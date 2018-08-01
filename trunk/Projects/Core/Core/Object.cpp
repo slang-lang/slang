@@ -417,64 +417,16 @@ void Object::operator_assign(const Object *other)
 
 void Object::operator_bitand(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("&operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
-		return;
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitcomplement(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator~: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("~operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
-		return;
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator~: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitor(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("|operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
-		return;
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
@@ -485,46 +437,11 @@ bool Object::operator_bool() const
 
 void Object::operator_divide(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("/operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
-		return;
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_equal(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("==operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		return operator_equal(&tmp);
-	}
-
 	if ( mIsReference && other->mIsReference ) {
 		return mReference == other->mReference;
 	}
@@ -534,194 +451,41 @@ bool Object::operator_equal(const Object *other)
 
 bool Object::operator_greater(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		return operator_greater(&tmp);
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_greater_equal(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">=operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		return operator_greater_equal(&tmp);
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-}
-
-bool Object::operator_is(const std::string& type)
-{
-	if ( type.empty() ) {
-		return false;
-	}
-
-	if ( mThis != this ) {
-		return mThis->isInstanceOf(type);
-	}
-
-	return isInstanceOf(type);
 }
 
 bool Object::operator_less(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		return operator_less(&tmp);
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_less_equal(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<=operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		return operator_less_equal(&tmp);
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_modulo(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("%operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
-		return;
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_multiply(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("*operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
-		return;
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_plus(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("+operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
-		return;
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_subtract(const Object *other)
 {
-	if ( !other->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-	}
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
-
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("-operator", params, false, Visibility::Public);
-	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
-	}
-	if ( value_operator ) {
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
-		return;
-	}
-
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 

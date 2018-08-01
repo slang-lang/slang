@@ -5,9 +5,8 @@
 // Library includes
 
 // Project includes
-#include <Core/Common/Exceptions.h>
-#include <Core/Tools.h>
-#include <Tools/Strings.h>
+#include <Core/Consts.h>
+#include <Core/Runtime/Exceptions.h>
 #include "BoolObject.h"
 #include "DoubleObject.h"
 #include "FloatObject.h"
@@ -21,7 +20,7 @@ namespace Runtime {
 
 
 AtomicValue IntegerObject::DEFAULTVALUE = AtomicValue(0);
-std::string IntegerObject::TYPENAME = "int";
+std::string IntegerObject::TYPENAME = _int;
 
 
 IntegerObject::IntegerObject(const AtomicValue& value)
@@ -76,10 +75,10 @@ void IntegerObject::operator_assign(const Object *other)
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ) {
 		mValue = other->getValue().toInt();
+		return;
 	}
-	else {
-		Object::operator_assign(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no = operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 bool IntegerObject::operator_bool() const
@@ -102,10 +101,10 @@ void IntegerObject::operator_bitand(const Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		mValue = mValue.toInt() & other->getValue().toInt();
+		return;
 	}
-	else {
-		Object::operator_bitand(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no & operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void IntegerObject::operator_bitor(const IntegerObject *other)
@@ -123,10 +122,10 @@ void IntegerObject::operator_bitor(const Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		mValue = mValue.toInt() | other->getValue().toInt();
+		return;
 	}
-	else {
-		Object::operator_bitor(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no | operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void IntegerObject::operator_divide(const IntegerObject *other)
@@ -143,10 +142,10 @@ void IntegerObject::operator_divide(const Object *other)
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ) {
 		mValue = mValue.toInt() / other->getValue().toInt();
+		return;
 	}
-	else {
-		Object::operator_divide(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no / operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 bool IntegerObject::operator_equal(const IntegerObject *other)
@@ -258,10 +257,10 @@ void IntegerObject::operator_modulo(const Object *other)
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ) {
 		mValue = mValue.toInt() % other->getValue().toInt();
+		return;
 	}
-	else {
-		Object::operator_modulo(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no % operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void IntegerObject::operator_multiply(const IntegerObject *other)
@@ -278,10 +277,10 @@ void IntegerObject::operator_multiply(const Object *other)
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ) {
 		mValue = mValue.toInt() * other->getValue().toInt();
+		return;
 	}
-	else {
-		Object::operator_multiply(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no * operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void IntegerObject::operator_plus(const IntegerObject *other)
@@ -298,10 +297,10 @@ void IntegerObject::operator_plus(const Object *other)
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ) {
 		mValue = mValue.toInt() + other->getValue().toInt();
+		return;
 	}
-	else {
-		Object::operator_plus(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no + operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void IntegerObject::operator_subtract(const IntegerObject *other)
@@ -318,10 +317,10 @@ void IntegerObject::operator_subtract(const Object *other)
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ) {
 		mValue = mValue.toInt() - other->getValue().toInt();
+		return;
 	}
-	else {
-		Object::operator_subtract(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no - operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void IntegerObject::operator_unary_decrement()

@@ -5,8 +5,8 @@
 // Library includes
 
 // Project includes
-#include <Core/Tools.h>
-#include <Tools/Strings.h>
+#include <Core/Consts.h>
+#include <Core/Runtime/Exceptions.h>
 #include "BoolObject.h"
 #include "FloatObject.h"
 #include "IntegerObject.h"
@@ -20,7 +20,7 @@ namespace Runtime {
 
 
 AtomicValue DoubleObject::DEFAULTVALUE = AtomicValue(0.0);
-std::string DoubleObject::TYPENAME = "double";
+std::string DoubleObject::TYPENAME = _double;
 
 
 DoubleObject::DoubleObject(const AtomicValue& value)
@@ -70,10 +70,10 @@ void DoubleObject::operator_assign(const Object *other)
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ) {
 		mValue = other->getValue().toDouble();
+		return;
 	}
-	else {
-		Object::operator_assign(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no = operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 bool DoubleObject::operator_bool() const
@@ -94,10 +94,10 @@ void DoubleObject::operator_divide(const Object *other)
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ) {
 		mValue = mValue.toDouble() / other->getValue().toDouble();
+		return;
 	}
-	else {
-		Object::operator_divide(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no / operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 bool DoubleObject::operator_equal(const DoubleObject *other)
@@ -203,10 +203,10 @@ void DoubleObject::operator_multiply(const Object *other)
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ) {
 		mValue = mValue.toDouble() * other->getValue().toDouble();
+		return;
 	}
-	else {
-		Object::operator_multiply(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no * operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void DoubleObject::operator_plus(const DoubleObject *other)
@@ -222,10 +222,10 @@ void DoubleObject::operator_plus(const Object *other)
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ) {
 		mValue = mValue.toDouble() + other->getValue().toDouble();
+		return;
 	}
-	else {
-		Object::operator_plus(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no + operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void DoubleObject::operator_subtract(const DoubleObject *other)
@@ -241,10 +241,10 @@ void DoubleObject::operator_subtract(const Object *other)
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ) {
 		mValue = mValue.toDouble() - other->getValue().toDouble();
+		return;
 	}
-	else {
-		Object::operator_subtract(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no - operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void DoubleObject::operator_unary_decrement()
