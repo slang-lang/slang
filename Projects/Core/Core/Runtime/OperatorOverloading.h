@@ -34,7 +34,6 @@ bool operator_binary_greater(Object *base, Object *other, const Common::Position
 bool operator_binary_greater_equal(Object *base, Object *other, const Common::Position& position = Common::Position());
 bool operator_binary_less(Object *base, Object *other, const Common::Position& position = Common::Position());
 bool operator_binary_less_equal(Object *base, Object *other, const Common::Position& position = Common::Position());
-bool operator_binary_is(Object* base, const std::string& type, const Common::Position& position = Common::Position());
 void operator_binary_modulo(Object *base, Object *other, const Common::Position& position = Common::Position());
 void operator_binary_multiply(Object *base, Object *other, const Common::Position& position = Common::Position());
 void operator_binary_plus(Object *base, Object *other, const Common::Position& position = Common::Position());

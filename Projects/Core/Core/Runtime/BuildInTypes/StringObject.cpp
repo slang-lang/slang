@@ -5,10 +5,8 @@
 // Library includes
 
 // Project includes
-#include <Core/Common/Exceptions.h>
 #include <Core/Consts.h>
-#include <Core/Tools.h>
-#include <Tools/Strings.h>
+#include <Core/Runtime/Exceptions.h>
 #include "BoolObject.h"
 #include "DoubleObject.h"
 #include "FloatObject.h"
@@ -24,7 +22,7 @@ namespace Runtime {
 
 
 AtomicValue StringObject::DEFAULTVALUE = AtomicValue(std::string(""));
-std::string StringObject::TYPENAME = "string";
+std::string StringObject::TYPENAME = _string;
 
 
 StringObject::StringObject(const AtomicValue& value)
@@ -79,10 +77,10 @@ void StringObject::operator_assign(const Object *other)
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ) {
 		mValue = other->getValue().toStdString();
+		return;
 	}
-	else {
-		Object::operator_assign(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no = operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void StringObject::operator_assign(const StringObject *other)
@@ -205,10 +203,10 @@ void StringObject::operator_plus(const Object *other)
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ) {
 		mValue = mValue.toStdString() + other->getValue().toStdString();
+		return;
 	}
-	else {
-		Object::operator_plus(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no + operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void StringObject::operator_plus(const StringObject *other)

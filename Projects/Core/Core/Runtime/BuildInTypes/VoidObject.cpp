@@ -5,8 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Tools.h>
-#include <Tools/Strings.h>
+#include <Core/Consts.h>
 
 // Namespace declarations
 
@@ -15,7 +14,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-std::string VoidObject::TYPENAME = "void";
+std::string VoidObject::TYPENAME = _void;
 
 
 VoidObject::VoidObject()

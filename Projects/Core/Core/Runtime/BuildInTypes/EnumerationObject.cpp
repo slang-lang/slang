@@ -59,9 +59,8 @@ void EnumerationObject::operator_assign(const Object *other)
 	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		mValue = other->getValue().toInt();
 	}
-	else {
-		Object::operator_assign(other);
-	}
+
+	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator=: invalid use of type " + other->QualifiedTypename());
 }
 
 bool EnumerationObject::operator_bool() const

@@ -6,9 +6,7 @@
 
 // Project includes
 #include <Core/Consts.h>
-#include <Core/Common/Exceptions.h>
-#include <Core/Tools.h>
-#include <Tools/Strings.h>
+#include <Core/Runtime/Exceptions.h>
 #include "DoubleObject.h"
 #include "FloatObject.h"
 #include "IntegerObject.h"
@@ -22,7 +20,7 @@ namespace Runtime {
 
 
 AtomicValue BoolObject::DEFAULTVALUE = AtomicValue(false);
-std::string BoolObject::TYPENAME = "bool";
+std::string BoolObject::TYPENAME = _bool;
 
 
 BoolObject::BoolObject(const AtomicValue& value)
@@ -78,10 +76,10 @@ void BoolObject::operator_assign(const Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		mValue = other->getValue().toBool();
+		return;
 	}
-	else {
-		Object::operator_assign(other);
-	}
+
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no = operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 bool BoolObject::operator_equal(const BoolObject *other)
@@ -101,7 +99,7 @@ bool BoolObject::operator_equal(const Object *other)
 		return mValue.toBool() == other->getValue().toBool();
 	}
 
-	return Object::operator_equal(other);
+	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no == operator for use with '" + other->QualifiedTypename() + "'");
 }
 
 void BoolObject::operator_unary_not()

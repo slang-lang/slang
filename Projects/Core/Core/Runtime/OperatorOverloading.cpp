@@ -93,23 +93,8 @@ void operator_binary_assign(Object *base, Object *other, const Common::Position&
 			return;
 		}
 
-
 		// invalid binary assignment operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator=()'");
-
-
-
-		ParameterList params;
-		params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
-
-		::ObjectiveScript::MethodSymbol* operator_method = base->resolveMethod("operator=", params, true, Visibility::Private);
-		if ( operator_method ) {
-			Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(operator_method), params, 0);
-
-			return;
-		}
-
-		throw Common::Exceptions::Exception(base->QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + base->QualifiedTypename() + " not supported");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->QualifiedTypename() + ".operator=(" + other->QualifiedTypename() + ")'");
 	}
 }
 
@@ -326,7 +311,6 @@ bool operator_binary_equal(Object *base, Object *other, const Common::Position& 
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
-		tmp.operator_equal(other);
 		return tmp.operator_equal(other);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
@@ -355,15 +339,6 @@ bool operator_binary_equal(Object *base, Object *other, const Common::Position& 
 
 	ParameterList params;
 	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
-
-	if ( base->resolveMethod("operator==", params, false, Visibility::Public) ) {
-		Object tmp;
-		base->execute(&tmp, "operator==", params);
-		return isTrue(tmp);
-	}
-
-	params.clear();
-	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	if ( base->resolveMethod("operator==", params, false, Visibility::Public) ) {
 		Object tmp;
@@ -549,15 +524,6 @@ bool operator_binary_less_equal(Object *base, Object *other, const Common::Posit
 	Object tmp;
 	base->execute(&tmp, "operator<=", params);
 	return isTrue(tmp);
-}
-
-bool operator_binary_is(Object* base, const std::string& type, const Common::Position& position)
-{
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
-	}
-
-	return base->operator_is(type);
 }
 
 void operator_binary_modulo(Object *base, Object *other, const Common::Position& position)

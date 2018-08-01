@@ -51,22 +51,6 @@ private object TestObject {
 		return this;
 	}
 
-/*
-	public int +operator(int other) const {
-		print("int +operator(int " + other + ")");
-		return mValue;
-	}
-	public string +operator(string other) const {
-		print("string +operator(string " + other + ")");
-		return string mValue;
-	}
-
-	public int -operator(int other) const {
-		print("int -operator(int " + other + ")");
-		return mValue;
-	}
-*/
-
 	public TestObject operator--() modify {
 		print("operator--");
 		mValue--;
@@ -79,16 +63,6 @@ private object TestObject {
 		mValue++;
 
 		return this;
-	}
-
-	public void ++operator() modify {
-		print("++operator");
-		mValue = mValue++;
-	}
-
-	public int <operator(int value) const {
-		print("<operator(int " + value + ")");
-		return mValue;
 	}
 }
 
@@ -132,7 +106,7 @@ private bool TestCase3() const {
 	TestObject obj = new TestObject(1);
 	print(obj.ToString());
 
-	int value = obj;
+	int value = int obj;
 
 	print("value = " + value);
 
