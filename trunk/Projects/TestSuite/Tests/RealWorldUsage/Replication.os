@@ -20,7 +20,7 @@ public void Main(int argc, string args) {
 	intList.push_back(new Integer(3));
 
 	foreach ( int i : intList ) {
-		print("i = " + i);
+		print("i = " + string i);
 	}
 
 	StringList stringList = new StringList();
