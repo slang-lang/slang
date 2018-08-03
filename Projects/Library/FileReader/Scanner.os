@@ -15,11 +15,13 @@ public object Scanner implements IIterateable {
 		mFile = file;
 		mSeparator = separator;
 
-		readAll();
+		if ( mFile ) {
+			readAll();
+		}
 	}
 
 	public string getFilename() const {
-		return mFile.getFilename();
+		return mFile ? mFile.getFilename() : "";
 	}
 
 	public string getText() const {
