@@ -2,6 +2,8 @@
 // Library imports
 import System.Exception;
 
+// Project imports
+
 
 public object FatalError implements IException {
     private string _message;

@@ -39,7 +39,7 @@ void generateTable(string tableName) const {
 	}
 	tableData += "}" + LINEBREAK + LINEBREAK;
 
-	var outFile = new System.IO.File("output/Table_" + tableName + ".os", "w");
+	var outFile = new System.IO.File("output/Table_" + tableName + ".os", System.IO.FileAccessMode.WriteOnly);
 	outFile.write(tableData);
 	outFile.close();
 }
