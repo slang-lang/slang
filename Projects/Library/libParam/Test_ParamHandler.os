@@ -43,7 +43,7 @@ bool TestCase2() {
 	Parameter param = params.at(0);
 	print(string param);
 
-	assert( "--one=true" == string param );
+	assert( "true" == string param );
 
 	print("Key: " + param.Key);
 	assert( param.Key == "one" );
@@ -67,7 +67,7 @@ bool TestCase2() {
 	param = params.at(2);
 	print(string param);
 
-	assert( "--three=" == string param );
+	assert( "" == string param );
 
 	print("Key: " + param.Key);
 	assert( param.Key == "three" );
