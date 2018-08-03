@@ -3,7 +3,7 @@
 import System.IO.Logger;
 
 public void Main(int argc = 0, string args = "") {
-	System.IO.Logger logger = new System.IO.Logger("MainObjectAndSomeOtherStuff", 12);
+	var logger = new System.IO.Logger("MainObjectAndSomeOtherStuff", 12);
 
 	logger.debug("this is a debug output");
 	logger.error("this is an error");
