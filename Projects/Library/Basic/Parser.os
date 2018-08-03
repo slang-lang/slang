@@ -26,7 +26,7 @@ public object Parser {
 	}
 
 	public Map<int, Line> parseFile(string filename) modify {
-		Scanner scanner = new Scanner(new System.IO.File(filename, "r"), ascii(10));
+		Scanner scanner = new Scanner(new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly), LINEBREAK);
 
 		//print("Parsing file '" + filename + "'...");
 
