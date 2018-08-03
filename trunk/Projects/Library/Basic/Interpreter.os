@@ -148,7 +148,7 @@ public object Interpreter {
 	private bool processBooleanExpression(Expression exp) const {
 		//print("processBooleanExpression(" + exp.toString() + ")");
 
-		var result = processExpression(exp);
+		string result = processExpression(exp);
 
 		return result && result != "0";
 	}

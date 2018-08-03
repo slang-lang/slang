@@ -1,7 +1,7 @@
 {
   "name": "BASIC Interpreter",
   "name_short": "Basic",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "BASIC Interpreter parses and interprets (=runs) .bas scripts.",
   "dependencies": [
     { "module": "libparam", "version_min": "0.1.0" },
@@ -10,6 +10,6 @@
   "target": {
     "directory": "Basic",
     "type": "internal",
-    "url": "Basic_0.1.0.tar.gz"
+    "url": "Basic_0.1.1.tar.gz"
   }
 }
