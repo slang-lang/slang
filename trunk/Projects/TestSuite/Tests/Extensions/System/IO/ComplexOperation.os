@@ -3,7 +3,7 @@
 import System.IO.File;
 
 public void Main(int argc, string argv) modify {
-	System.IO.File file = new System.IO.File("file.complex", "wb");
+	System.IO.File file = new System.IO.File("file.complex", "w");
 	assert( file.isOpen() );
 
 	assert( writeFile() );
@@ -51,7 +51,7 @@ private bool writeFile() modify {
 	int result = 0;
 
 	try {
-		fd = fopen("file.complex", "wb");
+		fd = fopen("file.complex", "w");
 
 		fwriteb(fd, true);	// write bool
 		fwrited(fd, 173.1389d); // write double

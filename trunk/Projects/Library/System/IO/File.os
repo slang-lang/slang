@@ -3,6 +3,30 @@ import System.Exception;
 
 public namespace System.IO {
 
+	public enum FileAccessMode {
+		Append = 0,
+		AppendUpdate = 1,
+		ReadOnly = 2,
+		ReadWrite = 3,
+		ReadUpdate = 4,
+		WriteOnly = 5,
+		WriteUpdate = 6;
+	}
+
+	private string MapFileAccessModeToString(FileAccessMode mode const) const throws {
+		switch ( mode ) {
+			case FileAccessMode.Append: { return "a"; }
+			case FileAccessMode.AppendUpdate: { return "a+"; }
+			case FileAccessMode.ReadOnly: { return "r"; }
+			case FileAccessMode.ReadWrite: { return "rw"; }
+			case FileAccessMode.ReadUpdate: { return "r+"; }
+			case FileAccessMode.WriteOnly: { return "w"; }
+			case FileAccessMode.WriteUpdate: { return "w+"; }
+		}
+
+		throw new Exception("invalid access mode(" + (string mode) + ") provided!");
+	}
+
 	public object File {
 		private string mAccessMode;
 		private string mFilename;
@@ -12,7 +36,13 @@ public namespace System.IO {
 			cleanup();
 		}
 
-		public void Constructor(string filename, string mode = "r") {
+		public void Constructor(string filename, FileAccessMode mode const val) {
+			cleanup();
+
+			open(filename, MapFileAccessModeToString(mode));
+		}
+
+		public void Constructor(string filename, string mode) {
 			cleanup();
 
 			open(filename, mode);
