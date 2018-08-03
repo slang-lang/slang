@@ -30,7 +30,7 @@ public object Parameter {
 	}
 
 	public string =operator(string) const {
-		return FullValue;
+		return Value;
 	}
 }
 
@@ -76,16 +76,18 @@ public object ParameterHandler implements IIterateable {
 		return new ParameterIterator(this);
 	}
 
-	public int size() const {
-		return mParameters.size();
-	}
-
-	public string stringAt(int index) const throws {
-		if ( index < 0 || index >= mParameters.size() ) {
-			throw new OutOfBoundsException("Index (" + index + ") out of bounds");
+	public Parameter getParameter(string key) const throws {
+		foreach ( Parameter p : mParameters ) {
+			if ( p == key ) {
+				return p;
+			}
 		}
 
-		return string mParameters.at(index);
+		throw new Exception("key('" + key + "') not found!");
+	}
+
+	public int size() const {
+		return mParameters.size();
 	}
 
 // Private
