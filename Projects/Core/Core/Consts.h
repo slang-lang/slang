@@ -103,6 +103,7 @@ static const char* UNKNOWN = "unknown";
 static const char* _any = "";
 static const char* _bool = "bool";
 static const char* _double = "double";
+static const char* _enum = "enum";
 static const char* _float = "float";
 static const char* _int = "int";
 static const char* _object = "Object";

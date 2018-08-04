@@ -5,10 +5,8 @@
 // Library includes
 
 // Project includes
-#include <Core/Common/Exceptions.h>
+#include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Tools.h>
-#include <Tools/Strings.h>
 #include "BoolObject.h"
 #include "DoubleObject.h"
 #include "FloatObject.h"
@@ -23,7 +21,7 @@ namespace Runtime {
 
 
 AtomicValue EnumerationObject::DEFAULTVALUE = AtomicValue(0);
-std::string EnumerationObject::TYPENAME = "enum";
+std::string EnumerationObject::TYPENAME = _enum;
 
 
 EnumerationObject::EnumerationObject(const std::string& name, const std::string& type, const AtomicValue& value)
@@ -45,36 +43,18 @@ bool EnumerationObject::isValid() const
 	return true;
 }
 
-void EnumerationObject::operator_assign(const EnumerationObject *other)
-{
-	if ( QualifiedTypename() == other->QualifiedTypename() ) {
-		mValue = other->getValue().toInt();
-	}
-
-	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator=: invalid use of type " + other->QualifiedTypename());
-}
-
 void EnumerationObject::operator_assign(const Object *other)
 {
 	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		mValue = other->getValue().toInt();
 	}
 
-	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator=: invalid use of type " + other->QualifiedTypename());
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool EnumerationObject::operator_bool() const
 {
 	return mValue.toInt() != 0;
-}
-
-bool EnumerationObject::operator_equal(const EnumerationObject *other)
-{
-	if ( QualifiedTypename() == other->QualifiedTypename() ) {
-		return mValue.toInt() == other->getValue().toInt();
-	}
-
-	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator==: invalid use of type " + other->QualifiedTypename());
 }
 
 bool EnumerationObject::operator_equal(const Object *other)
@@ -83,16 +63,7 @@ bool EnumerationObject::operator_equal(const Object *other)
 		return mValue.toInt() == other->getValue().toInt();
 	}
 
-	return Object::operator_equal(other);
-}
-
-bool EnumerationObject::operator_greater(const EnumerationObject *other)
-{
-	if ( QualifiedTypename() == other->QualifiedTypename() ) {
-		return mValue.toInt() > other->getValue().toInt();
-	}
-
-	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator>: invalid use of type " + other->QualifiedTypename());
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool EnumerationObject::operator_greater(const Object *other)
@@ -101,16 +72,7 @@ bool EnumerationObject::operator_greater(const Object *other)
 		return mValue.toInt() > other->getValue().toInt();
 	}
 
-	return Object::operator_greater(other);
-}
-
-bool EnumerationObject::operator_greater_equal(const EnumerationObject *other)
-{
-	if ( QualifiedTypename() == other->QualifiedTypename() ) {
-		return mValue.toInt() >= other->getValue().toInt();
-	}
-
-	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator>=: invalid use of type " + other->QualifiedTypename());
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool EnumerationObject::operator_greater_equal(const Object *other)
@@ -119,16 +81,7 @@ bool EnumerationObject::operator_greater_equal(const Object *other)
 		return mValue.toInt() >= other->getValue().toInt();
 	}
 
-	return Object::operator_greater_equal(other);
-}
-
-bool EnumerationObject::operator_less(const EnumerationObject *other)
-{
-	if ( QualifiedTypename() == other->QualifiedTypename() ) {
-		return mValue.toInt() < other->getValue().toInt();
-	}
-
-	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator<: invalid use of type " + other->QualifiedTypename());
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool EnumerationObject::operator_less(const Object *other)
@@ -137,16 +90,7 @@ bool EnumerationObject::operator_less(const Object *other)
 		return mValue.toInt() < other->getValue().toInt();
 	}
 
-	return Object::operator_less(other);
-}
-
-bool EnumerationObject::operator_less_equal(const EnumerationObject *other)
-{
-	if ( QualifiedTypename() == other->QualifiedTypename() ) {
-		return mValue.toInt() <= other->getValue().toInt();
-	}
-
-	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator<=: invalid use of type " + other->QualifiedTypename());
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool EnumerationObject::operator_less_equal(const Object *other)
@@ -155,7 +99,7 @@ bool EnumerationObject::operator_less_equal(const Object *other)
 		return mValue.toInt() <= other->getValue().toInt();
 	}
 
-	return Object::operator_less_equal(other);
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 

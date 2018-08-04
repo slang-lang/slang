@@ -55,7 +55,7 @@ public:
 
 public:	// Initialization
 	void deinit();
-	Runtime::ControlFlow::E execute(Common::Method* method, const ParameterList& params, Runtime::Object* result);
+	Runtime::ControlFlow::E execute(Runtime::Object* self, Common::Method* method, const ParameterList& params, Runtime::Object* result);
 	void init();
 	void print();
 

@@ -50,13 +50,13 @@ StringObject::StringObject(const Object& other)
 
 	mIsAtomicType = true;
 
-	std::string source = other.QualifiedTypename();
+	const std::string& target = other.QualifiedTypename();
 
-	if ( source == IntegerObject::TYPENAME ||
-		 source == BoolObject::TYPENAME ||
-		 source == StringObject::TYPENAME ||
-		 source == DoubleObject::TYPENAME ||
-		 source == FloatObject::TYPENAME ) {
+	if ( target == IntegerObject::TYPENAME ||
+		target == BoolObject::TYPENAME ||
+		target == StringObject::TYPENAME ||
+		target == DoubleObject::TYPENAME ||
+		target == FloatObject::TYPENAME ) {
 		mValue = other.getValue().toStdString();
 	}
 	else if ( other.isEnumerationValue() ) {
@@ -69,7 +69,7 @@ StringObject::StringObject(const Object& other)
 
 void StringObject::operator_assign(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == StringObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -80,12 +80,7 @@ void StringObject::operator_assign(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no = operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-void StringObject::operator_assign(const StringObject *other)
-{
-	mValue = other->getValue().toStdString();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool StringObject::operator_bool() const
@@ -95,7 +90,7 @@ bool StringObject::operator_bool() const
 
 bool StringObject::operator_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -105,22 +100,12 @@ bool StringObject::operator_equal(const Object *other)
 		return mValue.toStdString() == other->getValue().toStdString();
 	}
 
-	return Object::operator_equal(other);
-}
-
-bool StringObject::operator_equal(const StringObject *other)
-{
-	return mValue.toStdString() == other->getValue().toStdString();
-}
-
-bool StringObject::operator_greater(const StringObject *other)
-{
-	return mValue.toStdString() > other->getValue().toStdString();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool StringObject::operator_greater(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -130,17 +115,12 @@ bool StringObject::operator_greater(const Object *other)
 		return mValue.toStdString() > other->getValue().toStdString();
 	}
 
-	return Object::operator_greater(other);
-}
-
-bool StringObject::operator_greater_equal(const StringObject *other)
-{
-	return mValue.toStdString() >= other->getValue().toStdString();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool StringObject::operator_greater_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -150,17 +130,12 @@ bool StringObject::operator_greater_equal(const Object *other)
 		return mValue.toStdString() >= other->getValue().toStdString();
 	}
 
-	return Object::operator_greater_equal(other);
-}
-
-bool StringObject::operator_less(const StringObject *other)
-{
-	return mValue.toStdString() < other->getValue().toStdString();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool StringObject::operator_less(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -170,17 +145,12 @@ bool StringObject::operator_less(const Object *other)
 		return mValue.toStdString() < other->getValue().toStdString();
 	}
 
-	return Object::operator_less(other);
-}
-
-bool StringObject::operator_less_equal(const StringObject *other)
-{
-	return mValue.toStdString() <= other->getValue().toStdString();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool StringObject::operator_less_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -190,12 +160,12 @@ bool StringObject::operator_less_equal(const Object *other)
 		return mValue.toStdString() <= other->getValue().toStdString();
 	}
 
-	return Object::operator_less_equal(other);
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void StringObject::operator_plus(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == StringObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -206,12 +176,7 @@ void StringObject::operator_plus(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no + operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-void StringObject::operator_plus(const StringObject *other)
-{
-	mValue = mValue.toStdString() + other->getValue().toStdString();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 

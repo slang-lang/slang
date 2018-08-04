@@ -1197,7 +1197,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	for ( ExpressionList::const_iterator it = expressions.begin(); it != expressions.end(); ++it ) {
 		params.push_back(Parameter::CreateDesigntime(
 			ANONYMOUS_OBJECT,
-			Common::TypeDeclaration(dynamic_cast<Expression*>((*it))->getResultType(), PrototypeConstraints(), static_cast<Expression*>((*it))->isConst() ? Mutability::Const : Mutability::Modify),
+			Common::TypeDeclaration(dynamic_cast<Expression*>((*it))->getResultType(), PrototypeConstraints(), dynamic_cast<Expression*>((*it))->isConst() ? Mutability::Const : Mutability::Modify),
 			Runtime::AtomicValue(),
 			false,
 			dynamic_cast<Expression*>((*it))->isConst() ? Mutability::Const : Mutability::Modify,
@@ -1842,7 +1842,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 */
 
 			// set scope according to result type
-			scope = object->isAtomicType() ? 0 : object->getBluePrint();
+			scope = object->isAtomicType() ? NULL : object->getBluePrint();
 			type = object->QualifiedTypename();
 
 			symbol = new RuntimeSymbolExpression(name, type, object->isConst(), object->isMember(), object->isAtomicType());

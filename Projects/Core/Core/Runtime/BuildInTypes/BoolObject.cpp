@@ -42,7 +42,7 @@ BoolObject::BoolObject(const Object& other)
 
 	mIsAtomicType = true;
 
-	std::string target = other.QualifiedTypename();
+	const std::string& target = other.QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -61,14 +61,9 @@ bool BoolObject::operator_bool() const
 	return mValue.toBool();
 }
 
-void BoolObject::operator_assign(const BoolObject *other)
-{
-	mValue = other->getValue().toBool();
-}
-
 void BoolObject::operator_assign(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -79,17 +74,12 @@ void BoolObject::operator_assign(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no = operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-bool BoolObject::operator_equal(const BoolObject *other)
-{
-	return mValue.toBool() == other->getValue().toBool();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool BoolObject::operator_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -99,7 +89,7 @@ bool BoolObject::operator_equal(const Object *other)
 		return mValue.toBool() == other->getValue().toBool();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no == operator for use with '" + other->QualifiedTypename() + "'");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void BoolObject::operator_unary_not()

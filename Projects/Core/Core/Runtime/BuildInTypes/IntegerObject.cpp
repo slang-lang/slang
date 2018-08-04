@@ -42,7 +42,7 @@ IntegerObject::IntegerObject(const Object& other)
 
 	mIsAtomicType = true;
 
-	std::string target = other.QualifiedTypename();
+	const std::string& target = other.QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -61,14 +61,9 @@ const std::string& IntegerObject::getTypeName() const
 	return TYPENAME;
 }
 
-void IntegerObject::operator_assign(const IntegerObject *other)
-{
-	mValue = other->getValue().toInt();
-}
-
 void IntegerObject::operator_assign(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -78,7 +73,7 @@ void IntegerObject::operator_assign(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no = operator for use with '" + other->QualifiedTypename() + "'");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool IntegerObject::operator_bool() const
@@ -86,14 +81,9 @@ bool IntegerObject::operator_bool() const
 	return mValue.toBool();
 }
 
-void IntegerObject::operator_bitand(const IntegerObject *other)
-{
-	mValue = mValue.toInt() & other->getValue().toInt();
-}
-
 void IntegerObject::operator_bitand(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -104,17 +94,12 @@ void IntegerObject::operator_bitand(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no & operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-void IntegerObject::operator_bitor(const IntegerObject *other)
-{
-	mValue = mValue.toInt() | other->getValue().toInt();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void IntegerObject::operator_bitor(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -125,17 +110,12 @@ void IntegerObject::operator_bitor(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no | operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-void IntegerObject::operator_divide(const IntegerObject *other)
-{
-	mValue = mValue.toInt() / other->getValue().toInt();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void IntegerObject::operator_divide(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -145,17 +125,12 @@ void IntegerObject::operator_divide(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no / operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-bool IntegerObject::operator_equal(const IntegerObject *other)
-{
-	return mValue.toInt() == other->getValue().toInt();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool IntegerObject::operator_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -164,17 +139,12 @@ bool IntegerObject::operator_equal(const Object *other)
 		return mValue.toInt() == other->getValue().toInt();
 	}
 
-	return Object::operator_equal(other);
-}
-
-bool IntegerObject::operator_greater(const IntegerObject *other)
-{
-	return mValue.toInt() > other->getValue().toInt();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool IntegerObject::operator_greater(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -183,17 +153,12 @@ bool IntegerObject::operator_greater(const Object *other)
 		return mValue.toInt() > other->getValue().toInt();
 	}
 
-	return Object::operator_greater(other);
-}
-
-bool IntegerObject::operator_greater_equal(const IntegerObject *other)
-{
-	return mValue.toInt() >= other->getValue().toInt();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool IntegerObject::operator_greater_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -202,17 +167,12 @@ bool IntegerObject::operator_greater_equal(const Object *other)
 		return mValue.toInt() >= other->getValue().toInt();
 	}
 
-	return Object::operator_greater_equal(other);
-}
-
-bool IntegerObject::operator_less(const IntegerObject *other)
-{
-	return mValue.toInt() < other->getValue().toInt();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool IntegerObject::operator_less(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -221,17 +181,12 @@ bool IntegerObject::operator_less(const Object *other)
 		return mValue.toInt() < other->getValue().toInt();
 	}
 
-	return Object::operator_less(other);
-}
-
-bool IntegerObject::operator_less_equal(const IntegerObject *other)
-{
-	return mValue.toInt() <= other->getValue().toInt();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool IntegerObject::operator_less_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -240,17 +195,12 @@ bool IntegerObject::operator_less_equal(const Object *other)
 		return mValue.toInt() <= other->getValue().toInt();
 	}
 
-	return Object::operator_less_equal(other);
-}
-
-void IntegerObject::operator_modulo(const IntegerObject *other)
-{
-	mValue = mValue.toInt() % other->getValue().toInt();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void IntegerObject::operator_modulo(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -260,17 +210,12 @@ void IntegerObject::operator_modulo(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no % operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-void IntegerObject::operator_multiply(const IntegerObject *other)
-{
-	mValue = mValue.toInt() * other->getValue().toInt();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void IntegerObject::operator_multiply(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -280,17 +225,12 @@ void IntegerObject::operator_multiply(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no * operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-void IntegerObject::operator_plus(const IntegerObject *other)
-{
-	mValue = mValue.toInt() + other->getValue().toInt();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void IntegerObject::operator_plus(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -300,17 +240,12 @@ void IntegerObject::operator_plus(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no + operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-void IntegerObject::operator_subtract(const IntegerObject *other)
-{
-	mValue = mValue.toInt() - other->getValue().toInt();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void IntegerObject::operator_subtract(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -320,7 +255,7 @@ void IntegerObject::operator_subtract(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no - operator for use with '" + other->QualifiedTypename() + "'");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void IntegerObject::operator_unary_decrement()

@@ -102,6 +102,9 @@ public:
 	Symbols::const_iterator endSymbols() const;
 
 protected:
+	virtual void deinit();
+
+protected:
 	Symbols mExternalSymbols;
 	MethodCollection mExternalMethods;
 	MethodCollection mMethods;
@@ -109,9 +112,6 @@ protected:
 	std::string mScopeName;
 	IType::E mScopeType;
 	Symbols mSymbols;
-
-private:
-	void deinit();
 };
 
 

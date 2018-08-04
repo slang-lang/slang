@@ -496,19 +496,18 @@ void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::
 	// create and define all methods based on given blueprint
 	MethodScope::MethodCollection methods = srcObj->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-		// create new method and ...
-		Common::Method* method = new Common::Method(destObj, (*it)->getName(), (*it)->QualifiedTypename());
-		if ( method->isStatic() ) {
+		if ( (*it)->isStatic() ) {
 			continue;
 		}
+
+		// create new method and ...
+		Common::Method* method = new Common::Method(destObj, (*it)->getName(), (*it)->QualifiedTypename());
 
 		// ... copy its data from our template method
 		*method = *(*it);
 
-		destObj->defineMethod((*it)->getName(), method);
+		destObj->defineMethod(method->getName(), method);
 	}
-
-	destObj->define(IDENTIFIER_THIS, destObj);	// define this-symbol
 }
 
 /*
@@ -531,12 +530,8 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 		if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 			continue;
 		}
-		if ( it->first == IDENTIFIER_THIS ) {
-			// skip "this" symbols
-			continue;
-		}
 
-		Designtime::BluePrintObject* member = static_cast<Designtime::BluePrintObject*>(it->second);
+		Designtime::BluePrintObject* member = dynamic_cast<Designtime::BluePrintObject*>(it->second);
 
 		Designtime::BluePrintObject* baseType = findBluePrintObject(member->QualifiedTypename());
 		if ( !baseType ) {
