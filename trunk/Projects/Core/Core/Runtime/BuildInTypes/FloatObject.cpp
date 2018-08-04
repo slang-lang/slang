@@ -42,13 +42,13 @@ FloatObject::FloatObject(const Object& other)
 
 	mIsAtomicType = true;
 
-	std::string source = other.QualifiedTypename();
+	const std::string& target = other.QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ||
-		 source == DoubleObject::TYPENAME ||
-		 source == FloatObject::TYPENAME ||
-		 source == IntegerObject::TYPENAME ||
-		 source == StringObject::TYPENAME ) {
+	if ( target == BoolObject::TYPENAME ||
+		target == DoubleObject::TYPENAME ||
+		target == FloatObject::TYPENAME ||
+		target == IntegerObject::TYPENAME ||
+		target == StringObject::TYPENAME ) {
 		mValue = other.getValue().toFloat();
 	}
 	else {
@@ -56,14 +56,9 @@ FloatObject::FloatObject(const Object& other)
 	}
 }
 
-void FloatObject::operator_assign(const FloatObject *other)
-{
-	mValue = other->getValue().toFloat();
-}
-
 void FloatObject::operator_assign(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -73,7 +68,7 @@ void FloatObject::operator_assign(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no = operator for use with '" + other->QualifiedTypename() + "'");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool FloatObject::operator_bool() const
@@ -81,14 +76,9 @@ bool FloatObject::operator_bool() const
 	return mValue.toBool();
 }
 
-void FloatObject::operator_divide(const FloatObject *other)
-{
-	mValue = mValue.toFloat() / other->getValue().toFloat();
-}
-
 void FloatObject::operator_divide(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -97,17 +87,12 @@ void FloatObject::operator_divide(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no / operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-bool FloatObject::operator_equal(const FloatObject *other)
-{
-	return mValue.toFloat() == other->getValue().toFloat();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool FloatObject::operator_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -115,17 +100,12 @@ bool FloatObject::operator_equal(const Object *other)
 		return mValue.toFloat() == other->getValue().toFloat();
 	}
 
-	return Object::operator_equal(other);
-}
-
-bool FloatObject::operator_greater(const FloatObject *other)
-{
-	return mValue.toFloat() > other->getValue().toFloat();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool FloatObject::operator_greater(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -133,17 +113,12 @@ bool FloatObject::operator_greater(const Object *other)
 		return mValue.toFloat() > other->getValue().toFloat();
 	}
 
-	return Object::operator_greater(other);
-}
-
-bool FloatObject::operator_greater_equal(const FloatObject *other)
-{
-	return mValue.toFloat() >= other->getValue().toFloat();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool FloatObject::operator_greater_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -151,17 +126,12 @@ bool FloatObject::operator_greater_equal(const Object *other)
 		return mValue.toFloat() >= other->getValue().toFloat();
 	}
 
-	return Object::operator_greater_equal(other);
-}
-
-bool FloatObject::operator_less(const FloatObject *other)
-{
-	return mValue.toFloat() < other->getValue().toFloat();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool FloatObject::operator_less(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -169,17 +139,12 @@ bool FloatObject::operator_less(const Object *other)
 		return mValue.toFloat() < other->getValue().toFloat();
 	}
 
-	return Object::operator_less(other);
-}
-
-bool FloatObject::operator_less_equal(const FloatObject *other)
-{
-	return mValue.toFloat() <= other->getValue().toFloat();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool FloatObject::operator_less_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -187,17 +152,12 @@ bool FloatObject::operator_less_equal(const Object *other)
 		return mValue.toFloat() <= other->getValue().toFloat();
 	}
 
-	return Object::operator_less_equal(other);
-}
-
-void FloatObject::operator_multiply(const FloatObject *other)
-{
-	mValue = mValue.toFloat() * other->getValue().toFloat();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void FloatObject::operator_multiply(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -206,17 +166,12 @@ void FloatObject::operator_multiply(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no * operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-void FloatObject::operator_plus(const FloatObject *other)
-{
-	mValue = mValue.toFloat() + other->getValue().toFloat();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void FloatObject::operator_plus(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -225,17 +180,12 @@ void FloatObject::operator_plus(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no + operator for use with '" + other->QualifiedTypename() + "'");
-}
-
-void FloatObject::operator_subtract(const FloatObject *other)
-{
-	mValue = mValue.toFloat() - other->getValue().toFloat();
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void FloatObject::operator_subtract(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
+	const std::string& target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -244,7 +194,7 @@ void FloatObject::operator_subtract(const Object *other)
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation("'" + TYPENAME + "' offers no - operator for use with '" + other->QualifiedTypename() + "'");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void FloatObject::operator_unary_decrement()

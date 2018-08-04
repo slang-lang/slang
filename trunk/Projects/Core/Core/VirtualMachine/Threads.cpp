@@ -49,12 +49,12 @@ void Thread::deinit()
 	mState = State::Stopped;
 }
 
-Runtime::ControlFlow::E Thread::execute(Common::Method* method, const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E Thread::execute(Runtime::Object* self, Common::Method* method, const ParameterList& params, Runtime::Object* result)
 {
 	mState = State::Started;
 
 	AST::TreeInterpreter interpreter(mId);
-	Runtime::ControlFlow::E controlflow = interpreter.execute(NULL, method, params, result);
+	Runtime::ControlFlow::E controlflow = interpreter.execute(self, method, params, result);
 
 	mState = State::Stopping;
 

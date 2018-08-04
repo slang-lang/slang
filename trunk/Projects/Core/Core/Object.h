@@ -84,6 +84,8 @@ public:	// Value
 	AtomicValue getValue() const;
 	void setValue(AtomicValue value);
 
+	Object* getThis() const { return mThis; }
+
 	bool isAbstract() const;
 	bool isAtomicType() const;
 	bool isEnumerationValue() const;
@@ -116,12 +118,14 @@ public:	// Operators
 	virtual void operator_unary_decrement();
 	virtual void operator_unary_increment();
 	virtual void operator_unary_minus();
+	virtual void operator_unary_not();
 	virtual void operator_unary_plus();
 
 protected:
 	typedef std::map<Designtime::Ancestor, Object*> Inheritance;
 
 protected:
+	void deinit();
 	void garbageCollector();
 
 protected:

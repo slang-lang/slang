@@ -182,7 +182,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	if ( constructor ) {
 		VoidObject tmp;
 
-		controlflow = Controller::Instance().thread(0)->execute(constructor, params, &tmp);
+		controlflow = Controller::Instance().thread(0)->execute(mThis, constructor, params, &tmp);
 
 		if ( controlflow != ControlFlow::Normal ) {
 			return controlflow;
@@ -231,7 +231,7 @@ void Object::copy(const Object& other)
 					continue;
 				}
 
-				Object* source = static_cast<Object*>(it->second);
+				Object* source = dynamic_cast<Object*>(it->second);
 				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), PrototypeConstraints());
 				target->copy(*source);
 
@@ -259,7 +259,7 @@ void Object::defineMember(const std::string& name, Symbol* symbol)
 void Object::defineMethod(const std::string& name, Common::Method* method)
 {
 	// try to override abstract methods a.k.a. implement an interface method
-	Common::Method* old = static_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
+	Common::Method* old = dynamic_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
 	if ( old && old->isAbstract() ) {
 		Runtime::Object* base = dynamic_cast<Runtime::Object*>(resolve(IDENTIFIER_BASE, true, Visibility::Designtime));
 		base->undefineMethod(old);
@@ -270,6 +270,11 @@ void Object::defineMethod(const std::string& name, Common::Method* method)
 	MethodScope::defineMethod(name, method);
 }
 
+void Object::deinit()
+{
+	garbageCollector();
+}
+
 ControlFlow::E Object::Destructor()
 {
 	ControlFlow::E controlflow = ControlFlow::Normal;
@@ -278,11 +283,11 @@ ControlFlow::E Object::Destructor()
 		ParameterList params;
 
 		// only execute destructor if one is present
-		Common::Method *destructor = static_cast<Common::Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
+		Common::Method *destructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
 		if ( destructor ) {
 			VoidObject tmp;
 
-			controlflow = Controller::Instance().thread(0)->execute(destructor, params, &tmp);
+			controlflow = Controller::Instance().thread(0)->execute(mThis, destructor, params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
@@ -295,12 +300,12 @@ ControlFlow::E Object::Destructor()
 
 ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params)
 {
-	Common::Method *method = static_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
+	Common::Method *method = dynamic_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifer("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
 
-	return Controller::Instance().thread(0)->execute(method, params, result);
+	return Controller::Instance().thread(0)->execute(mThis, method, params, result);
 }
 
 void Object::garbageCollector()
@@ -408,36 +413,36 @@ void Object::operator_assign(const Object *other)
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	if ( value_operator ) {
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
+		Controller::Instance().thread(0)->execute(other->getThis(), dynamic_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitand(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitcomplement(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator~: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator~: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitor(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_bool() const
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator bool(): for " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator bool(): for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_divide(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_equal(const Object *other)
@@ -446,67 +451,72 @@ bool Object::operator_equal(const Object *other)
 		return mReference == other->mReference;
 	}
 
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_greater(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_greater_equal(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_less(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_less_equal(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_modulo(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_multiply(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_plus(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_subtract(const Object *other)
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_decrement()
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator--: for " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator--: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_increment()
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator++: for " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator++: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_minus()
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator unary -: for " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator unary -: for " + QualifiedTypename() + " not supported");
+}
+
+void Object::operator_unary_not()
+{
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator unary !: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_plus()
 {
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator unary +: for " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator unary +: for " + QualifiedTypename() + " not supported");
 }
 
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const

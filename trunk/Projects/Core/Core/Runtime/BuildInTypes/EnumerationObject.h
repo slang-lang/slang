@@ -30,24 +30,12 @@ public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
 
 public:	// Operators
-	void operator_assign(const EnumerationObject *other);
 	void operator_assign(const Object *other);
-
 	bool operator_bool() const;
-
-	bool operator_equal(const EnumerationObject *other);
 	bool operator_equal(const Object *other);
-
-	bool operator_greater(const EnumerationObject *other);
 	bool operator_greater(const Object *other);
-
-	bool operator_greater_equal(const EnumerationObject *other);
 	bool operator_greater_equal(const Object *other);
-
-	bool operator_less(const EnumerationObject *other);
 	bool operator_less(const Object *other);
-
-	bool operator_less_equal(const EnumerationObject *other);
 	bool operator_less_equal(const Object *other);
 
 public: // Values

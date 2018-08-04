@@ -29,14 +29,9 @@ public:
 	explicit BoolObject(const Object& other);
 
 public:	// Operators
-	void operator_assign(const BoolObject *other);
 	void operator_assign(const Object *other);
-
 	bool operator_bool() const;
-
-	bool operator_equal(const BoolObject *other);
 	bool operator_equal(const Object *other);
-
 	void operator_unary_not();
 };
 

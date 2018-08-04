@@ -287,7 +287,7 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 
 	Thread* thread = Controller::Instance().threads()->createThread();
 
-	Runtime::ControlFlow::E controlflow = thread->execute(main, params, result);
+	Runtime::ControlFlow::E controlflow = thread->execute(NULL, main, params, result);
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		throw Runtime::ControlFlow::Throw;
 	}
