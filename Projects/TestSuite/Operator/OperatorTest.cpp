@@ -50,6 +50,8 @@ void OperatorTest::process()
 	TEST(testIsOperator);
 	TEST(testMathOverloadsWithNumbers);
 	TEST(testMathOverloadsWithObjects);
+	TEST(testUnaryMinus);
+	TEST(testUnaryPlus);
 	TEST(testUnaryValidate);
 }
 
@@ -265,6 +267,38 @@ void OperatorTest::testMathOverloadsWithObjects()
 	try {
 		VirtualMachine vm;
 		vm.runScriptFromFile("Tests/Operator/MathOverloadsWithObjects.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testUnaryMinus()
+{
+	//TSKIP("unary minus is not yet implemented");
+
+	try {
+		VirtualMachine vm;
+		vm.runScriptFromFile("Tests/Operator/UnaryMinus.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testUnaryPlus()
+{
+	//TSKIP("unary plus is not yet implemented");
+
+	try {
+		VirtualMachine vm;
+		vm.runScriptFromFile("Tests/Operator/UnaryPlus.os");
 
 		// automatic success
 	}
