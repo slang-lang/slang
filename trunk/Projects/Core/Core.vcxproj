@@ -101,6 +101,10 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="Core\AST\PrintVisitor.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="Core\AST\TreeGenerator.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
@@ -142,6 +146,10 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="Core\Attributes\ObjectType.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Attributes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Attributes\Types.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Attributes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
     </ClCompile>
@@ -248,6 +256,38 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\BoolObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\DoubleObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\EnumerationObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\FloatObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\IntegerObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\StringObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\UserObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\VoidObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="Core\Runtime\ExceptionData.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
@@ -269,6 +309,10 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="Core\Runtime\TypeCast.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\Types.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
     </ClCompile>
@@ -335,6 +379,7 @@
     <ClInclude Include="Core\AST\Keywords.h" />
     <ClInclude Include="Core\AST\Node.h" />
     <ClInclude Include="Core\AST\Operator.h" />
+    <ClInclude Include="Core\AST\PrintVisitor.h" />
     <ClInclude Include="Core\AST\Statement.h" />
     <ClInclude Include="Core\AST\TreeGenerator.h" />
     <ClInclude Include="Core\AST\TreeInterpreter.h" />
@@ -347,6 +392,7 @@
     <ClInclude Include="Core\Attributes\LanguageFeatureState.h" />
     <ClInclude Include="Core\Attributes\Mutability.h" />
     <ClInclude Include="Core\Attributes\ObjectType.h" />
+    <ClInclude Include="Core\Attributes\Types.h" />
     <ClInclude Include="Core\BuildInObjects\BoolObject.h" />
     <ClInclude Include="Core\BuildInObjects\DoubleObject.h" />
     <ClInclude Include="Core\BuildInObjects\FloatObject.h" />
@@ -390,6 +436,14 @@
     <ClInclude Include="Core\ObjectiveScript.h" />
     <ClInclude Include="Core\Parameter.h" />
     <ClInclude Include="Core\Runtime\AtomicValue.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\BoolObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\DoubleObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\EnumerationObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\FloatObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\IntegerObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\StringObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\UserObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\VoidObject.h" />
     <ClInclude Include="Core\Runtime\ControlFlow.h" />
     <ClInclude Include="Core\Runtime\ExceptionData.h" />
     <ClInclude Include="Core\Runtime\Exceptions.h" />
@@ -398,6 +452,7 @@
     <ClInclude Include="Core\Runtime\Reference.h" />
     <ClInclude Include="Core\Runtime\Script.h" />
     <ClInclude Include="Core\Runtime\TypeCast.h" />
+    <ClInclude Include="Core\Runtime\Types.h" />
     <ClInclude Include="Core\Scope.h" />
     <ClInclude Include="Core\Symbol.h" />
     <ClInclude Include="Core\SystemExtension.h" />
