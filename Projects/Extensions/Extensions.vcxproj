@@ -137,6 +137,7 @@
     <ClInclude Include="Mysql\MysqlStoreResult.h" />
     <ClInclude Include="Mysql\MysqlUseResult.h" />
     <ClInclude Include="Mysql\Types.h" />
+    <ClInclude Include="System\Ascii.h" />
     <ClInclude Include="System\AssertMsg.h" />
     <ClInclude Include="System\Console\Cerr.h" />
     <ClInclude Include="System\Console\Cin.h" />
@@ -166,6 +167,16 @@
     <ClInclude Include="System\Math\Sqrt.h" />
     <ClInclude Include="System\Math\Srand.h" />
     <ClInclude Include="System\Math\Trunc.h" />
+    <ClInclude Include="System\Network\Accept.h" />
+    <ClInclude Include="System\Network\Bind.h" />
+    <ClInclude Include="System\Network\Close.h" />
+    <ClInclude Include="System\Network\Connect.h" />
+    <ClInclude Include="System\Network\Defines.h" />
+    <ClInclude Include="System\Network\Listen.h" />
+    <ClInclude Include="System\Network\NetworkExtension.h" />
+    <ClInclude Include="System\Network\Read.h" />
+    <ClInclude Include="System\Network\Socket.h" />
+    <ClInclude Include="System\Network\Write.h" />
     <ClInclude Include="System\Print.h" />
     <ClInclude Include="System\SetKeyboardBlockingMode.h" />
     <ClInclude Include="System\Sleep.h" />
@@ -176,6 +187,7 @@
     <ClInclude Include="System\Strings\StrLen.h" />
     <ClInclude Include="System\Strings\StrLPad.h" />
     <ClInclude Include="System\Strings\StrLTrim.h" />
+    <ClInclude Include="System\Strings\StrPos.h" />
     <ClInclude Include="System\Strings\StrRPad.h" />
     <ClInclude Include="System\Strings\StrRTrim.h" />
     <ClInclude Include="System\Strings\StrTrim.h" />
@@ -226,6 +238,8 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="System\Network\Defines.cpp" />
+    <ClCompile Include="System\Network\NetworkExtension.cpp" />
     <ClCompile Include="System\Strings\Defines.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Strings\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Strings\</ObjectFileName>
