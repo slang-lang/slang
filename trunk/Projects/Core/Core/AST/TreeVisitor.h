@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <sstream>
 
 // Project includes
 #include "Expression.h"
