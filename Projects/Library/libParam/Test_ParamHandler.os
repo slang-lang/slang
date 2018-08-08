@@ -68,6 +68,7 @@ bool TestCase2() {
 	print(string param);
 
 	assert( "" == string param );
+	assert( string param == "" );
 
 	print("Key: " + param.Key);
 	assert( param.Key == "three" );
