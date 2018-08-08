@@ -72,8 +72,8 @@ public object ParameterHandler implements IIterateable {
 		return mParameters.empty();
 	}
 
-	public ParameterIterator getIterator() const {
-		return new ParameterIterator(this);
+	public Iterator<Parameter> getIterator() const {
+		return mParameters.getIterator();
 	}
 
 	public Parameter getParameter(string key) const throws {
@@ -125,42 +125,4 @@ public object ParameterHandler implements IIterateable {
 	private string mArgs;
 	private List<Parameter> mParameters;
 }
-
-public object ParameterIterator {
-	public void Constructor(ParameterHandler handler ref) {
-		mHandler = handler;
-
-		reset();
-	}
-
-	public Parameter current() const throws {
-		return mHandler.at(mCurrentIndex);
-	}
-
-	public bool hasNext() const {
-		return mCurrentIndex < mHandler.size() - 1;
-	}
-
-	public Parameter next() modify throws {
-		mCurrentIndex++;
-
-		return current();
-	}
-
-	public void reset() modify {
-		mCurrentIndex = -1;
-	}
-
-	public Parameter =operator(Parameter) const {
-		return current();
-	}
-
-	public string =operator(string) const {
-		return string current();
-	}
-
-	private int mCurrentIndex;
-	private ParameterHandler mHandler;
-}
-
 
