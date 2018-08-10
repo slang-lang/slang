@@ -8,7 +8,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase2() );
 	assert( TestCase3() );
 	assert( TestCase4() );
-	//assert( TestCase5() );	// this test should fail
+	assert( TestCase5() );	// this test should fail
 }
 
 public bool TestCase1() {
@@ -121,13 +121,38 @@ private bool TestCase4() {
 }
 
 private bool TestCase5() {
-	print("TestCase 5: Queue with non-object type");
+        print("TestCase 5: native data types");
 
-/*
-	Queue<int> queue = new Queue<int>();
-	queue.enqueue(1);
-*/
+        try {
+                Queue<string> queue = new Queue<string>();
 
-	return false;
+                assert( queue );
+                assert( queue is Object );
+
+                queue.enqueue("1");
+                queue.enqueue("2");
+                queue.enqueue("3");
+
+                assert( queue.size() == 3 );
+
+                Iterator<string> it = queue.getIterator();
+                while ( it.hasNext() ) {
+                        it.next();
+
+                        string value = it.current();
+                        //print(value);
+                }
+
+                queue.clear();
+
+                assert( queue.empty() );
+
+                return true;
+        }
+        catch {
+                return false;
+        }
+
+        return false;
 }
 
