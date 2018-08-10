@@ -15,7 +15,7 @@ private bool TestCase1() const {
 	print("TestCase 1: iterate");
 
 	try {
-		List<String> list = new List<String>();
+		var list = new List<String>();
 		assert(list is ICollection);
 
 		list.push_back(new String("1"));
@@ -35,7 +35,7 @@ private bool TestCase1() const {
 	catch ( OutOfBoundsException e ) {
 		print(e.what());
 	}
-	catch ( Exception e ) {
+	catch ( IException e ) {
 		print(e.what());
 	}
 
@@ -46,7 +46,7 @@ private bool TestCase2() const {
 	print("TestCase 2: reverse iterate");
 
 	try {
-		List<String> list = new List<String>();
+		var list = new List<String>();
 		assert(list is ICollection);
 
 		list.push_back(new String("1"));
@@ -66,7 +66,7 @@ private bool TestCase2() const {
 	catch ( OutOfBoundsException e ) {
 		print( e.what() );
 	}
-	catch ( Exception e ) {
+	catch ( IException e ) {
 		print( e.what() );
 	}
 
@@ -77,7 +77,7 @@ private bool TestCase3() const {
 	print("TestCase 3: multiple iterators");
 
 	try {
-		List<String> list = new List<String>();
+		var list = new List<String>();
 		assert( list is List<String> );
 
 		list.push_back(new String("1"));
@@ -103,7 +103,7 @@ private bool TestCase3() const {
 	catch ( OutOfBoundsException e ) {
 		print( e.what() );
 	}
-	catch ( Exception e ) {
+	catch ( IException e ) {
 		print( e.what() );
 	}
 
@@ -114,7 +114,7 @@ private bool TestCase4() const {
 	print("TestCase 4: iterator operators");
 
 	try {
-		List<String> list = new List<String>();
+		var list = new List<String>();
 		assert( list is ICollection );
 		assert( list is Object );
 
