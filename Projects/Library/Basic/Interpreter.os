@@ -326,6 +326,9 @@ public object Interpreter {
 			throw new Exception("no valid lines to interpret!");
 		}
 
+		mForStack.clear();
+		mVariables.clear();
+
 		//print("Started interpreting statements...");
 
 		try {
