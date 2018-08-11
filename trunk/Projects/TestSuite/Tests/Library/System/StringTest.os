@@ -16,6 +16,8 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase11() );
 	assert( TestCase12() );
 	assert( TestCase13() );
+	assert( TestCase14() );
+	assert( TestCase15() );
 }
 
 private bool TestCase1() const {
@@ -90,15 +92,15 @@ private bool TestCase7() const {
 }
 
 private bool TestCase8() const {
-	print("TestCase 8: String.Find");
+	print("TestCase 8: String.IndexOf");
 
 	String str = new String("This is a string");
 
-	int find = str.Find("is");
-	print("str.Find(\"is\") = " + find);
+	int find = str.IndexOf("is");
+	print("str.IndexOf(\"is\") = " + find);
 
-	find = str.Find("is", find + 1);
-	print("str.Find(\"is\") = " + find);
+	find = str.IndexOf("is", find + 1);
+	print("str.IndexOf(\"is\") = " + find);
 
 	return find != -1;
 }
@@ -163,5 +165,27 @@ private bool TestCase13() const {
 	print("str.CharAt(6) = " + str.CharAt(6));
 
 	return str.CharAt(6) == "s";
+}
+
+private bool TestCase14() const {
+	print("TestCase 14: LastIndexOf");
+
+	String str = new String("This is a string");
+
+	return str.LastIndexOf("is") == 5;
+}
+
+private bool TestCase15() const {
+	print("TestCase 15: Length");
+
+	String str = new String("This is a string");
+
+	assert( str.Length() == 16 );
+
+	str.RemoveCharAt(5);
+
+	assert( str.Length() == 15 );
+
+	return true;
 }
 
