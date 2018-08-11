@@ -1,32 +1,35 @@
 
 import Collections.IIterateable;
+import Exception;
 import StringIterator;
 
 // declare 'System' namespace to prevent a user defined private 'System' namespace
 public namespace System { }
 
 public object String implements IIterateable {
+	private int mSize;
 	private string mValue;
 
 	/*
 	 * Standard & default constructor
 	 */
 	public void Constructor(string value val = "") {
+		mSize = strlen(value);
 		mValue = value;
 	}
 
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(String s ref) {
-		mValue = string s;
+	public void Constructor(String value ref) {
+		Constructor(string value);
 	}
 
 	/*
 	 * Returns the character at the given position
 	 */
-	public string CharAt(int index) const {
-		return substr(mValue, index, 1);
+	public string CharAt(int index) const throws {
+		return operator[](index);
 	}
 
 	/*
@@ -46,8 +49,8 @@ public object String implements IIterateable {
 	/*
 	 * Returns the start position of the given string
 	 */
-	public int Find(string str, int startpos = 0) const {
-		return strfind(mValue, str, startpos);
+	public deprecated int Find(string str, int startpos = 0) const {
+		return IndexOf(str, startpos);
 	}
 
 	/*
@@ -58,10 +61,31 @@ public object String implements IIterateable {
 	}
 
 	/*
+	 * Returns the start position of the given string
+	 */
+	public int IndexOf(string str, int startpos = 0) const {
+		return strfind(mValue, str, startpos);
+	}
+
+	/*
+	 * Returns the index of the last occurence of the given string
+	 */
+	public int LastIndexOf(string str) const {
+		int index = -1;
+		int index2;
+
+		while ( (index2 = IndexOf(str, index + 1)) != -1 ) {
+			index = index2;
+		}
+
+		return index;
+	}
+
+	/*
 	 * Returns the length of the held string
 	 */
 	public int Length() const {
-		return strlen(mValue);
+		return mSize;
 	}
 
 	/*
@@ -72,7 +96,11 @@ public object String implements IIterateable {
 
 		if ( position > 0 ) {
 			string tmp = substr(mValue, 0, position) + newStr + substr(mValue, position + strlen(oldStr));
+
+			// update members
+			mSize = strlen(tmp);
 			mValue = tmp;
+
 			return true;
 		}
 		
@@ -89,7 +117,22 @@ public object String implements IIterateable {
 			hasFound = true;
 		}
 
+		// update size
+		mSize = strlen(mValue);
+
 		return hasFound;
+	}
+
+	/*
+	 * Removes the character at the given position
+	 */
+	public void RemoveCharAt(int index) modify throws {
+		if ( index < 0 || index >= mSize ) {
+			throw new OutOfBoundsException("index(" + index + ") is out of bounds!");
+		}
+
+		mSize--;
+		mValue = substr(mValue, 0, index) + substr(mValue, index + 1);
 	}
 
 	/*
@@ -130,7 +173,7 @@ public object String implements IIterateable {
 	/*
 	 * String value operator
 	 */
-	public string =operator(string value) const {
+	public string =operator(string) const {
 		return mValue;
 	}
 
@@ -147,45 +190,48 @@ public object String implements IIterateable {
 	public bool operator==(string other val) const {
 		return (mValue == other);
 	}
+
 	/*
 	 * String compare operator
 	 */
 	public bool operator==(String other const ref) const {
-		return mValue == string other;
+		return operator==(string other);
 	}
 
 	/*
 	 * string assignment operator
 	 */
 	public String operator=(string other val) modify {
+		// update members
+		mSize = strlen(other);
 		mValue = other;
 
 		return this;
 	}
+
 	/*
 	 * String assignment operator
 	 */
 	public String operator=(String other const ref) modify {
-		mValue = string other;
-
-		return this;
+		return operator=(string other);
 	}
 
 	/*
 	 * string concatenation operator
 	 */
 	public String operator+(string other val) modify {
-		mValue = mValue + other;
+		// update members
+		mSize += strlen(other);
+		mValue += other;
 
 		return this;
 	}
+
 	/*
 	 * String concatenation operator
 	 */
 	public String operator+(String other const ref) modify {
-		mValue = mValue + string other;
-
-		return this;
+		return operator+(string other);
 	}
 
 	/*
@@ -199,13 +245,17 @@ public object String implements IIterateable {
 	 * String less compare operator
 	 */
 	public bool operator<(String other const ref) const {
-		return mValue < string other;
+		return operator<(string other);
 	}
 
 	/*
-	 * String subscript operator
+	 * Returns the character at the given position
 	 */
-	public string operator[](int index) const {
+	public string operator[](int index) const throws {
+		if ( index < 0 || index >= mSize ) {
+			throw new OutOfBoundsException("index(" + index + ") is out of bounds!");
+		}
+
 		return substr(mValue, index, 1);
 	}
 }
