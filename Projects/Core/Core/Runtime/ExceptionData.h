@@ -23,15 +23,17 @@ class ExceptionData
 {
 public:
 	ExceptionData();
-	ExceptionData(Object *data, const Common::Position& position);
+	ExceptionData(Object* data, const Common::Position& position = Common::Position(), const std::string& stackTrace = "");
 
 public:
 	Object* getData() const;
 	const Common::Position& getPosition() const;
+	const std::string& getStackTrace() const;
 
 private:
 	Object *mData;
 	Common::Position mPosition;
+	std::string mStackTrace;
 };
 
 

@@ -912,7 +912,7 @@ void TreeInterpreter::visitExit(ExitStatement* node)
 	Runtime::Object* data = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
 	tryControl(evaluate(node->mExpression, data));
 
-	mThread->exception() = Runtime::ExceptionData(data, Common::Position());
+	mThread->exception(data, node->token().position());
 
 	throw Runtime::ControlFlow::ExitProgram;
 }
@@ -1200,7 +1200,7 @@ void TreeInterpreter::visitThrow(ThrowStatement* node)
 		Runtime::Object* data = mRepository->createInstance(ANONYMOUS_OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
 		tryControl(evaluate(node->mExpression, data));
 
-		mThread->exception() = Runtime::ExceptionData(data, Common::Position());
+		mThread->exception(data, node->token().position());
 	}
 
 	mControlFlow = Runtime::ControlFlow::Throw;

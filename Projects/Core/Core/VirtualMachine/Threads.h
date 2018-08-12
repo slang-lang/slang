@@ -67,8 +67,10 @@ public:	// StackFrame specificas
 	StackFrame* currentFrame() const;
 	StackFrame* frame(Common::FrameId frameId) const;
 	Common::FrameId getNumFrames() const;
+	std::string stackTrace() const;
 
 	Runtime::ExceptionData& exception();
+	void exception(Runtime::Object* data, const Common::Position& position = Common::Position());
 
 	void popFrame();
 	void pushFrame(IScope* scope, const TokenList& tokens, const ParameterList& params);

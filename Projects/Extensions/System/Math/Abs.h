@@ -60,7 +60,7 @@ public:
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
 			*data = Runtime::StringObject(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+			Controller::Instance().thread(threadId)->exception(data, token.position());
 			return Runtime::ControlFlow::Throw;
 		}
 
