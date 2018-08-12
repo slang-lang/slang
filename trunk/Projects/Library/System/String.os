@@ -1,4 +1,5 @@
 
+import CharacterIterator;
 import Collections.IIterateable;
 import Exception;
 import StringIterator;
@@ -54,9 +55,16 @@ public object String implements IIterateable {
 	}
 
 	/*
-	 * Returns an Iterator that is attached to this string
+	 * Returns an iterator that iterates over all characters of the held string
 	 */
-	public StringIterator getIterator(string separator = " ") const {
+	public CharacterIterator getCharacterIterator() const {
+		return new CharacterIterator(this);
+	}
+
+	/*
+	 * Returns a StringIterator that is attached to this string
+	 */
+	public deprecated StringIterator getIterator(string separator = " ") const {
 		return new StringIterator(this, separator);
 	}
 
@@ -133,6 +141,13 @@ public object String implements IIterateable {
 
 		mSize--;
 		mValue = substr(mValue, 0, index) + substr(mValue, index + 1);
+	}
+
+	/*
+	 * Splits the held string into strings by a given separator
+	 */
+	public StringIterator Split(string separator = " ") const {
+		return new StringIterator(this, separator);
 	}
 
 	/*

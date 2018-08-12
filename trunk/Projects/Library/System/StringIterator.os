@@ -2,28 +2,29 @@
 import Exception;
 import String;
 
+// declare 'System' namespace to prevent a user defined private 'System' namespace
 public namespace System { }
 
 public object StringIterator {
 	private int mCurrentPosition;
 	private int mNextPosition;
 	private string mSeparator;
-	private String mValue;
+	private String mValue const;
 
 	/*
 	 * Standard constructor
 	 */
-	public void Constructor(String value, string separator = " ") {
-		mValue = value;
+	public void Constructor(string value, string separator = " ") {
+		mValue = new String(value);
 
 		setSeparator(separator, true);
 	}
 
 	/*
-	 * Secondary constructor
+	 * Copy constructor
 	 */
-	public void Constructor(string value, string separator = " ") {
-		mValue = new String(value);
+	public void Constructor(String value const, string separator = " ") {
+		mValue = value;
 
 		setSeparator(separator, true);
 	}
@@ -38,7 +39,7 @@ public object StringIterator {
 			throw new NotInitializedException("iterator not initialized");
 		}
 		if ( mNextPosition > mValue.Length() ) {
-			throw new OutOfBoundsException("out of bounds");
+			throw new OutOfBoundsException("index(" + mNextPosition + ") out of bounds");
 		}
 
 		return mValue.SubString(mCurrentPosition, mNextPosition - mCurrentPosition);
@@ -57,11 +58,11 @@ public object StringIterator {
 	 */
 	public string next() modify throws {
 		if ( mNextPosition >= mValue.Length() ) {
-			throw new OutOfBoundsException("out of bounds");
+			throw new OutOfBoundsException("index(" + mNextPosition + ") out of bounds");
 		}
 
 		mCurrentPosition = mNextPosition + strlen(mSeparator);
-		mNextPosition = mValue.Find(mSeparator, mCurrentPosition);
+		mNextPosition = mValue.IndexOf(mSeparator, mCurrentPosition);
 
 		if ( mNextPosition > 0 ) {
 			return mValue.SubString(mCurrentPosition, mNextPosition - mCurrentPosition);
@@ -102,7 +103,7 @@ public object StringIterator {
 			reset();
 		}
 		else {
-			mNextPosition = mValue.Find(mSeparator, mCurrentPosition);
+			mNextPosition = mValue.IndexOf(mSeparator, mCurrentPosition);
 
 			if ( mNextPosition <= 0 ) {
 				mNextPosition = mValue.Length();

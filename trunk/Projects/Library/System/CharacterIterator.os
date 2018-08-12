@@ -1,5 +1,9 @@
 
-import System.Collections.Iterator;
+import Collections.Iterator;
+import String;
+
+// declare 'System' namespace to prevent a user defined private 'System' namespace
+public namespace System { }
 
 public object CharacterIterator implements Iterator {
 	private int mCurrentIndex;
@@ -8,6 +12,10 @@ public object CharacterIterator implements Iterator {
 
 	public void Constructor(string value = "") {
 		reset(value);
+	}
+
+	public void Constructor(String value const) {
+		reset(string value);
 	}
 
 	public string current() const throws {
@@ -51,7 +59,7 @@ public object CharacterIterator implements Iterator {
 		mValue = value;
 	}
 
-	public string =operator(string none) const throws {
+	public string =operator(string) const throws {
 		if ( !mValue ) {
 			throw new Exception("invalid iteration string");
 		}

@@ -103,9 +103,9 @@ public object JsonWriter {
 	}
 
 // Protected
-    protected string indent(int) const {
-        return "";
-    }
+	protected string indent(int) const {
+		return "";
+	}
 
 	protected string _toString(JsonArray root const ref) modify {
 		string result;
@@ -144,29 +144,29 @@ public object JsonWriter {
 	}
 
 	protected int mIndentation;
-    protected string mWhiteSpaceEnd;
-    protected string mWhiteSpaceIndent;
-    protected string mWhiteSpaceStart;
+	protected string mWhiteSpaceEnd;
+	protected string mWhiteSpaceIndent;
+	protected string mWhiteSpaceStart;
 }
 
 public object JsonStyledWriter extends JsonWriter {
 // Public
-    public void Constructor() {
+	public void Constructor() {
 		mIndentation = 0;
-        mWhiteSpaceEnd = ascii(10);
+		mWhiteSpaceEnd = ascii(10);
 		mWhiteSpaceIndent = "     ";
-        mWhiteSpaceStart = ascii(10);
-    }
+		mWhiteSpaceStart = ascii(10);
+	}
 
 // Protected
-    protected string indent(int num) const {
-        string result;
+	protected string indent(int num) const {
+		string result;
 
-        for ( int i = 0; i < num; i++ ) {
-            result += mWhiteSpaceIndent;
-        }
+		for ( int i = 0; i < num; i++ ) {
+			result += mWhiteSpaceIndent;
+		}
 
-        return result;
-    }
+		return result;
+	}
 }
 
