@@ -3,23 +3,22 @@
 import System.Collections.Set;
 
 // project imports
-import Breakpoint;
 import Interpreter;
 
 
 public object Debugger extends Interpreter {
-	private Set<Breakpoint> mBreakpoints;
+	private Set<int> mBreakpoints;
 
 	public void Constructor(Object lines) {
 		base.Constructor(lines);
 
-		mBreakpoints = new Set<Breakpoint>();
+		mBreakpoints = new Set<int>();
 	}
 
 	private void addBreakpoint(int line) modify {
 		print("Adding breakpoint at line " + line);
 
-		mBreakpoints.insert(new Breakpoint(line));
+		mBreakpoints.insert(line);
 	}
 
 	private void addBreakpoint(StringIterator it) modify {
@@ -47,8 +46,8 @@ public object Debugger extends Interpreter {
 	}
 
 	private void printBreakpoints() const {
-		foreach ( Breakpoint line : mBreakpoints ) {
-			print("Line " + string line);
+		foreach ( int line : mBreakpoints ) {
+			print("Line " + line);
 		}
 	}
 
@@ -129,7 +128,7 @@ public object Debugger extends Interpreter {
 	}
 
 	private void removeBreakpoint(int line) modify {
-		int index = mBreakpoints.indexOf(new Breakpoint(line));
+		int index = mBreakpoints.indexOf(line);
 		if ( index != -1 ) {
 			mBreakpoints.erase(index);
 		}
@@ -148,7 +147,7 @@ public object Debugger extends Interpreter {
 			while ( lineNumber > 0 ) {
 				line = mLines.get(lineNumber);
 
-				if ( breakOnNextLine || mBreakpoints.contains(new Breakpoint(lineNumber)) ) {
+				if ( breakOnNextLine || mBreakpoints.contains(lineNumber) ) {
 					breakOnNextLine = false;
 
 					lineNumber = processBreakpoint(line);
