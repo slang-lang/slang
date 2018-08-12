@@ -19,9 +19,10 @@ ExceptionData::ExceptionData()
 {
 }
 
-ExceptionData::ExceptionData(Object *data, const Common::Position& position)
+ExceptionData::ExceptionData(Object* data, const Common::Position& position, const std::string& stackTrace)
 : mData(data),
-  mPosition(position)
+  mPosition(position),
+  mStackTrace(stackTrace)
 {
 }
 
@@ -33,6 +34,11 @@ Object* ExceptionData::getData() const
 const Common::Position& ExceptionData::getPosition() const
 {
 	return mPosition;
+}
+
+const std::string& ExceptionData::getStackTrace() const
+{
+	return mStackTrace;
 }
 
 

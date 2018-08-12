@@ -41,7 +41,8 @@ void Script::execute(Common::ThreadId threadId, const std::string& method, const
 		Runtime::ExceptionData data = Controller::Instance().thread(threadId)->exception();
 
 		std::string text = "Exception raised in " + data.getPosition().toString() + ":\n";
-					text += data.getData()->ToString();
+					text += data.getData()->ToString() + "\n";
+					text += data.getStackTrace();
 
 		throw Common::Exceptions::Exception(text);
 	}

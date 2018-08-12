@@ -4,6 +4,7 @@
 
 // Library includes
 #include <iostream>
+#include <sstream>
 
 // Project includes
 #include <Core/AST/TreeInterpreter.h>
@@ -70,6 +71,11 @@ Runtime::ExceptionData& Thread::exception()
 	return mExceptionData;
 }
 
+void Thread::exception(Runtime::Object* data, const Common::Position& position)
+{
+	mExceptionData = Runtime::ExceptionData(data, position, stackTrace());
+}
+
 StackFrame* Thread::frame(Common::FrameId frameId) const
 {
 	size_t idx = 0;
@@ -130,6 +136,17 @@ void Thread::pushFrame(IScope* scope, const TokenList& tokens, const ParameterLi
 	frame->pushTokens(tokens);
 
 	mStackFrames.push_back(frame);
+}
+
+std::string Thread::stackTrace() const
+{
+	std::stringstream ss;
+
+	for ( StackFrames::const_iterator it = mStackFrames.begin(); it != mStackFrames.end(); ++it ) {
+		ss << "Thread " << mId << ": " << (*it)->toString() << std::endl;
+	}
+
+	return ss.str();
 }
 
 
