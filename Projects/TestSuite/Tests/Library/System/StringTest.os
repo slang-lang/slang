@@ -96,13 +96,13 @@ private bool TestCase8() const {
 
 	String str = new String("This is a string");
 
-	int find = str.IndexOf("is");
-	print("str.IndexOf(\"is\") = " + find);
+	int index = str.IndexOf("is");
+	print("str.IndexOf(\"is\") = " + index);
 
-	find = str.IndexOf("is", find + 1);
-	print("str.IndexOf(\"is\") = " + find);
+	index = str.IndexOf("is", index + 1);
+	print("str.IndexOf(\"is\") = " + index);
 
-	return find != -1;
+	return index != -1;
 }
 
 private bool TestCase9() const {
@@ -117,11 +117,11 @@ private bool TestCase9() const {
 }
 
 private bool TestCase10() const {
-	print("TestCase 10: String.getIterator");
+	print("TestCase 10: String.Split");
 
 	String str = new String("This is a string");
 
-	StringIterator it = str.getIterator();
+	StringIterator it = str.Split();
 	assert( it );
 
 	while ( it.hasNext() ) {
@@ -176,7 +176,7 @@ private bool TestCase14() const {
 }
 
 private bool TestCase15() const {
-	print("TestCase 15: Length");
+	print("TestCase 15: Length && RemoveCharAt");
 
 	String str = new String("This is a string");
 
@@ -185,6 +185,10 @@ private bool TestCase15() const {
 	str.RemoveCharAt(5);
 
 	assert( str.Length() == 15 );
+
+	str.RemoveCharAt(12);
+
+	assert( str.Length() == 14 );
 
 	return true;
 }

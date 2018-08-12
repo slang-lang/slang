@@ -5,7 +5,7 @@ import Exception;
 public namespace System { }
 
 public object Character {
-    private string mValue;
+	private string mValue;
 
 	/*
 	 * Standard & default constructor
@@ -15,7 +15,7 @@ public object Character {
 			throw new InvalidLengthException("invalid input length(" + strlen(value) + ")");
 		}
 
-        // a character can only have a value of string(length: 1)
+		// a character can only have a value of string(length: 1)
 		mValue = substr(value, 0, 1);
 	}
 
@@ -37,7 +37,7 @@ public object Character {
 	 * Character compare operator
 	 */
 	public bool operator==(Character other ref) const {
-		return mValue == string other;
+		return operator==(string other);
 	}
 
 	/*
@@ -51,7 +51,7 @@ public object Character {
 	 * Character assignment operator
 	 */
 	public void operator=(Character other ref) modify {
-		mValue = string other;
+		operator=(string other);
 	}
 
 	/*
@@ -65,20 +65,20 @@ public object Character {
 	 * Character less compare operator
 	 */
 	public bool operator<(Character other ref) const {
-		return mValue < string other;
+		return operator<(string other);
 	}
 
 	/*
 	 * int typecast operator
 	 */
-	public int =operator(int none) const {
+	public int =operator(int) const {
 		return int mValue;
 	}
 
 	/*
 	 * string typecast operator
 	 */
-	public string =operator(string none) const {
+	public string =operator(string) const {
 		return mValue;
 	}
 }

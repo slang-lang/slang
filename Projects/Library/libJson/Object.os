@@ -4,11 +4,11 @@ import System.Collections.Iterator;
 import System.Collections.List;
 
 // Project imports
+import Array;
 import Value;
 
 
-public namespace Json {
-}
+public namespace Json { }
 
 public object JsonObject extends JsonValue implements IIterateable {
 	public void Constructor() {

@@ -7,8 +7,7 @@ import System.Collections.Vector;
 import Value;
 
 
-public namespace Json {
-}
+public namespace Json { }
 
 public object JsonArray extends JsonValue implements IIterateable {
 	public void Constructor(string key) {
