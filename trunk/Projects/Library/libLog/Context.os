@@ -10,7 +10,7 @@ public object FileContext implements IContext {
 	private System.IO.File mFile;
 
 	public void Constructor(string filename, bool append = false) {
-		mFile = new System.IO.File(filename, append ? System.IO.FileAccessMode.WriteAppend : System.IO.FileAccessMode.WriteOnly);
+		mFile = new System.IO.File(filename, append ? System.IO.FileAccessMode.WriteUpdate : System.IO.FileAccessMode.WriteOnly);
 	}
 
 	public void Destructor() {
