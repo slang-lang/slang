@@ -51,12 +51,8 @@ public object Iterator<T> {
 		return current();
 	}
 
-	public void operator++() modify throws {
-		if ( !hasNext() ) {
-			throw new OutOfBoundsException("operator++(): index out of bounds");
-		}
-
-		mCurrentIndex++;		
+	public T operator++() modify throws {
+		return next();	
 	}
 }
 
@@ -107,12 +103,8 @@ public object ReverseIterator<T> {
 		return current();
 	}
 
-	public void operator++() modify throws {
-		if ( !hasNext() ) {
-			throw new OutOfBoundsException("operator++(): index out of bounds");
-		}
-
-		mCurrentIndex--;		
+	public T operator++() modify throws {
+		return next();		
 	}
 }
 
