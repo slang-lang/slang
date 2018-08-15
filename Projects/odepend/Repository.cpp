@@ -34,7 +34,7 @@ void Repository::addModule(const Module& module)
 
 bool Repository::contains(const Module& module) const
 {
-	for ( Modules::const_iterator it = mModules.begin(); it != mModules.end(); ++it ) {
+	for ( Modules::const_iterator it = mModules.cbegin(); it != mModules.cend(); ++it ) {
 		if ( it->mShortName == module.mShortName ) {
 			return true;
 		}
@@ -45,7 +45,7 @@ bool Repository::contains(const Module& module) const
 
 bool Repository::getModule(const std::string& shortName, Module& module) const
 {
-	for ( Modules::const_iterator it = mModules.begin(); it != mModules.end(); ++it ) {
+	for ( Modules::const_iterator it = mModules.cbegin(); it != mModules.cend(); ++it ) {
 		if ( it->mShortName == shortName ) {
 			module = (*it);
 			return true;
@@ -78,7 +78,7 @@ bool Repository::processIndex(const Json::Value& value)
 
 	Json::Value modules = value["modules"];
 
-	for ( Json::Value::Members::const_iterator it = modules.members().begin(); it != modules.members().end(); ++it ) {
+	for ( Json::Value::Members::const_iterator it = modules.members().cbegin(); it != modules.members().cend(); ++it ) {
 		std::string name_short = (*it)["name"].asString();
 		std::string version = (*it)["version"].asString();
 

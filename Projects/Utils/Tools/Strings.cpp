@@ -88,10 +88,10 @@ bool StringCompareI(const std::string & s1, const std::string& s2)
 		return false;
 	}
 
-	std::string::const_iterator it1 = s1.begin();
-	std::string::const_iterator it2 = s2.begin();
+	std::string::const_iterator it1 = s1.cbegin();
+	std::string::const_iterator it2 = s2.cbegin();
 
-	while ( (it1 != s1.end()) && (it2 != s2.end()) ) {
+	while ( (it1 != s1.cend()) && (it2 != s2.cend()) ) {
 		if ( ::toupper(*it1) != ::toupper(*it2) ) {	// letters differ?
 			return false;
 		}
@@ -106,17 +106,6 @@ bool StringCompareI(const std::string & s1, const std::string& s2)
 bool stringToBool(const std::string& str)
 {
 	return !(str.empty() || str == "\n" || str == "false");
-
-/*
-	if ( str.length() == 1 && str[0] == '1' ) {
-		return true;
-	}
-	else if ( str.length() == 4 && StringCompareI(str, "true") ) {
-		return true;
-	}
-
-	return false;
-*/
 }
 
 double stringToDouble(const std::string& str)
