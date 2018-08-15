@@ -164,7 +164,7 @@ int main(int argc, const char* argv[])
 	}
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
-	for ( StringSet::const_iterator it = mLibraryFolders.begin(); it != mLibraryFolders.end(); ++it ) {
+	for ( StringSet::const_iterator it = mLibraryFolders.cbegin(); it != mLibraryFolders.cend(); ++it ) {
 		mVirtualMachine.addLibraryFolder((*it));
 	}
 
