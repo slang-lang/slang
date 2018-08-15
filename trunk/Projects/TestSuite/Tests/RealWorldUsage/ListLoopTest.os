@@ -9,7 +9,8 @@ public void Main(int argc = 0, string args = "") {
 	print("LinkedList loop test");
 
 	try {
-		ObjectMethod();
+		//ObjectMethod();
+		ValueMethod();
 	}
 	catch ( OutOfBoundsException e ) {
 		print(e.what());
@@ -41,7 +42,6 @@ private void ObjectMethod() {
 	}
 }
 
-/*
 private void ValueMethod() {
 	List<string> list = new List<string>();
 
@@ -65,5 +65,4 @@ private void ValueMethod() {
 		}
 	}
 }
-*/
 
