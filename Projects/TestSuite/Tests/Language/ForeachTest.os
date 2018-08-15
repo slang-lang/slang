@@ -70,7 +70,7 @@ private bool TestCase3() {
 
 	String str = new String("One can iterate over a String");
 
-	foreach ( String s : str ) {
+	foreach ( String s : str.Split() ) {
 		print("s = " + string s);
 	}
 

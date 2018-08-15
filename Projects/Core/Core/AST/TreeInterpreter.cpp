@@ -963,17 +963,24 @@ void TreeInterpreter::visitFor(ForStatement* node)
 
 void TreeInterpreter::visitForeach(ForeachStatement* node)
 {
-	Runtime::Object collection;
-	tryControl(evaluate(node->mCollectionExpression, &collection));
-
 	// get collection's forward iterator
 	Runtime::Object iterator;
 
-	pushScope(&collection);
+	if ( node->mCollectionExpression ) {
+		// resolve iterator from given collection
+		Runtime::Object collection;
+		tryControl(evaluate(node->mCollectionExpression, &collection));
 
+		pushScope(&collection);
+
+			evaluateMethodExpression(node->mGetIteratorExpression, &iterator);
+
+		popScope();
+	}
+	else {
+		// an iterator has been provided instead of a collection
 		evaluateMethodExpression(node->mGetIteratorExpression, &iterator);
-
-	popScope();
+	}
 
 	TypeDeclaration* typeDeclaration = node->mTypeDeclaration;
 

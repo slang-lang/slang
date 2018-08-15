@@ -15,11 +15,15 @@ public object BasePrototype<T> {
 // BEWARE: inheriting from prototypes is not supported because our AST::TreeGenerator cannot resolve its constraints
 public object DerivedFromPrototype extends BasePrototype<int> {
 	public void Constructor(int value) {
-		assert(!"not supported");
+		//assert(!"not supported");
+
+		base.mValue = value;
 	}
 }
 
 public void Main(int argc = 0, string args = "") {
-	assert( false );
+	var derived = new DerivedFromPrototype(173);
+
+	assert( derived.mValue == 173 );
 }
 

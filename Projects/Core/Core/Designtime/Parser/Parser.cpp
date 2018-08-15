@@ -165,10 +165,12 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 
 		PrototypeConstraints constraints = collectDesigntimePrototypeConstraints(token);
 
+/*
 		// extending prototypes is not supported right now
 		if ( inheritance == Ancestor::Type::Extends && !constraints.empty() ) {
 			throw Common::Exceptions::NotSupported("extending prototypes is not supported right now", token->position());
 		}
+*/
 
 		ancestors.insert(
 			Ancestor(Common::TypeDeclaration(type, constraints), inheritance, visibility)

@@ -917,29 +917,41 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 
 	Expression* collectionExpression = dynamic_cast<Expression*>(parseExpression(token));
 	if ( collectionExpression ) {
-		// check if this expression offers an iterator
 		Designtime::BluePrintObject* collection = mRepository->findBluePrintObject(collectionExpression->getResultType());
+		Designtime::BluePrintObject* iterator = NULL;
 
-		if ( !collection || !collection->isIterable() ) {
-			throw Common::Exceptions::SyntaxError(collectionExpression->getResultType() + " is not iterable", token->position());
+		if ( collection && collection->isOfType("Iterator") ) {
+			// we received an iterator instead of a collection
+			iterator = collection;
+			collection = NULL;
+
+			getIteratorExpression = dynamic_cast<MethodExpression*>(collectionExpression);
+			collectionExpression = NULL;
+		}
+		else {
+			// check if this expression offers an iterator
+			if ( !collection || !collection->isIterable() ) {
+				throw Common::Exceptions::SyntaxError(collectionExpression->getResultType() + " is not iterable", token->position());
+			}
+
+			Common::Method* getIteratorMethod = dynamic_cast<Common::Method*>(collection->resolveMethod("getIterator", ParameterList(), false, Visibility::Public));
+			if ( !getIteratorMethod ) {
+				throw Common::Exceptions::SyntaxError(collectionExpression->getResultType() + " has no 'getIterator' method", token->position());
+			}
+
+			// check if iterator is a valid type
+			iterator = mRepository->findBluePrintObject(getIteratorMethod->ReturnType());
+
+			{	// look up "getIterator" method in given collection
+				SymbolExpression* expression = new DesigntimeSymbolExpression(getIteratorMethod->getName(), getIteratorMethod->QualifiedTypename(), PrototypeConstraints(), false);
+				expression->mSurroundingScope = collection;
+
+				getIteratorExpression = process_method(expression, *token, ExpressionList());
+			}
 		}
 
-		Common::Method* getIteratorMethod = dynamic_cast<Common::Method*>(collection->resolveMethod("getIterator", ParameterList(), false, Visibility::Public));
-		if ( !getIteratorMethod ) {
-			throw Common::Exceptions::SyntaxError(collectionExpression->getResultType() + " has no 'getIterator' method", token->position());
-		}
-
-		// check if iterator is a valid type
-		Designtime::BluePrintObject* iterator = mRepository->findBluePrintObject(getIteratorMethod->ReturnType());
 		if ( !iterator ) {
-			throw Common::Exceptions::SyntaxError("'Iterator' is not a valid type", token->position());
-		}
-
-		{	// look up "getIterator" method in given collection
-			SymbolExpression* expression = new DesigntimeSymbolExpression(getIteratorMethod->getName(), getIteratorMethod->QualifiedTypename(), PrototypeConstraints(), false);
-			expression->mSurroundingScope = collection;
-
-			getIteratorExpression = process_method(expression, *token, ExpressionList());
+			throw Common::Exceptions::SyntaxError("no iterator found", token->position());
 		}
 
 		{	// look up "hasNext" method in given iterator
@@ -956,7 +968,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 			nextExpression = process_method(expression, *token, ExpressionList());
 
 			// validate result type
-			//resolveType(expression, Token(Token::Type::ASSIGN, "="), nextExpression);
+			//resolveType(typeDeclaration->mType, Token(Token::Category::Operator, Token::Type::ASSIGN, "=", token->position()), nextExpression->getResultType());
 		}
 	}
 
@@ -1945,7 +1957,12 @@ std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node*
 		throw Designtime::Exceptions::DesigntimeException("invalid right expression");
 	}
 
-	return mTypeSystem->getType(l->getResultType(), operation, r->getResultType());
+	return resolveType(l->getResultType(), operation, r->getResultType());
+}
+
+std::string TreeGenerator::resolveType(const std::string& left, const Token& operation, const std::string& right) const
+{
+	return mTypeSystem->getType(left, operation, right);
 }
 
 
