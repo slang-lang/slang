@@ -297,7 +297,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 			// check if we are using a valid type
 			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
 			if ( !blueprint ) {
-				throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+				throw Designtime::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
 			}
 
 			SymbolExpression* inner = exp;
@@ -350,7 +350,7 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 		// check if we are using a valid type
 		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
 		if ( !blueprint ) {
-			throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+			throw Designtime::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
 		}
 
 		SymbolExpression* inner = exp;
@@ -394,7 +394,7 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 		// check if we are using a valid type
 		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
 		if ( !blueprint ) {
-			throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+			throw Designtime::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
 		}
 
 		SymbolExpression* inner = exp;
@@ -473,7 +473,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 		TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
 		if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
-			throw Common::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expression don't match", start->position());
+			throw Designtime::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expression don't match", start->position());
 		}
 
 		infixPostfix = ternaryExpression;
@@ -506,7 +506,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 /*
 					Expression* baseExp = dynamic_cast<Expression*>(infixPostfix);
 					if ( !baseExp ) {
-						throw Common::Exceptions::SyntaxError("invalid expression type detected!", start->position());
+						throw Designtime::Exceptions::SyntaxError("invalid expression type detected!", start->position());
 					}
 
 					infixPostfix = process_incdecrement(start, baseExp);
@@ -519,17 +519,17 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 					Expression* baseExp = dynamic_cast<Expression*>(infixPostfix);
 					if ( !baseExp ) {
-						throw Common::Exceptions::SyntaxError("invalid expression type detected!", start->position());
+						throw Designtime::Exceptions::SyntaxError("invalid expression type detected!", start->position());
 					}
 
 					Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(baseExp->getResultType());
 					if ( !scope ) {
-						throw Common::Exceptions::SyntaxError("invalid type '" + baseExp->getResultType() + "' detected!", start->position());
+						throw Designtime::Exceptions::SyntaxError("invalid type '" + baseExp->getResultType() + "' detected!", start->position());
 					}
 
 					SymbolExpression* symbolExpression = resolve(start, scope, true, Visibility::Public);
 					if ( !symbolExpression ) {
-						throw Common::Exceptions::SyntaxError("invalid symbol '" + start->content() + "' for type '" + baseExp->getResultType() + "' detected!", start->position());
+						throw Designtime::Exceptions::SyntaxError("invalid symbol '" + start->content() + "' for type '" + baseExp->getResultType() + "' detected!", start->position());
 					}
 
 					if ( start->type() == Token::Type::PARENTHESIS_OPEN ) {
@@ -591,7 +591,7 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 			++start;	// consume operator token
 		} break;
 		default:
-			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but '" + start->content() + "' found", start->position());
+			throw Designtime::Exceptions::SyntaxError("identifier, literal or constant expected but '" + start->content() + "' found", start->position());
 	}
 
 	return term;
@@ -682,7 +682,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 			case Token::Type::ASSIGN_MODULO:        operation = Token(Token::Category::Operator, Token::Type::MATH_MODULO, "%", op->position()); break;
 			case Token::Type::ASSIGN_MULTIPLY:      operation = Token(Token::Category::Operator, Token::Type::MATH_MULTIPLY, "*", op->position()); break;
 			case Token::Type::ASSIGN_SUBTRACT:      operation = Token(Token::Category::Operator, Token::Type::MATH_SUBTRACT, "-", op->position()); break;
-			default: throw Common::Exceptions::SyntaxError("assignment type expected", token->position());
+			default: throw Designtime::Exceptions::SyntaxError("assignment type expected", token->position());
 		}
 
 		if ( lhs->isAtomicType() ) {
@@ -692,7 +692,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 			// check if we are using a valid type
 			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
 			if ( !blueprint ) {
-				throw Common::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", operation.position());
+				throw Designtime::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", operation.position());
 			}
 
 			SymbolExpression* sym = new DesigntimeSymbolExpression(lhs->mName, lhs->getResultType(), PrototypeConstraints(), false);
@@ -715,7 +715,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 	// check if we are using a valid type
 	Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
 	if ( !blueprint ) {
-		throw Common::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", token->position());
+		throw Designtime::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", token->position());
 	}
 
 	SymbolExpression* inner = lhs;
@@ -834,7 +834,7 @@ Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
 		expression = process_typeid(token);
 	}
 	else {
-		throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+		throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 	}
 
 	return expression;
@@ -931,12 +931,12 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 		else {
 			// check if this expression offers an iterator
 			if ( !collection || !collection->isIterable() ) {
-				throw Common::Exceptions::SyntaxError(collectionExpression->getResultType() + " is not iterable", token->position());
+				throw Designtime::Exceptions::SyntaxError(collectionExpression->getResultType() + " is not iterable", token->position());
 			}
 
 			Common::Method* getIteratorMethod = dynamic_cast<Common::Method*>(collection->resolveMethod("getIterator", ParameterList(), false, Visibility::Public));
 			if ( !getIteratorMethod ) {
-				throw Common::Exceptions::SyntaxError(collectionExpression->getResultType() + " has no 'getIterator' method", token->position());
+				throw Designtime::Exceptions::SyntaxError(collectionExpression->getResultType() + " has no 'getIterator' method", token->position());
 			}
 
 			// check if iterator is a valid type
@@ -951,7 +951,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 		}
 
 		if ( !iterator ) {
-			throw Common::Exceptions::SyntaxError("no iterator found", token->position());
+			throw Designtime::Exceptions::SyntaxError("no iterator found", token->position());
 		}
 
 		{	// look up "hasNext" method in given iterator
@@ -1091,13 +1091,13 @@ Expression* TreeGenerator::process_incdecrement(TokenIterator& token, Expression
 
 	SymbolExpression* symbol = dynamic_cast<SymbolExpression*>(lhs);
 	if ( !symbol ) {
-		throw Common::Exceptions::SyntaxError("invalid expression type detected!", token->position());
+		throw Designtime::Exceptions::SyntaxError("invalid expression type detected!", token->position());
 	}
 
 	// check if we are using a valid type
 	Designtime::BluePrintObject* type = mRepository->findBluePrintObject(symbol->getResultType());
 	if ( !type ) {
-		throw Common::Exceptions::SyntaxError("'" + symbol->getResultType() + "' is not a valid type", token->position());
+		throw Designtime::Exceptions::SyntaxError("'" + symbol->getResultType() + "' is not a valid type", token->position());
 	}
 
 	symbol->mSymbolExpression = new DesigntimeSymbolExpression("operator" + token->content(), _void, PrototypeConstraints(), false);
@@ -1432,7 +1432,7 @@ Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndC
 			++token;
 			break;
 		default:
-			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+			throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 	}
 
 	return node;
@@ -1441,7 +1441,7 @@ Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndC
 /*
  * syntax:
  * switch ( <expression> ) {
- *		[ case <identifier>: { ... } ]
+ *		[ case <expression>: { ... } ]
  *		[ default: { ... } ]
  * }
  */
@@ -1484,7 +1484,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 		}
 		else if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_DEFAULT ) {
 			if ( defaultStatement ) {
-				throw Common::Exceptions::SyntaxError("duplicate default entry for switch statement", token->position());
+				throw Designtime::Exceptions::SyntaxError("duplicate default entry for switch statement", token->position());
 			}
 
 			// skip default-label
@@ -1502,6 +1502,30 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 
 		expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 		++token;
+	}
+
+	// determine if we are using an enumeration expression
+	Expression* enumExp = dynamic_cast<Expression*>(switchExpression);
+	if ( enumExp ) {
+		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(enumExp->getResultType());
+		if ( !blueprint ) {
+			// unknown result type of switch-expression
+			throw Common::Exceptions::UnknownIdentifer(enumExp->getResultType(), start.position());
+		}
+
+		if ( blueprint->isEnumeration() && !defaultStatement ) {
+			long available = std::distance(blueprint->beginSymbols(), blueprint->endSymbols());
+			long used = caseStatements.size();
+
+			if ( available > used ) {
+				// no default statement is present, so all enumeration values should be used
+				OSinfo("Consider using a default statement when not using all enumeration values in " + start.position().toString());
+			}
+			else  if ( available < used ) {
+				// duplicate case statements have been used
+				OSwarn("Duplicate case statements have been used in switch in " + start.position().toString());
+			}
+		}
 	}
 
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
@@ -1604,7 +1628,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 		}
 		else if ( tmp != localEnd && tmp->content() == KEYWORD_FINALLY ) {
 			if ( finallyBlock ) {
-				throw Common::Exceptions::SyntaxError("multiple finally blocks are not allowed");
+				throw Designtime::Exceptions::SyntaxError("multiple finally blocks are not allowed");
 			}
 
 			++tmp;
@@ -1665,7 +1689,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
 	if ( mutability == Mutability::Unknown ) {
-		throw Common::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
+		throw Designtime::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
 	}
 
 	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::AllowAbstract);
@@ -1735,7 +1759,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 
 	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
 	if ( mutability == Mutability::Unknown ) {
-		throw Common::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
+		throw Designtime::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
 	}
 
 	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, AccessMode::ByValue);

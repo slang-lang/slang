@@ -11,6 +11,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include <Core/Designtime/Exceptions.h>
 #include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 
@@ -68,7 +69,7 @@ void InterfacesTest::testFail_MethodImplemented()
 {
     try {
         VirtualMachine vm;
-        TTHROWS(vm.runScriptFromFile("Tests/Interfaces/Fail_MethodImplemented.os"), ObjectiveScript::Common::Exceptions::SyntaxError);
+        TTHROWS(vm.runScriptFromFile("Tests/Interfaces/Fail_MethodImplemented.os"), Designtime::Exceptions::SyntaxError);
 
         // automatic success
     }
@@ -84,7 +85,7 @@ TSKIP("inheriting from interfaces does not make an object abstract yet");
 
     try {
         VirtualMachine vm;
-        TTHROWS(vm.runScriptFromFile("Tests/Interfaces/InterfaceObject.os"), ObjectiveScript::Common::Exceptions::AbstractException);
+        TTHROWS(vm.runScriptFromFile("Tests/Interfaces/InterfaceObject.os"), Common::Exceptions::AbstractException);
 
         // automatic success
     }

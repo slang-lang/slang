@@ -18,27 +18,13 @@ namespace Runtime {
 namespace Exceptions {
 
 
-#ifdef _WIN32
-class RuntimeException : public ::ObjectiveScript::Common::Exceptions::Exception
-{
-public:
-	explicit RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
-	: ::ObjectiveScript::Common::Exceptions::Exception(text, position)
-	{ }
-
-	virtual ~RuntimeException() { }
-};
-#else
 class RuntimeException : public ::ObjectiveScript::Common::Exceptions::Exception
 {
 public:
 	explicit RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position()) noexcept
 	: ::ObjectiveScript::Common::Exceptions::Exception(text, position)
 	{ }
-
-	virtual ~RuntimeException() noexcept { }
 };
-#endif
 
 
 class AccessViolation : public RuntimeException
@@ -47,8 +33,6 @@ public:
 	explicit AccessViolation(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("AccessViolation: " + text, position)
 	{ }
-
-	virtual ~AccessViolation() { }
 };
 
 
@@ -58,8 +42,6 @@ public:
 	explicit AssertionFailed(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("AssertionFailed: " + text, position)
 	{ }
-
-	virtual ~AssertionFailed() { }
 };
 
 
@@ -69,8 +51,6 @@ public:
 	explicit ExplicitCastRequired(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("ExplicitCastRequired: " + text, position)
 	{ }
-
-	virtual ~ExplicitCastRequired() { }
 };
 
 
@@ -80,8 +60,6 @@ public:
 	explicit InvalidAssignment(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("InvalidAssignment: " + text, position)
 	{ }
-
-	virtual ~InvalidAssignment() { }
 };
 
 
@@ -91,8 +69,6 @@ public:
 	explicit InvalidOperation(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("InvalidOperation: " + text, position)
 	{ }
-
-	virtual ~InvalidOperation() { }
 };
 
 
@@ -102,8 +78,6 @@ public:
 	explicit InvalidSymbol(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("InvalidSymbol: " + text, position)
 	{ }
-
-	virtual ~InvalidSymbol() { }
 };
 
 
@@ -113,8 +87,6 @@ public:
 	explicit NullPointerException(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("NullPointerException: " + text, position)
 	{ }
-
-	virtual ~NullPointerException() { }
 };
 
 
@@ -124,8 +96,6 @@ public:
 	explicit SizeException(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("SizeException: " + text, position)
 	{ }
-
-	virtual ~SizeException() { }
 };
 
 
@@ -135,8 +105,6 @@ public:
 	explicit TypecastException(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("TypecastException: " + text, position)
 	{ }
-
-	virtual ~TypecastException() { }
 };
 
 

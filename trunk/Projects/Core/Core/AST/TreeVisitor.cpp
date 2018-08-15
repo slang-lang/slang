@@ -250,7 +250,7 @@ void TreeVisitor::visitStatements(Statements* node)
 	Statements* statements = node;
 
 	if ( statements ) {
-		for ( Statements::Nodes::const_iterator it = statements->mNodes.begin(); it != statements->mNodes.end(); ++it ) {
+		for ( Statements::Nodes::const_iterator it = statements->mNodes.cbegin(); it != statements->mNodes.cend(); ++it ) {
 			visit((*it));
 		}
 	}
@@ -260,7 +260,7 @@ void TreeVisitor::visitSwitch(SwitchStatement* node)
 {
 	visit(node->mExpression);
 
-	for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
+	for ( CaseStatements::const_iterator it = node->mCaseStatements.cbegin(); it != node->mCaseStatements.cend(); ++it ) {
 		visit((*it)->mCaseExpression);
 
 		visit((*it)->mCaseBlock);
@@ -282,7 +282,7 @@ void TreeVisitor::visitTry(TryStatement* node)
 
 	// TODO: handle catch statements
 
-	for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
+	for ( CatchStatements::const_iterator it = node->mCatchStatements.cbegin(); it != node->mCatchStatements.cend(); ++it ) {
 		if ( (*it)->mTypeDeclaration ) {
 			//visitTypeDeclaration((*it)->mTypeDeclaration);
 
