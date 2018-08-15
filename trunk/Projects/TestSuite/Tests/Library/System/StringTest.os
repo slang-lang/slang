@@ -140,7 +140,7 @@ private bool TestCase11() const {
 	String str = new String("This is a string");
 
 	int count = 0;
-	foreach ( string s : str ) {
+	foreach ( string s : str.Split() ) {
 		print("str(" + count + ") = '" + s + "'");
 
 		count++;

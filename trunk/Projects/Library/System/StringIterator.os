@@ -1,11 +1,12 @@
 
+import Collections.Iterator;
 import Exception;
 import String;
 
 // declare 'System' namespace to prevent a user defined private 'System' namespace
 public namespace System { }
 
-public object StringIterator {
+public object StringIterator extends Iterator<string> {
 	private int mCurrentPosition;
 	private int mNextPosition;
 	private string mSeparator;
@@ -115,7 +116,7 @@ public object StringIterator {
 	 * returns the value of the current iteration
 	 * throws OutOfBoundsException
 	 */
-	public string =operator(string none) const throws {
+	public string =operator(string) const throws {
 		return current();
 	}
 
@@ -123,8 +124,8 @@ public object StringIterator {
 	 * increments the iteration step
 	 * throws OutOfBoundsException
 	 */
-	public void operator++() modify throws {
-		next();
+	public string operator++() modify throws {
+		return next();
 	}
 }
 

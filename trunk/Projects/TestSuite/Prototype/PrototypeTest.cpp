@@ -149,6 +149,8 @@ void PrototypeTest::testFail_PrototypeAssignment()
 
 void PrototypeTest::testInheritFromPrototypeTest()
 {
+TSKIP("Inheriting from prototypes is currently being evaluated");
+
 	try {
 		VirtualMachine vm;
 		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os"), ObjectiveScript::Common::Exceptions::NotSupported);

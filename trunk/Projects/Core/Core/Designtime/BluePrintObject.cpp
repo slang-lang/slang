@@ -49,6 +49,9 @@ BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& cons
 	// generate a new blueprint from our prototype
 	BluePrintObject* prototype = replicate(Designtime::Parser::buildRuntimeConstraintTypename(QualifiedTypename(), constraints), mFilename);
 
+	// set base type
+	prototype->mBasedOnType = QualifiedTypename();
+
 	// clear prototype constraints
 	prototype->setPrototypeConstraints(PrototypeConstraints());
 
@@ -120,12 +123,6 @@ bool BluePrintObject::isIterable() const
 {
 	ParameterList params;
 
-/*	this has to be used as soon as 'this' is passed to methods as first parameter
-	params.push_back(
-		Parameter::CreateDesigntime(IDENTIFIER_THIS, Common::TypeDeclaration(QualifiedTypename(), getPrototypeConstraints()))
-	);
-*/
-
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->getName() == "getIterator" &&  (*it)->isSignatureValid(params) ) {
 			return true;
@@ -133,6 +130,15 @@ bool BluePrintObject::isIterable() const
 	}
 
 	return false;
+}
+
+bool BluePrintObject::isOfType(const std::string& type) const
+{
+	if ( mQualifiedTypename == type || mBasedOnType == type ) {
+		return true;
+	}
+
+	return inheritsFrom(type);
 }
 
 bool BluePrintObject::isPrepared() const
@@ -193,6 +199,9 @@ Symbols BluePrintObject::provideSymbols() const
 BluePrintObject* BluePrintObject::replicate(const std::string& newType, const std::string& filename, BluePrintObject* target) const
 {
 	BluePrintObject* replica = target ? target : new BluePrintObject(newType, filename);
+
+	// set base type
+	replica->mBasedOnType = QualifiedTypename();
 
 	// replicate basic blueprint data
 	replica->setConst(isConst());

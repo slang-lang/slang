@@ -45,6 +45,8 @@ public:
 
 	bool isIterable() const;
 
+	bool isOfType(const std::string& type) const;
+
 	bool isPrepared() const;
 	void prepareParents(Repository* repository);
 
@@ -65,6 +67,7 @@ public:
 	Symbols provideSymbols() const;
 
 private:
+	std::string mBasedOnType;
 	bool mIsEnumeration;
 	bool mIsPrepared;
 	bool mIsReference;

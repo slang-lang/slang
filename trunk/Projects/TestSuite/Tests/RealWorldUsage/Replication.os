@@ -34,7 +34,7 @@ public void Main(int argc, string args) {
 	foreach ( String s : stringList ) {
 		print("s = " + string s);
 
-		foreach ( string word : s ) {
+		foreach ( string word : s.Split() ) {
 			print("word = " + word);
 		}
 	}
