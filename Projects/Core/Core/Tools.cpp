@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Common/Exceptions.h>
+#include <Core/Designtime/Exceptions.h>
 #include <Tools/Strings.h>
 #include "Object.h"
 
@@ -18,7 +18,7 @@ namespace ObjectiveScript {
 void expect(Token::Type::E expected, const TokenIterator& found)
 {
 	if ( found->type() != expected ) {
-		throw Common::Exceptions::SyntaxError("unexpected token '" + found->content() + "' found", found->position());
+		throw Designtime::Exceptions::SyntaxError("unexpected token '" + found->content() + "' found", found->position());
 	}
 }
 
@@ -57,7 +57,7 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 			return tmp;
 		}
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Common::Exceptions::SyntaxError("Closed bracket expected, but none found after " + Utils::Tools::toString(count) + " iteration(s)", start->position());
+			throw Designtime::Exceptions::SyntaxError("Closed bracket expected, but none found after " + Utils::Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		++count;
@@ -85,7 +85,7 @@ TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator en
 		}
 
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Common::Exceptions::SyntaxError("Closed curly bracket expected, but none found after " + Utils::Tools::toString(count) + " iteration(s)", start->position());
+			throw Designtime::Exceptions::SyntaxError("Closed curly bracket expected, but none found after " + Utils::Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		++count;
@@ -114,7 +114,7 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 			return tmp;
 		}
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Common::Exceptions::SyntaxError("closed parenthesis expected, but none found after " + Utils::Tools::toString(count) + " iteration(s)", start->position());
+			throw Designtime::Exceptions::SyntaxError("closed parenthesis expected, but none found after " + Utils::Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		++count;

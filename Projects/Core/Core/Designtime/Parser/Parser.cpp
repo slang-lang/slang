@@ -5,8 +5,8 @@
 // Library includes
 
 // Project includes
-#include <Core/Common/Exceptions.h>
 #include <Core/Consts.h>
+#include <Core/Designtime/Exceptions.h>
 #include <Core/Interfaces/IScope.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
@@ -50,7 +50,7 @@ PrototypeConstraints mergeConstraints(const PrototypeConstraints& designtime, co
 	PrototypeConstraints result;
 
 	if ( designtime.size() != runtime.size() ) {
-		throw Common::Exceptions::Exception("prototype constraint size mismatch");
+		throw Designtime::Exceptions::SyntaxError("prototype constraint size mismatch");
 	}
 
 	PrototypeConstraints::const_iterator designIt = designtime.begin();
@@ -77,7 +77,7 @@ std::string Parser::buildDesigntimeConstraintTypename(const std::string &name, c
 
 	std::string type = name;
 	type += "<";
-	for ( PrototypeConstraints::const_iterator it = constraints.begin(); it != constraints.end(); ++it ) {
+	for ( PrototypeConstraints::const_iterator it = constraints.cbegin(); it != constraints.cend(); ++it ) {
 		type += it->mDesignType;
 
 		if ( std::distance(it, constraints.end()) > 1 ) {
@@ -97,7 +97,7 @@ std::string Parser::buildRuntimeConstraintTypename(const std::string &name, cons
 
 	std::string type = name;
 	type += "<";
-	for ( PrototypeConstraints::const_iterator it = constraints.begin(); it != constraints.end(); ++it ) {
+	for ( PrototypeConstraints::const_iterator it = constraints.cbegin(); it != constraints.cend(); ++it ) {
 		type += it->mRunType.empty() ? _object : it->mRunType;
 
 		if ( std::distance(it, constraints.end()) > 1 ) {
@@ -125,7 +125,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 	for ( ; ; ) {
 		if ( token->content() == RESERVED_WORD_EXTENDS ) {
 			if ( replicates ) {
-				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
+				throw Designtime::Exceptions::SyntaxError("combinations with 'replicates' are not allowed");
 			}
 
 			++token;	// consume token
@@ -134,7 +134,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 		}
 		else if ( token->content() == RESERVED_WORD_IMPLEMENTS ) {
 			if ( replicates ) {
-				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
+				throw Designtime::Exceptions::SyntaxError("combinations with 'replicates' are not allowed");
 			}
 
 			++token;	// consume token
@@ -143,7 +143,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 		}
 		else if ( token->content() == RESERVED_WORD_REPLICATES ) {
 			if ( replicates ) {
-				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
+				throw Designtime::Exceptions::SyntaxError("combinations with 'replicates' are not allowed");
 			}
 
 			++token;	// consume token
@@ -211,7 +211,7 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 				constraint = token->content();
 			}
 			else {
-				throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
+				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
 			}
 
 			++token;
@@ -506,7 +506,7 @@ AccessMode::E Parser::parseAccessMode(TokenIterator& token, AccessMode::E defaul
 
 		if ( result == AccessMode::Unspecified ) {
 			// invalid type
-			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+			throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 		}
 
 		++token;
@@ -616,7 +616,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			accessMode = AccessMode::ByValue;
 		}
 		else {
-			throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
+			throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
 		}
 
 		Common::TypeDeclaration type = parseTypeDeclaration(token, scope);
@@ -641,7 +641,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 				++token;
 			}
 			else {
-				throw Common::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
+				throw Designtime::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
 			}
 		}
 
@@ -655,13 +655,13 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 				++token;
 			}
 			else {
-				throw Common::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
+				throw Designtime::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
 			}
 		}
 
 		if ( token->type() == Token::Type::ASSIGN ) {
 			if ( name.empty() ) {
-				throw Common::Exceptions::SyntaxError("cannot use default values for unnamed parameters", token->position());
+				throw Designtime::Exceptions::SyntaxError("cannot use default values for unnamed parameters", token->position());
 			}
 
 			hasDefaultValue = true;
@@ -674,7 +674,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 
 		if ( hasDefaultValue && accessMode == AccessMode::ByReference ) {
 			// parameters with default values cannot be accessed by reference
-			throw Common::Exceptions::SyntaxError("default parameters are not allowed to be accessed by reference");
+			throw Designtime::Exceptions::SyntaxError("default parameters are not allowed to be accessed by reference");
 		}
 
 		params.push_back(
@@ -722,7 +722,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 	switch ( token->type() ) {
 		case Token::Type::CONST_BOOLEAN:
 			if ( !sign.empty() ) {
-				throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
 			value = Utils::Tools::stringToBool(token->content());
@@ -738,14 +738,14 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 			break;
 		case Token::Type::CONST_LITERAL:
 			if ( !sign.empty() ) {
-				throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
 			value = token->content();
 			break;
 		default:
 			if ( !sign.empty() ) {
-				throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
 			throw Common::Exceptions::NotSupported("only atomic data types are allowed as default parameters", token->position());

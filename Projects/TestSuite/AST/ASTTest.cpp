@@ -10,8 +10,8 @@
 // Library includes
 
 // Project includes
+#include <Core/Designtime/Exceptions.h>
 #include <Core/Runtime/ControlFlow.h>
-#include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 
@@ -387,7 +387,7 @@ void ASTTest::testTernaryOperatorFail()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/AST/Fail_TernaryOperatorTest.os"), Common::Exceptions::SyntaxError);
+		TTHROWS(vm.runScriptFromFile("Tests/AST/Fail_TernaryOperatorTest.os"), Designtime::Exceptions::SyntaxError);
 
 		// automatic success
 	}

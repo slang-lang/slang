@@ -1055,7 +1055,7 @@ void TreeInterpreter::visitIf(IfStatement* node)
 
 void TreeInterpreter::visitOperator(Operator* /*op*/)
 {
-	throw Common::Exceptions::SyntaxError("cannot process standalone operator");
+	throw Runtime::Exceptions::InvalidOperation("cannot process standalone operator");
 }
 
 void TreeInterpreter::visitPrint(PrintStatement* node)
@@ -1162,7 +1162,7 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 		bool evaluateCaseExpression = true;
 
 		// loop over all case statements
-		for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
+		for ( CaseStatements::const_iterator it = node->mCaseStatements.cbegin(); it != node->mCaseStatements.cend(); ++it ) {
 			if ( evaluateCaseExpression ) {
 				tryControl(evaluate(node->mExpression, &value));
 

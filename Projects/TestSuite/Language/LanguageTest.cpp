@@ -490,7 +490,7 @@ void LanguageTest::testSanityChecker()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/SanityCheckerTest.os"), ObjectiveScript::Common::Exceptions::SyntaxError);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/SanityCheckerTest.os"), ObjectiveScript::Designtime::Exceptions::SanityCheckError);
 
 		// automatic success
 	}

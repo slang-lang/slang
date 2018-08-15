@@ -5,8 +5,8 @@
 // Library includes
 
 // Project includes
-#include <Core/Common/Exceptions.h>
 #include <Core/Tools.h>
+#include "Exceptions.h"
 
 // Namespace declarations
 
@@ -101,16 +101,16 @@ bool SanityChecker::process(const TokenList &tokens)
 	mTokens = tokens;
 
 	if ( !checkBalancedBrackets() ) {
-		throw Common::Exceptions::SyntaxError("SanityCheck: unbalanced brackets detected", mTokens.begin()->position());
+		throw Exceptions::SanityCheckError("unbalanced brackets detected", mTokens.begin()->position());
 	}
 	if ( !checkBalancedCurlyBrackets() ) {
-		throw Common::Exceptions::SyntaxError("SanityCheck: unbalanced curly brackets detected", mTokens.begin()->position());
+		throw Exceptions::SanityCheckError("unbalanced curly brackets detected", mTokens.begin()->position());
 	}
 	if ( !checkBalancedParenthesis() ) {
-		throw Common::Exceptions::SyntaxError("SanityCheck: unbalanced parenthesis detected", mTokens.begin()->position());
+		throw Exceptions::SanityCheckError("unbalanced parenthesis detected", mTokens.begin()->position());
 	}
 	if ( !checkBalancedQuotes() ) {
-		throw Common::Exceptions::SyntaxError("SanityCheck: unbalanced quotes detected", mTokens.begin()->position());
+		throw Exceptions::SanityCheckError("unbalanced quotes detected", mTokens.begin()->position());
 	}
 
 	return true;
