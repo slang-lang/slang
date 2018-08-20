@@ -11,18 +11,20 @@ import Scanner;
 
 public object Parser {
 	private String CHARS const;
-	private string COMPARECHARS const = "<>=";
+	private String COMPARECHARS const;
 	private String DELIMITERCHARS const;
 	private String NUMBERS const;
-	private string OPERATORCHARS const = "+-*/%";
+	private String OPERATORCHARS const;
 	private String WHITESPACES const;
 
 	public void Constructor() {
 		CHARS = new String("ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz");
+		COMPARECHARS = new String("<>=");
 		NUMBERS = new String("0123456789");
+		OPERATORCHARS = new String("+-*/%");
 		WHITESPACES = new String(" ");
 
-		DELIMITERCHARS = new String(COMPARECHARS + OPERATORCHARS + string WHITESPACES);
+		DELIMITERCHARS = new String( (string COMPARECHARS) + (string OPERATORCHARS) + (string WHITESPACES) );
 	}
 
 	public Map<int, Line> parseFile(string filename) modify {
@@ -340,9 +342,7 @@ public object Parser {
 
 			ci.next();
 
-			var binaryExp = new BinaryExpression(leftExp, op, expression(ci));
-
-			return Expression binaryExp;
+			return Expression new BinaryExpression(leftExp, op, expression(ci));
 		}
 
 		return leftExp;
@@ -371,7 +371,7 @@ public object Parser {
 	}
 
 	private bool isComparator(string value) const {
-		return strfind(COMPARECHARS, value, 0) >= 0;
+		return COMPARECHARS.Contains(value);
 	}
 
 	private bool isNumber(string value) const {
@@ -390,7 +390,7 @@ public object Parser {
 	}
 
 	private bool isOperator(string value) const {
-		return strfind(OPERATORCHARS, value, 0) >= 0;
+		return OPERATORCHARS.Contains(value);
 	}
 
 	private bool isVariable(string value) const {
@@ -412,9 +412,7 @@ public object Parser {
 		string line;
 
 		while ( ci.hasNext() ) {
-			string c = ci.next();
-
-			line += c;
+			line += ci.next();
 		}
 
 		return line;
@@ -442,7 +440,7 @@ public object Parser {
 		return word;
 	}
 
-	private void skipWhitespaces(CharacterIterator ci) const throws {
+	private void skipWhitespaces(CharacterIterator ci) throws {
 		while ( ci.hasNext() && WHITESPACES.Contains(ci.current()) ) {
 			ci.next();
 		}

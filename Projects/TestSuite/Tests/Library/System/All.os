@@ -5,6 +5,10 @@ import System.All;
 public void Main(int argc, string args) {
 	print("BooleanTest.os");
 	system("./BooleanTest.os");
+	print("CharacterIteratorTest.os");
+	system("./CharacterIteratorTest.os");
+	print("CharacterTest.os");
+	system("./CharacterTest.os");
 	print("DoubleTest.os");
 	system("./DoubleTest.os");
 	print("FloatTest.os");

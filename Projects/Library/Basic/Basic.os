@@ -15,7 +15,7 @@ import Parser;
 
 
 public string APPNAME const = "ObjectiveScript BASIC Interpreter";
-public string VERSION const = "0.1.0";
+public string VERSION const = "0.1.1";
 
 public int Main(int argc, string args) modify {
 	if ( argc < 2 ) {
