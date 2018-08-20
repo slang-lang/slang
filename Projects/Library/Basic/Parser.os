@@ -2,6 +2,7 @@
 // library imports
 import System.CharacterIterator;
 import System.Collections.Map;
+import System.IO.File;
 
 // project imports
 import Line;
