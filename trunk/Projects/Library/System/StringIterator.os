@@ -7,11 +7,6 @@ import String;
 public namespace System { }
 
 public object StringIterator extends Iterator<string> {
-	private int mCurrentPosition;
-	private int mNextPosition;
-	private string mSeparator;
-	private String mValue const;
-
 	/*
 	 * Standard constructor
 	 */
@@ -114,6 +109,7 @@ public object StringIterator extends Iterator<string> {
 
 	/*
 	 * returns the value of the current iteration
+	 * equivalent to calling current()
 	 * throws OutOfBoundsException
 	 */
 	public string =operator(string) const throws {
@@ -121,11 +117,17 @@ public object StringIterator extends Iterator<string> {
 	}
 
 	/*
-	 * increments the iteration step
+	 * returns the next sub string of the held String value
+	 * equivalent to calling next()
 	 * throws OutOfBoundsException
 	 */
 	public string operator++() modify throws {
 		return next();
 	}
+
+	private int mCurrentPosition;
+	private int mNextPosition;
+	private string mSeparator;
+	private String mValue const;
 }
 
