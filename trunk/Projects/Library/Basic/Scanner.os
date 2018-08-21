@@ -1,7 +1,11 @@
 
+// library imports
 import System.Collections.IIterateable;
 import System.IO.File;
 import System.StringIterator;
+
+// project imports
+
 
 public object Scanner implements IIterateable {
 	private System.IO.File mFile;

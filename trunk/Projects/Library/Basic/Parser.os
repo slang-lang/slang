@@ -37,9 +37,8 @@ public object Parser {
 		Line previousLine;
 
 		while ( it.hasNext() ) {
-			it++;
-
-			if ( it.current() ) {
+			// only parse non-empty lines
+			if ( it.next() ) {
 				Line line = parseLine(it.current());
 				if ( !line ) {
 					// ignore invalid lines (mostly shebangs ;-)
@@ -75,7 +74,7 @@ public object Parser {
 
 		string lineLabel = substr(content, 0, idx);
 		if ( !isNumber(lineLabel) ) {
-			throw new Exception("invalid label '" + lineLabel + "'!");
+			throw new Exception("invalid label \"" + lineLabel + "\"!");
 		}
 		// }
 
