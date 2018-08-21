@@ -1,0 +1,13 @@
+{
+  "name": "ObjectiveScript MySQL library",
+  "name_short": "Mysql",
+  "version": "0.2.0",
+  "description": "ObjectiveScript MySQL library",
+  "dependencies": [
+    { "module": "system", "version_min": "0.1.0" }
+  ],
+  "target": {
+    "type": "internal",
+    "url": "Mysql_0.2.0.tar.gz"
+  }
+}

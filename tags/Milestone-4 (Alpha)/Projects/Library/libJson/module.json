@@ -1,0 +1,14 @@
+{
+  "name": "ObjectiveScript JSON library ",
+  "name_short": "libJson",
+  "version": "0.0.1",
+  "description": "The ObjectiveScript JSON library provides a way to generate JSON objects.",
+  "dependencies": [
+    { "module": "system", "version_min": "0.0.1" }
+  ],
+  "target": {
+    "directory": "libJson",
+    "type": "internal",
+    "url": "libJson_0.0.1.tar.gz"
+  }
+}
