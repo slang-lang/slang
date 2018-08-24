@@ -48,24 +48,10 @@ public object String implements IIterateable {
 	}
 
 	/*
-	 * Returns the start position of the given string
-	 */
-	public deprecated int Find(string str, int startpos = 0) const {
-		return IndexOf(str, startpos);
-	}
-
-	/*
 	 * Returns an iterator that iterates over all characters of the held string
 	 */
-	public CharacterIterator getCharacterIterator() const {
+	public CharacterIterator getIterator() const {
 		return new CharacterIterator(this);
-	}
-
-	/*
-	 * Returns a StringIterator that is attached to this string
-	 */
-	public deprecated StringIterator getIterator(string separator = " ") const {
-		return new StringIterator(this, separator);
 	}
 
 	/*
@@ -239,7 +225,7 @@ public object String implements IIterateable {
 		mSize += strlen(other);
 		mValue += other;
 
-		return this;
+		return new String(mValue + other);
 	}
 
 	/*

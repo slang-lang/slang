@@ -145,6 +145,17 @@ private bool TestCase11() const {
 
 		count++;
 	}
+	assert( count == 4 );
+
+	count = 0;
+	write("'");
+	foreach ( string c : str ) {
+		//print("str[" + count + "] = '" + c + "'");
+		write(c);
+
+		count++;
+	}
+	writeln("'");
 
 	return true;
 }

@@ -417,7 +417,7 @@ public object Parser {
 		return line;
 	}
 
-	private string parseWord(CharacterIterator ci) throws {
+	private string parseWord(CharacterIterator ci) const throws {
 		bool isString;
 		string word;
 
