@@ -449,6 +449,40 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 		infixPostfix = new IsExpression(infixPostfix, type);
 	}
+	else if ( op == Token::Type::OPERATOR_RANGE ) {		// postfix .. operator
+		++start;
+
+		SymbolExpression* rangeExp = NULL;
+		IntegerLiteralExpression* lhs = dynamic_cast<IntegerLiteralExpression*>(infixPostfix);
+		IntegerLiteralExpression* rhs = NULL;
+
+		// validate left expression (has to be integer literal expression)
+		if ( !lhs ) {
+			throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on left side", start->position());
+		}
+
+		// collect right expression
+		rhs = dynamic_cast<IntegerLiteralExpression*>(expression(start));
+
+		// validate right expression (has to be integer literal expression)
+		if ( !rhs ) {
+			throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on right side", start->position());
+		}
+
+		rangeExp = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
+		rangeExp->mSurroundingScope = mRepository->findBluePrintObject(std::string("Range"));
+
+		if ( !rangeExp->mSurroundingScope ) {
+			//throw Designtime::Exceptions::SyntaxError("could not resolve symbol 'Range', please import System.Collections.Range", start->position());
+			throw Designtime::Exceptions::SyntaxError("to use range operator System.Collections.Range has to be imported", start->position());
+		}
+
+		ExpressionList params;
+		params.push_back(lhs);
+		params.push_back(rhs);
+
+		infixPostfix = new NewExpression("Range", process_method(rangeExp, *start, params));
+	}
 	else if ( op == Token::Type::QUESTION_MARK ) {		// postfix ternary ? operator
 		++start;
 
