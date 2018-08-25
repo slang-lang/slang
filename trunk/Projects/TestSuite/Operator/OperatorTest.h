@@ -46,6 +46,7 @@ private:	// Tests
 	void testIsOperator();
 	void testMathOverloadsWithNumbers();
 	void testMathOverloadsWithObjects();
+	void testRangeOperator();
 	void testUnaryMinus();
 	void testUnaryPlus();
 	void testUnaryValidate();
