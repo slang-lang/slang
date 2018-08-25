@@ -9,3 +9,4 @@ public stable interface ICollection implements IIterateable, IReverseIterateable
 
     public Object operator[](int index) const throws;
 }
+
