@@ -11,6 +11,8 @@ public void Main(int argc, string args) {
 	system("./MapTest.os");
 	print("PairTest.os");
 	system("./PairTest.os");
+	print("RangeTest.os");
+	system("./RangeTest.os");
 	print("QueueTest.os");
 	system("./QueueTest.os");
 	print("SetTest.os");
