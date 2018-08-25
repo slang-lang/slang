@@ -42,6 +42,27 @@ public:
 			TypeidExpression,
 			UnaryExpression
 		};
+
+		static std::string ToString(E e) {
+			switch ( e ) {
+				case AssignmentExpression: return "AssignmentExpression";
+				case BinaryExpression: return "BinaryExpression";
+				case CopyExpression: return "CopyExpression";
+				case IsExpression: return "IsExpression";
+				case LiteralExpression: return "LiteralExpression";
+				case MethodExpression: return "MethodExpression";
+				case NewExpression: return "NewExpression";
+				case ScopeExpression: return "ScopeExpression";
+				case SymbolExpression: return "SymbolExpression";
+				case TernaryExpression: return "TernaryExpression";
+				case TypecastExpression: return "TypecastExpression";
+				case TypeidExpression: return "TypeidExpression";
+				case UnaryExpression: return "UnaryExpression";
+			}
+
+			assert( !"unknown expression type" );
+			return "unknown expression type";
+		}
 	};
 
 public:

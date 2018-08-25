@@ -449,6 +449,40 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 		infixPostfix = new IsExpression(infixPostfix, type);
 	}
+	else if ( op == Token::Type::OPERATOR_RANGE ) {		// postfix .. operator
+		++start;
+
+		SymbolExpression* rangeExp = NULL;
+		IntegerLiteralExpression* lhs = dynamic_cast<IntegerLiteralExpression*>(infixPostfix);
+		IntegerLiteralExpression* rhs = NULL;
+
+		// validate left expression (has to be integer literal expression)
+		if ( !lhs ) {
+			throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on left side", start->position());
+		}
+
+		// collect right expression
+		rhs = dynamic_cast<IntegerLiteralExpression*>(expression(start));
+
+		// validate right expression (has to be integer literal expression)
+		if ( !rhs ) {
+			throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on right side", start->position());
+		}
+
+		rangeExp = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
+		rangeExp->mSurroundingScope = mRepository->findBluePrintObject(std::string("Range"));
+
+		if ( !rangeExp->mSurroundingScope ) {
+			//throw Designtime::Exceptions::SyntaxError("could not resolve symbol 'Range', please import System.Collections.Range", start->position());
+			throw Designtime::Exceptions::SyntaxError("to use range operator System.Collections.Range has to be imported", start->position());
+		}
+
+		ExpressionList params;
+		params.push_back(lhs);
+		params.push_back(rhs);
+
+		infixPostfix = new NewExpression("Range", process_method(rangeExp, *start, params));
+	}
 	else if ( op == Token::Type::QUESTION_MARK ) {		// postfix ternary ? operator
 		++start;
 
@@ -488,7 +522,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 			if ( op != Token::Type::BRACKET_OPEN &&
 				 op != Token::Type::OPERATOR_DECREMENT &&
 				 op != Token::Type::OPERATOR_INCREMENT &&
-				 op != Token::Type::SCOPE ) {
+				 op != Token::Type::OPERATOR_SCOPE ) {
 				return infixPostfix;
 			}
 
@@ -512,7 +546,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 					infixPostfix = process_incdecrement(start, baseExp);
 */
 				} break;
-				case Token::Type::SCOPE: {
+				case Token::Type::OPERATOR_SCOPE: {
 					++start;
 
 					//OSexperimental("Usage of extended scope operator is marked as unstable in " + start->position().toString());
@@ -926,6 +960,10 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 			collection = NULL;
 
 			getIteratorExpression = dynamic_cast<MethodExpression*>(collectionExpression);
+			if ( !getIteratorExpression ) {
+				throw Designtime::Exceptions::SyntaxError("method expression expected by expression of type " + Expression::ExpressionType::ToString(collectionExpression->getExpressionType()) + " found", token->position());
+			}
+
 			collectionExpression = NULL;
 		}
 		else {
@@ -1891,7 +1929,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 		} break;
 	}
 
-	if ( token->type() == Token::Type::SCOPE ) {
+	if ( token->type() == Token::Type::OPERATOR_SCOPE ) {
 		if ( name == IDENTIFIER_BASE ) {
 			visibility = Visibility::Protected;		// this allows us to access protected and public members/methods of our base class
 		}
