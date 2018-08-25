@@ -1,7 +1,0 @@
-SET(BUILD_CURL_INC "/path/to/curl/include")
-SET(BUILD_CURL_LIB "/path/to/curl/lib")
-SET(BUILD_JSON_INC "/path/to/json/include")
-SET(BUILD_JSON_LIB "/path/to/json/lib")
-SET(BUILD_MYSQL_INC "/path/to/mysql/include")
-SET(BUILD_MYSQL_LIB "/path/to/mysql/lib")
-

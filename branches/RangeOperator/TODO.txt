@@ -1,4 +1,0 @@
-default values of parameters are not type checked!!!
-unary prefix operators are badly implemented
-implement unary validate operator (postfix)
-
