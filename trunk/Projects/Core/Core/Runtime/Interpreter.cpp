@@ -377,7 +377,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 			onlyCurrentScope = true;
 		}
 
-		if ( lookahead(token)->type() != Token::Type::SCOPE ) {
+		if ( lookahead(token)->type() != Token::Type::OPERATOR_SCOPE ) {
 			break;
 		}
 
@@ -433,7 +433,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 			onlyCurrentScope = true;
 		}
 
-		if ( lookahead(token)->type() != Token::Type::SCOPE ) {
+		if ( lookahead(token)->type() != Token::Type::OPERATOR_SCOPE ) {
 			break;
 		}
 
