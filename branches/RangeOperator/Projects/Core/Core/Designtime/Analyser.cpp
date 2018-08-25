@@ -352,7 +352,7 @@ bool Analyser::createLibraryReference(TokenIterator& token)
 	while ( token->type() == Token::Type::IDENTIFIER ) {
 		reference += (*token++).content();
 
-		if ( token->type() != Token::Type::SCOPE ) {
+		if ( token->type() != Token::Type::OPERATOR_SCOPE ) {
 			break;
 		}
 
@@ -548,7 +548,7 @@ bool Analyser::createNamespace(TokenIterator& token)
 		// look for the identifier token
 		std::string name = (*token++).content();
 
-		if ( token->type() == Token::Type::SCOPE ) {
+		if ( token->type() == Token::Type::OPERATOR_SCOPE ) {
 			++token;
 		}
 

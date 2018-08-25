@@ -42,7 +42,7 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( content == "&" ) { category = Token::Category::Operator; type = Token::Type::BITAND; }
 	else if ( content == "|" ) { category = Token::Category::Operator; type = Token::Type::BITOR; }
 	else if ( content == "," ) { type = Token::Type::COMMA; }
-	else if ( content == "." ) { type = Token::Type::SCOPE; }
+	else if ( content == "." ) { type = Token::Type::OPERATOR_SCOPE; }
 	else if ( content == ".." ) { type = Token::Type::OPERATOR_RANGE; }
 	else if ( content == ";" ) { type = Token::Type::SEMICOLON; }
 	else if ( content == ":" ) { type = Token::Type::COLON; }
@@ -325,7 +325,7 @@ void Tokenizer::mergeOperators()
 			// ... and add OR instead
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::NOR, "!|", token->position()));
 		}
-		else if ( (lastType == Token::Type::SCOPE) && (activeType == Token::Type::SCOPE) ) {
+		else if ( (lastType == Token::Type::OPERATOR_SCOPE) && (activeType == Token::Type::OPERATOR_SCOPE) ) {
 			// .. range operator
 			changed = true;
 			// remove last added token ...
@@ -604,7 +604,7 @@ void Tokenizer::replaceConstDataTypes()
 
 			tmp = lookahead(token, numCombines + 1);
 
-			if ( tmp->type() == Token::Type::SCOPE ) {
+			if ( tmp->type() == Token::Type::OPERATOR_SCOPE ) {
 				// CONST_INTEGER '.'
 				numCombines++;
 

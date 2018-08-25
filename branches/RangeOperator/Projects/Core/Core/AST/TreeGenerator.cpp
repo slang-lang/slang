@@ -522,7 +522,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 			if ( op != Token::Type::BRACKET_OPEN &&
 				 op != Token::Type::OPERATOR_DECREMENT &&
 				 op != Token::Type::OPERATOR_INCREMENT &&
-				 op != Token::Type::SCOPE ) {
+				 op != Token::Type::OPERATOR_SCOPE ) {
 				return infixPostfix;
 			}
 
@@ -546,7 +546,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 					infixPostfix = process_incdecrement(start, baseExp);
 */
 				} break;
-				case Token::Type::SCOPE: {
+				case Token::Type::OPERATOR_SCOPE: {
 					++start;
 
 					//OSexperimental("Usage of extended scope operator is marked as unstable in " + start->position().toString());
@@ -1929,7 +1929,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 		} break;
 	}
 
-	if ( token->type() == Token::Type::SCOPE ) {
+	if ( token->type() == Token::Type::OPERATOR_SCOPE ) {
 		if ( name == IDENTIFIER_BASE ) {
 			visibility = Visibility::Protected;		// this allows us to access protected and public members/methods of our base class
 		}

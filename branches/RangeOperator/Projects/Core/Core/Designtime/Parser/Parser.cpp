@@ -312,7 +312,7 @@ std::string Parser::identify(TokenIterator& token)
 	std::string type = token->content();
 
 	while ( (token++)->type() == Token::Type::IDENTIFIER ) {
-		if ( token->type() != Token::Type::SCOPE ) {
+		if ( token->type() != Token::Type::OPERATOR_SCOPE ) {
 			break;
 		}
 
@@ -389,7 +389,7 @@ bool Parser::isMemberDeclaration(TokenIterator token)
 		// identifier token is okay
 		++token;
 
-		if ( token->type() == Token::Type::SCOPE ) {
+		if ( token->type() == Token::Type::OPERATOR_SCOPE ) {
 			// scope token is okay
 			++token;
 			continue;
@@ -433,7 +433,7 @@ bool Parser::isMethodDeclaration(TokenIterator token)
 	while ( token->type() == Token::Type::IDENTIFIER ) {
 		++token;
 
-		if ( token->type() == Token::Type::SCOPE ) {
+		if ( token->type() == Token::Type::OPERATOR_SCOPE ) {
 			++token;
 			continue;
 		}
