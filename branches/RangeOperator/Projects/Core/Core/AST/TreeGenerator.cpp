@@ -960,6 +960,10 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 			collection = NULL;
 
 			getIteratorExpression = dynamic_cast<MethodExpression*>(collectionExpression);
+			if ( !getIteratorExpression ) {
+				throw Designtime::Exceptions::SyntaxError("method expression expected by expression of type " + Expression::ExpressionType::ToString(collectionExpression->getExpressionType()) + " found", token->position());
+			}
+
 			collectionExpression = NULL;
 		}
 		else {
