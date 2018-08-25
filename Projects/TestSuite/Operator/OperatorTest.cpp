@@ -50,6 +50,7 @@ void OperatorTest::process()
 	TEST(testIsOperator);
 	TEST(testMathOverloadsWithNumbers);
 	TEST(testMathOverloadsWithObjects);
+	TEST(testRangeOperator);
 	TEST(testUnaryMinus);
 	TEST(testUnaryPlus);
 	TEST(testUnaryValidate);
@@ -267,6 +268,20 @@ void OperatorTest::testMathOverloadsWithObjects()
 	try {
 		VirtualMachine vm;
 		vm.runScriptFromFile("Tests/Operator/MathOverloadsWithObjects.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testRangeOperator()
+{
+	try {
+		VirtualMachine vm;
+		vm.runScriptFromFile("Tests/Operator/RangeOperatorTest.os");
 
 		// automatic success
 	}
