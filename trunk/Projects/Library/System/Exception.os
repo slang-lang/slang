@@ -30,6 +30,18 @@ public object ArithmeticException implements IException {
 	}
 }
 
+public object InvalidArgumentException implements IException {
+	private string _exception;
+
+	public void Constructor(string ex) {
+		_exception = ex;
+	}
+
+	public string what() const {
+		return _exception;
+	}
+}
+
 public object InvalidLengthException implements IException {
 	private string _exception;
 

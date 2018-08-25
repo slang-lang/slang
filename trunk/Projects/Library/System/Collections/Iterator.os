@@ -19,7 +19,7 @@ public object Iterator<T> {
 			throw new Exception("current(): invalid iterator access");
 		}
 		if ( mCurrentIndex == -1 ) {
-			throw new Exception("iterator not initialized");
+			throw new Exception("current(): iterator not initialized");
 		}
 
 		return T mCollection.at(mCurrentIndex);
@@ -71,7 +71,7 @@ public object ReverseIterator<T> {
 			throw new Exception("current(): invalid iterator access");
 		}
 		if ( mCurrentIndex == mCollection.size() ) {
-			throw new Exception("iterator not initialized");
+			throw new Exception("current(): iterator not initialized");
 		}
 
 		return T mCollection.at(mCurrentIndex);
