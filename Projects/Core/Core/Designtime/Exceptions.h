@@ -22,7 +22,7 @@ class DesigntimeException : public ObjectiveScript::Common::Exceptions::Exceptio
 {
 public:
 	explicit DesigntimeException(const std::string& text, const Common::Position& position = Common::Position()) noexcept
-	: ObjectiveScript::Common::Exceptions::Exception(text, position)
+	: ObjectiveScript::Common::Exceptions::Exception("DesigntimeException: " + text, position)
 	{ }
 
 	virtual ~DesigntimeException() noexcept { }

@@ -101,7 +101,7 @@ void TreeGenerator::deinitialize()
 			last = mMethod->getTokens().back();
 		}
 
-		throw Designtime::Exceptions::DesigntimeException("return statement missing in '" + mMethod->getFullScopeName() + "'", last.position());
+		throw Designtime::Exceptions::SyntaxError("return statement missing in '" + mMethod->getFullScopeName() + "'", last.position());
 	}
 
 	// reset reusable members
@@ -442,7 +442,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		infixPostfix = processIsOperator(start, infixPostfix);
 	}
 	else if ( op == Token::Type::OPERATOR_RANGE ) {		// postfix .. operator
-		infixPostfix = processRangeOperator(start, infixPostfix);
+		infixPostfix = processPostfixRangeOperator(start, infixPostfix);
 	}
 	else if ( op == Token::Type::QUESTION_MARK ) {		// postfix ternary ? operator
 		infixPostfix = processTernaryOperator(start, infixPostfix);
@@ -607,41 +607,7 @@ Node* TreeGenerator::processPostfixNotOperator(TokenIterator& start, Node* /*bas
 	throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
 }
 
-Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* baseExp)
-{
-	++start;
-
-	Expression* infixPostfix = dynamic_cast<Expression*>(baseExp);
-	if ( !infixPostfix ) {
-		throw Designtime::Exceptions::SyntaxError("invalid expression type detected!", start->position());
-	}
-
-	Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(infixPostfix->getResultType());
-	if ( !scope ) {
-		throw Designtime::Exceptions::SyntaxError("invalid type '" + infixPostfix->getResultType() + "' detected!", start->position());
-	}
-
-	SymbolExpression* symbolExpression = resolve(start, scope, true, Visibility::Public);
-	if ( !symbolExpression ) {
-		throw Designtime::Exceptions::SyntaxError("invalid symbol '" + start->content() + "' for type '" + infixPostfix->getResultType() + "' detected!", start->position());
-	}
-
-	if ( start->type() == Token::Type::PARENTHESIS_OPEN ) {
-		MethodExpression* method = process_method(symbolExpression, start);
-
-		return new ScopeExpression(infixPostfix, method, method->getResultType());
-	}
-
-	return new ScopeExpression(infixPostfix, symbolExpression, symbolExpression->getResultType());
-}
-
-Node* TreeGenerator::processPostfixSubscriptOperator(TokenIterator& start, Node* /*baseExp*/)
-{
-	// postfix operator[]
-	throw Common::Exceptions::NotSupported("postfix [] operator not supported", start->position());
-}
-
-Node* TreeGenerator::processRangeOperator(TokenIterator& start, Node* baseExp)
+Node* TreeGenerator::processPostfixRangeOperator(TokenIterator& start, Node* baseExp)
 {
 	++start;
 
@@ -674,6 +640,40 @@ Node* TreeGenerator::processRangeOperator(TokenIterator& start, Node* baseExp)
 	params.push_back(rhs);
 
 	return new NewExpression("Range", process_method(rangeExp, *start, params));
+}
+
+Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* baseExp)
+{
+	++start;
+
+	Expression* infixPostfix = dynamic_cast<Expression*>(baseExp);
+	if ( !infixPostfix ) {
+		throw Designtime::Exceptions::SyntaxError("invalid expression type detected!", start->position());
+	}
+
+	Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(infixPostfix->getResultType());
+	if ( !scope ) {
+		throw Designtime::Exceptions::SyntaxError("invalid type '" + infixPostfix->getResultType() + "' detected!", start->position());
+	}
+
+	SymbolExpression* symbolExpression = resolve(start, scope, true, Visibility::Public);
+	if ( !symbolExpression ) {
+		throw Designtime::Exceptions::SyntaxError("invalid symbol '" + start->content() + "' for type '" + infixPostfix->getResultType() + "' detected!", start->position());
+	}
+
+	if ( start->type() == Token::Type::PARENTHESIS_OPEN ) {
+		MethodExpression* method = process_method(symbolExpression, start);
+
+		return new ScopeExpression(infixPostfix, method, method->getResultType());
+	}
+
+	return new ScopeExpression(infixPostfix, symbolExpression, symbolExpression->getResultType());
+}
+
+Node* TreeGenerator::processPostfixSubscriptOperator(TokenIterator& start, Node* /*baseExp*/)
+{
+	// postfix operator[]
+	throw Common::Exceptions::NotSupported("postfix [] operator not supported", start->position());
 }
 
 Node* TreeGenerator::processTernaryOperator(TokenIterator& start, Node* baseExp)
@@ -1236,7 +1236,7 @@ Statement* TreeGenerator::process_keyword(TokenIterator& token)
 		statement = process_while(token);
 	}
 	else {
-		throw Designtime::Exceptions::DesigntimeException("invalid keyword '" + token->content() + "' found", token->position());
+		throw Designtime::Exceptions::SyntaxError("invalid keyword '" + token->content() + "' found", token->position());
 	}
 
 	return statement;
@@ -1382,7 +1382,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 			inner->mSymbolExpression->mSurroundingScope = mRepository->findBluePrintObject(type);
 
 			if ( !inner->mSymbolExpression->mSurroundingScope ) {
-				throw Common::Exceptions::UnknownIdentifer(type, token->position());
+				throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + type + "'", token->position());
 			}
 			break;
 		}
@@ -1463,6 +1463,9 @@ Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpress
 	std::string type = symbol->getResultType();
 
 	Designtime::BluePrintObject* obj = mRepository->findBluePrintObject(type);
+	if ( !obj ) {
+		throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + type + "'", token->position());
+	}
 
 	symbol->mSymbolExpression = new RuntimeSymbolExpression("operator[]", "", true, true, obj->isAtomicType());
 	symbol->mSymbolExpression->mSurroundingScope = obj;
@@ -1573,7 +1576,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 			defaultStatement = process_scope(token, true, true);
 		}
 		else {
-			throw Designtime::Exceptions::DesigntimeException("invalid token '" + token->content() + "' found", token->position());
+			throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 		}
 
 		expect(Token::Type::BRACKET_CURLY_CLOSE, token);
@@ -1898,7 +1901,7 @@ void TreeGenerator::pushTokens(const TokenList& tokens)
 SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	if ( !base ) {
-		throw Designtime::Exceptions::DesigntimeException("invalid base scope");
+		throw Designtime::Exceptions::DesigntimeException("invalid base scope", token->position());
 	}
 
 	std::string name = token->content();
@@ -2049,12 +2052,12 @@ std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node*
 {
 	Expression* l = dynamic_cast<Expression*>(left);
 	if ( !l ) {
-		throw Designtime::Exceptions::DesigntimeException("invalid left expression");
+		throw Designtime::Exceptions::SyntaxError("invalid left expression");
 	}
 
 	Expression* r = dynamic_cast<Expression*>(right);
 	if ( !r ) {
-		throw Designtime::Exceptions::DesigntimeException("invalid right expression");
+		throw Designtime::Exceptions::SyntaxError("invalid right expression");
 	}
 
 	return resolveType(l->getResultType(), operation, r->getResultType());

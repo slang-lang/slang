@@ -118,9 +118,9 @@ private: // Execution
 	Node* processIsOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixIncDecOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixNotOperator(TokenIterator& start, Node* baseExp);
+	Node* processPostfixRangeOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixScopeOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixSubscriptOperator(TokenIterator& start, Node* baseExp);
-	Node* processRangeOperator(TokenIterator& start, Node* baseExp);
 	Node* processTernaryOperator(TokenIterator& start, Node* baseExp);
 	// }
 
