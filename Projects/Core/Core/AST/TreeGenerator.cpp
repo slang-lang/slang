@@ -440,11 +440,14 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 	// postfix (single repeat)
 	if ( op == Token::Type::OPERATOR_IS ) {		// postfix is operator
 		++start;
+
 		SymbolExpression* symbol = resolveWithExceptions(start, getScope());
 
+		DesigntimeSymbolExpression* rhs = dynamic_cast<DesigntimeSymbolExpression*>(symbol);
+
 		std::string type = symbol->getResultType();
-		if ( dynamic_cast<DesigntimeSymbolExpression*>(symbol) ) {
-			type = Designtime::Parser::buildRuntimeConstraintTypename(type, dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints);
+		if ( rhs ) {
+			type = Designtime::Parser::buildRuntimeConstraintTypename(type, rhs->mConstraints);
 		}
 
 		infixPostfix = new IsExpression(infixPostfix, type);
@@ -473,7 +476,6 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		rangeExp->mSurroundingScope = mRepository->findBluePrintObject(std::string("Range"));
 
 		if ( !rangeExp->mSurroundingScope ) {
-			//throw Designtime::Exceptions::SyntaxError("could not resolve symbol 'Range', please import System.Collections.Range", start->position());
 			throw Designtime::Exceptions::SyntaxError("to use range operator System.Collections.Range has to be imported", start->position());
 		}
 
@@ -520,6 +522,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		for ( ; ; ) {
 			Token::Type::E op = start->type();
 			if ( op != Token::Type::BRACKET_OPEN &&
+				 op != Token::Type::BRACKET_OPEN &&
 				 op != Token::Type::OPERATOR_DECREMENT &&
 				 op != Token::Type::OPERATOR_INCREMENT &&
 				 op != Token::Type::OPERATOR_SCOPE ) {
