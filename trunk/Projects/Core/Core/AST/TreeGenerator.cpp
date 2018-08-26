@@ -439,80 +439,13 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 	// postfix (single repeat)
 	if ( op == Token::Type::OPERATOR_IS ) {		// postfix is operator
-		++start;
-
-		SymbolExpression* symbol = resolveWithExceptions(start, getScope());
-
-		DesigntimeSymbolExpression* rhs = dynamic_cast<DesigntimeSymbolExpression*>(symbol);
-
-		std::string type = symbol->getResultType();
-		if ( rhs ) {
-			type = Designtime::Parser::buildRuntimeConstraintTypename(type, rhs->mConstraints);
-		}
-
-		infixPostfix = new IsExpression(infixPostfix, type);
+		infixPostfix = processIsOperator(start, infixPostfix);
 	}
 	else if ( op == Token::Type::OPERATOR_RANGE ) {		// postfix .. operator
-		++start;
-
-		SymbolExpression* rangeExp = NULL;
-		IntegerLiteralExpression* lhs = dynamic_cast<IntegerLiteralExpression*>(infixPostfix);
-		IntegerLiteralExpression* rhs = NULL;
-
-		// validate left expression (has to be integer literal expression)
-		if ( !lhs ) {
-			throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on left side", start->position());
-		}
-
-		// collect right expression
-		rhs = dynamic_cast<IntegerLiteralExpression*>(expression(start));
-
-		// validate right expression (has to be integer literal expression)
-		if ( !rhs ) {
-			throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on right side", start->position());
-		}
-
-		rangeExp = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
-		rangeExp->mSurroundingScope = mRepository->findBluePrintObject(std::string("Range"));
-
-		if ( !rangeExp->mSurroundingScope ) {
-			throw Designtime::Exceptions::SyntaxError("to use range operator System.Collections.Range has to be imported", start->position());
-		}
-
-		ExpressionList params;
-		params.push_back(lhs);
-		params.push_back(rhs);
-
-		infixPostfix = new NewExpression("Range", process_method(rangeExp, *start, params));
+		infixPostfix = processRangeOperator(start, infixPostfix);
 	}
 	else if ( op == Token::Type::QUESTION_MARK ) {		// postfix ternary ? operator
-		++start;
-
-		Node* condition = infixPostfix;
-		Node* first = NULL;
-		Node* second = NULL;
-
-		// determine the type of the ternary operator
-		if ( start->type() == Token::Type::COLON ) {
-			// use short ternary operator: <expression> ?: <expression>
-			first = condition;
-		}
-		else {
-			// use long ternary operator: <expression> ? <expression> : <expression>
-			first = expression(start);
-		}
-
-		expect(Token::Type::COLON, start);
-		++start;
-
-		second = expression(start);
-
-		TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
-		if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
-			throw Designtime::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expression don't match", start->position());
-		}
-
-		infixPostfix = ternaryExpression;
+		infixPostfix = processTernaryOperator(start, infixPostfix);
 	}
 	else if ( op == Token::Type::OPERATOR_NOT ) {		// postfix ! operator
 		throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
@@ -670,6 +603,88 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 	}
 
 	return statements;
+}
+
+Node* TreeGenerator::processIsOperator(TokenIterator& start, Node* baseExp)
+{
+	++start;
+
+	SymbolExpression* symbol = resolveWithExceptions(start, getScope());
+
+	DesigntimeSymbolExpression* rhs = dynamic_cast<DesigntimeSymbolExpression*>(symbol);
+
+	std::string type = symbol->getResultType();
+	if ( rhs ) {
+		type = Designtime::Parser::buildRuntimeConstraintTypename(type, rhs->mConstraints);
+	}
+
+	return new IsExpression(baseExp, type);
+}
+
+Node* TreeGenerator::processRangeOperator(TokenIterator& start, Node* baseExp)
+{
+	++start;
+
+	SymbolExpression* rangeExp = NULL;
+	IntegerLiteralExpression* lhs = dynamic_cast<IntegerLiteralExpression*>(baseExp);
+	IntegerLiteralExpression* rhs = NULL;
+
+	// validate left expression (has to be integer literal expression)
+	if ( !lhs ) {
+		throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on left side", start->position());
+	}
+
+	// collect right expression
+	rhs = dynamic_cast<IntegerLiteralExpression*>(expression(start));
+
+	// validate right expression (has to be integer literal expression)
+	if ( !rhs ) {
+		throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on right side", start->position());
+	}
+
+	rangeExp = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
+	rangeExp->mSurroundingScope = mRepository->findBluePrintObject(std::string("Range"));
+
+	if ( !rangeExp->mSurroundingScope ) {
+		throw Designtime::Exceptions::SyntaxError("to use range operator System.Collections.Range has to be imported", start->position());
+	}
+
+	ExpressionList params;
+	params.push_back(lhs);
+	params.push_back(rhs);
+
+	return new NewExpression("Range", process_method(rangeExp, *start, params));
+}
+
+Node* TreeGenerator::processTernaryOperator(TokenIterator& start, Node* baseExp)
+{
+	++start;
+
+	Node* condition = baseExp;
+	Node* first = NULL;
+	Node* second = NULL;
+
+	// determine the type of the ternary operator
+	if ( start->type() == Token::Type::COLON ) {
+		// use short ternary operator: <expression> ?: <expression>
+		first = condition;
+	}
+	else {
+		// use long ternary operator: <expression> ? <expression> : <expression>
+		first = expression(start);
+	}
+
+	expect(Token::Type::COLON, start);
+	++start;
+
+	second = expression(start);
+
+	TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
+	if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
+		throw Designtime::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expression don't match", start->position());
+	}
+
+	return ternaryExpression;
 }
 
 /*

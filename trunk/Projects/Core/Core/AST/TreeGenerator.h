@@ -113,6 +113,13 @@ private: // Execution
 	Node* parseTerm(TokenIterator& start);
 	// }
 
+	// operator processing
+	// {
+	Node* processIsOperator(TokenIterator& start, Node* baseExp);
+	Node* processRangeOperator(TokenIterator& start, Node* baseExp);
+	Node* processTernaryOperator(TokenIterator& start, Node* baseExp);
+	// }
+
 	SymbolExpression* resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope, Visibility::E visibility) const;
 	SymbolExpression* resolveWithExceptions(TokenIterator& token, IScope* base) const;
 	SymbolExpression* resolveWithThis(TokenIterator& token, IScope* base) const;
