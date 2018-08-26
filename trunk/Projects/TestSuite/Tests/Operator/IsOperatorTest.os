@@ -12,14 +12,14 @@ public void Main(int argc = 0, string args = "") {
 	BaseObject baseObject = new BaseObject();
 	DerivedObject derivedObj = new DerivedObject();
 
-	assert(baseObject is BaseObject);
 	print("baseObject is BaseObject");
+	assert(baseObject is BaseObject);
 
-	assert(derivedObj is DerivedObject);
 	print("derivedObj is DerivedObject");
+	assert(derivedObj is DerivedObject);
 
-	assert(derivedObj is BaseObject);
 	print("derivedObj is BaseObject");
+	assert(derivedObj is BaseObject);
 
 	print("derivedObj is baseObject");
 	assert(derivedObj is baseObject);
