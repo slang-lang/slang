@@ -15,6 +15,7 @@
     <ProjectGuid>{C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29}</ProjectGuid>
     <RootNamespace>ObjectiveScript</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -25,7 +26,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
@@ -125,27 +126,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Attributes\AccessMode.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Attributes\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="Core\Attributes\Attributes.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Attributes\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Core\Attributes\ImplementationType.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Attributes\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Core\Attributes\LanguageFeatureState.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Attributes\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Core\Attributes\Mutability.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Attributes\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Core\Attributes\ObjectType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Attributes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
     </ClCompile>
@@ -153,13 +134,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Attributes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\BuildInObjects\BoolObject.cpp" />
-    <ClCompile Include="Core\BuildInObjects\DoubleObject.cpp" />
-    <ClCompile Include="Core\BuildInObjects\FloatObject.cpp" />
-    <ClCompile Include="Core\BuildInObjects\IntegerObject.cpp" />
-    <ClCompile Include="Core\BuildInObjects\StringObject.cpp" />
-    <ClCompile Include="Core\BuildInObjects\UserObject.cpp" />
-    <ClCompile Include="Core\BuildInObjects\VoidObject.cpp" />
     <ClCompile Include="Core\Common\Exceptions.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Common\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Common\</ObjectFileName>
@@ -190,10 +164,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="Core\Designtime\Ancestor.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Core\Designtime\BluePrintEnum.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
     </ClCompile>
@@ -292,10 +262,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\Interpreter.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
-    </ClCompile>
+    <ClCompile Include="Core\Runtime\Interpreter.cpp" />
     <ClCompile Include="Core\Runtime\OperatorOverloading.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
@@ -335,10 +302,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\VirtualMachine\Stack.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="Core\VirtualMachine\StackFrame.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
@@ -352,10 +315,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="Core\VirtualMachine\VirtualMachine.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Core\VirtualMachine\VirtualMethodTable.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
     </ClCompile>
@@ -386,20 +345,8 @@
     <ClInclude Include="Core\AST\TreeLineBuffer.h" />
     <ClInclude Include="Core\AST\TreeOptimizer.h" />
     <ClInclude Include="Core\AST\TreeVisitor.h" />
-    <ClInclude Include="Core\Attributes\AccessMode.h" />
     <ClInclude Include="Core\Attributes\Attributes.h" />
-    <ClInclude Include="Core\Attributes\ImplementationType.h" />
-    <ClInclude Include="Core\Attributes\LanguageFeatureState.h" />
-    <ClInclude Include="Core\Attributes\Mutability.h" />
-    <ClInclude Include="Core\Attributes\ObjectType.h" />
     <ClInclude Include="Core\Attributes\Types.h" />
-    <ClInclude Include="Core\BuildInObjects\BoolObject.h" />
-    <ClInclude Include="Core\BuildInObjects\DoubleObject.h" />
-    <ClInclude Include="Core\BuildInObjects\FloatObject.h" />
-    <ClInclude Include="Core\BuildInObjects\IntegerObject.h" />
-    <ClInclude Include="Core\BuildInObjects\StringObject.h" />
-    <ClInclude Include="Core\BuildInObjects\UserObject.h" />
-    <ClInclude Include="Core\BuildInObjects\VoidObject.h" />
     <ClInclude Include="Core\Common\Exceptions.h" />
     <ClInclude Include="Core\Common\Method.h" />
     <ClInclude Include="Core\Common\Namespace.h" />
@@ -412,7 +359,6 @@
     <ClInclude Include="Core\Defines.h" />
     <ClInclude Include="Core\Designtime\Analyser.h" />
     <ClInclude Include="Core\Designtime\Ancestor.h" />
-    <ClInclude Include="Core\Designtime\BluePrintEnum.h" />
     <ClInclude Include="Core\Designtime\BluePrintGeneric.h" />
     <ClInclude Include="Core\Designtime\BluePrintObject.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\BoolObject.h" />
@@ -463,12 +409,10 @@
     <ClInclude Include="Core\VirtualMachine\Controller.h" />
     <ClInclude Include="Core\VirtualMachine\Memory.h" />
     <ClInclude Include="Core\VirtualMachine\Repository.h" />
-    <ClInclude Include="Core\VirtualMachine\Stack.h" />
     <ClInclude Include="Core\VirtualMachine\StackFrame.h" />
     <ClInclude Include="Core\VirtualMachine\Threads.h" />
     <ClInclude Include="Core\VirtualMachine\TypeSystem.h" />
     <ClInclude Include="Core\VirtualMachine\VirtualMachine.h" />
-    <ClInclude Include="Core\VirtualMachine\VirtualMethodTable.h" />
     <ClInclude Include="Debugger\BreakPoint.h" />
     <ClInclude Include="Debugger\Condition.h" />
     <ClInclude Include="Debugger\Debugger.h" />

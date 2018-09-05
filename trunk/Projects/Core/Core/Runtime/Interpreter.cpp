@@ -5,18 +5,19 @@
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/BoolObject.h>
-#include <Core/BuildInObjects/DoubleObject.h>
-#include <Core/BuildInObjects/FloatObject.h>
-#include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/StringObject.h>
-#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Defines.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
+#include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Runtime/BuildInTypes/BoolObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
@@ -49,7 +50,7 @@ Interpreter::Interpreter(Common::ThreadId threadId)
 	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : NULL;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
-	mStack = Controller::Instance().threads(threadId);
+	mThread = Controller::Instance().thread(threadId);
 }
 
 Interpreter::~Interpreter()
@@ -128,7 +129,7 @@ void Interpreter::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 void Interpreter::deinitialize()
 {
 	// unwind stack
-	mStack->pop();
+	mThread->popFrame();
 }
 
 /*
@@ -184,19 +185,6 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 		case ControlFlow::Throw:
 			// an ObjectiveScript exception has been thrown or we want to terminate
 			break;
-	}
-
-	if ( mControlFlow == ControlFlow::Normal ) {
-		switch ( method->getMethodType() ) {
-			case MethodAttributes::MethodType::Constructor:
-				dynamic_cast<Object*>(mOwner)->setConstructed(true);
-				break;
-			case MethodAttributes::MethodType::Destructor:
-				dynamic_cast<Object*>(mOwner)->setConstructed(false);
-				break;
-			default:
-				break;
-		}
 	}
 
 	// notify debugger
@@ -329,12 +317,12 @@ Runtime::Object* Interpreter::getEnclosingObject(IScope* scope) const
 
 IScope* Interpreter::getScope() const
 {
-	return mStack->current()->getScope();
+	return mThread->currentFrame()->getScope();
 }
 
 const TokenList& Interpreter::getTokens() const
 {
-	return mStack->current()->getTokens();
+	return mThread->currentFrame()->getTokens();
 }
 
 inline Symbol* Interpreter::identify(TokenIterator& token) const
@@ -488,7 +476,7 @@ void Interpreter::initialize(IScope* scope, const TokenList& tokens, const Param
 	}
 
 	// record stack
-	mStack->push(scope, tokens, params);
+	mThread->pushFrame(scope, tokens, params);
 }
 
 /*
@@ -520,7 +508,7 @@ AccessMode::E Interpreter::parseAccessMode(TokenIterator &token, bool isAtomicTy
 
 		if ( result == AccessMode::Unspecified ) {
 			// invalid type
-			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+			throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 		}
 
 		++token;
@@ -730,10 +718,11 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 				compareType = Designtime::Parser::buildRuntimeConstraintTypename(compareType, constraints);
 			}
 			else {
-				throw Common::Exceptions::SyntaxError("invalid symbol type found", start->position());
+				throw Designtime::Exceptions::SyntaxError("invalid symbol type found", start->position());
 			}
 
-			*result = BoolObject(operator_binary_is(result, compareType));
+			//*result = BoolObject(operator_binary_is(result, compareType));
+			*result = BoolObject(result->QualifiedTypename() == compareType);
 		} break;
 		case Token::Type::OPERATOR_NOT: {
 			throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
@@ -756,7 +745,7 @@ Mutability::E Interpreter::parseMutability(TokenIterator& token)
 
 		if ( result != Mutability::Const && result != Mutability::Modify ) {
 			// local variables are only allowed to by modifiable or constant
-			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+			throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 		}
 
 		++token;
@@ -831,7 +820,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					++start;
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					throw Common::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
+					throw Designtime::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
 				case Symbol::IType::ObjectSymbol:
 					operator_binary_assign(result, static_cast<Object*>(symbol));
 					++start;
@@ -845,19 +834,19 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 		case Token::Type::SEMICOLON: {
 		} break;
 		default: {
-			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but '" + start->content() + "' found", start->position());
+			throw Designtime::Exceptions::SyntaxError("identifier, literal or constant expected but '" + start->content() + "' found", start->position());
 		} break;
 	}
 }
 
 void Interpreter::popScope()
 {
-	mStack->current()->popScope();
+	mThread->currentFrame()->popScope();
 }
 
 void Interpreter::popTokens()
 {
-	mStack->current()->popTokens();
+	mThread->currentFrame()->popTokens();
 }
 
 /*
@@ -897,7 +886,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 				//++token;
 				break;
 			default:
-				throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+				throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 		}
 
 		++token;	// consume token
@@ -941,7 +930,7 @@ void Interpreter::process_assert(TokenIterator& token)
  */
 void Interpreter::process_break(TokenIterator& token)
 {
-	if ( !mStack->current()->allowBreakAndContinue() ) {
+	if ( !mThread->currentFrame()->allowBreakAndContinue() ) {
 		OSwarn("break not allowed in " + token->position().toString());
 		return;
 	}
@@ -958,7 +947,7 @@ void Interpreter::process_break(TokenIterator& token)
  */
 void Interpreter::process_continue(TokenIterator& token)
 {
-	if ( !mStack->current()->allowBreakAndContinue() ) {
+	if ( !mThread->currentFrame()->allowBreakAndContinue() ) {
 		OSwarn("continue not allowed in " + token->position().toString());
 		return;
 	}
@@ -1047,7 +1036,7 @@ void Interpreter::process_exit(TokenIterator& token)
 		return;
 	}
 
-	mStack->exception() = ExceptionData(data, token->position());
+	mThread->exception() = ExceptionData(data, token->position());
 
 	throw ControlFlow::ExitProgram;
 
@@ -1167,7 +1156,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 		throw Common::Exceptions::UnknownIdentifer("identifier '" + typedefIt->content() + "' not found", token->position());
 	}
 	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-		throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", token->position());
+		throw Designtime::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", token->position());
 	}
 
 	// create and define loop variable
@@ -1180,13 +1169,13 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	// identify collection symbol
 	Object* collection = dynamic_cast<Object*>(identify(token));
 	if ( !collection ) {
-		throw Common::Exceptions::SyntaxError("invalid symbol '" + token->content() + "' found", token->position());
+		throw Designtime::Exceptions::SyntaxError("invalid symbol '" + token->content() + "' found", token->position());
 	}
 	if ( !collection->isValid() ) {
 		throw Runtime::Exceptions::NullPointerException("null pointer access", token->position());
 	}
 	if ( !collection->isInstanceOf("IIterateable") ) {
-		throw Common::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIteratable", token->position());
+		throw Designtime::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIteratable", token->position());
 	}
 	++token;
 
@@ -1507,25 +1496,17 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		throw Common::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + owner->ToString() + "\"", tmp->position());
 	}
 
-	ControlFlow::E controlflow;
-
 	if ( method->isExtensionMethod() ) {
-		controlflow = method->execute(params, result, (*tmp));
+		mControlFlow = dynamic_cast<ObjectiveScript::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
 	}
 	else {
-		controlflow = execute(method, params, result);
+		mControlFlow = execute(method, params, result);
 	}
 
-	switch ( controlflow ) {
-		case ControlFlow::ExitProgram:
-			mControlFlow = ControlFlow::ExitProgram;
-			throw ControlFlow::ExitProgram;		// promote control flow
-		case ControlFlow::Throw:
-			mControlFlow = ControlFlow::Throw;
-			throw ControlFlow::Throw;			// promote control flow
-		default:
-			mControlFlow = ControlFlow::Normal;
-			break;
+	switch (mControlFlow) {
+		case Runtime::ControlFlow::ExitProgram: throw Runtime::ControlFlow::ExitProgram;	// promote control flow
+		case Runtime::ControlFlow::Throw: throw Runtime::ControlFlow::Throw;				// promote control flow
+		default: mControlFlow = Runtime::ControlFlow::Normal; break;
 	}
 }
 
@@ -1637,7 +1618,7 @@ void Interpreter::process_statement(TokenIterator& token, Object* result)
 			++token;
 			break;
 		default:
-			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+			throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 	}
 }
 
@@ -1708,7 +1689,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 		}
 		else if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_DEFAULT ) {
 			if ( defaultBlock.mBegin != localEnd ) {
-				throw Common::Exceptions::SyntaxError("duplicate default entry for switch statement");
+				throw Designtime::Exceptions::SyntaxError("duplicate default entry for switch statement");
 			}
 
 			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
@@ -1820,7 +1801,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 			return;
 		}
 
-		mStack->exception() = ExceptionData(data, token->position());
+		mThread->exception() = ExceptionData(data, token->position());
 	}
 
 	mControlFlow = ControlFlow::Throw;
@@ -1867,7 +1848,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		}
 		else if ( tmp != localEnd && tmp->content() == KEYWORD_FINALLY ) {
 			if ( finallyToken != localEnd ) {
-				throw Common::Exceptions::SyntaxError("multiple finally blocks are not allowed");
+				throw Designtime::Exceptions::SyntaxError("multiple finally blocks are not allowed");
 			}
 
 			finallyToken = tmp;
@@ -1891,7 +1872,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			mControlFlow = ControlFlow::Normal;
 		}
 
-		Object* exception = mStack->exception().getData();
+		Object* exception = mThread->exception().getData();
 
 		for ( std::list<TokenIterator>::const_iterator it = catches.begin(); it != catches.end(); ++it ) {
 			TokenIterator catchIt = (*it);
@@ -1908,7 +1889,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 					throw Common::Exceptions::UnknownIdentifer("identifier '" + catchIt->content() + "' not found", catchIt->position());
 				}
 				if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-					throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
+					throw Designtime::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
 				}
 
 				// create new exception type instance
@@ -2188,7 +2169,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 
 void Interpreter::pushScope(IScope* scope, bool allowBreakAndContinue)
 {
-	StackFrame* stack = mStack->current();
+	StackFrame* stack = mThread->currentFrame();
 
 	bool allowDelete = !scope;
 
@@ -2201,7 +2182,7 @@ void Interpreter::pushScope(IScope* scope, bool allowBreakAndContinue)
 
 void Interpreter::pushTokens(const TokenList& tokens)
 {
-	mStack->current()->pushTokens(tokens);
+	mThread->currentFrame()->pushTokens(tokens);
 }
 
 
