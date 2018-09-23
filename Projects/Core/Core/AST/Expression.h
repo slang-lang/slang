@@ -91,6 +91,9 @@ public:
 	virtual std::string getResultType() const {
 		return mResultType;
 	}
+	virtual std::string toString() const {
+		return ExpressionType::ToString(mExpressionType);
+	}
 
 protected:
 	ExpressionType::E mExpressionType;
@@ -325,6 +328,7 @@ public:
 	public:
 		enum E {
 			DesigntimeSymbolExpression,
+			LocalSymbolExpression,
 			RuntimeSymbolExpression
 		};
 	};
@@ -409,6 +413,39 @@ public:
 };
 
 
+class LocalSymbolExpression : public SymbolExpression
+{
+public:
+	explicit LocalSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isAtomicType, size_t index)
+	: SymbolExpression(name, resultType, isAtomicType)
+	{
+		mIndex = index;
+		mIsConst = isConst;
+		mIsMember = false;
+		mSymbolExpressionType = SymbolExpressionType::LocalSymbolExpression;
+	}
+
+	std::string getResultType() const {
+		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
+	}
+
+	size_t getIndex() const {
+		return mIndex;
+	}
+
+	std::string toString() const {
+		std::string result = ExpressionType::ToString(mExpressionType) + ": LocalSymbolExpression\n";
+		result += "mName: " + mName + "\n";
+		result += "mIndex: " + std::to_string(mIndex);
+
+		return result;
+	}
+
+private:
+	size_t mIndex;
+};
+
+
 class RuntimeSymbolExpression : public SymbolExpression
 {
 public:
@@ -426,28 +463,6 @@ public:
 };
 
 
-class LocalSymbolExpression : public SymbolExpression
-{
-public:
-	explicit LocalSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isAtomicType)
-	: SymbolExpression(name, resultType, isAtomicType)
-	{
-		mIsConst = isConst;
-		mIsMember = false;
-		mSymbolExpressionType = SymbolExpressionType::RuntimeSymbolExpression;
-	}
-
-	std::string getResultType() const {
-		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
-	}
-
-	unsigned int getIndex() const {
-		return mIndex;
-	}
-
-private:
-	unsigned int mIndex;
-};
 
 // Variable expressions
 ///////////////////////////////////////////////////////////////////////////////

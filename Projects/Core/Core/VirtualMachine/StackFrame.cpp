@@ -10,6 +10,7 @@
 #include <Core/Tools.h>
 #include <Core/Types.h>
 #include <Tools/Strings.h>
+#include <Utils.h>
 
 // Namespace declarations
 
@@ -52,6 +53,36 @@ const TokenList& StackFrame::getTokens() const
 	return mTokenStack.back();
 }
 
+size_t StackFrame::lookup(const std::string& name) const
+{
+	size_t index = mCurrentStack.size() - 1;
+
+	for ( CurrentStack::const_reverse_iterator it = mCurrentStack.rbegin(); it != mCurrentStack.rend(); ++it ) {
+		if ( it->mName == name ) {
+			return index;
+		}
+
+		index--;
+	}
+
+	return size_t(-1);
+}
+
+IScope* StackFrame::peek(size_t index) const
+{
+	if ( index == size_t(-1) ) {
+assert(0);
+		return mCurrentStack.back().mItem;
+	}
+
+	if ( index >= mCurrentStack.size() ) {
+		OSerror("peek with invalid index: " + std::to_string(index) + " vs " + std::to_string(mCurrentStack.size()));
+		throw NULL;
+	}
+
+	return mCurrentStack[index].mItem;
+}
+
 void StackFrame::popScope()
 {
 	Scope s = mScopeStack.back();
@@ -60,6 +91,17 @@ void StackFrame::popScope()
 
 	if ( s.mAllowDelete ) {
 		delete s.mScope;
+	}
+}
+
+void StackFrame::popStack()
+{
+	while ( !mCurrentStack.empty() && mCurrentStack.back().mItem != NULL ) {
+		mCurrentStack.pop_back();
+	}
+
+	if ( !mCurrentStack.empty() && mCurrentStack.back().mItem == NULL ) {
+		mCurrentStack.pop_back();
 	}
 }
 
@@ -73,6 +115,24 @@ void StackFrame::pushScope(IScope* scope, bool allowDelete, bool allowBreakAndCo
 	mScopeStack.push_back(
 		Scope(scope, allowDelete, allowBreakAndContinue)
 	);
+}
+
+size_t StackFrame::pushIdentifier(IScope* symbol, const std::string& name)
+{
+	size_t index = mCurrentStack.size();
+
+	StackItem item;
+	item.mItem = symbol;
+	item.mName = name;
+
+	mCurrentStack.push_back(item);
+
+	return index;
+}
+
+void StackFrame::pushStack()
+{
+	mCurrentStack.push_back(StackItem());
 }
 
 void StackFrame::pushTokens(const TokenList& tokens)
@@ -89,7 +149,14 @@ Runtime::Object& StackFrame::returnValue()
 
 std::string StackFrame::toString() const
 {
-	std::string result = "Frame " + Utils::Tools::toString(mLevel) + ": ";
+	std::string result = "Frame " + Utils::Tools::toString(mLevel) + ": \n";
+
+	size_t index = 0;
+	for ( CurrentStack::const_iterator it = mCurrentStack.cbegin(); it != mCurrentStack.cend(); ++it ) {
+		result += "(" + std::to_string(index) + "): " + it->mName + "\n";
+
+		index++;
+	}
 
 	switch ( mScope->getScopeType() ) {
 		case IScope::IType::MethodScope:

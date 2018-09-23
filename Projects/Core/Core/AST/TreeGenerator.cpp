@@ -229,6 +229,7 @@ void TreeGenerator::initialize(Common::Method* method)
 	// add 'this' symbol to method
 	if ( mThis && !mMethod->isStatic() ) {
 		scope->define(IDENTIFIER_THIS, mThis);
+		//mStackFrame->pushIdentifier(mThis, IDENTIFIER_THIS);
 	}
 
 	const ParameterList& params = mMethod->provideSignature();
@@ -243,7 +244,8 @@ void TreeGenerator::initialize(Common::Method* method)
 		object->setIsReference(it->access() == AccessMode::ByReference);
 		object->setMutability(it->mutability());
 
-		scope->define(it->name(), object);
+		//scope->define(it->name(), object);
+		mStackFrame->pushIdentifier(object, it->name());
 	}
 }
 
@@ -532,6 +534,7 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 void TreeGenerator::popScope()
 {
 	mStackFrame->popScope();
+	//mStackFrame->popStack();
 }
 
 void TreeGenerator::popTokens()
@@ -1774,7 +1777,8 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::AllowAbstract);
 	object->setConst(object->isConst() || mutability == Mutability::Const);	// prevent constness of blueprint if set
 
-	getScope()->define(name, object);
+	//getScope()->define(name, object);
+	size_t index = mStackFrame->pushIdentifier(object, name);
 
 	// non-atomic types are references by default
 	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, object->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference);
@@ -1787,7 +1791,8 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 			throw Common::Exceptions::NotSupported("initialization is not allowed here", token->position());
 		}
 
-		RuntimeSymbolExpression* lhs = new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), accessMode == AccessMode::ByValue);
+		//RuntimeSymbolExpression* lhs = new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), accessMode == AccessMode::ByValue);
+		LocalSymbolExpression* lhs = new LocalSymbolExpression(name, object->QualifiedTypename(), false, accessMode == AccessMode::ByValue, index);
 
 		//Token copy = (*token);
 		rhs = process_assignment(token, lhs);
@@ -1853,7 +1858,8 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 	object->setMutability(mutability);
 	object->setIsReference(accessMode == AccessMode::ByReference);
 
-	getScope()->define(name, object);
+	//getScope()->define(name, object);
+	mStackFrame->pushIdentifier(object, name);
 
 	// this could easily be changed to return a TypeDeclaration statement, which would be a little faster but during debugging the wrong statement would be shown
 	return new TypeInference(start, type, PrototypeConstraints(), name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
@@ -1891,6 +1897,7 @@ void TreeGenerator::pushScope(IScope* scope, bool allowBreakAndContinue)
 	}
 
 	mStackFrame->pushScope(scope, allowDelete, allowBreakAndContinue || mStackFrame->allowBreakAndContinue());
+	//mStackFrame->pushStack();
 }
 
 void TreeGenerator::pushTokens(const TokenList& tokens)
@@ -1992,6 +1999,27 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	return symbol;
 }
 
+SymbolExpression* TreeGenerator::resolveLocal(TokenIterator& token) const
+{
+	std::string name = token->content();
+
+	size_t index = mStackFrame->lookup(name);
+	if ( index != size_t(-1) ) {
+		IScope* scope = mStackFrame->peek(index);
+		if ( !scope ) {
+			return NULL;
+		}
+
+		++token;
+
+		Runtime::Object* object = dynamic_cast<Runtime::Object*>(scope);
+
+		return new LocalSymbolExpression(name, object->QualifiedTypename(), object->isConst(), object->isAtomicType(), index);
+	}
+
+	return NULL;
+}
+
 SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, IScope* base) const
 {
 	SymbolExpression* exp = resolve(token, base, false, Visibility::Public);
@@ -2004,6 +2032,12 @@ SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, ISc
 
 SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* base) const
 {
+	// try to resolve local symbol
+	SymbolExpression* result = resolveLocal(token);
+	if ( result ) {
+		return result;
+	}
+
 	if ( mThis ) {
 		// every class-method has a "this" local that points to the object's blueprint
 		// resolve symbol by using the "this" identifier (without exceptions so that we can try to resolve another time)

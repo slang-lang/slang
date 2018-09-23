@@ -91,9 +91,12 @@ private:
 	inline IScope* getScope() const;
 	inline void popScope();
 	inline void pushScope(IScope* scope = 0);
+
+	inline void popStack();
+	inline void pushStack();
 	// }
 
-	void evaluate(Node* exp, Runtime::Object* result);
+	void evaluate(Node* exp, Runtime::Object* result, Runtime::Object* scope = NULL);
 	void evaluateAssignmentExpression(AssignmentExpression* exp, Runtime::Object* result);
 	void evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result);
 	void evaluateBooleanBinaryExpression(BooleanBinaryExpression* exp, Runtime::Object* result);
