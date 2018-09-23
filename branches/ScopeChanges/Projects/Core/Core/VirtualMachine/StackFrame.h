@@ -5,6 +5,7 @@
 
 // Library includes
 #include <string>
+#include <vector>
 
 // Project includes
 #include <Core/Designtime/Parser/Token.h>
@@ -36,6 +37,19 @@ public:
 	};
 	typedef std::list<Scope> Scopes;
 
+	class StackItem
+	{
+	public:
+		StackItem()
+		: mItem(NULL)
+		{ }
+
+	public:
+		IScope* mItem;
+		std::string mName;
+	};
+	typedef std::vector<StackItem> CurrentStack;
+
 public:
 	StackFrame(unsigned long level, IScope* scope, const ParameterList& params);
 	~StackFrame();
@@ -49,6 +63,12 @@ public:
 	void popScope();
 	void pushScope(IScope* scope, bool allowDelete, bool allowBreakAndContinue);
 
+	size_t lookup(const std::string& name) const;
+	IScope* peek(size_t index = size_t(-1)) const;
+	size_t pushIdentifier(IScope* symbol, const std::string& name = "");
+	void popStack();
+	void pushStack();
+
 	const TokenList& getTokens() const;
 	void popTokens();
 	void pushTokens(const TokenList& tokens);
@@ -59,6 +79,7 @@ private:
 	void operator=(const StackFrame&)/* = delete*/;
 
 private:
+	CurrentStack mCurrentStack;
 	unsigned int mLevel;
 	ParameterList mParameters;
 	Runtime::Object mReturnValue;
