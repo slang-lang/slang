@@ -582,7 +582,7 @@ void Object::setBluePrint(Designtime::BluePrintObject* blueprint)
 	mBluePrint = blueprint;
 }
 
-	void Object::setIsReference(bool state)
+void Object::setIsReference(bool state)
 {
 	mIsReference = state;
 }
