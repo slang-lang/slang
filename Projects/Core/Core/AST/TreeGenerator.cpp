@@ -1772,7 +1772,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	}
 
 	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::AllowAbstract);
-	object->setConst(object->isConst() || mutability == Mutability::Const);	// prevent constness of blueprint if set
+	object->setMutability(mutability);
 
 	getScope()->define(name, object);
 
@@ -1789,10 +1789,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 		RuntimeSymbolExpression* lhs = new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), accessMode == AccessMode::ByValue);
 
-		//Token copy = (*token);
 		rhs = process_assignment(token, lhs);
-
-		//mTypeSystem->getType(object->QualifiedTypename(), copy, rhs->getResultType());
 	}
 	else if ( initialization == Initialization::Required ) {
 		// initialization is required (probably because type inference is used) but no initialization sequence found
