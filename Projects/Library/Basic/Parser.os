@@ -2,6 +2,7 @@
 // library imports
 import System.CharacterIterator;
 import System.Collections.Map;
+import System.Collections.Set;
 import System.IO.File;
 
 // project imports
@@ -9,13 +10,32 @@ import Line;
 import Scanner;
 
 
+public object ParseException implements IException {
+	public void Constructor(string msg, int line = 0) {
+		mLine = line;
+		mMessage = msg;
+	}
+
+	public string what() const {
+		return mMessage + " at Line " + mLine;
+	}
+
+	private int mLine;
+	private string mMessage;
+}
+
 public object Parser {
+	// Constants
 	private String CHARS const;
 	private String COMPARECHARS const;
 	private String DELIMITERCHARS const;
 	private String NUMBERS const;
 	private String OPERATORCHARS const;
 	private String WHITESPACES const;
+
+	// Variables
+	private int mCurrentLine;
+	private Set<string> mVariables;
 
 	public void Constructor() {
 		CHARS = new String("ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz");
@@ -29,6 +49,10 @@ public object Parser {
 
 	public Map<int, Line> parseFile(string filename) modify {
 		Scanner scanner = new Scanner(new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly), LINEBREAK);
+
+		// reset variables
+		mCurrentLine = 0;
+		mVariables = new Set<string>();
 
 		//print("Parsing file '" + filename + "'...");
 
@@ -60,7 +84,7 @@ public object Parser {
 		return lines;
 	}
 
-	private Line parseLine(string content) throws {
+	private Line parseLine(string content) modify throws {
 		if ( strpos(content, 0) == "#" ) {
 			return Line null;
 		}
@@ -69,14 +93,16 @@ public object Parser {
 		// {
 		int idx = strfind(content, " ", 0);
 		if ( !idx ) {
-			throw new Exception("invalid or missing line number: \"" + content + "\"");
+			throw new ParseException("invalid or missing line number: \"" + content + "\"");
 		}
 
 		string lineLabel = substr(content, 0, idx);
 		if ( !isNumber(lineLabel) ) {
-			throw new Exception("invalid label \"" + lineLabel + "\"!");
+			throw new ParseException("invalid label \"" + lineLabel + "\"!");
 		}
 		// }
+
+		mCurrentLine = int lineLabel;
 
 		// parse statement
 		// {
@@ -84,7 +110,7 @@ public object Parser {
 
 		Statement statement = parseStatement(ci);
 		if ( !statement ) {
-			throw new Exception("invalid keyword in line \"" + content + "\"");
+			throw new ParseException("invalid keyword in line \"" + content + "\"");
 		}
 
 		skipWhitespaces(ci);
@@ -102,7 +128,7 @@ public object Parser {
 		return new Line(int lineLabel, statement);
 	}
 
-	private Statement parseStatement(CharacterIterator ci) throws {
+	private Statement parseStatement(CharacterIterator ci) modify throws {
 		Statement result;
 
 		switch ( parseWord(ci) ) {
@@ -161,9 +187,9 @@ public object Parser {
 		return result;
 	}
 
-	private Statement parseDIM(CharacterIterator ci) throws {
+	private Statement parseDIM(CharacterIterator ci) modify throws {
 		if ( !ci.hasNext() ) {
-			throw new Exception("incomplete DIM!");
+			throw new ParseException("incomplete DIM!", mCurrentLine);
 		}
 
 		string variable = parseWord(ci);
@@ -177,6 +203,11 @@ public object Parser {
 			exp = expression(ci);
 		}
 
+		if ( mVariables.contains(variable) ) {
+			throw new ParseException("Duplicate variable '" + variable + "' declared!", mCurrentLine);
+		}
+		mVariables.insert(variable);
+
 		return Statement new DimStatement(variable, exp);
 	}
 
@@ -186,7 +217,7 @@ public object Parser {
 
 	private Statement parseFOR(CharacterIterator ci) throws {
 		if ( !ci.hasNext() ) {
-			throw new Exception("incomplete FOR!");
+			throw new ParseException("incomplete FOR!", mCurrentLine);
 		}
 
 		VariableExpression varExp = new VariableExpression(parseWord(ci));
@@ -241,15 +272,15 @@ public object Parser {
 
 	private Statement parseGOTO(CharacterIterator ci) throws {
 		if ( !ci.hasNext() ) {
-			throw new Exception("incomplete GOTO!");
+			throw new ParseException("incomplete GOTO!", mCurrentLine);
 		}
 
 		return Statement new GotoStatement(int parseWord(ci));
 	}
 
-	private Statement parseIF(CharacterIterator ci) throws {
+	private Statement parseIF(CharacterIterator ci) modify throws {
 		if ( !ci.hasNext() ) {
-			throw new Exception("incomplete IF!");
+			throw new ParseException("incomplete IF!", mCurrentLine);
 		}
 
 		Expression exp = expression(ci);
@@ -270,7 +301,7 @@ public object Parser {
 
 	private Statement parseINPUT(CharacterIterator ci) throws {
 		if ( !ci.hasNext() ) {
-			throw new Exception("incomplete INPUT!");
+			throw new ParseException("incomplete INPUT!", mCurrentLine);
 		}
 
 		string text;
@@ -283,7 +314,7 @@ public object Parser {
 
 	private Statement parseLET(CharacterIterator ci) throws {
 		if ( !ci.hasNext() ) {
-			throw new Exception("incomplete LET!");
+			throw new ParseException("incomplete LET!", mCurrentLine);
 		}
 
 		string variable = parseWord(ci);
@@ -300,7 +331,7 @@ public object Parser {
 
 	private Statement parseNEXT(CharacterIterator ci) throws {
 		if ( !ci.hasNext() ) {
-			throw new Exception("incomplete NEXT!");
+			throw new ParseException("incomplete NEXT!", mCurrentLine);
 		}
 
 		string variable = parseWord(ci);
@@ -310,7 +341,7 @@ public object Parser {
 
 	private Statement parsePRINT(CharacterIterator ci) throws {
 		if ( !ci.hasNext() ) {
-			throw new Exception("incomplete LET!");
+			throw new ParseException("incomplete LET!", mCurrentLine);
 		}
 
 		Expression exp = expression(ci);
@@ -397,14 +428,7 @@ public object Parser {
 			return false;
 		}
 
-		var ci = new CharacterIterator(value);
-		while ( ci.hasNext() ) {
-			if ( !CHARS.Contains(ci.next()) ) {
-				return false;
-			}
-		}
-
-		return true;
+		return mVariables.contains(value);
 	}
 
 	private string parseLine(CharacterIterator ci) throws {
