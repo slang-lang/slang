@@ -239,7 +239,7 @@ void TreeGenerator::initialize(Common::Method* method)
 			continue;
 		}
 
-		Runtime::Object* object = mRepository->createInstance(it->type(), it->name());
+		Runtime::Object* object = mRepository->createInstance(it->type(), it->name(), it->typeConstraints());
 		object->setIsReference(it->access() == AccessMode::ByReference);
 		object->setMutability(it->mutability());
 
@@ -1787,9 +1787,10 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 			throw Common::Exceptions::NotSupported("initialization is not allowed here", token->position());
 		}
 
-		RuntimeSymbolExpression* lhs = new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), accessMode == AccessMode::ByValue);
-
-		rhs = process_assignment(token, lhs);
+		rhs = process_assignment(
+			token,
+			new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), accessMode == AccessMode::ByValue)
+		);
 	}
 	else if ( initialization == Initialization::Required ) {
 		// initialization is required (probably because type inference is used) but no initialization sequence found
