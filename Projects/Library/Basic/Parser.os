@@ -33,7 +33,7 @@ public object Parser {
 	private String OPERATORCHARS const;
 	private String WHITESPACES const;
 
-	// Variables
+	// Members
 	private int mCurrentLine;
 	private Set<string> mVariables;
 
@@ -50,11 +50,9 @@ public object Parser {
 	public Map<int, Line> parseFile(string filename) modify {
 		Scanner scanner = new Scanner(new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly), LINEBREAK);
 
-		// reset variables
+		// reset members
 		mCurrentLine = 0;
 		mVariables = new Set<string>();
-
-		//print("Parsing file '" + filename + "'...");
 
 		StringIterator it = scanner.getIterator();
 		Map<int, Line> lines = new Map<int, Line>();
@@ -78,8 +76,6 @@ public object Parser {
 				previousLine = line;
 			}
 		}
-
-		//print("Done parsing.");
 
 		return lines;
 	}
@@ -193,20 +189,20 @@ public object Parser {
 		}
 
 		string variable = parseWord(ci);
-		Expression exp;
-
-		skipWhitespaces(ci);
-
-		if ( ci.current() == "=" ) {
-			ci.next();
-
-			exp = expression(ci);
-		}
 
 		if ( mVariables.contains(variable) ) {
 			throw new ParseException("Duplicate variable '" + variable + "' declared!", mCurrentLine);
 		}
 		mVariables.insert(variable);
+
+		skipWhitespaces(ci);
+
+		Expression exp;
+		if ( ci.current() == "=" ) {
+			ci.next();
+
+			exp = expression(ci);
+		}
 
 		return Statement new DimStatement(variable, exp);
 	}
