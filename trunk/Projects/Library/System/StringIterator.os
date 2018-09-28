@@ -110,7 +110,7 @@ public object StringIterator extends Iterator<string> {
 	/*
 	 * returns the value of the current iteration
 	 * equivalent to calling current()
-	 * throws OutOfBoundsException
+	 * throws NotInitializedException, OutOfBoundsException
 	 */
 	public string =operator(string) const throws {
 		return current();
