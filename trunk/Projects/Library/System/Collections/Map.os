@@ -6,11 +6,10 @@ import Iterator;
 import List;
 import Pair;
 
+// declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
 
 public object Map<K, V> implements ICollection {
-	private List<Object> mItems;		// a list of Pair<K, V>
-
 	public void Constructor() {
 		mItems = new List<Object>();
 	}
@@ -115,5 +114,7 @@ public object Map<K, V> implements ICollection {
 	public V operator[](K key) const {
 		return get(key);
 	}
+
+	private List<Object> mItems;		// a list of Pair<K, V>
 }
 

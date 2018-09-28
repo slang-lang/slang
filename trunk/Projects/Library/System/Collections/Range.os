@@ -3,6 +3,7 @@ import System.Exception;
 import ICollection;
 import IIterateable;
 
+// declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
 
 public object Range implements ICollection, IIterateable {
@@ -41,7 +42,6 @@ public object Range implements ICollection, IIterateable {
 	public int operator[](int index) const throws {
 		return at(index);
 	}
-
 
 	private int mEnd const;
 	private int mStart const;
