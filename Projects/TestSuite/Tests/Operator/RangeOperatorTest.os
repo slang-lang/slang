@@ -6,6 +6,7 @@ import System.Collections.Range;
 public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
+	//assert( TestCase3() );
 }
 
 private bool TestCase1() {
@@ -40,4 +41,21 @@ private bool TestCase2() {
 
 	return (2..8).size() == 7;
 }
+
+/*
+private bool TestCase3() {
+	print("TestCase 3: range with variables");
+
+	int x = 1;
+	int y = 10;
+
+	foreach ( int idx : x..y ) {
+		print("idx = " + idx);
+
+		count++;
+	}
+
+	return count == 10;
+}
+*/
 
