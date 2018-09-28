@@ -2,12 +2,10 @@
 import ICollection;
 import System.Exception;
 
+// declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
 
 public object Iterator<T> {
-	private ICollection mCollection;
-	private int mCurrentIndex;
-
 	public void Constructor(ICollection collection ref) {
 		mCollection = collection;
 
@@ -54,12 +52,12 @@ public object Iterator<T> {
 	public T operator++() modify throws {
 		return next();	
 	}
+
+	private ICollection mCollection;
+	private int mCurrentIndex;
 }
 
 public object ReverseIterator<T> {
-	private ICollection mCollection;
-	private int mCurrentIndex;
-
 	public void Constructor(ICollection collection ref) {
 		mCollection = collection;
 
@@ -106,5 +104,8 @@ public object ReverseIterator<T> {
 	public T operator++() modify throws {
 		return next();		
 	}
+
+	private ICollection mCollection;
+	private int mCurrentIndex;
 }
 
