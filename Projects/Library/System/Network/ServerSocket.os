@@ -1,6 +1,6 @@
 
-import System.Network.Exception;
-import System.Network.Socket;
+import Exception;
+import Socket;
 
 public namespace System.Network { }
 

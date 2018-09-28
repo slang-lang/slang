@@ -5,8 +5,6 @@ import Exception;
 public namespace System { }
 
 public object Character {
-	private string mValue;
-
 	/*
 	 * Standard & default constructor
 	 */
@@ -81,6 +79,8 @@ public object Character {
 	public string =operator(string) const {
 		return mValue;
 	}
+
+	private string mValue;
 }
 
 public Character Character(string value) const {

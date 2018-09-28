@@ -130,9 +130,16 @@ public object String implements IIterateable {
 	}
 
 	/*
-	 * Splits the held string into strings by a given separator
+	 * Splits the held string into substrings using a single whitespace as separator
 	 */
-	public StringIterator Split(string separator = " ") const {
+	public StringIterator Split() const {
+		return new StringIterator(this, " ");
+	}
+
+	/*
+	 * Splits the held string into substrings using the given separator
+	 */
+	public StringIterator SplitBy(string separator) const {
 		return new StringIterator(this, separator);
 	}
 
@@ -172,7 +179,7 @@ public object String implements IIterateable {
 	}
 
 	/*
-	 * String value operator
+	 * string typecast operator
 	 */
 	public string =operator(string) const {
 		return mValue;
@@ -261,6 +268,9 @@ public object String implements IIterateable {
 	}
 }
 
+/*
+ * String cast constructor
+ */
 public String String(string value) const {
 	return new String(value);
 }

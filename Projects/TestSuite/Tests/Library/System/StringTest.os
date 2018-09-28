@@ -18,6 +18,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase13() );
 	assert( TestCase14() );
 	assert( TestCase15() );
+	assert( TestCase16() );
 }
 
 private bool TestCase1() const {
@@ -128,7 +129,6 @@ private bool TestCase10() const {
 		it.next();
 
 		print("it.current() = '" + it.current() + "'");
-
 	}
 
 	return true;
@@ -203,4 +203,23 @@ private bool TestCase15() const {
 
 	return true;
 }
+
+private bool TestCase16() const {
+	print("TestCase 10: String.SplitBy");
+
+	String str = new String("This is a string");
+
+	StringIterator it = str.SplitBy("i");
+	assert( it );
+
+	while ( it.hasNext() ) {
+		it.next();
+
+		print("it.current() = '" + it.current() + "'");
+
+	}
+
+	return true;
+}
+
 

@@ -7,12 +7,15 @@ public namespace System { }
 
 public object CharacterIterator extends Iterator<string> {
 	/*
-	 * Standard constructor
+	 * Standard string constructor
 	 */
 	public void Constructor(string value = "") {
 		reset(value);
 	}
 
+	/*
+	 * Standard String constructor
+	 */
 	public void Constructor(String value const) {
 		reset(string value);
 	}
@@ -26,7 +29,7 @@ public object CharacterIterator extends Iterator<string> {
 		if ( mCurrentIndex < 0 ) {
 			throw new NotInitializedException("iterator not initialized");
 		}
-		if ( mCurrentIndex > mLength ) {
+		if ( mCurrentIndex > mLength) {
 			throw new OutOfBoundsException("index(" + mCurrentIndex + ") out of bounds");
 		}
 
@@ -45,10 +48,7 @@ public object CharacterIterator extends Iterator<string> {
 	 * throws OutOfBoundsException
 	 */
 	public string lookAHead(int offset = 1) const throws {
-		if ( offset <= 0 ) {
-			throw new Exception("invalid look ahead offset(" + offset + ")");
-		}
-		if ( mCurrentIndex + offset >= mLength ) {
+		if ( mCurrentIndex + offset < 0 || mCurrentIndex + offset > mLength ) {
 			throw new OutOfBoundsException("index(" + mCurrentIndex + offset + ") out of bounds");
 		}
 
@@ -80,7 +80,7 @@ public object CharacterIterator extends Iterator<string> {
 	/*
 	 * returns the value of the current iteration
 	 * equivalent to calling current()
-	 * throws OutOfBoundsException
+	 * throws NotInitializedException, OutOfBoundsException
 	 */
 	public string =operator(string) const throws {
 		return current();
