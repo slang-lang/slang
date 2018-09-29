@@ -5,8 +5,7 @@
 
 public enum NodeType {
 	ExpressionNode = 1,
-	OperatorNode = 2,
-	StatementNode = 3;
+	StatementNode = 2;
 }
 
 public object Node {

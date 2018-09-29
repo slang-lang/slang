@@ -11,15 +11,17 @@ import Scanner;
 
 
 public object ParseException implements IException {
-	public void Constructor(string msg, int line = 0) {
+	public void Constructor(string msg, int line = 0, int column = 0) {
+		mColumn = column;
 		mLine = line;
 		mMessage = msg;
 	}
 
 	public string what() const {
-		return mMessage + " at Line " + mLine;
+		return mMessage + " at Line " + mLine + ", " + mColumn;
 	}
 
+	private int mColumn;
 	private int mLine;
 	private string mMessage;
 }
@@ -211,12 +213,18 @@ public object Parser {
 		return Statement new EndStatement();
 	}
 
-	private Statement parseFOR(CharacterIterator ci) throws {
+	private Statement parseFOR(CharacterIterator ci) modify throws {
 		if ( !ci.hasNext() ) {
 			throw new ParseException("incomplete FOR!", mCurrentLine);
 		}
 
-		VariableExpression varExp = new VariableExpression(parseWord(ci));
+		string variable = parseWord(ci);
+
+		if ( !mVariables.contains(variable) ) {
+			mVariables.insert(variable);
+		}
+
+		var varExp = new VariableExpression(variable);
 
 		skipWhitespaces(ci);
 
