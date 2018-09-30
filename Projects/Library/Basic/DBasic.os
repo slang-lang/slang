@@ -10,17 +10,23 @@ import System.StringIterator;
 // project imports
 import Debugger;
 import Interpreter;
-import Line;
-import Parser;
 
 
-// public variable
+// public consts
+public string APPNAME const = "ObjectiveScript BASIC Interpreter";
+public string VERSION const = "0.1.2";
+
+// public variables
 string filename;
 
 
 public int Main(int argc, string args) modify {
 	var params = new ParameterHandler(argc, args);
-	if ( params.size() > 1 ) {
+	if ( params.contains("version") ) {
+		print(APPNAME + " " + VERSION);
+		return 0;
+	}
+	else if ( params.size() > 1 ) {
 		// set filename if any params are set
 		filename = string params.at(1);
 	}
@@ -86,8 +92,7 @@ void run(StringIterator it) modify {
 	}
 
 	try {
-		Parser parser = new Parser();
-		Debugger debugger = new Debugger(Object parser.parseFile(filename));
+		Debugger debugger = new Debugger(filename);
 
 		print("Started debug session...");
 		print("");
@@ -97,11 +102,11 @@ void run(StringIterator it) modify {
 		print("");
 		print("Debug session exited.");
 	}
-	catch ( string e ) {
-		print("Exception: " + e);
-	}
 	catch ( IException e ) {
 		print("Exception: " + e.what());
+	}
+	catch ( string e ) {
+		print("Exception: " + e);
 	}
 	catch {
 		print("Exception: caught unknown exception!");

@@ -3,16 +3,19 @@
 import System.Collections.Set;
 
 // project imports
+import Parser;
 import Interpreter;
 
 
 public object Debugger extends Interpreter {
 	private Set<int> mBreakpoints;
+	private Parser mParser;
 
-	public void Constructor(Object lines) {
-		base.Constructor(lines);
-
+	public void Constructor(string filename) {
 		mBreakpoints = new Set<int>();
+		mParser = new Parser();
+
+		base.Constructor(Object mParser.parseFile(filename));
 	}
 
 	private void addBreakpoint(int line) modify {
@@ -29,6 +32,25 @@ public object Debugger extends Interpreter {
 
 		addBreakpoint(int it.next());
 	}
+
+	private void executeCommand(string command) modify {
+		var ci = new CharacterIterator(command);
+
+		try {
+			var stmt = mParser.parseStatement(ci);
+			if ( stmt ) {
+				int newLine = process(stmt);
+
+				if ( newLine ) {
+					mCurrentLine = newLine;
+				}
+			}
+		}
+		catch ( IException e ) {
+			print(typeid(e) + ": " + e.what());
+		}
+	}
+
 	private void modifyVariable(StringIterator si) modify {
 		if ( !si.hasNext() ) {
 			print("invalid variable name provided!");
@@ -102,7 +124,9 @@ public object Debugger extends Interpreter {
 		while ( true ) {
 			write("debug> ");
 
-			var cmdIt = new StringIterator(cin());
+			string command = cin();
+
+			var cmdIt = new StringIterator(command);
 			if ( !cmdIt.hasNext() ) {
 				continue;
 			}
@@ -121,6 +145,7 @@ public object Debugger extends Interpreter {
 				case "n": { return -1; }
 				case "p": { printVariable(cmdIt); break; }
 				case "quit": { print("Aborting debug session..."); throw ControlFlow.Exit; }
+				default: { executeCommand(command); break; }
 			}
 		}
 
@@ -139,29 +164,31 @@ public object Debugger extends Interpreter {
 			throw new Exception("no valid lines to interpret!");
 		}
 
-		bool breakOnNextLine = breakOnFirstLine;
-		int lineNumber = 10;
-		Line line;
+		mForStack.clear();
+		mVariables.clear();
 
 		try {
-			while ( lineNumber > 0 ) {
-				line = mLines.get(lineNumber);
+			bool breakOnNextLine = breakOnFirstLine;
+			Line line;
 
-				if ( breakOnNextLine || mBreakpoints.contains(lineNumber) ) {
+			while ( mCurrentLine > 0 ) {
+				line = mLines.get(mCurrentLine);
+
+				if ( breakOnNextLine || mBreakpoints.contains(mCurrentLine) ) {
 					breakOnNextLine = false;
 
-					lineNumber = processBreakpoint(line);
+					mCurrentLine = processBreakpoint(line);
 
-					if ( lineNumber > 0 ) {
+					if ( mCurrentLine > 0 ) {
 						// jump to given line
 						continue;
 					}
-					else if ( lineNumber == -1 ) {
+					else if ( mCurrentLine == -1 ) {
 						breakOnNextLine = true;
 					}
 				}
 
-				lineNumber = process(line.mStatement) ?: line.nextLine();
+				mCurrentLine = process(line.mStatement) ?: line.nextLine();
 			}
 		}
 		catch ( ControlFlow e ) {

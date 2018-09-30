@@ -18,7 +18,7 @@ public object ParseException implements IException {
 	}
 
 	public string what() const {
-		return mMessage + " at Line " + mLine + ", " + mColumn;
+		return mMessage + mLine ? (" at Line " + mLine + ", " + mColumn) : "";
 	}
 
 	private int mColumn;
@@ -47,6 +47,8 @@ public object Parser {
 		WHITESPACES = new String(" ");
 
 		DELIMITERCHARS = new String( (string COMPARECHARS) + (string OPERATORCHARS) + (string WHITESPACES) );
+
+		mVariables = new Set<string>();
 	}
 
 	public Map<int, Line> parseFile(string filename) modify {
@@ -54,7 +56,7 @@ public object Parser {
 
 		// reset members
 		mCurrentLine = 0;
-		mVariables = new Set<string>();
+		mVariables.clear();
 
 		StringIterator it = scanner.getIterator();
 		Map<int, Line> lines = new Map<int, Line>();
@@ -79,10 +81,12 @@ public object Parser {
 			}
 		}
 
+		mCurrentLine = 0;
+
 		return lines;
 	}
 
-	private Line parseLine(string content) modify throws {
+	public Line parseLine(string content) modify throws {
 		if ( strpos(content, 0) == "#" ) {
 			return Line null;
 		}
@@ -126,7 +130,7 @@ public object Parser {
 		return new Line(int lineLabel, statement);
 	}
 
-	private Statement parseStatement(CharacterIterator ci) modify throws {
+	public Statement parseStatement(CharacterIterator ci) modify throws {
 		Statement result;
 
 		switch ( parseWord(ci) ) {
