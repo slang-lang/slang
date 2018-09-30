@@ -9,6 +9,10 @@ import System.StringIterator;
 
 
 public object Parameter {
+/*
+ * Public
+ */
+
 	public string FullValue;
 	public string Key;
 	public string Value;
@@ -35,7 +39,9 @@ public object Parameter {
 }
 
 public object ParameterHandler implements IIterateable {
-// Public interface
+/*
+ * Public
+ */
 
 	public void Constructor(int argc, string args, bool skipProgramName = false) {
 		mArgc = argc;
@@ -90,7 +96,9 @@ public object ParameterHandler implements IIterateable {
 		return mParameters.size();
 	}
 
-// Private
+/*
+ * Private
+ */
 
 	private void process() modify {
 		StringIterator it = new StringIterator(mArgs, LINEBREAK_UNIX);
