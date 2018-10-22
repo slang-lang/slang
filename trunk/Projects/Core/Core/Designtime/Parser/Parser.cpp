@@ -667,7 +667,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			hasDefaultValue = true;
 			++token;
 
-			value = parseValueInitialization(token);
+			value = parseValueInitialization(token, type.mName);
 
 			++token;
 		}
@@ -709,7 +709,7 @@ Common::TypeDeclaration Parser::parseTypeDeclaration(TokenIterator& token, IScop
 	return result;
 }
 
-Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
+Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, const std::string& type)
 {
 	Runtime::AtomicValue value;
 	std::string sign;
@@ -721,6 +721,9 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 
 	switch ( token->type() ) {
 		case Token::Type::CONST_BOOLEAN:
+			if ( type != _bool ) {
+				throw Exceptions::DesigntimeException("invalid default value type provided: " + type, token->position());
+			}
 			if ( !sign.empty() ) {
 				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
@@ -728,15 +731,27 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 			value = Utils::Tools::stringToBool(token->content());
 			break;
 		case Token::Type::CONST_DOUBLE:
+			if ( type != _double ) {
+				throw Exceptions::DesigntimeException("invalid default value type provided: " + type, token->position());
+			}
 			value = Utils::Tools::stringToDouble(sign + token->content());
 			break;
 		case Token::Type::CONST_FLOAT:
+			if ( type != _float ) {
+				throw Exceptions::DesigntimeException("invalid default value type provided: " + type, token->position());
+			}
 			value = Utils::Tools::stringToFloat(sign + token->content());
 			break;
 		case Token::Type::CONST_INTEGER:
+			if ( type != _int ) {
+				throw Exceptions::DesigntimeException("invalid default value type provided: " + type, token->position());
+			}
 			value = Utils::Tools::stringToInt(sign + token->content());
 			break;
 		case Token::Type::CONST_LITERAL:
+			if ( type != _string ) {
+				throw Exceptions::DesigntimeException("invalid default value type provided: " + type, token->position());
+			}
 			if ( !sign.empty() ) {
 				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
