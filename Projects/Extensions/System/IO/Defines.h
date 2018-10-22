@@ -4,11 +4,14 @@
 
 
 // Library includes
-#include <fcntl.h>
 #include <stdio.h>
 #ifdef __APPLE__
-#	include <unistd.h>
+//#	include <unistd.h>
+#	include <fcntl.h>
+#	include <sys/stat.h>
+#	include <sys/types.h>
 #elif defined _WIN32
+#	include <fcntl.h>
 #	include <sys/stat.h>
 #	include <sys/types.h>
 #	include <io.h>

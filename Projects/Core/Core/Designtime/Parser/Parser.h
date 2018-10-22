@@ -59,7 +59,7 @@ public:
 	static Mutability::E parseMutability(TokenIterator& token, Mutability::E defaultValue = Mutability::Modify);
 	static ParameterList parseParameters(TokenIterator &token, IScope* scope = 0);
 	static Common::TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope = 0);
-	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token);
+	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token, const std::string& type);
 	static Virtuality::E parseVirtuality(TokenIterator& token, Virtuality::E defaultValue = Virtuality::Virtual);
 	static Visibility::E parseVisibility(TokenIterator& token, Visibility::E defaultValue = Visibility::Private);
 };

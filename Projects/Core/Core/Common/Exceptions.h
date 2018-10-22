@@ -42,6 +42,7 @@ public:
 			mMessage += " in " + mPosition.toString();
 		}
 	}
+
 	virtual ~Exception() noexcept { }
 #endif
 

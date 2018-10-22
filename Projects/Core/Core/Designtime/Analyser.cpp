@@ -408,7 +408,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	if ( token->type() == Token::Type::ASSIGN ) {
 		++token;
 
-		value = Parser::parseValueInitialization(token);
+		value = Parser::parseValueInitialization(token, type.mName);
 
 		++token;
 	}
@@ -494,7 +494,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	TokenList tokens;
 	if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
 		if ( virtuality == Virtuality::Abstract ) {
-			throw Designtime::Exceptions::SyntaxError("interface methods are not allowed to be implemented", token->position());
+			throw Designtime::Exceptions::SyntaxError("abstract methods are not allowed to be implemented", token->position());
 		}
 
 		tokens = Parser::collectScopeTokens(token);
