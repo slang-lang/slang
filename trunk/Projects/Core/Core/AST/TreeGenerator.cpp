@@ -612,19 +612,16 @@ Node* TreeGenerator::processPostfixRangeOperator(TokenIterator& start, Node* bas
 	++start;
 
 	SymbolExpression* rangeExp = NULL;
-	IntegerLiteralExpression* lhs = dynamic_cast<IntegerLiteralExpression*>(baseExp);
-	IntegerLiteralExpression* rhs = NULL;
+	Expression* lhs = dynamic_cast<Expression*>(baseExp);
+	Expression* rhs = dynamic_cast<Expression*>(expression(start));
 
 	// validate left expression (has to be integer literal expression)
-	if ( !lhs ) {
+	if ( !lhs || lhs->getResultType() != _int ) {
 		throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on left side", start->position());
 	}
 
-	// collect right expression
-	rhs = dynamic_cast<IntegerLiteralExpression*>(expression(start));
-
 	// validate right expression (has to be integer literal expression)
-	if ( !rhs ) {
+	if ( !rhs || rhs->getResultType() != _int ) {
 		throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on right side", start->position());
 	}
 
