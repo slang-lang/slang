@@ -21,6 +21,10 @@ public object Queue<T> implements ICollection {
 		clear();
 	}
 
+	public T at(int index) const throws {
+		return mItems.at(index);
+	}
+
 	public void clear() modify {
 		mItems.clear();
 	}
@@ -57,10 +61,14 @@ public object Queue<T> implements ICollection {
 		return mItems.size();
 	}
 
+	public T operator[](int index) const throws {
+		return mItems.at(index);
+	}
+
 	private bool mIsObjectType;
 	private List<T> mItems;
 
-	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
+	private Iterator<T> __iterator;						// this is a hack to automatically initialize a generic type
 	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
 }
 

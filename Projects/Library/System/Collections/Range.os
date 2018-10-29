@@ -31,8 +31,20 @@ public object Range implements ICollection, IIterateable {
 		return mStart + index * mStep;
 	}
 
+	public int getEnd() const {
+		return mEnd;
+	}
+
 	public Iterator<int> getIterator() const {
 		return new Iterator<int>(ICollection this);
+	}
+
+	public int getStart() const {
+		return mStart;
+	}
+
+	public int getStep() const {
+		return mStep;
 	}
 
 	public int size() const {
