@@ -14,7 +14,7 @@ public void Main(int argc = 0, string args = "") {
 }
 
 private bool TestCase1() {
-	print("TestCase 1");
+	print("TestCase 1: basic range operator with literals");
 
 	int count = 0;
 	foreach ( int idx : 1..10 ) {
@@ -30,6 +30,9 @@ private bool TestCase2() {
 	print("TestCase 2");
 
 	try {
+		//print( (0..1)[0] );
+		//assert( (0..1)[0] == 0 );
+
 		print( (0..1).at(0) );
 		assert( (0..1).at(0) == 0 );
 
@@ -47,7 +50,7 @@ private bool TestCase2() {
 }
 
 private bool TestCase3() {
-	print("TestCase 3: range with <int variable>..<const int>");
+	print("TestCase 3: range with <int variable>..<int literal>");
 
 	int x = 1;
 
@@ -62,7 +65,7 @@ private bool TestCase3() {
 }
 
 private bool TestCase4() {
-	print("TestCase 4: range with <const int>..<int variable>");
+	print("TestCase 4: range with <int literal>..<int variable>");
 
 	int y = 10;
 
