@@ -72,7 +72,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		Designtime::BluePrintObject* generic = findBluePrintObject(constIt->mRunType);
 
 		if ( !generic ) {
-			throw Common::Exceptions::UnknownIdentifer(constIt->mRunType + " is unknown");
+			throw Common::Exceptions::UnknownIdentifier(constIt->mRunType + " is unknown");
 		}
 		if ( !constIt->mConstraint.empty() && generic->QualifiedTypename() != constIt->mConstraint && !generic->inheritsFrom(constIt->mConstraint) ) {
 			throw Common::Exceptions::TypeMismatch(constIt->mRunType + " is no or does not inherit from " + constIt->mConstraint);
@@ -535,7 +535,7 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 
 		Designtime::BluePrintObject* baseType = findBluePrintObject(member->QualifiedTypename());
 		if ( !baseType ) {
-			throw Common::Exceptions::UnknownIdentifer("unknown member type '" + member->QualifiedTypename() + "'!");
+			throw Common::Exceptions::UnknownIdentifier("unknown member type '" + member->QualifiedTypename() + "'!");
 		}
 		if ( !baseType->isPrototype() && member->isPrototype() ) {
 			throw Common::Exceptions::TypeMismatch("base type '" + baseType->QualifiedTypename() + "' is no prototype!");
@@ -563,7 +563,7 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 
 		Designtime::BluePrintObject* baseType = findBluePrintObject(method->QualifiedTypename());
 		if ( !baseType ) {
-			throw Common::Exceptions::UnknownIdentifer("unknown type '" + method->QualifiedTypename() + "'!");
+			throw Common::Exceptions::UnknownIdentifier("unknown type '" + method->QualifiedTypename() + "'!");
 		}
 		if ( !baseType->isPrototype() && method->isPrototype() ) {
 			throw Common::Exceptions::TypeMismatch("base type '" + baseType->QualifiedTypename() + "' is no prototype!");
@@ -724,7 +724,7 @@ void Repository::prepareType(const Common::TypeDeclaration& type)
 
 		if ( !blueprint ) {
 			// pure type not available
-			throw Common::Exceptions::UnknownIdentifer(resolvedType);
+			throw Common::Exceptions::UnknownIdentifier(resolvedType);
 		}
 
 		// build new prototype from pure type with constraints

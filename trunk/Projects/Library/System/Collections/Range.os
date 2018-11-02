@@ -7,20 +7,25 @@ import IIterateable;
 public namespace System.Collections { }
 
 public object Range implements ICollection, IIterateable {
-/*
-	public Range Create(int start, int end, int step = 1) static {
-		return new Range(start, end, step);
-	}
-*/
 
-	public void Constructor(int start, int end, int step = 1) throws {
-		if ( !step ) {
+	/*
+	 * Range factory method
+	 */
+	public Range Create(int _start, int _end, int _step = 1) static {
+		return new Range(_start, _end, _step);
+	}
+
+	/*
+	 * Default constructor
+	 */
+	public void Constructor(int _start, int _end, int _step = 1) throws {
+		if ( !_step ) {
 			throw new InvalidArgumentException("invalid step size provided!");
 		}
 
-		mEnd = end;
-		mStart = start;
-		mStep = step;
+		mEnd = _end;
+		mStart = _start;
+		mStep = _step;
 	}
 
 	public int at(int index) const throws {
@@ -45,6 +50,18 @@ public object Range implements ICollection, IIterateable {
 
 	public int getStep() const {
 		return mStep;
+	}
+
+	/*
+	 * returns a new Range object with given step size
+	 * throws Exception
+	 */
+	public Range step(int stepSize) throws {
+		if ( stepSize == 0 ) {
+			throw new Exception("invalid step size(" + stepSize + ") provided");
+		}
+
+		return new Range(mStart, mEnd, stepSize);
 	}
 
 	public int size() const {

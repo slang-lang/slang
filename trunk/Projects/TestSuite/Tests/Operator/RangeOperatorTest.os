@@ -10,7 +10,8 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase4() );
 	assert( TestCase5() );
 	assert( TestCase6() );
-	//assert( TestCase7() );	// functions are currently not supported
+	assert( TestCase7() );
+	assert( TestCase8() );
 }
 
 private bool TestCase1() {
@@ -111,12 +112,11 @@ private bool TestCase6() {
 	return count == 10;
 }
 
-/*
 private bool TestCase7() {
-	print("TestCase 7: range with function");
+	print("TestCase 7: range with functions");
 
 	int count = 0;
-	for ( int idx : get1() .. get10() ) {
+	foreach ( int idx : get1()..get10() ) {
 		print("idx = " + idx);
 
 		count++;
@@ -128,11 +128,22 @@ private bool TestCase7() {
 private int get1() { return 1; }
 private int get10() { return 10; }
 
-*/
+private bool TestCase8() {
+	print("TestCase 8: range with step");
+
+	int count = 0;
+	foreach ( int idx : (1..10).step(2) ) {
+		print("idx = " + idx);
+
+		count++;
+	}
+
+	return count == 5;
+}
 
 /*
-private bool TestCase8() {
-	print("TestCase 8: failing");
+private bool Failing1() {
+	print("Failing 1: invalid type");
 
 	int x = 1;
 	float y = 10.f;

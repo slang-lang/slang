@@ -158,7 +158,7 @@ void BluePrintObject::prepareParents(Repository* repository)
 		BluePrintObject* parent = repository->findBluePrintObject(it->typeDeclaration());
 
 		if ( !parent ) {
-			throw Common::Exceptions::UnknownIdentifer("Unknown parent identifier '" + it->typeDeclaration().mName + "'");
+			throw Common::Exceptions::UnknownIdentifier("Unknown parent identifier '" + it->typeDeclaration().mName + "'");
 		}
 
 		if ( !parent->isPrepared() ) {

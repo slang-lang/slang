@@ -1292,7 +1292,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 
 	Common::Method* method = dynamic_cast<Common::Method*>(resolveMethod(symbol, params, Visibility::Private));
 	if ( !method ) {
-		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token.position());
+		throw Common::Exceptions::UnknownIdentifier("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token.position());
 	}
 
 	// validate parameters
@@ -1323,18 +1323,18 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	}
 
 	// prevent calls to modifiable methods from const methods
-	if ( mMethod->isConstMethod() && mMethod->getEnclosingScope() == method->getEnclosingScope() && !method->isConstMethod() ) {
+	if ( mMethod->isConstMethod() && mMethod->getEnclosingScope() == method->getEnclosingScope() && !method->isConstMethod() && method->getMethodType() == Common::Method::MethodType::Function ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", token.position());
 	}
 
 	// prevent calls to modifiable method from const symbol (exception: constructors are allowed)
 	if ( symbol->isConst() && !method->isConstMethod() /*&& method->getMethodType() != MethodAttributes::MethodType::Constructor*/ ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed from within const symbol '" + symbol->toString() + "'", token.position());
+		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed from within const symbol '" + mMethod->getFullScopeName() + "'", token.position());
 	}
 
 	// prevent calls to non-static methods from static methods
-	if ( mMethod->isStatic() && !method->isStatic() ) {
-		throw Common::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + mMethod->ToString() + "\"", token.position());
+	if ( mMethod->isStatic() && !method->isStatic() && method->getMethodType() == Common::Method::MethodType::Function ) {
+		throw Common::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + mMethod->getFullScopeName() + "\"", token.position());
 	}
 
 	// evaluate language feature state of the called method
@@ -1379,14 +1379,14 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 			inner->mSymbolExpression->mSurroundingScope = mRepository->findBluePrintObject(type);
 
 			if ( !inner->mSymbolExpression->mSurroundingScope ) {
-				throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + type + "'", token->position());
+				throw Common::Exceptions::UnknownIdentifier("unknown identifier '" + type + "'", token->position());
 			}
 			break;
 		}
 	}
 
 	if ( !mRepository->findBluePrintObject(exp->getResultType()) ) {
-		throw Common::Exceptions::UnknownIdentifer(exp->getResultType(), token->position());
+		throw Common::Exceptions::UnknownIdentifier(exp->getResultType(), token->position());
 	}
 
 	return new NewExpression(type, process_method(exp, token));
@@ -1461,7 +1461,7 @@ Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpress
 
 	Designtime::BluePrintObject* obj = mRepository->findBluePrintObject(type);
 	if ( !obj ) {
-		throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + type + "'", token->position());
+		throw Common::Exceptions::UnknownIdentifier("unknown identifier '" + type + "'", token->position());
 	}
 
 	symbol->mSymbolExpression = new RuntimeSymbolExpression("operator[]", "", true, true, obj->isAtomicType());
@@ -1586,7 +1586,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(enumExp->getResultType());
 		if ( !blueprint ) {
 			// unknown result type of switch-expression
-			throw Common::Exceptions::UnknownIdentifer(enumExp->getResultType(), start.position());
+			throw Common::Exceptions::UnknownIdentifier(enumExp->getResultType(), start.position());
 		}
 
 		if ( blueprint->isEnumeration() && !defaultStatement ) {
@@ -1919,7 +1919,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(type);
 			if ( !blueprint ) {
-				throw Common::Exceptions::UnknownIdentifer("'" + type + "' not found", token->position());
+				throw Common::Exceptions::UnknownIdentifier("'" + type + "' not found", token->position());
 			}
 
 			PrototypeConstraints constraints;
