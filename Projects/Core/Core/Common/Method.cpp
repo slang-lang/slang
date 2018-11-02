@@ -286,7 +286,7 @@ bool Method::isSignatureValid(const ParameterList& params) const
 ParameterList Method::mergeParameters(const ParameterList& params) const
 {
 	if ( !isSignatureValid(params) ) {
-		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
+		throw Common::Exceptions::ParameterCountMismatch("incorrect number or type of parameters");
 	}
 
 	ParameterList result;

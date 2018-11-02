@@ -167,7 +167,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	if ( mIsAtomicType ) {	// hack to initialize atomic types
 		if ( !params.empty() ) {
 			if ( params.size() != 1 ) {
-				throw Common::Exceptions::ParameterCountMissmatch("atomic types only support one constructor parameter");
+				throw Common::Exceptions::ParameterCountMismatch("atomic types only support one constructor parameter");
 			}
 
 			setValue(params.front().value());
@@ -302,7 +302,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 {
 	Common::Method *method = dynamic_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
 	if ( !method ) {
-		throw Common::Exceptions::UnknownIdentifer("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
+		throw Common::Exceptions::UnknownIdentifier("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
 
 	return Controller::Instance().thread(0)->execute(mThis, method, params, result);
