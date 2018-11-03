@@ -308,7 +308,7 @@ void TreeInterpreter::evaluateScopeExpression(ScopeExpression* exp, Runtime::Obj
 
 	popScope();
 
-	*result = *static_cast<Runtime::Object*>(&right);
+	*result = right;
 }
 
 void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object* result)
