@@ -144,7 +144,9 @@ void Object::assignReference(const Reference& ref)
 		mThis = this;
 	}
 
-	Controller::Instance().memory()->remove(old);
+	if ( old.isValid() ) {
+		Controller::Instance().memory()->remove(old);
+	}
 }
 
 bool Object::CanExecuteDefaultConstructor() const
