@@ -198,61 +198,6 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	return controlflow;
 }
 
-void Object::copy(const Object& other)
-{
-	if ( this != &other ) {
-		mBluePrint = other.mBluePrint;
-		mFilename = other.mFilename;
-		mImplementationType = other.mImplementationType;
-		mInheritance = other.mInheritance;
-		mIsAtomicType = other.mIsAtomicType;
-		mFilename = other.mFilename;
-		mParent = other.mParent ? other.mParent : mParent;
-		mQualifiedOuterface = other.mQualifiedTypename;
-		mQualifiedTypename = other.mQualifiedTypename;
-		mScopeName = other.mScopeName;
-		mScopeType = other.mScopeType;
-		mTypename = other.mTypename;
-		mValue = other.mValue;
-
-		if ( mIsReference ) {
-			// this object has a reference to a third object
-			// we also have to copy this third object by creating a fourth
-
-			assert(!"not implemented");
-		}
-		else {
-			garbageCollector();
-
-			// register this
-			define(IDENTIFIER_THIS, this);
-
-			// register new members
-			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( it->first == IDENTIFIER_THIS || !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol) {
-					continue;
-				}
-
-				Object* source = dynamic_cast<Object*>(it->second);
-				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), PrototypeConstraints());
-				target->copy(*source);
-
-				defineMember(target->getName(), target);
-			}
-
-			// register new methods
-			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				// create new method and ...
-				Common::Method* method = new Common::Method(this, (*it)->getName(), (*it)->QualifiedTypename());
-				// ... copy its data from our template method
-				*method = *(*it);
-
-				defineMethod((*it)->getName(), method);
-			}
-		}
-	}
-}
-
 void Object::defineMember(const std::string& name, Symbol* symbol)
 {
 	MethodScope::define(name, symbol);
