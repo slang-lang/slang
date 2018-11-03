@@ -228,7 +228,7 @@ void TreeInterpreter::evaluateCopyExpression(CopyExpression* exp, Runtime::Objec
 
 	evaluate(exp->mExpression, &obj);
 
-	result->copy(obj);
+	*result = obj;
 }
 
 void TreeInterpreter::evaluateIsExpression(IsExpression* exp, Runtime::Object* result)
@@ -296,21 +296,6 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	}
 }
 
-void TreeInterpreter::evaluateScopeExpression(ScopeExpression* exp, Runtime::Object* result)
-{
-	Runtime::Object left;
-	evaluate(exp->mLHS, &left);
-
-	pushScope(&left);
-
-	Runtime::Object right;
-	evaluate(exp->mRHS, &right);
-
-	popScope();
-
-	*result = right;
-}
-
 void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object* result)
 {
 	MethodExpression* method = dynamic_cast<MethodExpression*>(exp->mExpression);
@@ -336,6 +321,21 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
+}
+
+void TreeInterpreter::evaluateScopeExpression(ScopeExpression* exp, Runtime::Object* result)
+{
+	Runtime::Object left;
+	evaluate(exp->mLHS, &left);
+
+	pushScope(&left);
+
+	Runtime::Object right;
+	evaluate(exp->mRHS, &right);
+
+	popScope();
+
+	*result = right;
 }
 
 void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::Object *result, IScope *scope)

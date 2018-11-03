@@ -47,7 +47,6 @@ public:
 public:
 	Object& operator= (const Object& other);
 	void assign(const Object& other);
-	void copy(const Object& other);
 
 public: // MethodScope overrides
 	void defineMember(const std::string& name, Symbol* symbol);

@@ -256,8 +256,6 @@ void LanguageTest::testConstCorrectness4()
 
 void LanguageTest::testCopy()
 {
-TSKIP("copy-expression not supported by now");
-
 	try {
 		VirtualMachine vm;
 		vm.runScriptFromFile("Tests/Language/CopyTest.os");

@@ -242,11 +242,11 @@ public:
 class CopyExpression : public Expression
 {
 public:
-	explicit CopyExpression(Node* exp)
+	explicit CopyExpression(const std::string& type, Node* exp)
 	: Expression(ExpressionType::CopyExpression),
 	  mExpression(exp)
 	{
-		mResultType = static_cast<Expression*>(exp)->getResultType();
+		mResultType = type;
 	}
 	~CopyExpression() {
 		delete mExpression;

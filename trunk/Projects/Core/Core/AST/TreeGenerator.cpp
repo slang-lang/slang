@@ -370,7 +370,7 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 
 Node* TreeGenerator::parseFactor(TokenIterator &start)
 {
-	Node* factor = parseInfixPostfix(start);
+	Node* factor = parseInfix(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -381,7 +381,7 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 		}
 
 		Token operation = (*start);
-		Node* right = parseInfixPostfix(++start);
+		Node* right = parseInfix(++start);
 		std::string type = resolveType(factor, operation, right);
 
 		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(factor);
@@ -412,9 +412,9 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 	}
 }
 
-Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
+Node* TreeGenerator::parseInfix(TokenIterator &start)
 {
-	Node* infixPostfix = 0;
+	Node* infix = 0;
 	Token::Type::E op = start->type();
 
 	// infix
@@ -423,63 +423,68 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		case Token::Type::MATH_SUBTRACT: {		// infix +/- operators
 			Token operation = (*start);
 
-			infixPostfix = new UnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::RValue);
+			infix = new UnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::RValue);
 		} break;
 		case Token::Type::OPERATOR_NOT: {		// infix ! operator
 			Token operation = (*start);
 
-			infixPostfix = new BooleanUnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::RValue);
+			infix = new BooleanUnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::RValue);
 		} break;
 		default: {								// default term parsing
-			infixPostfix = parseTerm(start);
+			infix = parseTerm(start);
 		} break;
 	}
 
-	op = start->type();
+	return parsePostfix(start, infix);
+}
 
-	// postfix (single repeat)
-	if ( op == Token::Type::OPERATOR_IS ) {		// postfix is operator
-		infixPostfix = processIsOperator(start, infixPostfix);
-	}
-	else if ( op == Token::Type::OPERATOR_RANGE ) {		// postfix .. operator
-		infixPostfix = processPostfixRangeOperator(start, infixPostfix);
-	}
-	else if ( op == Token::Type::QUESTION_MARK ) {		// postfix ternary ? operator
-		infixPostfix = processTernaryOperator(start, infixPostfix);
-	}
-	else if ( op == Token::Type::OPERATOR_NOT ) {		// postfix ! operator
-		infixPostfix = processPostfixNotOperator(start, infixPostfix);
-	}
-	else {
-		// postfix (multiple repeat)
-		for ( ; ; ) {
-			Token::Type::E op = start->type();
-			if ( op != Token::Type::BRACKET_OPEN &&
-				 op != Token::Type::BRACKET_OPEN &&
-				 op != Token::Type::OPERATOR_DECREMENT &&
-				 op != Token::Type::OPERATOR_INCREMENT &&
-				 op != Token::Type::OPERATOR_SCOPE ) {
-				return infixPostfix;
+Node* TreeGenerator::parsePostfix(TokenIterator& start, Node* baseExp)
+{
+	Token::Type::E op = start->type();
+
+	switch ( op ) {
+		case Token::Type::OPERATOR_IS:			// postfix is operator
+			baseExp = processIsOperator(start, baseExp);
+			break;
+		case Token::Type::OPERATOR_RANGE:		// postfix .. operator
+			baseExp = processPostfixRangeOperator(start, baseExp);
+			break;
+		case Token::Type::QUESTION_MARK:		// postfix ternary ? operator
+			baseExp = processTernaryOperator(start, baseExp);
+			break;
+		case Token::Type::OPERATOR_NOT:		// postfix ! operator
+			baseExp = processPostfixNotOperator(start, baseExp);
+			break;
+		default:
+			// postfix (multiple repeat)
+			for ( ; ; ) {
+				op = start->type();
+				if ( op != Token::Type::BRACKET_OPEN &&
+					 op != Token::Type::OPERATOR_DECREMENT &&
+					 op != Token::Type::OPERATOR_INCREMENT &&
+					 op != Token::Type::OPERATOR_SCOPE ) {
+					return baseExp;
+				}
+
+				switch ( op ) {
+					case Token::Type::BRACKET_OPEN: {
+						baseExp = processPostfixSubscriptOperator(start, baseExp);
+					} break;
+					case Token::Type::OPERATOR_DECREMENT:
+					case Token::Type::OPERATOR_INCREMENT: {	// postfix --/++ operators for rvalue
+						baseExp = processPostfixIncDecOperator(start, baseExp);
+					} break;
+					case Token::Type::OPERATOR_SCOPE: {
+						baseExp = processPostfixScopeOperator(start, baseExp);
+					} break;
+					default: {
+					} break;
+				}
 			}
-
-			switch ( op ) {
-				case Token::Type::BRACKET_OPEN: {
-					infixPostfix = processPostfixSubscriptOperator(start, infixPostfix);
-				} break;
-				case Token::Type::OPERATOR_DECREMENT:
-				case Token::Type::OPERATOR_INCREMENT: {	// postfix --/++ operators for rvalue
-					infixPostfix = processPostfixIncDecOperator(start, infixPostfix);
-				} break;
-				case Token::Type::OPERATOR_SCOPE: {
-					infixPostfix = processPostfixScopeOperator(start, infixPostfix);
-				} break;
-				default: {
-				} break;
-			}
-		}
+			break;
 	}
 
-	return infixPostfix;
+	return baseExp;
 }
 
 Node* TreeGenerator::parseTerm(TokenIterator& start)
@@ -841,11 +846,45 @@ Statement* TreeGenerator::process_continue(TokenIterator& token)
 
 /*
  * syntax:
- * copy <expression>;
+ * copy <expression>[;]
  */
 Expression* TreeGenerator::process_copy(TokenIterator& token)
 {
-	return new CopyExpression(expression(token));
+	TokenIterator start = token;
+
+	RuntimeSymbolExpression* exp = dynamic_cast<RuntimeSymbolExpression*>(expression(token));
+	if ( !exp ) {
+		throw Common::Exceptions::InvalidSymbol("invalid runtime symbol detected", start->position());
+	}
+
+	std::string type;
+
+	SymbolExpression* inner = exp;
+	for ( ; ; ) {
+		if ( inner->mSymbolExpression ) {
+			inner = inner->mSymbolExpression;
+		}
+		else {
+			type = exp->getResultType();
+
+			Designtime::BluePrintObject* obj = mRepository->findBluePrintObject(type);
+			if ( !obj ) {
+				throw Common::Exceptions::UnknownIdentifier("unknown identifier '" + type + "'", token->position());
+			}
+
+			inner->mSymbolExpression = new RuntimeSymbolExpression("Copy", type, true, true, obj->isAtomicType());
+			inner->mSymbolExpression->mSurroundingScope = obj;
+
+			if ( !inner->mSymbolExpression->mSurroundingScope ) {
+				throw Common::Exceptions::UnknownIdentifier("unknown identifier '" + type + "'", token->position());
+			}
+			break;
+		}
+	}
+
+	ExpressionList params;
+
+	return new CopyExpression(exp->getResultType(), process_method(exp, (*token), params));
 }
 
 /*
@@ -1076,7 +1115,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 		}
 
 		node = new TypecastExpression(type, expression(token));					// this processes all following expressions before casting
-		//node = new TypecastExpression(type, parseInfixPostfix(token));		// this casts first and does not combine the subsequent expressions with this one
+		//node = new TypecastExpression(type, parseInfix(token));		// this casts first and does not combine the subsequent expressions with this one
 
 		// delete resolved symbol expression as it is not needed any more
 		delete symbol;
