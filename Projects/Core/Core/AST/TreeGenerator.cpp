@@ -442,7 +442,7 @@ Node* TreeGenerator::parsePostfix(TokenIterator& start, Node* baseExp)
 {
 	Token::Type::E op = start->type();
 
-	switch ( op ) {
+	switch ( op ) {		// postfix (single repeat)
 		case Token::Type::OPERATOR_IS:			// postfix is operator
 			baseExp = processIsOperator(start, baseExp);
 			break;
@@ -452,9 +452,6 @@ Node* TreeGenerator::parsePostfix(TokenIterator& start, Node* baseExp)
 		case Token::Type::QUESTION_MARK:		// postfix ternary ? operator
 			baseExp = processTernaryOperator(start, baseExp);
 			break;
-		case Token::Type::OPERATOR_NOT:		// postfix ! operator
-			baseExp = processPostfixNotOperator(start, baseExp);
-			break;
 		default:
 			// postfix (multiple repeat)
 			for ( ; ; ) {
@@ -462,23 +459,27 @@ Node* TreeGenerator::parsePostfix(TokenIterator& start, Node* baseExp)
 				if ( op != Token::Type::BRACKET_OPEN &&
 					 op != Token::Type::OPERATOR_DECREMENT &&
 					 op != Token::Type::OPERATOR_INCREMENT &&
+					 op != Token::Type::OPERATOR_NOT &&
 					 op != Token::Type::OPERATOR_SCOPE ) {
 					return baseExp;
 				}
 
 				switch ( op ) {
-					case Token::Type::BRACKET_OPEN: {
+					case Token::Type::BRACKET_OPEN:
 						baseExp = processPostfixSubscriptOperator(start, baseExp);
-					} break;
+						break;
 					case Token::Type::OPERATOR_DECREMENT:
-					case Token::Type::OPERATOR_INCREMENT: {	// postfix --/++ operators for rvalue
+					case Token::Type::OPERATOR_INCREMENT:	// postfix --/++ operators for rvalue
 						baseExp = processPostfixIncDecOperator(start, baseExp);
-					} break;
-					case Token::Type::OPERATOR_SCOPE: {
+						break;
+					case Token::Type::OPERATOR_NOT:	// postfix ! operator
+						baseExp = processPostfixNotOperator(start, baseExp);
+						break;
+					case Token::Type::OPERATOR_SCOPE:
 						baseExp = processPostfixScopeOperator(start, baseExp);
-					} break;
-					default: {
-					} break;
+						break;
+					default:
+						break;
 				}
 			}
 			break;
@@ -593,23 +594,27 @@ Node* TreeGenerator::processPostfixIncDecOperator(TokenIterator& start, Node* ba
 	Token operation = (*start);
 	++start;
 
-	Node* infixPostfix = new UnaryExpression(operation, baseExp, UnaryExpression::ValueType::RValue);
+	Node* postfix = new UnaryExpression(operation, baseExp, UnaryExpression::ValueType::RValue);
 
 /*
-	Expression* baseExp = dynamic_cast<Expression*>(infixPostfix);
+	Expression* baseExp = dynamic_cast<Expression*>(postfix);
 	if ( !baseExp ) {
 		throw Designtime::Exceptions::SyntaxError("invalid expression type detected!", start->position());
 	}
 
-	infixPostfix = process_incdecrement(start, baseExp);
+	postfix = process_incdecrement(start, baseExp);
 */
 
-	return infixPostfix;
+	return postfix;
 }
 
-Node* TreeGenerator::processPostfixNotOperator(TokenIterator& start, Node* /*baseExp*/)
+Node* TreeGenerator::processPostfixNotOperator(TokenIterator& start, Node* baseExp)
 {
-	throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
+	//throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
+
+	++start;
+
+	return new UnaryExpression(Token::Type::OPERATOR_VALIDATE, baseExp, UnaryExpression::ValueType::RValue);
 }
 
 Node* TreeGenerator::processPostfixRangeOperator(TokenIterator& start, Node* baseExp)
