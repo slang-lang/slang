@@ -6,6 +6,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
+	assert( TestCase4() );
 }
 
 private bool TestCase1() {
@@ -13,6 +14,7 @@ private bool TestCase1() {
 
 	Character c = new Character("this should only hold the first character");
 	print("c = " + string c);
+	assert( c == "t" );
 
 	return strlen(string c) == 1;
 }
@@ -41,6 +43,24 @@ private bool TestCase3() {
 
 	print("c == new Character(\"b\"): " + (c == new Character("b")));
 	assert( c == new Character("b") );
+
+	return true;
+}
+
+private bool TestCase4() {
+	print("TestCase 4: conversion to int");
+
+	var c = new Character("1");
+
+	print("c = " + int c);
+	assert( 1 == int c );
+
+/* this currently fails
+	var d = new Character("a");
+
+	print("d = " + int d);
+	assert( 97 == int d );
+*/
 
 	return true;
 }
