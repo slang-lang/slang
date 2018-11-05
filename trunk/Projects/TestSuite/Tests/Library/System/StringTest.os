@@ -44,7 +44,7 @@ private bool TestCase3() const {
 	print("TestCase 3: String.ToLowerCase");
 
 	String str = new String("This is a string");
-	print("str.ToLowerCase() = " + (str.ToLowerCase() == "this is a string"));
+	print("str.ToLowerCase() = " + str.ToLowerCase());
 
 	return str.ToLowerCase() == "this is a string";
 }
@@ -53,7 +53,7 @@ private bool TestCase4() const {
 	print("TestCase 4: String.ToUpperCase");
 
 	String str = new String("This is a string");
-	print("str.ToUpperCase() = " + (str.ToUpperCase() == "THIS IS A STRING"));
+	print("str.ToUpperCase() = " + str.ToUpperCase());
 
 	return str.ToUpperCase() == "THIS IS A STRING";
 }
