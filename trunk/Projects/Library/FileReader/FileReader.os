@@ -11,6 +11,7 @@ import Scanner;
 public void Main(int argc, string args) {
 	if ( argc < 2 ) {
 		print("usage: program [arg1 [arg2 [...] ] ]");
+		print("");
 		return;
 	}
 
