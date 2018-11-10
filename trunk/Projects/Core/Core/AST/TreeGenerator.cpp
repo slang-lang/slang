@@ -2016,6 +2016,10 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 		else if ( name == IDENTIFIER_THIS ) {
 			visibility = Visibility::Private;		// this allows us full access to our owners class' members/methods
 		}
+		else if ( mThis && dynamic_cast<Runtime::Object*>(result)
+			   && mThis == dynamic_cast<Runtime::Object*>(result)->getBluePrint() ) {
+			visibility = Visibility::Private;		// this allows us full access to our owners class' members/methods
+		}
 
 		symbol->mSymbolExpression = resolve(++token, scope, true, visibility);
 
