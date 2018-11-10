@@ -45,6 +45,10 @@ public object Iterator<T> {
 		mCurrentIndex = -1;
 	}
 
+	public bool operator==(Iterator<T> other const) const {
+		return mCurrentIndex == other.mCurrentIndex;
+	}
+
 	public T =operator(T) const throws {
 		return current();
 	}
@@ -95,6 +99,10 @@ public object ReverseIterator<T> {
 
 	public void reset() modify {
 		mCurrentIndex = mCollection.size();
+	}
+
+	public bool operator==(ReverseIterator<T> other const) const {
+		return mCurrentIndex == other.mCurrentIndex;
 	}
 
 	public T =operator(T) const throws {
