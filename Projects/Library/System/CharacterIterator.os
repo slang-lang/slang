@@ -21,6 +21,13 @@ public object CharacterIterator extends Iterator<string> {
 	}
 
 	/*
+	 * Copy operator
+	 */
+	public CharacterIterator Copy() const {
+		return new CharacterIterator(mValue);
+	}
+
+	/*
 	 * returns the value of the current iteration
 	 * throws NotInitializedException
 	 * throws OutOfBoundsException
@@ -87,6 +94,13 @@ public object CharacterIterator extends Iterator<string> {
 	}
 
 	/*
+	 * Equality operator
+	 */
+	public bool operator==(CharacterIterator other const) const {
+		return mValue == other.mValue && mCurrentIndex == other.mCurrentIndex;
+	}
+
+	/*
 	 * returns the next character of the held string value
 	 * equivalent to calling next()
 	 * throws OutOfBoundsException
@@ -96,7 +110,7 @@ public object CharacterIterator extends Iterator<string> {
 	}
 
 	private int mCurrentIndex;
-	private int mLength;
-	private string mValue;
+	private int mLength const;
+	private string mValue const;
 }
 

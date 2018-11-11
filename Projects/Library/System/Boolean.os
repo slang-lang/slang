@@ -3,8 +3,6 @@
 public namespace System { }
 
 public object Boolean {
-	private bool mValue;
-
 	/*
 	 * Default constructor 
 	 */
@@ -16,7 +14,14 @@ public object Boolean {
 	 * Copy constructor
 	 */
 	public void Constructor(Boolean value ref) {
-		mValue = bool value;
+		mValue = value.mValue;
+	}
+
+	/*
+	 * Copy operator
+	 */
+	public Boolean Copy() const {
+		return new Boolean(mValue);
 	}
 
 	public bool operator!() const {
@@ -27,7 +32,7 @@ public object Boolean {
 		return mValue == other;
 	}
 	public bool operator==(Boolean other ref) const {
-		return mValue == bool other;
+		return mValue == other.mValue;
 	}
 
 	public Boolean operator=(bool other val) modify {
@@ -36,7 +41,7 @@ public object Boolean {
 		return this;
 	}
 	public Boolean operator=(Boolean other ref) modify {
-		mValue = bool other;
+		mValue = other.mValue;
 
 		return this;
 	}
@@ -44,16 +49,18 @@ public object Boolean {
 	/*
 	 * bool-value operator
 	 */
-	public bool =operator(bool none val) const {
+	public bool =operator(bool) const {
 		return mValue;
 	}
 
 	/*
 	 * string-value operator
 	 */
-	public string =operator(string none val) const {
+	public string =operator(string) const {
 		return string mValue;
 	}
+
+	private bool mValue;
 }
 
 public Boolean Boolean(bool value) const {
