@@ -26,10 +26,12 @@ private bool TestCase1() modify {
 	assert(obj2);
 
 	print("obj1.mValue = " + obj1.mValue + " vs obj2.mValue = " + obj2.mValue);
+	assert( obj1.mValue == obj2.mValue );
 
 	obj2.mValue = 1389;
 
 	print("obj1.mValue = " + obj1.mValue + " vs obj2.mValue = " + obj2.mValue);
+	assert( obj1.mValue != obj2.mValue );
 
 	return obj1.mValue != obj2.mValue;
 }

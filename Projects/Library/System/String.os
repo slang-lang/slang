@@ -27,6 +27,20 @@ public object String implements IIterateable {
 	}
 
 	/*
+	 * Destructor
+	 */
+	public void Destructor() {
+		// this is empty by intend
+	}
+
+	/*
+	 * Copy operator
+	 */
+	public String Copy() {
+		return new String(mValue);
+	}
+
+	/*
 	 * Returns the character at the given position
 	 */
 	public string CharAt(int index) const throws {
@@ -196,14 +210,14 @@ public object String implements IIterateable {
 	 * string compare operator
 	 */
 	public bool operator==(string other val) const {
-		return (mValue == other);
+		return mValue == other;
 	}
 
 	/*
 	 * String compare operator
 	 */
 	public bool operator==(String other const ref) const {
-		return operator==(string other);
+		return mValue == other.mValue;
 	}
 
 	/*
@@ -228,10 +242,6 @@ public object String implements IIterateable {
 	 * string concatenation operator
 	 */
 	public String operator+(string other val) modify {
-		// update members
-		mSize += strlen(other);
-		mValue += other;
-
 		return new String(mValue + other);
 	}
 
@@ -239,7 +249,7 @@ public object String implements IIterateable {
 	 * String concatenation operator
 	 */
 	public String operator+(String other const ref) modify {
-		return operator+(string other);
+		return new String(mValue + other.mValue);
 	}
 
 	/*
@@ -253,7 +263,7 @@ public object String implements IIterateable {
 	 * String less compare operator
 	 */
 	public bool operator<(String other const ref) const {
-		return operator<(string other);
+		return mValue < other.mValue;
 	}
 
 	/*
