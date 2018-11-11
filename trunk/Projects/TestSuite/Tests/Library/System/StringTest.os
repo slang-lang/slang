@@ -19,6 +19,8 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase14() );
 	assert( TestCase15() );
 	assert( TestCase16() );
+	assert( TestCase17() );
+	assert( TestCase18() );
 }
 
 private bool TestCase1() const {
@@ -150,7 +152,6 @@ private bool TestCase11() const {
 	count = 0;
 	write("'");
 	foreach ( string c : str ) {
-		//print("str[" + count + "] = '" + c + "'");
 		write(c);
 
 		count++;
@@ -205,7 +206,7 @@ private bool TestCase15() const {
 }
 
 private bool TestCase16() const {
-	print("TestCase 10: String.SplitBy");
+	print("TestCase 16: String.SplitBy");
 
 	String str = new String("This is a string");
 
@@ -222,4 +223,29 @@ private bool TestCase16() const {
 	return true;
 }
 
+private bool TestCase17() const {
+	print("TestCase 17: operator+");
+
+	String str1 = new String("This is a string");
+	String str2 = new String("This is another string");
+
+	print("str1 + str2 = " + string str1 + str2);
+	assert( str1 == "This is a string" );
+	assert( str2 == "This is another string" );
+
+	return true;
+}
+
+private bool TestCase18() const {
+	print("TestCase 18: operator+=");
+
+	String str = new String("This is a string");
+
+	str += " and another";
+	print("str = " + string str);
+
+	assert( str == "This is a string and another" );
+
+	return true;
+}
 
