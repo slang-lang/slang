@@ -26,6 +26,13 @@ public object StringIterator extends Iterator<string> {
 	}
 
 	/*
+	 * Copy operator
+	 */
+	public StringIterator Copy() const {
+		return new StringIterator(mValue, mSeparator);
+	}
+
+	/*
 	 * returns the value of the current iteration
 	 * throws NotInitializedException
 	 * throws OutOfBoundsException
@@ -114,6 +121,13 @@ public object StringIterator extends Iterator<string> {
 	 */
 	public string =operator(string) const throws {
 		return current();
+	}
+
+	/*
+	 * Equality operator
+	 */
+	public bool operator==(StringIterator other const) const {
+		return mValue == other.mValue && mCurrentPosition == other.mCurrentPosition;
 	}
 
 	/*

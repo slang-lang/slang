@@ -3,8 +3,6 @@
 public namespace System { }
 
 public object Double {
-	private double mValue;
-
 	/*
 	 * Default constructor
 	 */
@@ -19,6 +17,13 @@ public object Double {
 		mValue = double value;
 	}
 
+	/*
+	 * Copy operator
+	 */
+	public Double Copy() const {
+		return new Double(mValue);
+	}
+
 	public bool operator!() const {
 		return !mValue;
 	}
@@ -27,7 +32,7 @@ public object Double {
 		return mValue == other;
 	}
 	public bool operator==(Double other ref) const {
-		return mValue == double other;
+		return mValue == other.mValue;
 	}
 
 	public Double operator=(double other val) modify {
@@ -36,61 +41,47 @@ public object Double {
 		return this;
 	}
 	public Double operator=(Double other ref) modify {
-		mValue = double other;
+		mValue = other.mValue;
 
 		return this;
 	}
 
-	public bool =operator(bool other val) const {
+	public bool =operator(bool) const {
 		return bool mValue;
 	}
-	public double =operator(double other val) const {
+	public double =operator(double) const {
 		return mValue;
 	}
 
 	public Double operator+(double other val) modify {
-		mValue = mValue + other;
-
-		return this;
+		return new Double(mValue + other);
 	}
 	public Double operator+(Double other ref) modify {
-		mValue = mValue + double other;
-
-		return this;
+		return new Double(mValue + other.mValue);
 	}
 
 	public Double operator-(double other val) modify {
-		mValue = mValue - other;
-
-		return this;
+		return new Double(mValue - other);
 	}
 	public Double operator-(Double other ref) modify {
-		mValue = mValue - double other;
-
-		return this;
+		return new Double(mValue - other.mValue);
 	}
 
 	public Double operator*(double other val) modify {
-		mValue = mValue * other;
-
-		return this;
+		return new Double(mValue * other);
 	}
 	public Double operator*(Double other ref) modify {
-		mValue = mValue * double other;
-
-		return this;
+		return new Double(mValue * other.mValue);
 	}
 
 	public Double operator/(double other val) modify {
-		mValue = mValue / other;
-
-		return this;
+		return new Double(mValue / other);
 	}
 	public Double operator/(Double other ref) modify {
-		mValue = mValue / double other;
-
-		return this;
+		return new Double(mValue / other.mValue);
 	}
+
+	private double mValue;
 }
 
 public Double Double(double value) const {

@@ -18,6 +18,13 @@ public object Character {
 	}
 
 	/*
+	 * Copy operator
+	 */
+	public Character Copy() const {
+		return new Character(mValue);
+	}
+
+	/*
 	 * Validation operator
 	 */
 	public bool operator!() const {
@@ -35,7 +42,7 @@ public object Character {
 	 * Character compare operator
 	 */
 	public bool operator==(Character other ref) const {
-		return operator==(string other);
+		return operator==(other.mValue);
 	}
 
 	/*
@@ -49,7 +56,7 @@ public object Character {
 	 * Character assignment operator
 	 */
 	public void operator=(Character other ref) modify {
-		operator=(string other);
+		operator=(other.mValue);
 	}
 
 	/*
@@ -63,7 +70,7 @@ public object Character {
 	 * Character less compare operator
 	 */
 	public bool operator<(Character other ref) const {
-		return operator<(string other);
+		return operator<(other.mValue);
 	}
 
 	/*

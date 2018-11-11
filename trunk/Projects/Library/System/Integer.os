@@ -26,6 +26,13 @@ public object Integer {
 		// this is empty by intend
 	}
 
+	/*
+	 * Copy operator
+	 */
+	public Integer Copy() const {
+		return new Integer(mValue);
+	}
+
 	public bool operator!() const {
 		return !mValue;
 	}
@@ -34,21 +41,21 @@ public object Integer {
 		return mValue == other;
 	}
 	public bool operator==(Integer other const ref) const {
-		return mValue == int other;
+		return mValue == other.mValue;
 	}
 
 	public bool operator<(int other) const {
 		return mValue < other;
 	}
 	public bool operator<(Integer other const ref) const {
-		return mValue < int other;
+		return mValue < other.mValue;
 	}
 
 	public bool operator>(int other val) const {
 		return mValue > other;
 	}
 	public bool operator>(Integer other const ref) const {
-		return mValue > int other;
+		return mValue > other.mValue;
 	}
 
 	/*
@@ -64,7 +71,7 @@ public object Integer {
 	 * Integer assignment operator
 	 */
 	public Integer operator=(Integer other const ref) modify {
-		mValue = int other;
+		mValue = other.mValue;
 
 		return this;
 	}
@@ -84,47 +91,31 @@ public object Integer {
 	}
 
 	public Integer operator+(int other val) modify {
-		mValue = mValue + other;
-
-		return this;
+		return new Integer(mValue + other);
 	}
 	public Integer operator+(Integer other const ref) modify {
-		mValue = mValue + int other;
-
-		return this;
+		return new Integer(mValue + other.mValue);
 	}
 
 	public Integer operator-(int other val) modify {
-		mValue = mValue - other;
-
-		return this;
+		return new Integer(mValue - other);
 	}
 	public Integer operator-(Integer other const ref) modify {
-		mValue = mValue - int other;
-
-		return this;
+		return new Integer(mValue - other.mValue);
 	}
 
 	public Integer operator*(int other val) modify {
-		mValue = mValue * other;
-
-		return this;
+		return new Integer(mValue * other);
 	}
 	public Integer operator*(Integer other const ref) modify {
-		mValue = mValue * int other;
-
-		return this;
+		return new Integer(mValue * other.mValue);
 	}
 
 	public Integer operator/(int other val) modify {
-		mValue = mValue / other;
-
-		return this;
+		return new Integer(mValue / other);
 	}
 	public Integer operator/(Integer other const ref) modify {
-		mValue = mValue / int other;
-
-		return this;
+		return new Integer(mValue / other.mValue);
 	}
 }
 
