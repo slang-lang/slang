@@ -8,13 +8,10 @@ import System.String;
 import System.StringIterator;
 
 // project imports
+import Consts;
 import Debugger;
 import Interpreter;
 
-
-// public consts
-public string APPNAME const = "ObjectiveScript BASIC Interpreter";
-public string VERSION const = "0.1.2";
 
 // public variables
 string filename;
