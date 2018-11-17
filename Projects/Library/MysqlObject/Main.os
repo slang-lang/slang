@@ -9,9 +9,6 @@ import Generator;
 import TableLookup;
 
 
-int DBHandle = 0;
-
-
 int connect() modify throws {
 	int handle = mysql_init();
 	handle = mysql_real_connect(handle, Host, Port, User, Password, Database);
@@ -27,9 +24,8 @@ void disconnect(int handle) modify {
 	mysql_close(handle);
 }
 
-void generateTable(string tableName) const {
-	Generator generator = new Generator(DBHandle);
-
+void generateTable(int dbHandle, string tableName) const {
+	var generator = new Generator(dbHandle);
 	var table = generator.generate(tableName);
 
 	string tableData = LINEBREAK;
@@ -46,14 +42,14 @@ void generateTable(string tableName) const {
 
 public void Main(int argc, string args) modify throws {
 	try {
-		DBHandle = connect();
+		int DBHandle = connect();
 
 		var lookup = new TableLookup(DBHandle);
 		var tables = lookup.getTables(Database);
 
 		int count;
 		foreach ( string tableName : tables ) {
-			generateTable(tableName);
+			generateTable(DBHandle, tableName);
 
 			count++;
 		}
