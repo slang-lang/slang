@@ -10,7 +10,7 @@ import Line;
 import Scanner;
 
 
-public object ParseException implements IException {
+public object ParseException const implements IException {
 	public void Constructor(string msg, int line = 0, int column = 0) {
 		mColumn = column;
 		mLine = line;
@@ -21,9 +21,9 @@ public object ParseException implements IException {
 		return mMessage + mLine ? (" at Line " + mLine + ", " + mColumn) : "";
 	}
 
-	private int mColumn;
-	private int mLine;
-	private string mMessage;
+	private int mColumn const;
+	private int mLine const;
+	private string mMessage const;
 }
 
 public object Parser {
