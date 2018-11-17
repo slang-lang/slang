@@ -101,7 +101,7 @@ public object ParameterHandler implements IIterateable {
  */
 
 	private void process() modify {
-		StringIterator it = new StringIterator(mArgs, LINEBREAK_UNIX);
+		StringIterator it = new StringIterator(mArgs, LINEBREAK);
 
 		while ( it.hasNext() ) {
 			string current = it.next();

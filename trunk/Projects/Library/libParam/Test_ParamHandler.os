@@ -12,7 +12,7 @@ bool TestCase1() {
 
 	try {
 		int argc = 2;
-		string args = "./Test_ParameterHandler.os" + ascii(10) + "this is a parameter";
+		string args = "./Test_ParameterHandler.os" + LINEBREAK + "this is a parameter";
 
 		var params = new ParameterHandler(argc, args);
 
@@ -33,7 +33,7 @@ bool TestCase2() {
 	print("TestCase 2");
 
 	int argc = 3;
-	string args = "--one=true" + ascii(10) + "--two" + ascii(10) + "--three=";
+	string args = "--one=true" + LINEBREAK + "--two" + LINEBREAK + "--three=";
 
 	var params = new ParameterHandler(argc, args);
 
