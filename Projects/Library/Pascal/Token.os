@@ -18,10 +18,11 @@ public enum TokenType {
 	MINUS,
 	MULTIPLY,
 	PLUS,
+	PRINT,
+	PROGRAM,
 	RPAREN,
 	SEMICOLON,
 	STRING,
-	PROGRAM,
 	UNIT
 	;
 }
@@ -43,6 +44,7 @@ public string TokenToString(TokenType type val) {
 		case TokenType.RPAREN:		{ return ")"; break; }
 		case TokenType.SEMICOLON:	{ return "SEMICOLON"; break; }
 		case TokenType.STRING:		{ return "STRING"; break; }
+		case TokenType.PRINT:		{ return "PRINT"; break; }
 		case TokenType.PROGRAM:		{ return "PROGRAM"; break; }
 		case TokenType.UNIT:		{ return "UNIT"; break; }
 	}

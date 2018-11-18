@@ -10,7 +10,7 @@ import System.StringIterator;
 // project imports
 import Consts;
 //import Debugger;
-//import Interpreter;
+import Interpreter;
 import Parser;
 
 
@@ -28,12 +28,14 @@ public int Main(int argc, string args) modify {
 
 	try {
 		Parser parser = new Parser();
-		parser.parseFile(string params.at(1))
+		Statement program = parser.parseFile(string params.at(1))
 
-/*
-		Interpreter interpreter = new Interpreter(Object parser.parseFile(string params.at(1)));
+		print("");
+		print(program.toString());
+		print("");
+
+		Interpreter interpreter = new Interpreter(program);
 		return interpreter.run();
-*/
 	}
 	catch ( IException e ) {
 		print("Exception: " + e.what());

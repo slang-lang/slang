@@ -18,6 +18,7 @@ public object Tokenizer {
 		RESERVED_WORDS = new List<Token>();
 		RESERVED_WORDS.push_back(new Token(TokenType.BEGIN, "BEGIN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.PRINT, "PRINT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROGRAM, "PROGRAM", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.UNIT, "UNIT", Position null));
 
@@ -123,7 +124,7 @@ public object Tokenizer {
 					consume();			// consume '
 
 					string value;
-					while ( peek() != "\"" ) {
+					while ( peek() != "\'" ) {
 						value += consume();
 					}
 
@@ -182,9 +183,7 @@ public object Tokenizer {
 	}
 
 	private string peek(int pos = 1) const throws {
-		try {
-			return mCharIterator.lookAHead(pos);
-		}
+		try { return mCharIterator.lookAHead(pos); }
 
 		return "";
 	}
