@@ -1,0 +1,15 @@
+{
+  "name": "Pascale Interpreter",
+  "name_short": "Pascal",
+  "version": "0.0.1",
+  "description": "Pascal interpreter parses and interprets (=runs) .pas scripts.",
+  "dependencies": [
+    { "module": "libparam", "version_min": "0.1.0" },
+    { "module": "system", "version_min": "0.1.0" }
+  ],
+  "target": {
+    "directory": "Pascal",
+    "type": "internal",
+    "url": "Pascal_0.0.1.tar.gz"
+  }
+}
