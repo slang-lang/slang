@@ -6,7 +6,7 @@ import System.Exception;
 public namespace System.Collections { }
 
 public object Iterator<T> {
-	public void Constructor(ICollection collection ref) {
+	public void Constructor(ICollection collection ref const) {
 		mCollection = collection;
 
 		reset();
@@ -39,6 +39,10 @@ public object Iterator<T> {
 		mCurrentIndex++;
 
 		return T mCollection.at(mCurrentIndex);
+	}
+
+	public T peek(int position = 1) const throws {
+		return T mCollection.at(mCurrentIndex + position);
 	}
 
 	public void reset() modify {
@@ -95,6 +99,10 @@ public object ReverseIterator<T> {
 		mCurrentIndex--;
 
 		return T mCollection.at(mCurrentIndex);
+	}
+
+	public T peek(int position = 1) const throws {
+		return T mCollection.at(mCurrentIndex + position);
 	}
 
 	public void reset() modify {
