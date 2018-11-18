@@ -65,10 +65,10 @@ public object CompoundStatement extends Statement {
 		string result = "BEGIN ";
 
 		foreach ( Statement stmt : mStatements ) {
-			result += (stmt ? stmt.toString() : "") + ";";
+			result += LINEBREAK + (stmt ? stmt.toString() : "") + ";";
 		}
 
-		return result + " END";
+		return result + LINEBREAK + "END";
 	}
 }
 
@@ -128,8 +128,9 @@ public object MethodStatement extends Statement {
 
 	public string toString() const {
 		string result = mMethodName + "(";
-		foreach ( string p : mParameters )
+		foreach ( string p : mParameters ) {
 			result += p + " ";
+		}
  		result += ")";
 
 		return result;
@@ -151,34 +152,34 @@ public object PrintStatement extends Statement {
 }
 
 public object ProgramStatement extends Statement {
-	public string mProgramName;
+	public string mName;
 	public CompoundStatement mStatements;
 
 	public void Constructor(string programName, CompoundStatement statements) {
 		base.Constructor(StatementType.ProgramStatement);
 
-		mProgramName = programName;
+		mName = programName;
 		mStatements = statements;
 	}
 
 	public string toString() const {
-		return "PROGRAM " + mProgramName + ";" + (mStatements ? mStatements.toString() : "") + ".";
+		return "PROGRAM " + mName + ";" + LINEBREAK + (mStatements ? mStatements.toString() : "") + ".";
 	}
 }
 
 public object UnitStatement extends Statement {
 	public CompoundStatement mStatements;
-	public string mUnitName;
+	public string mName;
 
 	public void Constructor(string unitName, CompoundStatement statements) {
 		base.Constructor(StatementType.ProgramStatement);
 
+		mName = unitName;
 		mStatements = statements;
-		mUnitName = unitName;
 	}
 
 	public string toString() const {
-		return "UNIT " + mUnitName + ";" + (mStatements ? mStatements.toString() : "") + ";";
+		return "UNIT " + mName + ";" + LINEBREAK + (mStatements ? mStatements.toString() : "") + ";";
 	}
 }
 

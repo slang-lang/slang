@@ -24,6 +24,7 @@ public object ParseException const implements IException {
 	private Position mPosition const;
 }
 
+
 public object Parser {
 	public void Constructor() {
 		// this is empty by intend
@@ -65,7 +66,7 @@ public object Parser {
 		Token identifier = consume();
 
 		var identifierExp = Expression new VariableExpression(identifier, identifier.mValue);
-		print(toString(identifierExp));
+		//print(toString(identifierExp));
 		if ( !identifierExp || identifierExp.mExpressionType != ExpressionType.VariableExpression ) {
 			throw new ParseException("invalid IDENTIFIER expression found", identifier ? identifier.mPosition : Position null);
 		}
@@ -73,7 +74,7 @@ public object Parser {
 		require(TokenType.ASSIGN);
 
 		var assignmentExp = expression();
-		print(toString(assignmentExp));
+		//print(toString(assignmentExp));
 		if ( !assignmentExp ) {
 			throw new ParseException("invalid ASSIGNMENT expression found", identifier.mPosition);
 		}
@@ -104,6 +105,14 @@ public object Parser {
 		return new CompoundStatement( Object statements );
 	}
 
+	private PrintStatement parsePrintStatement() modify throws {
+		print("parsePrintStatement()");
+
+		require(TokenType.PRINT);
+
+		return new PrintStatement( expression() );
+	}
+
 	private ProgramStatement parseProgram() modify throws {
 		//print("parseProgram()");
 
@@ -130,7 +139,7 @@ public object Parser {
 		Statement stmt;
 
 		Token token = peek();
-		print(toString(token));
+		//print(toString(token));
 
 		switch ( token.mType ) {
 			case TokenType.BEGIN: {
@@ -138,7 +147,11 @@ public object Parser {
 				break;
 			}
 			case TokenType.IDENTIFIER: {
-				stmt =  Statement parseAssignStatement();
+				stmt = Statement parseAssignStatement();
+				break;
+			}
+			case TokenType.PRINT: {
+				stmt = Statement parsePrintStatement();
 				break;
 			}
 			default: {
@@ -148,7 +161,7 @@ public object Parser {
 
 		require(TokenType.SEMICOLON);
 
-		print(toString(stmt));
+		//print(toString(stmt));
 
 		return stmt;
 	}
@@ -178,7 +191,7 @@ public object Parser {
 // Expression parsing
 
 	private Expression expression() modify throws {
-		print("expression()");
+		//print("expression()");
 
 		Expression node = term();
 
@@ -194,7 +207,7 @@ public object Parser {
 	}
 
 	private Expression factor() modify throws {
-		print("factor()");
+		//print("factor()");
 
 		Token token = peek();
 		switch ( token.mType ) {
@@ -230,7 +243,7 @@ public object Parser {
 	}
 
 	private Expression term() modify throws {
-		print("term()");
+		//print("term()");
 
 		Expression node = factor();
 
