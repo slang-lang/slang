@@ -1159,16 +1159,13 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 	do {
 		// reset this for every loop
 		bool caseMatched = false;
-		bool evaluateCaseExpression = true;
+
+		if ( !node->mCaseStatements.empty() ) {
+			tryControl(evaluate(node->mExpression, &value));
+		}
 
 		// loop over all case statements
 		for ( CaseStatements::const_iterator it = node->mCaseStatements.cbegin(); it != node->mCaseStatements.cend(); ++it ) {
-			if ( evaluateCaseExpression ) {
-				tryControl(evaluate(node->mExpression, &value));
-
-				evaluateCaseExpression = false;
-			}
-
 			Runtime::Object caseValue;
 			tryControl(evaluate((*it)->mCaseExpression, &caseValue));
 
@@ -1176,6 +1173,7 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 				caseMatched = true;
 
 				visitStatements((*it)->mCaseBlock);
+				break;
 			}
 		}
 

@@ -49,26 +49,26 @@ std::string PrintVisitor::printExpression(Node* node) const
 
 	switch ( expression->getExpressionType() ) {
 		case Expression::ExpressionType::AssignmentExpression: {
-			AssignmentExpression* ass = static_cast<AssignmentExpression*>(expression);
+			AssignmentExpression* assExp = static_cast<AssignmentExpression*>(expression);
 
-			result += printExpression(ass->mLHS);
+			result += printExpression(assExp->mLHS);
 			result += " = ";
-			result += printExpression(ass->mRHS);
+			result += printExpression(assExp->mRHS);
 		} break;
 		case Expression::ExpressionType::BinaryExpression: {
-			BinaryExpression* bin = static_cast<BinaryExpression*>(node);
+			BinaryExpression* binExp = static_cast<BinaryExpression*>(node);
 
-			result += printExpression(bin->mLHS) + " ";
-			result += bin->mOperation.content() + " ";
-			result += printExpression(bin->mRHS);
+			result += printExpression(binExp->mLHS) + " ";
+			result += binExp->mOperation.content() + " ";
+			result += printExpression(binExp->mRHS);
 		} break;
 		case Expression::ExpressionType::CopyExpression: {
 			result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::IsExpression: {
-			IsExpression* is = static_cast<IsExpression*>(expression);
+			IsExpression* isExp = static_cast<IsExpression*>(expression);
 
-			result += printExpression(is->mExpression) + " is " + is->mMatchType;
+			result += printExpression(isExp->mExpression) + " is " + isExp->mMatchType;
 		} break;
 		case Expression::ExpressionType::NewExpression: {
 			result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
@@ -84,46 +84,49 @@ std::string PrintVisitor::printExpression(Node* node) const
 			}
 		} break;
 		case Expression::ExpressionType::MethodExpression: {
-			MethodExpression* method = static_cast<MethodExpression*>(expression);
+			MethodExpression* methodExp = static_cast<MethodExpression*>(expression);
 
-			result += printExpression(method->mSymbolExpression);
+			result += printExpression(methodExp->mSymbolExpression);
 			result += "(";
-			for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
+			for ( ExpressionList::const_iterator it = methodExp->mParams.begin(); it != methodExp->mParams.end(); ++it ) {
+				if ( it != methodExp->mParams.begin() ) {
+					result += ", ";
+				}
 				result += printExpression((*it));
 			}
 			result += ")";
 		} break;
 		case Expression::ExpressionType::ScopeExpression: {
-			ScopeExpression* scope = dynamic_cast<ScopeExpression*>(expression);
+			ScopeExpression* scopeExp = dynamic_cast<ScopeExpression*>(expression);
 
-			result += printExpression(scope->mLHS);
+			result += printExpression(scopeExp->mLHS);
 			result += ".";
-			result += printExpression(scope->mRHS);
+			result += printExpression(scopeExp->mRHS);
 		} break;
 		case Expression::ExpressionType::SymbolExpression: {
-			SymbolExpression* sym = static_cast<SymbolExpression*>(expression);
+			SymbolExpression* symExp = static_cast<SymbolExpression*>(expression);
 
-			result += sym->mSymbolExpression ? printExpression(sym->mSymbolExpression) : sym->mName;
+			result += symExp->mSymbolExpression ? printExpression(symExp->mSymbolExpression) : symExp->mName;
 		} break;
 		case Expression::ExpressionType::TernaryExpression: {
-			TernaryExpression* ter = static_cast<TernaryExpression*>(expression);
+			TernaryExpression* terExp = static_cast<TernaryExpression*>(expression);
 
-			result += printExpression(ter->mCondition) + " ? ";
-			result += printExpression(ter->mFirst) + " : ";
-			result += printExpression(ter->mSecond);
+			result += printExpression(terExp->mCondition) + " ? ";
+			result += printExpression(terExp->mFirst) + " : ";
+			result += printExpression(terExp->mSecond);
 		} break;
 		case Expression::ExpressionType::TypecastExpression: {
-			TypecastExpression* type = static_cast<TypecastExpression*>(expression);
+			TypecastExpression* tcExp = static_cast<TypecastExpression*>(expression);
 
-			result += "( " + type->mDestinationType + " " + printExpression(type->mExpression) + " )";
+			result += "( " + tcExp->mDestinationType + " " + printExpression(tcExp->mExpression) + " )";
 		} break;
 		case Expression::ExpressionType::TypeidExpression: {
 			result += "typeid( " + printExpression(static_cast<TypeidExpression*>(expression)->mExpression) + " )";
 		} break;
 		case Expression::ExpressionType::UnaryExpression: {
-			UnaryExpression* un = static_cast<UnaryExpression*>(expression);
+			UnaryExpression* unExp = static_cast<UnaryExpression*>(expression);
 
-			result += un->mOperation.content() + printExpression(un->mExpression);
+			result += unExp->mOperation.content() + printExpression(unExp->mExpression);
 		} break;
 	}
 
