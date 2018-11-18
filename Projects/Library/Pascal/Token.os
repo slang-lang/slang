@@ -61,10 +61,10 @@ public object Token const {
 		mType = type;
 		mValue = value;
 
-		print(string this);
+		print(toString());
 	}
 
-	public string =operator(string) const {
+	public string toString() const {
 		return "Token(" + TokenToString(mType) + ", \"" + mValue + "\", " + mPosition ? mPosition.toString() : "<null>" + ")";
 	}
 

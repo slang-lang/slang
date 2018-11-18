@@ -30,10 +30,6 @@ public object Statement extends Node {
 	}
 
 	public string toString() const abstract;
-
-	public string =operator(string) const {
-		return toString();
-	}
 }
 
 
@@ -66,13 +62,13 @@ public object CompoundStatement extends Statement {
 	}
 
 	public string toString() const {
-		string result = "BEGIN" + LINEBREAK;
+		string result = "BEGIN ";
 
 		foreach ( Statement stmt : mStatements ) {
-			result += stmt ? stmt.toString() : "";
+			result += (stmt ? stmt.toString() : "") + ";";
 		}
 
-		return result + "END";
+		return result + " END";
 	}
 }
 
@@ -114,8 +110,8 @@ public object IfStatement extends Statement {
 
 	public string toString() const {
 		return "IF ( " + mExpression.toString() + " ) THEN"
-		       + (mIfBlock ? LINEBREAK + mIfBlock.toString() : "")
-			   + (mElseBlock ? LINEBREAK + "ELSE " + mElseBlock.toString() + LINEBREAK : "");
+		       + (mIfBlock ? mIfBlock.toString() : "")
+			   + (mElseBlock ? "ELSE " + mElseBlock.toString() : "");
 	}
 }
 
@@ -166,7 +162,7 @@ public object ProgramStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "PROGRAM " + mProgramName + ";" + LINEBREAK + mStatements ? mStatements.toString() : "";
+		return "PROGRAM " + mProgramName + ";" + (mStatements ? mStatements.toString() : "") + ".";
 	}
 }
 
@@ -182,7 +178,7 @@ public object UnitStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "UNIT " + mUnitName + ";" + LINEBREAK + mStatements ? mStatements.toString() : "";
+		return "UNIT " + mUnitName + ";" + (mStatements ? mStatements.toString() : "") + ";";
 	}
 }
 

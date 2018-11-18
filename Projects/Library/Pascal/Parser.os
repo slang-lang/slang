@@ -33,7 +33,7 @@ public object Parser {
 		// this is empty by intend
 	}
 
-	public void parseFile(string filename) modify throws {
+	public Statement parseFile(string filename) modify throws {
 		var tokenizer = new Tokenizer();
 
 		mTokens = tokenizer.parseFile(filename);
@@ -58,9 +58,7 @@ public object Parser {
 			}
 		}
 
-		if ( statement ) {
-			print(string statement);
-		}
+		return statement;
 	}
 
 	private AssignmentStatement parseAssignStatement() modify throws {
@@ -279,7 +277,7 @@ public object Parser {
 	}
 
 	private string toString(Token token) const {
-		return "[" + (token ? string token : "<invalid token>") + "]";
+		return "[" + (token ? token.toString() : "<invalid token>") + "]";
 	}
 
 	private void require(TokenType tokenType const) modify throws {
