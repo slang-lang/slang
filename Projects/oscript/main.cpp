@@ -200,9 +200,11 @@ int main(int argc, const char* argv[])
 		return 0;
 	}
 	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
-		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
-			OSerror("abnormal program termination!");
+		if ( e == ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
+			return 0;
 		}
+
+		OSerror("abnormal program termination!");
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());
