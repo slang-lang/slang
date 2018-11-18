@@ -24,7 +24,7 @@ public namespace System.IO {
 			open(filename, MapFileAccessModeToString(mode));
 		}
 
-		public void Constructor(string filename, string mode) {
+		public void Constructor(string filename, string mode = "r") {
 			cleanup();
 
 			open(filename, mode);
