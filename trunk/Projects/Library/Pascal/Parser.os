@@ -182,11 +182,12 @@ public object Parser {
 
 		Expression node = term();
 
-		Token op = peek();
-		if ( op.mType == TokenType.MINUS || op.mType == TokenType.PLUS ) {
+		Token op;
+		while ( (op = peek()) != null && (op.mType == TokenType.MINUS || op.mType == TokenType.PLUS) ) {
 			consume();
 
-			return Expression new BinaryExpression(op, node, op.mValue, term());
+			Expression exp = Expression new BinaryExpression(op, node, op.mValue, term());
+			node = exp;
 		}
 
 		return node;
@@ -233,10 +234,11 @@ public object Parser {
 
 		Expression node = factor();
 
-		Token op = peek();
-		if ( op.mType == TokenType.DIVIDE || op.mType == TokenType.MULTIPLY ) {
+		Token op;
+		while ( (op = peek()) != null && (op.mType == TokenType.DIVIDE || op.mType == TokenType.MULTIPLY) ) {
 			consume();
-			return Expression new BinaryExpression(op, node, op.mValue, factor());
+			Expression exp = Expression new BinaryExpression(op, node, op.mValue, factor());
+			node = exp;
 		}
 
 		return node;
