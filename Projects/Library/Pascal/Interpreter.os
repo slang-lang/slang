@@ -68,6 +68,11 @@ public object Interpreter {
 
     private void visitAssignStatement(AssignmentStatement assign) modify {
         print("visitAssignStatement()");
+
+        visitExpression(assign.mLeft);
+        write( " := " );
+        visitExpression(assign.mRight);
+        writeln(";");
     }
 
     private void visitCompoundStatement(CompoundStatement compound) modify {
@@ -78,8 +83,8 @@ public object Interpreter {
         }
     }
 
-    private void visitExpression(Expression exp) modify {
-        print("visitExpression()");
+    private void visitExpression(Expression exp) const {
+        //print("visitExpression()");
 
         if ( !exp ) {
             return;
@@ -87,21 +92,27 @@ public object Interpreter {
 
         switch ( exp.mExpressionType ) {
             case ExpressionType.BinaryExpression: {
-                break;
-            }
-            case ExpressionType.ConstExpression: {
+                visitExpression( (BinaryExpression exp).mLeft );
+                write( " " + (BinaryExpression exp).mOperator + " " );
+                visitExpression( (BinaryExpression exp).mRight );
                 break;
             }
             case ExpressionType.ConstIntegerExpression: {
+                int value = (ConstIntegerExpression exp).mValue;
+                write( string value );
                 break;
             }
             case ExpressionType.ConstStringExpression: {
+                write( "'" + (ConstStringExpression exp).mValue + "'" );
                 break;
             }
             case ExpressionType.UnaryExpression: {
+                write( (UnaryExpression exp).mOperator );
+                visitExpression( (UnaryExpression exp).mExpression );
                 break;
             }
             case ExpressionType.VariableExpression: {
+                write( (VariableExpression exp).mVariable );
                 break;
             }
         }
@@ -117,8 +128,11 @@ public object Interpreter {
     }
 */
 
-    private void visitPrintStatement(PrintStatement stmt) {
+    private void visitPrintStatement(PrintStatement stmt) const {
         print("visitPrintStatement()");
+
+        visitExpression( stmt.mExpression );
+        writeln("");
     }
 
     private void visitStatement(Statement stmt) modify {
