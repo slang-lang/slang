@@ -67,7 +67,7 @@ private:
 private: // Execution
 	void collectScopeTokens(TokenIterator& token, TokenList& tokens);
 
-	Statements* generate(const TokenList &tokens, bool allowBreakAndContinue = false, bool needsControlStatement = false);
+	Statements* generate(const TokenList& tokens, bool allowBreakAndContinue = false, bool needsControlStatement = false);
 
 	// token processing
 	// {

@@ -126,7 +126,7 @@ Node* TreeGenerator::expression(TokenIterator& start)
 
 		Token operation = (*start);
 		Node* right = parseCondition(++start);
-		/*std::string type =*/ resolveType(expression, operation, right);
+		/*std::string type = resolveType(expression, operation, right);*/
 
 		expression = new BooleanBinaryExpression(expression, operation, right);
 	}
@@ -135,7 +135,7 @@ Node* TreeGenerator::expression(TokenIterator& start)
 /*
  * executes the given tokens in a separate scope
  */
-Statements* TreeGenerator::generate(const TokenList &tokens, bool allowBreakAndContinue, bool needsControlStatement)
+Statements* TreeGenerator::generate(const TokenList& tokens, bool allowBreakAndContinue, bool needsControlStatement)
 {
 	// reset control flow to be able to check for missing control flow statements during switch/case
 	mControlFlow = Runtime::ControlFlow::Normal;
