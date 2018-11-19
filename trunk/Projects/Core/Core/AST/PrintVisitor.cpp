@@ -371,7 +371,7 @@ void PrintVisitor::visitTry(TryStatement* node)
 
 	visitStatement(node->mTryBlock);
 
-	// TODO: handle catch statements
+	// TODO: handle catch statements correctly
 
 	for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
 		mOutput.insert((*it)->mStatements->token().position(), printIndentation(mIndentation) + "catch ");
