@@ -398,6 +398,10 @@ bool Object::operator_equal(const Object *other)
 		return mReference == other->mReference;
 	}
 
+	if ( QualifiedTypename() == NULL_TYPE && (other->QualifiedTypename() == NULL_TYPE || other->QualifiedTypename() == _object) ) {
+		return isValid() == other->isValid();
+	}
+
 	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
