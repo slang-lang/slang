@@ -38,7 +38,7 @@ public int Main(int argc, string args) modify {
 		return interpreter.run();
 	}
 	catch ( IException e ) {
-		print("Exception: " + e.what());
+		print(typeid(e) + ": " + e.what());
 	}
 	catch ( string e ) {
 		print("Exception: " + e);

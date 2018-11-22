@@ -8,7 +8,6 @@ import Token;
 
 public enum ExpressionType {
 	BinaryExpression = 0,
-	ConstExpression,
 	ConstIntegerExpression,
 	ConstStringExpression,
 	UnaryExpression,

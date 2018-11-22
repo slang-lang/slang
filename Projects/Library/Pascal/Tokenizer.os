@@ -18,19 +18,18 @@ public object Tokenizer {
 		RESERVED_WORDS = new List<Token>();
 		RESERVED_WORDS.push_back(new Token(TokenType.BEGIN, "BEGIN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.ELSE, "ELSE", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.IF, "IF", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PRINT, "PRINT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROGRAM, "PROGRAM", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.UNIT, "UNIT", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.THEN, "THEN", Position null));
 
 		WHITESPACES = new String(" 	");
 		WHITESPACES = WHITESPACES + LINEBREAK_DOS;
 		WHITESPACES = WHITESPACES + LINEBREAK_UNIX;
 
 		print("");
-	}
-
-	public void Destructor() {
-		// this is empty by intend
 	}
 
 	public List<Token> parseFile(string filename) modify throws {
@@ -140,6 +139,9 @@ public object Tokenizer {
 				}
 				case c == ".": {
 					return new Token(TokenType.DOT, consume(), new Position(mLine, mColumn));
+				}
+				case c == "=": {
+					return new Token(TokenType.EQUALS, consume(), new Position(mLine, mColumn));
 				}
 				case c == "+": {
 					return new Token(TokenType.PLUS, consume(), new Position(mLine, mColumn));

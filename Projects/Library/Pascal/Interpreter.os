@@ -114,9 +114,6 @@ public object Interpreter {
             case ExpressionType.BinaryExpression: {
                 return processBinaryExpression(BinaryExpression exp);
             }
-            case ExpressionType.ConstExpression: {
-                throw new RuntimeException("ConstExpressions are not supported by now");
-            }
             case ExpressionType.ConstIntegerExpression: {
                 return processConstIntegerExpression(ConstIntegerExpression exp);
             }
@@ -244,6 +241,20 @@ public object Interpreter {
         }
     }
 
+    private void visitIfStatement(IfStatement stmt) modify {
+        //print("visitIfStatement()");
+
+        var condition = processExpression(stmt.mCondition);
+        //print("condition = '" + condition + "'");
+
+        if ( condition == "1" ) {
+            visitStatement(stmt.mIfBlock);
+        }
+        else if ( stmt.mElseBlock ) {
+            visitStatement(stmt.mElseBlock);
+        }
+    }
+
     private void visitPrintStatement(PrintStatement stmt) const {
         //print("visitPrintStatement()");
 
@@ -264,6 +275,10 @@ public object Interpreter {
             }
             case StatementType.AssignmentStatement: {
                 visitAssignStatement(AssignmentStatement stmt);
+                break;
+            }
+            case StatementType.IfStatement: {
+                visitIfStatement(IfStatement stmt);
                 break;
             }
             case StatementType.PrintStatement: {
