@@ -96,22 +96,22 @@ public object ForStatement extends Statement {
 }
 
 public object IfStatement extends Statement {
-	public Expression mExpression const;
+	public Expression mCondition const;
 	public Statement mElseBlock const;
 	public Statement mIfBlock const;
 
 	public void Constructor(Expression exp const, Statement ifBlock const, Statement elseBlock const) {
 		base.Constructor(StatementType.IfStatement);
 
+		mCondition = exp;
 		mElseBlock = elseBlock;
-		mExpression = exp;
 		mIfBlock = ifBlock;
 	}
 
 	public string toString() const {
-		return "IF ( " + mExpression.toString() + " ) THEN"
+		return "IF ( " + mCondition.toString() + " ) THEN" + LINEBREAK
 		       + (mIfBlock ? mIfBlock.toString() : "")
-			   + (mElseBlock ? "ELSE " + mElseBlock.toString() : "");
+			   + (mElseBlock ? LINEBREAK + "ELSE " + mElseBlock.toString() : "");
 	}
 }
 

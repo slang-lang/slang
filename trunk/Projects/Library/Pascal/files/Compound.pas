@@ -4,4 +4,7 @@ BEGIN
 	BEGIN
 		B := 2;
 	END;
+
+	BEGIN
+	END;
 END.

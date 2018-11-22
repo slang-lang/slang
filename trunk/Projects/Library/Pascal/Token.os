@@ -11,8 +11,11 @@ public enum TokenType {
 	DIVIDE,
 	DOT,
 	END,
+	ELSE,
 	EOF,
+	EQUALS,
 	IDENTIFIER,
+	IF,
 	INTEGER,
 	LPAREN,
 	MINUS,
@@ -23,6 +26,7 @@ public enum TokenType {
 	RPAREN,
 	SEMICOLON,
 	STRING,
+	THEN,
 	UNIT
 	;
 }
@@ -32,20 +36,24 @@ public string TokenToString(TokenType type val) {
 		case TokenType.ASSIGN:		{ return "ASSIGN"; break; }
 		case TokenType.BEGIN:		{ return "BEGIN"; break; }
 		case TokenType.DIVIDE:		{ return "DIVIDE"; break; }
-		case TokenType.DOT:			{ return "DOT"; break; }
-		case TokenType.END:			{ return "END"; break; }
-		case TokenType.EOF:			{ return "EOF"; break; }
+		case TokenType.DOT:		{ return "DOT"; break; }
+		case TokenType.END:		{ return "END"; break; }
+		case TokenType.ELSE:		{ return "ELSE"; break; }
+		case TokenType.EOF:		{ return "EOF"; break; }
+		case TokenType.EQUALS:		{ return "EQUALS"; break; }
 		case TokenType.IDENTIFIER:	{ return "IDENTIFIER"; break; }
+		case TokenType.IF:		{ return "IF"; break; }
 		case TokenType.INTEGER:		{ return "INTEGER"; break; }
 		case TokenType.LPAREN:		{ return "("; break; }
 		case TokenType.MINUS:		{ return "MINUS"; break; }
 		case TokenType.MULTIPLY:	{ return "MULITPLY"; break; }
 		case TokenType.PLUS:		{ return "PLUS"; break; }
+		case TokenType.PRINT:		{ return "PRINT"; break; }
+		case TokenType.PROGRAM:		{ return "PROGRAM"; break; }
 		case TokenType.RPAREN:		{ return ")"; break; }
 		case TokenType.SEMICOLON:	{ return "SEMICOLON"; break; }
 		case TokenType.STRING:		{ return "STRING"; break; }
-		case TokenType.PRINT:		{ return "PRINT"; break; }
-		case TokenType.PROGRAM:		{ return "PROGRAM"; break; }
+		case TokenType.THEN:		{ return "THEN"; break; }
 		case TokenType.UNIT:		{ return "UNIT"; break; }
 	}
 

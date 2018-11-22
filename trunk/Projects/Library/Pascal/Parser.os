@@ -66,12 +66,7 @@ public object Parser {
 			throw new ParseException("invalid ASSIGNMENT expression found", identifier.mPosition);
 		}
 
-		var assignmentStmt = new AssignmentStatement(
-			identifierExp,
-			assignmentExp
-		);
-
-		return assignmentStmt;
+		return new AssignmentStatement(identifierExp, assignmentExp);
 	}
 
 	private CompoundStatement parseCompoundStatement() modify throws {
@@ -90,6 +85,32 @@ public object Parser {
 		require(TokenType.END);
 
 		return new CompoundStatement( Object statements );
+	}
+
+	private IfStatement parseIfStatement() modify throws {
+		//print("parseIfStatement()");
+
+		Token ifToken = peek();
+		require(TokenType.IF);
+
+		var conditionExp = condition();
+		if ( !conditionExp ) {
+			throw new ParseException("invalid conditional expression found", ifToken.mPosition);
+		}
+
+		require(TokenType.THEN);
+
+		Statement ifBlock = parseStatement(false);
+		Statement elseBlock;
+
+		Token elseToken = peek();
+		if ( elseToken && elseToken.mType == TokenType.ELSE ) {
+			consume();
+
+			elseBlock = parseStatement(false);
+		}
+
+		return new IfStatement(conditionExp, ifBlock, elseBlock);
 	}
 
 	private PrintStatement parsePrintStatement() modify throws {
@@ -120,13 +141,12 @@ public object Parser {
 		return statement;
 	}
 
-	private Statement parseStatement() modify throws {
+	private Statement parseStatement(bool requiresSemicolon = true) modify throws {
 		//print("parseStatement()");
 
 		Statement stmt;
 
 		Token token = peek();
-
 		switch ( token.mType ) {
 			case TokenType.BEGIN: {
 				stmt = Statement parseCompoundStatement();
@@ -134,6 +154,10 @@ public object Parser {
 			}
 			case TokenType.IDENTIFIER: {
 				stmt = Statement parseAssignStatement();
+				break;
+			}
+			case TokenType.IF: {
+				stmt = Statement parseIfStatement();
 				break;
 			}
 			case TokenType.PRINT: {
@@ -145,7 +169,9 @@ public object Parser {
 			}
 		}
 
-		require(TokenType.SEMICOLON);
+		if ( requiresSemicolon ) {
+			require(TokenType.SEMICOLON);
+		}
 
 		return stmt;
 	}
@@ -173,6 +199,22 @@ public object Parser {
 
 //////////////////////////////////////////////////////////////////////////////
 // Expression parsing
+
+	private Expression condition() modify throws {
+		//print("condition()");
+
+		Expression node = expression();
+
+		Token op;
+		while ( (op = peek()) != null && isComperator(op) ) {
+			consume();
+
+			Expression exp = Expression new BinaryExpression(op, node, op.mValue, expression());
+			node = exp;
+		}
+
+		return node;
+	}
 
 	private Expression expression() modify throws {
 		//print("expression()");
@@ -262,6 +304,17 @@ public object Parser {
 		try { return mTokenIterator.next(); }
 
 		return Token null;
+	}
+
+	private bool isComperator(Token token) const {
+		switch ( token.mType ) {
+			case TokenType.EQUALS: {
+				return true;
+			}
+			// TODO: implement all missing compare operators
+		}
+
+		return false;
 	}
 
 	private Token peek(int pos = 1) const throws {
