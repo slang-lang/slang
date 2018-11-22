@@ -63,13 +63,11 @@ public object Parser {
 	}
 
 	private AssignmentStatement parseAssignStatement() modify throws {
-		Token identifier = consume();
+		Token identifier = peek();
+
+		require(TokenType.IDENTIFIER);
 
 		var identifierExp = Expression new VariableExpression(identifier, identifier.mValue);
-		//print(toString(identifierExp));
-		if ( !identifierExp || identifierExp.mExpressionType != ExpressionType.VariableExpression ) {
-			throw new ParseException("invalid IDENTIFIER expression found", identifier ? identifier.mPosition : Position null);
-		}
 
 		require(TokenType.ASSIGN);
 
@@ -139,7 +137,6 @@ public object Parser {
 		Statement stmt;
 
 		Token token = peek();
-		//print(toString(token));
 
 		switch ( token.mType ) {
 			case TokenType.BEGIN: {
@@ -160,8 +157,6 @@ public object Parser {
 		}
 
 		require(TokenType.SEMICOLON);
-
-		//print(toString(stmt));
 
 		return stmt;
 	}
