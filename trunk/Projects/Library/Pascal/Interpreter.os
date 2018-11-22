@@ -45,6 +45,124 @@ public object Interpreter {
         return 0;
     }
 
+    private string processBinaryExpression(BinaryExpression exp) const throws {
+        //print("processBinaryExpression(" + exp.toString() + ")");
+
+        string left = processExpression(exp.mLeft);
+        string right = processExpression(exp.mRight);
+
+        //print("BinaryExpression: " + left + " " + exp.mOperator + " " + right);
+
+        switch ( exp.mOperator ) {
+			// compare operators
+			case "=": {
+				return "" + (left == right);
+			}
+			case "<": {
+				return "" + ((float left) < (float right));
+			}
+			case "<=": {
+				return "" + ((float left) <= (float right));
+			}
+			case ">": {
+				return "" + ((float left) > (float right));
+			}
+			case ">=": {
+				return "" + ((float left) >= (float right));
+			}
+			case "<>": {
+				return "" + (left != right);
+			}
+
+			// arithmetic operators
+			case "+": {
+				return "" + ((float left) + (float right));
+			}
+			case "-": {
+				return "" + ((float left) - (float right));
+			}
+			case "*": {
+				return "" + ((float left) * (float right));
+			}
+			case "/": {
+				return "" + ((float left) / (float right));
+			}
+			case "%": {
+				return "" + ((int left) % (int right));
+			}
+        }
+
+        throw new RuntimeException("invalid binary operator '" + exp.mOperator + "'!");
+    }
+
+    private string processConstIntegerExpression(ConstIntegerExpression exp) const {
+        //print("processConstIntegerExpression(" + exp.toString() + ")");
+
+        return string exp.mValue;
+    }
+
+    private string processConstStringExpression(ConstStringExpression exp) const {
+        //print("processConstStringExpression(" + exp.toString() + ")");
+
+        return exp.mValue;
+    }
+
+    private string processExpression(Expression exp) const throws {
+        //print("processExpression(" + exp.toString() + ")");
+
+        switch ( exp.mExpressionType ) {
+            case ExpressionType.BinaryExpression: {
+                return processBinaryExpression(BinaryExpression exp);
+            }
+            case ExpressionType.ConstExpression: {
+                throw new RuntimeException("ConstExpressions are not supported by now");
+            }
+            case ExpressionType.ConstIntegerExpression: {
+                return processConstIntegerExpression(ConstIntegerExpression exp);
+            }
+            case ExpressionType.ConstStringExpression: {
+                return processConstStringExpression(ConstStringExpression exp);
+            }
+            case ExpressionType.UnaryExpression: {
+                return processUnaryExpression(UnaryExpression exp);
+            }
+            case ExpressionType.VariableExpression: {
+                return processVariableExpression(VariableExpression exp);
+            }
+        }
+    }
+
+    private string processUnaryExpression(UnaryExpression exp) const throws {
+        //print("processUnaryExpression(" + exp.toString() + ")");
+
+        switch ( exp.mOperator ) {
+            case "+": {
+                return processExpression(exp.mExpression);
+            }
+            case "-": {
+                return "-" + processExpression(exp.mExpression);
+            }
+        }
+
+        throw new RuntimeException("invalid unary operator '" + exp.mOperator + "'!");
+    }
+
+    private string processVariableExpression(VariableExpression exp) const throws {
+        //print("processVariableExpression(" + exp.toString() + ")");
+
+        String obj;
+        string varName = (VariableExpression exp).mVariable;
+
+        if ( !mVariables.contains(varName) ) {
+            throw new RuntimeException("Variable '" + varName + "' is unknown");
+        }
+        else {
+            obj = mVariables.get(varName);
+        }
+
+        return string obj;
+    }
+
     private void visit(Node node) modify {
         if ( !node ) {
             return;
@@ -52,7 +170,7 @@ public object Interpreter {
 
         switch ( node.mNodeType ) {
             case NodeType.ExpressionNode: {
-                visitExpression(Expression node);
+                processExpression(Expression node);
                 break;
             }
             case NodeType.OperatorNode: {
@@ -67,16 +185,24 @@ public object Interpreter {
     }
 
     private void visitAssignStatement(AssignmentStatement assign) modify {
-        print("visitAssignStatement()");
+        //print("visitAssignStatement()");
 
-        visitExpression(assign.mLeft);
-        write( " := " );
-        visitExpression(assign.mRight);
-        writeln(";");
+        String obj;
+        string varName = (VariableExpression assign.mLeft).mVariable;
+
+        if ( !mVariables.contains(varName) ) {
+            obj = new String("0");
+            mVariables.insert(varName, obj);
+        }
+        else {
+            obj = mVariables.get(varName);
+        }
+
+        obj = processExpression(assign.mRight);
     }
 
     private void visitCompoundStatement(CompoundStatement compound) modify {
-        print("visitCompoundStatement()");
+        //print("visitCompoundStatement()");
 
         foreach ( Statement stmt : compound.mStatements ) {
             visitStatement(stmt);
@@ -118,21 +244,12 @@ public object Interpreter {
         }
     }
 
-/*
-    private void visitOperator(Operator op) modify {
-        print("visitOperator()");
-
-        if ( !op ) {
-            return;
-        }
-    }
-*/
-
     private void visitPrintStatement(PrintStatement stmt) const {
-        print("visitPrintStatement()");
+        //print("visitPrintStatement()");
 
-        visitExpression( stmt.mExpression );
-        writeln("");
+        //visitExpression( stmt.mExpression );
+
+        print( processExpression(stmt.mExpression) );
     }
 
     private void visitStatement(Statement stmt) modify {
