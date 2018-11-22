@@ -76,7 +76,7 @@ public object ConstStringExpression extends Expression {
 	}
 
 	public string toString() const {
-		return "ConstStringExpression('" + mValue + "')";
+		return "ConstStringExpression(\"" + mValue + "\")";
 	}
 }
 
@@ -106,7 +106,7 @@ public object VariableExpression extends Expression {
 	}
 
 	public string toString() const {
-		return "VariableExpression(" + mVariable + ")";
+		return "VariableExpression(\"" + mVariable + "\")";
 	}
 }
 

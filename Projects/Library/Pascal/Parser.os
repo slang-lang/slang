@@ -26,21 +26,11 @@ public object ParseException const implements IException {
 
 
 public object Parser {
-	public void Constructor() {
-		// this is empty by intend
-	}
-
-	public void Destructor() {
-		// this is empty by intend
-	}
-
 	public Statement parseFile(string filename) modify throws {
 		var tokenizer = new Tokenizer();
 
 		mTokens = tokenizer.parseFile(filename);
 		mTokenIterator = mTokens.getIterator();
-
-		print("");
 
 		print("Building AST...");
 
@@ -72,7 +62,6 @@ public object Parser {
 		require(TokenType.ASSIGN);
 
 		var assignmentExp = expression();
-		//print(toString(assignmentExp));
 		if ( !assignmentExp ) {
 			throw new ParseException("invalid ASSIGNMENT expression found", identifier.mPosition);
 		}
@@ -86,7 +75,7 @@ public object Parser {
 	}
 
 	private CompoundStatement parseCompoundStatement() modify throws {
-		print("parseCompoundStatement()");
+		//print("parseCompoundStatement()");
 
 		Token token = consume();
 		if ( !token || token.mType != TokenType.BEGIN ) {
@@ -104,7 +93,7 @@ public object Parser {
 	}
 
 	private PrintStatement parsePrintStatement() modify throws {
-		print("parsePrintStatement()");
+		//print("parsePrintStatement()");
 
 		require(TokenType.PRINT);
 
@@ -132,7 +121,7 @@ public object Parser {
 	}
 
 	private Statement parseStatement() modify throws {
-		print("parseStatement()");
+		//print("parseStatement()");
 
 		Statement stmt;
 
@@ -206,6 +195,9 @@ public object Parser {
 
 		Token token = peek();
 		switch ( token.mType ) {
+			case TokenType.IDENTIFIER: {
+				return Expression parseIdentifier();
+			}
 			case TokenType.INTEGER: {
 				require(TokenType.INTEGER);
 				return Expression new ConstIntegerExpression(token, int token.mValue);
@@ -253,7 +245,7 @@ public object Parser {
 	}
 
 	private Expression parseIdentifier() modify throws {
-		print("parseIdentifier()");
+		//print("parseIdentifier()");
 
 		Token token = consume();
 		return Expression new VariableExpression(token, token.mValue);

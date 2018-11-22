@@ -63,7 +63,7 @@ public object Token const {
 		mType = type;
 		mValue = value;
 
-		print(toString());
+		//print(toString());
 	}
 
 	public string toString() const {

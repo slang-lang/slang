@@ -34,7 +34,7 @@ public object Tokenizer {
 	}
 
 	public List<Token> parseFile(string filename) modify throws {
-		print("Parsing file \"" + filename + "\"...");
+		print("Tokenizing \"" + filename + "\"...");
 
 		mCharIterator = new Scanner(new System.IO.File(filename)).getIterator();
 		mColumn = 1;
