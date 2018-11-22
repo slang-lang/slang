@@ -147,7 +147,7 @@ public object PrintStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "PRINT " + (mExpression ? mExpression.toString() : "");
+		return "PRINT( " + (mExpression ? mExpression.toString() : "") + " )";
 	}
 }
 
