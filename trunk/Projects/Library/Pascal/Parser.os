@@ -56,7 +56,7 @@ public object Parser {
 
 		require(TokenType.IDENTIFIER);
 
-		var identifierExp = Expression new VariableExpression(identifier, identifier.mValue);
+		var identifierExp = Expression new VariableExpression(identifier, toUpper(identifier.mValue));
 
 		require(TokenType.ASSIGN);
 
@@ -309,7 +309,7 @@ public object Parser {
 		//print("parseIdentifier()");
 
 		Token token = consume();
-		return Expression new VariableExpression(token, token.mValue);
+		return Expression new VariableExpression(token, toUpper(token.mValue));
 	}
 
 // Expression parsing
