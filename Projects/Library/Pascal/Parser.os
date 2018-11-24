@@ -209,7 +209,7 @@ public object Parser {
 		while ( (op = peek()) != null && isComperator(op) ) {
 			consume();
 
-			Expression exp = Expression new BinaryExpression(op, node, op.mValue, expression());
+			Expression exp = Expression new BooleanBinaryExpression(op, node, op.mValue, expression());
 			node = exp;
 		}
 
@@ -308,10 +308,12 @@ public object Parser {
 
 	private bool isComperator(Token token) const {
 		switch ( token.mType ) {
-			case TokenType.EQUALS: {
-				return true;
-			}
-			// TODO: implement all missing compare operators
+			case TokenType.EQUAL:			{ return true; }
+			case TokenType.GREATER:			{ return true; }
+			case TokenType.GREATER_EQUAL:	{ return true; }
+			case TokenType.LESS:			{ return true; }
+			case TokenType.LESS_EQUAL:		{ return true; }
+			case TokenType.UNEQUAL:			{ return true; }
 		}
 
 		return false;

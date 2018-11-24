@@ -7,7 +7,8 @@ import Token;
 
 
 public enum ExpressionType {
-	BinaryExpression = 0,
+	BinaryExpression,
+	BooleanBinaryExpression,
 	ConstIntegerExpression,
 	ConstStringExpression,
 	UnaryExpression,
@@ -48,6 +49,14 @@ public object BinaryExpression extends Expression {
 
 	public string toString() const {
 		return "BinaryExpression(" + mLeft.toString() + ", '" + mOperator + "', " + mRight.toString() + ")";
+	}
+}
+
+public object BooleanBinaryExpression extends BinaryExpression {
+	public void Constructor(Token token, Expression left const, string op, Expression right const) {
+		base.Constructor(token, left, op, right);
+
+		mExpressionType = ExpressionType.BooleanBinaryExpression;
 	}
 }
 
