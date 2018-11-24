@@ -54,26 +54,6 @@ public object Interpreter {
         //print("BinaryExpression: " + left + " " + exp.mOperator + " " + right);
 
         switch ( exp.mOperator ) {
-			// compare operators
-			case "=": {
-				return "" + (left == right);
-			}
-			case "<": {
-				return "" + ((float left) < (float right));
-			}
-			case "<=": {
-				return "" + ((float left) <= (float right));
-			}
-			case ">": {
-				return "" + ((float left) > (float right));
-			}
-			case ">=": {
-				return "" + ((float left) >= (float right));
-			}
-			case "<>": {
-				return "" + (left != right);
-			}
-
 			// arithmetic operators
 			case "+": {
 				return "" + ((float left) + (float right));
@@ -104,15 +84,23 @@ public object Interpreter {
         //print("BooleanBinaryExpression: " + left + " " + exp.mOperator + " " + right);
 
         switch ( exp.mOperator ) {
-			case "=":  { return left == right; }
-			case "<":  { return (float left) < (float right); }
+            case "AND": { return (float left) && (float right); }
+            case "OR": { return left || right; }
+			case "=": { return left == right; }
+			case "<": { return (float left) < (float right); }
 			case "<=": { return (float left) <= (float right); }
-			case ">":  { return (float left) > (float right); }
+			case ">": { return (float left) > (float right); }
 			case ">=": { return (float left) >= (float right); }
-			case "<>": { return (left != right); }
+			case "<>": { return left != right; }
         }
 
         throw new RuntimeException("invalid binary operator '" + exp.mOperator + "'!");
+    }
+
+    private bool processConstBooleanExpression(ConstBooleanExpression exp) const {
+        //print("processConstBooleanExpression(" + exp.toString() + ")");
+
+        return exp.mValue;
     }
 
     private int processConstIntegerExpression(ConstIntegerExpression exp) const {
@@ -136,6 +124,9 @@ public object Interpreter {
             }
             case ExpressionType.BooleanBinaryExpression: {
                 return string processBooleanBinaryExpression(BooleanBinaryExpression exp);
+            }
+            case ExpressionType.ConstBooleanExpression: {
+                return string processConstBooleanExpression(ConstBooleanExpression exp);
             }
             case ExpressionType.ConstIntegerExpression: {
                 return string processConstIntegerExpression(ConstIntegerExpression exp);

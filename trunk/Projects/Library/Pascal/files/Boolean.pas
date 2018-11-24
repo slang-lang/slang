@@ -1,0 +1,12 @@
+PROGRAM Boolean;
+BEGIN
+	A := TRUE;
+	PRINT( A );
+
+	IF A THEN BEGIN
+		PRINT( 'TRUE' );
+	END
+	ELSE BEGIN
+		PRINT( 'FALSE' );
+	END;
+END.
