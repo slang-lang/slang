@@ -9,12 +9,14 @@ public enum TokenType {
 	AND,
 	ASSIGN,
 	BEGIN,
+	BOOLEAN,
 	DIVIDE,
 	DOT,
 	END,
 	ELSE,
 	EOF,
 	EQUAL,
+	FALSE,
 	GREATER,
 	GREATER_EQUAL,
 	IDENTIFIER,
@@ -33,6 +35,7 @@ public enum TokenType {
 	SEMICOLON,
 	STRING,
 	THEN,
+	TRUE,
 	UNEQUAL,
 	UNIT
 	;
@@ -43,12 +46,14 @@ public string TokenToString(TokenType type val) {
 		case TokenType.AND:				{ return "AND"; break; }
 		case TokenType.ASSIGN:			{ return "ASSIGN"; break; }
 		case TokenType.BEGIN:			{ return "BEGIN"; break; }
+		case TokenType.BOOLEAN:			{ return "BOOLEAN"; break; }
 		case TokenType.DIVIDE:			{ return "DIVIDE"; break; }
 		case TokenType.DOT:				{ return "DOT"; break; }
 		case TokenType.END:				{ return "END"; break; }
 		case TokenType.ELSE:			{ return "ELSE"; break; }
 		case TokenType.EOF:				{ return "EOF"; break; }
 		case TokenType.EQUAL:			{ return "EQUAL"; break; }
+		case TokenType.FALSE:			{ return "FALSE"; break; }
 		case TokenType.GREATER:			{ return "GREATER"; break; }
 		case TokenType.GREATER_EQUAL:	{ return "GREATER_EQUAL"; break; }
 		case TokenType.IDENTIFIER:		{ return "IDENTIFIER"; break; }
@@ -67,6 +72,7 @@ public string TokenToString(TokenType type val) {
 		case TokenType.SEMICOLON:		{ return "SEMICOLON"; break; }
 		case TokenType.STRING:			{ return "STRING"; break; }
 		case TokenType.THEN:			{ return "THEN"; break; }
+		case TokenType.TRUE:			{ return "TRUE"; break; }
 		case TokenType.UNEQUAL:			{ return "UNEQUAL"; break; }
 		case TokenType.UNIT:			{ return "UNIT"; break; }
 	}

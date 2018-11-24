@@ -1,6 +1,7 @@
 PROGRAM IfStatement;
 BEGIN
-	A := -1;
+	A := 0 OR 1;
+	PRINT( A );
 
 	IF A < 1 THEN BEGIN
 		PRINT( 'A < 1' );

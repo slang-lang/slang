@@ -18,6 +18,8 @@ public object Tokenizer {
 		RESERVED_WORDS = new List<Token>();
 		RESERVED_WORDS.push_back(new Token(TokenType.AND, "AND", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.BEGIN, "BEGIN", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.BOOLEAN, "FALSE", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.BOOLEAN, "TRUE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.ELSE, "ELSE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.IF, "IF", Position null));

@@ -35,17 +35,16 @@ public object Parser {
 		print("Building AST...");
 
 		Statement statement;
-		Token token;
-		while ( (token = consume()) != null ) {
-			switch ( token ) {
-				case "PROGRAM": {
-					statement = Statement parseProgram();
-					break;
-				}
-				case "UNIT": {
-					statement = Statement parseUnit();
-					break;
-				}
+
+		Token token = consume();
+		switch ( token ) {
+			case "PROGRAM": {
+				statement = Statement parseProgram();
+				break;
+			}
+			case "UNIT": {
+				statement = Statement parseUnit();
+				break;
 			}
 		}
 
@@ -93,7 +92,7 @@ public object Parser {
 		Token ifToken = peek();
 		require(TokenType.IF);
 
-		var conditionExp = condition();
+		var conditionExp = expression();
 		if ( !conditionExp ) {
 			throw new ParseException("invalid conditional expression found", ifToken.mPosition);
 		}
@@ -118,7 +117,7 @@ public object Parser {
 
 		require(TokenType.PRINT);
 
-		return new PrintStatement( expression() );
+		return new PrintStatement( parseExpression() );
 	}
 
 	private ProgramStatement parseProgram() modify throws {
@@ -200,43 +199,63 @@ public object Parser {
 //////////////////////////////////////////////////////////////////////////////
 // Expression parsing
 
-	private Expression condition() modify throws {
-		//print("condition()");
+	private Expression expression() modify {
+		//print("expression()");
 
-		Expression node = expression();
+		Expression node = parseCondition();
+
+		Token op;
+		while ( (op = peek()) != null && (op.mType == TokenType.AND || op.mType == TokenType.OR) ) {
+			consume();
+
+			Expression exp = Expression new BooleanBinaryExpression(op, node, op.mValue, parseCondition());
+			node = exp;
+		}
+
+		return node;
+	}
+
+	private Expression parseCondition() modify throws {
+		//print("parseCondition()");
+
+		Expression node = parseExpression();
 
 		Token op;
 		while ( (op = peek()) != null && isComperator(op) ) {
 			consume();
 
-			Expression exp = Expression new BooleanBinaryExpression(op, node, op.mValue, expression());
+			Expression exp = Expression new BooleanBinaryExpression(op, node, op.mValue, parseExpression());
 			node = exp;
 		}
 
 		return node;
 	}
 
-	private Expression expression() modify throws {
-		//print("expression()");
+	private Expression parseExpression() modify throws {
+		//print("parseExpression()");
 
-		Expression node = term();
+		Expression node = parseTerm();
 
 		Token op;
 		while ( (op = peek()) != null && (op.mType == TokenType.MINUS || op.mType == TokenType.PLUS) ) {
 			consume();
 
-			Expression exp = Expression new BinaryExpression(op, node, op.mValue, term());
+			Expression exp = Expression new BinaryExpression(op, node, op.mValue, parseTerm());
 			node = exp;
 		}
 
 		return node;
 	}
 
-	private Expression factor() modify throws {
-		//print("factor()");
+	private Expression parseFactor() modify throws {
+		//print("parseFactor()");
 
 		Token token = peek();
 		switch ( token.mType ) {
+			case TokenType.BOOLEAN: {
+				require(TokenType.BOOLEAN);
+				return Expression new ConstBooleanExpression(token, token.mValue == "TRUE");
+			}
 			case TokenType.IDENTIFIER: {
 				return Expression parseIdentifier();
 			}
@@ -246,18 +265,18 @@ public object Parser {
 			}
 			case TokenType.LPAREN: {
 				require(TokenType.LPAREN);
-				Expression node = expression();
+				Expression node = parseExpression();
 				require(TokenType.RPAREN);
 
 				return node;
 			}
 			case TokenType.MINUS: {
 				require(TokenType.MINUS);
-				return Expression new UnaryExpression(token, token.mValue, factor());	
+				return Expression new UnaryExpression(token, token.mValue, parseFactor());	
 			}
 			case TokenType.PLUS: {
 				require(TokenType.PLUS);
-				return Expression new UnaryExpression(token, token.mValue, factor());	
+				return Expression new UnaryExpression(token, token.mValue, parseFactor());	
 			}
 			case TokenType.STRING: {
 				require(TokenType.STRING);
@@ -271,15 +290,15 @@ public object Parser {
 		throw new ParseException("invalid factor expression found" + toString(token), token.mPosition);
 	}
 
-	private Expression term() modify throws {
-		//print("term()");
+	private Expression parseTerm() modify throws {
+		//print("parseTerm()");
 
-		Expression node = factor();
+		Expression node = parseFactor();
 
 		Token op;
 		while ( (op = peek()) != null && (op.mType == TokenType.DIVIDE || op.mType == TokenType.MULTIPLY) ) {
 			consume();
-			Expression exp = Expression new BinaryExpression(op, node, op.mValue, factor());
+			Expression exp = Expression new BinaryExpression(op, node, op.mValue, parseFactor());
 			node = exp;
 		}
 
