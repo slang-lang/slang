@@ -95,10 +95,30 @@ public object Interpreter {
         throw new RuntimeException("invalid binary operator '" + exp.mOperator + "'!");
     }
 
-    private string processConstIntegerExpression(ConstIntegerExpression exp) const {
+    private bool processBooleanBinaryExpression(BooleanBinaryExpression exp) const throws {
+        //print("processBooleanBinaryExpression(" + exp.toString() + ")");
+
+        string left = processExpression(exp.mLeft);
+        string right = processExpression(exp.mRight);
+
+        //print("BooleanBinaryExpression: " + left + " " + exp.mOperator + " " + right);
+
+        switch ( exp.mOperator ) {
+			case "=":  { return left == right; }
+			case "<":  { return (float left) < (float right); }
+			case "<=": { return (float left) <= (float right); }
+			case ">":  { return (float left) > (float right); }
+			case ">=": { return (float left) >= (float right); }
+			case "<>": { return (left != right); }
+        }
+
+        throw new RuntimeException("invalid binary operator '" + exp.mOperator + "'!");
+    }
+
+    private int processConstIntegerExpression(ConstIntegerExpression exp) const {
         //print("processConstIntegerExpression(" + exp.toString() + ")");
 
-        return string exp.mValue;
+        return exp.mValue;
     }
 
     private string processConstStringExpression(ConstStringExpression exp) const {
@@ -114,8 +134,11 @@ public object Interpreter {
             case ExpressionType.BinaryExpression: {
                 return processBinaryExpression(BinaryExpression exp);
             }
+            case ExpressionType.BooleanBinaryExpression: {
+                return string processBooleanBinaryExpression(BooleanBinaryExpression exp);
+            }
             case ExpressionType.ConstIntegerExpression: {
-                return processConstIntegerExpression(ConstIntegerExpression exp);
+                return string processConstIntegerExpression(ConstIntegerExpression exp);
             }
             case ExpressionType.ConstStringExpression: {
                 return processConstStringExpression(ConstStringExpression exp);
@@ -160,7 +183,7 @@ public object Interpreter {
         return string obj;
     }
 
-    private void visit(Node node) modify {
+    private void visit(Node node) modify throws {
         if ( !node ) {
             return;
         }
@@ -171,8 +194,7 @@ public object Interpreter {
                 break;
             }
             case NodeType.OperatorNode: {
-                //visitOperator(Operator node);
-                break;
+                throw new RuntimeException("cannot process operator nodes");
             }
             case NodeType.StatementNode: {
                 visitStatement(Statement node);
@@ -203,41 +225,6 @@ public object Interpreter {
 
         foreach ( Statement stmt : compound.mStatements ) {
             visitStatement(stmt);
-        }
-    }
-
-    private void visitExpression(Expression exp) const {
-        //print("visitExpression()");
-
-        if ( !exp ) {
-            return;
-        }
-
-        switch ( exp.mExpressionType ) {
-            case ExpressionType.BinaryExpression: {
-                visitExpression( (BinaryExpression exp).mLeft );
-                write( " " + (BinaryExpression exp).mOperator + " " );
-                visitExpression( (BinaryExpression exp).mRight );
-                break;
-            }
-            case ExpressionType.ConstIntegerExpression: {
-                int value = (ConstIntegerExpression exp).mValue;
-                write( string value );
-                break;
-            }
-            case ExpressionType.ConstStringExpression: {
-                write( "'" + (ConstStringExpression exp).mValue + "'" );
-                break;
-            }
-            case ExpressionType.UnaryExpression: {
-                write( (UnaryExpression exp).mOperator );
-                visitExpression( (UnaryExpression exp).mExpression );
-                break;
-            }
-            case ExpressionType.VariableExpression: {
-                write( (VariableExpression exp).mVariable );
-                break;
-            }
         }
     }
 

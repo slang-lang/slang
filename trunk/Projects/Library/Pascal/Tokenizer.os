@@ -16,10 +16,12 @@ public object Tokenizer {
 		OPERATORCHARS = new String("+-*/%<>=");
 
 		RESERVED_WORDS = new List<Token>();
+		RESERVED_WORDS.push_back(new Token(TokenType.AND, "AND", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.BEGIN, "BEGIN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.ELSE, "ELSE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.IF, "IF", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.OR, "OR", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PRINT, "PRINT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROGRAM, "PROGRAM", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.UNIT, "UNIT", Position null));
@@ -140,9 +142,28 @@ public object Tokenizer {
 				case c == ".": {
 					return new Token(TokenType.DOT, consume(), new Position(mLine, mColumn));
 				}
+
+				// Compare operators
 				case c == "=": {
-					return new Token(TokenType.EQUALS, consume(), new Position(mLine, mColumn));
+					return new Token(TokenType.EQUAL, consume(), new Position(mLine, mColumn));
 				}
+				case c == "<" && peek(2) == ">": {
+					return new Token(TokenType.UNEQUAL, consume(2), new Position(mLine, mColumn));
+				}
+				case c == "<" && peek(2) == "=": {
+					return new Token(TokenType.LESS_EQUAL, consume(2), new Position(mLine, mColumn));
+				}
+				case c == "<": {
+					return new Token(TokenType.LESS, consume(), new Position(mLine, mColumn));
+				}
+				case c == ">" && peek(2) == "=": {
+					return new Token(TokenType.GREATER_EQUAL, consume(2), new Position(mLine, mColumn));
+				}
+				case c == ">": {
+					return new Token(TokenType.GREATER, consume(), new Position(mLine, mColumn));
+				}
+
+				// Arithmetic operators
 				case c == "+": {
 					return new Token(TokenType.PLUS, consume(), new Position(mLine, mColumn));
 				}
