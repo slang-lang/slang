@@ -96,6 +96,9 @@ public object Tokenizer {
 			result += consume();
 		}
 
+		// convert to upper case
+		result = toUpper(result);
+
 		foreach ( Token token : RESERVED_WORDS ) {
 			if ( token == result ) {
 				return new Token(token.mType, token.mValue, new Position(mLine, column));
