@@ -272,10 +272,27 @@ public object Interpreter {
             case StatementType.UnitStatement: {
                 throw new RuntimeException("statement not allowed here: " + typeid(stmt));
             }
+            case StatementType.WhileStatement: {
+		visitWhileStatement(WhileStatement stmt);
+		break;
+            }
         }
     }
 
-	protected Map<string, String> mVariables;
+    private void visitWhileStatement(WhileStatement stmt) modify throws {
+	print("visitWhileStatement()");
+
+	while ( true ) {
+		var condition = processExpression( stmt.mCondition );
+		if ( condition != "1" ) {
+			break;
+		}
+
+		visitStatement( stmt.mBody );
+	}
+    }
+
+    protected Map<string, String> mVariables;
 
     private Statement mProgram;
 }

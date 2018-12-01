@@ -10,12 +10,15 @@ import Expressions;
 public enum StatementType {
 	AssignmentStatement,
 	CompoundStatement,
+	ConstantDeclarationStatement,
 	ForStatement,
+	FunctionStatement,
 	IfStatement,
 	MethodStatement,
 	PrintStatement,
 	ProgramStatement,
 	UnitStatement,
+	VariableDeclarationStatement,
 	WhileStatement
 	;
 }
@@ -69,6 +72,24 @@ public object CompoundStatement extends Statement {
 		}
 
 		return result + LINEBREAK + "END";
+	}
+}
+
+public object FunctionStatement extends Statement {
+	public Statement mBody const;
+	public string mName const;
+	public string mResultType const;
+
+	public void Constructor(string name, string resultType, Statement body) {
+		base.Constructor(StatementType.FunctionStatement);
+
+		mBody = body;
+		mName = name;
+		mResultType = resultType;
+	}
+
+	public string toString() const {
+		return "FUNCTION " + mName + "() : " + mResultType + " " + mBody.toString();
 	}
 }
 
@@ -180,6 +201,25 @@ public object UnitStatement extends Statement {
 
 	public string toString() const {
 		return "UNIT " + mName + ";" + LINEBREAK + (mStatements ? mStatements.toString() : "") + ";";
+	}
+}
+
+public object VariableDeclarationStatement extends Statement {
+}
+
+public object WhileStatement extends Statement {
+	public Statement mBody const;
+	public Expression mCondition const;
+
+	public void Constructor(Expression condition, Statement body) {
+		base.Constructor(StatementType.WhileStatement);
+
+		mBody = body;
+		mCondition = condition;
+	}
+
+	public string toString() const {
+		return "WHILE " + mCondition.toString() + " " + mBody.toString();
 	}
 }
 

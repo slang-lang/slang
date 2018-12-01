@@ -27,8 +27,10 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.OR, "OR", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PRINT, "PRINT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROGRAM, "PROGRAM", Position null));
-		RESERVED_WORDS.push_back(new Token(TokenType.UNIT, "UNIT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.THEN, "THEN", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.UNIT, "UNIT", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.VAR, "VAR", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.WHILE, "WHILE", Position null));
 
 		WHITESPACES = new String(" 	");
 		WHITESPACES = WHITESPACES + LINEBREAK_DOS;

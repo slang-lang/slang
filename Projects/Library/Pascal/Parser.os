@@ -163,6 +163,10 @@ public object Parser {
 				stmt = Statement parsePrintStatement();
 				break;
 			}
+			case TokenType.WHILE: {
+				stmt = Statement parseWhileStatement();
+				break;
+			}
 			default: {
 				throw new ParseException("invalid token found" + toString(token), token.mPosition);
 			}
@@ -179,7 +183,7 @@ public object Parser {
 		//print("parseUnit()");
 
 		Token name = consume();
-		if ( !name && name.mType != TokenType.IDENTIFIER ) {
+		if ( !name || name.mType != TokenType.IDENTIFIER ) {
 			throw new ParseException("invalid UNIT statement found", name.mPosition);
 		}
 
@@ -193,6 +197,20 @@ public object Parser {
 		require(TokenType.SEMICOLON);
 
 		return statement;
+	}
+
+	private WhileStatement parseWhileStatement() modify throws {
+		print("parseWhileStatement()");
+
+		Token start = consume();
+		if ( !start || start.mType != TokenType.WHILE ) {
+			throw new ParseException("invalid WHILE statement found", start.mPosition);
+		}
+
+		return new WhileStatement(
+			expression(),
+			parseStatement(false)
+		);
 	}
 
 
@@ -265,7 +283,7 @@ public object Parser {
 			}
 			case TokenType.LPAREN: {
 				require(TokenType.LPAREN);
-				Expression node = parseExpression();
+				Expression node = expression();
 				require(TokenType.RPAREN);
 
 				return node;

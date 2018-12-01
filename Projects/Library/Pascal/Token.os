@@ -38,7 +38,9 @@ public enum TokenType {
 	THEN,
 	TRUE,
 	UNEQUAL,
-	UNIT
+	UNIT,
+	VAR,
+	WHILE
 	;
 }
 
@@ -77,6 +79,8 @@ public string TokenToString(TokenType type val) {
 		case TokenType.TRUE:			{ return "TRUE"; break; }
 		case TokenType.UNEQUAL:			{ return "UNEQUAL"; break; }
 		case TokenType.UNIT:			{ return "UNIT"; break; }
+		case TokenType.VAR:			{ return "VAR"; break; }
+		case TokenType.WHILE:			{ return "WHILE"; break; }
 	}
 
 	return "<invalid token type>";
