@@ -206,10 +206,16 @@ void NamespaceAttributes::setSealed(bool state)
 
 
 ObjectAttributes::ObjectAttributes()
-: mImplementationType(ImplementationType::Unspecified),
+: mBluePrintType(BluePrintType::Unknown),
+  mImplementationType(ImplementationType::Unspecified),
   mIsMember(false)
 {
 	setMutability(Mutability::Modify);
+}
+
+BluePrintType::E ObjectAttributes::getBluePrintType() const
+{
+	return mBluePrintType;
 }
 
 ImplementationType::E ObjectAttributes::getImplementationType() const
@@ -225,6 +231,11 @@ bool ObjectAttributes::isMember() const
 bool ObjectAttributes::isSealed() const
 {
 	return mIsSealed;
+}
+
+void ObjectAttributes::setBluePrintType(ObjectiveScript::BluePrintType::E value)
+{
+	mBluePrintType = value;
 }
 
 void ObjectAttributes::setImplementationType(ImplementationType::E value)
