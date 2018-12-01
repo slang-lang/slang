@@ -55,6 +55,9 @@ public object Interpreter {
 
         switch ( exp.mOperator ) {
 			// arithmetic operators
+			case "DIV": {
+				return "" + int "" + ((int left) / (int right));
+			}
 			case "+": {
 				return "" + ((float left) + (float right));
 			}

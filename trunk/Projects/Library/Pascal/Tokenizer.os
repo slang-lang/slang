@@ -23,6 +23,7 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.ELSE, "ELSE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.IF, "IF", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.MATH_DIVIDE_INT, "DIV", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.OR, "OR", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PRINT, "PRINT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROGRAM, "PROGRAM", Position null));
@@ -170,16 +171,16 @@ public object Tokenizer {
 
 				// Arithmetic operators
 				case c == "+": {
-					return new Token(TokenType.PLUS, consume(), new Position(mLine, mColumn));
+					return new Token(TokenType.MATH_PLUS, consume(), new Position(mLine, mColumn));
 				}
 				case c == "-": {
-					return new Token(TokenType.MINUS, consume(), new Position(mLine, mColumn));
+					return new Token(TokenType.MATH_MINUS, consume(), new Position(mLine, mColumn));
 				}
 				case c == "*": {
-					return new Token(TokenType.MULTIPLY, consume(), new Position(mLine, mColumn));
+					return new Token(TokenType.MATH_MULTIPLY, consume(), new Position(mLine, mColumn));
 				}
 				case c == "/": {
-					return new Token(TokenType.DIVIDE, consume(), new Position(mLine, mColumn));
+					return new Token(TokenType.MATH_DIVIDE, consume(), new Position(mLine, mColumn));
 				}
 				case c == "(": {
 					return new Token(TokenType.LPAREN, consume(), new Position(mLine, mColumn));
