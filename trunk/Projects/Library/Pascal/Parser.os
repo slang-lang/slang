@@ -32,7 +32,7 @@ public object Parser {
 		mTokens = tokenizer.parseFile(filename);
 		mTokenIterator = mTokens.getIterator();
 
-		print("Building AST...");
+		print("Building AST for \"" + filename + "\"...");
 
 		Statement statement;
 
