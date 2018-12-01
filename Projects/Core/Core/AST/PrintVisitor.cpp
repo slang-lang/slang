@@ -383,7 +383,7 @@ void PrintVisitor::visitTry(TryStatement* node)
 			int indent = mIndentation;
 			mIndentation = 0;
 
-			//visitTypeDeclaration((*it)->mTypeDeclaration);
+			visitTypeDeclaration((*it)->mTypeDeclaration);
 
 			// reset indentation
 			mIndentation = indent;
