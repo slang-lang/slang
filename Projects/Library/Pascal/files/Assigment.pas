@@ -1,4 +1,5 @@
 PROGRAM Assignment;
 BEGIN
-	A := 1;
+	VAR A: INTEGER := 1;
+	PRINT( A );
 END.

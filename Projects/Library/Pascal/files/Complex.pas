@@ -1,14 +1,14 @@
 PROGRAM Complex;
 BEGIN
     BEGIN
-        number := 2;
-        a := number;
-        b := 10 * a + 10 * number / 4;
-        c := a - -b;
+        VAR number: INTEGER := 2;
+        VAR a: INTEGER := number;
+        VAR b: INTEGER := 10 * a + 10 * number / 4;
+        VAR c: INTEGER := a - -b;
 
         PRINT( c );
     END;
 
-    x := 11;
+    VAR x: INTEGER := 11;
     PRINT( x );
 END.

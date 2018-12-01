@@ -86,6 +86,40 @@ public object Parser {
 		return new CompoundStatement( Object statements );
 	}
 
+	private DeclarationStatement parseDeclarationStatement() modify throws {
+		//print("parseDeclarationStatement()");
+
+		Token identifier = consume();
+		if ( !identifier || identifier.mType != TokenType.IDENTIFIER ) {
+			throw new ParseException("invalid DECLARATION statement found", identifier.mPosition);
+		}
+
+		Token type;
+		if ( peek().mType == TokenType.COLON ) {	// this allows using VAR without a typename
+		require(TokenType.COLON);
+
+		type = consume();
+		if ( !type || type.mType != TokenType.IDENTIFIER ) {
+			throw new ParseException("invalid TYPE found", type.mPosition);
+		}
+		}
+
+		Expression value;
+
+		Token assign = peek();
+		if ( assign && assign.mType == TokenType.ASSIGN ) {
+			consume();
+
+			value = expression();
+		}
+
+		return new DeclarationStatement(
+			identifier.mValue,
+			type ? type.mValue : "",
+			value
+		);
+	}
+
 	private IfStatement parseIfStatement() modify throws {
 		//print("parseIfStatement()");
 
@@ -163,6 +197,10 @@ public object Parser {
 				stmt = Statement parsePrintStatement();
 				break;
 			}
+			case TokenType.VAR: {
+				stmt = Statement parseVariableDeclarationStatement();
+				break;
+			}
 			case TokenType.WHILE: {
 				stmt = Statement parseWhileStatement();
 				break;
@@ -199,8 +237,21 @@ public object Parser {
 		return statement;
 	}
 
+	private VariableDeclarationStatement parseVariableDeclarationStatement() modify throws {
+		//print("parseVariableDeclarationStatement()");
+
+		Token start = consume();
+		if ( !start || start.mType != TokenType.VAR ) {
+			throw new ParseException("invalid VAR statement found", start.mPosition);
+		}
+
+		return new VariableDeclarationStatement(
+			parseDeclarationStatement()
+		);
+	}
+
 	private WhileStatement parseWhileStatement() modify throws {
-		print("parseWhileStatement()");
+		//print("parseWhileStatement()");
 
 		Token start = consume();
 		if ( !start || start.mType != TokenType.WHILE ) {

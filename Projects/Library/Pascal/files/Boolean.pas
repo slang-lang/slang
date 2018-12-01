@@ -1,6 +1,6 @@
 PROGRAM Boolean;
 BEGIN
-	A := TRUE;
+	VAR A: BOOLEAN := TRUE;
 	PRINT( A );
 
 	IF A THEN BEGIN

@@ -1,6 +1,6 @@
 PROGRAM WhileTest;
 BEGIN
-	A := 10;
+	VAR A := 10;
 
 	WHILE ( A > 0 )
 	BEGIN
