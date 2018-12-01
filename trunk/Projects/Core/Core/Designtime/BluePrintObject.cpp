@@ -21,7 +21,6 @@ namespace Designtime {
 
 BluePrintObject::BluePrintObject()
 : MethodScope(ANONYMOUS_OBJECT, 0),
-  mIsEnumeration(false),
   mIsPrepared(false),
   mIsReference(false)
 {
@@ -32,7 +31,6 @@ BluePrintObject::BluePrintObject()
 BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
   MethodScope(type, 0),
-  mIsEnumeration(false),
   mIsPrepared(false),
   mIsReference(false)
 {
@@ -116,7 +114,7 @@ bool BluePrintObject::hasDefaultConstructor() const
 
 bool BluePrintObject::isEnumeration() const
 {
-	return mIsEnumeration;
+	return mBluePrintType == BluePrintType::Enum;
 }
 
 bool BluePrintObject::isIterable() const
@@ -205,6 +203,7 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 
 	// replicate basic blueprint data
 	replica->setConst(isConst());
+	replica->setBluePrintType(getBluePrintType());
 	replica->setImplementationType(getImplementationType());
 	replica->setLanguageFeatureState(getLanguageFeatureState());
 	replica->setMember(isMember());
@@ -236,7 +235,7 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 		Designtime::BluePrintObject* blue = dynamic_cast<Designtime::BluePrintObject*>(symIt->second);
 
 		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(blue->QualifiedTypename(), blue->Filename(), blue->getName());
-		member->setIsEnumeration(blue->isEnumeration());
+		member->setBluePrintType(BluePrintType::Enum);
 		member->setLanguageFeatureState(blue->getLanguageFeatureState());
 		member->setMember(blue->isMember());
 		member->setMemoryLayout(blue->getMemoryLayout());
@@ -261,11 +260,6 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 	}
 
 	return replica;
-}
-
-void BluePrintObject::setIsEnumeration(bool state)
-{
-	mIsEnumeration = state;
 }
 
 void BluePrintObject::setIsReference(bool state)
