@@ -237,7 +237,7 @@ public object Parser {
 		Expression node = parseTerm();
 
 		Token op;
-		while ( (op = peek()) != null && (op.mType == TokenType.MINUS || op.mType == TokenType.PLUS) ) {
+		while ( (op = peek()) != null && (op.mType == TokenType.MATH_MINUS || op.mType == TokenType.MATH_PLUS) ) {
 			consume();
 
 			Expression exp = Expression new BinaryExpression(op, node, op.mValue, parseTerm());
@@ -270,12 +270,12 @@ public object Parser {
 
 				return node;
 			}
-			case TokenType.MINUS: {
-				require(TokenType.MINUS);
+			case TokenType.MATH_MINUS: {
+				require(TokenType.MATH_MINUS);
 				return Expression new UnaryExpression(token, token.mValue, parseFactor());	
 			}
-			case TokenType.PLUS: {
-				require(TokenType.PLUS);
+			case TokenType.MATH_PLUS: {
+				require(TokenType.MATH_PLUS);
 				return Expression new UnaryExpression(token, token.mValue, parseFactor());	
 			}
 			case TokenType.STRING: {
@@ -296,7 +296,10 @@ public object Parser {
 		Expression node = parseFactor();
 
 		Token op;
-		while ( (op = peek()) != null && (op.mType == TokenType.DIVIDE || op.mType == TokenType.MULTIPLY) ) {
+		while ( (op = peek()) != null &&
+			(op.mType == TokenType.MATH_DIVIDE
+			|| op.mType == TokenType.MATH_DIVIDE_INT
+			|| op.mType == TokenType.MATH_MULTIPLY) ) {
 			consume();
 			Expression exp = Expression new BinaryExpression(op, node, op.mValue, parseFactor());
 			node = exp;
@@ -327,13 +330,13 @@ public object Parser {
 
 	private bool isComperator(Token token) const {
 		switch ( token.mType ) {
-			case TokenType.EQUAL:			{ return true; }
-			case TokenType.GREATER:			{ return true; }
+			case TokenType.EQUAL:		{ return true; }
+			case TokenType.GREATER:		{ return true; }
 			case TokenType.GREATER_EQUAL:	{ return true; }
-			case TokenType.LESS:			{ return true; }
-			case TokenType.LESS_EQUAL:		{ return true; }
-			case TokenType.UNEQUAL:			{ return true; }
-			default:						{ return false; }
+			case TokenType.LESS:		{ return true; }
+			case TokenType.LESS_EQUAL:	{ return true; }
+			case TokenType.UNEQUAL:		{ return true; }
+			default:			{ return false; }
 		}
 
 		return false;
