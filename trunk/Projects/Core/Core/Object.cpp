@@ -29,7 +29,6 @@ Object::Object()
   mBluePrint(0),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
-  mIsEnumerationValue(false),
   mIsReference(false),
   mQualifiedOuterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
@@ -44,7 +43,6 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mBluePrint(0),
   mFilename(filename),
   mIsAtomicType(false),
-  mIsEnumerationValue(false),
   mIsReference(false),
   mQualifiedOuterface(type),
   mQualifiedTypename(type),
@@ -65,11 +63,11 @@ Object& Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
 		mBluePrint = other.mBluePrint;
+		mBluePrintType = other.mBluePrintType;
 		mFilename = other.mFilename;
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
-		mIsEnumerationValue = other.mIsEnumerationValue;
 		mIsReference = other.mIsReference;
 		mMemoryLayout = other.mMemoryLayout;
 		mName = other.mName;
@@ -96,6 +94,7 @@ void Object::assign(const Object& other)
 {
 	if ( this != &other ) {
 		mBluePrint = other.mBluePrint;
+		mBluePrintType = other.mBluePrintType;
 		mFilename = other.mFilename;
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
@@ -307,7 +306,7 @@ bool Object::isAbstract() const
 		}
 	}
 
-	return getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
+	return mImplementationType == ImplementationType::Abstract || mBluePrintType == BluePrintType::Interface;
 }
 
 bool Object::isAtomicType() const
@@ -317,7 +316,7 @@ bool Object::isAtomicType() const
 
 bool Object::isEnumerationValue() const
 {
-	return mIsEnumerationValue;
+	return mBluePrintType == BluePrintType::Enum;
 }
 
 bool Object::isInstanceOf(const std::string& type) const

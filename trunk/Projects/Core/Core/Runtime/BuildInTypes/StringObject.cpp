@@ -56,10 +56,8 @@ StringObject::StringObject(const Object& other)
 		target == BoolObject::TYPENAME ||
 		target == StringObject::TYPENAME ||
 		target == DoubleObject::TYPENAME ||
-		target == FloatObject::TYPENAME ) {
-		mValue = other.getValue().toStdString();
-	}
-	else if ( other.isEnumerationValue() ) {
+		target == FloatObject::TYPENAME ||
+		other.isEnumerationValue() ) {
 		mValue = other.getValue().toStdString();
 	}
 	else {

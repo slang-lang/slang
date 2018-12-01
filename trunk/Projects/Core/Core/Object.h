@@ -132,7 +132,6 @@ protected:
 	std::string mFilename;
 	Inheritance mInheritance;
 	bool mIsAtomicType;
-	bool mIsEnumerationValue;
 	bool mIsReference;
 	std::string mQualifiedOuterface;
 	std::string mQualifiedTypename;
