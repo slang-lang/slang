@@ -241,7 +241,7 @@ public object Interpreter {
         print( processExpression(stmt.mExpression) );
     }
 
-    private void visitStatement(Statement stmt) modify {
+    private void visitStatement(Statement stmt) modify throws {
         if ( !stmt ) {
             return;
         }
@@ -262,6 +262,12 @@ public object Interpreter {
             case StatementType.PrintStatement: {
                 visitPrintStatement(PrintStatement stmt);
                 break;
+            }
+            case StatementType.ProgramStatement: {
+                throw new RuntimeException("statement not allowed here: " + typeid(stmt));
+            }
+            case StatementType.UnitStatement: {
+                throw new RuntimeException("statement not allowed here: " + typeid(stmt));
             }
         }
     }
