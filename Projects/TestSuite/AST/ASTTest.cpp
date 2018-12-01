@@ -50,6 +50,7 @@ void ASTTest::process()
 	TEST(testConstCorrectness2);
 	TEST(testConstCorrectness3);
 	TEST(testConstCorrectness4);
+	TEST(testConstCorrectness5);
 	TEST(testExit);
 	TEST(testExpression);
 	TEST(testFor);
@@ -199,6 +200,20 @@ void ASTTest::testConstCorrectness4()
 	try {
 		VirtualMachine vm;
 		TTHROWS(vm.runScriptFromFile("Tests/AST/ConstCorrectnessTest4.os"), Common::Exceptions::StaticException);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testConstCorrectness5()
+{
+	try {
+		VirtualMachine vm;
+		TTHROWS(vm.runScriptFromFile("Tests/AST/ConstCorrectnessTest5.os"), Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}

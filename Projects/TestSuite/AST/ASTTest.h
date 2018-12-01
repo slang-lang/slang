@@ -40,6 +40,7 @@ private:	// Tests
 	void testConstCorrectness2();
 	void testConstCorrectness3();
 	void testConstCorrectness4();
+	void testConstCorrectness5();
 	void testExit();
 	void testExpression();
 	void testFor();
