@@ -1,8 +1,8 @@
 PROGRAM Compound;
 BEGIN
-	A := 1;
+	VAR A := 1;
 	BEGIN
-		B := 2;
+		VAR B := 2;
 	END;
 
 	BEGIN

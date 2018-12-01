@@ -11,6 +11,7 @@ public enum StatementType {
 	AssignmentStatement,
 	CompoundStatement,
 	ConstantDeclarationStatement,
+	DeclarationStatement,
 	ForStatement,
 	FunctionStatement,
 	IfStatement,
@@ -72,6 +73,24 @@ public object CompoundStatement extends Statement {
 		}
 
 		return result + LINEBREAK + "END";
+	}
+}
+
+public object DeclarationStatement extends Statement {
+	public string mName const;
+	public string mType const;
+	public Expression mValue const;
+
+	public void Constructor(string name, string type, Expression value) {
+		base.Constructor(StatementType.DeclarationStatement);
+
+		mName = name;
+		mType = type;
+		mValue = value;
+	}
+
+	public string toString() const {
+		return mName + (mType ? ": "  + mType : "") + (mValue ? " := " + mValue.toString() : "");
 	}
 }
 
@@ -205,6 +224,17 @@ public object UnitStatement extends Statement {
 }
 
 public object VariableDeclarationStatement extends Statement {
+	public DeclarationStatement mDeclaration const;
+
+	public void Constructor(DeclarationStatement stmt) {
+		base.Constructor(StatementType.VariableDeclarationStatement);
+
+		mDeclaration = stmt;
+	}
+
+	public string toString() const {
+		return "VAR " + mDeclaration.toString() + ";";
+	}
 }
 
 public object WhileStatement extends Statement {

@@ -29,7 +29,7 @@ public object RuntimeException const implements IException {
 
 public object Interpreter {
     public void Constructor(Statement program) {
-        mProgram = program;
+		mProgram = program;
 		mVariables = new Map<string, String>();
     }
 
@@ -197,15 +197,19 @@ public object Interpreter {
         }
     }
 
-    private void visitAssignStatement(AssignmentStatement assign) modify {
+    private void visitAssignStatement(AssignmentStatement assign) modify throws {
         //print("visitAssignStatement()");
 
         String obj;
         string varName = (VariableExpression assign.mLeft).mVariable;
 
         if ( !mVariables.contains(varName) ) {
+/* declare new variable automatically
             obj = new String("0");
             mVariables.insert(varName, obj);
+*/
+
+            throw new RuntimeException("unknown variable '" + varName + "' referenced");
         }
         else {
             obj = mVariables.get(varName);
@@ -272,6 +276,10 @@ public object Interpreter {
             case StatementType.UnitStatement: {
                 throw new RuntimeException("statement not allowed here: " + typeid(stmt));
             }
+            case StatementType.VariableDeclarationStatement: {
+		visitVariableDeclarationStatement(VariableDeclarationStatement stmt);
+		break;
+            }
             case StatementType.WhileStatement: {
 		visitWhileStatement(WhileStatement stmt);
 		break;
@@ -279,8 +287,26 @@ public object Interpreter {
         }
     }
 
+    private void visitVariableDeclarationStatement(VariableDeclarationStatement stmt) modify throws {
+	//print("visitVariableDeclarationStatement()");
+
+	var decl = stmt.mDeclaration;
+
+	string name = decl.mName;
+	if ( mVariables.contains( name ) ) {
+		throw new RuntimeException("duplicate variable '" + name + "' declared");
+	}
+
+	var obj = new String("0");
+	mVariables.insert(name, obj);
+
+	if ( decl.mValue ) {
+		obj = processExpression(decl.mValue);
+	}
+    }
+
     private void visitWhileStatement(WhileStatement stmt) modify throws {
-	print("visitWhileStatement()");
+	//print("visitWhileStatement()");
 
 	while ( true ) {
 		var condition = processExpression( stmt.mCondition );

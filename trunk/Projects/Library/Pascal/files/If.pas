@@ -1,6 +1,6 @@
 PROGRAM IfStatement;
 BEGIN
-	A := 0 OR 1;
+	VAR A := 0 OR 1;
 	PRINT( A );
 
 	IF A < 1 THEN BEGIN

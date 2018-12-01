@@ -95,7 +95,8 @@ public object Tokenizer {
 		int column = mColumn;
 		string result;
 
-		while ( isCharacter(peek()) ) {
+		string c;
+		while ( (c = peek()) && (isCharacter(c) || isDigit(c)) ) {
 			result += consume();
 		}
 
@@ -143,6 +144,9 @@ public object Tokenizer {
 				}
 				case c == ":" && peek(2) == "=": {
 					return new Token(TokenType.ASSIGN, consume(2), new Position(mLine, mColumn));
+				}
+				case c == ":": {
+					return new Token(TokenType.COLON, consume(), new Position(mLine, mColumn));
 				}
 				case c == ";": {
 					return new Token(TokenType.SEMICOLON, consume(), new Position(mLine, mColumn));

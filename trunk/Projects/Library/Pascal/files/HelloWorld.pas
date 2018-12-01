@@ -2,7 +2,7 @@ PROGRAM HelloWorld;
 BEGIN
 	PRINT( 'Hello, World!' );
 
-	A := 1;
-	B := 'Bla bla';
-	C := 2 + 3;
+	VAR A := 1;
+	VAR B := 'Bla bla';
+	VAR C := 2 + 3;
 END.
