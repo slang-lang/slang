@@ -333,6 +333,7 @@ public object Parser {
 			case TokenType.LESS:			{ return true; }
 			case TokenType.LESS_EQUAL:		{ return true; }
 			case TokenType.UNEQUAL:			{ return true; }
+			default:						{ return false; }
 		}
 
 		return false;

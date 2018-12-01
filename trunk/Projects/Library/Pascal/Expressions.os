@@ -21,6 +21,7 @@ public enum ExpressionType {
 public abstract object Expression extends Node {
 	public ExpressionType mExpressionType const;
 	public Position mPosition const;
+	public string mResultType const;
 
 	public void Constructor(ExpressionType expressionType const, Token token) {
 		base.Constructor(NodeType.ExpressionNode);
@@ -58,6 +59,7 @@ public object BooleanBinaryExpression extends BinaryExpression {
 		base.Constructor(token, left, op, right);
 
 		mExpressionType = ExpressionType.BooleanBinaryExpression;
+		mResultType = "bool";
 	}
 
 	public string toString() const {
@@ -71,6 +73,7 @@ public object ConstBooleanExpression extends Expression {
 	public void Constructor(Token token, bool value) {
 		base.Constructor(ExpressionType.ConstBooleanExpression, token);
 
+		mResultType = "bool";
 		mValue = value;
 	}
 
@@ -85,6 +88,7 @@ public object ConstIntegerExpression extends Expression {
 	public void Constructor(Token token, int value) {
 		base.Constructor(ExpressionType.ConstIntegerExpression, token);
 
+		mResultType = "int";
 		mValue = value;
 	}
 
@@ -99,6 +103,7 @@ public object ConstStringExpression extends Expression {
 	public void Constructor(Token token, string value) {
 		base.Constructor(ExpressionType.ConstStringExpression, token);
 
+		mResultType = "string";
 		mValue = value;
 	}
 
@@ -116,6 +121,7 @@ public object UnaryExpression extends Expression {
 
 		mExpression = exp;
 		mOperator = op;
+		mResultType = exp.mResultType;
 	}
 
 	public string toString() const {
@@ -126,9 +132,10 @@ public object UnaryExpression extends Expression {
 public object VariableExpression extends Expression {
 	public string mVariable const;
 
-	public void Constructor(Token token, string variable) {
+	public void Constructor(Token token, string variable, string type = "int") {
 		base.Constructor(ExpressionType.VariableExpression, token);
 
+		mResultType = type;
 		mVariable = variable;
 	}
 
