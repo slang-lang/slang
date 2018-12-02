@@ -76,6 +76,20 @@ public object CompoundStatement extends Statement {
 	}
 }
 
+public object ConstantDeclarationStatement extends Statement {
+	public DeclarationStatement mDeclaration const;
+
+	public void Constructor(DeclarationStatement stmt) {
+		base.Constructor(StatementType.ConstantDeclarationStatement);
+
+		mDeclaration = stmt;
+	}
+
+	public string toString() const {
+		return "CONST " + mDeclaration.toString() + ";";
+	}
+}
+
 public object DeclarationStatement extends Statement {
 	public string mName const;
 	public string mType const;

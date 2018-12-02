@@ -1,6 +1,7 @@
 
 // library imports
 import System.Collections.List;
+import System.Collections.Map;
 import System.IO.File;
 
 // project imports
@@ -29,6 +30,7 @@ public object Parser {
 	public Statement parseFile(string filename) modify throws {
 		var tokenizer = new Tokenizer();
 
+		mScope = new Map<string, bool>();
 		mTokens = tokenizer.parseFile(filename);
 		mTokenIterator = mTokens.getIterator();
 
@@ -85,6 +87,28 @@ public object Parser {
 
 		return new CompoundStatement( Object statements );
 	}
+
+	private ConstantDeclarationStatement parseConstantDeclarationStatement() modify throws {
+		//print("parseConstantDeclarationStatement()");
+
+		Token start = consume();
+		if ( !start || start.mType != TokenType.CONST ) {
+			throw new ParseException("invalid CONST statement found", start.mPosition);
+		}
+
+		var declStmt = parseDeclarationStatement();
+
+		if ( mScope.contains(declStmt.mName) ) {
+			throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+		}
+
+		mScope.insert(declStmt.mName, true);
+
+		return new ConstantDeclarationStatement(
+			declStmt
+		);
+	}
+
 
 	private DeclarationStatement parseDeclarationStatement() modify throws {
 		//print("parseDeclarationStatement()");
@@ -185,6 +209,10 @@ public object Parser {
 				stmt = Statement parseCompoundStatement();
 				break;
 			}
+			case TokenType.CONST: {
+				stmt = Statement parseConstantDeclarationStatement();
+				break;
+			}
 			case TokenType.IDENTIFIER: {
 				stmt = Statement parseAssignStatement();
 				break;
@@ -245,8 +273,16 @@ public object Parser {
 			throw new ParseException("invalid VAR statement found", start.mPosition);
 		}
 
+		var declStmt = parseDeclarationStatement();
+
+		if ( mScope.contains(declStmt.mName) ) {
+			throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+		}
+
+		mScope.insert(declStmt.mName, true);
+
 		return new VariableDeclarationStatement(
-			parseDeclarationStatement()
+			declStmt
 		);
 	}
 
@@ -258,8 +294,12 @@ public object Parser {
 			throw new ParseException("invalid WHILE statement found", start.mPosition);
 		}
 
+		var condition = expression();
+
+		require(TokenType.DO);
+
 		return new WhileStatement(
-			expression(),
+			condition,
 			parseStatement(false)
 		);
 	}
@@ -441,6 +481,7 @@ public object Parser {
 //////////////////////////////////////////////////////////////////////////////
 
 
+	private Map<string, bool> mScope;
 	private Iterator<Token> mTokenIterator;
 	private List<Token> mTokens;
 }

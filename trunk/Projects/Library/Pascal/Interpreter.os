@@ -29,6 +29,7 @@ public object RuntimeException const implements IException {
 
 public object Interpreter {
     public void Constructor(Statement program) {
+		mConstants = new Map<string, String>();
 		mProgram = program;
 		mVariables = new Map<string, String>();
     }
@@ -106,6 +107,22 @@ public object Interpreter {
         return exp.mValue;
     }
 
+    private string processConstantExpression(ConstantExpression exp) const throws {
+        //print("processConstantExpression(" + exp.toString() + ")");
+
+        String obj;
+        string varName = (ConstantExpression exp).mConstant;
+
+        if ( !mConstants.contains(varName) ) {
+            throw new RuntimeException("Variable '" + varName + "' is unknown");
+        }
+        else {
+            obj = mConstants.get(varName);
+        }
+
+        return string obj;
+    }
+
     private int processConstIntegerExpression(ConstIntegerExpression exp) const {
         //print("processConstIntegerExpression(" + exp.toString() + ")");
 
@@ -127,6 +144,9 @@ public object Interpreter {
             }
             case ExpressionType.BooleanBinaryExpression: {
                 return string processBooleanBinaryExpression(BooleanBinaryExpression exp);
+            }
+            case ExpressionType.ConstantExpression: {
+		return string processConstantExpression(ConstantExpression exp);
             }
             case ExpressionType.ConstBooleanExpression: {
                 return string processConstBooleanExpression(ConstBooleanExpression exp);
@@ -226,6 +246,25 @@ public object Interpreter {
         }
     }
 
+    private void visitConstantDeclarationStatement(ConstantDeclarationStatement stmt) modify throws {
+	//print("visitConstantDeclarationStatement()");
+
+	var decl = stmt.mDeclaration;
+
+	string name = decl.mName;
+	if ( mConstants.contains( name ) ) {
+		throw new RuntimeException("duplicate constant '" + name + "' declared");
+	}
+
+	var obj = new String("0");
+	mConstants.insert(name, obj);
+
+	if ( decl.mValue ) {
+		obj = processExpression(decl.mValue);
+	}
+    }
+
+
     private void visitIfStatement(IfStatement stmt) modify {
         //print("visitIfStatement()");
 
@@ -254,13 +293,17 @@ public object Interpreter {
         }
 
         switch ( stmt.mStatementType ) {
+            case StatementType.AssignmentStatement: {
+                visitAssignStatement(AssignmentStatement stmt);
+                break;
+            }
             case StatementType.CompoundStatement: {
                 visitCompoundStatement(CompoundStatement stmt);
                 break;
             }
-            case StatementType.AssignmentStatement: {
-                visitAssignStatement(AssignmentStatement stmt);
-                break;
+            case StatementType.ConstantDeclarationStatement: {
+		visitConstantDeclarationStatement(ConstantDeclarationStatement stmt);
+		break;
             }
             case StatementType.IfStatement: {
                 visitIfStatement(IfStatement stmt);
@@ -318,6 +361,7 @@ public object Interpreter {
 	}
     }
 
+    protected Map<string, String> mConstants;
     protected Map<string, String> mVariables;
 
     private Statement mProgram;
