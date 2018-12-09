@@ -101,12 +101,6 @@ public object Interpreter {
         throw new RuntimeException("invalid binary operator '" + exp.mOperator + "'!");
     }
 
-    private bool processConstBooleanExpression(ConstBooleanExpression exp) const {
-        //print("processConstBooleanExpression(" + exp.toString() + ")");
-
-        return exp.mValue;
-    }
-
     private string processConstantExpression(ConstantExpression exp) const throws {
         //print("processConstantExpression(" + exp.toString() + ")");
 
@@ -123,14 +117,20 @@ public object Interpreter {
         return string obj;
     }
 
-    private int processConstIntegerExpression(ConstIntegerExpression exp) const {
-        //print("processConstIntegerExpression(" + exp.toString() + ")");
+    private bool processLiteralBooleanExpression(LiteralBooleanExpression exp) const {
+        //print("processLiteralBooleanExpression(" + exp.toString() + ")");
 
         return exp.mValue;
     }
 
-    private string processConstStringExpression(ConstStringExpression exp) const {
-        //print("processConstStringExpression(" + exp.toString() + ")");
+    private int processLiteralIntegerExpression(LiteralIntegerExpression exp) const {
+        //print("processLiteralIntegerExpression(" + exp.toString() + ")");
+
+        return exp.mValue;
+    }
+
+    private string processLiteralStringExpression(LiteralStringExpression exp) const {
+        //print("processLiteralStringExpression(" + exp.toString() + ")");
 
         return exp.mValue;
     }
@@ -146,16 +146,16 @@ public object Interpreter {
                 return string processBooleanBinaryExpression(BooleanBinaryExpression exp);
             }
             case ExpressionType.ConstantExpression: {
-		return string processConstantExpression(ConstantExpression exp);
+		        return string processConstantExpression(ConstantExpression exp);
             }
-            case ExpressionType.ConstBooleanExpression: {
-                return string processConstBooleanExpression(ConstBooleanExpression exp);
+            case ExpressionType.LiteralBooleanExpression: {
+                return string processLiteralBooleanExpression(LiteralBooleanExpression exp);
             }
-            case ExpressionType.ConstIntegerExpression: {
-                return string processConstIntegerExpression(ConstIntegerExpression exp);
+            case ExpressionType.LiteralIntegerExpression: {
+                return string processLiteralIntegerExpression(LiteralIntegerExpression exp);
             }
-            case ExpressionType.ConstStringExpression: {
-                return processConstStringExpression(ConstStringExpression exp);
+            case ExpressionType.LiteralStringExpression: {
+                return processLiteralStringExpression(LiteralStringExpression exp);
             }
             case ExpressionType.UnaryExpression: {
                 return processUnaryExpression(UnaryExpression exp);
