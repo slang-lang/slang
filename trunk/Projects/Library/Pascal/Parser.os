@@ -134,12 +134,12 @@ public object Parser {
 
 		Token type;
 		if ( peek().mType == TokenType.COLON ) {	// this allows using VAR without a typename
-		require(TokenType.COLON);
+			require(TokenType.COLON);
 
-		type = consume();
-		if ( !type || type.mType != TokenType.IDENTIFIER ) {
-			throw new ParseException("invalid TYPE found", type.mPosition);
-		}
+			type = consume();
+			if ( !type || type.mType != TokenType.IDENTIFIER ) {
+				throw new ParseException("invalid TYPE found", type.mPosition);
+			}
 		}
 
 		Expression value;
@@ -377,14 +377,14 @@ public object Parser {
 		switch ( token.mType ) {
 			case TokenType.BOOLEAN: {
 				require(TokenType.BOOLEAN);
-				return Expression new ConstBooleanExpression(token, token.mValue == "TRUE");
+				return Expression new LiteralBooleanExpression(token, token.mValue == "TRUE");
 			}
 			case TokenType.IDENTIFIER: {
 				return Expression parseIdentifier();
 			}
 			case TokenType.INTEGER: {
 				require(TokenType.INTEGER);
-				return Expression new ConstIntegerExpression(token, int token.mValue);
+				return Expression new LiteralIntegerExpression(token, int token.mValue);
 			}
 			case TokenType.LPAREN: {
 				require(TokenType.LPAREN);
@@ -403,7 +403,7 @@ public object Parser {
 			}
 			case TokenType.STRING: {
 				require(TokenType.STRING);
-				return Expression new ConstStringExpression(token, token.mValue);
+				return Expression new LiteralStringExpression(token, token.mValue);
 			}
 			default: {
 				return Expression parseIdentifier();
@@ -435,7 +435,7 @@ public object Parser {
 		//print("parseIdentifier()");
 
 		Token token = consume();
-/*
+
 		var type = getType(token.mValue);
 		if ( !type ) {
 			throw new ParseException("unknown symbol '" + token.mValue + "' detected", token.mPosition);
@@ -444,8 +444,8 @@ public object Parser {
 		if ( type.mIsConst ) {
 			return Expression new ConstantExpression(token, toUpper(token.mValue), type.mType);
 		}
-*/
-		return Expression new VariableExpression(token, toUpper(token.mValue));//, type.mType);
+
+		return Expression new VariableExpression(token, toUpper(token.mValue), type.mType);
 	}
 
 // Expression parsing
@@ -462,7 +462,9 @@ public object Parser {
 	}
 
 	private ParseType getType(string identifier) const throws {
-		return mScope[identifier];
+		try { return mScope.get(identifier); }
+
+		return ParseType null;
 	}
 
 	private bool isComperator(Token token) const {

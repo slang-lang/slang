@@ -10,9 +10,9 @@ public enum ExpressionType {
 	BinaryExpression,
 	BooleanBinaryExpression,
 	ConstantExpression,
-	ConstBooleanExpression,
-	ConstIntegerExpression,
-	ConstStringExpression,
+	LiteralBooleanExpression,
+	LiteralIntegerExpression,
+	LiteralStringExpression,
 	UnaryExpression,
 	VariableExpression
 	;
@@ -71,7 +71,7 @@ public object BooleanBinaryExpression extends BinaryExpression {
 public object ConstantExpression extends Expression {
 	public string mConstant const;
 
-	public void Constructor(Token token, string constant, string type = "int") {
+	public void Constructor(Token token, string constant, string type = "INTEGER") {
 		base.Constructor(ExpressionType.ConstantExpression, token);
 
 		mConstant = constant;
@@ -79,52 +79,52 @@ public object ConstantExpression extends Expression {
 	}
 
 	public string toString() const {
-		return "ConstantExpression(\"" + mConstant + "\")";
+		return "ConstantExpression(\"" + mConstant + "\", Type: " + mResultType + ")";
 	}
 }
 
-public object ConstBooleanExpression extends Expression {
+public object LiteralBooleanExpression extends Expression {
 	public bool mValue const;
 
 	public void Constructor(Token token, bool value) {
-		base.Constructor(ExpressionType.ConstBooleanExpression, token);
+		base.Constructor(ExpressionType.LiteralBooleanExpression, token);
 
 		mResultType = "bool";
 		mValue = value;
 	}
 
 	public string toString() const {
-		return "ConstBooleanExpression(" + mValue + ")";
+		return "LiteralBooleanExpression(" + mValue + ")";
 	}
 }
 
-public object ConstIntegerExpression extends Expression {
+public object LiteralIntegerExpression extends Expression {
 	public int mValue const;
 
 	public void Constructor(Token token, int value) {
-		base.Constructor(ExpressionType.ConstIntegerExpression, token);
+		base.Constructor(ExpressionType.LiteralIntegerExpression, token);
 
 		mResultType = "int";
 		mValue = value;
 	}
 
 	public string toString() const {
-		return "ConstIntegerExpression(" + mValue + ")";
+		return "LiteralIntegerExpression(" + mValue + ")";
 	}
 }
 
-public object ConstStringExpression extends Expression {
+public object LiteralStringExpression extends Expression {
 	public string mValue const;
 
 	public void Constructor(Token token, string value) {
-		base.Constructor(ExpressionType.ConstStringExpression, token);
+		base.Constructor(ExpressionType.LiteralStringExpression, token);
 
 		mResultType = "string";
 		mValue = value;
 	}
 
 	public string toString() const {
-		return "ConstStringExpression(\"" + mValue + "\")";
+		return "LiteralStringExpression(\"" + mValue + "\")";
 	}
 }
 
@@ -148,7 +148,7 @@ public object UnaryExpression extends Expression {
 public object VariableExpression extends Expression {
 	public string mVariable const;
 
-	public void Constructor(Token token, string variable, string type = "int") {
+	public void Constructor(Token token, string variable, string type = "INTEGER") {
 		base.Constructor(ExpressionType.VariableExpression, token);
 
 		mResultType = type;

@@ -4,4 +4,5 @@ BEGIN
 	PRINT( A );
 
 	VAR B := A + 1;
+	PRINT( B );
 END.
