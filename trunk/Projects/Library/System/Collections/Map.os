@@ -111,10 +111,13 @@ public object Map<K, V> implements ICollection {
 		return mItems.size();
 	}
 
-	public V operator[](K key) const {
+	public V operator[](K key) const throws {
 		return get(key);
 	}
 
 	private List<Object> mItems;		// a list of Pair<K, V>
+
+	private Iterator<Object> __iterator;				// this is a hack to automatically initialize a generic type
+	private ReverseIterator<Object> __reverse_iterator;		// this is a hack to automatically initialize a generic type
 }
 
