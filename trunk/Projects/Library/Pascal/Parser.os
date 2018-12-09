@@ -25,12 +25,26 @@ public object ParseException const implements IException {
 	private Position mPosition const;
 }
 
+public object ParseType const {
+	public bool mIsConst const;
+	public string mType const;
+
+	public void Constructor(string type, bool isConst = false) {
+		mIsConst = isConst;
+		mType = type;
+	}
+
+	public string toString() const {
+		return "Type(" + mType + ", Const: " + mIsConst + ")";
+	}
+}
+
 
 public object Parser {
 	public Statement parseFile(string filename) modify throws {
 		var tokenizer = new Tokenizer();
 
-		mScope = new Map<string, bool>();
+		mScope = new Map<string, ParseType>();
 		mTokens = tokenizer.parseFile(filename);
 		mTokenIterator = mTokens.getIterator();
 
@@ -58,7 +72,7 @@ public object Parser {
 
 		require(TokenType.IDENTIFIER);
 
-		var identifierExp = Expression new VariableExpression(identifier, toUpper(identifier.mValue));
+		var identifierExp = Expression new VariableExpression(identifier, toUpper(identifier.mValue), getType(identifier.mValue).mType);
 
 		require(TokenType.ASSIGN);
 
@@ -102,7 +116,7 @@ public object Parser {
 			throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
 		}
 
-		mScope.insert(declStmt.mName, true);
+		mScope.insert(declStmt.mName, new ParseType(declStmt.mType, true));
 
 		return new ConstantDeclarationStatement(
 			declStmt
@@ -279,7 +293,7 @@ public object Parser {
 			throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
 		}
 
-		mScope.insert(declStmt.mName, true);
+		mScope.insert(declStmt.mName, new ParseType(declStmt.mType, false));
 
 		return new VariableDeclarationStatement(
 			declStmt
@@ -421,7 +435,17 @@ public object Parser {
 		//print("parseIdentifier()");
 
 		Token token = consume();
-		return Expression new VariableExpression(token, toUpper(token.mValue));
+/*
+		var type = getType(token.mValue);
+		if ( !type ) {
+			throw new ParseException("unknown symbol '" + token.mValue + "' detected", token.mPosition);
+		}
+
+		if ( type.mIsConst ) {
+			return Expression new ConstantExpression(token, toUpper(token.mValue), type.mType);
+		}
+*/
+		return Expression new VariableExpression(token, toUpper(token.mValue));//, type.mType);
 	}
 
 // Expression parsing
@@ -435,6 +459,10 @@ public object Parser {
 		try { return mTokenIterator.next(); }
 
 		return Token null;
+	}
+
+	private ParseType getType(string identifier) const throws {
+		return mScope[identifier];
 	}
 
 	private bool isComperator(Token token) const {
@@ -481,7 +509,7 @@ public object Parser {
 //////////////////////////////////////////////////////////////////////////////
 
 
-	private Map<string, bool> mScope;
+	private Map<string, ParseType> mScope;
 	private Iterator<Token> mTokenIterator;
 	private List<Token> mTokens;
 }

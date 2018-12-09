@@ -156,7 +156,7 @@ public object VariableExpression extends Expression {
 	}
 
 	public string toString() const {
-		return "VariableExpression(\"" + mVariable + "\")";
+		return "VariableExpression(\"" + mVariable + "\", Type: " + mResultType + ")";
 	}
 }
 
