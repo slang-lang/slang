@@ -137,7 +137,7 @@ public object Parser {
 			require(TokenType.COLON);
 
 			type = consume();
-			if ( !type || type.mType != TokenType.IDENTIFIER ) {
+			if ( !type || type.mType != TokenType.TYPE ) {
 				throw new ParseException("invalid TYPE found", type.mPosition);
 			}
 		}

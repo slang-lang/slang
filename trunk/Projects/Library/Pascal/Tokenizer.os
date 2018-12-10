@@ -18,10 +18,10 @@ public object Tokenizer {
 		RESERVED_WORDS = new List<Token>();
 		RESERVED_WORDS.push_back(new Token(TokenType.AND, "AND", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.BEGIN, "BEGIN", Position null));
-		RESERVED_WORDS.push_back(new Token(TokenType.DO, "DO", Position null));
-		RESERVED_WORDS.push_back(new Token(TokenType.CONST, "CONST", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.BOOLEAN, "FALSE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.BOOLEAN, "TRUE", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.CONST, "CONST", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.DO, "DO", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.ELSE, "ELSE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.IF, "IF", Position null));
@@ -30,6 +30,9 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.PRINT, "PRINT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROGRAM, "PROGRAM", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.THEN, "THEN", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "BOOLEAN", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "INTEGER", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "STRING", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.UNIT, "UNIT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.VAR, "VAR", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.WHILE, "WHILE", Position null));
