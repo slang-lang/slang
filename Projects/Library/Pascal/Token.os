@@ -40,6 +40,7 @@ public enum TokenType {
 	STRING,
 	THEN,
 	TRUE,
+	TYPE,
 	UNEQUAL,
 	UNIT,
 	VAR,
@@ -83,6 +84,7 @@ public string TokenToString(TokenType type val) {
 		case TokenType.STRING:			{ return "STRING"; }
 		case TokenType.THEN:			{ return "THEN"; }
 		case TokenType.TRUE:			{ return "TRUE"; }
+		case TokenType.TYPE:			{ return "TYPE"; }
 		case TokenType.UNEQUAL:			{ return "UNEQUAL"; }
 		case TokenType.UNIT:			{ return "UNIT"; }
 		case TokenType.VAR:			{ return "VAR"; }

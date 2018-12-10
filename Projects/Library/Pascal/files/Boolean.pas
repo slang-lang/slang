@@ -1,4 +1,4 @@
-PROGRAM Boolean;
+PROGRAM BooleanTest;
 BEGIN
 	VAR A: BOOLEAN := TRUE;
 	PRINT( A );
