@@ -60,6 +60,9 @@ public object Interpreter {
 				return "" + int "" + ((int left) / (int right));
 			}
 			case "+": {
+                if ( exp.mLeft.mResultType == "STRING" ) {
+                    return left + right;
+                }
 				return "" + ((float left) + (float right));
 			}
 			case "-": {
@@ -129,6 +132,12 @@ public object Interpreter {
         return exp.mValue;
     }
 
+    private float processLiteralRealExpression(LiteralRealExpression exp) const {
+        //print("processLiteralRealExpression(" + exp.toString() + ")");
+
+        return exp.mValue;
+    }
+
     private string processLiteralStringExpression(LiteralStringExpression exp) const {
         //print("processLiteralStringExpression(" + exp.toString() + ")");
 
@@ -153,6 +162,9 @@ public object Interpreter {
             }
             case ExpressionType.LiteralIntegerExpression: {
                 return string processLiteralIntegerExpression(LiteralIntegerExpression exp);
+            }
+            case ExpressionType.LiteralRealExpression: {
+                return string processLiteralRealExpression(LiteralRealExpression exp);
             }
             case ExpressionType.LiteralStringExpression: {
                 return processLiteralStringExpression(LiteralStringExpression exp);
@@ -302,8 +314,8 @@ public object Interpreter {
                 break;
             }
             case StatementType.ConstantDeclarationStatement: {
-		visitConstantDeclarationStatement(ConstantDeclarationStatement stmt);
-		break;
+                visitConstantDeclarationStatement(ConstantDeclarationStatement stmt);
+                break;
             }
             case StatementType.IfStatement: {
                 visitIfStatement(IfStatement stmt);
@@ -320,12 +332,12 @@ public object Interpreter {
                 throw new RuntimeException("statement not allowed here: " + typeid(stmt));
             }
             case StatementType.VariableDeclarationStatement: {
-		visitVariableDeclarationStatement(VariableDeclarationStatement stmt);
-		break;
+                visitVariableDeclarationStatement(VariableDeclarationStatement stmt);
+                break;
             }
             case StatementType.WhileStatement: {
-		visitWhileStatement(WhileStatement stmt);
-		break;
+                visitWhileStatement(WhileStatement stmt);
+                break;
             }
         }
     }

@@ -4,5 +4,5 @@ BEGIN
 	PRINT( 1 + 2 + 3 );
 	PRINT( 'Hello' );
 	PRINT( A );
-	PRINT( ' A := ' + A );
+	PRINT( 'A := ' + A );
 END.

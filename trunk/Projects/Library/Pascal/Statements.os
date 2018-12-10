@@ -86,7 +86,7 @@ public object ConstantDeclarationStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "CONST " + mDeclaration.toString() + ";";
+		return "CONST " + mDeclaration.toString();
 	}
 }
 
@@ -247,7 +247,7 @@ public object VariableDeclarationStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "VAR " + mDeclaration.toString() + ";";
+		return "VAR " + mDeclaration.toString();
 	}
 }
 

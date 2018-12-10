@@ -35,6 +35,7 @@ public enum TokenType {
 	OR,
 	PRINT,
 	PROGRAM,
+	REAL,
 	RPAREN,
 	SEMICOLON,
 	STRING,
@@ -79,6 +80,7 @@ public string TokenToString(TokenType type val) {
 		case TokenType.OR:			{ return "OR"; }
 		case TokenType.PRINT:			{ return "PRINT"; }
 		case TokenType.PROGRAM:			{ return "PROGRAM"; }
+		case TokenType.REAL:			{ return "REAL"; }
 		case TokenType.RPAREN:			{ return ")"; }
 		case TokenType.SEMICOLON:		{ return "SEMICOLON"; }
 		case TokenType.STRING:			{ return "STRING"; }

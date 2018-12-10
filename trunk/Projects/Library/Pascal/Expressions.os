@@ -12,6 +12,7 @@ public enum ExpressionType {
 	ConstantExpression,
 	LiteralBooleanExpression,
 	LiteralIntegerExpression,
+	LiteralRealExpression,
 	LiteralStringExpression,
 	UnaryExpression,
 	VariableExpression
@@ -51,7 +52,7 @@ public object BinaryExpression extends Expression {
 	}
 
 	public string toString() const {
-		return "BinaryExpression(" + mLeft.toString() + ", '" + mOperator + "', " + mRight.toString() + ")";
+		return "BinaryExpression(" + mLeft.toString() + ", '" + mOperator + "', " + mRight.toString() + ", Type: " + mResultType + ")";
 	}
 }
 
@@ -64,7 +65,7 @@ public object BooleanBinaryExpression extends BinaryExpression {
 	}
 
 	public string toString() const {
-		return "BooleanBinaryExpression(" + mLeft.toString() + ", '" + mOperator + "', " + mRight.toString() + ")";
+		return "BooleanBinaryExpression(" + mLeft.toString() + ", '" + mOperator + "', " + mRight.toString() + ", Type: " + mResultType + ")";
 	}
 }
 
@@ -89,7 +90,7 @@ public object LiteralBooleanExpression extends Expression {
 	public void Constructor(Token token, bool value) {
 		base.Constructor(ExpressionType.LiteralBooleanExpression, token);
 
-		mResultType = "bool";
+		mResultType = "BOOLEAN";
 		mValue = value;
 	}
 
@@ -104,12 +105,27 @@ public object LiteralIntegerExpression extends Expression {
 	public void Constructor(Token token, int value) {
 		base.Constructor(ExpressionType.LiteralIntegerExpression, token);
 
-		mResultType = "int";
+		mResultType = "INTEGER";
 		mValue = value;
 	}
 
 	public string toString() const {
 		return "LiteralIntegerExpression(" + mValue + ")";
+	}
+}
+
+public object LiteralRealExpression extends Expression {
+	public float mValue const;
+
+	public void Constructor(Token token, float value) {
+		base.Constructor(ExpressionType.LiteralRealExpression, token);
+
+		mResultType = "REAL";
+		mValue = value;
+	}
+
+	public string toString() const {
+		return "LiteralRealExpression(" + mValue + ")";
 	}
 }
 
@@ -119,7 +135,7 @@ public object LiteralStringExpression extends Expression {
 	public void Constructor(Token token, string value) {
 		base.Constructor(ExpressionType.LiteralStringExpression, token);
 
-		mResultType = "string";
+		mResultType = "STRING";
 		mValue = value;
 	}
 
@@ -141,7 +157,7 @@ public object UnaryExpression extends Expression {
 	}
 
 	public string toString() const {
-		return "UnaryExpression(" + mOperator + "', " + mExpression.toString() + ")";
+		return "UnaryExpression(" + mOperator + "', " + mExpression.toString() + ", Type: " + mResultType + ")";
 	}
 }
 
