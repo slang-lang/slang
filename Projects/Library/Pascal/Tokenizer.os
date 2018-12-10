@@ -32,6 +32,7 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.THEN, "THEN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "BOOLEAN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "INTEGER", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "REAL", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "STRING", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.UNIT, "UNIT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.VAR, "VAR", Position null));

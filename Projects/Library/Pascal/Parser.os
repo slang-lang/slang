@@ -401,6 +401,10 @@ public object Parser {
 				require(TokenType.MATH_PLUS);
 				return Expression new UnaryExpression(token, token.mValue, parseFactor());	
 			}
+			case TokenType.REAL: {
+				require(TokenType.REAL);
+				return Expression new LiteralRealExpression(token, float token.mValue);
+			}
 			case TokenType.STRING: {
 				require(TokenType.STRING);
 				return Expression new LiteralStringExpression(token, token.mValue);
