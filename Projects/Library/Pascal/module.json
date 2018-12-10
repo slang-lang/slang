@@ -1,5 +1,5 @@
 {
-  "name": "Pascale Interpreter",
+  "name": "Pascal Interpreter",
   "name_short": "Pascal",
   "version": "0.0.3",
   "description": "Pascal interpreter parses and interprets (=runs) .pas scripts.",
