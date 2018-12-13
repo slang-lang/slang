@@ -108,13 +108,13 @@ public object Interpreter {
         //print("processConstantExpression(" + exp.toString() + ")");
 
         String obj;
-        string varName = (ConstantExpression exp).mConstant;
+        string name = (ConstantExpression exp).mConstant;
 
-        if ( !mConstants.contains(varName) ) {
-            throw new RuntimeException("Variable '" + varName + "' is unknown");
+        if ( !mConstants.contains(name) ) {
+            throw new RuntimeException("Constant '" + name + "' is unknown");
         }
         else {
-            obj = mConstants.get(varName);
+            obj = mConstants.get(name);
         }
 
         return string obj;
@@ -236,11 +236,6 @@ public object Interpreter {
         string varName = (VariableExpression assign.mLeft).mVariable;
 
         if ( !mVariables.contains(varName) ) {
-/* declare new variable automatically
-            obj = new String("0");
-            mVariables.insert(varName, obj);
-*/
-
             throw new RuntimeException("unknown variable '" + varName + "' referenced");
         }
         else {
@@ -253,35 +248,41 @@ public object Interpreter {
     private void visitCompoundStatement(CompoundStatement compound) modify {
         //print("visitCompoundStatement()");
 
+        if ( compound.mConstantDeclarations ) {
+            visitConstantDeclarationStatement(compound.mConstantDeclarations);
+        }
+
+        if ( compound.mVariableDeclarations ) {
+            visitVariableDeclarationStatement(compound.mVariableDeclarations);
+        }
+
         foreach ( Statement stmt : compound.mStatements ) {
             visitStatement(stmt);
         }
     }
 
     private void visitConstantDeclarationStatement(ConstantDeclarationStatement stmt) modify throws {
-	//print("visitConstantDeclarationStatement()");
+        //print("visitConstantDeclarationStatement()");
 
-	var decl = stmt.mDeclaration;
+        foreach ( DeclarationStatement declStmt : stmt.mDeclarations ) {
+            string name = declStmt.mName;
+            if ( mConstants.contains( name ) ) {
+                throw new RuntimeException("duplicate constant '" + name + "' declared");
+            }
 
-	string name = decl.mName;
-	if ( mConstants.contains( name ) ) {
-		throw new RuntimeException("duplicate constant '" + name + "' declared");
-	}
+            var obj = new String("0");
+            mConstants.insert(name, obj);
 
-	var obj = new String("0");
-	mConstants.insert(name, obj);
-
-	if ( decl.mValue ) {
-		obj = processExpression(decl.mValue);
-	}
+            if ( declStmt.mValue ) {
+                obj = processExpression(declStmt.mValue);
+            }
+        }
     }
-
 
     private void visitIfStatement(IfStatement stmt) modify {
         //print("visitIfStatement()");
 
         var condition = processExpression(stmt.mCondition);
-        //print("condition = '" + condition + "'");
 
         if ( condition == "1" ) {
             visitStatement(stmt.mIfBlock);
@@ -293,8 +294,6 @@ public object Interpreter {
 
     private void visitPrintStatement(PrintStatement stmt) const {
         //print("visitPrintStatement()");
-
-        //visitExpression( stmt.mExpression );
 
         print( processExpression(stmt.mExpression) );
     }
@@ -314,8 +313,7 @@ public object Interpreter {
                 break;
             }
             case StatementType.ConstantDeclarationStatement: {
-                visitConstantDeclarationStatement(ConstantDeclarationStatement stmt);
-                break;
+                throw new RuntimeException("inline constant declarations are not allowed");
             }
             case StatementType.IfStatement: {
                 visitIfStatement(IfStatement stmt);
@@ -332,8 +330,7 @@ public object Interpreter {
                 throw new RuntimeException("statement not allowed here: " + typeid(stmt));
             }
             case StatementType.VariableDeclarationStatement: {
-                visitVariableDeclarationStatement(VariableDeclarationStatement stmt);
-                break;
+                throw new RuntimeException("inline variable declarations are not allowed");
             }
             case StatementType.WhileStatement: {
                 visitWhileStatement(WhileStatement stmt);
@@ -343,34 +340,34 @@ public object Interpreter {
     }
 
     private void visitVariableDeclarationStatement(VariableDeclarationStatement stmt) modify throws {
-	//print("visitVariableDeclarationStatement()");
+        //print("visitVariableDeclarationStatement()");
 
-	var decl = stmt.mDeclaration;
+        foreach ( DeclarationStatement declStmt : stmt.mDeclarations ) {
+            string name = declStmt.mName;
+            if ( mVariables.contains( name ) ) {
+                throw new RuntimeException("duplicate constant '" + name + "' declared");
+            }
 
-	string name = decl.mName;
-	if ( mVariables.contains( name ) ) {
-		throw new RuntimeException("duplicate variable '" + name + "' declared");
-	}
+            var obj = new String("0");
+            mVariables.insert(name, obj);
 
-	var obj = new String("0");
-	mVariables.insert(name, obj);
-
-	if ( decl.mValue ) {
-		obj = processExpression(decl.mValue);
-	}
+            if ( declStmt.mValue ) {
+                obj = processExpression(declStmt.mValue);
+            }
+        }
     }
 
     private void visitWhileStatement(WhileStatement stmt) modify throws {
-	//print("visitWhileStatement()");
+	    //print("visitWhileStatement()");
 
-	while ( true ) {
-		var condition = processExpression( stmt.mCondition );
-		if ( condition != "1" ) {
-			break;
-		}
+        while ( true ) {
+            var condition = processExpression( stmt.mCondition );
+            if ( condition != "1" ) {
+                break;
+            }
 
-		visitStatement( stmt.mBody );
-	}
+            visitStatement( stmt.mBody );
+        }
     }
 
     protected Map<string, String> mConstants;
