@@ -54,7 +54,9 @@ public object AssignmentStatement extends Statement {
 }
 
 public object CompoundStatement extends Statement {
+	public ConstantDeclarationStatement mConstantDeclarations const;
 	public List<Statement> mStatements const;
+	public VariableDeclarationStatement mVariableDeclarations const;
 
 	//public void Constructor(List<Statement> statements) {
 	public void Constructor(Object statements) {
@@ -66,27 +68,36 @@ public object CompoundStatement extends Statement {
 	}
 
 	public string toString() const {
-		string result = "BEGIN ";
-
+		string result = mConstantDeclarations ? mConstantDeclarations.toString() + LINEBREAK : "";
+		result += mVariableDeclarations ? mVariableDeclarations.toString() + LINEBREAK : "";
+		result += "BEGIN ";
 		foreach ( Statement stmt : mStatements ) {
 			result += LINEBREAK + (stmt ? stmt.toString() : "") + ";";
 		}
-
 		return result + LINEBREAK + "END";
 	}
 }
 
 public object ConstantDeclarationStatement extends Statement {
-	public DeclarationStatement mDeclaration const;
+	public List<DeclarationStatement> mDeclarations;
 
-	public void Constructor(DeclarationStatement stmt) {
+	public void Constructor() {
 		base.Constructor(StatementType.ConstantDeclarationStatement);
 
-		mDeclaration = stmt;
+		mDeclarations = new List<DeclarationStatement>();
 	}
 
 	public string toString() const {
-		return "CONST " + mDeclaration.toString();
+		if ( mDeclarations.empty() ) {
+			return "";
+		}
+
+		string result;
+		foreach ( DeclarationStatement stmt : mDeclarations ) {
+			result += (result ? LINEBREAK : "") + stmt.toString();
+		}
+
+		return "CONST" + LINEBREAK + result;
 	}
 }
 
@@ -104,7 +115,7 @@ public object DeclarationStatement extends Statement {
 	}
 
 	public string toString() const {
-		return mName + (mType ? ": "  + mType : "") + (mValue ? " := " + mValue.toString() : "");
+		return mName + ": " + mType + (mValue ? " := " + mValue.toString() : "") + ";";
 	}
 }
 
@@ -238,16 +249,25 @@ public object UnitStatement extends Statement {
 }
 
 public object VariableDeclarationStatement extends Statement {
-	public DeclarationStatement mDeclaration const;
+	public List<DeclarationStatement> mDeclarations;
 
-	public void Constructor(DeclarationStatement stmt) {
-		base.Constructor(StatementType.VariableDeclarationStatement);
+	public void Constructor() {
+		base.Constructor(StatementType.ConstantDeclarationStatement);
 
-		mDeclaration = stmt;
+		mDeclarations = new List<DeclarationStatement>();
 	}
 
 	public string toString() const {
-		return "VAR " + mDeclaration.toString();
+		if ( mDeclarations.empty() ) {
+			return "";
+		}
+
+		string result;
+		foreach ( DeclarationStatement stmt : mDeclarations ) {
+			result += (result ? LINEBREAK : "") + stmt.toString();
+		}
+
+		return "VAR" + LINEBREAK + result;
 	}
 }
 

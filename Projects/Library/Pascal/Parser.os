@@ -62,6 +62,9 @@ public object Parser {
 				statement = Statement parseUnit();
 				break;
 			}
+			default: {
+				throw new ParseException("invalid token detected", token.mPosition);
+			}
 		}
 
 		return statement;
@@ -102,6 +105,28 @@ public object Parser {
 		return new CompoundStatement( Object statements );
 	}
 
+	private CompoundStatement parseCompoundStatementWithDeclarations() modify throws {
+		//print("parseCompoundStatementWithDeclarations()");
+
+		Token blockDec = peek();
+		ConstantDeclarationStatement constStmt;
+		if ( blockDec && blockDec.mType == TokenType.CONST ) {
+			constStmt = parseConstantDeclarationStatement();
+		}
+
+		blockDec = peek();
+		VariableDeclarationStatement varStmt;
+		if ( blockDec && blockDec.mType == TokenType.VAR ) {
+			varStmt = parseVariableDeclarationStatement();
+		}
+
+		var stmt = parseCompoundStatement();
+		stmt.mConstantDeclarations = constStmt;
+		stmt.mVariableDeclarations = varStmt;
+
+		return stmt;
+	}
+
 	private ConstantDeclarationStatement parseConstantDeclarationStatement() modify throws {
 		//print("parseConstantDeclarationStatement()");
 
@@ -110,19 +135,21 @@ public object Parser {
 			throw new ParseException("invalid CONST statement found", start.mPosition);
 		}
 
-		var declStmt = parseDeclarationStatement();
+		var stmt = new ConstantDeclarationStatement();
 
-		if ( mScope.contains(declStmt.mName) ) {
-			throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+		while ( peek().mType == TokenType.IDENTIFIER ) {
+			var declStmt = parseDeclarationStatement();
+			stmt.mDeclarations.push_back( declStmt );
+
+			if ( mScope.contains(declStmt.mName) ) {
+				throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+			}
+
+			mScope.insert(declStmt.mName, new ParseType(declStmt.mType, true));
 		}
 
-		mScope.insert(declStmt.mName, new ParseType(declStmt.mType, true));
-
-		return new ConstantDeclarationStatement(
-			declStmt
-		);
+		return stmt;
 	}
-
 
 	private DeclarationStatement parseDeclarationStatement() modify throws {
 		//print("parseDeclarationStatement()");
@@ -132,14 +159,11 @@ public object Parser {
 			throw new ParseException("invalid DECLARATION statement found", identifier.mPosition);
 		}
 
-		Token type;
-		if ( peek().mType == TokenType.COLON ) {	// this allows using VAR without a typename
-			require(TokenType.COLON);
+		require(TokenType.COLON);
 
-			type = consume();
-			if ( !type || type.mType != TokenType.TYPE ) {
-				throw new ParseException("invalid TYPE found", type.mPosition);
-			}
+		Token type= consume();
+		if ( !type || type.mType != TokenType.TYPE ) {
+			throw new ParseException("invalid TYPE found", type.mPosition);
 		}
 
 		Expression value;
@@ -150,6 +174,8 @@ public object Parser {
 
 			value = expression();
 		}
+
+		require(TokenType.SEMICOLON);
 
 		return new DeclarationStatement(
 			identifier.mValue,
@@ -204,7 +230,7 @@ public object Parser {
 
 		var statement = new ProgramStatement(
 			name.mValue,
-			parseCompoundStatement()
+			parseCompoundStatementWithDeclarations()
 		);
 
 		require(TokenType.DOT);
@@ -287,17 +313,20 @@ public object Parser {
 			throw new ParseException("invalid VAR statement found", start.mPosition);
 		}
 
-		var declStmt = parseDeclarationStatement();
+		var stmt = new VariableDeclarationStatement();
 
-		if ( mScope.contains(declStmt.mName) ) {
-			throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+		while ( peek().mType == TokenType.IDENTIFIER ) {
+			var declStmt = parseDeclarationStatement();
+			stmt.mDeclarations.push_back( declStmt );
+
+			if ( mScope.contains(declStmt.mName) ) {
+				throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+			}
+
+			mScope.insert(declStmt.mName, new ParseType(declStmt.mType, false));
 		}
 
-		mScope.insert(declStmt.mName, new ParseType(declStmt.mType, false));
-
-		return new VariableDeclarationStatement(
-			declStmt
-		);
+		return stmt;
 	}
 
 	private WhileStatement parseWhileStatement() modify throws {
@@ -428,6 +457,7 @@ public object Parser {
 			|| op.mType == TokenType.MATH_DIVIDE_INT
 			|| op.mType == TokenType.MATH_MULTIPLY) ) {
 			consume();
+
 			Expression exp = Expression new BinaryExpression(op, node, op.mValue, parseFactor());
 			node = exp;
 		}

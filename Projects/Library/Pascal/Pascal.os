@@ -26,14 +26,14 @@ public int Main(int argc, string args) modify {
 	}
 
 	try {
-		Parser parser = new Parser();
-		Statement program = parser.parseFile(string params.at(1))
+		var parser = new Parser();
+		var program = parser.parseFile(string params.at(1))
 
 		print("");
 		print(program.toString());
 		print("");
 
-		Interpreter interpreter = new Interpreter(program);
+		var interpreter = new Interpreter(program);
 		return interpreter.run();
 	}
 	catch ( IException e ) {
