@@ -11,6 +11,7 @@ public enum TokenType {
 	BEGIN,
 	BOOLEAN,
 	COLON,
+	COMMA,
 	CONST,
 	DO,
 	DOT,
@@ -55,8 +56,9 @@ public string TokenToString(TokenType type val) {
 		case TokenType.ASSIGN:			{ return "ASSIGN"; }
 		case TokenType.BEGIN:			{ return "BEGIN"; }
 		case TokenType.BOOLEAN:			{ return "BOOLEAN"; }
-		case TokenType.CONST:                   { return "CONST"; }
 		case TokenType.COLON:			{ return "COLON"; }
+		case TokenType.COMMA:			{ return "COMMA"; }
+		case TokenType.CONST:                   { return "CONST"; }
 		case TokenType.DO:			{ return "DO"; }
 		case TokenType.DOT:			{ return "DOT"; }
 		case TokenType.END:			{ return "END"; }

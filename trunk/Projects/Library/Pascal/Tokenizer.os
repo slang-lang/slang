@@ -157,6 +157,9 @@ public object Tokenizer {
 				case c == ";": {
 					return new Token(TokenType.SEMICOLON, consume(), new Position(mLine, mColumn));
 				}
+				case c == ",": {
+					return new Token(TokenType.COMMA, consume(), new Position(mLine, mColumn));
+				}
 				case c == ".": {
 					return new Token(TokenType.DOT, consume(), new Position(mLine, mColumn));
 				}
