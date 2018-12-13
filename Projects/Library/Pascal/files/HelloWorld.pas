@@ -1,8 +1,12 @@
 PROGRAM HelloWorld;
+VAR
+	A: INTEGER;
+	B: INTEGER;
+	C: INTEGER;
 BEGIN
 	PRINT( 'Hello, World!' );
 
-	VAR A := 1;
-	VAR B := 'Bla bla';
-	VAR C := 2 + 3;
+	A := 1;
+	B := 'Bla bla';
+	C := 2 + 3;
 END.
