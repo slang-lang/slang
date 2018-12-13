@@ -1,8 +1,10 @@
 PROGRAM Compound;
+VAR
+	A: INTEGER := 1;
+	B: INTEGER;
 BEGIN
-	VAR A := 1;
 	BEGIN
-		VAR B := 2;
+		B := 2;
 	END;
 
 	BEGIN

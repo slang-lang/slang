@@ -1,6 +1,7 @@
 PROGRAM PrintTest;
+VAR A: INTEGER;
 BEGIN
-	VAR A := 173;
+	A := 173;
 	PRINT( 1 + 2 + 3 );
 	PRINT( 'Hello' );
 	PRINT( A );

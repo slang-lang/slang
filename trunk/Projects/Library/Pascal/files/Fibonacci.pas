@@ -1,14 +1,14 @@
 PROGRAM Fibonacci;
+VAR
+	start: INTEGER := 10;
+	fib1: INTEGER;
+	fib2: INTEGER;
+	fibonacci: INTEGER;
+	i: INTEGER := 1;
+	j: INTEGER;
 BEGIN
-	VAR start: INTEGER := 10;
 	PRINT('Start value: ' + start);
 
-	VAR fib1: INTEGER;
-	VAR fib2: INTEGER;
-	VAR fibonacci: INTEGER;
-
-	VAR i: INTEGER := 1;
-	VAR j: INTEGER;
 
 	WHILE ( i <= start ) DO
 	BEGIN

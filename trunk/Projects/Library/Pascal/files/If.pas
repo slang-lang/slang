@@ -1,6 +1,7 @@
 PROGRAM IfStatement;
+VAR A: BOOLEAN;
 BEGIN
-	VAR A := 0 OR 1;
+	A := 0 OR 1;
 	PRINT( A );
 
 	IF A < 1 THEN BEGIN

@@ -1,5 +1,6 @@
 PROGRAM Assignment;
+VAR A: INTEGER;
 BEGIN
-	VAR A: INTEGER := 1;
-	PRINT( A );
+	A := 173;
+	PRINT( 'A = ' + A );
 END.

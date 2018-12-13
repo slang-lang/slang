@@ -1,8 +1,8 @@
 PROGRAM ConstTest;
+CONST
+	A: INTEGER := 1;
+	B: INTEGER := A + 1;
 BEGIN
-	CONST A: INTEGER := 1;
-	PRINT( 'A := ' + A );
-
-	VAR B := A + 1;
-	PRINT( 'B := ' + B );
+	PRINT( 'A = ' + A );
+	PRINT( 'B = ' + B );
 END.

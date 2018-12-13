@@ -1,10 +1,11 @@
 PROGRAM VarTest;
+VAR
+	A: INTEGER;
+	B: INTEGER := 173;
 BEGIN
-	VAR A: INTEGER;
 	A := 1;
 	PRINT( A );
 
-	VAR B: INTEGER := 173;
 	B := 2;
 	PRINT( B );
 END.

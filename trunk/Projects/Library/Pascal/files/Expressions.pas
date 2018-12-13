@@ -1,5 +1,6 @@
 PROGRAM Expressions;
+VAR A: REAL;
 BEGIN
-	VAR A := 1 + 2 * 3 / 4;
+	A := 1 + 2 * 3 / 4;
 	PRINT( A );
 END.
