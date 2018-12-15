@@ -1,16 +1,16 @@
 PROGRAM Fibonacci;
+CONST
+	START: INTEGER := 10;
 VAR
-	start: INTEGER := 10;
 	fib1: INTEGER;
 	fib2: INTEGER;
 	fibonacci: INTEGER;
 	i: INTEGER := 1;
 	j: INTEGER;
 BEGIN
-	PRINT('Start value: ' + start);
+	PRINT('Start value: ' + START);
 
-
-	WHILE ( i <= start ) DO
+	WHILE ( i <= START ) DO
 	BEGIN
 		j := 3;
 		fib1 := 1;
