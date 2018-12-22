@@ -37,13 +37,28 @@ bool Module::operator==(const Module& other) const
 
 bool Module::loadFromJson(const Json::Value& value)
 {
+	if ( value.size() <= 0 ) {
+		return false;
+	}
+
 	mDescription = value["description"].asString();
 	mLongName = value["name"].asString();
 	mShortName = value["name_short"].asString();
 	mVersion = value["version"].asString();
 
-	if ( value.isMember("target") && value["target"].isMember("directory") ) {
-		mTargetDirectory = value["target"]["directory"].asString();
+	if ( value.isMember("target") ) {
+		// directory
+		if ( value["target"].isMember("directory") ) {
+			mTargetDirectory = value["target"]["directory"].asString();
+		}
+
+		// URL
+		if ( value["target"].isMember("url") ) {
+			mURL = value["target"]["url"].asString();
+		}
+		else {
+			mURL = mShortName + "_" + mVersion.toString() + ".tar.gz";
+		}
 	}
 	else {
 		mTargetDirectory = value["name_short"].asString();

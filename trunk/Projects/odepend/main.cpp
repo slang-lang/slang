@@ -98,7 +98,7 @@ bool isLocalLibrary();
 void list();
 void loadConfig();
 void prepareModuleInstallation(const std::string& repo, const std::string& moduleName, const std::string& version);
-void prepareRemoteRepository();
+bool prepareRemoteRepository();
 void printUsage();
 void printVersion();
 void processParameters(int argc, const char* argv[]);
@@ -277,7 +277,11 @@ Module collectModuleData(const std::string& path, const std::string& filename)
 	readJsonFile(path + "/" + filename, config);
 
 	Module module;
-	module.loadFromJson(config);
+	if ( !module.loadFromJson(config) ) {
+		std::cout << "!!! Invalid module data in file '" << filename << "'" << std::endl;
+		return module;
+	}
+
 	module.mDependencies = collectDependencies(config["dependencies"]);
 	module.mInstalledDirectory = path;
 
@@ -537,7 +541,9 @@ void install(const StringList& params)
 	}
 
 	collectLocalModuleData();
-	prepareRemoteRepository();
+	if ( !prepareRemoteRepository() ) {
+		update();
+	}
 
 	std::cout << "Preparing dependencies..." << std::endl;
 
@@ -620,12 +626,12 @@ void installModule(const std::string& repo, const std::string& module)
 	std::string url;
 
 	if ( type == "internal" ) {
-		if ( !config["target"].isMember("url") ) {
-			std::cout << "!!! No url entry found in target module information" << std::endl;
-			return;
+		if ( config["target"].isMember("url") ) {
+			url = repo + MODULES + config["target"]["url"].asString();
 		}
-
-		url = repo + MODULES + config["target"]["url"].asString();
+		else {
+			url = repo + MODULES + config["name_short"].asString() + "_" + config["version"].asString() + ".tar.gz";
+		}
 	}
 	else if ( type == "virtual" ) {
 		// no url
@@ -844,7 +850,7 @@ void prepareModuleInstallation(const std::string& repo, const std::string& modul
 	}
 }
 
-void prepareRemoteRepository()
+bool prepareRemoteRepository()
 {
 	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
@@ -852,9 +858,7 @@ void prepareRemoteRepository()
 	if ( !::Utils::Tools::Files::exists(filename) ) {
 		// no configuration file exists
 		std::cout << "!!! File \"" + filename + "\" not found" << std::endl;
-		return;
-
-		//throw ObjectiveScript::Common::Exceptions::Exception("!!! File "" + filename + "" not found");
+		return false;
 	}
 
 	Json::Value config;
@@ -862,6 +866,8 @@ void prepareRemoteRepository()
 
 	// process Json::Value in Repository
 	mRemoteRepository.processIndex(config);
+
+	return true;
 }
 
 void purge(const StringList& params)
@@ -1065,7 +1071,9 @@ void upgrade(StringList params)
 	// (3) install new modules if any are available
 
 	collectLocalModuleData();
-	prepareRemoteRepository();
+	if ( !prepareRemoteRepository() ) {
+		update();
+	}
 
 	Repository::Modules outdatedModules;
 	checkOutdatedModules(outdatedModules);
