@@ -9,7 +9,6 @@
   ],
   "target": {
     "directory": "Pascal",
-    "type": "internal",
-    "url": "Pascal_0.0.4.tar.gz"
+    "type": "internal"
   }
 }
