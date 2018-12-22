@@ -20,6 +20,7 @@ public enum TokenType {
 	EOF,
 	EQUAL,
 	FALSE,
+	FUNCTION,
 	GREATER,
 	GREATER_EQUAL,
 	IDENTIFIER,
@@ -35,6 +36,7 @@ public enum TokenType {
 	MATH_PLUS,
 	OR,
 	PRINT,
+	PROCEDURE,
 	PROGRAM,
 	REAL,
 	RPAREN,
@@ -66,6 +68,7 @@ public string TokenToString(TokenType type val) {
 		case TokenType.EOF:			{ return "EOF"; }
 		case TokenType.EQUAL:			{ return "EQUAL"; }
 		case TokenType.FALSE:			{ return "FALSE"; }
+		case TokenType.FUNCTION:		{ return "FUNCTION"; }
 		case TokenType.GREATER:			{ return "GREATER"; }
 		case TokenType.GREATER_EQUAL:		{ return "GREATER_EQUAL"; }
 		case TokenType.IDENTIFIER:		{ return "IDENTIFIER"; }
@@ -81,6 +84,7 @@ public string TokenToString(TokenType type val) {
 		case TokenType.MATH_PLUS:		{ return "MATH_PLUS"; }
 		case TokenType.OR:			{ return "OR"; }
 		case TokenType.PRINT:			{ return "PRINT"; }
+		case TokenType.PROCEDURE:		{ return "PROCEDURE"; }
 		case TokenType.PROGRAM:			{ return "PROGRAM"; }
 		case TokenType.REAL:			{ return "REAL"; }
 		case TokenType.RPAREN:			{ return ")"; }
