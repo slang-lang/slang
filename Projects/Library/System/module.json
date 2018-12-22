@@ -6,7 +6,7 @@
   "description": "ObjectiveScript core system library",
   "dependencies": [],
   "target": {
-    "type": "internal",
-    "url": "System_0.2.2.tar.gz"
+    "directory": "System",
+    "type": "internal"
   }
 }

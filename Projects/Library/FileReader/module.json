@@ -9,7 +9,6 @@
   ],
   "target": {
     "directory": "FileReader",
-    "type": "internal",
-    "url": "FileReader_0.1.1.tar.gz"
+    "type": "internal"
   }
 }

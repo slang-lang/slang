@@ -8,7 +8,6 @@
   ],
   "target": {
     "directory": "libLog",
-    "type": "internal",
-    "url": "libLog_0.1.4.tar.gz"
+    "type": "internal"
   }
 }

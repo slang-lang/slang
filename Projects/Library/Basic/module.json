@@ -9,7 +9,6 @@
   ],
   "target": {
     "directory": "Basic",
-    "type": "internal",
-    "url": "Basic_0.1.2.tar.gz"
+    "type": "internal"
   }
 }

@@ -8,7 +8,6 @@
   ],
   "target": {
     "directory": "libJsonBuilder",
-    "type": "internal",
-    "url": "libJsonBuilder_0.1.0.tar.gz"
+    "type": "internal"
   }
 }
