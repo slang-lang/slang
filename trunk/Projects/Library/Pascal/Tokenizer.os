@@ -24,10 +24,12 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.DO, "DO", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.ELSE, "ELSE", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.FUNCTION, "FUNCTION", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.IF, "IF", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.MATH_DIVIDE_INT, "DIV", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.OR, "OR", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PRINT, "PRINT", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.PROCEDURE, "PROCEDURE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROGRAM, "PROGRAM", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.THEN, "THEN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "BOOLEAN", Position null));

@@ -182,21 +182,25 @@ public object IfStatement extends Statement {
 
 
 public object MethodStatement extends Statement {
+	public CompoundStatement mBlock;
 	public string mMethodName const;
-	public List<String> mParameters;
+	//public List<String> mParameters;
 
-	public void Constructor(string method) {
+	public void Constructor(string method, CompoundStatement block) {
 		base.Constructor(StatementType.MethodStatement);
 
+		mBlock = block;
 		mMethodName = method;
 	}
 
 	public string toString() const {
-		string result = mMethodName + "(";
+		string result;
+/*
 		foreach ( string p : mParameters ) {
 			result += p + " ";
 		}
- 		result += ")";
+*/
+ 		result += mMethodName + "(" + result + ")";
 
 		return result;
 	}
