@@ -261,7 +261,7 @@ public object Interpreter {
         }
     }
 
-    private void visitConstantDeclarationStatement(ConstantDeclarationStatement stmt) modify throws {
+    protected void visitConstantDeclarationStatement(ConstantDeclarationStatement stmt) modify throws {
         //print("visitConstantDeclarationStatement()");
 
         foreach ( DeclarationStatement declStmt : stmt.mDeclarations ) {
@@ -298,7 +298,7 @@ public object Interpreter {
         print( processExpression(stmt.mExpression) );
     }
 
-    private void visitStatement(Statement stmt) modify throws {
+    protected void visitStatement(Statement stmt) modify throws {
         if ( !stmt ) {
             return;
         }
@@ -339,7 +339,7 @@ public object Interpreter {
         }
     }
 
-    private void visitVariableDeclarationStatement(VariableDeclarationStatement stmt) modify throws {
+    protected void visitVariableDeclarationStatement(VariableDeclarationStatement stmt) modify throws {
         //print("visitVariableDeclarationStatement()");
 
         foreach ( DeclarationStatement declStmt : stmt.mDeclarations ) {
@@ -371,7 +371,6 @@ public object Interpreter {
     }
 
     protected Map<string, String> mConstants;
+    protected Statement mProgram;
     protected Map<string, String> mVariables;
-
-    private Statement mProgram;
 }
