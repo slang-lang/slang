@@ -547,6 +547,8 @@ void install(const StringList& params)
 
 	std::cout << "Preparing dependencies..." << std::endl;
 
+	bool forceVersion = false;
+
 	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
 		std::string moduleName;
 		std::string version;
@@ -559,6 +561,9 @@ void install(const StringList& params)
 			if ( mRemoteRepository.getModule(moduleName, tmpModule) ) {
 				version = tmpModule.mVersion.toString();
 			}
+		}
+		else {
+			forceVersion = true;
 		}
 
 		prepareModuleInstallation(mRemoteRepository.getURL(), moduleName, version);
@@ -578,6 +583,9 @@ void install(const StringList& params)
 				version = tmpModule.mVersion.toString();
 			}
 		}
+		else {
+			forceVersion = true;
+		}
 
 		mMissingDependencies.addModule(
 			Module(moduleName, version)
@@ -589,7 +597,7 @@ void install(const StringList& params)
 		Module tmp;
 
 		if ( mLocalRepository.getModule(moduleIt->mShortName, tmp) ) {
-			if ( !(tmp.mVersion < moduleIt->mVersion) ) {
+			if ( !forceVersion && !(tmp.mVersion < moduleIt->mVersion) ) {
 				std::cout << "Same or newer version (" << tmp.mVersion.toString() << " vs " << moduleIt->mVersion.toString() << ") of module \"" << moduleIt->mShortName << "\" already installed" << std::endl;
 				continue;
 			}
