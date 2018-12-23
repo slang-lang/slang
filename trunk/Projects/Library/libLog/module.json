@@ -4,7 +4,7 @@
   "version": "0.1.4",
   "description": "The ObjectiveScript logging library provides standard out and file logging capabilities.",
   "dependencies": [
-    { "module": "system", "version_min": "0.0.1" }
+    { "module": "System", "version_min": "0.2.0" }
   ],
   "target": {
     "directory": "libLog",
