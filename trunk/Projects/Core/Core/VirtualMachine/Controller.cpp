@@ -41,8 +41,8 @@ void Controller::deinit()
 	delete mGlobalScope;
 	mGlobalScope = 0;
 
-	mThreads->deinit();
 	mMemory->deinit();
+	mThreads->deinit();
 	mRepository->deinit();
 	mTypeSystem->deinit();
 
