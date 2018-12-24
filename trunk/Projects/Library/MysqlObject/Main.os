@@ -29,7 +29,7 @@ void generateTable(int dbHandle, string name) const {
 	var table = generator.generate(name);
 
 	string tableData = LINEBREAK;
-	tableData += "public object " + TABLE_PREFIX + toUpper(name) + " {" + LINEBREAK;
+	tableData += "public object " + TABLE_PREFIX + toUpper(name) + TABLE_POSTFIX + " {" + LINEBREAK;
 	foreach ( Pair<string, string> field : table ) {
 		tableData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
 	}
@@ -45,7 +45,7 @@ void generateView(int dbHandle, string name) const {
 	var view = generator.generate(name);
 
 	string viewData = LINEBREAK;
-	viewData += "public object " + VIEW_PREFIX + toUpper(name) + " {" + LINEBREAK;
+	viewData += "public object " + VIEW_PREFIX + toUpper(name) + VIEW_POSTFIX + " {" + LINEBREAK;
 	foreach ( Pair<string, string> field : view ) {
 		viewData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
 	}
