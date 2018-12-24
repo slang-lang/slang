@@ -29,7 +29,7 @@ void generateTable(int dbHandle, string name) const {
 	var table = generator.generate(name);
 
 	string tableData = LINEBREAK;
-	tableData += "public object " + name + " {" + LINEBREAK;
+	tableData += "public object t_" + name + " {" + LINEBREAK;
 	foreach ( Pair<string, string> field : table ) {
 		tableData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
 	}
@@ -42,17 +42,17 @@ void generateTable(int dbHandle, string name) const {
 
 void generateView(int dbHandle, string name) const {
 	var generator = new Generator(dbHandle);
-	var table = generator.generate(name);
+	var view = generator.generate(name);
 
-	string tableData = LINEBREAK;
-	tableData += "public object " + name + " {" + LINEBREAK;
-	foreach ( Pair<string, string> field : table ) {
-		tableData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
+	string viewData = LINEBREAK;
+	viewData += "public object v_" + name + " {" + LINEBREAK;
+	foreach ( Pair<string, string> field : view ) {
+		viewData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
 	}
-	tableData += "}" + LINEBREAK + LINEBREAK;
+	viewData += "}" + LINEBREAK + LINEBREAK;
 
 	var outFile = new System.IO.File("output/Views/" + name + ".os", System.IO.FileAccessMode.WriteOnly);
-	outFile.write(tableData);
+	outFile.write(viewData);
 	outFile.close();
 }
 
@@ -87,7 +87,7 @@ public void Main(int argc, string args) modify throws {
 				count++;
 			}
 
-			print("" + count + " table objects generated.");
+			print("" + count + " view objects generated.");
 		}
 
 		disconnect(DBHandle);
