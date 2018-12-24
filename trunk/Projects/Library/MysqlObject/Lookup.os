@@ -14,11 +14,7 @@ public object Lookup {
 	}
 
 	public List<string> getTables(string database) const throws {
-		string query = "SELECT TABLE_NAME "
-			     + "FROM INFORMATION_SCHEMA.COLUMNS "
-			     + "WHERE TABLE_SCHEMA = '" + database + "' "
-			     + "GROUP BY TABLE_NAME "
-			     + "ORDER BY TABLE_NAME ASC";
+		string query = "SHOW FULL TABLES IN " + database + " WHERE TABLE_TYPE LIKE 'BASE TABLE'";
 
 		int error = mysql_query(mDatabaseHandle, query);
 		if ( error ) {
@@ -29,7 +25,7 @@ public object Lookup {
 
 		int result = mysql_store_result(mDatabaseHandle);
 		while ( mysql_next_row(result) ) {
-			string table = mysql_get_field_value(result, "TABLE_NAME");
+			string table = mysql_get_field_value(result, 0);
 
 			tables.push_back(table);
 		}
