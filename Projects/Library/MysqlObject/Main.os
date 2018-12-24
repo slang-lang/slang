@@ -25,37 +25,33 @@ void disconnect(int handle) modify {
 }
 
 void generateTable(int dbHandle, string name) const {
-	name = toUpper(name);
-
 	var generator = new Generator(dbHandle);
 	var table = generator.generate(name);
 
 	string tableData = LINEBREAK;
-	tableData += "public object " + TABLE_PREFIX + name + " {" + LINEBREAK;
+	tableData += "public object " + TABLE_PREFIX + toUpper(name) + " {" + LINEBREAK;
 	foreach ( Pair<string, string> field : table ) {
 		tableData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
 	}
 	tableData += "}" + LINEBREAK + LINEBREAK;
 
-	var outFile = new System.IO.File("output/Tables/" + name + ".os", System.IO.FileAccessMode.WriteOnly);
+	var outFile = new System.IO.File("output/Tables/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
 	outFile.write(tableData);
 	outFile.close();
 }
 
 void generateView(int dbHandle, string name) const {
-	name = toUpper(name);
-
 	var generator = new Generator(dbHandle);
 	var view = generator.generate(name);
 
 	string viewData = LINEBREAK;
-	viewData += "public object " + VIEW_PREFIX + name + " {" + LINEBREAK;
+	viewData += "public object " + VIEW_PREFIX + toUpper(name) + " {" + LINEBREAK;
 	foreach ( Pair<string, string> field : view ) {
 		viewData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
 	}
 	viewData += "}" + LINEBREAK + LINEBREAK;
 
-	var outFile = new System.IO.File("output/Views/" + name + ".os", System.IO.FileAccessMode.WriteOnly);
+	var outFile = new System.IO.File("output/Views/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
 	outFile.write(viewData);
 	outFile.close();
 }
