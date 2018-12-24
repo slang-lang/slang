@@ -13,107 +13,112 @@ import Debugger;
 import Parser;
 
 
-// public variables
-string filename;
-
-
-public int Main(int argc, string args) modify {
-	var params = new ParameterHandler(argc, args);
-	if ( params.contains("version") ) {
-		print(APPNAME + " " + VERSION);
-		return 0;
-	}
-	else if ( params.size() > 1 ) {
-		// set filename if any params are set
-		filename = string params.at(1);
-	}
-
-	try {
-		while ( true ) {
-			write("DPascal> ");
-
-			var commandIt = new StringIterator(cin());
-			if ( !commandIt.hasNext() ) {
-				continue;
-			}
-
-			switch ( commandIt.next() ) {
-				case "help": { printHelp(); break; }
-				case "load": { loadFile(commandIt); break; }
-				case "run": { run(commandIt); break; }
-				case "quit": { print("Quitting..."); return 0; }
-				default: { print("Invalid command"); break; }
-			}
+public object PascalDebugger {
+	public void Constructor(int argc, string args) {
+		var params = new ParameterHandler(argc, args);
+		if ( params.contains("version") ) {
+			print(APPNAME + " " + VERSION);
+			return;
+		}
+		else if ( params.size() > 1 ) {
+			// load file if any params are set
+			loadFile(string params.at(1));
 		}
 	}
-	catch ( string e ) {
-		print("Exception: " + e);
-	}
-	catch ( IException e ) {
-		print("Exception: " + e.what());
-	}
-	catch {
-		print("Exception: uncaught exception!");
-	}
 
-	return 0;
-}
+	public void run() modify {
+		try {
+			while ( true ) {
+				write("DPascal> ");
 
-void loadFile(StringIterator it) modify {
-	if ( !it.hasNext() ) {
-		print("filename expected!");
-		return;
-	}
+				var commandIt = new StringIterator(cin());
+				if ( !commandIt.hasNext() ) {
+					continue;
+				}
 
-	filename = it.next();
-}
-
-void printHelp() {
-	print("");
-	print("Available commands:");
-	print("help    This screen");
-	print("load    Loads a file for execution");
-	print("run     Starts a debugging session for the loaded file");
-	print("quit    Quits the debugger");
-	print("");
-}
-
-void run(StringIterator it) modify {
-	if ( it.hasNext() ) {
-		loadFile(it);
+				switch ( commandIt.next() ) {
+					case "help": { printHelp(); break; }
+					case "load": { loadFile(commandIt.next()); break; }
+					case "run": { run(commandIt); break; }
+					case "quit": { print("Quitting..."); return; }
+					default: { print("Invalid command"); break; }
+				}
+			}
+		}
+		catch ( string e ) {
+			print("Exception: " + e);
+		}
+		catch ( IException e ) {
+			print("Exception: " + e.what());
+		}
+		catch {
+			print("Exception: uncaught exception!");
+		}
 	}
 
-	if ( !filename ) {
-		print("no file selected for debugging");
-		return;
-	}
+	private void loadFile(string filename) modify {
+		if ( !filename ) {
+			print("filename expected!");
+			return;
+		}
 
-	try {
 		var parser = new Parser();
-		var program = parser.parseFile(string it)
+		mProgram = parser.parseFile(filename);
 
 		print("");
-		print(program.toString());
+		print(mProgram.toString());
 		print("");
+	}
 
-		var debugger = new Debugger(program);
-
-		print("Started debug session...");
+	private void printHelp() {
 		print("");
-
-		debugger.run();
-
+		print("Available commands:");
+		print("help    This screen");
+		print("load    Loads a file for execution");
+		print("run     Starts a debugging session for the loaded file");
+		print("quit    Quits the debugger");
 		print("");
-		print("Debug session exited.");
 	}
-	catch ( IException e ) {
-		print("Exception: " + e.what());
+
+	private void run(StringIterator it) modify {
+		if ( it.hasNext() ) {
+			loadFile(it.next());
+		}
+
+		if ( !mProgram ) {
+			print("no file selected for debugging");
+			return;
+		}
+
+		try {
+			var debugger = new Debugger(mProgram);
+
+			print("Started debug session...");
+			print("");
+
+			debugger.run();
+
+			print("");
+			print("Debug session exited.");
+		}
+		catch ( IException e ) {
+			print("Exception: " + e.what());
+		}
+		catch ( string e ) {
+			print("Exception: " + e);
+		}
+		catch {
+			print("Exception: caught unknown exception!");
+		}
 	}
-	catch ( string e ) {
-		print("Exception: " + e);
-	}
-	catch {
-		print("Exception: caught unknown exception!");
-	}
+
+	private string mFilename;
+	private Statement mProgram;
+} 
+
+
+public void Main(int argc, string args) modify {
+	var debugger = new PascalDebugger(argc, args);
+	debugger.run();
 }
 
