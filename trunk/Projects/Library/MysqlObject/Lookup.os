@@ -6,7 +6,7 @@ import System.String;
 // Project imports
 
 
-public object TableLookup {
+public object Lookup {
 	private int mDatabaseHandle;
 
 	public void Constructor(int dbHandle) {
@@ -14,6 +14,30 @@ public object TableLookup {
 	}
 
 	public List<string> getTables(string database) const throws {
+		string query = "SELECT TABLE_NAME "
+			     + "FROM INFORMATION_SCHEMA.COLUMNS "
+			     + "WHERE TABLE_SCHEMA = '" + database + "' "
+			     + "GROUP BY TABLE_NAME "
+			     + "ORDER BY TABLE_NAME ASC";
+
+		int error = mysql_query(mDatabaseHandle, query);
+		if ( error ) {
+			throw mysql_error(mDatabaseHandle);
+		}
+
+		var tables = new List<string>();
+
+		int result = mysql_store_result(mDatabaseHandle);
+		while ( mysql_next_row(result) ) {
+			string table = mysql_get_field_value(result, "TABLE_NAME");
+
+			tables.push_back(table);
+		}
+
+		return tables;
+	}
+
+	public List<string> getViews(string database) const throws {
 		string query = "SELECT TABLE_NAME "
 			     + "FROM INFORMATION_SCHEMA.COLUMNS "
 			     + "WHERE TABLE_SCHEMA = '" + database + "' "

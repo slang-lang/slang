@@ -6,7 +6,7 @@ import System.IO.File;
 // Project imports
 import DatatypeMapper;
 import Generator;
-import TableLookup;
+import Lookup;
 
 
 int connect() modify throws {
@@ -24,18 +24,34 @@ void disconnect(int handle) modify {
 	mysql_close(handle);
 }
 
-void generateTable(int dbHandle, string tableName) const {
+void generateTable(int dbHandle, string name) const {
 	var generator = new Generator(dbHandle);
-	var table = generator.generate(tableName);
+	var table = generator.generate(name);
 
 	string tableData = LINEBREAK;
-	tableData += "public object " + tableName + " {" + LINEBREAK;
+	tableData += "public object " + name + " {" + LINEBREAK;
 	foreach ( Pair<string, string> field : table ) {
 		tableData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
 	}
 	tableData += "}" + LINEBREAK + LINEBREAK;
 
-	var outFile = new System.IO.File("output/Table_" + tableName + ".os", System.IO.FileAccessMode.WriteOnly);
+	var outFile = new System.IO.File("output/Tables/" + name + ".os", System.IO.FileAccessMode.WriteOnly);
+	outFile.write(tableData);
+	outFile.close();
+}
+
+void generateView(int dbHandle, string name) const {
+	var generator = new Generator(dbHandle);
+	var table = generator.generate(name);
+
+	string tableData = LINEBREAK;
+	tableData += "public object " + name + " {" + LINEBREAK;
+	foreach ( Pair<string, string> field : table ) {
+		tableData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
+	}
+	tableData += "}" + LINEBREAK + LINEBREAK;
+
+	var outFile = new System.IO.File("output/Views/" + name + ".os", System.IO.FileAccessMode.WriteOnly);
 	outFile.write(tableData);
 	outFile.close();
 }
@@ -44,17 +60,35 @@ public void Main(int argc, string args) modify throws {
 	try {
 		int DBHandle = connect();
 
-		var lookup = new TableLookup(DBHandle);
-		var tables = lookup.getTables(Database);
+		var lookup = new Lookup(DBHandle);
 
-		int count;
-		foreach ( string tableName : tables ) {
-			generateTable(DBHandle, tableName);
+		// generate tables
+		{
+			var tables = lookup.getTables(Database);
 
-			count++;
+			int count;
+			foreach ( string tableName : tables ) {
+				generateTable(DBHandle, tableName);
+
+				count++;
+			}
+
+			print("" + count + " table objects generated.");
 		}
 
-		print("" + count + " table objects generated.");
+		// generate views
+		{
+			var views = lookup.getViews(Database);
+
+			int count;
+			foreach ( string tableName : views ) {
+				generateView(DBHandle, tableName);
+
+				count++;
+			}
+
+			print("" + count + " table objects generated.");
+		}
 
 		disconnect(DBHandle);
 	}
