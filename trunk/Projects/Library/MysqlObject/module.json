@@ -1,7 +1,7 @@
 {
   "name": "ObjectiveScript MySQL table serializer",
   "name_short": "MysqlObject",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Program that serializes MySQL tables into ObjectiveScript objects",
   "dependencies": [
     { "module": "System", "version_min": "0.2.0" }

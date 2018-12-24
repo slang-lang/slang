@@ -25,11 +25,13 @@ void disconnect(int handle) modify {
 }
 
 void generateTable(int dbHandle, string name) const {
+	name = toUpper(name);
+
 	var generator = new Generator(dbHandle);
 	var table = generator.generate(name);
 
 	string tableData = LINEBREAK;
-	tableData += "public object t_" + name + " {" + LINEBREAK;
+	tableData += "public object " + TABLE_PREFIX + name + " {" + LINEBREAK;
 	foreach ( Pair<string, string> field : table ) {
 		tableData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
 	}
@@ -41,11 +43,13 @@ void generateTable(int dbHandle, string name) const {
 }
 
 void generateView(int dbHandle, string name) const {
+	name = toUpper(name);
+
 	var generator = new Generator(dbHandle);
 	var view = generator.generate(name);
 
 	string viewData = LINEBREAK;
-	viewData += "public object v_" + name + " {" + LINEBREAK;
+	viewData += "public object " + VIEW_PREFIX + name + " {" + LINEBREAK;
 	foreach ( Pair<string, string> field : view ) {
 		viewData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
 	}
