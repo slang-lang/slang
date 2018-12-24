@@ -7,6 +7,8 @@ public int Port const = 3306;
 public string User const = "root";
 
 // Output settings
-public string TABLE_PREFIX const = "T_";
-public string VIEW_PREFIX const = "V_";
+public string TABLE_PREFIX const = "";
+public string TABLE_POSTFIX const = "_Record";
+public string VIEW_PREFIX const = "";
+public string VIEW_POSTFIX const = "_Record";
 
