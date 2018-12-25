@@ -14,6 +14,7 @@ SET(SOURCES
 SET(HEADERS
 	Ascii.h
 	AssertMsg.h
+	Fork.h
 	GetChar.h
 	GetEnv.h
 	SetKeyboardBlockingMode.h
