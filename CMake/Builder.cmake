@@ -1,4 +1,9 @@
 
+SET(JSON_PACKAGE_NAME "libMyJson-0.2.4_51")
+SET(JSON_TARBALL "${JSON_PACKAGE_NAME}.tar.gz")
+SET(JSON_DOWNLOAD_URL "https://sourceforge.net/projects/libmyjson/files/libMyJson-0.2.4_51.tar.gz/download")
+
+
 function(build_static_testlib target modules)
 
     # append our utils testmanagement
@@ -135,12 +140,14 @@ function(_curl_check_existence)
 
 endfunction()
 
+
 function(_handle_post_curl target)
 
     _curl_check_existence()
     target_link_libraries(${target} curl)
 
 endfunction()
+
 
 function(_handle_pre_curl)
 
@@ -155,9 +162,20 @@ endfunction()
 ###############################
 ### JSON
 
+function(_could_not_find_json)
+  MESSAGE(STATUS "Could not find (the correct version of) Json.")
+  MESSAGE(STATUS "ObjectiveScript currently requires ${JSON_PACKAGE_NAME}\n")
+  MESSAGE(FATAL_ERROR "You can download from ${JSON_DOWNLOAD_URL}")
+endfunction()
+
+
 function(_json_check_existence)
 
     # make sure the appropriate environment variable is set!
+    if(NOT BUILD_JSON_INC)
+       _could_not_find_json()
+    else()
+
     if("${BUILD_JSON_INC}" STREQUAL "")
         MESSAGE(FATAL_ERROR "BUILD_JSON_INC needed for json!")
     endif()
@@ -166,7 +184,10 @@ function(_json_check_existence)
         MESSAGE(FATAL_ERROR "BUILD_JSON_LIB needed for json!")
     endif()
 
+    endif()
+
 endfunction()
+
 
 function(_handle_post_json target)
 
@@ -174,6 +195,7 @@ function(_handle_post_json target)
     target_link_libraries(${target} Json)
 
 endfunction()
+
 
 function(_handle_pre_json)
 
