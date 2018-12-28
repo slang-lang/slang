@@ -1,9 +1,9 @@
 
 // Library imports
+import System.CharacterIterator;
 import System.Collections.IIterateable;
 import System.Collections.List;
 import System.Exception;
-import System.StringIterator;
 
 // Project imports
 
@@ -12,19 +12,11 @@ public object Parameter {
 /*
  * Public
  */
-
-	public string FullValue;
+ 
 	public string Key;
 	public string Value;
 
-	public void Constructor(string fullValue) {
-		FullValue = fullValue;
-		Key = fullValue;
-		Value = fullValue;
-	}
-
-	public void Constructor(string key, string value, string fullValue) {
-		FullValue = fullValue;
+	public void Constructor(string key, string value) {
 		Key = key;
 		Value = value;
 	}
@@ -35,6 +27,10 @@ public object Parameter {
 
 	public string =operator(string) const {
 		return Value;
+	}
+
+	public string debug() const {
+		return "Key: '" + Key + "', Value: '" + Value + "'";
 	}
 }
 
@@ -99,31 +95,69 @@ public object ParameterHandler implements IIterateable {
 /*
  * Private
  */
+	private void insertParameter(string key, string value) modify {
+		int startPos;
+		if ( substr(key, 0, 1) == "-" ) {
+			startPos = 1;
+			if ( substr(key, 0, 2) == "--" ) {
+				startPos = 2;
+			}
+		}
+
+		mParameters.push_back(new Parameter(substr(key, startPos), value));
+	}
 
 	private void process() modify {
-		StringIterator it = new StringIterator(mArgs, LINEBREAK);
+		bool isEscape;
+		bool isString;
+		bool isValue;
+		string key;
+		string param;
 
+		var it = new CharacterIterator(mArgs);
+
+		string c;
 		while ( it.hasNext() ) {
-			string current = it.next();
-			int keyPos = 0;
-			int startPos = 0;
+			c = it.next();
 
-			if ( substr(current, 0, 1) == "-" ) {
-				startPos = 1;
+			switch ( true ) {
+				case !isEscape && c == "\"": {
+					isString = !isString;
+					break;
+				}
+				case !isEscape && c == "\/": {
+					isEscape = !isEscape;
+					break;
+				}
+				case !isString && c == " ": {
+					if ( param || isValue ) {
+						insertParameter(isValue ? key : param, isValue ? param : "");
+					}
 
-				if ( substr(current, 1, 1) == "-" ) {
-					startPos = 2;
+					isEscape = false;
+					isString = false;
+					isValue = false;
+					key = "";
+					param = "";
+					break;
+				}
+				case !isString && c == "=": {
+					isValue = true;
+
+					key = param;
+					param = "";
+					break;
+				}
+				default: {
+					isEscape = false;
+					param += c;
+					break;
 				}
 			}
-
-			if ( (keyPos = strfind(current, "=")) > 0 ) {
-				// extract key, value
-				mParameters.push_back(new Parameter(substr(current, startPos, keyPos - startPos), substr(current, keyPos + 1, strlen(current)), current));
-				continue;
-			}
-
-			mParameters.push_back(new Parameter(substr(current, startPos)));
 		}
+
+		//insertParameter(key, param);
+		insertParameter(isValue ? key : param, isValue ? param : "");
 
 		// verify that we correctly parsed all arguments
 		assert( mArgc == mParameters.size() );
