@@ -47,9 +47,13 @@ public object ParameterHandler implements IIterateable {
 		process();
 
 		if ( skipProgramName && mParameters.size() > 0 ) {
+			mArgc--;
 			// remove first parameter
 			mParameters.erase(0);
 		}
+
+		// verify that we correctly parsed all arguments
+		assert( mArgc == mParameters.size() );
 	}
 
 	public Parameter at(int index) const throws {
@@ -129,7 +133,7 @@ public object ParameterHandler implements IIterateable {
 					isEscape = !isEscape;
 					break;
 				}
-				case !isString && c == " ": {
+				case !isString && (c == " " || c == LINEBREAK): {
 					if ( param || isValue ) {
 						insertParameter(isValue ? key : param, isValue ? param : "");
 					}
@@ -158,9 +162,6 @@ public object ParameterHandler implements IIterateable {
 
 		//insertParameter(key, param);
 		insertParameter(isValue ? key : param, isValue ? param : "");
-
-		// verify that we correctly parsed all arguments
-		assert( mArgc == mParameters.size() );
 	}
 
 	private int mArgc;
