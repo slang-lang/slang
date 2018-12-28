@@ -12,7 +12,7 @@ public object Parameter {
 /*
  * Public
  */
- 
+
 	public string Key;
 	public string Value;
 
@@ -160,7 +160,6 @@ public object ParameterHandler implements IIterateable {
 			}
 		}
 
-		//insertParameter(key, param);
 		insertParameter(isValue ? key : param, isValue ? param : "");
 	}
 
