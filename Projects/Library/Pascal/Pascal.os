@@ -27,7 +27,7 @@ public int Main(int argc, string args) modify {
 
 	try {
 		var parser = new Parser();
-		var program = parser.parseFile(string params.at(1))
+		var program = parser.parseFile(string params.at(1).Key)
 
 		print("");
 		print(program.toString());

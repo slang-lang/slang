@@ -30,7 +30,7 @@ public int Main(int argc, string args) modify {
 	try {
 		Parser parser = new Parser();
 
-		Interpreter interpreter = new Interpreter(Object parser.parseFile(string params.at(1)));
+		Interpreter interpreter = new Interpreter(Object parser.parseFile(params.at(1).Key));
 		return interpreter.run();
 	}
 	catch ( IException e ) {
