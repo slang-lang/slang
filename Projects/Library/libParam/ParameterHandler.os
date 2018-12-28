@@ -129,10 +129,12 @@ public object ParameterHandler implements IIterateable {
 					isString = !isString;
 					break;
 				}
-				case !isEscape && c == "\/": {
+/*
+				case !isEscape && c == "\\": {
 					isEscape = !isEscape;
 					break;
 				}
+*/
 				case !isString && (c == " " || c == LINEBREAK): {
 					if ( param || isValue ) {
 						insertParameter(isValue ? key : param, isValue ? param : "");
