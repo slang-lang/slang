@@ -20,10 +20,10 @@ public void Main(int argc, string args) {
 
 		foreach ( Parameter filename : params ) {
 			if ( params.size() > 2 ) {
-				print(filename.Value + ":");
+				print(filename.Key + ":");
 			}
 
-			foreach ( string line : new Scanner(new System.IO.File(filename.Value, System.IO.FileAccessMode.ReadOnly), LINEBREAK) ) {
+			foreach ( string line : new Scanner(new System.IO.File(filename.Key, System.IO.FileAccessMode.ReadOnly), LINEBREAK) ) {
 				print(line);
 			}
 		}

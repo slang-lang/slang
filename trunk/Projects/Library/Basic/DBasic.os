@@ -24,7 +24,7 @@ public int Main(int argc, string args) modify {
 	}
 	else if ( params.size() > 1 ) {
 		// set filename if any params are set
-		filename = string params.at(1);
+		filename = string params.at(1).Key;
 	}
 
 	try {
