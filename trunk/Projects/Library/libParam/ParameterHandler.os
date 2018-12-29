@@ -100,8 +100,6 @@ public object ParameterHandler implements IIterateable {
  * Private
  */
 	private void insertParameter(string key, string value) modify {
-		print("key = '" + key + "', value = '" + value + "'");
-
 		int startPos;
 		if ( substr(key, 0, 1) == "-" ) {
 			startPos = 1;
