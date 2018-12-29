@@ -100,6 +100,8 @@ public object ParameterHandler implements IIterateable {
  * Private
  */
 	private void insertParameter(string key, string value) modify {
+		print("key = '" + key + "', value = '" + value + "'");
+
 		int startPos;
 		if ( substr(key, 0, 1) == "-" ) {
 			startPos = 1;
@@ -129,12 +131,11 @@ public object ParameterHandler implements IIterateable {
 					isString = !isString;
 					break;
 				}
-/*
 				case !isEscape && c == "\\": {
+					assert(0);	// does this ever happen?
 					isEscape = !isEscape;
 					break;
 				}
-*/
 				case !isString && (c == " " || c == LINEBREAK): {
 					if ( param || isValue ) {
 						insertParameter(isValue ? key : param, isValue ? param : "");
