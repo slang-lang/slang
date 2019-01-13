@@ -2,7 +2,6 @@
 
 // Library imports
 import libParam.ParameterHandler;
-import System.IO.File;
 
 // Project imports
 import Scanner;
@@ -23,7 +22,7 @@ public void Main(int argc, string args) {
 				print(filename.Key + ":");
 			}
 
-			foreach ( string line : new Scanner(new System.IO.File(filename.Key, System.IO.FileAccessMode.ReadOnly), LINEBREAK) ) {
+			foreach ( string line : new Scanner(filename.Key) ) {
 				print(line);
 			}
 		}

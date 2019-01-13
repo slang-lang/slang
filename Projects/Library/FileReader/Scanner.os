@@ -11,9 +11,9 @@ public object Scanner implements IIterateable {
 	private string mSeparator;
 	private string mText;
 
-	public void Constructor(System.IO.File file ref, string separator = " ") {
-		mFile = file;
-		mSeparator = separator;
+	public void Constructor(string filename) {
+		mFile = new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly);
+		mSeparator = LINEBREAK;
 
 		if ( mFile ) {
 			readAll();
@@ -24,6 +24,10 @@ public object Scanner implements IIterateable {
 		return mFile ? mFile.getFilename() : "";
 	}
 
+	public StringIterator getIterator() const {
+		return new StringIterator(mText, mSeparator);
+	}
+
 	public string getText() const {
 		return mText;
 	}
@@ -31,17 +35,9 @@ public object Scanner implements IIterateable {
 	private void readAll() modify {
 		mText = "";
 
-		string ch;
-
 		while ( !mFile.isEOF() ) {
-			ch = mFile.readChar();
-
-			mText += ch;
+			mText += mFile.readChar();
 		}
-	}
-
-	public StringIterator getIterator() const {
-		return new StringIterator(mText, mSeparator);
 	}
 }
 
