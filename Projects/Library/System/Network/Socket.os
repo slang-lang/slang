@@ -1,4 +1,5 @@
 
+// declare 'System.Network' namespace to prevent a user defined private 'System.Network' namespace
 public namespace System.Network { }
 
 public stable interface ISocketAddress {

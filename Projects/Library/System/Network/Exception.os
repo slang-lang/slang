@@ -1,11 +1,10 @@
 
 import System.Exception;
 
+// declare 'System.Network' namespace to prevent a user defined private 'System.Network' namespace
 public namespace System.Network { }
 
-public object NotConnectedException implements IException {
-	private string _exception;
-
+public object NotConnectedException const implements IException {
 	public void Constructor(string ex) {
 		_exception = ex;
 	}
@@ -13,5 +12,7 @@ public object NotConnectedException implements IException {
 	public string what() const {
 		return _exception;
 	}
+
+	private string _exception const;
 }
 
