@@ -7,9 +7,9 @@ VAR
 	x: INTEGER := 11;
 BEGIN
     BEGIN
-	a := number;
-	b := 10 * a + 10 * number / 4;
-	c := a - -b;
+		a := number;
+		b := 10 * a + 10 * number / 4;
+		c := a - -b;
 
         PRINT( c );
     END;
