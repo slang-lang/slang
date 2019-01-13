@@ -19,14 +19,10 @@ public namespace System.IO {
 		}
 
 		public void Constructor(string filename, FileAccessMode mode const) {
-			cleanup();
-
-			open(filename, MapFileAccessModeToString(mode));
+			Constructor(filename, MapFileAccessModeToString(mode));
 		}
 
 		public void Constructor(string filename, string mode = "r") {
-			cleanup();
-
 			open(filename, mode);
 		}
 
@@ -66,6 +62,10 @@ public namespace System.IO {
 
 		public bool isOpen() const {
 			return (mHandle != 0);
+		}
+
+		public bool open(string filename, FileAccessMode mode const) modify throws {
+			return open(filename, MapFileAccessModeToString(mode));
 		}
 
 		public bool open(string filename, string mode) modify throws {
@@ -162,6 +162,8 @@ public namespace System.IO {
 			case "w":  { return FileAccessMode.WriteOnly; }
 			case "w+": { return FileAccessMode.WriteUpdate; }
 		}
+
+		throw new Exception("invalid mode(\"" + mode + "\") provided!");
 	}
 }
 

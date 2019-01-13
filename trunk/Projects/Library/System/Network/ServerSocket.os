@@ -2,6 +2,7 @@
 import Exception;
 import Socket;
 
+// declare 'System.Network' namespace to prevent a user defined private 'System.Network' namespace
 public namespace System.Network { }
 
 public object ServerSocket {
@@ -9,14 +10,6 @@ public object ServerSocket {
 	 * Public constants
 	 */
 	public int DEFAULT_QUEUE_LENGTH const = 50;
-
-	/*
-	 * Private members
-	 */
-	private IPv4Address mEndpoint;
-	private int mListenerSocket = 0;
-	private int mMasterSocket;
-	private int mQueueLength;
 
 	/*
 	 * Default constructor
@@ -173,5 +166,13 @@ public object ServerSocket {
 
 	    return reads(mListenerSocket, length);
 	}
+
+	/*
+	 * Private members
+	 */
+	private IPv4Address mEndpoint;
+	private int mListenerSocket = 0;
+	private int mMasterSocket;
+	private int mQueueLength;
 }
 
