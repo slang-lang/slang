@@ -337,7 +337,7 @@ public object Interpreter {
                 break;
             }
             default: {
-                throw new RuntimeException("unknown statement type(" + (string stmt.mStatementType) + ") detected!");
+                throw new RuntimeException("invalid statement type(" + (string stmt.mStatementType) + ") detected!");
             }
         }
     }
