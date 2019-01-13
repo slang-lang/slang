@@ -336,6 +336,9 @@ public object Interpreter {
                 visitWhileStatement(WhileStatement stmt);
                 break;
             }
+            default: {
+                throw new RuntimeException("unknown statement type(" + (string stmt.mStatementType) + ") detected!");
+            }
         }
     }
 

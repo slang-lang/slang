@@ -45,6 +45,7 @@ public object Parser {
 		var tokenizer = new Tokenizer();
 
 		mScope = new Map<string, ParseType>();
+		mTokenizer = new Tokenizer();
 		mTokens = tokenizer.parseFile(filename);
 		mTokenIterator = mTokens.getIterator();
 
@@ -351,6 +352,20 @@ public object Parser {
 //////////////////////////////////////////////////////////////////////////////
 // Expression parsing
 
+	private string evaluateType(Expression left, Expression right) const {
+		var leftToken = mTokenizer.getToken(left.mResultType);
+
+		if ( leftToken && leftToken.mType == TokenType.TYPE ) {
+			var rightToken = mTokenizer.getToken(right.mResultType);
+
+			if ( rightToken && rightToken.mType == TokenType.TYPE ) {
+				return leftToken.mValue;
+			}
+		}
+
+		return "";
+	}
+
 	private Expression expression() modify {
 		//print("expression()");
 
@@ -386,17 +401,19 @@ public object Parser {
 	private Expression parseExpression() modify throws {
 		//print("parseExpression()");
 
-		Expression node = parseTerm();
+		Expression left = parseTerm();
 
 		Token op;
 		while ( (op = peek()) != null && (op.mType == TokenType.MATH_MINUS || op.mType == TokenType.MATH_PLUS) ) {
 			consume();
 
-			Expression exp = Expression new BinaryExpression(op, node, op.mValue, parseTerm());
-			node = exp;
+			Expression right = parseTerm();
+
+			Expression exp = Expression new BinaryExpression(op, left, op.mValue, right, evaluateType(left, right));
+			left = exp;
 		}
 
-		return node;
+		return left;
 	}
 
 	private Expression parseFactor() modify throws {
@@ -449,7 +466,7 @@ public object Parser {
 	private Expression parseTerm() modify throws {
 		//print("parseTerm()");
 
-		Expression node = parseFactor();
+		Expression left = parseFactor();
 
 		Token op;
 		while ( (op = peek()) != null &&
@@ -458,11 +475,13 @@ public object Parser {
 			|| op.mType == TokenType.MATH_MULTIPLY) ) {
 			consume();
 
-			Expression exp = Expression new BinaryExpression(op, node, op.mValue, parseFactor());
-			node = exp;
+			Expression right = parseFactor();
+
+			Expression exp = Expression new BinaryExpression(op, left, op.mValue, right, evaluateType(left, right));
+			left = exp;
 		}
 
-		return node;
+		return left;
 	}
 
 	private Expression parseIdentifier() modify throws {
@@ -547,6 +566,7 @@ public object Parser {
 
 	private Map<string, ParseType> mScope;
 	private Iterator<Token> mTokenIterator;
+	private Tokenizer mTokenizer;
 	private List<Token> mTokens;
 }
 
