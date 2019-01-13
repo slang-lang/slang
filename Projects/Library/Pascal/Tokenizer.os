@@ -47,6 +47,16 @@ public object Tokenizer {
 		print("");
 	}
 
+	public Token getToken(string word) {
+		foreach ( Token token : RESERVED_WORDS ) {
+			if ( token == word ) {
+				return token;
+			}
+		}
+
+		return Token null;
+	}
+
 	public List<Token> parseFile(string filename) modify throws {
 		print("Tokenizing \"" + filename + "\"...");
 

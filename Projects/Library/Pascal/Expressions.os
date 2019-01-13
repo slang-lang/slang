@@ -43,12 +43,13 @@ public object BinaryExpression extends Expression {
 	public string mOperator const;
 	public Expression mRight const;
 
-	public void Constructor(Token token, Expression left const, string op, Expression right const) {
+	public void Constructor(Token token, Expression left const, string op, Expression right const, string resultType) {
 		base.Constructor(ExpressionType.BinaryExpression, token);
 
 		mLeft = left;
 		mOperator = op;
 		mRight = right;
+		mResultType = resultType;
 	}
 
 	public string toString() const {
@@ -58,10 +59,9 @@ public object BinaryExpression extends Expression {
 
 public object BooleanBinaryExpression extends BinaryExpression {
 	public void Constructor(Token token, Expression left const, string op, Expression right const) {
-		base.Constructor(token, left, op, right);
+		base.Constructor(token, left, op, right, "BOOLEAN");
 
 		mExpressionType = ExpressionType.BooleanBinaryExpression;
-		mResultType = "bool";
 	}
 
 	public string toString() const {
