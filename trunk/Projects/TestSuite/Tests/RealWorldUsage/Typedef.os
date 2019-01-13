@@ -42,7 +42,8 @@ private object DerivedObject extends TestObject {
 	}
 }
 
-private object Retyped replicates TestObject;
+//private object Retyped replicates TestObject;
+private object Retyped extends TestObject;
 
 public void Main(int argc, string argv) {
 	DerivedObject derived = new DerivedObject();
