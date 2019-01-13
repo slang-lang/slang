@@ -19,7 +19,7 @@ bool TestCase1() {
 		{	// debug print
 			int count;
 			foreach ( Parameter param : params ) {
-				print((string count++) + ": " + param.debug());
+				print((string count++) + ": " + param.toString());
 			}
 		}
 	}
@@ -42,7 +42,7 @@ bool TestCase2() {
 	{	// debug print
 		int count;
 		foreach ( Parameter param : params ) {
-			print((string count++) + ": " + param.debug());
+			print((string count++) + ": " + param.toString());
 		}
 	}
 

@@ -1,7 +1,6 @@
 
 // Library imports
 import System.CharacterIterator;
-import System.Collections.IIterateable;
 import System.Collections.List;
 import System.Exception;
 
@@ -29,7 +28,7 @@ public object Parameter {
 		return Value;
 	}
 
-	public string debug() const {
+	public string toString() const {
 		return "Key: '" + Key + "', Value: '" + Value + "'";
 	}
 }
@@ -40,20 +39,18 @@ public object ParameterHandler implements IIterateable {
  */
 
 	public void Constructor(int argc, string args, bool skipProgramName = false) {
-		mArgc = argc;
-		mArgs = args;
 		mParameters = new List<Parameter>();
 
-		process();
+		process(args);
 
-		if ( skipProgramName && mParameters.size() > 0 ) {
-			mArgc--;
+		if ( skipProgramName /*&& mParameters.size() > 0*/ ) {
+			argc--;
 			// remove first parameter
 			mParameters.erase(0);
 		}
 
 		// verify that we correctly parsed all arguments
-		assert( mArgc == mParameters.size() );
+		assert( argc == mParameters.size() );
 	}
 
 	public Parameter at(int index) const throws {
@@ -101,6 +98,7 @@ public object ParameterHandler implements IIterateable {
  */
 	private void insertParameter(string key, string value) modify {
 		int startPos;
+
 		if ( substr(key, 0, 1) == "-" ) {
 			startPos = 1;
 			if ( substr(key, 0, 2) == "--" ) {
@@ -111,14 +109,14 @@ public object ParameterHandler implements IIterateable {
 		mParameters.push_back(new Parameter(substr(key, startPos), value));
 	}
 
-	private void process() modify {
+	private void process(string args) modify {
 		bool isEscape;
 		bool isString;
 		bool isValue;
 		string key;
 		string param;
 
-		var it = new CharacterIterator(mArgs);
+		var it = new CharacterIterator(args);
 
 		string c;
 		while ( it.hasNext() ) {
@@ -130,7 +128,6 @@ public object ParameterHandler implements IIterateable {
 					break;
 				}
 				case !isEscape && c == "\\": {
-					assert(0);	// does this ever happen?
 					isEscape = !isEscape;
 					break;
 				}
@@ -164,8 +161,6 @@ public object ParameterHandler implements IIterateable {
 		insertParameter(isValue ? key : param, isValue ? param : "");
 	}
 
-	private int mArgc;
-	private string mArgs;
 	private List<Parameter> mParameters;
 }
 
