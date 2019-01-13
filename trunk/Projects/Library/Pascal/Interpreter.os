@@ -60,9 +60,9 @@ public object Interpreter {
 				return "" + int "" + ((int left) / (int right));
 			}
 			case "+": {
-                if ( exp.mLeft.mResultType == "STRING" ) {
-                    return left + right;
-                }
+				if ( exp.mLeft.mResultType == "STRING" ) {
+					return left + right;
+				}
 				return "" + ((float left) + (float right));
 			}
 			case "-": {
@@ -155,7 +155,7 @@ public object Interpreter {
                 return string processBooleanBinaryExpression(BooleanBinaryExpression exp);
             }
             case ExpressionType.ConstantExpression: {
-		        return string processConstantExpression(ConstantExpression exp);
+	        return string processConstantExpression(ConstantExpression exp);
             }
             case ExpressionType.LiteralBooleanExpression: {
                 return string processLiteralBooleanExpression(LiteralBooleanExpression exp);
