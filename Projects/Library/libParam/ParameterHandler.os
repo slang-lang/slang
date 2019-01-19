@@ -43,7 +43,7 @@ public object ParameterHandler implements IIterateable {
 
 		process(args);
 
-		if ( skipProgramName /*&& mParameters.size() > 0*/ ) {
+		if ( skipProgramName && mParameters.size() > 0 ) {
 			argc--;
 			// remove first parameter
 			mParameters.erase(0);
@@ -54,10 +54,6 @@ public object ParameterHandler implements IIterateable {
 	}
 
 	public Parameter at(int index) const throws {
-		if ( index < 0 || index >= mParameters.size() ) {
-			throw new OutOfBoundsException("Index (" + index + ") out of bounds");
-		}
-
 		return mParameters.at(index);
 	}
 
