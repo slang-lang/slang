@@ -24,6 +24,6 @@ public void Main(int argc, string args) {
 	var impl = AbstractBase new AbstractImplementation();
 
 	print(string impl.size());
-	print(string impl);
+	print(string impl);		// this should produce a parser error
 }
 
