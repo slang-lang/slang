@@ -5,13 +5,15 @@
 
 // Library includes
 #include <string>
-#include <Json/Value.h>
 
 // Project includes
 #include "Dependency.h"
 #include "Version.h"
 
 // Forward declarations
+namespace Json {
+	class Value;
+}
 
 // Namespace declarations
 
@@ -55,3 +57,4 @@ public:
 
 
 #endif
+

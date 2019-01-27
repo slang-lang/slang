@@ -3,6 +3,7 @@
 #include "Module.h"
 
 // Library includes
+#include <Json/Value.h>
 
 // Project includes
 
