@@ -482,7 +482,26 @@ void info(const StringList& params)
 	}
 
 	if ( !found ) {
-		std::cout << "!!! Requested module \"" << demandedModule << "\" is not installed" << std::endl;
+		// download module info from repository
+		std::string path = mBaseFolder + CACHE_MODULES;
+		std::string filename = demandedModule + ".json";
+		std::string module_config = path + filename;
+		std::string url = mRemoteRepository.getURL() + "/" + MODULES + demandedModule + ".json";
+
+		bool result = download(url, module_config);
+		if ( result ) {
+			Module tmpModule = collectModuleData(path, filename);
+			if ( tmpModule.isValid() ) {
+				found = true;
+
+				std::cout << tmpModule.mShortName << "(" << tmpModule.mVersion.toString() << "): " << tmpModule.mLongName << std::endl;
+				std::cout << tmpModule.mDescription << std::endl;
+			}
+		}
+	}
+
+	if ( !found ) {
+		std::cout << "!!! Requested module \"" << demandedModule << "\" not found" << std::endl;
 	}
 }
 

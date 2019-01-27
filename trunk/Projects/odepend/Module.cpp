@@ -36,6 +36,10 @@ bool Module::operator==(const Module& other) const
 	return mShortName == other.mShortName;
 }
 
+bool Module::isValid() const {
+	return mVersion.isValid();
+}
+
 bool Module::loadFromJson(const Json::Value& value)
 {
 	if ( value.size() <= 0 ) {
