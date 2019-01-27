@@ -40,6 +40,7 @@ public:
 	bool operator==(const Module& other) const;
 
 public:
+	bool isValid() const;
 	bool loadFromJson(const Json::Value& value);
 	std::string toVersionString() const;
 
