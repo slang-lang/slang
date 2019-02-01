@@ -6,6 +6,7 @@
 // Library includes
 #include <sys/types.h>
 #ifdef _MSC_VER
+#	include <io.h>
 #	include <winsock.h>
 #else
 #	include <sys/socket.h>

@@ -21,9 +21,15 @@ namespace Exceptions {
 class RuntimeException : public ::ObjectiveScript::Common::Exceptions::Exception
 {
 public:
+#ifdef _WIN32
+	explicit RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
+	: ::ObjectiveScript::Common::Exceptions::Exception(text, position)
+	{ }
+#else
 	explicit RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position()) noexcept
 	: ::ObjectiveScript::Common::Exceptions::Exception(text, position)
 	{ }
+#endif
 };
 
 

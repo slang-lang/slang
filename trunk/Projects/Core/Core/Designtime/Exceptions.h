@@ -21,16 +21,24 @@ namespace Exceptions {
 class DesigntimeException : public ObjectiveScript::Common::Exceptions::Exception
 {
 public:
+#ifdef _WIN32
+	explicit DesigntimeException(const std::string& text, const Common::Position& position = Common::Position())
+	: ObjectiveScript::Common::Exceptions::Exception("DesigntimeException: " + text, position)
+	{ }
+
+	virtual ~DesigntimeException() { }
+#else
 	explicit DesigntimeException(const std::string& text, const Common::Position& position = Common::Position()) noexcept
 	: ObjectiveScript::Common::Exceptions::Exception(text, position)
 	{ }
+#endif
 };
 
 
 class LawOfDemeterViolated : public DesigntimeException
 {
 public:
-	explicit LawOfDemeterViolated(const std::string& text, const Common::Position& position = Common::Position()) noexcept
+	explicit LawOfDemeterViolated(const std::string& text, const Common::Position& position = Common::Position())
 	: DesigntimeException("Law Of Demeter violated: " + text, position)
 	{ }
 };
