@@ -21,8 +21,6 @@ public void Main(int argc = 0, string args = "") {
 	string address = params.at(numParams - 2).Key;
 	int port = int params.at(numParams - 1).Key;
 
-	//print("address:port = " + address + ":" + port);
-
 
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if ( sockfd == -1 ) {
@@ -37,6 +35,8 @@ public void Main(int argc = 0, string args = "") {
 		print("connect failed");
 		return;
 	}
+
+	print("Connected to " + address + ":" + port + "...");
 
 	string cmd_data;
 	int cmd_length;
