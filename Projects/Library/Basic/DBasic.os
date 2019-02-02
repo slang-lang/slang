@@ -22,9 +22,10 @@ public int Main(int argc, string args) modify {
 		print(APPNAME + " " + VERSION);
 		return 0;
 	}
-	else if ( params.size() > 1 ) {
+
+	if ( !params.empty() ) {
 		// set filename if any params are set
-		filename = string params.at(1).Key;
+		filename = string params.at(0).Key;
 	}
 
 	try {

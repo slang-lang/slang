@@ -38,7 +38,7 @@ public object ParameterHandler implements IIterateable {
  * Public
  */
 
-	public void Constructor(int argc, string args, bool skipProgramName = false) {
+	public void Constructor(int argc, string args, bool skipProgramName = true) {
 		mParameters = new List<Parameter>();
 
 		process(args);
