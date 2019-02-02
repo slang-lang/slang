@@ -44,17 +44,10 @@ public void Main(int argc = 0, string args = "") {
 	bool running = true;
 	while ( running ) {
 		write("> ");
-		cmd_data = string cin();
-		cmd_length = strlen(cmd_data);
 
+		cmd_data = string cin();
 		if ( cmd_data == "quit" ) {
 			break;
-		}
-
-		result = writei(sockfd, cmd_length);
-		if ( result == -1 ) {
-			print("writing of command length failed");
-			return;
 		}
 
 		result = writes(sockfd, cmd_data);
