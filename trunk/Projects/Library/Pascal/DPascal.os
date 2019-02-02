@@ -20,9 +20,10 @@ public object PascalDebugger {
 			print(APPNAME + " " + VERSION);
 			return;
 		}
-		else if ( params.size() > 1 ) {
+
+		if ( !params.empty() ) {
 			// load file if any params are set
-			loadFile(string params.at(1));
+			loadFile(string params.at(0));
 		}
 	}
 

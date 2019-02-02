@@ -14,7 +14,7 @@ public void Main(int argc, string args) {
 	}
 
 	try {
-		var params = new ParameterHandler(argc, args, true);
+		var params = new ParameterHandler(argc, args);
 
 		foreach ( Parameter filename : params ) {
 			if ( params.size() > 2 ) {

@@ -14,7 +14,7 @@ bool TestCase1() {
 		int argc = 2;
 		string args = "./Test_ParameterHandler.os \"this is a parameter\"";
 
-		var params = new ParameterHandler(argc, args);
+		var params = new ParameterHandler(argc, args, false);
 
 		{	// debug print
 			int count;
@@ -37,7 +37,7 @@ bool TestCase2() {
 	int argc = 4;
 	string args = "--one=true --two --three= four";
 
-	var params = new ParameterHandler(argc, args);
+	var params = new ParameterHandler(argc, args, false);
 
 	{	// debug print
 		int count;
