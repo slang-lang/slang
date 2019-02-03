@@ -16,6 +16,7 @@ SET(HEADERS
 	Read.h
 	#Receive.h
 	#Send.h
+	Shutdown.h
 	Socket.h
 	Write.h
 )

@@ -11,6 +11,7 @@
 #include "Connect.h"
 #include "Listen.h"
 #include "Read.h"
+#include "Shutdown.h"
 #include "Socket.h"
 #include "Write.h"
 
@@ -87,6 +88,7 @@ void SystemNetworkExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new ReadFloat());
 	methods.push_back(new ReadInt());
 	methods.push_back(new ReadString());
+	methods.push_back(new Shutdown());
 	methods.push_back(new Socket());
 	methods.push_back(new WriteBool());
 	methods.push_back(new WriteDouble());

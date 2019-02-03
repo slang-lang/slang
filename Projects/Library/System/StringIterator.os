@@ -77,15 +77,24 @@ public object StringIterator extends Iterator<string> {
 	}
 
 	/*
-	 * changes the separator and returns the next sub string of the held String value
+	 * temporarly changes the separator and returns the next sub string of the held String value
 	 * throws OutOfBoundsException
 	 */
 	public string next(string separator) modify throws {
-		mCurrentPosition = mNextPosition;
+		if ( mNextPosition >= mValue.Length() ) {
+			throw new OutOfBoundsException("index(" + mNextPosition + ") out of bounds");
+		}
 
-		setSeparator(separator, false);
+		mCurrentPosition = mNextPosition + strlen(mSeparator);
+		mNextPosition = mValue.IndexOf(separator, mCurrentPosition);
 
-		return next();
+		if ( mNextPosition > 0 ) {
+			return mValue.SubString(mCurrentPosition, mNextPosition - mCurrentPosition);
+		}
+
+		// set iteration to end of string
+		mNextPosition = mValue.Length();
+		return mValue.SubString(mCurrentPosition);
 	}
 
 	/*

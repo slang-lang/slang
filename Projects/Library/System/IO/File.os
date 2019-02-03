@@ -61,7 +61,7 @@ public namespace System.IO {
 		}
 
 		public bool isOpen() const {
-			return (mHandle != 0);
+			return mHandle != 0;
 		}
 
 		public bool open(string filename, FileAccessMode mode const) modify throws {
