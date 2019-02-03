@@ -72,6 +72,13 @@ void SystemNetworkExtension::initialize(IScope* scope)
 	scope->define("INADDR_ANY", new Runtime::StringObject(std::string("0.0.0.0")));
 
 
+	/*
+	 * howto arguments for shutdown(2), specified by Posix.1g.
+	 */
+	scope->define("SHUT_RD", new Runtime::IntegerObject(SHUT_RD));		// shut down the reading side
+	scope->define("SHUT_WR", new Runtime::IntegerObject(SHUT_WR));		// shut down the writing side
+	scope->define("SHUT_RDWR", new Runtime::IntegerObject(SHUT_RDWR));	// shut down both sides
+
 	// finalize initialization
 	AExtension::initialize(scope);
 }
