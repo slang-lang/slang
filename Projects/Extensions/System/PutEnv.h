@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_GetEnv_h
-#define ObjectiveScript_Extensions_System_GetEnv_h
+#ifndef ObjectiveScript_Extensions_System_PutEnv_h
+#define ObjectiveScript_Extensions_System_PutEnv_h
 
 
 // Library includes
@@ -24,11 +24,11 @@ namespace Extensions {
 namespace System {
 
 
-class GetEnv : public ExtensionMethod
+class PutEnv : public ExtensionMethod
 {
 public:
-	GetEnv()
-	: ExtensionMethod(0, "getenv", Designtime::StringObject::TYPENAME)
+	PutEnv()
+	: ExtensionMethod(0, "putenv", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("envvar", Designtime::StringObject::TYPENAME));
@@ -46,14 +46,7 @@ public:
 
 			std::string param_name = (*it++).value().toStdString();
 
-			std::string result_value;
-
-			char* val = getenv(param_name.c_str());
-			if ( val ) {
-				result_value = std::string(val);
-			}
-
-			*result = Runtime::StringObject(result_value);
+			*result = Runtime::IntegerObject(putenv(const_cast<char*>(param_name.c_str())));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
