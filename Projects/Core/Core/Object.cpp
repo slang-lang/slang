@@ -401,7 +401,9 @@ bool Object::operator_equal(const Object *other)
 		return isValid() == other->isValid();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	//throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+
+	return mValue.toInt() == other->mValue.toInt() && mReference == other->mReference;
 }
 
 bool Object::operator_greater(const Object *other)
