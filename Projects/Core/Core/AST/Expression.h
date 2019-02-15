@@ -311,7 +311,7 @@ public:
 	{
 		mResultType = resultType;
 	}
-	virtual ~ScopeExpression() {
+	~ScopeExpression() {
 		delete mLHS;
 		delete mRHS;
 	}
@@ -469,6 +469,10 @@ public:
 		mIsConst = lhs->isConst();
 		mIsMember = lhs->isMember();
 		mResultType = resultType;
+	}
+	~AssignmentExpression() {
+		// don't delete left hand side since it doesn't belong to us
+		delete mRHS;
 	}
 
 public:

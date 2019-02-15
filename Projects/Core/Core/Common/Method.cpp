@@ -33,7 +33,7 @@ Method::Method(const Method& other, bool shallowCopy)
   MethodSymbol(other.getName())
 {
 	mAlgorithm = other.mAlgorithm;
-	mAllowDelete = false;
+	mAllowDelete = !shallowCopy;
 	mCheckedExceptions = other.mCheckedExceptions;
 	mIsExtensionMethod = other.mIsExtensionMethod;
 	mIsSealed = other.mIsSealed;
