@@ -311,6 +311,10 @@ public:
 	{
 		mResultType = resultType;
 	}
+	virtual ~ScopeExpression() {
+		delete mLHS;
+		delete mRHS;
+	}
 
 public:
 	Expression* mLHS;
