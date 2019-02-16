@@ -103,7 +103,7 @@ public:
 	  mName(name),
 	  mType(type)
 	{ }
-	~TypeDeclaration() {
+	virtual ~TypeDeclaration() {
 		delete mAssignment;
 	}
 
