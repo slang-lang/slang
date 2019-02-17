@@ -12,8 +12,8 @@ public object String implements IIterateable {
 	 * Standard & default constructor
 	 */
 	public void Constructor(string value val = "") {
-		mSize = strlen(value);
 		mValue = value;
+		mSize = strlen(mValue);
 	}
 
 	/*
@@ -107,8 +107,8 @@ public object String implements IIterateable {
 			string tmp = substr(mValue, 0, position) + newStr + substr(mValue, position + strlen(oldStr));
 
 			// update members
-			mSize = strlen(tmp);
 			mValue = tmp;
+			mSize = strlen(mValue);
 
 			return true;
 		}
@@ -127,7 +127,7 @@ public object String implements IIterateable {
 		}
 
 		// update size
-		mSize = strlen(mValue);
+		//mSize = strlen(mValue);	// this should already be updated
 
 		return hasFound;
 	}
@@ -187,6 +187,60 @@ public object String implements IIterateable {
 	}
 
 	/*
+	 * Trims whitespaces from the left side of the held string value
+	 */
+	public string TrimLeft() modify {
+		mValue = strltrim(mValue);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Cuts away from the left side of the held string value
+	 */
+	public string TrimLeft(int index) modify throws {
+		if ( index < 0 || index >= mSize ) {
+			throw new OutOfBoundsException("index(" + index + ") is out of bounds!");
+		}
+
+		mValue = substr(mValue, index);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Trims whitespaces from the right side of the held string value
+	 */
+	public string TrimRight() modify {
+		mValue = strrtrim(mValue);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Cuts away from the right side of the held string value
+	 */
+	public string TrimRight(int index) modify {
+		mValue = substr(mValue, 0, strlen(mValue) - index);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Trims whitespaces from both sides of the held string value
+	 */
+	public string Trim() modify {
+		mValue = strltrim(mValue);
+		mValue = strrtrim(mValue);
+
+		return mValue;
+	}
+
+	/*
 	 * Returns the held string in capital letters
 	 */
 	public string ToUpperCase() const {
@@ -226,8 +280,8 @@ public object String implements IIterateable {
 	 */
 	public String operator=(string other val) modify {
 		// update members
-		mSize = strlen(other);
 		mValue = other;
+		mSize = strlen(mValue);
 
 		return this;
 	}
