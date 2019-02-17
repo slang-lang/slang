@@ -8,9 +8,6 @@ import StringIterator;
 public namespace System { }
 
 public object String implements IIterateable {
-	private int mSize;
-	private string mValue;
-
 	/*
 	 * Standard & default constructor
 	 */
@@ -44,7 +41,11 @@ public object String implements IIterateable {
 	 * Returns the character at the given position
 	 */
 	public string CharAt(int index) const throws {
-		return operator[](index);
+		if ( index < 0 || index >= mSize ) {
+			throw new OutOfBoundsException("index(" + index + ") is out of bounds!");
+		}
+
+		return substr(mValue, index, 1);
 	}
 
 	/*
@@ -270,12 +271,11 @@ public object String implements IIterateable {
 	 * Returns the character at the given position
 	 */
 	public string operator[](int index) const throws {
-		if ( index < 0 || index >= mSize ) {
-			throw new OutOfBoundsException("index(" + index + ") is out of bounds!");
-		}
-
-		return substr(mValue, index, 1);
+		return CharAt(index);
 	}
+
+	private int mSize;
+	private string mValue;
 }
 
 /*
