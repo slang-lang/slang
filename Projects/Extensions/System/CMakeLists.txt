@@ -18,6 +18,7 @@ SET(HEADERS
 	GetChar.h
 	GetEnv.h
 	PutEnv.h
+	SetEnv.h
 	SetKeyboardBlockingMode.h
 	Sleep.h
 	StdTime.h
