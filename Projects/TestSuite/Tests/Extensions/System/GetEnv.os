@@ -1,11 +1,11 @@
 #!/usr/local/bin/oscript
 
 public void Main(int argc, string args) {
-	writeln("getenv Test");
+	print("getenv Test");
 
-	writeln("getenv(\"OBJECTIVESCRIPT_LIBRARY\") = " + getenv("OBJECTIVESCRIPT_LIBRARY"));
-	writeln("getenv(\"bla) = " + getenv("bla"));
-	writeln("getenv(\"PATH\") = " + getenv("PATH"));
-	writeln("getenv(\"GET\") = " + getenv("GET"));
+	print("getenv(\"OBJECTIVESCRIPT_LIBRARY\") = " + getenv("OBJECTIVESCRIPT_LIBRARY"));
+	print("getenv(\"bla\") = " + getenv("bla"));
+	print("getenv(\"PATH\") = " + getenv("PATH"));
+	print("getenv(\"GET\") = " + getenv("GET"));
 }
 
