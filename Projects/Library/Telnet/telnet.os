@@ -65,6 +65,7 @@ public void Main(int argc = 0, string args = "") {
 			print("Response: \"" + response + "\"");
 		}
 
+		result = shutdown(sockfd, SHUT_RDWR);
 		result = close(sockfd);
 	}
 	catch ( string e ) {
