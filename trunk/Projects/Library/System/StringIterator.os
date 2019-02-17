@@ -81,20 +81,11 @@ public object StringIterator extends Iterator<string> {
 	 * throws OutOfBoundsException
 	 */
 	public string next(string separator) modify throws {
-		if ( mNextPosition >= mValue.Length() ) {
-			throw new OutOfBoundsException("index(" + mNextPosition + ") out of bounds");
-		}
-
 		mCurrentPosition = mNextPosition + strlen(mSeparator);
-		mNextPosition = mValue.IndexOf(separator, mCurrentPosition);
 
-		if ( mNextPosition > 0 ) {
-			return mValue.SubString(mCurrentPosition, mNextPosition - mCurrentPosition);
-		}
+		setSeparator(separator, false);
 
-		// set iteration to end of string
-		mNextPosition = mValue.Length();
-		return mValue.SubString(mCurrentPosition);
+		return next();
 	}
 
 	/*
