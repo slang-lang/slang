@@ -749,6 +749,11 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 
 	Expression* rhs = dynamic_cast<Expression*>(expression(++token));
 
+	SymbolExpression* inner = lhs;
+	while ( inner->mSymbolExpression ) {
+		inner = inner->mSymbolExpression;
+	}
+
 	if ( op->type() != Token::Type::ASSIGN ) {
 		Token operation;
 
@@ -764,8 +769,8 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 			default: throw Designtime::Exceptions::SyntaxError("assignment type expected", token->position());
 		}
 
-		if ( lhs->isAtomicType() ) {
-			rhs = new BinaryExpression(lhs, operation, rhs, resolveType(lhs, operation, rhs));
+		if ( inner->isAtomicType() ) {
+			rhs = new BinaryExpression(new RuntimeSymbolExpression(inner->mName, inner->getResultType(), inner->isConst(), inner->isMember(), inner->isAtomicType()), operation, rhs, resolveType(lhs, operation, rhs));
 		}
 		else {
 			// check if we are using a valid type
@@ -787,7 +792,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 	}
 
 
-	if ( lhs->isAtomicType() || lhs->getResultType() == rhs->getResultType() ) {
+	if ( inner->isAtomicType() || inner->getResultType() == rhs->getResultType() ) {
 		return new AssignmentExpression(lhs, rhs, resolveType(lhs, assignment, rhs));
 	}
 
@@ -797,11 +802,6 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 		throw Designtime::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", token->position());
 	}
 
-	SymbolExpression* inner = lhs;
-	while ( inner->mSymbolExpression ) {
-		inner = inner->mSymbolExpression;
-	}
-
 	inner->mSymbolExpression = new DesigntimeSymbolExpression("operator=", lhs->getResultType(), PrototypeConstraints(), false);
 	inner->mSymbolExpression->mSurroundingScope = blueprint;
 
@@ -809,6 +809,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 	params.emplace_back(rhs);
 
 	return process_method(lhs, (*token), params);
+
 }
 
 /*
@@ -1820,7 +1821,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	// non-atomic types are references by default
 	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, object->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference);
 
-	Expression* rhs = 0;
+	Expression* assignmentExp = 0;
 
 	if ( token->type() == Token::Type::ASSIGN ) {
 		if ( initialization != Initialization::Allowed ) {
@@ -1828,7 +1829,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 			throw Common::Exceptions::NotSupported("initialization is not allowed here", token->position());
 		}
 
-		rhs = process_assignment(
+		assignmentExp = process_assignment(
 			token,
 			new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), accessMode == AccessMode::ByValue)
 		);
@@ -1844,7 +1845,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 		throw Common::Exceptions::NotSupported("atomic references need to be initialized", token->position());
 	}
 
-	return new TypeDeclaration(start, type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, rhs);
+	return new TypeDeclaration(start, type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignmentExp);
 }
 
 /*
