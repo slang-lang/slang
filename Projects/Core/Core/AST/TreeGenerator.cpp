@@ -152,6 +152,7 @@ Statements* TreeGenerator::generate(const TokenList& tokens, bool allowBreakAndC
 			statements = process(start, end);
 
 			if ( needsControlStatement && mControlFlow == Runtime::ControlFlow::Normal ) {
+				delete statements;
 				throw Common::Exceptions::ControlFlowException("block is missing control flow statement", position);
 			}
 		popTokens();
@@ -556,18 +557,19 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 	}
 
 	Token firstToken = (*token);
-	Statements* statements = 0;
+	Statements* statements = new Statements(firstToken);
 
 	while ( (token != end) && (token->type() != Token::Type::ENDOFFILE) ) {
 		Node* node = process_statement(token);
 
 		if ( node ) {
-			if ( !statements ) {
-				statements = new Statements(firstToken);
-			}
-
 			statements->mNodes.push_back(node);
 		}
+	}
+
+	if ( statements->mNodes.empty() ) {
+		delete statements;
+		statements = 0;
 	}
 
 	return statements;
