@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-import System.Integer;
-
 private object TestObject {
 	private int mValue;
 
