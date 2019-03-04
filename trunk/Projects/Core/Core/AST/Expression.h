@@ -471,7 +471,7 @@ public:
 		mResultType = resultType;
 	}
 	~AssignmentExpression() {
-		// don't delete left hand side since it doesn't belong to us
+		delete mLHS;
 		delete mRHS;
 	}
 
