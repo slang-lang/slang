@@ -6,7 +6,7 @@ public object Boolean {
 	/*
 	 * Default constructor 
 	 */
-	public void Constructor(bool value val = false) {
+	public void Constructor(bool value = false) {
 		mValue = value;
 	}
 
@@ -28,14 +28,14 @@ public object Boolean {
 		return !mValue;
 	}
 
-	public bool operator==(bool other val) const {
+	public bool operator==(bool other) const {
 		return mValue == other;
 	}
 	public bool operator==(Boolean other ref) const {
 		return mValue == other.mValue;
 	}
 
-	public Boolean operator=(bool other val) modify {
+	public Boolean operator=(bool other) modify {
 		mValue = other;
 
 		return this;

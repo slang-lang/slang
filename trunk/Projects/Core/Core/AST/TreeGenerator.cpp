@@ -964,6 +964,8 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 {
 	Token start = (*token);
 
+	pushScope();
+
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
@@ -1006,6 +1008,8 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	Node* loopBody = process_statement(token, true);
 	// }
 
+	popScope();
+
 	return new ForStatement(start, initialization, condition, iteration, loopBody);
 }
 
@@ -1016,6 +1020,8 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 Statement* TreeGenerator::process_foreach(TokenIterator& token)
 {
 	Token start = (*token);
+
+	pushScope();
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
@@ -1095,7 +1101,14 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return new ForeachStatement(start, typeDeclaration, collectionExpression, getIteratorExpression, hasNextExpression, nextExpression, process_statement(token, true));
+	// Body parsing
+	// {
+	Node* loopBody = process_statement(token, true);
+	// }
+
+	popScope();
+
+	return new ForeachStatement(start, typeDeclaration, collectionExpression, getIteratorExpression, hasNextExpression, nextExpression, loopBody);
 }
 
 /*

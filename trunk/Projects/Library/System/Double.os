@@ -6,7 +6,7 @@ public object Double {
 	/*
 	 * Default constructor
 	 */
-	public void Constructor(double value val = 0d) {
+	public void Constructor(double value = 0d) {
 		mValue = value;
 	}
 
@@ -28,14 +28,14 @@ public object Double {
 		return !mValue;
 	}
 
-	public bool operator==(double other val) const {
+	public bool operator==(double other) const {
 		return mValue == other;
 	}
 	public bool operator==(Double other ref) const {
 		return mValue == other.mValue;
 	}
 
-	public Double operator=(double other val) modify {
+	public Double operator=(double other) modify {
 		mValue = other;
 
 		return this;
@@ -53,28 +53,28 @@ public object Double {
 		return mValue;
 	}
 
-	public Double operator+(double other val) modify {
+	public Double operator+(double other) modify {
 		return new Double(mValue + other);
 	}
 	public Double operator+(Double other ref) modify {
 		return new Double(mValue + other.mValue);
 	}
 
-	public Double operator-(double other val) modify {
+	public Double operator-(double other) modify {
 		return new Double(mValue - other);
 	}
 	public Double operator-(Double other ref) modify {
 		return new Double(mValue - other.mValue);
 	}
 
-	public Double operator*(double other val) modify {
+	public Double operator*(double other) modify {
 		return new Double(mValue * other);
 	}
 	public Double operator*(Double other ref) modify {
 		return new Double(mValue * other.mValue);
 	}
 
-	public Double operator/(double other val) modify {
+	public Double operator/(double other) modify {
 		return new Double(mValue / other);
 	}
 	public Double operator/(Double other ref) modify {

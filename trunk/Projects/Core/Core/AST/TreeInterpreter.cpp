@@ -613,25 +613,14 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 		Runtime::Object* object = mRepository->createInstance(it->type(), it->name());
 
 		object->setMutability(it->mutability());
-		object->setValue(it->value());
 
-		switch ( it->access() ) {
-			case AccessMode::ByReference: {
-				object->setIsReference(true);
-
-				if ( it->reference().isValid() ) {
-					object->assign(*mMemory->get(it->reference()));
-				}
-			} break;
-			case AccessMode::ByValue: {
-				object->setIsReference(false);
-
-				if ( it->reference().isValid() ) {
-					throw Common::Exceptions::NotSupported("by value calls not allowed for objects");
-				}
-			} break;
-			case AccessMode::Unspecified:
-				throw Common::Exceptions::AccessMode("unspecified access mode");
+		if ( it->reference().isValid() ) {
+			object->setIsReference(true);
+			object->assign(*mMemory->get(it->reference()));
+		}
+		else {
+			object->setIsReference(false);
+			object->setValue(it->value());
 		}
 
 		scope->define(it->name(), object);
@@ -925,10 +914,11 @@ void TreeInterpreter::visitExpression(Expression* expression)
 
 void TreeInterpreter::visitFor(ForStatement* node)
 {
+	// push new scope for loop variable
+	pushScope();
+
 	// execute initialization statement
 	visit(node->mInitialization);
-
-	//pushScope();	// push new scope for loop variable
 
 	Runtime::Object condition;
 	for  ( ; ; ) {
@@ -958,7 +948,8 @@ void TreeInterpreter::visitFor(ForStatement* node)
 		visit(node->mIteration);
 	}
 
-	//popScope();		// pop scope and remove loop variable
+	// pop scope to remove loop variable
+	popScope();
 }
 
 void TreeInterpreter::visitForeach(ForeachStatement* node)
