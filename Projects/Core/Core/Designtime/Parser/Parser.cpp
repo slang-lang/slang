@@ -650,10 +650,6 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 				accessMode = AccessMode::ByReference;
 				++token;
 			}
-			else if ( token->content() == RESERVED_WORD_BY_VALUE ) {
-				accessMode = AccessMode::ByValue;
-				++token;
-			}
 			else {
 				throw Designtime::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
 			}

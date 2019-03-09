@@ -6,7 +6,7 @@ public object Float {
 	/*
 	 * Default constructor
 	 */
-	public void Constructor(float value val = 0f) {
+	public void Constructor(float value = 0f) {
 		mValue = value;
 	}
 
@@ -28,14 +28,14 @@ public object Float {
 		return !mValue;
 	}
 
-	public bool operator==(float other val) const {
+	public bool operator==(float other) const {
 		return mValue == other;
 	}
 	public bool operator==(Float other ref) const {
 		return mValue == other.mValue;
 	}
 
-	public Float operator=(float other val) modify {
+	public Float operator=(float other) modify {
 		mValue = other;
 
 		return this;
@@ -60,21 +60,21 @@ public object Float {
 		return new Float(mValue + other.mValue);
 	}
 
-	public Float operator-(float other val) modify {
+	public Float operator-(float other) modify {
 		return new Float(mValue - other);
 	}
 	public Float operator-(Float other ref) modify {
 		return new Float(mValue - other.mValue);
 	}
 
-	public Float operator*(float other val) modify {
+	public Float operator*(float other) modify {
 		return new Float(mValue * other);
 	}
 	public Float operator*(Float other ref) modify {
 		return new Float(mValue * other.mValue);
 	}
 
-	public Float operator/(float other val) modify {
+	public Float operator/(float other) modify {
 		return new Float(mValue / other);
 	}
 	public Float operator/(Float other ref) modify {

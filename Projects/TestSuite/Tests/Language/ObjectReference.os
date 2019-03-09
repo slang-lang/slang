@@ -81,7 +81,7 @@ private void ParameterByReference(Language.TestObject value ref) modify {
 	assert(value.mValue == 2);
 }
 
-private void ParameterByValue(int value val) const {
+private void ParameterByValue(int value) const {
 	assert(value == 1);
 	print("ParameterByValue(int): value = " + value);
 	value = value + 1;

@@ -97,7 +97,6 @@ StringSet provideReservedWords()
 	StringSet reservedWords;
 
 	reservedWords.insert(RESERVED_WORD_BY_REFERENCE);
-	reservedWords.insert(RESERVED_WORD_BY_VALUE);
 	reservedWords.insert(RESERVED_WORD_ENUM);
 	reservedWords.insert(RESERVED_WORD_EXTENDS);
 	reservedWords.insert(RESERVED_WORD_IMPLEMENTS);

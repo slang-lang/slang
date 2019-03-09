@@ -8,7 +8,7 @@ public object Character {
 	/*
 	 * Standard & default constructor
 	 */
-	public void Constructor(string value val = "", bool checkLength = false) throws {
+	public void Constructor(string value = "", bool checkLength = false) throws {
 		if ( checkLength && strlen(value) != 1) {
 			throw new InvalidLengthException("invalid input length(" + strlen(value) + ")");
 		}
@@ -34,7 +34,7 @@ public object Character {
 	/*
 	 * string compare operator
 	 */
-	public bool operator==(string other val) const {
+	public bool operator==(string other) const {
 		return mValue == substr(other, 0, 1);
 	}
 
@@ -48,7 +48,7 @@ public object Character {
 	/*
 	 * string assignment operator
 	 */
-	public void operator=(string other val) modify {
+	public void operator=(string other) modify {
 		mValue = substr(other, 0, 1);
 	}
 
@@ -62,7 +62,7 @@ public object Character {
 	/*
 	 * string less compare operator
 	 */
-	public bool operator<(string other val) const {
+	public bool operator<(string other) const {
 		return mValue < substr(other, 0, 1);
 	}
 

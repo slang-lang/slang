@@ -120,6 +120,9 @@ static const char* PRIVATE = "private";
 static const char* PROTECTED = "protected";
 static const char* PUBLIC = "public";
 
+// Unsorted
+static const char* EMPTY = "";
+
 
 }
 
