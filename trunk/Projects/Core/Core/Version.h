@@ -1,11 +1,15 @@
 
-#ifndef _VERSION_H_
-#define _VERSION_H_
+#ifndef ObjectiveScript_Core_Version_h
+#define ObjectiveScript_Core_Version_h
 
 
 // Library includes
 
 // Project includes
+
+// Forward declarations
+
+// Namespace declarations
 
 
 static const char* COPYRIGHT = "Copyright (c) 2014-2019 Michael Adelmann";
