@@ -36,6 +36,7 @@ public enum StatementType {
 	LetStatement,
 	MethodStatement,
 	NextStatement,
+	OnStatement,
 	PrintStatement,
 	RemStatement;
 }
@@ -249,6 +250,26 @@ public object NextStatement extends Statement {
 
 	public string toString() const {
 		return "NEXT " + mLoopVariable + following();
+	}
+}
+
+public object OnStatement extends Statement {
+	public Expression mExpression const;
+	public List<int> mLines;
+
+	public void Constructor(Expression exp) {
+		base.Constructor(StatementType.OnStatement);
+
+		mExpression = exp;
+		mLines = new List<int>();
+	}
+
+	public string toPrettyString() const {
+		return "ON " + mExpression.toPrettyString() + " GOTO " + prettyFollowing();
+	}
+
+	public string toString() const {
+		return "ON " + mExpression.toString() + " GOTO " + following();
 	}
 }
 
