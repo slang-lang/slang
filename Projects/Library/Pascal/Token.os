@@ -55,27 +55,27 @@ public enum TokenType {
 public string TokenToString(TokenType type) {
 	switch ( type ) {
 		case TokenType.AND:			{ return "AND"; }
-		case TokenType.ASSIGN:			{ return "ASSIGN"; }
+		case TokenType.ASSIGN:			{ return ":="; }
 		case TokenType.BEGIN:			{ return "BEGIN"; }
 		case TokenType.BOOLEAN:			{ return "BOOLEAN"; }
-		case TokenType.COLON:			{ return "COLON"; }
-		case TokenType.COMMA:			{ return "COMMA"; }
+		case TokenType.COLON:			{ return ":"; }
+		case TokenType.COMMA:			{ return ","; }
 		case TokenType.CONST:                   { return "CONST"; }
 		case TokenType.DO:			{ return "DO"; }
-		case TokenType.DOT:			{ return "DOT"; }
+		case TokenType.DOT:			{ return "."; }
 		case TokenType.END:			{ return "END"; }
 		case TokenType.ELSE:			{ return "ELSE"; }
 		case TokenType.EOF:			{ return "EOF"; }
-		case TokenType.EQUAL:			{ return "EQUAL"; }
+		case TokenType.EQUAL:			{ return "="; }
 		case TokenType.FALSE:			{ return "FALSE"; }
 		case TokenType.FUNCTION:		{ return "FUNCTION"; }
-		case TokenType.GREATER:			{ return "GREATER"; }
-		case TokenType.GREATER_EQUAL:		{ return "GREATER_EQUAL"; }
+		case TokenType.GREATER:			{ return ">"; }
+		case TokenType.GREATER_EQUAL:		{ return ">="; }
 		case TokenType.IDENTIFIER:		{ return "IDENTIFIER"; }
 		case TokenType.IF:			{ return "IF"; }
 		case TokenType.INTEGER:			{ return "INTEGER"; }
-		case TokenType.LESS:			{ return "LESS"; }
-		case TokenType.LESS_EQUAL:		{ return "LESS_EQUAL"; }
+		case TokenType.LESS:			{ return "<"; }
+		case TokenType.LESS_EQUAL:		{ return "<="; }
 		case TokenType.LPAREN:			{ return "("; }
 		case TokenType.MATH_DIVIDE:		{ return "MATH_DIVIDE"; }
 		case TokenType.MATH_DIVIDE_INT:		{ return "MATH_DIVIDE_INT"; }
@@ -88,12 +88,12 @@ public string TokenToString(TokenType type) {
 		case TokenType.PROGRAM:			{ return "PROGRAM"; }
 		case TokenType.REAL:			{ return "REAL"; }
 		case TokenType.RPAREN:			{ return ")"; }
-		case TokenType.SEMICOLON:		{ return "SEMICOLON"; }
+		case TokenType.SEMICOLON:		{ return ";"; }
 		case TokenType.STRING:			{ return "STRING"; }
 		case TokenType.THEN:			{ return "THEN"; }
 		case TokenType.TRUE:			{ return "TRUE"; }
 		case TokenType.TYPE:			{ return "TYPE"; }
-		case TokenType.UNEQUAL:			{ return "UNEQUAL"; }
+		case TokenType.UNEQUAL:			{ return "<>"; }
 		case TokenType.UNIT:			{ return "UNIT"; }
 		case TokenType.VAR:			{ return "VAR"; }
 		case TokenType.WHILE:			{ return "WHILE"; }
