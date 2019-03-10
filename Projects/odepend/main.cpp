@@ -17,12 +17,13 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
+#include <Core/Common/Exceptions.h>
 #include <Core/Consts.h>
 #include <Core/Types.h>
+#include <Core/Version.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
-#include <Core/Common/Exceptions.h>
 #include "Defines.h"
 #include "Repository.h"
 
@@ -771,8 +772,8 @@ void printUsage()
 
 void printVersion()
 {
-	std::cout << "ObjectiveScript Dependency Manager 0.6.6 (cli)" << std::endl;
-	std::cout << "Copyright (c) 2014-2018 Michael Adelmann" << std::endl;
+	std::cout << PRODUCT_NAME << " Dependency Manager " << PRODUCT_VERSION << " (cli)" << std::endl;
+	std::cout << COPYRIGHT << std::endl;
 	std::cout << "" << std::endl;
 }
 

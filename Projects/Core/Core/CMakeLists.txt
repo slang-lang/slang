@@ -28,6 +28,7 @@ SET(HEADERS
 	Symbol.h
 	Tools.h
 	Types.h
+	Version.h
 )
 
 SET(DEPENDENCIES
