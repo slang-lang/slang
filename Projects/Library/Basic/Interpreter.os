@@ -6,6 +6,7 @@ import System.String;
 // project imports
 import Line;
 
+
 public int FIRST_LINE const = 10;
 
 public enum ControlFlow {
@@ -13,12 +14,21 @@ public enum ControlFlow {
 	Normal;
 }
 
-public object Interpreter {
-	protected int mCurrentLine;
-	protected Map<string, int> mForStack;
-	protected Map<int, Line> mLines;
-	protected Map<string, String> mVariables;
 
+public object RuntimeException const implements IException {
+    public void Constructor(string msg) {
+        mMessage = msg;
+    }
+
+    public string what() const {
+        return mMessage;
+    }
+
+    private string mMessage const;
+}
+
+
+public object Interpreter {
 	public void Constructor(Object lines) {
 		assert(lines is Map<int, Line>);
 
@@ -193,9 +203,9 @@ public object Interpreter {
 		print("processFunctionExpression(" + exp.toString() + ")");
 
 		switch ( exp.mName ) {
-			case "ABS": { break; }
-			case "POW": { break; }
-			case "SQR": { break ; }
+			case "ABS": { return functionABS(exp); }
+			case "POW": { return functionPOW(exp); }
+			case "SQR": { return functionSQR(exp); }
 		}
 
 		return "";
@@ -378,5 +388,55 @@ public object Interpreter {
 
 		return 0;
 	}
+
+	//////////////////////////////////////////////////////
+
+	private string functionABS(FunctionExpression exp) const throws {
+		print("functionABS(" + exp.toString() + ")");
+
+		if ( exp.mParameters.size() != 1 ) {
+			throw new RuntimeException("invalid number of parameters for function ABS()");
+		}
+
+		var param1 = float processExpression(exp.mParameters.at(0));
+		print("param1 = '" + param1 + "'");
+
+		return "" + (param1 >= 0 ? param1 : param1 * -1);
+	}
+
+	private string functionPOW(FunctionExpression exp) const throws {
+		print("functionPOW(" + exp.toString() + ")");
+
+		if ( exp.mParameters.size() != 2 ) {
+			throw new RuntimeException("invalid number of parameters for function POW()");
+		}
+
+		var param1 = float processExpression(exp.mParameters.at(0));
+		print("param1 = '" + param1 + "'");
+
+		var param2 = float processExpression(exp.mParameters.at(0));
+		print("param2 = '" + param2 + "'");
+
+		return "" + param1 * param2;
+	}
+
+	private string functionSQR(FunctionExpression exp) const throws {
+		print("functionSQR(" + exp.toString() + ")");
+
+		if ( exp.mParameters.size() != 1 ) {
+			throw new RuntimeException("invalid number of parameters for function SQR()");
+		}
+
+		var param1 = float processExpression(exp.mParameters.at(0));
+		print("param1 = '" + param1 + "'");
+
+		return "" + param1 * param1;
+	}
+
+
+	protected int mCurrentLine;
+	protected Map<string, int> mForStack;
+	protected Map<int, Line> mLines;
+	protected Map<string, String> mVariables;
 }
 
