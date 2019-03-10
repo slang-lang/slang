@@ -1,4 +1,3 @@
-#!/usr/local/bin/Basic.os
 10 REM This is probably the canonical BASIC example
 110 REM Program. Note that REM statements are ignored.
 120 PRINT "This is a test program."

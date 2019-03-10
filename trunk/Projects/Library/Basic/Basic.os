@@ -33,11 +33,11 @@ public int Main(int argc, string args) modify {
 		Interpreter interpreter = new Interpreter(Object parser.parseFile(params.at(0).Key));
 		return interpreter.run();
 	}
-	catch ( IException e ) {
-		print("Exception: " + e.what());
-	}
 	catch ( string e ) {
 		print("Exception: " + e);
+	}
+	catch ( IException e ) {
+		print(typeid(e) + ": " + e.what());
 	}
 	catch {
 		print("Exception: caught unknown exception!");

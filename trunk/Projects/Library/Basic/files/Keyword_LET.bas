@@ -1,4 +1,3 @@
-#!/usr/local/bin/Basic.os
 10 REM LET-Test
 110 DIM A
 120 DIM B

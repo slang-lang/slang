@@ -27,26 +27,18 @@ public object ParseException const implements IException {
 }
 
 public object Parser {
-	// Constants
-	private String CHARS const;
-	private String COMPARECHARS const;
-	private String DELIMITERCHARS const;
-	private String NUMBERS const;
-	private String OPERATORCHARS const;
-	private String WHITESPACES const;
-
-	// Members
-	private int mCurrentLine;
-	private Set<string> mVariables;
-
 	public void Constructor() {
 		CHARS = new String("ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz");
 		COMPARECHARS = new String("<>=");
+		FUNCTIONS = new Set<string>();
 		NUMBERS = new String("0123456789");
 		OPERATORCHARS = new String("+-*/%");
 		WHITESPACES = new String(" ");
 
-		DELIMITERCHARS = new String( (string COMPARECHARS) + (string OPERATORCHARS) + (string WHITESPACES) );
+		DELIMITERCHARS = new String( (string COMPARECHARS) + (string OPERATORCHARS) + (string WHITESPACES) + ",()" );
+		FUNCTIONS.insert("ABS");
+		FUNCTIONS.insert("POW");
+		FUNCTIONS.insert("SQR");
 
 		mVariables = new Set<string>();
 	}
@@ -269,7 +261,7 @@ public object Parser {
 			stepExp = expression(ci);
 		}
 		else {
-			stepExp = expression("1");
+			stepExp = Expression new ConstNumberExpression(1.f);
 		}
 
 		return Statement new ForStatement(varExp,
@@ -367,7 +359,7 @@ public object Parser {
 // Expression parsing
 
 	private Expression expression(CharacterIterator ci) throws {
-		var leftExp = expression(parseWord(ci));
+		var leftExp = parseExpression(ci);
 
 		skipWhitespaces(ci);
 
@@ -386,9 +378,14 @@ public object Parser {
 		return leftExp;
 	}
 
-	private Expression expression(string value) const throws {
+	private Expression parseExpression(CharacterIterator ci) const throws {
+		string value = parseWord(ci);
+
 		if ( isNumber(value) ) {
 			return Expression new ConstNumberExpression(float value);
+		}
+		else if ( isFunction(value) ) {
+			return Expression parseFunction(value, ci);
 		}
 		else if ( isVariable(value) ) {
 			return Expression new VariableExpression(value);
@@ -398,6 +395,31 @@ public object Parser {
 		}
 
 		throw "invalid value '" + value + "' provided!";
+	}
+
+	private FunctionExpression parseFunction(string name, CharacterIterator ci) const throws {
+		var funExp = new FunctionExpression(name);
+
+		if ( ci.current() != "(" ) {
+			throw new ParseException("'(' expected but '" + ci.current() + " ' found!");
+		}
+
+		while ( ci.peek() != ")" ) {
+			var exp = expression( ci );
+			funExp.mParameters.push_back(exp);
+
+			if ( ci.peek() == "," ) {
+				continue;
+			}
+
+			break;
+		}
+
+		if ( ci.current() != ")" ) {
+			throw new ParseException("')' expected but '" + ci.current() + " ' found!");
+		}
+
+		return funExp;
 	}
 
 
@@ -410,6 +432,10 @@ public object Parser {
 
 	private bool isComparator(string value) const {
 		return COMPARECHARS.Contains(value);
+	}
+
+	private bool isFunction(string value) const {
+		return FUNCTIONS.contains(value);
 	}
 
 	private bool isNumber(string value) const {
@@ -476,5 +502,19 @@ public object Parser {
 			ci.next();
 		}
 	}
+
+
+	// Constants
+	private String CHARS const;
+	private String COMPARECHARS const;
+	private String DELIMITERCHARS const;
+	private Set<string> FUNCTIONS const;
+	private String NUMBERS const;
+	private String OPERATORCHARS const;
+	private String WHITESPACES const;
+
+	// Members
+	private int mCurrentLine;
+	private Set<string> mVariables;
 }
 
