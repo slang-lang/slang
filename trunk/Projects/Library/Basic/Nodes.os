@@ -11,7 +11,7 @@ public enum NodeType {
 public object Node {
 	public NodeType mNodeType const;
 
-	public void Constructor(NodeType type val) {
+	public void Constructor(NodeType type) {
 		mNodeType = type;
 	}
 

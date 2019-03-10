@@ -27,7 +27,7 @@ public enum StatementType {
 public object Statement extends Node {
 	public StatementType mStatementType const;
 
-	public void Constructor(StatementType statementType val) {
+	public void Constructor(StatementType statementType) {
 		base.Constructor(NodeType.StatementNode);
 
 		mStatementType = statementType;
