@@ -1,4 +1,3 @@
-#!/usr/local/bin/Basic.os
 10 REM This is a simple BASIC script that tests the IF keyword
 20 DIM A = 0
 30 DIM B = 5

@@ -1,4 +1,3 @@
-#!/usr/local/bin/Basic.os
 10 REM LET-Test
 20 PRINT "Simple FOR loop test"
 30 DIM I = 5

@@ -178,12 +178,27 @@ public object Interpreter {
 			case exp is ConstStringExpression: {
 				return processConstStringExpression(ConstStringExpression exp);
 			}
+			case exp is FunctionExpression: {
+				return processFunctionExpression(FunctionExpression exp);
+			}
 			case exp is VariableExpression: {
 				return processVariableExpression(VariableExpression exp);
 			}
 		}
 
 		throw "Unhandled expression found!";
+	}
+
+	private string processFunctionExpression(FunctionExpression exp) const throws {
+		print("processFunctionExpression(" + exp.toString() + ")");
+
+		switch ( exp.mName ) {
+			case "ABS": { break; }
+			case "POW": { break; }
+			case "SQR": { break ; }
+		}
+
+		return "";
 	}
 
 	private string processVariableExpression(VariableExpression exp) const throws {
