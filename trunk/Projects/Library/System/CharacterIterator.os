@@ -76,6 +76,18 @@ public object CharacterIterator extends Iterator<string> {
 	}
 
 	/*
+	 * returns the next character of the held string value without changing the current iteration index
+	 * throws OutOfBoundsException
+	 */
+	public string peek(int pos = 1) modify throws {
+		if ( mCurrentIndex + pos < 0 || mCurrentIndex + pos > mLength ) {
+			throw new OutOfBoundsException("index(" + mCurrentIndex + pos + ") out of bounds");
+		}
+
+		return substr(mValue, mCurrentIndex, pos);
+	}
+
+	/*
 	 * resets the current iteration
 	 */
 	public void reset(string value = "") modify {
