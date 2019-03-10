@@ -602,23 +602,6 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		AccessMode::E accessMode = AccessMode::Unspecified;
-		bool hasDefaultValue = false;
-		Mutability::E mutability = Mutability::Modify;
-		Runtime::AtomicValue value;
-
-		if ( token->type() == Token::Type::IDENTIFIER ) {
-			// set default access mode for complex types
-			accessMode = AccessMode::ByReference;
-		}
-		else if ( token->type() == Token::Type::TYPE ) {
-			// set default access mode for atomic parameters
-			accessMode = AccessMode::ByValue;
-		}
-		else {
-			throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
-		}
-
 		Common::TypeDeclaration type = parseTypeDeclaration(token, scope);
 
 		// this allows unnamed parameters that are not instantiated, just to satisfy an interface or similar
@@ -631,6 +614,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		}
 		// }
 
+		Mutability::E mutability = Mutability::Modify;
 		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_CONST ) {
 				mutability = Mutability::Const;
@@ -645,6 +629,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			}
 		}
 
+		AccessMode::E accessMode = AccessMode::Unspecified;
 		if ( token->category() == Token::Category::ReservedWord ) {
 			if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
 				accessMode = AccessMode::ByReference;
@@ -655,6 +640,8 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			}
 		}
 
+		bool hasDefaultValue = false;
+		Runtime::AtomicValue value;
 		if ( token->type() == Token::Type::ASSIGN ) {
 			if ( name.empty() ) {
 				throw Designtime::Exceptions::SyntaxError("cannot use default values for unnamed parameters", token->position());

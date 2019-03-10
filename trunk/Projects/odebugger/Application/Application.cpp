@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/Runtime/ControlFlow.h>
+#include <Core/Version.h>
 #include <Debugger/Debugger.h>
 #include <LocalClient/LocalClient.h>
 #include <Tools/Files.h>
@@ -105,8 +106,8 @@ void Application::printUsage()
 
 void Application::printVersion()
 {
-	std::cout << "ObjectiveScript Debugger 0.6.6 (cli)" << std::endl;
-	std::cout << "Copyright (c) 2014-2018 Michael Adelmann" << std::endl;
+	std::cout << PRODUCT_NAME << " Debugger " << PRODUCT_VERSION << " (cli)" << std::endl;
+	std::cout << COPYRIGHT << std::endl;
 	std::cout << "" << std::endl;
 }
 

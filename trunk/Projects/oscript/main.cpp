@@ -7,6 +7,7 @@
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Script.h>
+#include <Core/Version.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Tools/Printer.h>
@@ -63,8 +64,8 @@ void printUsage()
 
 void printVersion()
 {
-	std::cout << "ObjectiveScript Interpreter 0.6.6 (cli)" << std::endl;
-	std::cout << "Copyright (c) 2014-2018 Michael Adelmann" << std::endl;
+	std::cout << PRODUCT_NAME << " Interpreter " << PRODUCT_VERSION << " (cli)" << std::endl;
+	std::cout << COPYRIGHT << std::endl;
 	std::cout << "" << std::endl;
 }
 
