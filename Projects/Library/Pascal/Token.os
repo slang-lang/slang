@@ -52,7 +52,7 @@ public enum TokenType {
 	;
 }
 
-public string TokenToString(TokenType type val) {
+public string TokenToString(TokenType type) {
 	switch ( type ) {
 		case TokenType.AND:			{ return "AND"; }
 		case TokenType.ASSIGN:			{ return "ASSIGN"; }
