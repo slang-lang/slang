@@ -1,8 +1,8 @@
 
 // library imports
+import System.CharacterIterator;
 import System.Collections.IIterateable;
 import System.IO.File;
-import System.CharacterIterator;
 
 // project imports
 
