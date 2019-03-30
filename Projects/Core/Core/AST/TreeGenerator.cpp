@@ -873,6 +873,50 @@ Statement* TreeGenerator::process_break(TokenIterator& token)
 
 /*
  * syntax:
+ * "cast<" <typename> ">(" <expression> ")"
+ */
+Expression* TreeGenerator::process_cast(TokenIterator& token)
+{
+	Token start = (*token);
+
+assert( !"before LESS token" );
+
+	expect(Token::Type::LESS, token);
+	++token;
+
+assert( !"after LESS token" );
+
+        DesigntimeSymbolExpression* typeExpr = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
+        if ( !typeExpr ) {
+                throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
+        }
+
+        std::string type = typeExpr->getResultType();
+        PrototypeConstraints constraints = typeExpr->mConstraints;
+
+	Common::TypeDeclaration typeName(type, constraints);
+
+        mRepository->prepareType(typeName);
+
+        // delete resolved symbol expression as it is not needed any more
+        delete typeExpr;
+
+	expect(Token::Type::GREATER, token);
+	++token;
+
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
+
+	TypecastExpression* typeExp = new TypecastExpression(typeName.mCombinedName, expression(token));
+
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
+
+	return typeExp;
+}
+
+/*
+ * syntax:
  * continue;
  */
 Statement* TreeGenerator::process_continue(TokenIterator& token)
@@ -978,7 +1022,10 @@ Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
 
 	std::string keyword = (*token++).content();
 
-	if ( keyword == KEYWORD_COPY ) {
+	if ( keyword == KEYWORD_CAST ) {
+		expression = process_cast(token);
+	}
+	else if ( keyword == KEYWORD_COPY ) {
 		expression = process_copy(token);
 	}
 	else if ( keyword == KEYWORD_NEW ) {
