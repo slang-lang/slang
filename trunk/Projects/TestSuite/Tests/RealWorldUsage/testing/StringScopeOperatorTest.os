@@ -11,6 +11,10 @@ private bool TestCase1() {
 	print("TestCase 1");
 
 	print( "12345".Length() );
+	print( "12345".CharAt(1) );
+	//print( "12345".mValue );
+
+	print( (string 123).Length() );
 
 	return true;
 }
