@@ -3,8 +3,6 @@
 public namespace System { }
 
 public object Integer {
-	private int mValue;
-
 	/*
 	 * Standard & default constructor
 	 */
@@ -117,6 +115,8 @@ public object Integer {
 	public Integer operator/(Integer other const ref) modify {
 		return new Integer(mValue / other.mValue);
 	}
+
+	private int mValue;
 }
 
 public Integer Integer(int value) const {
