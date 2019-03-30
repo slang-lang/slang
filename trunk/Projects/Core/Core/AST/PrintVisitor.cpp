@@ -71,7 +71,17 @@ std::string PrintVisitor::printExpression(Node* node) const
 			result += printExpression(isExp->mExpression) + " is " + isExp->mMatchType;
 		} break;
 		case Expression::ExpressionType::NewExpression: {
-			result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
+			MethodExpression* methodExp = static_cast<MethodExpression*>(static_cast<NewExpression*>(expression)->mExpression);
+
+			result += "new " + static_cast<NewExpression*>(expression)->getResultType();
+			result += "(";
+			for ( ExpressionList::const_iterator it = methodExp->mParams.begin(); it != methodExp->mParams.end(); ++it ) {
+				if ( it != methodExp->mParams.begin() ) {
+					result += ", ";
+				}
+				result += printExpression((*it));
+			}
+			result += ")";
 		} break;
 		case Expression::ExpressionType::LiteralExpression: {
 			Runtime::AtomicValue value = static_cast<LiteralExpression*>(expression)->mValue;
