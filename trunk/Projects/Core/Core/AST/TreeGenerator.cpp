@@ -610,11 +610,6 @@ Node* TreeGenerator::processPostfixIncDecOperator(TokenIterator& start, Node* ba
 	return postfix;
 }
 
-Node* TreeGenerator::processPostfixIntegerOperator(TokenIterator& start, Expression* baseExp)
-{
-    return processPostfixObjectOperator(std::string(_int_object), start, baseExp);
-}
-
 Node* TreeGenerator::processPostfixNotOperator(TokenIterator& start, Node* baseExp)
 {
 	//throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
@@ -697,10 +692,10 @@ Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* bas
 
 	// handle literal types (like int, string, etc.)
 	if ( infixPostfix->getResultType() == _int ) {
-		return processPostfixIntegerOperator(start, infixPostfix);
+		return processPostfixObjectOperator(std::string(_int_object), start, infixPostfix);
 	}
 	else if ( infixPostfix->getResultType() == _string ) {
-		return processPostfixStringOperator(start, infixPostfix);
+		return processPostfixObjectOperator(std::string(_string_object), start, infixPostfix);
 	}
 
 	Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(infixPostfix->getResultType());
@@ -720,11 +715,6 @@ Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* bas
 	}
 
 	return new ScopeExpression(infixPostfix, symbolExpression, symbolExpression->getResultType());
-}
-
-Node* TreeGenerator::processPostfixStringOperator(TokenIterator& start, Expression* baseExp)
-{
-    return processPostfixObjectOperator(std::string(_string_object), start, baseExp);
 }
 
 Node* TreeGenerator::processPostfixSubscriptOperator(TokenIterator& start, Node* /*baseExp*/)
