@@ -118,12 +118,10 @@ private: // Execution
 	// {
 	Node* processIsOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixIncDecOperator(TokenIterator& start, Node* baseExp);
-	Node* processPostfixIntegerOperator(TokenIterator& start, Expression* baseExp);
 	Node* processPostfixNotOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixObjectOperator(const std::string& objectType, TokenIterator& start, Expression* baseExp);
 	Node* processPostfixRangeOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixScopeOperator(TokenIterator& start, Node* baseExp);
-	Node* processPostfixStringOperator(TokenIterator& start, Expression* baseExp);
 	Node* processPostfixSubscriptOperator(TokenIterator& start, Node* baseExp);
 	Node* processTernaryOperator(TokenIterator& start, Node* baseExp);
 	// }
