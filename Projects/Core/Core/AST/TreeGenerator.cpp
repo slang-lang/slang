@@ -466,7 +466,7 @@ Node* TreeGenerator::parsePostfix(TokenIterator& start, Node* baseExp)
 				}
 
 				switch ( op ) {
-					case Token::Type::BRACKET_OPEN:
+					case Token::Type::BRACKET_OPEN: // postfix [] operator
 						baseExp = processPostfixSubscriptOperator(start, baseExp);
 						break;
 					case Token::Type::OPERATOR_DECREMENT:
@@ -476,7 +476,7 @@ Node* TreeGenerator::parsePostfix(TokenIterator& start, Node* baseExp)
 					case Token::Type::OPERATOR_NOT:	// postfix ! operator
 						baseExp = processPostfixNotOperator(start, baseExp);
 						break;
-					case Token::Type::OPERATOR_SCOPE:
+					case Token::Type::OPERATOR_SCOPE: // postfix . operator
 						baseExp = processPostfixScopeOperator(start, baseExp);
 						break;
 					default:
@@ -610,6 +610,11 @@ Node* TreeGenerator::processPostfixIncDecOperator(TokenIterator& start, Node* ba
 	return postfix;
 }
 
+Node* TreeGenerator::processPostfixIntegerOperator(TokenIterator& start, Expression* baseExp)
+{
+    return processPostfixObjectOperator(std::string(_int_object), start, baseExp);
+}
+
 Node* TreeGenerator::processPostfixNotOperator(TokenIterator& start, Node* baseExp)
 {
 	//throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
@@ -617,6 +622,36 @@ Node* TreeGenerator::processPostfixNotOperator(TokenIterator& start, Node* baseE
 	++start;
 
 	return new UnaryExpression(Token::Type::OPERATOR_VALIDATE, baseExp, UnaryExpression::ValueType::RValue);
+}
+
+Node* TreeGenerator::processPostfixObjectOperator(const std::string& objectType, TokenIterator& start, Expression* baseExp)
+{
+	Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(objectType);
+	if ( !scope ) {
+		throw Designtime::Exceptions::SyntaxError("to use operators on literals System." + objectType + " has to be imported", start->position());
+	}
+
+	SymbolExpression* stringExp = NULL;
+	stringExp = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
+	stringExp->mSurroundingScope = scope;
+
+	ExpressionList params;
+	params.push_back(baseExp);
+
+	NewExpression* newExp = new NewExpression(_string_object, process_method(stringExp, *start, params));
+
+	SymbolExpression* symbolExpression = resolve(start, scope, true, Visibility::Public);
+	if ( !symbolExpression ) {
+		throw Designtime::Exceptions::SyntaxError("invalid symbol '" + start->content() + "' for type '" + objectType + "' detected!", start->position());
+	}
+
+	if ( start->type() == Token::Type::PARENTHESIS_OPEN ) {
+	MethodExpression* method = process_method(symbolExpression, start);
+
+		return new ScopeExpression(newExp, method, method->getResultType());
+	}
+
+	return new ScopeExpression(newExp, symbolExpression, symbolExpression->getResultType());
 }
 
 Node* TreeGenerator::processPostfixRangeOperator(TokenIterator& start, Node* baseExp)
@@ -660,6 +695,14 @@ Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* bas
 		throw Designtime::Exceptions::SyntaxError("invalid expression type detected!", start->position());
 	}
 
+	// handle literal types (like int, string, etc.)
+	if ( infixPostfix->getResultType() == _int ) {
+		return processPostfixIntegerOperator(start, infixPostfix);
+	}
+	else if ( infixPostfix->getResultType() == _string ) {
+		return processPostfixStringOperator(start, infixPostfix);
+	}
+
 	Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(infixPostfix->getResultType());
 	if ( !scope ) {
 		throw Designtime::Exceptions::SyntaxError("invalid type '" + infixPostfix->getResultType() + "' detected!", start->position());
@@ -677,6 +720,11 @@ Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* bas
 	}
 
 	return new ScopeExpression(infixPostfix, symbolExpression, symbolExpression->getResultType());
+}
+
+Node* TreeGenerator::processPostfixStringOperator(TokenIterator& start, Expression* baseExp)
+{
+    return processPostfixObjectOperator(std::string(_string_object), start, baseExp);
 }
 
 Node* TreeGenerator::processPostfixSubscriptOperator(TokenIterator& start, Node* /*baseExp*/)

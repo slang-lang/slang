@@ -107,8 +107,10 @@ static const char* _double = "double";
 static const char* _enum = "enum";
 static const char* _float = "float";
 static const char* _int = "int";
+static const char* _int_object = "Integer";
 static const char* _object = "Object";
 static const char* _string = "string";
+static const char* _string_object = "String";
 static const char* _void = "void";
 
 // Values
