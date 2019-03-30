@@ -29,6 +29,7 @@ static const char* IDENTIFIER_THIS = "this";
 static const char* KEYWORD_ASSERT = "assert";
 static const char* KEYWORD_BREAK = "break";
 static const char* KEYWORD_CASE = "case";
+static const char* KEYWORD_CAST = "cast";
 static const char* KEYWORD_CATCH = "catch";
 static const char* KEYWORD_CONTINUE = "continue";
 static const char* KEYWORD_COPY = "copy";

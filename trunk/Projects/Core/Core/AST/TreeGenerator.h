@@ -75,6 +75,7 @@ private: // Execution
 	Statement* process_assert(TokenIterator& token);
 	Expression* process_assignment(TokenIterator& token, SymbolExpression* lhs);
 	Statement* process_break(TokenIterator& token);
+	Expression* process_cast(TokenIterator& token);
 	Statement* process_continue(TokenIterator& token);
 	Expression* process_copy(TokenIterator& token);
 	Statement* process_delete(TokenIterator& token);

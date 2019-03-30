@@ -51,6 +51,7 @@ StringSet provideKeyWords()
 	keywords.insert(KEYWORD_ASSERT);
 	keywords.insert(KEYWORD_BREAK);
 	keywords.insert(KEYWORD_CASE);
+	keywords.insert(KEYWORD_CAST);
 	keywords.insert(KEYWORD_CATCH);
 	keywords.insert(KEYWORD_CONTINUE);
 	keywords.insert(KEYWORD_COPY);
