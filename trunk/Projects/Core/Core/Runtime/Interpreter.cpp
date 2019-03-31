@@ -1403,6 +1403,9 @@ void Interpreter::process_keyword(TokenIterator& token, Object *result)
 	else if ( keyword == KEYWORD_BREAK ) {
 		process_break(token);
 	}
+	else if ( keyword == KEYWORD_CAST ) {
+		//process_cast(token);
+	}
 	else if ( keyword == KEYWORD_CONTINUE ) {
 		process_continue(token);
 	}
