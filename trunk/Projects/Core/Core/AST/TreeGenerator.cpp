@@ -894,21 +894,24 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 
         mRepository->prepareType(typeName);
 
-        // delete resolved symbol expression as it is not needed any more
-        delete typeExpr;
-
 	expect(Token::Type::COMPARE_GREATER, token);
 	++token;
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	TypecastExpression* castExpr = new TypecastExpression(typeName.mCombinedName, expression(token));
+	Node* sourceExpr = expression(token);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return castExpr;
+	resolveType(typeExpr, Token(Token::Type::ASSIGN, "="), sourceExpr);
+	//resolveType(typeExpr, Token(Token::Type::TYPECAST, "from"), sourceExpr);
+
+        // delete resolved symbol expression as it is not needed any more
+        delete typeExpr;
+
+	return new TypecastExpression(typeName.mCombinedName, sourceExpr);
 }
 
 /*
@@ -1208,6 +1211,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 		((op->category() == Token::Category::Constant || op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) ||
 		 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && dynamic_cast<DesigntimeSymbolExpression*>(symbol)->isPrototype()))
 		) {
+		//OSinfo("C-style typecasts will soon be deprecated");
 
 		mRepository->prepareType(Common::TypeDeclaration(symbol->getResultType(), dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints));
 
@@ -2195,12 +2199,22 @@ std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node*
 		throw Designtime::Exceptions::SyntaxError("invalid left expression");
 	}
 
+	std::string leftType = l->getResultType();
+	if ( dynamic_cast<DesigntimeSymbolExpression*>(l) ) {
+		leftType = Designtime::Parser::buildRuntimeConstraintTypename(leftType, dynamic_cast<DesigntimeSymbolExpression*>(l)->mConstraints);
+	}
+
 	Expression* r = dynamic_cast<Expression*>(right);
 	if ( !r ) {
 		throw Designtime::Exceptions::SyntaxError("invalid right expression");
 	}
 
-	return resolveType(l->getResultType(), operation, r->getResultType());
+	std::string rightType = r->getResultType();
+	if ( dynamic_cast<DesigntimeSymbolExpression*>(r) ) {
+		rightType = Designtime::Parser::buildRuntimeConstraintTypename(rightType, dynamic_cast<DesigntimeSymbolExpression*>(r)->mConstraints);
+	}
+
+	return resolveType(leftType, operation, rightType);
 }
 
 std::string TreeGenerator::resolveType(const std::string& left, const Token& operation, const std::string& right) const
