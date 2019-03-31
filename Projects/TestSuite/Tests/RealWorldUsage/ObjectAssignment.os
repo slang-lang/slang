@@ -21,14 +21,14 @@ private object Vector2D {
 		return "Vector2D = { name: \"" + name + "\", " + x + ", " + y + " }";
 	}
 
-	public void operator=(Vector2D other ref) modify {
+	public void operator=(Vector2D other const ref) modify {
 		print("operator=()");
 
 		x = other.x;
 		y = other.y;
 	}
 
-	public bool operator==(Vector2D other ref) const {
+	public bool operator==(Vector2D other const ref) const {
 		print("operator==(Vector2D)");
 
 		return x == other.x && y == other.y;
