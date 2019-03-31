@@ -17,6 +17,30 @@ public object String implements IIterateable {
 	}
 
 	/*
+	 * double cast constructor
+	 */
+	public void Constructor(double value) {
+		mValue = string value;
+		mSize = strlen(mValue);
+	}
+
+	/*
+	 * float cast constructor
+	 */
+	public void Constructor(float value) {
+		mValue = string value;
+		mSize = strlen(mValue);
+	}
+
+	/*
+	 * int cast constructor
+	 */
+	public void Constructor(int value) {
+		mValue = string value;
+		mSize = strlen(mValue);
+	}
+
+	/*
 	 * Copy constructor
 	 */
 	public void Constructor(String value ref) {
