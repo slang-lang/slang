@@ -879,12 +879,8 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 {
 	Token start = (*token);
 
-assert( !"before LESS token" );
-
-	expect(Token::Type::LESS, token);
+	expect(Token::Type::COMPARE_LESS, token);
 	++token;
-
-assert( !"after LESS token" );
 
         DesigntimeSymbolExpression* typeExpr = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
         if ( !typeExpr ) {
@@ -901,18 +897,18 @@ assert( !"after LESS token" );
         // delete resolved symbol expression as it is not needed any more
         delete typeExpr;
 
-	expect(Token::Type::GREATER, token);
+	expect(Token::Type::COMPARE_GREATER, token);
 	++token;
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	TypecastExpression* typeExp = new TypecastExpression(typeName.mCombinedName, expression(token));
+	TypecastExpression* castExpr = new TypecastExpression(typeName.mCombinedName, expression(token));
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return typeExp;
+	return castExpr;
 }
 
 /*
