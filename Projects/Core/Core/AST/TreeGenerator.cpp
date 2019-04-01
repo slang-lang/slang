@@ -38,9 +38,9 @@ namespace AST {
 TreeGenerator::TreeGenerator()
 : mAllowConstModify(false),
   mControlFlow(Runtime::ControlFlow::Normal),
-  mMethod(0),
-  mThis(0),
-  mStackFrame(0)
+  mMethod(NULL),
+  mThis(NULL),
+  mStackFrame(NULL)
 {
 	// initialize virtual machine stuff
 	mRepository = Controller::Instance().repository();
@@ -91,7 +91,7 @@ void TreeGenerator::deinitialize()
 	mStackFrame->popScope();
 	// delete stack frame
 	delete mStackFrame;
-	mStackFrame = 0;
+	mStackFrame = NULL;
 
 	// verify return statement existance
 	if ( mMethod->QualifiedTypename() != Designtime::VoidObject::TYPENAME
@@ -105,8 +105,8 @@ void TreeGenerator::deinitialize()
 	}
 
 	// reset reusable members
-	mThis = 0;
-	mMethod = 0;
+	mThis = NULL;
+	mMethod = NULL;
 	mControlFlow = Runtime::ControlFlow::Normal;
 	mAllowConstModify = false;
 }
@@ -140,9 +140,9 @@ Statements* TreeGenerator::generate(const TokenList& tokens, bool allowBreakAndC
 	// reset control flow to be able to check for missing control flow statements during switch/case
 	mControlFlow = Runtime::ControlFlow::Normal;
 
-	Statements* statements = 0;
+	Statements* statements = NULL;
 
-	pushScope(0, allowBreakAndContinue);
+	pushScope(NULL, allowBreakAndContinue);
 		pushTokens(tokens);
 			TokenIterator start = getTokens().begin();
 			TokenIterator end = getTokens().end();
@@ -152,7 +152,6 @@ Statements* TreeGenerator::generate(const TokenList& tokens, bool allowBreakAndC
 			statements = process(start, end);
 
 			if ( needsControlStatement && mControlFlow == Runtime::ControlFlow::Normal ) {
-				delete statements;
 				throw Common::Exceptions::ControlFlowException("block is missing control flow statement", position);
 			}
 		popTokens();
@@ -189,7 +188,7 @@ MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
 		scope = scope->getEnclosingScope();
 	}
 
-	return 0;
+	return NULL;
 }
 
 MethodScope* TreeGenerator::getMethodScope(IScope* scope) const
@@ -415,7 +414,7 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 
 Node* TreeGenerator::parseInfix(TokenIterator &start)
 {
-	Node* infix = 0;
+	Node* infix = NULL;
 	Token::Type::E op = start->type();
 
 	// infix
@@ -491,7 +490,7 @@ Node* TreeGenerator::parsePostfix(TokenIterator& start, Node* baseExp)
 
 Node* TreeGenerator::parseTerm(TokenIterator& start)
 {
-	Node* term = 0;
+	Node* term = NULL;
 
 	switch ( start->type() ) {
 		case Token::Type::CONST_BOOLEAN: {
@@ -553,23 +552,33 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 {
 	if ( token == end ) {
 		// empty method provided
-		return 0;
+		return NULL;
 	}
 
-	Token firstToken = (*token);
-	Statements* statements = new Statements(firstToken);
+	int reachedReturn = 0;
+	Statements* statements = new Statements((*token));
 
 	while ( (token != end) && (token->type() != Token::Type::ENDOFFILE) ) {
+		if ( reachedReturn == 1 ) {
+			OSinfo("Reached return statement, the following code will never be executed in " + token->position().toString());
+			reachedReturn++;
+		}
+
 		Node* node = process_statement(token);
 
 		if ( node ) {
 			statements->mNodes.push_back(node);
+
+			if ( dynamic_cast<ReturnStatement*>(node) ) {
+				//break;	// use this as optimization to not parse unreachable code, instead of only informing the user about it
+				reachedReturn++;
+			}
 		}
 	}
 
 	if ( statements->mNodes.empty() ) {
 		delete statements;
-		statements = 0;
+		statements = NULL;
 	}
 
 	return statements;
@@ -1017,7 +1026,7 @@ Statement* TreeGenerator::process_exit(TokenIterator& token)
 
 Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
 {
-	Expression* expression = 0;
+	Expression* expression = NULL;
 
 	std::string keyword = (*token++).content();
 
@@ -1055,7 +1064,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	// Declaration parsing
 	// {
-	Node* initialization = 0;
+	Node* initialization = NULL;
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		initialization = process_statement(token);
 	}
@@ -1065,7 +1074,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	// Condition parsing
 	// {
-	Node* condition = 0;
+	Node* condition = NULL;
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		condition = expression(token);
 
@@ -1079,7 +1088,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	// Iteration parsing
 	// {
-	Node* iteration = 0;
+	Node* iteration = NULL;
 	if ( token->type() != Token::Type::PARENTHESIS_CLOSE ) {
 		iteration = process_statement(token, true);
 	}
@@ -1285,7 +1294,7 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 
 	Node* ifBlock = process_statement(token);
 
-	Node* elseBlock = 0;
+	Node* elseBlock = NULL;
 	if ( token != getTokens().end() &&
 		 token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_ELSE ) {
 		++token;
@@ -1328,7 +1337,7 @@ Expression* TreeGenerator::process_incdecrement(TokenIterator& token, Expression
 
 Statement* TreeGenerator::process_keyword(TokenIterator& token)
 {
-	Statement* statement = 0;
+	Statement* statement = NULL;
 
 	std::string keyword = (*token++).content();
 
@@ -1568,7 +1577,7 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 	Token start = (*token);
 	mControlFlow = Runtime::ControlFlow::Return;
 
-	Node* exp = 0;
+	Node* exp = NULL;
 	std::string returnType = Designtime::VoidObject::TYPENAME;
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
@@ -1632,7 +1641,7 @@ Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpress
 
 Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndContinue)
 {
-	Node* node = 0;
+	Node* node = NULL;
 
 	switch ( token->type() ) {
 		case Token::Type::BRACKET_CURLY_OPEN:
@@ -1683,7 +1692,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	++token;
 
 	CaseStatements caseStatements;
-	Statements* defaultStatement = 0;
+	Statements* defaultStatement = NULL;
 
 	// collect all case-blocks
 	while ( token->type() != Token::Type::BRACKET_CURLY_CLOSE ) {
@@ -1764,7 +1773,7 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
 	Token start = (*token);
 	mControlFlow = Runtime::ControlFlow::Throw;
 
-	Node* exp = 0;
+	Node* exp = NULL;
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		exp = expression(token);
@@ -1802,7 +1811,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	TokenIterator localEnd = getTokens().end();
 
 	CatchStatements catchStatements;
-	Statements* finallyBlock = 0;
+	Statements* finallyBlock = NULL;
 
 	// collect all catch- and finally-blocks
 	for ( ; ; ) {
@@ -1814,7 +1823,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 
 			pushScope();	// push a new scope to allow reuse of the same exception instance name
 
-			TypeDeclaration* typeDeclaration = 0;
+			TypeDeclaration* typeDeclaration = NULL;
 
 			// parse exception type (if present)
 			if ( tmp->type() == Token::Type::PARENTHESIS_OPEN ) {
@@ -1901,7 +1910,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 	// delete resolved symbol expression as it is not needed any more
 	delete lhs;
-	lhs = 0;
+	lhs = NULL;
 
 	expect(Token::Type::IDENTIFIER, token);
 
@@ -1921,7 +1930,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	// non-atomic types are references by default
 	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, object->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference);
 
-	Expression* assignmentExp = 0;
+	Expression* assignmentExp = NULL;
 
 	if ( token->type() == Token::Type::ASSIGN ) {
 		if ( initialization != Initialization::Allowed ) {
@@ -2045,14 +2054,14 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	}
 
 	std::string name = token->content();
-	IScope* scope = 0;
-	SymbolExpression* symbol = 0;
+	IScope* scope = NULL;
+	SymbolExpression* symbol = NULL;
 	std::string type;
 
 	// retrieve symbol for token from base scope
 	Symbol* result = base->resolve(name, onlyCurrentScope, !onlyCurrentScope ? Visibility::Private : visibility);
 	if ( !result ) {
-		return 0;
+		return NULL;
 	}
 
 	++token;
@@ -2125,10 +2134,10 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 		symbol->mSymbolExpression = resolve(++token, scope, true, visibility);
 
 		if ( !symbol->mSymbolExpression ) {
-			// exceptions are not allowed here so we have to return 0 (without leaving memleaks)
+			// exceptions are not allowed here so we have to return NULL (without leaving memleaks)
 			delete symbol;
 
-			return 0;
+			return NULL;
 		}
 	}
 	symbol->mSurroundingScope = base;
