@@ -13,7 +13,7 @@ public object Float {
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(Float value ref) {
+	public void Constructor(Float value const) {
 		mValue = float value;
 	}
 
@@ -31,7 +31,7 @@ public object Float {
 	public bool operator==(float other) const {
 		return mValue == other;
 	}
-	public bool operator==(Float other ref) const {
+	public bool operator==(Float other const) const {
 		return mValue == other.mValue;
 	}
 
@@ -40,7 +40,7 @@ public object Float {
 
 		return this;
 	}
-	public Float operator=(Float other ref) modify {
+	public Float operator=(Float other const) modify {
 		mValue = other.mValue;
 
 		return this;
@@ -53,31 +53,31 @@ public object Float {
 		return mValue;
 	}
 
-	public Float operator+(float other) modify {
+	public Float operator+(float other) const {
 		return new Float(mValue + other);
 	}
-	public Float operator+(Float other ref) modify {
+	public Float operator+(Float other const) const {
 		return new Float(mValue + other.mValue);
 	}
 
-	public Float operator-(float other) modify {
+	public Float operator-(float other) const {
 		return new Float(mValue - other);
 	}
-	public Float operator-(Float other ref) modify {
+	public Float operator-(Float other const) const {
 		return new Float(mValue - other.mValue);
 	}
 
-	public Float operator*(float other) modify {
+	public Float operator*(float other) const {
 		return new Float(mValue * other);
 	}
-	public Float operator*(Float other ref) modify {
+	public Float operator*(Float other const) const {
 		return new Float(mValue * other.mValue);
 	}
 
-	public Float operator/(float other) modify {
+	public Float operator/(float other) const {
 		return new Float(mValue / other);
 	}
-	public Float operator/(Float other ref) modify {
+	public Float operator/(Float other const) const {
 		return new Float(mValue / other.mValue);
 	}
 

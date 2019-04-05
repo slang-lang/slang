@@ -13,7 +13,7 @@ public object Double {
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(Double value ref) {
+	public void Constructor(Double value const) {
 		mValue = double value;
 	}
 
@@ -31,7 +31,7 @@ public object Double {
 	public bool operator==(double other) const {
 		return mValue == other;
 	}
-	public bool operator==(Double other ref) const {
+	public bool operator==(Double other const) const {
 		return mValue == other.mValue;
 	}
 
@@ -40,7 +40,7 @@ public object Double {
 
 		return this;
 	}
-	public Double operator=(Double other ref) modify {
+	public Double operator=(Double other const) modify {
 		mValue = other.mValue;
 
 		return this;
@@ -53,31 +53,31 @@ public object Double {
 		return mValue;
 	}
 
-	public Double operator+(double other) modify {
+	public Double operator+(double other) const {
 		return new Double(mValue + other);
 	}
-	public Double operator+(Double other ref) modify {
+	public Double operator+(Double other const) const {
 		return new Double(mValue + other.mValue);
 	}
 
-	public Double operator-(double other) modify {
+	public Double operator-(double other) const {
 		return new Double(mValue - other);
 	}
-	public Double operator-(Double other ref) modify {
+	public Double operator-(Double other const) const {
 		return new Double(mValue - other.mValue);
 	}
 
-	public Double operator*(double other) modify {
+	public Double operator*(double other) const {
 		return new Double(mValue * other);
 	}
-	public Double operator*(Double other ref) modify {
+	public Double operator*(Double other const) const {
 		return new Double(mValue * other.mValue);
 	}
 
-	public Double operator/(double other) modify {
+	public Double operator/(double other) const {
 		return new Double(mValue / other);
 	}
-	public Double operator/(Double other ref) modify {
+	public Double operator/(Double other const) const {
 		return new Double(mValue / other.mValue);
 	}
 

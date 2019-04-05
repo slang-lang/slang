@@ -41,8 +41,8 @@ public object Character {
 	/*
 	 * Character compare operator
 	 */
-	public bool operator==(Character other ref) const {
-		return operator==(other.mValue);
+	public bool operator==(Character other const) const {
+		return mValue == other.mValue;
 	}
 
 	/*
@@ -55,8 +55,8 @@ public object Character {
 	/*
 	 * Character assignment operator
 	 */
-	public void operator=(Character other ref) modify {
-		operator=(other.mValue);
+	public void operator=(Character other const) modify {
+		mValue = other.mValue;
 	}
 
 	/*
@@ -69,8 +69,8 @@ public object Character {
 	/*
 	 * Character less compare operator
 	 */
-	public bool operator<(Character other ref) const {
-		return operator<(other.mValue);
+	public bool operator<(Character other const) const {
+		return mValue < other.mValue;
 	}
 
 	/*
