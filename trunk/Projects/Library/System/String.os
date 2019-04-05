@@ -274,6 +274,13 @@ public object String implements IIterateable {
 	/*
 	 * Returns the held string in capital letters
 	 */
+	public String ToUpper() const {
+		return new String(toUpper(mValue));
+	}
+
+	/*
+	 * Returns the held string in capital letters
+	 */
 	public string ToUpperCase() const {
 		return toUpper(mValue);
 	}
