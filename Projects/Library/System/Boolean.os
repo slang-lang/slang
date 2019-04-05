@@ -13,7 +13,7 @@ public object Boolean {
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(Boolean value ref) {
+	public void Constructor(Boolean value) {
 		mValue = value.mValue;
 	}
 
@@ -31,7 +31,7 @@ public object Boolean {
 	public bool operator==(bool other) const {
 		return mValue == other;
 	}
-	public bool operator==(Boolean other ref) const {
+	public bool operator==(Boolean other) const {
 		return mValue == other.mValue;
 	}
 
@@ -40,7 +40,7 @@ public object Boolean {
 
 		return this;
 	}
-	public Boolean operator=(Boolean other ref) modify {
+	public Boolean operator=(Boolean other) modify {
 		mValue = other.mValue;
 
 		return this;

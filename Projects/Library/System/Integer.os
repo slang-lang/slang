@@ -13,7 +13,7 @@ public object Integer {
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(Integer i ref) {
+	public void Constructor(Integer i const) {
 		mValue = int i;
 	}
 
@@ -38,21 +38,21 @@ public object Integer {
 	public bool operator==(int other) const {
 		return mValue == other;
 	}
-	public bool operator==(Integer other const ref) const {
+	public bool operator==(Integer other const) const {
 		return mValue == other.mValue;
 	}
 
 	public bool operator<(int other) const {
 		return mValue < other;
 	}
-	public bool operator<(Integer other const ref) const {
+	public bool operator<(Integer other const) const {
 		return mValue < other.mValue;
 	}
 
 	public bool operator>(int other) const {
 		return mValue > other;
 	}
-	public bool operator>(Integer other const ref) const {
+	public bool operator>(Integer other const) const {
 		return mValue > other.mValue;
 	}
 
@@ -68,7 +68,7 @@ public object Integer {
 	/*
 	 * Integer assignment operator
 	 */
-	public Integer operator=(Integer other const ref) modify {
+	public Integer operator=(Integer other const) modify {
 		mValue = other.mValue;
 
 		return this;
@@ -88,31 +88,31 @@ public object Integer {
 		return string mValue;
 	}
 
-	public Integer operator+(int other) modify {
+	public Integer operator+(int other) const {
 		return new Integer(mValue + other);
 	}
-	public Integer operator+(Integer other const ref) modify {
+	public Integer operator+(Integer other const) const {
 		return new Integer(mValue + other.mValue);
 	}
 
-	public Integer operator-(int other) modify {
+	public Integer operator-(int other) const {
 		return new Integer(mValue - other);
 	}
-	public Integer operator-(Integer other const ref) modify {
+	public Integer operator-(Integer other const) const {
 		return new Integer(mValue - other.mValue);
 	}
 
-	public Integer operator*(int other) modify {
+	public Integer operator*(int other) const {
 		return new Integer(mValue * other);
 	}
-	public Integer operator*(Integer other const ref) modify {
+	public Integer operator*(Integer other const) const {
 		return new Integer(mValue * other.mValue);
 	}
 
-	public Integer operator/(int other) modify {
+	public Integer operator/(int other) const {
 		return new Integer(mValue / other);
 	}
-	public Integer operator/(Integer other const ref) modify {
+	public Integer operator/(Integer other const) const {
 		return new Integer(mValue / other.mValue);
 	}
 

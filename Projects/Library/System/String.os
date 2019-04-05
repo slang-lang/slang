@@ -43,7 +43,7 @@ public object String implements IIterateable {
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(String value ref) {
+	public void Constructor(String value) {
 		Constructor(string value);
 	}
 
@@ -206,6 +206,13 @@ public object String implements IIterateable {
 	/*
 	 * Returns the held string in lower case letters
 	 */
+	public String ToLower() const {
+		return new String(toLower(mValue));
+	}
+
+	/*
+	 * Returns the held string in lower case letters
+	 */
 	public string ToLowerCase() const {
 		return toLower(mValue);
 	}
@@ -295,7 +302,7 @@ public object String implements IIterateable {
 	/*
 	 * String compare operator
 	 */
-	public bool operator==(String other const ref) const {
+	public bool operator==(String other const) const {
 		return mValue == other.mValue;
 	}
 
@@ -313,21 +320,21 @@ public object String implements IIterateable {
 	/*
 	 * String assignment operator
 	 */
-	public String operator=(String other const ref) modify {
+	public String operator=(String other const) modify {
 		return operator=(string other);
 	}
 
 	/*
 	 * string concatenation operator
 	 */
-	public String operator+(string other) modify {
+	public String operator+(string other) const {
 		return new String(mValue + other);
 	}
 
 	/*
 	 * String concatenation operator
 	 */
-	public String operator+(String other const ref) modify {
+	public String operator+(String other const) const {
 		return new String(mValue + other.mValue);
 	}
 
@@ -341,7 +348,7 @@ public object String implements IIterateable {
 	/*
 	 * String less compare operator
 	 */
-	public bool operator<(String other const ref) const {
+	public bool operator<(String other const) const {
 		return mValue < other.mValue;
 	}
 
