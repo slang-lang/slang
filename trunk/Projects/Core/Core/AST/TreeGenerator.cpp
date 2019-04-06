@@ -85,15 +85,7 @@ void TreeGenerator::deinitialize()
 		throw Common::Exceptions::ControlFlowException("'" + mMethod->getFullScopeName() + "' throws " + exceptions + " exception(s) although it is not marked with 'throws'");
 	}
 
-	// pop tokens;
-	mStackFrame->popTokens();
-	// pop scope
-	mStackFrame->popScope();
-	// delete stack frame
-	delete mStackFrame;
-	mStackFrame = NULL;
-
-	// verify return statement existance
+	// verify return statement existence
 	if ( mMethod->QualifiedTypename() != Designtime::VoidObject::TYPENAME
 		 && (mControlFlow != Runtime::ControlFlow::Return && mControlFlow != Runtime::ControlFlow::Throw) ) {
 		Token last;
@@ -103,6 +95,14 @@ void TreeGenerator::deinitialize()
 
 		throw Designtime::Exceptions::SyntaxError("return statement missing in '" + mMethod->getFullScopeName() + "'", last.position());
 	}
+
+	// pop tokens;
+	mStackFrame->popTokens();
+	// pop scope
+	mStackFrame->popScope();
+	// delete stack frame
+	delete mStackFrame;
+	mStackFrame = NULL;
 
 	// reset reusable members
 	mThis = NULL;
@@ -170,7 +170,7 @@ Statements* TreeGenerator::generateAST(Common::Method* method)
 	initialize(&scope);
 
 	// generate AST
-	Statements* statements = generate(mMethod->getTokens());
+	Statements* statements = generate(method->getTokens());
 
 	deinitialize();
 
@@ -559,24 +559,24 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 		return NULL;
 	}
 
-	int reachedReturn = 0;
+	int reachedControlFlowChanges = 0;
 	Statements* statements = new Statements((*token));
 
 	while ( (token != end) && (token->type() != Token::Type::ENDOFFILE) ) {
-		if ( reachedReturn == 1 ) {
-			OSinfo("Reached return statement, the following code will never be executed in " + token->position().toString());
-			reachedReturn++;
+		if ( reachedControlFlowChanges == 1 ) {
+			OSinfo("Broke control flow, the following code will never be executed in " + token->position().toString());
+			reachedControlFlowChanges++;
 		}
 
 		Node* node = process_statement(token);
-
 		if ( node ) {
 			statements->mNodes.push_back(node);
 
-			if ( dynamic_cast<ReturnStatement*>(node) ) {
+			if ( dynamic_cast<BreakStatement*>(node) || dynamic_cast<ContinueStatement*>(node) || dynamic_cast<ReturnStatement*>(node) || dynamic_cast<ThrowStatement*>(node) ) {
 				//break;	// use this as optimization to not parse unreachable code, instead of only informing the user about it
-				reachedReturn++;
+				reachedControlFlowChanges++;
 			}
+
 		}
 	}
 
@@ -844,6 +844,10 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 		}
 	}
 
+
+	if ( !inner->isAtomicType() && inner->isConst() ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to assign const type '" + rhs->getResultType() + "' to non-const symbol '" + lhs->mName + "'", op->position());
+	}
 
 	if ( inner->isAtomicType() || inner->getResultType() == rhs->getResultType() ) {
 		return new AssignmentExpression(lhs, rhs, resolveType(lhs, assignment, rhs));
@@ -1944,7 +1948,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 		assignmentExp = process_assignment(
 			token,
-			new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), accessMode == AccessMode::ByValue)
+			new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), object->isAtomicType())
 		);
 	}
 	else if ( initialization == Initialization::Required ) {
