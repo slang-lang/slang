@@ -15,7 +15,7 @@ public object JsonObject extends JsonValue implements IIterateable {
 		base.Constructor();
 
 		mMembers = new List<JsonValue>();
-		mType = Json.Type.Object;
+		mType = JsonType.Object;
 	}
 
 	public void Constructor(string key, JsonArray value) {

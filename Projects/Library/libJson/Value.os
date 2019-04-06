@@ -6,33 +6,30 @@ import Exceptions;
 import Object;
 
 
-public namespace Json {
-
-	public enum Type {
-		Array,
-		Object,
-		Value
-		;
-	}
-
-	public enum ValueType {
-		Bool,
-		Double,
-		Float,
-		Int,
-		Object,
-		String
-		;
-	}
-
+public enum JsonType {
+	Array,
+	Object,
+	Value
+	;
 }
+
+public enum JsonValueType {
+	Bool,
+	Double,
+	Float,
+	Int,
+	Object,
+	String
+	;
+}
+
 
 public object JsonValue {
 // Public
 	public void Constructor() {
 		mNumberValue = 0;
 		mStringValue = "null";
-		mValueType = Json.ValueType.Object;
+		mValueType = JsonValueType.Object;
 	}
 
 	public void Constructor(bool value) {
@@ -64,10 +61,10 @@ public object JsonValue {
 	}
 
 	public bool asBool() const {
-		if ( mValueType == Json.ValueType.Object ) {
+		if ( mValueType == JsonValueType.Object ) {
 			return bool mObjectValue;
 		}
-		else if ( mValueType == Json.ValueType.String ) {
+		else if ( mValueType == JsonValueType.String ) {
 			return bool mStringValue;
 		}
 
@@ -75,8 +72,8 @@ public object JsonValue {
 	}
 
 	public double asDouble() const throws {
-		if ( mValueType == Json.ValueType.Object
-		  || mValueType == Json.ValueType.String ) {
+		if ( mValueType == JsonValueType.Object
+		  || mValueType == JsonValueType.String ) {
 			throw new InvalidTypeException();
 		}
 
@@ -84,8 +81,8 @@ public object JsonValue {
 	}
 
 	public float asFloat() const throws {
-		if ( mValueType == Json.ValueType.Object
-		  || mValueType == Json.ValueType.String ) {
+		if ( mValueType == JsonValueType.Object
+		  || mValueType == JsonValueType.String ) {
 			throw new InvalidTypeException();
 		}
 
@@ -93,8 +90,8 @@ public object JsonValue {
 	}
 
 	public int asInt() const throws {
-		if ( mValueType == Json.ValueType.Object
-		  || mValueType == Json.ValueType.String ) {
+		if ( mValueType == JsonValueType.Object
+		  || mValueType == JsonValueType.String ) {
 			throw new InvalidTypeException();
 		}
 
@@ -102,82 +99,82 @@ public object JsonValue {
 	}
 
 	public string asString() const {
-		if ( mValueType == Json.ValueType.Object ) {
+		if ( mValueType == JsonValueType.Object ) {
 			return mObjectValue.asString();
 		}
-		else if ( mValueType == Json.ValueType.String ) {
+		else if ( mValueType == JsonValueType.String ) {
 			return "\"" + mStringValue + "\"";
 		}
 
 		return string mNumberValue;
 	}
 
-	public Json.Type getType() const {
+	public JsonType getType() const {
 		return mType;
 	}
 
-	public Json.ValueType getValueType() const {
+	public JsonValueType getValueType() const {
 		return mValueType;
 	}
 
 	public bool isBool() const {
-		return mValueType == Json.ValueType.Bool;
+		return mValueType == JsonValueType.Bool;
 	}
 
 	public bool isDouble() const {
-		return mValueType == Json.ValueType.Double;
+		return mValueType == JsonValueType.Double;
 	}
 
 	public bool isFloat() const {
-		return mValueType == Json.ValueType.Float;
+		return mValueType == JsonValueType.Float;
 	}
 
 	public bool isInt() const {
-		return mValueType == Json.ValueType.Int;
+		return mValueType == JsonValueType.Int;
 	}
 
 	public bool isString() const {
-		return mValueType == Json.ValueType.String;
+		return mValueType == JsonValueType.String;
 	}
 
 	public void setValue(bool value) modify {
 		mNumberValue = value;
 		mObjectValue = JsonValue null;
 		mStringValue = "";
-		mType = Json.Type.Value;
-		mValueType = Json.ValueType.Bool;
+		mType = JsonType.Value;
+		mValueType = JsonValueType.Bool;
 	}
 
 	public void setValue(double value) modify {
 		mNumberValue = value;
 		mObjectValue = JsonValue null;
 		mStringValue = "";
-		mType = Json.Type.Value;
-		mValueType = Json.ValueType.Double;
+		mType = JsonType.Value;
+		mValueType = JsonValueType.Double;
 	}
 
 	public void setValue(float value) modify {
 		mNumberValue = value;
 		mObjectValue = JsonValue null;
 		mStringValue = "";
-		mType = Json.Type.Value;
-		mValueType = Json.ValueType.Float;
+		mType = JsonType.Value;
+		mValueType = JsonValueType.Float;
 	}
 
 	public void setValue(int value) modify {
 		mNumberValue = value;
 		mObjectValue = JsonValue null;
 		mStringValue = "";
-		mType = Json.Type.Value;
-		mValueType = Json.ValueType.Int;
+		mType = JsonType.Value;
+		mValueType = JsonValueType.Int;
 	}
 
 	public void setValue(string value) modify {
 		mNumberValue = 0;
 		mObjectValue = JsonValue null;
 		mStringValue = value;
-		mType = Json.Type.Value;
-		mValueType = Json.ValueType.String;
+		mType = JsonType.Value;
+		mValueType = JsonValueType.String;
 	}
 
 	public void setValue(JsonValue value) modify {
@@ -248,7 +245,7 @@ public object JsonValue {
 	protected double mNumberValue;
 	protected JsonValue mObjectValue;
 	protected string mStringValue;
-	protected Json.Type mType;
-	protected Json.ValueType mValueType;
+	protected JsonType mType;
+	protected JsonValueType mValueType;
 }
 

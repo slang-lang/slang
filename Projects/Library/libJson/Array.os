@@ -15,7 +15,7 @@ public object JsonArray extends JsonValue implements IIterateable {
 
 		mKey = key;
 		mMembers = new Vector<JsonValue>();
-		mType = Json.Type.Array;
+		mType = JsonType.Array;
 	}
 
 	public void addMember(JsonValue value) modify {
