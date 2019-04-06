@@ -25,6 +25,8 @@ private bool TestCase1() modify {
 	TestObject obj2 = copy obj1;
 	assert(obj2);
 
+	assert( obj1 != obj2 );
+
 	print("obj1.mValue = " + obj1.mValue + " vs obj2.mValue = " + obj2.mValue);
 	assert( obj1.mValue == obj2.mValue );
 

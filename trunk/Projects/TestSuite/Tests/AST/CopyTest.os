@@ -8,6 +8,7 @@ private object CopyObject {
 	}
 
 	public CopyObject Copy() const {
+		print("Copy operator");
 		return new CopyObject(mValue);
 	}
 }
