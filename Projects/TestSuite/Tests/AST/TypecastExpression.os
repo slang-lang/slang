@@ -7,6 +7,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase2() );
 	assert( TestCase3() );
 	assert( TestCase4() );
+	//assert( TestCase5() );
 }
 
 private bool TestCase1() {
@@ -44,4 +45,16 @@ private bool TestCase4() {
 
 	return cast<String>( obj ) != null;
 }
+
+/*
+private bool TestCase5() {
+	print("TestCase 5: failing cast");
+
+	var obj = cast<Object>(new String( 173 ));
+
+	assert( cast<string>( obj ) );
+
+	return false;
+}
+*/
 
