@@ -12,17 +12,17 @@ public void Main(int argc, string args) {
 	var value = new CompareEqualContent();
 
 	if ( value == 173 ) {
-		print("Compare equal operator");
+		print("1: Compare equal operator");
 	}
 	if ( value === 173 ) {
-		print("Compare equal content operator");
+		print("2: Compare equal content operator");
 	}
 
 	if ( value == new CompareEqualContent() ) {
-		print("Compare equal operator");
+		print("3: Compare equal operator");
 	}
 	if ( value === new CompareEqualContent() ) {
-		print("Compare equal content operator");
+		print("4: Compare equal content operator");
 	}
 }
 
