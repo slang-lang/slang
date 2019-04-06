@@ -259,7 +259,8 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 			 op != Token::Type::COMPARE_GREATER_EQUAL &&
 			 op != Token::Type::COMPARE_LESS &&
 			 op != Token::Type::COMPARE_LESS_EQUAL &&
-			 op != Token::Type::COMPARE_UNEQUAL ) {
+			 op != Token::Type::COMPARE_UNEQUAL &&
+			 op != Token::Type::COMPARE_UNEQUAL_CONTENT ) {
 			 return condition;
 		}
 
@@ -274,55 +275,56 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 			operation.resetContentTo("==");
 			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
 		}
-
-		resolveType(condition, operation, right);
-
-		condition = new BooleanBinaryExpression(condition, operation, right);
-
-		// != operator is not defined but rather used as 'not =='
-		if ( op == Token::Type::COMPARE_UNEQUAL ) {
-			condition = new BooleanUnaryExpression(Token::Type::OPERATOR_NOT, condition, UnaryExpression::ValueType::RValue);
-		}
-
-/*
-		if ( op == Token::Type::COMPARE_UNEQUAL ) {
+		else if ( op == Token::Type::COMPARE_UNEQUAL_CONTENT ) {
 			operation.resetContentTo("==");
 			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
 		}
 
 		resolveType(condition, operation, right);
 
+
+		Expression* lhs = dynamic_cast<Expression*>(condition);
+		Expression* rhs = dynamic_cast<Expression*>(right);
+
+		// check if we are using a valid type
+		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
+		if ( !blueprint ) {
+			throw Designtime::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", operation.position());
+		}
+
+		ParameterList params;
+		params.emplace_back(Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(rhs->getResultType())));
+
 		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(condition);
 
-		if ( !exp || exp->isAtomicType() ) {
-			condition = new BooleanBinaryExpression(condition, operation, right);
-		}
-		else {
-			// check if we are using a valid type
-			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
-			if ( !blueprint ) {
-				throw Designtime::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
-			}
-
+		if ( exp && blueprint->resolveMethod("operator" + operation.content(), params, false) ) {
 			SymbolExpression* inner = exp;
+
 			while ( inner->mSymbolExpression ) {
 				inner = inner->mSymbolExpression;
 			}
 
-			inner->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), dynamic_cast<Expression*>(right)->getResultType(), PrototypeConstraints(), false);
+			inner->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), rhs->getResultType(), PrototypeConstraints(), false);
 			inner->mSymbolExpression->mSurroundingScope = blueprint;
 
-			ExpressionList params;
-			params.emplace_back(right);
+			ExpressionList methodParams;
+			methodParams.emplace_back(rhs);
 
-			condition = process_method(exp, (*start), params);
+			condition = process_method(exp, (*start), methodParams);
+		}
+		else {
+			if ( op == Token::Type::COMPARE_EQUAL_CONTENT || op == Token::Type::COMPARE_UNEQUAL_CONTENT ) {
+				// content comparison requested but lhs type does not support this operator
+				throw Designtime::Exceptions::SyntaxError("type '" + lhs->getResultType() + "' does not support content comparision operator for type '" + rhs->getResultType() + "' in " + operation.position().toString());
+			}
+
+			condition = new BooleanBinaryExpression(condition, operation, rhs);
 		}
 
 		// != operator is not defined but rather used as 'not =='
-		if ( op == Token::Type::COMPARE_UNEQUAL ) {
+		if ( op == Token::Type::COMPARE_UNEQUAL || op == Token::Type::COMPARE_UNEQUAL_CONTENT ) {
 			condition = new BooleanUnaryExpression(Token::Type::OPERATOR_NOT, condition, UnaryExpression::ValueType::RValue);
 		}
-*/
 	}
 }
 
@@ -344,6 +346,10 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 		Node* right = parseFactor(++start);
 		std::string type = resolveType(expression, operation, right);
 
+
+		Expression* lhs = dynamic_cast<Expression*>(expression);
+		Expression* rhs = dynamic_cast<Expression*>(right);
+
 		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(expression);
 
 		if ( !exp || exp->isAtomicType() ) {
@@ -352,9 +358,9 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 		}
 
 		// check if we are using a valid type
-		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
+		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
 		if ( !blueprint ) {
-			throw Designtime::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+			throw Designtime::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", operation.position());
 		}
 
 		SymbolExpression* inner = exp;
@@ -362,11 +368,11 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 			inner = inner->mSymbolExpression;
 		}
 
-		inner->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), type, PrototypeConstraints(), false);
+		inner->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), rhs->getResultType(), PrototypeConstraints(), false);
 		inner->mSymbolExpression->mSurroundingScope = blueprint;
 
 		ExpressionList params;
-		params.emplace_back(right);
+		params.emplace_back(rhs);
 
 		expression = process_method(exp, (*start), params);
 	}
@@ -388,6 +394,10 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 		Node* right = parseInfix(++start);
 		std::string type = resolveType(factor, operation, right);
 
+
+		Expression* lhs = dynamic_cast<Expression*>(factor);
+		Expression* rhs = dynamic_cast<Expression*>(right);
+
 		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(factor);
 
 		if ( !exp || exp->isAtomicType() ) {
@@ -396,9 +406,9 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 		}
 
 		// check if we are using a valid type
-		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
+		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
 		if ( !blueprint ) {
-			throw Designtime::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+			throw Designtime::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", operation.position());
 		}
 
 		SymbolExpression* inner = exp;
@@ -406,11 +416,11 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 			inner = inner->mSymbolExpression;
 		}
 
-		inner->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), type, PrototypeConstraints(), false);
+		inner->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), rhs->getResultType(), PrototypeConstraints(), false);
 		inner->mSymbolExpression->mSurroundingScope = blueprint;
 
 		ExpressionList params;
-		params.emplace_back(right);
+		params.emplace_back(rhs);
 
 		factor = process_method(exp, (*start), params);
 	}
