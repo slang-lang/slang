@@ -58,6 +58,7 @@ private:	// Tests
 	void testThrow();
 	void testTry();
 	void testTypecast();
+	void testTypecastExpression();
 	void testTypeDeclaration();
 	void testTypeInference();
 	void testTypeSystem();

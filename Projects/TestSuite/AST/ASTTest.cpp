@@ -68,6 +68,7 @@ void ASTTest::process()
 	TEST(testThrow);
 	TEST(testTry);
 	TEST(testTypecast);
+	TEST(testTypecastExpression);
 	TEST(testTypeDeclaration);
 	TEST(testTypeInference);
 	TEST(testTypeSystem);
@@ -459,6 +460,23 @@ void ASTTest::testTypecast()
 	try {
 		VirtualMachine vm;
 		vm.runScriptFromFile("Tests/AST/TypecastTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testTypecastExpression()
+{
+	try {
+		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
+		vm.runScriptFromFile("Tests/AST/TypecastExpression.os");
 
 		// automatic success
 	}
