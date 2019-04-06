@@ -498,6 +498,14 @@ void Tokenizer::mergeAssignments()
 			// ... and add COMPARE_EQUAL instead
 			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_EQUAL_CONTENT, "===", token->position()));
 		}
+		else if ( (lastType == Token::Type::COMPARE_UNEQUAL) && (activeType == Token::Type::ASSIGN) ) {
+			// ==
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add COMPARE_EQUAL instead
+			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_UNEQUAL_CONTENT, "!==", token->position()));
+		}
 		else if ( (lastType == Token::Type::BITAND) && (activeType == Token::Type::ASSIGN) ) {
 			// &=
 			changed = true;
