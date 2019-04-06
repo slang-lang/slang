@@ -913,17 +913,17 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 	expect(Token::Type::COMPARE_LESS, token);
 	++token;
 
-        DesigntimeSymbolExpression* typeExpr = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
-        if ( !typeExpr ) {
-                throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
-        }
+	DesigntimeSymbolExpression* typeExpr = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
+	if ( !typeExpr ) {
+		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
+	}
 
-        std::string type = typeExpr->getResultType();
-        PrototypeConstraints constraints = typeExpr->mConstraints;
+	std::string type = typeExpr->getResultType();
+	PrototypeConstraints constraints = typeExpr->mConstraints;
 
 	Common::TypeDeclaration typeName(type, constraints);
 
-        mRepository->prepareType(typeName);
+	mRepository->prepareType(typeName);
 
 	expect(Token::Type::COMPARE_GREATER, token);
 	++token;
@@ -939,8 +939,8 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 	resolveType(typeExpr, Token(Token::Type::ASSIGN, "="), sourceExpr);
 	//resolveType(typeExpr, Token(Token::Type::TYPECAST, "from"), sourceExpr);
 
-        // delete resolved symbol expression as it is not needed any more
-        delete typeExpr;
+	// delete resolved symbol expression as it is not needed any more
+	delete typeExpr;
 
 	return new TypecastExpression(typeName.mCombinedName, sourceExpr);
 }
