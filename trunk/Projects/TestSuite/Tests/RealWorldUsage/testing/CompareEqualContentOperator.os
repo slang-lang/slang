@@ -17,5 +17,12 @@ public void Main(int argc, string args) {
 	if ( value === 173 ) {
 		print("Compare equal content operator");
 	}
+
+	if ( value == new CompareEqualContent() ) {
+		print("Compare equal operator");
+	}
+	if ( value === new CompareEqualContent() ) {
+		print("Compare equal content operator");
+	}
 }
 
