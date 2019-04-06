@@ -254,6 +254,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
 		if ( op != Token::Type::COMPARE_EQUAL &&
+			 op != Token::Type::COMPARE_EQUAL_CONTENT &&
 			 op != Token::Type::COMPARE_GREATER &&
 			 op != Token::Type::COMPARE_GREATER_EQUAL &&
 			 op != Token::Type::COMPARE_LESS &&
@@ -265,8 +266,11 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 		Token operation = (*start);
 		Node* right = parseExpression(++start);
 
-
-		if ( op == Token::Type::COMPARE_UNEQUAL ) {
+		if ( op == Token::Type::COMPARE_EQUAL_CONTENT ) {
+			operation.resetContentTo("==");
+			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
+		}
+		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
 			operation.resetContentTo("==");
 			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
 		}
