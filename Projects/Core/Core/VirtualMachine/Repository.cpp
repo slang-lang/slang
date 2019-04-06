@@ -643,7 +643,7 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		}
 		else if ( name == "operator==" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, params.front().type(), (*it)->QualifiedTypename());
-			//mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, params.front().type(), (*it)->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL_CONTENT, params.front().type(), (*it)->QualifiedTypename());
 		}
 		else if ( name == "operator<" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS, params.front().type(), (*it)->QualifiedTypename());
@@ -694,7 +694,7 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 
 	// add equality operator entries for type system if it doesn't exist yet
 	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,   blueprint->QualifiedTypename(), _bool);
-	//mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, blueprint->QualifiedTypename(), _bool);
+	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL_CONTENT, blueprint->QualifiedTypename(), _bool);
 
 	// add assignment entries for extended and implemented objects
 	{
