@@ -480,9 +480,9 @@ void Tokenizer::mergeAssignments()
 	// try to combine all compare tokens
 	while ( token != mTokens.end() ) {
 		bool changed = false;
-		Token::Type::E activeType = token->type();
+		Token::Type::E currentType = token->type();
 
-		if ( (lastType == Token::Type::ASSIGN) && (activeType == Token::Type::ASSIGN) ) {
+		if ( (lastType == Token::Type::ASSIGN) && (currentType == Token::Type::ASSIGN) ) {
 			// ==
 			changed = true;
 			// remove last added token ...
@@ -490,23 +490,23 @@ void Tokenizer::mergeAssignments()
 			// ... and add COMPARE_EQUAL instead
 			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_EQUAL, "==", token->position()));
 		}
-		else if ( (lastType == Token::Type::COMPARE_EQUAL) && (activeType == Token::Type::ASSIGN) ) {
-			// ==
+		else if ( (lastType == Token::Type::COMPARE_EQUAL) && (currentType == Token::Type::ASSIGN) ) {
+			// ===
 			changed = true;
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_EQUAL instead
 			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_EQUAL_CONTENT, "===", token->position()));
 		}
-		else if ( (lastType == Token::Type::COMPARE_UNEQUAL) && (activeType == Token::Type::ASSIGN) ) {
-			// ==
+		else if ( (lastType == Token::Type::COMPARE_UNEQUAL) && (currentType == Token::Type::ASSIGN) ) {
+			// !==
 			changed = true;
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_EQUAL instead
 			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_UNEQUAL_CONTENT, "!==", token->position()));
 		}
-		else if ( (lastType == Token::Type::BITAND) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::BITAND) && (currentType == Token::Type::ASSIGN) ) {
 			// &=
 			changed = true;
 			// remove last added token ...
@@ -514,7 +514,7 @@ void Tokenizer::mergeAssignments()
 			// ... and add ASSIGN_ADD instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITAND, "&=", token->position()));
 		}
-		else if ( (lastType == Token::Type::BITCOMPLEMENT) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::BITCOMPLEMENT) && (currentType == Token::Type::ASSIGN) ) {
 			// ~=
 			changed = true;
 			// remove last added token ...
@@ -522,7 +522,7 @@ void Tokenizer::mergeAssignments()
 			// ... and add ASSIGN_BITCOMPLEMENT instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITCOMPLEMENT, "~=", token->position()));
 		}
-		else if ( (lastType == Token::Type::BITOR) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::BITOR) && (currentType == Token::Type::ASSIGN) ) {
 			// |=
 			changed = true;
 			// remove last added token ...
@@ -530,7 +530,7 @@ void Tokenizer::mergeAssignments()
 			// ... and add ASSIGN_ADD instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITOR, "|=", token->position()));
 		}
-		else if ( (lastType == Token::Type::OPERATOR_NOT) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::OPERATOR_NOT) && (currentType == Token::Type::ASSIGN) ) {
 			// !=
 			changed = true;
 			// remove last added token ...
@@ -538,7 +538,7 @@ void Tokenizer::mergeAssignments()
 			// ... and add ASSIGN_ADD instead
 			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_UNEQUAL, "!=", token->position()));
 		}
-		else if ( (lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER) && (currentType == Token::Type::ASSIGN) ) {
 			// >=
 			changed = true;
 			// remove last added token ...
@@ -546,7 +546,7 @@ void Tokenizer::mergeAssignments()
 			// ... and add COMPARE_GREATER_EQUAL instead
 			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_GREATER_EQUAL, ">=", token->position()));
 		}
-		else if ( (lastType == Token::Type::LESS || lastType == Token::Type::COMPARE_LESS) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::LESS || lastType == Token::Type::COMPARE_LESS) && (currentType == Token::Type::ASSIGN) ) {
 			// <=
 			changed = true;
 			// remove last added token ...
@@ -554,7 +554,7 @@ void Tokenizer::mergeAssignments()
 			// ... and add COMPARE_LESS_EQUAL instead
 			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_LESS_EQUAL, "<=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_ADDITION) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::MATH_ADDITION) && (currentType == Token::Type::ASSIGN) ) {
 			// +=
 			changed = true;
 			// remove last added token ...
@@ -562,7 +562,7 @@ void Tokenizer::mergeAssignments()
 			// ... and add ASSIGN_ADD instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_ADDITION, "+=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_DIVIDE) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::MATH_DIVIDE) && (currentType == Token::Type::ASSIGN) ) {
 			// /=
 			changed = true;
 			// remove last added token ...
@@ -570,7 +570,7 @@ void Tokenizer::mergeAssignments()
 			// ... and add ASSIGN_DIVIDE instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_DIVIDE, "/=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_MODULO) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::MATH_MODULO) && (currentType == Token::Type::ASSIGN) ) {
 			// %=
 			changed = true;
 			// remove last added token ...
@@ -578,7 +578,7 @@ void Tokenizer::mergeAssignments()
 			// ... and add ASSIGN_MULTI instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_MODULO, "*=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_MULTIPLY) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::MATH_MULTIPLY) && (currentType == Token::Type::ASSIGN) ) {
 			// *=
 			changed = true;
 			// remove last added token ...
@@ -586,7 +586,7 @@ void Tokenizer::mergeAssignments()
 			// ... and add ASSIGN_MULTI instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_MULTIPLY, "*=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_SUBTRACT) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::MATH_SUBTRACT) && (currentType == Token::Type::ASSIGN) ) {
 			// -=
 			changed = true;
 			// remove last added token ...
