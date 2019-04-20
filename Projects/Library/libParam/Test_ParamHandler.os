@@ -95,6 +95,16 @@ bool TestCase2() {
 		assert( param.Value == "" );
 	}
 
+	{	// remove a parameter
+		param = params.at(2);
+		assert( param == "three" );
+		assert( params.size() == 4 );
+
+		params.remove( "three" );
+
+		assert( params.size() == 3 );
+	}
+
 	return true;
 }
 

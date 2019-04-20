@@ -85,6 +85,21 @@ public object ParameterHandler implements IIterateable {
 		throw new Exception("key('" + key + "') not found!");
 	}
 
+	public bool remove(string key) modify throws {
+		int idx;
+
+		foreach ( Parameter p : mParameters ) {
+			if ( p == key ) {
+				mParameters.erase( idx );
+				return true;
+			}
+
+			idx++;
+		}
+
+		return false;
+	}
+
 	public int size() const {
 		return mParameters.size();
 	}
