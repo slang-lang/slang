@@ -226,7 +226,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	mRepository->addBluePrint(blueprint);
 
-	return blueprint != 0;
+	return blueprint != NULL;
 }
 
 bool Analyser::createEnum(TokenIterator& token)
@@ -345,7 +345,7 @@ bool Analyser::createInterface(TokenIterator& token)
 
 	mRepository->addBluePrint(blueprint);
 
-	return blueprint != 0;
+	return blueprint != NULL;
 }
 
 bool Analyser::createLibraryReference(TokenIterator& token)
@@ -558,7 +558,7 @@ bool Analyser::createNamespace(TokenIterator& token)
 			++token;
 		}
 
-		Common::Namespace* space = 0;
+		Common::Namespace* space = NULL;
 
 		// check for an existing namespace with this name
 		Symbol* symbol = mScope->resolve(name, true, Visibility::Designtime);
