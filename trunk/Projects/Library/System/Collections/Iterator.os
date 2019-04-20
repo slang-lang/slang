@@ -66,7 +66,7 @@ public object Iterator<T> {
 }
 
 public object ReverseIterator<T> {
-	public void Constructor(ICollection collection ref) {
+	public void Constructor(ICollection collection ref const) {
 		mCollection = collection;
 
 		reset();
