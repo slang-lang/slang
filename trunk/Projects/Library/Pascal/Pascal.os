@@ -10,24 +10,36 @@ import Parser;
 
 
 public int Main(int argc, string args) modify {
-	if ( argc < 2 ) {
-		print("not enought parameters provided!");
-		return -1;
+	var debug = false;
+	var params = new ParameterHandler(argc, args);
+
+	// Handle parameters
+	// {
+	if ( params.contains("debug") ) {
+		debug = true;
+		params.remove("debug");
 	}
 
-	var params = new ParameterHandler(argc, args);
 	if ( params.contains("version") ) {
 		print(APPNAME + " " + VERSION);
 		return 0;
 	}
 
+	if ( params.empty() ) {
+		print("not enought parameters provided!");
+		return -1;
+	}
+	// }
+
 	try {
 		var parser = new Parser();
 		var program = parser.parseFile(string params.at(0).Key)
 
-		print("");
-		print(program.toString());
-		print("");
+		if ( debug ) {
+			print("");
+			print(program.toString());
+			print("");
+		}
 
 		var interpreter = new Interpreter(program);
 		return interpreter.run();
