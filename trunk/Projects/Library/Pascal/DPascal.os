@@ -16,6 +16,12 @@ import Parser;
 public object PascalDebugger {
 	public void Constructor(int argc, string args) {
 		var params = new ParameterHandler(argc, args);
+
+		if ( params.contains("debug") ) {
+			mDebugMode = true;
+			params.remove("debug");
+		}
+
 		if ( params.contains("version") ) {
 			print(APPNAME + " " + VERSION);
 			return;
@@ -66,9 +72,11 @@ public object PascalDebugger {
 		var parser = new Parser();
 		mProgram = parser.parseFile(filename);
 
-		print("");
-		print(mProgram.toString());
-		print("");
+		if ( mDebugMode ) {
+			print("");
+			print(mProgram.toString());
+			print("");
+		}
 	}
 
 	private void printHelp() {
@@ -113,6 +121,7 @@ public object PascalDebugger {
 		}
 	}
 
+	private bool mDebugMode;
 	private string mFilename;
 	private Statement mProgram;
 } 
