@@ -15,8 +15,8 @@ public enum StatementType {
 	ForStatement,
 	FunctionStatement,
 	IfStatement,
-	MethodStatement,
 	PrintStatement,
+	ProcedureStatement,
 	ProgramStatement,
 	UnitStatement,
 	VariableDeclarationStatement,
@@ -55,6 +55,7 @@ public object AssignmentStatement extends Statement {
 
 public object CompoundStatement extends Statement {
 	public ConstantDeclarationStatement mConstantDeclarations const;
+	public List<ScopeStatement> mMethods;
 	public List<Statement> mStatements const;
 	public VariableDeclarationStatement mVariableDeclarations const;
 
@@ -119,24 +120,6 @@ public object DeclarationStatement extends Statement {
 	}
 }
 
-public object FunctionStatement extends Statement {
-	public Statement mBody const;
-	public string mName const;
-	public string mResultType const;
-
-	public void Constructor(string name, string resultType, Statement body) {
-		base.Constructor(StatementType.FunctionStatement);
-
-		mBody = body;
-		mName = name;
-		mResultType = resultType;
-	}
-
-	public string toString() const {
-		return "FUNCTION " + mName + "() : " + mResultType + " " + mBody.toString();
-	}
-}
-
 public object ForStatement extends Statement {
 	public VariableExpression mLoopVariable const;
 	public Expression mStartExpression const;
@@ -160,6 +143,22 @@ public object ForStatement extends Statement {
 	}
 }
 
+public object FunctionStatement extends ScopeStatement {
+	public string mResultType const;
+
+	public void Constructor(string name, string resultType, CompoundStatement body) {
+		base.Constructor(StatementType.FunctionStatement);
+
+		mBody = body;
+		mName = name;
+		mResultType = resultType;
+	}
+
+	public string toString() const {
+		return "FUNCTION " + mName + "() : " + mResultType + " " + mBody.toString();
+	}
+}
+
 public object IfStatement extends Statement {
 	public Expression mCondition const;
 	public Statement mElseBlock const;
@@ -180,32 +179,6 @@ public object IfStatement extends Statement {
 	}
 }
 
-
-public object MethodStatement extends Statement {
-	public CompoundStatement mBlock;
-	public string mMethodName const;
-	//public List<String> mParameters;
-
-	public void Constructor(string method, CompoundStatement block) {
-		base.Constructor(StatementType.MethodStatement);
-
-		mBlock = block;
-		mMethodName = method;
-	}
-
-	public string toString() const {
-		string result;
-/*
-		foreach ( string p : mParameters ) {
-			result += p + " ";
-		}
-*/
- 		result += mMethodName + "(" + result + ")";
-
-		return result;
-	}
-}
-
 public object PrintStatement extends Statement {
 	public Expression mExpression const;
 
@@ -217,6 +190,19 @@ public object PrintStatement extends Statement {
 
 	public string toString() const {
 		return "PRINT( " + (mExpression ? mExpression.toString() : "") + " )";
+	}
+}
+
+public object ProcedureStatement extends ScopeStatement {
+	public void Constructor(string name, CompoundStatement body) {
+		base.Constructor(StatementType.ProcedureStatement);
+
+		mBody = body;
+		mName = name;
+	}
+
+	public string toString() const {
+		return "PROCEDURE " + mName + "(); " + mBody.toString();
 	}
 }
 
@@ -233,6 +219,15 @@ public object ProgramStatement extends Statement {
 
 	public string toString() const {
 		return "PROGRAM " + mName + ";" + LINEBREAK + (mStatements ? mStatements.toString() : "") + ".";
+	}
+}
+
+public object ScopeStatement extends Statement {
+	public CompoundStatement mBody const;
+	public string mName const;
+
+	public void Constructor(StatementType statementType) {
+		base.Constructor(statementType);
 	}
 }
 
@@ -287,7 +282,7 @@ public object WhileStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "WHILE " + mCondition.toString() + " " + mBody.toString();
+		return "WHILE " + mCondition.toString() + " DO " + mBody.toString();
 	}
 }
 

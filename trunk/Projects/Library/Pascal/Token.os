@@ -112,8 +112,6 @@ public object Token const {
 		mPosition = position;
 		mType = type;
 		mValue = value;
-
-		//print(toString());
 	}
 
 	public string toString() const {

@@ -6,13 +6,13 @@ VAR
 	c: INTEGER;
 	x: INTEGER := 11;
 BEGIN
-    BEGIN
+	BEGIN
 		a := number;
 		b := 10 * a + 10 * number / 4;
 		c := a - -b;
 
-        PRINT( c );
-    END;
+		PRINT( c );
+	END;
 
-    PRINT( x );
+	PRINT( x );
 END.

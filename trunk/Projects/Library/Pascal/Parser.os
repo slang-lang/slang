@@ -6,6 +6,7 @@ import System.IO.File;
 
 // project imports
 import Expressions;
+import ScopedSymbolTable;
 import Statements;
 import Token;
 import Tokenizer;
@@ -44,7 +45,6 @@ public object Parser {
 	public Statement parseFile(string filename) modify throws {
 		var tokenizer = new Tokenizer();
 
-		mScope = new Map<string, ParseType>();
 		mTokenizer = new Tokenizer();
 		mTokens = tokenizer.parseFile(filename);
 		mTokenIterator = mTokens.getIterator();
@@ -72,11 +72,24 @@ public object Parser {
 	}
 
 	private AssignmentStatement parseAssignStatement() modify throws {
+		//print("parseAssignment()");
+
 		Token identifier = peek();
 
 		require(TokenType.IDENTIFIER);
 
-		var identifierExp = Expression new VariableExpression(identifier, toUpper(identifier.mValue), getType(identifier.mValue).mType);
+		var sym = mCurrentScope.lookup(identifier.mValue);
+		if ( !sym ) {
+			throw new ParseException("Symbol '" + identifier.mValue + "' is unknown", identifier.mPosition);
+		}
+		if ( !(sym is LocalSymbol) ) {
+			throw new ParseException("Symbol '" + identifier.mValue + "' is not of type LocalSymbol", identifier.mPosition);
+		}
+		if ( (LocalSymbol sym).mIsConst ) {
+			throw new ParseException("Assignment to const Symbol '" + identifier.mValue + "' is not allowed", identifier.mPosition);
+		}
+
+		var identifierExp = Expression new VariableExpression(identifier, toUpper(identifier.mValue), (LocalSymbol sym).mType);
 
 		require(TokenType.ASSIGN);
 
@@ -121,8 +134,25 @@ public object Parser {
 			varStmt = parseVariableDeclarationStatement();
 		}
 
+		var methods = new List<ScopeStatement>();
+		while ( (blockDec = peek()) != null ) {
+			ScopeStatement stmt;
+			if ( blockDec.mType == TokenType.FUNCTION ) {
+				stmt = ScopeStatement parseFunction();
+			}
+			else if ( blockDec.mType == TokenType.PROCEDURE ) {
+				stmt = ScopeStatement parseProcedure();
+			}
+			else {
+				break;
+			}
+
+			methods.push_back( stmt );
+		}
+
 		var stmt = parseCompoundStatement();
 		stmt.mConstantDeclarations = constStmt;
+		stmt.mMethods = methods;
 		stmt.mVariableDeclarations = varStmt;
 
 		return stmt;
@@ -142,11 +172,11 @@ public object Parser {
 			var declStmt = parseDeclarationStatement();
 			stmt.mDeclarations.push_back( declStmt );
 
-			if ( mScope.contains(declStmt.mName) ) {
+			if ( mCurrentScope.lookup(declStmt.mName, true) ) {
 				throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
 			}
 
-			mScope.insert(declStmt.mName, new ParseType(declStmt.mType, true));
+			mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, true));
 		}
 
 		return stmt;
@@ -162,7 +192,7 @@ public object Parser {
 
 		require(TokenType.COLON);
 
-		Token type= consume();
+		Token type = consume();
 		if ( !type || type.mType != TokenType.TYPE ) {
 			throw new ParseException("invalid TYPE found", type.mPosition);
 		}
@@ -183,6 +213,33 @@ public object Parser {
 			type ? type.mValue : "",
 			value
 		);
+	}
+
+	private ScopeStatement parseFunction() modify throws {
+		//print("parseFunction()");
+
+		Token token = consume();
+
+		// name
+		token = consume();
+		if ( token.mType != TokenType.IDENTIFIER ) {
+			throw new ParseException("invalid token " + toString(token) + " found", token.mPosition);
+		}
+
+		require(TokenType.COLON);
+
+		Token type = consume();
+		if ( type.mType != TokenType.TYPE ) {
+			throw new ParseException("invalid token " + toString(type) + " found", type.mPosition);
+		}
+
+		require(TokenType.SEMICOLON);
+
+		var func = ScopeStatement new FunctionStatement(token.mValue, type.mValue, parseCompoundStatementWithDeclarations());
+
+		require(TokenType.SEMICOLON);
+
+		return func;
 	}
 
 	private IfStatement parseIfStatement() modify throws {
@@ -211,12 +268,48 @@ public object Parser {
 		return new IfStatement(conditionExp, ifBlock, elseBlock);
 	}
 
+	private ScopeStatement parseMethodCall() modify throws {
+		Token name = consume();
+
+		// parameters are not supported at the moment
+		var sym = mCurrentScope.lookup(name.mValue);
+		assert( sym is MethodSymbol );
+
+		return (MethodSymbol sym).mStatement;
+	}
+
 	private PrintStatement parsePrintStatement() modify throws {
 		//print("parsePrintStatement()");
 
 		require(TokenType.PRINT);
 
 		return new PrintStatement( parseExpression() );
+	}
+
+	private ScopeStatement parseProcedure() modify throws {
+		//print("parseProcedure()");
+
+		Token token = consume();
+
+		// name
+		token = consume();
+		if ( token.mType != TokenType.IDENTIFIER ) {
+			throw new ParseException("invalid token " + toString(token) + " found", token.mPosition);
+		}
+
+		require(TokenType.SEMICOLON);
+
+		var oldScope = mCurrentScope;
+		mCurrentScope = new ScopedSymbolTable(1, token.mValue, oldScope);
+
+		var proc = ScopeStatement new ProcedureStatement(token.mValue, parseCompoundStatementWithDeclarations());
+
+		mCurrentScope = oldScope;
+		mCurrentScope.declare(Symbol new MethodSymbol(token.mValue, "void", proc));
+
+		require(TokenType.SEMICOLON);
+
+		return proc;
 	}
 
 	private ProgramStatement parseProgram() modify throws {
@@ -229,10 +322,14 @@ public object Parser {
 
 		require(TokenType.SEMICOLON);
 
+		mCurrentScope = new ScopedSymbolTable(0, "global");
+
 		var statement = new ProgramStatement(
 			name.mValue,
 			parseCompoundStatementWithDeclarations()
 		);
+
+		delete mCurrentScope;
 
 		require(TokenType.DOT);
 
@@ -255,7 +352,18 @@ public object Parser {
 				break;
 			}
 			case TokenType.IDENTIFIER: {
-				stmt = Statement parseAssignStatement();
+				var sym = mCurrentScope.lookup(token.mValue);
+
+				if ( sym && sym is LocalSymbol ) {
+					stmt = Statement parseAssignStatement();
+				}
+				else if ( sym && sym is MethodSymbol ) {
+					stmt = Statement parseMethodCall();
+				}
+				else {
+					throw new ParseException("invalid symbol '" + token.mValue + "' detected", token.mPosition);
+				}
+
 				break;
 			}
 			case TokenType.IF: {
@@ -320,11 +428,11 @@ public object Parser {
 			var declStmt = parseDeclarationStatement();
 			stmt.mDeclarations.push_back( declStmt );
 
-			if ( mScope.contains(declStmt.mName) ) {
-				throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+			if ( mCurrentScope.lookup(declStmt.mName, true) ) {
+				throw new ParseException("Duplicate symbol '" + declStmt.mName + "' declared", start.mPosition);
 			}
 
-			mScope.insert(declStmt.mName, new ParseType(declStmt.mType, false));
+			mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType));
 		}
 
 		return stmt;
@@ -489,7 +597,7 @@ public object Parser {
 
 		Token token = consume();
 
-		var type = getType(token.mValue);
+		var type = LocalSymbol mCurrentScope.lookup(token.mValue);
 		if ( !type ) {
 			throw new ParseException("unknown symbol '" + token.mValue + "' detected", token.mPosition);
 		}
@@ -514,10 +622,10 @@ public object Parser {
 		return Token null;
 	}
 
-	private ParseType getType(string identifier) const throws {
-		try { return mScope.get(identifier); }
+	private Symbol getSymbol(string identifier) const throws {
+		try { return mCurrentScope.lookup(identifier); }
 
-		return ParseType null;
+		return Symbol null;
 	}
 
 	private bool isComperator(Token token) const {
@@ -564,7 +672,7 @@ public object Parser {
 //////////////////////////////////////////////////////////////////////////////
 
 
-	private Map<string, ParseType> mScope;
+	private ScopedSymbolTable mCurrentScope;
 	private Iterator<Token> mTokenIterator;
 	private Tokenizer mTokenizer;
 	private List<Token> mTokens;
