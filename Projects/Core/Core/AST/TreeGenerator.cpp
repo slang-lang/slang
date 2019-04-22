@@ -718,7 +718,16 @@ Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* bas
 	}
 
 	// handle literal types (like int, string, etc.)
-	if ( infixPostfix->getResultType() == _int ) {
+	if ( infixPostfix->getResultType() == _bool ) {
+		return processPostfixObjectOperator(std::string(_bool_object), start, infixPostfix);
+	}
+	else if ( infixPostfix->getResultType() == _double ) {
+		return processPostfixObjectOperator(std::string(_double_object), start, infixPostfix);
+	}
+	else if ( infixPostfix->getResultType() == _float ) {
+		return processPostfixObjectOperator(std::string(_float_object), start, infixPostfix);
+	}
+	else if ( infixPostfix->getResultType() == _int ) {
 		return processPostfixObjectOperator(std::string(_int_object), start, infixPostfix);
 	}
 	else if ( infixPostfix->getResultType() == _string ) {
