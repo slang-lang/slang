@@ -18,6 +18,15 @@
 namespace ObjectiveScript {
 
 
+bool isAtomicType(const std::string& type)
+{
+	static const StringSet atomicTypes = provideAtomicTypes();
+
+	StringSet::const_iterator it = atomicTypes.find(type);
+
+	return it != atomicTypes.end();
+}
+
 StringSet provideAtomicTypes()
 {
 	StringSet types;
