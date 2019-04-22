@@ -310,12 +310,24 @@ public object Interpreter {
         }
     }
 
+    private void visitMethodStatement(MethodCallStatement stmt) modify throws {
+        //print("visitMethodStatement()");
+
+        var oldScope = mCurrentScope;
+        mCurrentScope = new ScopedSymbolTable(oldScope.mLevel + 1, stmt.mName, oldScope);
+
+        visitStatement(Statement stmt.mMethod.mBody);
+
+        mCurrentScope = oldScope;
+    }
+
     private void visitPrintStatement(PrintStatement stmt) const {
         //print("visitPrintStatement()");
 
         print( processExpression(stmt.mExpression) );
     }
 
+/*
     private void visitProcedureStatement(ProcedureStatement stmt) modify throws {
         //print("visitProcedureStatement()");
 
@@ -326,6 +338,7 @@ public object Interpreter {
 
         mCurrentScope = oldScope;
     }
+*/
 
     protected void visitStatement(Statement stmt) modify throws {
         if ( !stmt ) {
@@ -348,14 +361,20 @@ public object Interpreter {
                 visitIfStatement(IfStatement stmt);
                 break;
             }
+            case StatementType.MethodCallStatement: {
+                 visitMethodStatement(MethodCallStatement stmt);
+                 break;
+            }
             case StatementType.PrintStatement: {
                 visitPrintStatement(PrintStatement stmt);
                 break;
             }
+/*
             case StatementType.ProcedureStatement: {
                  visitProcedureStatement(ProcedureStatement stmt);
                  break;
             }
+*/
             case StatementType.ProgramStatement: {
                 throw new RuntimeException("statement not allowed here: " + typeid(stmt));
             }

@@ -11,7 +11,7 @@ import Token;
 
 public object Tokenizer {
 	public void Constructor() {
-		CHARS = new String("ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz");
+		CHARS = new String("ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz_");
 		DIGITS = new String("0123456789");
 		OPERATORCHARS = new String("+-*/%<>=");
 

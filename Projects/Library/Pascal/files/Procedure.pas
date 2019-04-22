@@ -1,4 +1,4 @@
-PROGRAM ProcedureTest;
+PROGRAM Procedure_Test;
 
 	PROCEDURE YELL;
 	VAR
