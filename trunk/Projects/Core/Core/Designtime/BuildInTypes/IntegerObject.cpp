@@ -24,8 +24,6 @@ IntegerObject::IntegerObject()
 {
 	mIsAtomicType = true;
 
-	//addInheritance(Ancestor(TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
-
 	initialize();
 }
 

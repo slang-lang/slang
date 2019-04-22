@@ -24,8 +24,6 @@ VoidObject::VoidObject()
 {
 	mIsAtomicType = true;
 
-	//addInheritance(Ancestor(_object, Ancestor::Type::Extends, Visibility::Public));
-
 	initialize();
 }
 
