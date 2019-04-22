@@ -15,6 +15,7 @@ public enum StatementType {
 	ForStatement,
 	FunctionStatement,
 	IfStatement,
+	MethodCallStatement,
 	PrintStatement,
 	ProcedureStatement,
 	ProgramStatement,
@@ -71,6 +72,10 @@ public object CompoundStatement extends Statement {
 	public string toString() const {
 		string result = mConstantDeclarations ? mConstantDeclarations.toString() + LINEBREAK : "";
 		result += mVariableDeclarations ? mVariableDeclarations.toString() + LINEBREAK : "";
+		foreach ( ScopeStatement method : mMethods ?: new List<ScopeStatement>() ) {
+			result += LINEBREAK + (method ? method.toString() : "") + ";";
+		}
+		result += LINEBREAK;
 		result += "BEGIN ";
 		foreach ( Statement stmt : mStatements ) {
 			result += LINEBREAK + (stmt ? stmt.toString() : "") + ";";
@@ -179,6 +184,23 @@ public object IfStatement extends Statement {
 	}
 }
 
+public object MethodCallStatement extends Statement {
+	public ScopeStatement mMethod const;
+	public string mName const;
+	public string mType const;
+
+	public void Constructor(string name, ScopeStatement method) {
+		base.Constructor(StatementType.MethodCallStatement);
+
+		mMethod = method;
+		mName = name;
+	}
+
+	public string toString() const {
+		return mName + "()";
+	}
+}
+
 public object PrintStatement extends Statement {
 	public Expression mExpression const;
 
@@ -228,6 +250,10 @@ public object ScopeStatement extends Statement {
 
 	public void Constructor(StatementType statementType) {
 		base.Constructor(statementType);
+	}
+
+	public string toString() const {
+		return "SCOPE " + mName + "(); " + mBody.toString();
 	}
 }
 

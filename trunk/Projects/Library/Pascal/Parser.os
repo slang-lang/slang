@@ -268,14 +268,14 @@ public object Parser {
 		return new IfStatement(conditionExp, ifBlock, elseBlock);
 	}
 
-	private ScopeStatement parseMethodCall() modify throws {
+	private MethodCallStatement parseMethodCall() modify throws {
 		Token name = consume();
 
 		// parameters are not supported at the moment
 		var sym = mCurrentScope.lookup(name.mValue);
 		assert( sym is MethodSymbol );
 
-		return (MethodSymbol sym).mStatement;
+		return new MethodCallStatement(name.mValue, (MethodSymbol sym).mStatement);
 	}
 
 	private PrintStatement parsePrintStatement() modify throws {
