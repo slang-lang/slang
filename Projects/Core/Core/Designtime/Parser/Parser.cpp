@@ -744,6 +744,32 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 
 			value = token->content();
 			break;
+/* this is not yet usable, handling of "null" needs to be refactored before
+		case Token::Type::CONST_NULL:
+			if ( type != _object ) {
+				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+			}
+			if ( !sign.empty() ) {
+				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+			}
+
+			value = Runtime::MemoryId(0);
+			break;
+*/
+		// this is a hack to support null as default value for parameters without completely refactoring handling of null values
+		case Token::Type::IDENTIFIER:
+			if ( type != _object ) {
+				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+			}
+			if ( token->content() != VALUE_NULL ) {
+				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+			}
+			if ( !sign.empty() ) {
+				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+			}
+
+			value = Runtime::MemoryId(0);
+			break;
 		default:
 			if ( !sign.empty() ) {
 				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
