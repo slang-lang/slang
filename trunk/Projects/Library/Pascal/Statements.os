@@ -73,9 +73,8 @@ public object CompoundStatement extends Statement {
 		string result = mConstantDeclarations ? mConstantDeclarations.toString() + LINEBREAK : "";
 		result += mVariableDeclarations ? mVariableDeclarations.toString() + LINEBREAK : "";
 		foreach ( ScopeStatement method : mMethods ?: new List<ScopeStatement>() ) {
-			result += LINEBREAK + (method ? method.toString() : "") + ";";
+			result += (method ? method.toString() : "") + ";" + LINEBREAK;
 		}
-		result += LINEBREAK;
 		result += "BEGIN ";
 		foreach ( Statement stmt : mStatements ) {
 			result += LINEBREAK + (stmt ? stmt.toString() : "") + ";";
@@ -224,7 +223,7 @@ public object ProcedureStatement extends ScopeStatement {
 	}
 
 	public string toString() const {
-		return "PROCEDURE " + mName + "(); " + mBody.toString();
+		return "PROCEDURE " + mName + "();" + LINEBREAK + mBody.toString();
 	}
 }
 
@@ -253,7 +252,7 @@ public object ScopeStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "SCOPE " + mName + "(); " + mBody.toString();
+		return "SCOPE " + mName + "();" + LINEBREAK + mBody.toString();
 	}
 }
 

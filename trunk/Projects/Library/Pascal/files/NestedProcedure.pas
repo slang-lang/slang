@@ -1,4 +1,8 @@
 PROGRAM Nested_Procedure_Test;
+CONST
+	c1: Integer := 1;
+VAR
+	v2: Integer := 2;
 
 	PROCEDURE Level1;
 	VAR
