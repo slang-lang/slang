@@ -10,6 +10,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include <Core/Object.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -28,7 +29,7 @@ Memory::~Memory()
 {
 }
 
-void Memory::add(const Runtime::Reference &ref)
+void Memory::add(const Runtime::Reference& ref)
 {
 	if ( !ref.isValid() ) {
 		// cannot add address 0
@@ -77,7 +78,7 @@ void Memory::deleteObject(const Runtime::Reference& ref)
 	}
 }
 
-Runtime::Object* Memory::get(const Runtime::Reference &ref) const
+Runtime::Object* Memory::get(const Runtime::Reference& ref) const
 {
 	MemoryMap::const_iterator it = mMemory.find(ref);
 	if ( it != mMemory.end() ) {
@@ -91,7 +92,7 @@ void Memory::init()
 {
 }
 
-const Runtime::Reference& Memory::newObject(Runtime::Object *obj)
+const Runtime::Reference& Memory::newObject(Runtime::Object* obj)
 {
 	const Runtime::Reference& ref = reserveAddress();
 
@@ -103,7 +104,7 @@ const Runtime::Reference& Memory::newObject(Runtime::Object *obj)
 	return ref;
 }
 
-void Memory::remove(const Runtime::Reference &ref)
+void Memory::remove(const Runtime::Reference& ref)
 {
 	if ( !ref.isValid() ) {
 		// cannot delete address 0
@@ -150,3 +151,4 @@ const Runtime::Reference& Memory::reserveAddress()
 
 
 }
+
