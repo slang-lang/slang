@@ -24,8 +24,6 @@ BoolObject::BoolObject()
 {
 	mIsAtomicType = true;
 
-	//addInheritance(Ancestor(TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
-
 	initialize();
 }
 
