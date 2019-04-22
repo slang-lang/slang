@@ -9,6 +9,7 @@
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Interfaces/IScope.h>
 #include <Core/Tools.h>
+#include <Core/Types.h>
 #include <Tools/Strings.h>
 
 // Namespace declarations
@@ -753,12 +754,12 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
-			value = Runtime::MemoryId(0);
+			value = Runtime::null;
 			break;
 */
 		// this is a hack to support null as default value for parameters without completely refactoring handling of null values
 		case Token::Type::IDENTIFIER:
-			if ( type != _object ) {
+			if ( isAtomicType(type) ) {
 				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
 			}
 			if ( token->content() != VALUE_NULL ) {
@@ -768,7 +769,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
-			value = Runtime::MemoryId(0);
+			value = Runtime::null;
 			break;
 		default:
 			if ( !sign.empty() ) {
