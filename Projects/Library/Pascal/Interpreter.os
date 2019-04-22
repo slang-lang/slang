@@ -5,6 +5,7 @@ import System.Exception;
 
 // project imports
 import Expressions;
+import ScopedSymbolTable;
 import Statements;
 
 
@@ -31,7 +32,6 @@ public object Interpreter {
     public void Constructor(Statement program) {
 		mConstants = new Map<string, String>();
 		mProgram = program;
-		mVariables = new Map<string, String>();
     }
 
     public int run() modify throws {
@@ -41,7 +41,11 @@ public object Interpreter {
 
         print("Interpreting \"" + (ProgramStatement mProgram).mName + "\"...");
 
+        mCurrentScope = new ScopedSymbolTable(0, "global");
+
         visitCompoundStatement((ProgramStatement mProgram).mStatements);
+
+        delete mCurrentScope;
 
         return 0;
     }
@@ -110,11 +114,12 @@ public object Interpreter {
         String obj;
         string name = (ConstantExpression exp).mConstant;
 
-        if ( !mConstants.contains(name) ) {
-            throw new RuntimeException("Constant '" + name + "' is unknown");
+        var sym = mCurrentScope.lookup(name);
+        if ( !sym ) {
+            throw new RuntimeException("Symbol '" + name + "' is unknown");
         }
         else {
-            obj = mConstants.get(name);
+            obj = (LocalSymbol sym).mValue;
         }
 
         return string obj;
@@ -197,13 +202,14 @@ public object Interpreter {
         //print("processVariableExpression(" + exp.toString() + ")");
 
         String obj;
-        string varName = (VariableExpression exp).mVariable;
+        string name = (VariableExpression exp).mVariable;
 
-        if ( !mVariables.contains(varName) ) {
-            throw new RuntimeException("Variable '" + varName + "' is unknown");
+        var sym = mCurrentScope.lookup(name);
+        if ( !sym ) {
+            throw new RuntimeException("Symbol '" + name + "' is unknown");
         }
         else {
-            obj = mVariables.get(varName);
+            obj = (LocalSymbol sym).mValue;
         }
 
         return string obj;
@@ -233,20 +239,29 @@ public object Interpreter {
         //print("visitAssignStatement()");
 
         String obj;
-        string varName = (VariableExpression assign.mLeft).mVariable;
+        string name = (VariableExpression assign.mLeft).mVariable;
 
-        if ( !mVariables.contains(varName) ) {
-            throw new RuntimeException("unknown variable '" + varName + "' referenced");
+        var sym = mCurrentScope.lookup(name);
+        if ( !sym ) {
+            throw new RuntimeException("Symbol '" + name + "' is unknown");
         }
-        else {
-            obj = mVariables.get(varName);
+        if ( !(sym is LocalSymbol) ) {
+            throw new RuntimeException("Symbol '" + name + "' is not of type LocalSymbol");
         }
+        if ( (LocalSymbol sym).mIsConst ) {
+            throw new RuntimeException("Symbol '" + name + "' is const");
+        }
+
+        obj = (LocalSymbol sym).mValue;
 
         obj = processExpression(assign.mRight);
     }
 
     private void visitCompoundStatement(CompoundStatement compound) modify {
         //print("visitCompoundStatement()");
+
+        var oldScope = mCurrentScope;
+        mCurrentScope = new ScopedSymbolTable(oldScope.mLevel + 1, "", oldScope);
 
         if ( compound.mConstantDeclarations ) {
             visitConstantDeclarationStatement(compound.mConstantDeclarations);
@@ -259,6 +274,8 @@ public object Interpreter {
         foreach ( Statement stmt : compound.mStatements ) {
             visitStatement(stmt);
         }
+
+        mCurrentScope = oldScope;
     }
 
     protected void visitConstantDeclarationStatement(ConstantDeclarationStatement stmt) modify throws {
@@ -266,12 +283,13 @@ public object Interpreter {
 
         foreach ( DeclarationStatement declStmt : stmt.mDeclarations ) {
             string name = declStmt.mName;
-            if ( mConstants.contains( name ) ) {
-                throw new RuntimeException("duplicate constant '" + name + "' declared");
+
+            if ( mCurrentScope.lookup(name, true) ) {
+                throw new RuntimeException("duplicate symbol '" + name + "' declared");
             }
 
             var obj = new String("0");
-            mConstants.insert(name, obj);
+            mCurrentScope.declare(Symbol new LocalSymbol(name, declStmt.mType, true, obj));
 
             if ( declStmt.mValue ) {
                 obj = processExpression(declStmt.mValue);
@@ -296,6 +314,17 @@ public object Interpreter {
         //print("visitPrintStatement()");
 
         print( processExpression(stmt.mExpression) );
+    }
+
+    private void visitProcedureStatement(ProcedureStatement stmt) modify throws {
+        //print("visitProcedureStatement()");
+
+        var oldScope = mCurrentScope;
+        mCurrentScope = new ScopedSymbolTable(oldScope.mLevel + 1, stmt.mName, oldScope);
+
+        visitStatement(Statement stmt.mBody);
+
+        mCurrentScope = oldScope;
     }
 
     protected void visitStatement(Statement stmt) modify throws {
@@ -323,6 +352,10 @@ public object Interpreter {
                 visitPrintStatement(PrintStatement stmt);
                 break;
             }
+            case StatementType.ProcedureStatement: {
+                 visitProcedureStatement(ProcedureStatement stmt);
+                 break;
+            }
             case StatementType.ProgramStatement: {
                 throw new RuntimeException("statement not allowed here: " + typeid(stmt));
             }
@@ -347,12 +380,12 @@ public object Interpreter {
 
         foreach ( DeclarationStatement declStmt : stmt.mDeclarations ) {
             string name = declStmt.mName;
-            if ( mVariables.contains( name ) ) {
-                throw new RuntimeException("duplicate constant '" + name + "' declared");
+            if ( mCurrentScope.lookup(name, true) ) {
+                throw new RuntimeException("duplicate symbol '" + name + "' declared");
             }
 
             var obj = new String("0");
-            mVariables.insert(name, obj);
+            mCurrentScope.declare(Symbol new LocalSymbol(name, declStmt.mType, false, obj));
 
             if ( declStmt.mValue ) {
                 obj = processExpression(declStmt.mValue);
@@ -373,7 +406,7 @@ public object Interpreter {
         }
     }
 
+    protected ScopedSymbolTable mCurrentScope;
     protected Map<string, String> mConstants;
     protected Statement mProgram;
-    protected Map<string, String> mVariables;
 }
