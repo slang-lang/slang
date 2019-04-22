@@ -104,9 +104,12 @@ static const char* UNKNOWN = "unknown";
 // Types
 static const char* _any = "";
 static const char* _bool = "bool";
+static const char* _bool_object = "Boolean";
 static const char* _double = "double";
+static const char* _double_object = "Double";
 static const char* _enum = "enum";
 static const char* _float = "float";
+static const char* _float_object = "Float";
 static const char* _int = "int";
 static const char* _int_object = "Integer";
 static const char* _object = "Object";
