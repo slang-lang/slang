@@ -75,11 +75,11 @@ public object CompoundStatement extends Statement {
 		foreach ( ScopeStatement method : mMethods ?: new List<ScopeStatement>() ) {
 			result += (method ? method.toString() : "") + ";" + LINEBREAK;
 		}
-		result += "BEGIN ";
+		result += "BEGIN" + LINEBREAK;
 		foreach ( Statement stmt : mStatements ) {
-			result += LINEBREAK + (stmt ? stmt.toString() : "") + ";";
+			result += (stmt ? stmt.toString() + ";" + LINEBREAK : "");
 		}
-		return result + LINEBREAK + "END";
+		return result + "END";
 	}
 }
 

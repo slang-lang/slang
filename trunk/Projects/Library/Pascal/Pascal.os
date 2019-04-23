@@ -45,13 +45,13 @@ public int Main(int argc, string args) modify {
 		return interpreter.run();
 	}
 	catch ( IException e ) {
-		print(typeid(e) + ": " + e.what());
+		print("Error: " + typeid(e) + ": " + e.what());
 	}
 	catch ( string e ) {
-		print("Exception: " + e);
+		print("Error: " + e);
 	}
 	catch {
-		print("Exception: caught unknown exception!");
+		print("Error: caught unknown exception!");
 	}
 
 	return -1;
