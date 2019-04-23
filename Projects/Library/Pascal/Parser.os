@@ -26,20 +26,6 @@ public object ParseException const implements IException {
 	private Position mPosition const;
 }
 
-public object ParseType const {
-	public bool mIsConst const;
-	public string mType const;
-
-	public void Constructor(string type, bool isConst = false) {
-		mIsConst = isConst;
-		mType = type;
-	}
-
-	public string toString() const {
-		return "Type(" + mType + ", Const: " + mIsConst + ")";
-	}
-}
-
 
 public object Parser {
 	public Statement parseFile(string filename) modify throws {
@@ -273,7 +259,9 @@ public object Parser {
 
 		// parameters are not supported at the moment
 		var sym = mCurrentScope.lookup(name.mValue);
-		assert( sym is MethodSymbol );
+		if ( !(sym is MethodSymbol) ) {
+			throw new ParseException("invalid symbol '" + name.mValue + "' detected", name.mPosition);
+		}
 
 		return new MethodCallStatement(name.mValue, (MethodSymbol sym).mStatement);
 	}
