@@ -45,13 +45,13 @@
 			return; \
 		}
 
-#define tryEvalute(left, right) \
+#define tryControlReturnNull( exp ) \
 		try { \
-			evaluate(left, right); \
+			exp; \
 		} \
 		catch ( Runtime::ControlFlow::E &e ) { \
 			mControlFlow = e; \
-			return; \
+			return NULL; \
 		}
 
 #define tryEvaluteReturnNull(left, right) \
@@ -235,7 +235,6 @@ void TreeInterpreter::evaluateIsExpression(IsExpression* exp, Runtime::Object* r
 {
 	Runtime::Object tmp;
 
-	// evaluate left expression
 	evaluate(exp->mExpression, &tmp);
 
 	*result = Runtime::BoolObject(tmp.isInstanceOf(exp->mMatchType));
@@ -276,7 +275,14 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		methodSymbol = resolveMethod(getEnclosingMethodScope(scope), exp->mSymbolExpression, params, Visibility::Private);
 	}
 	if ( !methodSymbol ) {
-		throw Runtime::Exceptions::RuntimeException("method " + (!scope->getFullScopeName().empty() ? scope->getFullScopeName() + "." : "") + exp->mSymbolExpression->toString() + "(" + toString(params) + ") not found");
+		//throw Runtime::Exceptions::RuntimeException("method " + (!scope->getFullScopeName().empty() ? scope->getFullScopeName() + "." : "") + exp->mSymbolExpression->toString() + "(" + toString(params) + ") not found");
+
+		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(std::string("NullPointerException"));
+		//*data = Runtime::UserObject(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, std::string("NullPointerException"));
+
+		mThread->exception() = Runtime::ExceptionData(data);
+		throw Runtime::ControlFlow::Throw;				// promote control flow
 	}
 
 	Common::Method* method = dynamic_cast<Common::Method*>(methodSymbol);
@@ -351,7 +357,13 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 	// resolve current symbol name
 	Symbol* lvalue = scope->resolve(exp->mName, false, Visibility::Designtime);
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + exp->mName + "' not found");
+		//throw Runtime::Exceptions::InvalidAssignment("lvalue '" + exp->mName + "' not found");
+
+		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(std::string("NullPointerException"));
+
+		mThread->exception() = Runtime::ExceptionData(data);
+		throw Runtime::ControlFlow::Throw;				// promote control flow
 	}
 
 	// evaluate sub expression?
