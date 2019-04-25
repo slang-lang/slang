@@ -147,8 +147,8 @@ private: // Execution
 	// Token stack
 	// {
 	inline const TokenList& getTokens() const;
-	void popTokens();
-	void pushTokens(const TokenList& tokens);
+	inline void popTokens();
+	inline void pushTokens(const TokenList& tokens);
 	// }
 
 private:	// Initialization

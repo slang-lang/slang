@@ -668,7 +668,7 @@ Node* TreeGenerator::processPostfixObjectOperator(const std::string& objectType,
 	}
 
 	if ( start->type() == Token::Type::PARENTHESIS_OPEN ) {
-	MethodExpression* method = process_method(symbolExpression, start);
+		MethodExpression* method = process_method(symbolExpression, start);
 
 		return new ScopeExpression(newExp, method, method->getResultType());
 	}
