@@ -25,6 +25,8 @@ public enum TokenType {
 	GREATER_EQUAL,
 	IDENTIFIER,
 	IF,
+	IMPLEMENTATION,
+	INTERFACE,
 	INTEGER,
 	LESS,
 	LESS_EQUAL,
@@ -75,6 +77,8 @@ public string TokenToString(TokenType type) {
 		case TokenType.GREATER_EQUAL:		{ return ">="; }
 		case TokenType.IDENTIFIER:		{ return "IDENTIFIER"; }
 		case TokenType.IF:			{ return "IF"; }
+		case TokenType.IMPLEMENTATION:		{ return "IMPLEMENTATION"; }
+		case TokenType.INTERFACE:		{ return "INTERFACE"; }
 		case TokenType.INTEGER:			{ return "INTEGER"; }
 		case TokenType.LESS:			{ return "<"; }
 		case TokenType.LESS_EQUAL:		{ return "<="; }
