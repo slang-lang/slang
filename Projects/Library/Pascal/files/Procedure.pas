@@ -16,6 +16,8 @@ PROGRAM Procedure_Test;
 			PRINT( 'count: ' + count );
 			count := count + 1;
 		END;
+
+		YELL;
 	END;
 
 BEGIN
@@ -24,6 +26,4 @@ BEGIN
 	YELL;
 
 	BLA;
-
-	YELL;
 END.

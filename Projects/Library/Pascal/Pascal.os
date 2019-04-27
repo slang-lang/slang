@@ -33,7 +33,7 @@ public int Main(int argc, string args) modify {
 
 	try {
 		var parser = new Parser();
-		var program = parser.parseFile(string params.at(0).Key)
+		var program = parser.parseFile(string params.at(0).Key);
 
 		if ( debug ) {
 			print("");
