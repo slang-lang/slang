@@ -5,8 +5,8 @@ import System.Exception;
 
 // project imports
 import Expressions;
-import ScopedSymbolTable;
 import Statements;
+import SymbolTable;
 
 
 public enum ControlFlow {
@@ -41,7 +41,7 @@ public object Interpreter {
 
         print("Interpreting \"" + (ProgramStatement mProgram).mName + "\"...");
 
-        mCurrentScope = new ScopedSymbolTable(0, "global");
+        mCurrentScope = new SymbolTable(0, "global");
 
         visitCompoundStatement((ProgramStatement mProgram).mStatements);
 
@@ -261,7 +261,7 @@ public object Interpreter {
         //print("visitCompoundStatement()");
 
         var oldScope = mCurrentScope;
-        mCurrentScope = new ScopedSymbolTable(oldScope.mLevel + 1, "", oldScope);
+        mCurrentScope = new SymbolTable(oldScope.mLevel + 1, "", oldScope);
 
         if ( compound.mConstantDeclarations ) {
             visitConstantDeclarationStatement(compound.mConstantDeclarations);
@@ -314,7 +314,7 @@ public object Interpreter {
         //print("visitMethodStatement()");
 
         var oldScope = mCurrentScope;
-        mCurrentScope = new ScopedSymbolTable(oldScope.mLevel + 1, stmt.mName, oldScope);
+        mCurrentScope = new SymbolTable(oldScope.mLevel + 1, stmt.mName, oldScope);
 
         visitStatement(Statement stmt.mMethod.mBody);
 
@@ -332,7 +332,7 @@ public object Interpreter {
         //print("visitProcedureStatement()");
 
         var oldScope = mCurrentScope;
-        mCurrentScope = new ScopedSymbolTable(oldScope.mLevel + 1, stmt.mName, oldScope);
+        mCurrentScope = new SymbolTable(oldScope.mLevel + 1, stmt.mName, oldScope);
 
         visitStatement(Statement stmt.mBody);
 
@@ -425,7 +425,7 @@ public object Interpreter {
         }
     }
 
-    protected ScopedSymbolTable mCurrentScope;
+    protected SymbolTable mCurrentScope;
     protected Map<string, String> mConstants;
     protected Statement mProgram;
 }
