@@ -108,25 +108,17 @@ public object Parser {
 	private CompoundStatement parseCompoundStatementWithDeclarations() modify throws {
 		//print("parseCompoundStatementWithDeclarations()");
 
-		Token blockDec = peek();
-		ConstantDeclarationStatement constStmt;
-		if ( blockDec && blockDec.mType == TokenType.CONST ) {
-			constStmt = parseConstantDeclarationStatement();
-		}
-
-		blockDec = peek();
-		VariableDeclarationStatement varStmt;
-		if ( blockDec && blockDec.mType == TokenType.VAR ) {
-			varStmt = parseVariableDeclarationStatement();
-		}
+		var constStmt = parseConstantDeclarationStatement();
+		var varStmt = parseVariableDeclarationStatement();
 
 		var methods = new List<ScopeStatement>();
-		while ( (blockDec = peek()) != null ) {
+		Token token;
+		while ( (token = peek()) != null ) {
 			ScopeStatement stmt;
-			if ( blockDec.mType == TokenType.FUNCTION ) {
+			if ( token.mType == TokenType.FUNCTION ) {
 				stmt = ScopeStatement parseFunction();
 			}
-			else if ( blockDec.mType == TokenType.PROCEDURE ) {
+			else if ( token.mType == TokenType.PROCEDURE ) {
 				stmt = ScopeStatement parseProcedure();
 			}
 			else {
@@ -147,22 +139,22 @@ public object Parser {
 	private ConstantDeclarationStatement parseConstantDeclarationStatement() modify throws {
 		//print("parseConstantDeclarationStatement()");
 
-		Token start = consume();
-		if ( !start || start.mType != TokenType.CONST ) {
-			throw new ParseException("invalid CONST statement found", start.mPosition);
-		}
-
 		var stmt = new ConstantDeclarationStatement();
 
-		while ( peek().mType == TokenType.IDENTIFIER ) {
-			var declStmt = parseDeclarationStatement();
-			stmt.mDeclarations.push_back( declStmt );
+		Token start = peek();
+		if ( start && start.mType == TokenType.CONST ) {
+			consume();	// consume CONST token
 
-			if ( mCurrentScope.lookup(declStmt.mName, true) ) {
-				throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+			while ( peek().mType == TokenType.IDENTIFIER ) {
+				var declStmt = parseDeclarationStatement();
+				stmt.mDeclarations.push_back( declStmt );
+
+				if ( mCurrentScope.lookup(declStmt.mName, true) ) {
+					throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+				}
+
+				mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, true));
 			}
-
-			mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, true));
 		}
 
 		return stmt;
@@ -448,22 +440,22 @@ public object Parser {
 	private VariableDeclarationStatement parseVariableDeclarationStatement() modify throws {
 		//print("parseVariableDeclarationStatement()");
 
-		Token start = consume();
-		if ( !start || start.mType != TokenType.VAR ) {
-			throw new ParseException("invalid VAR statement found", start.mPosition);
-		}
-
 		var stmt = new VariableDeclarationStatement();
 
-		while ( peek().mType == TokenType.IDENTIFIER ) {
-			var declStmt = parseDeclarationStatement();
-			stmt.mDeclarations.push_back( declStmt );
+		Token start = peek();
+		if ( start && start.mType == TokenType.VAR ) {
+			consume();	// consume VAR token
 
-			if ( mCurrentScope.lookup(declStmt.mName, true) ) {
-				throw new ParseException("Duplicate symbol '" + declStmt.mName + "' declared", start.mPosition);
+			while ( peek().mType == TokenType.IDENTIFIER ) {
+				var declStmt = parseDeclarationStatement();
+				stmt.mDeclarations.push_back( declStmt );
+
+				if ( mCurrentScope.lookup(declStmt.mName, true) ) {
+					throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+				}
+
+				mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, false));
 			}
-
-			mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType));
 		}
 
 		return stmt;
