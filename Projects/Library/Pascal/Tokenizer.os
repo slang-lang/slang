@@ -26,6 +26,8 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.ELSE, "ELSE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.FUNCTION, "FUNCTION", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.IF, "IF", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.IMPLEMENTATION, "IMPLEMENTATION", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.INTERFACE, "INTERFACE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.MATH_DIVIDE_INT, "DIV", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.OR, "OR", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PRINT, "PRINT", Position null));

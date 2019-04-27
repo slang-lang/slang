@@ -336,7 +336,7 @@ public object Parser {
 				break;
 			}
 			case TokenType.CONST: {
-				stmt = Statement parseConstantDeclarationStatement();
+				stmt = Statement parseCompoundStatementWithDeclarations();
 				break;
 			}
 			case TokenType.IDENTIFIER: {
@@ -363,7 +363,7 @@ public object Parser {
 				break;
 			}
 			case TokenType.VAR: {
-				stmt = Statement parseVariableDeclarationStatement();
+				stmt = Statement parseCompoundStatementWithDeclarations();
 				break;
 			}
 			case TokenType.WHILE: {
@@ -396,6 +396,11 @@ public object Parser {
 		mCurrentScope = new SymbolTable(0, "global");
 
 		var uses = parseUsesStatement();
+
+		require(TokenType.INTERFACE);
+
+		require(TokenType.IMPLEMENTATION);
+
 		var statements = parseCompoundStatementWithDeclarations();
 
 		// pop scope
