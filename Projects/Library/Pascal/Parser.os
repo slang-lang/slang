@@ -6,8 +6,8 @@ import System.IO.File;
 
 // project imports
 import Expressions;
-import ScopedSymbolTable;
 import Statements;
+import SymbolTable;
 import Token;
 import Tokenizer;
 
@@ -288,7 +288,7 @@ public object Parser {
 		require(TokenType.SEMICOLON);
 
 		var oldScope = mCurrentScope;
-		mCurrentScope = new ScopedSymbolTable(1, token.mValue, oldScope);
+		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, token.mValue, oldScope);
 
 		var proc = ScopeStatement new ProcedureStatement(token.mValue, parseCompoundStatementWithDeclarations());
 
@@ -310,7 +310,7 @@ public object Parser {
 
 		require(TokenType.SEMICOLON);
 
-		mCurrentScope = new ScopedSymbolTable(0, "global");
+		mCurrentScope = new SymbolTable(0, "global");
 
 		var statement = new ProgramStatement(
 			name.mValue,
@@ -660,7 +660,7 @@ public object Parser {
 //////////////////////////////////////////////////////////////////////////////
 
 
-	private ScopedSymbolTable mCurrentScope;
+	private SymbolTable mCurrentScope;
 	private Iterator<Token> mTokenIterator;
 	private Tokenizer mTokenizer;
 	private List<Token> mTokens;

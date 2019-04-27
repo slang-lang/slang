@@ -6,22 +6,22 @@ import System.Collections.List;
 import Symbol;
 
 
-public object ScopedSymbolTable {
+public object SymbolTable {
 	public int mLevel const;
 	public string mName const;
-	public ScopedSymbolTable mParent const;
+	public SymbolTable mParent const;
 
-	public void Constructor(int level, string name, ScopedSymbolTable parent = null) {
+	public void Constructor(int level, string name, SymbolTable parent = null) {
 		mLevel = level;
 		mName = name;
 		mParent = parent;
 		mSymbols = new List<Symbol>();
 
-		//print("new ScopedSymbolTable(level: " + mLevel + ", name: \"" + mName + "\", parent: " + (mParent ? true : false) + ")");
+		//print("new SymbolTable(level: " + mLevel + ", name: \"" + mName + "\", parent: " + (mParent ? true : false) + ")");
 	}
 
 	public void Destructor() {
-		//print("delete ScopedSymbolTable(level: " + mLevel + ", name: \"" + mName + "\", parent: " + (mParent ? true : false) + ")");
+		//print("delete SymbolTable(level: " + mLevel + ", name: \"" + mName + "\", parent: " + (mParent ? true : false) + ")");
 	}
 
 	public void declare(Symbol symbol) modify throws {
