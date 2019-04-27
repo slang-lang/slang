@@ -37,6 +37,7 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "REAL", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "STRING", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.UNIT, "UNIT", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.USES, "USES", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.VAR, "VAR", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.WHILE, "WHILE", Position null));
 
