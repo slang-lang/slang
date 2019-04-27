@@ -20,6 +20,7 @@ public enum StatementType {
 	ProcedureStatement,
 	ProgramStatement,
 	UnitStatement,
+	UsesStatement,
 	VariableDeclarationStatement,
 	WhileStatement
 	;
@@ -228,18 +229,24 @@ public object ProcedureStatement extends ScopeStatement {
 }
 
 public object ProgramStatement extends Statement {
-	public string mName;
-	public CompoundStatement mStatements;
+	public string mName const;
+	public CompoundStatement mStatements const;
+	public UsesStatement mUses const;
 
-	public void Constructor(string programName, CompoundStatement statements) {
+	public void Constructor(string name, UsesStatement uses, CompoundStatement statements) {
 		base.Constructor(StatementType.ProgramStatement);
 
-		mName = programName;
+		mName = name;
 		mStatements = statements;
+		mUses = uses;
 	}
 
 	public string toString() const {
-		return "PROGRAM " + mName + ";" + LINEBREAK + (mStatements ? mStatements.toString() : "") + ".";
+		string result = "PROGRAM " + mName + ";" + LINEBREAK;
+		//result += mUses.toString();
+		result += mStatements ? mStatements.toString() : "";
+
+		return result + ".";
 	}
 }
 
@@ -257,18 +264,49 @@ public object ScopeStatement extends Statement {
 }
 
 public object UnitStatement extends Statement {
-	public CompoundStatement mStatements;
-	public string mName;
+	public string mName const;
+	public CompoundStatement mStatements const;
+	public UsesStatement mUses const;
 
-	public void Constructor(string unitName, CompoundStatement statements) {
-		base.Constructor(StatementType.ProgramStatement);
+	public void Constructor(string name, UsesStatement uses, CompoundStatement statements) {
+		base.Constructor(StatementType.UnitStatement);
 
-		mName = unitName;
+		mName = name;
 		mStatements = statements;
+		mUses = uses;
 	}
 
 	public string toString() const {
-		return "UNIT " + mName + ";" + LINEBREAK + (mStatements ? mStatements.toString() : "") + ";";
+		string result = "UNIT " + mName + ";" + LINEBREAK;
+		result += mUses.toString() ?: "";
+		result += mStatements ? mStatements.toString() : "";
+
+		return result + ";";
+	}
+}
+
+public object UsesStatement extends Statement {
+	public List<string> mUnits;
+
+	public void Constructor() {
+		base.Constructor(StatementType.UsesStatement);
+
+		mUnits = new List<string>();
+	}
+
+	public string toString() const {
+		string result;
+
+		foreach ( string unit : mUnits ) {
+			if ( !result ) {
+				result = unit;
+				continue;
+			}
+
+			result += ", " + unit;
+		}
+
+		return result ? "USES " + result + ";" + LINEBREAK : "";
 	}
 }
 

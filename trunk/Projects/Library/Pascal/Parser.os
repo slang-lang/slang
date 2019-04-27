@@ -40,7 +40,7 @@ public object Parser {
 		Statement statement;
 
 		Token token = consume();
-		switch ( token ) {
+		switch ( token.mValue ) {
 			case "PROGRAM": {
 				statement = Statement parseProgram();
 				break;
@@ -204,10 +204,10 @@ public object Parser {
 	private ScopeStatement parseFunction() modify throws {
 		//print("parseFunction()");
 
-		Token token = consume();
+		require(TokenType.FUNCTION);
 
 		// name
-		token = consume();
+		Token token = consume();
 		if ( token.mType != TokenType.IDENTIFIER ) {
 			throw new ParseException("invalid token " + toString(token) + " found", token.mPosition);
 		}
@@ -277,10 +277,10 @@ public object Parser {
 	private ScopeStatement parseProcedure() modify throws {
 		//print("parseProcedure()");
 
-		Token token = consume();
+		require(TokenType.PROCEDURE);
 
 		// name
-		token = consume();
+		Token token = consume();
 		if ( token.mType != TokenType.IDENTIFIER ) {
 			throw new ParseException("invalid token " + toString(token) + " found", token.mPosition);
 		}
@@ -312,16 +312,16 @@ public object Parser {
 
 		mCurrentScope = new SymbolTable(0, "global");
 
-		var statement = new ProgramStatement(
-			name.mValue,
-			parseCompoundStatementWithDeclarations()
-		);
+		Token token = peek();
+
+		var uses = parseUsesStatement();
+		var statements = parseCompoundStatementWithDeclarations();
 
 		delete mCurrentScope;
 
 		require(TokenType.DOT);
 
-		return statement;
+		return new ProgramStatement(name.mValue, uses, statements);
 	}
 
 	private Statement parseStatement(bool requiresSemicolon = true) modify throws {
@@ -387,19 +387,57 @@ public object Parser {
 
 		Token name = consume();
 		if ( !name || name.mType != TokenType.IDENTIFIER ) {
-			throw new ParseException("invalid UNIT statement found", name.mPosition);
+			throw new ParseException("invalid UNIT statement found" + toString(name), name.mPosition);
 		}
 
 		require(TokenType.SEMICOLON);
 
-		var statement = new UnitStatement(
-			name.mValue,
-			parseCompoundStatement()
-		);
+		// push new scope
+		mCurrentScope = new SymbolTable(0, "global");
 
-		require(TokenType.SEMICOLON);
+		var uses = parseUsesStatement();
+		var statements = parseCompoundStatementWithDeclarations();
 
-		return statement;
+		// pop scope
+		delete mCurrentScope;
+
+		require(TokenType.DOT);
+
+		return new UnitStatement(name.mValue, uses, statements);
+	}
+
+	private UsesStatement parseUsesStatement() modify throws {
+		//print("parseUsesStatement()");
+
+		var uses = new UsesStatement();
+
+		Token usesToken = peek();
+		if ( usesToken && usesToken.mType == TokenType.USES ) {
+			// consume uses token
+			require(TokenType.USES);
+
+			Token token;
+			while ( (token = peek()) != null && token.mType == TokenType.IDENTIFIER ) {
+				consume();	// consume unit name
+
+				uses.mUnits.push_back( token.mValue );
+
+				token = peek();
+				if ( token && token.mType == TokenType.COMMA ) {
+					consume();	// consume comma
+					continue;
+				}
+				else if ( token && token.mType == TokenType.SEMICOLON ) {
+					consume();	// consume semicolon
+					break;
+				}
+				else {
+					throw new ParseException("invalid USES statement", token.mPosition);
+				}
+			}
+		}
+
+		return uses;
 	}
 
 	private VariableDeclarationStatement parseVariableDeclarationStatement() modify throws {
