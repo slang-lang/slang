@@ -71,15 +71,18 @@ public object CompoundStatement extends Statement {
 	}
 
 	public string toString() const {
-		string result = mConstantDeclarations ? mConstantDeclarations.toString() + LINEBREAK : "";
+		string result;
+
+		result += mConstantDeclarations ? mConstantDeclarations.toString() + LINEBREAK : "";
 		result += mVariableDeclarations ? mVariableDeclarations.toString() + LINEBREAK : "";
 		foreach ( ScopeStatement method : mMethods ?: new List<ScopeStatement>() ) {
-			result += (method ? method.toString() : "") + ";" + LINEBREAK;
+			result += method ? method.toString() + ";" + LINEBREAK : "";
 		}
 		result += "BEGIN" + LINEBREAK;
 		foreach ( Statement stmt : mStatements ) {
-			result += (stmt ? stmt.toString() + ";" + LINEBREAK : "");
+			result += stmt ? stmt.toString() + ";" + LINEBREAK : "";
 		}
+
 		return result + "END";
 	}
 }
@@ -94,16 +97,11 @@ public object ConstantDeclarationStatement extends Statement {
 	}
 
 	public string toString() const {
-		if ( mDeclarations.empty() ) {
-			return "";
-		}
-
 		string result;
 		foreach ( DeclarationStatement stmt : mDeclarations ) {
 			result += (result ? LINEBREAK : "") + stmt.toString();
 		}
-
-		return "CONST" + LINEBREAK + result;
+		return result ? "CONST" + LINEBREAK + result : "";
 	}
 }
 
@@ -160,7 +158,7 @@ public object FunctionStatement extends ScopeStatement {
 	}
 
 	public string toString() const {
-		return "FUNCTION " + mName + "() : " + mResultType + " " + mBody.toString();
+		return "FUNCTION " + mName + "(): " + mResultType + ";" + LINEBREAK + mBody.toString();
 	}
 }
 
@@ -320,16 +318,11 @@ public object VariableDeclarationStatement extends Statement {
 	}
 
 	public string toString() const {
-		if ( mDeclarations.empty() ) {
-			return "";
-		}
-
 		string result;
 		foreach ( DeclarationStatement stmt : mDeclarations ) {
 			result += (result ? LINEBREAK : "") + stmt.toString();
 		}
-
-		return "VAR" + LINEBREAK + result;
+		return result ? "VAR" + LINEBREAK + result : "";
 	}
 }
 
