@@ -28,14 +28,16 @@ public object ParseException const implements IException {
 
 
 public object Parser {
-	public Statement parseFile(string filename) modify throws {
+	public Statement parseFile(string filename, bool debug = false) modify throws {
 		var tokenizer = new Tokenizer();
 
 		mTokenizer = new Tokenizer();
-		mTokens = tokenizer.parseFile(filename);
+		mTokens = tokenizer.parseFile(filename, debug);
 		mTokenIterator = mTokens.getIterator();
 
-		print("Building AST for \"" + filename + "\"...");
+		if ( debug ) {
+			print("Building AST for \"" + filename + "\"...");
+		}
 
 		Statement statement;
 

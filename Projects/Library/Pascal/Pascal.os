@@ -33,7 +33,7 @@ public int Main(int argc, string args) modify {
 
 	try {
 		var parser = new Parser();
-		var program = parser.parseFile(string params.at(0).Key);
+		var program = parser.parseFile(string params.at(0).Key, debug);
 
 		if ( debug ) {
 			print("");
@@ -42,7 +42,7 @@ public int Main(int argc, string args) modify {
 		}
 
 		var interpreter = new Interpreter(program);
-		return interpreter.run();
+		return interpreter.run(debug);
 	}
 	catch ( IException e ) {
 		print("Error: " + typeid(e) + ": " + e.what());

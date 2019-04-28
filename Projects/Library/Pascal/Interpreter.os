@@ -34,12 +34,14 @@ public object Interpreter {
 		mProgram = program;
     }
 
-    public int run() modify throws {
+    public int run(bool debug = false) modify throws {
         if ( !mProgram ) {
             return -1;
         }
 
-        print("Interpreting \"" + (ProgramStatement mProgram).mName + "\"...");
+	if ( debug ) {
+	        print("Interpreting \"" + (ProgramStatement mProgram).mName + "\"...");
+	}
 
         mCurrentScope = new SymbolTable(0, "global");
 
