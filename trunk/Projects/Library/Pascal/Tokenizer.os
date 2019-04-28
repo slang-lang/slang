@@ -46,8 +46,6 @@ public object Tokenizer {
 		WHITESPACES = new String(" 	");
 		WHITESPACES = WHITESPACES + LINEBREAK_DOS;
 		WHITESPACES = WHITESPACES + LINEBREAK_UNIX;
-
-		print("");
 	}
 
 	public Token getToken(string word) {
@@ -60,8 +58,10 @@ public object Tokenizer {
 		return Token null;
 	}
 
-	public List<Token> parseFile(string filename) modify throws {
-		print("Tokenizing \"" + filename + "\"...");
+	public List<Token> parseFile(string filename, bool debug = false) modify throws {
+		if ( debug ) {
+			print("Tokenizing \"" + filename + "\"...");
+		}
 
 		mCharIterator = new Scanner(new System.IO.File(filename)).getIterator();
 		mColumn = 1;
