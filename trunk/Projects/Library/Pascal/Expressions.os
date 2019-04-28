@@ -3,6 +3,7 @@
 
 // project imports
 import Nodes;
+import Statements;
 import Token;
 
 
@@ -14,6 +15,7 @@ public enum ExpressionType {
 	LiteralIntegerExpression,
 	LiteralRealExpression,
 	LiteralStringExpression,
+	MethodExpression,
 	UnaryExpression,
 	VariableExpression
 	;
@@ -141,6 +143,21 @@ public object LiteralStringExpression extends Expression {
 
 	public string toString() const {
 		return "LiteralStringExpression(\"" + mValue + "\")";
+	}
+}
+
+public object MethodExpression extends Expression {
+	public ScopeStatement mMethod const;
+
+	public void Constructor(Token token, ScopeStatement method, string type = "INTEGER") {
+		base.Constructor(ExpressionType.MethodExpression, token);
+
+		mMethod = method;
+		mResultType = type;
+	}
+
+	public string toString() const {
+		return "MethodExpression(\"" + mMethod.mName + "\", Type: " + mResultType + ")";
 	}
 }
 

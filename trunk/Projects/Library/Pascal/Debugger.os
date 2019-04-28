@@ -10,7 +10,7 @@ public object Debugger extends Interpreter {
         base.Constructor(program);
     }
 
-    public int run() modify throws {
+    public int run(bool debug = false) modify throws {
         if ( !mProgram ) {
             return -1;
         }

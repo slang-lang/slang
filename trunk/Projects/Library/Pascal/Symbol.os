@@ -45,12 +45,12 @@ public object LocalSymbol extends Symbol {
 }
 
 public object MethodSymbol extends Symbol {
-	public ScopeStatement mStatement const;
+	public ScopeStatement mMethod const;
 
-	public void Constructor(string name, string type, ScopeStatement stmt) {
+	public void Constructor(string name, string type, ScopeStatement method) {
 		base.Constructor(name, type);
 
-		mStatement = stmt;
+		mMethod = method;
 	}
 }
 

@@ -52,7 +52,7 @@ public object Interpreter {
         return 0;
     }
 
-    private string processBinaryExpression(BinaryExpression exp) const throws {
+    private string processBinaryExpression(BinaryExpression exp) modify throws {
         //print("processBinaryExpression(" + exp.toString() + ")");
 
         string left = processExpression(exp.mLeft);
@@ -88,7 +88,7 @@ public object Interpreter {
         throw new RuntimeException("invalid binary operator '" + exp.mOperator + "'!");
     }
 
-    private bool processBooleanBinaryExpression(BooleanBinaryExpression exp) const throws {
+    private bool processBooleanBinaryExpression(BooleanBinaryExpression exp) modify throws {
         //print("processBooleanBinaryExpression(" + exp.toString() + ")");
 
         string left = processExpression(exp.mLeft);
@@ -151,7 +151,24 @@ public object Interpreter {
         return exp.mValue;
     }
 
-    private string processExpression(Expression exp) const throws {
+    private string processMethodExpression(MethodExpression exp) modify {
+        //print("processMethodExpression(" + exp.toString() + ")");
+
+        var oldScope = mCurrentScope;
+        mCurrentScope = new SymbolTable(oldScope.mLevel + 1, exp.mMethod.mName, oldScope);
+
+        var result = new LocalSymbol("RESULT", exp.mResultType, false, new String());
+        mCurrentScope.declare(Symbol result);
+
+        visitStatement(Statement exp.mMethod.mBody);
+
+        var resultValue = string result.mValue;
+        mCurrentScope = oldScope;
+
+        return resultValue;
+    }
+
+    private string processExpression(Expression exp) modify throws {
         //print("processExpression(" + exp.toString() + ")");
 
         switch ( exp.mExpressionType ) {
@@ -176,6 +193,9 @@ public object Interpreter {
             case ExpressionType.LiteralStringExpression: {
                 return processLiteralStringExpression(LiteralStringExpression exp);
             }
+            case ExpressionType.MethodExpression: {
+                return processMethodExpression(MethodExpression exp);
+            }
             case ExpressionType.UnaryExpression: {
                 return processUnaryExpression(UnaryExpression exp);
             }
@@ -185,7 +205,7 @@ public object Interpreter {
         }
     }
 
-    private string processUnaryExpression(UnaryExpression exp) const throws {
+    private string processUnaryExpression(UnaryExpression exp) modify throws {
         //print("processUnaryExpression(" + exp.toString() + ")");
 
         switch ( exp.mOperator ) {
@@ -323,24 +343,11 @@ public object Interpreter {
         mCurrentScope = oldScope;
     }
 
-    private void visitPrintStatement(PrintStatement stmt) const {
+    private void visitPrintStatement(PrintStatement stmt) modify {
         //print("visitPrintStatement()");
 
         print( processExpression(stmt.mExpression) );
     }
-
-/*
-    private void visitProcedureStatement(ProcedureStatement stmt) modify throws {
-        //print("visitProcedureStatement()");
-
-        var oldScope = mCurrentScope;
-        mCurrentScope = new SymbolTable(oldScope.mLevel + 1, stmt.mName, oldScope);
-
-        visitStatement(Statement stmt.mBody);
-
-        mCurrentScope = oldScope;
-    }
-*/
 
     protected void visitStatement(Statement stmt) modify throws {
         if ( !stmt ) {
@@ -371,12 +378,6 @@ public object Interpreter {
                 visitPrintStatement(PrintStatement stmt);
                 break;
             }
-/*
-            case StatementType.ProcedureStatement: {
-                 visitProcedureStatement(ProcedureStatement stmt);
-                 break;
-            }
-*/
             case StatementType.ProgramStatement: {
                 throw new RuntimeException("statement not allowed here: " + typeid(stmt));
             }

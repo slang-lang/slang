@@ -215,7 +215,14 @@ public object Parser {
 
 		require(TokenType.SEMICOLON);
 
+		var oldScope = mCurrentScope;
+		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, token.mValue, oldScope);
+		mCurrentScope.declare(Symbol new LocalSymbol("RESULT", type.mValue));
+
 		var func = ScopeStatement new FunctionStatement(token.mValue, type.mValue, parseCompoundStatementWithDeclarations());
+
+		mCurrentScope = oldScope;
+		mCurrentScope.declare(Symbol new MethodSymbol(token.mValue, type.mValue, func));
 
 		require(TokenType.SEMICOLON);
 
@@ -257,7 +264,7 @@ public object Parser {
 			throw new ParseException("invalid symbol '" + name.mValue + "' detected", name.mPosition);
 		}
 
-		return new MethodCallStatement(name.mValue, (MethodSymbol sym).mStatement);
+		return new MethodCallStatement(name.mValue, (MethodSymbol sym).mMethod);
 	}
 
 	private PrintStatement parsePrintStatement() modify throws {
@@ -622,16 +629,23 @@ public object Parser {
 
 		Token token = consume();
 
-		var type = LocalSymbol mCurrentScope.lookup(token.mValue);
-		if ( !type ) {
+		var sym = mCurrentScope.lookup(token.mValue);
+		if ( !sym ) {
 			throw new ParseException("unknown symbol '" + token.mValue + "' detected", token.mPosition);
 		}
 
-		if ( type.mIsConst ) {
-			return Expression new ConstantExpression(token, toUpper(token.mValue), type.mType);
+		if ( sym is LocalSymbol ) {
+			if ( (LocalSymbol sym).mIsConst ) {
+				return Expression new ConstantExpression(token, toUpper(token.mValue), sym.mType);
+			}
+
+			return Expression new VariableExpression(token, toUpper(token.mValue), sym.mType);
+		}
+		else if ( sym is MethodSymbol ) {
+			return Expression new MethodExpression(token, (MethodSymbol sym).mMethod, sym.mType);
 		}
 
-		return Expression new VariableExpression(token, toUpper(token.mValue), type.mType);
+		throw new ParseException("invalid symbol '" + token.mValue + "' detected", token.mPosition);
 	}
 
 // Expression parsing
