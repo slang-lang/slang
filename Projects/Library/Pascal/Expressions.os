@@ -148,6 +148,7 @@ public object LiteralStringExpression extends Expression {
 
 public object MethodExpression extends Expression {
 	public ScopeStatement mMethod const;
+	public List<Expression> mParameters;
 
 	public void Constructor(Token token, ScopeStatement method, string type = "INTEGER") {
 		base.Constructor(ExpressionType.MethodExpression, token);
