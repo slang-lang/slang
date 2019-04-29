@@ -1,28 +1,26 @@
 PROGRAM Fibonacci;
-CONST
-	START: Integer := 10;
 VAR
 	I: Integer := 1;
+	MAX: Integer := 0;
 
 FUNCTION fibonacci(number: Integer): Integer;
 BEGIN
-	IF number <= 2 THEN
+	IF (number = 1) OR (number = 2) THEN
 		result := 1
 	ELSE
 		result := fibonacci(number - 1) + fibonacci(number - 2);
 END;
 
 BEGIN
-	WRITELN('Start value: ' + START);
+	WRITE( 'Start value: ' );
+	READLN( MAX );
 
-	WHILE ( i < START ) DO
+	WHILE ( i <= MAX ) DO
 	BEGIN
-		WRITELN( 'i = ' + i );
-		WRITELN( fibonacci(i) + ', ' );
-		WRITELN( 'i = ' + i );
+		WRITE( fibonacci(i) ); WRITE( ', ' );
 
 		i := i + 1;
 	END;
 
-	WRITELN('...');
+	WRITELN( '...' );
 END.

@@ -269,7 +269,7 @@ public object ReadlineStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "READLN(" + mVariable.toString() + ")";
+		return "READLN( " + mVariable.toString() + " )";
 	}
 }
 
@@ -380,7 +380,7 @@ public object WriteStatement extends Statement {
 	}
 
 	public string toString() const {
-		return mLineBreak ? "WRITELN" : "WRITE" + "( " + (mExpression ? mExpression.toString() : "") + " )";
+		return (mLineBreak ? "WRITELN" : "WRITE") + "( " + (mExpression ? mExpression.toString() : "") + " )";
 	}
 }
 

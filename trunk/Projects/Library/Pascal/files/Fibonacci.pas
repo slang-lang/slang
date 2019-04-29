@@ -26,8 +26,10 @@ BEGIN
 			j := j + 1;
 		END;
 
-		WRITELN( 'fibonacci: ' + fibonacci );
+		WRITE( fibonacci ); WRITE( ' ' );
 
 		i := i + 1;
 	END;
+
+	WRITELN( '...' );
 END.
