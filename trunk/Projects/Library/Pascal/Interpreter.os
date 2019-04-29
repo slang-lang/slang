@@ -410,12 +410,6 @@ public object Interpreter {
                 visitPrintStatement(PrintStatement stmt);
                 break;
             }
-            case StatementType.ProgramStatement: {
-                throw new RuntimeException("statement not allowed here: " + typeid(stmt));
-            }
-            case StatementType.UnitStatement: {
-                throw new RuntimeException("statement not allowed here: " + typeid(stmt));
-            }
             case StatementType.VariableDeclarationStatement: {
                 throw new RuntimeException("inline variable declarations are not allowed");
             }

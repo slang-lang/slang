@@ -151,10 +151,9 @@ public object ForStatement extends Statement {
 public object FunctionStatement extends ScopeStatement {
 	public string mResultType const;
 
-	public void Constructor(string name, string resultType, CompoundStatement body) {
+	public void Constructor(string name, string resultType) {
 		base.Constructor(StatementType.FunctionStatement);
 
-		mBody = body;
 		mName = name;
 		mResultType = resultType;
 	}
@@ -224,10 +223,9 @@ public object PrintStatement extends Statement {
 }
 
 public object ProcedureStatement extends ScopeStatement {
-	public void Constructor(string name, CompoundStatement body) {
+	public void Constructor(string name) {
 		base.Constructor(StatementType.ProcedureStatement);
 
-		mBody = body;
 		mName = name;
 	}
 
@@ -259,7 +257,7 @@ public object ProgramStatement extends Statement {
 }
 
 public object ScopeStatement extends Statement {
-	public CompoundStatement mBody const;
+	public CompoundStatement mBody;
 	public string mName const;
 	public List<DeclarationStatement> mParameters;
 
