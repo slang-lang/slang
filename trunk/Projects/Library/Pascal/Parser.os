@@ -275,7 +275,7 @@ public object Parser {
 	}
 
 	private ReadlineStatement parseReadlineStatement() modify throws {
-		print("parseReadlineStatement()");
+		//print("parseReadlineStatement()");
 
 		Token token = consume();
 

@@ -376,7 +376,7 @@ public object Interpreter {
     }
 
     private void visitReadlineStatement(ReadlineStatement stmt) modify throws {
-        print("visitReadlineStatement()");
+        //print("visitReadlineStatement()");
 
         var sym = mCurrentScope.lookup(stmt.mVariable.mVariable);
         if ( !sym || !(sym is LocalSymbol) ) {
