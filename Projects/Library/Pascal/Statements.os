@@ -159,7 +159,15 @@ public object FunctionStatement extends ScopeStatement {
 	}
 
 	public string toString() const {
-		return "FUNCTION " + mName + "(): " + mResultType + ";" + LINEBREAK + mBody.toString();
+		string params;
+		foreach ( DeclarationStatement stmt : mParameters ) {
+			if ( params ) {
+				params += " ";
+			}
+			params += stmt.toString();
+		}
+
+		return "FUNCTION " + mName + "(" + params + "): " + mResultType + ";" + LINEBREAK + mBody.toString();
 	}
 }
 
@@ -230,7 +238,15 @@ public object ProcedureStatement extends ScopeStatement {
 	}
 
 	public string toString() const {
-		return "PROCEDURE " + mName + "();" + LINEBREAK + mBody.toString();
+		string params;
+		foreach ( DeclarationStatement stmt : mParameters ) {
+			if ( params ) {
+				params += " ";
+			}
+			params += stmt.toString();
+		}
+
+		return "PROCEDURE " + mName + "(" + params + ");" + LINEBREAK + mBody.toString();
 	}
 }
 
@@ -267,9 +283,7 @@ public object ScopeStatement extends Statement {
 		mParameters = new List<DeclarationStatement>();
 	}
 
-	public string toString() const {
-		return "SCOPE " + mName + "();" + LINEBREAK + mBody.toString();
-	}
+	public string toString() const abstract;
 }
 
 public object UnitStatement extends Statement {
