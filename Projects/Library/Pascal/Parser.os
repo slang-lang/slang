@@ -232,8 +232,13 @@ public object Parser {
 		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, name.mValue, oldScope);
 		mCurrentScope.declare(Symbol new LocalSymbol("RESULT", type.mValue));
 
-		var func = ScopeStatement new FunctionStatement(name.mValue, type.mValue, parseCompoundStatementWithDeclarations());
+		var func = ScopeStatement new FunctionStatement(name.mValue, type.mValue);
 		func.mParameters = declarations;
+
+		// add function to current scope to allow recursive calls to it
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, type.mValue, func));
+
+		func.mBody = parseCompoundStatementWithDeclarations();
 
 		mCurrentScope = oldScope;
 		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, type.mValue, func));
@@ -354,8 +359,13 @@ public object Parser {
 		var oldScope = mCurrentScope;
 		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, name.mValue, oldScope);
 
-		var proc = ScopeStatement new ProcedureStatement(name.mValue, parseCompoundStatementWithDeclarations());
+		var proc = ScopeStatement new ProcedureStatement(name.mValue);
 		proc.mParameters = declarations;
+
+		// add method symbol also to current scope to allow recursive method calls
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, "void", proc));
+
+		proc.mBody = parseCompoundStatementWithDeclarations();
 
 		mCurrentScope = oldScope;
 		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, "void", proc));

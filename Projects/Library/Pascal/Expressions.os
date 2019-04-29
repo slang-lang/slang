@@ -158,7 +158,14 @@ public object MethodExpression extends Expression {
 	}
 
 	public string toString() const {
-		return "MethodExpression(\"" + mMethod.mName + "\", Type: " + mResultType + ")";
+		string params;
+		foreach ( Expression param : mParameters ) {
+			if ( params ) {
+				params += ", ";
+			}
+			params += param.toString();
+		}
+		return "MethodExpression(\"" + mMethod.mName + "\", Type: " + mResultType + ", Parameter: " + params + ")";
 	}
 }
 
