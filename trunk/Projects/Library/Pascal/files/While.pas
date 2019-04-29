@@ -9,4 +9,9 @@ BEGIN
 
 		A := A - 1;
 	END;
+
+	WHILE ( A < 10 ) DO
+		A := A + 1;
+
+	PRINT( 'A = ' + A );
 END.

@@ -123,6 +123,8 @@ public object DeclarationStatement extends Statement {
 	}
 }
 
+public object DeclarationList extends List<DeclarationStatement>;
+
 public object ForStatement extends Statement {
 	public VariableExpression mLoopVariable const;
 	public Expression mStartExpression const;
@@ -185,6 +187,7 @@ public object IfStatement extends Statement {
 public object MethodCallStatement extends Statement {
 	public ScopeStatement mMethod const;
 	public string mName const;
+	public List<Expression> mParameters;
 	public string mType const;
 
 	public void Constructor(string name, ScopeStatement method) {
@@ -195,7 +198,14 @@ public object MethodCallStatement extends Statement {
 	}
 
 	public string toString() const {
-		return mName + "()";
+		string params;
+		foreach ( Expression exp : mParameters ) {
+			if ( params ) {
+				params += ", ";
+			}
+			params += exp.toString();
+		}
+		return mName + "(" + params + ")";
 	}
 }
 
@@ -251,9 +261,12 @@ public object ProgramStatement extends Statement {
 public object ScopeStatement extends Statement {
 	public CompoundStatement mBody const;
 	public string mName const;
+	public List<DeclarationStatement> mParameters;
 
 	public void Constructor(StatementType statementType) {
 		base.Constructor(statementType);
+
+		mParameters = new List<DeclarationStatement>();
 	}
 
 	public string toString() const {

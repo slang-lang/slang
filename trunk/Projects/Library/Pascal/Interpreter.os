@@ -338,6 +338,22 @@ public object Interpreter {
         var oldScope = mCurrentScope;
         mCurrentScope = new SymbolTable(oldScope.mLevel + 1, stmt.mName, oldScope);
 
+	if ( stmt.mParameters && stmt.mMethod.mParameters ) {
+		// add symbols for parameters
+		var paramIt = stmt.mParameters.getIterator();
+		var sigIt = stmt.mMethod.mParameters.getIterator();
+		while ( paramIt.hasNext() && sigIt.hasNext() ) {
+			paramIt.next();
+			sigIt.next();
+
+			string symName = sigIt.current().mName;
+			string symType = sigIt.current().mType;
+			String symValue = new String( processExpression(paramIt.current()) );
+
+			mCurrentScope.declare(Symbol new LocalSymbol(symName, symType, false, symValue));
+		}
+	}
+
         visitStatement(Statement stmt.mMethod.mBody);
 
         mCurrentScope = oldScope;
