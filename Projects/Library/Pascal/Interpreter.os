@@ -98,7 +98,7 @@ public object Interpreter {
 
         switch ( exp.mOperator ) {
             case "AND": { return (float left) && (float right); }
-            case "OR" : { return left || right; }
+            case "OR" : { return (float left) || (float right); }
             case "="  : { return left == right; }
             case "<"  : { return (float left) < (float right); }
             case "<=" : { return (float left) <= (float right); }
