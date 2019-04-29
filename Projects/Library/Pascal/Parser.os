@@ -314,7 +314,7 @@ public object Parser {
 				throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
 			}
 
-			mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, true));
+			mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, false));
 
 			if ( peek().mType == TokenType.SEMICOLON ) {
 				consume();	// consume ';' token
