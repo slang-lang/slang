@@ -6,7 +6,7 @@ PROGRAM FunctionTestWithParameter;
 	END;
 
 BEGIN
-	PRINT( 'Function test with parameter' );
+	WRITELN( 'Function test with parameter' );
 
-	PRINT( 'GETSTRING = ' + GETSTRING('param1') );
+	WRITELN( 'GETSTRING = ' + GETSTRING('param1') );
 END.

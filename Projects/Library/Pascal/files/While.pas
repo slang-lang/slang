@@ -5,7 +5,7 @@ BEGIN
 
 	WHILE ( A > 0 ) DO
 	BEGIN
-		PRINT( A );
+		WRITELN( A );
 
 		A := A - 1;
 	END;
@@ -13,5 +13,5 @@ BEGIN
 	WHILE ( A < 10 ) DO
 		A := A + 1;
 
-	PRINT( 'A = ' + A );
+	WRITELN( 'A = ' + A );
 END.

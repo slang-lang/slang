@@ -2,7 +2,7 @@ PROGRAM FunctionRecursive;
 
 FUNCTION Recursive(count: Integer): Integer;
 BEGIN
-	PRINT( 'Count: ' + count );
+	WRITELN( 'Count: ' + count );
 
 	IF count < 10 THEN
 		Result := Recursive(count + 1)
@@ -11,6 +11,6 @@ BEGIN
 END;
 
 BEGIN
-	PRINT( 'Recursive: ' + Recursive(1) );
+	WRITELN( 'Recursive: ' + Recursive(1) );
 END.
 

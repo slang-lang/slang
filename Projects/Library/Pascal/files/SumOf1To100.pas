@@ -3,7 +3,7 @@ VAR
 	COUNT: INTEGER := 1;
 	SUM: INTEGER;
 BEGIN
-	PRINT( 'Summing the values between 1 and 100' );
+	WRITELN( 'Summing the values between 1 and 100' );
 
 	WHILE ( COUNT <= 100 ) DO
 	BEGIN
@@ -11,5 +11,5 @@ BEGIN
 		SUM := SUM + COUNT;
 	END;
 
-	PRINT( 'The total of all digits between 1 and 100 is ' + SUM );
+	WRITELN( 'The total of all digits between 1 and 100 is ' + SUM );
 END.

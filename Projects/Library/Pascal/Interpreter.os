@@ -375,10 +375,25 @@ public object Interpreter {
         mCurrentScope = oldScope;
     }
 
-    private void visitPrintStatement(PrintStatement stmt) modify {
-        //print("visitPrintStatement()");
+    private void visitReadlineStatement(ReadlineStatement stmt) modify throws {
+        print("visitReadlineStatement()");
 
-        print( processExpression(stmt.mExpression) );
+        var sym = mCurrentScope.lookup(stmt.mVariable.mVariable);
+        if ( !sym || !(sym is LocalSymbol) ) {
+            throw new RuntimeException("invalid symbol '" + stmt.mVariable.mVariable + "'");
+        }
+
+        var obj = (LocalSymbol sym).mValue;
+	obj = cin();
+    }
+
+    private void visitWriteStatement(WriteStatement stmt) modify {
+        //print("visitWriteStatement()");
+
+        cout( processExpression(stmt.mExpression) );
+        if ( stmt.mLineBreak ) {
+            endl();
+        }
     }
 
     protected void visitStatement(Statement stmt) modify throws {
@@ -406,15 +421,19 @@ public object Interpreter {
                  visitMethodStatement(MethodCallStatement stmt);
                  break;
             }
-            case StatementType.PrintStatement: {
-                visitPrintStatement(PrintStatement stmt);
-                break;
+            case StatementType.ReadlineStatement: {
+                 visitReadlineStatement(ReadlineStatement stmt);
+                 break;
             }
             case StatementType.VariableDeclarationStatement: {
                 throw new RuntimeException("inline variable declarations are not allowed");
             }
             case StatementType.WhileStatement: {
                 visitWhileStatement(WhileStatement stmt);
+                break;
+            }
+            case StatementType.WriteStatement: {
+                visitWriteStatement(WriteStatement stmt);
                 break;
             }
             default: {

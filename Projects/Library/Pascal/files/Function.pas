@@ -6,7 +6,7 @@ PROGRAM FunctionTest;
 	END;
 
 BEGIN
-	PRINT( 'FunctionTest' );
+	WRITELN( 'FunctionTest' );
 
-	PRINT( GETSTRING + ' vs ' + GETSTRING );
+	WRITELN( GETSTRING + ' vs ' + GETSTRING );
 END.

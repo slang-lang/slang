@@ -274,6 +274,23 @@ public object Parser {
 		return new IfStatement(conditionExp, ifBlock, elseBlock);
 	}
 
+	private ReadlineStatement parseReadlineStatement() modify throws {
+		print("parseReadlineStatement()");
+
+		Token token = consume();
+
+		require(TokenType.LPAREN);
+
+		var varExp = expression();
+		if ( !(varExp is VariableExpression) ) {
+			throw new ParseException("variable expected", token.mPosition);
+		}
+
+		require(TokenType.RPAREN);
+
+		return new ReadlineStatement(VariableExpression varExp);
+	}
+
 	private MethodCallStatement parseMethodCall() modify throws {
 		//print("parseMethodCall()");
 
@@ -322,14 +339,6 @@ public object Parser {
 		}
 
 		return declarations;
-	}
-
-	private PrintStatement parsePrintStatement() modify throws {
-		//print("parsePrintStatement()");
-
-		require(TokenType.PRINT);
-
-		return new PrintStatement( parseExpression() );
 	}
 
 	private ScopeStatement parseProcedure() modify throws {
@@ -433,8 +442,8 @@ public object Parser {
 				stmt = Statement parseIfStatement();
 				break;
 			}
-			case TokenType.PRINT: {
-				stmt = Statement parsePrintStatement();
+			case TokenType.READLN: {
+				stmt = Statement parseReadlineStatement();
 				break;
 			}
 			case TokenType.VAR: {
@@ -443,6 +452,14 @@ public object Parser {
 			}
 			case TokenType.WHILE: {
 				stmt = Statement parseWhileStatement();
+				break;
+			}
+			case TokenType.WRITE: {
+				stmt = Statement parseWriteStatement(false);
+				break;
+			}
+			case TokenType.WRITELN: {
+				stmt = Statement parseWriteStatement(true);
 				break;
 			}
 			default: {
@@ -560,6 +577,19 @@ public object Parser {
 			condition,
 			parseStatement(false)
 		);
+	}
+
+	private WriteStatement parseWriteStatement(bool lineBreak) modify throws {
+		//print("parseWriteStatement()");
+
+		if ( lineBreak ) {
+			require(TokenType.WRITELN);
+		}
+		else {
+			require(TokenType.WRITE);
+		}
+
+		return new WriteStatement( parseExpression(), lineBreak );
 	}
 
 

@@ -6,23 +6,23 @@ VAR
 
 FUNCTION fibonacci(number: Integer): Integer;
 BEGIN
-	PRINT( 'fibonacci(' + number + ')' );
-
-	IF number <= 2 THEN BEGIN
-		result := 1;
-	END
-	ELSE BEGIN
+	IF number <= 2 THEN
+		result := 1
+	ELSE
 		result := fibonacci(number - 1) + fibonacci(number - 2);
-	END;
 END;
 
 BEGIN
-	PRINT('Start value: ' + START);
+	WRITELN('Start value: ' + START);
 
 	WHILE ( i < START ) DO
 	BEGIN
-		PRINT( i + ': ' + fibonacci(i) );
+		WRITELN( 'i = ' + i );
+		WRITELN( fibonacci(i) + ', ' );
+		WRITELN( 'i = ' + i );
 
 		i := i + 1;
 	END;
+
+	WRITELN('...');
 END.

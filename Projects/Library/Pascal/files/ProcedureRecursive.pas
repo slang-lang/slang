@@ -2,7 +2,7 @@ PROGRAM ProcedureRecursive;
 
 PROCEDURE Recursive(count: Integer);
 BEGIN
-	PRINT('Recursive calls: ' + count);
+	WRITELN('Recursive calls: ' + count);
 
 	IF count < 10 THEN BEGIN
 		Recursive(count + 1);

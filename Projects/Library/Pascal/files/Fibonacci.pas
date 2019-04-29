@@ -8,7 +8,7 @@ VAR
 	i: INTEGER := 1;
 	j: INTEGER;
 BEGIN
-	PRINT('Start value: ' + START);
+	WRITELN('Start value: ' + START);
 
 	WHILE ( i <= START ) DO
 	BEGIN
@@ -26,7 +26,7 @@ BEGIN
 			j := j + 1;
 		END;
 
-		PRINT( 'fibonacci: ' + fibonacci );
+		WRITELN( 'fibonacci: ' + fibonacci );
 
 		i := i + 1;
 	END;

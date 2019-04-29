@@ -30,9 +30,9 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.INTERFACE, "INTERFACE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.MATH_DIVIDE_INT, "DIV", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.OR, "OR", Position null));
-		RESERVED_WORDS.push_back(new Token(TokenType.PRINT, "PRINT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROCEDURE, "PROCEDURE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROGRAM, "PROGRAM", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.READLN, "READLN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.THEN, "THEN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "BOOLEAN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "INTEGER", Position null));
@@ -42,6 +42,8 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.USES, "USES", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.VAR, "VAR", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.WHILE, "WHILE", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.WRITE, "WRITE", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.WRITELN, "WRITELN", Position null));
 
 		WHITESPACES = new String(" 	");
 		WHITESPACES = WHITESPACES + LINEBREAK_DOS;

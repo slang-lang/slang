@@ -6,11 +6,11 @@ PROGRAM ProcedureTestWithParameter;
 
 	PROCEDURE YELL(param: STRING);
 	BEGIN
-		PRINT( 'Hello World, ' + param );
+		WRITELN( 'Hello World, ' + param );
 	END;
 
 BEGIN
-	PRINT( 'Procedure test with parameter' );
+	WRITELN( 'Procedure test with parameter' );
 
 	YELL('param 1');
 
