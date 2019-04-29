@@ -3,6 +3,6 @@ CONST
 	A: INTEGER := 1;
 	B: INTEGER := A + 1;
 BEGIN
-	PRINT( 'A = ' + A );
-	PRINT( 'B = ' + B );
+	WRITELN( 'A = ' + A );
+	WRITELN( 'B = ' + B );
 END.

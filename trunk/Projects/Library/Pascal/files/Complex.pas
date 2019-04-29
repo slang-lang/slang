@@ -11,8 +11,8 @@ BEGIN
 		b := 10 * a + 10 * number / 4;
 		c := a - -b;
 
-		PRINT( c );
+		WRITELN( c );
 	END;
 
-	PRINT( x );
+	WRITELN( x );
 END.

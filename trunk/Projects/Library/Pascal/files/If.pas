@@ -2,18 +2,18 @@ PROGRAM IfStatement;
 VAR A: BOOLEAN;
 BEGIN
 	A := 0 OR 1;
-	PRINT( A );
+	WRITELN( A );
 
 	IF A < 1 THEN BEGIN
-		PRINT( 'A < 1' );
+		WRITELN( 'A < 1' );
 	END
 	ELSE IF A = 1 THEN BEGIN
-		PRINT( 'A = 1' );
+		WRITELN( 'A = 1' );
 	END
 	ELSE IF A = 2 THEN BEGIN
-		PRINT( 'A = 2' );
+		WRITELN( 'A = 2' );
 	END
 	ELSE IF A > 2 THEN BEGIN
-		PRINT( 'A > 2' );
+		WRITELN( 'A > 2' );
 	END;
 END.

@@ -1,8 +1,8 @@
 Program Division;
 VAR A: REAL := 20 / 7;
 begin
-	PRINT( A );
+	WRITELN( A );
 
 	A := 20 div 7;
-	PRINT( A );
+	WRITELN( A );
 end.

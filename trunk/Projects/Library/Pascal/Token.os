@@ -38,9 +38,9 @@ public enum TokenType {
 	MATH_MULTIPLY,
 	MATH_PLUS,
 	OR,
-	PRINT,
 	PROCEDURE,
 	PROGRAM,
+	READLN,
 	REAL,
 	RPAREN,
 	SEMICOLON,
@@ -52,7 +52,9 @@ public enum TokenType {
 	UNIT,
 	USES,
 	VAR,
-	WHILE
+	WHILE,
+	WRITE,
+	WRITELN
 	;
 }
 
@@ -90,9 +92,9 @@ public string TokenToString(TokenType type) {
 		case TokenType.MATH_MULTIPLY:		{ return "MATH_MULITPLY"; }
 		case TokenType.MATH_PLUS:		{ return "MATH_PLUS"; }
 		case TokenType.OR:			{ return "OR"; }
-		case TokenType.PRINT:			{ return "PRINT"; }
 		case TokenType.PROCEDURE:		{ return "PROCEDURE"; }
 		case TokenType.PROGRAM:			{ return "PROGRAM"; }
+		case TokenType.READLN:			{ return "READLN"; }
 		case TokenType.REAL:			{ return "REAL"; }
 		case TokenType.RPAREN:			{ return ")"; }
 		case TokenType.SEMICOLON:		{ return ";"; }
@@ -105,6 +107,8 @@ public string TokenToString(TokenType type) {
 		case TokenType.USES:			{ return "USES"; }
 		case TokenType.VAR:			{ return "VAR"; }
 		case TokenType.WHILE:			{ return "WHILE"; }
+		case TokenType.WRITE:			{ return "WRITE"; }
+		case TokenType.WRITELN:			{ return "WRITELN"; }
 	}
 
 	return "<invalid token type>";

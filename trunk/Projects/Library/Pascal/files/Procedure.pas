@@ -4,7 +4,7 @@ PROGRAM Procedure_Test;
 	VAR
 		count: Integer := 0;
 	BEGIN
-		PRINT( 'Hello World!' );
+		WRITELN( 'Hello World!' );
 	END;
 
 	PROCEDURE BLA;
@@ -13,7 +13,7 @@ PROGRAM Procedure_Test;
 	BEGIN
 		WHILE ( count <= 10 ) DO
 		BEGIN
-			PRINT( 'count: ' + count );
+			WRITELN( 'count: ' + count );
 			count := count + 1;
 		END;
 
@@ -21,7 +21,7 @@ PROGRAM Procedure_Test;
 	END;
 
 BEGIN
-	PRINT( 'ProcedureTest' );
+	WRITELN( 'ProcedureTest' );
 
 	YELL;
 

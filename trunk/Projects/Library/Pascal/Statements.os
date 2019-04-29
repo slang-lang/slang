@@ -16,13 +16,14 @@ public enum StatementType {
 	FunctionStatement,
 	IfStatement,
 	MethodCallStatement,
-	PrintStatement,
 	ProcedureStatement,
 	ProgramStatement,
+	ReadlineStatement,
 	UnitStatement,
 	UsesStatement,
 	VariableDeclarationStatement,
-	WhileStatement
+	WhileStatement,
+	WriteStatement
 	;
 }
 
@@ -216,20 +217,6 @@ public object MethodCallStatement extends Statement {
 	}
 }
 
-public object PrintStatement extends Statement {
-	public Expression mExpression const;
-
-	public void Constructor(Expression exp) {
-		base.Constructor(StatementType.PrintStatement);
-
-		mExpression = exp;
-	}
-
-	public string toString() const {
-		return "PRINT( " + (mExpression ? mExpression.toString() : "") + " )";
-	}
-}
-
 public object ProcedureStatement extends ScopeStatement {
 	public void Constructor(string name) {
 		base.Constructor(StatementType.ProcedureStatement);
@@ -269,6 +256,20 @@ public object ProgramStatement extends Statement {
 		result += mStatements ? mStatements.toString() : "";
 
 		return result + ".";
+	}
+}
+
+public object ReadlineStatement extends Statement {
+	public VariableExpression mVariable const;
+
+	public void Constructor(VariableExpression variable) {
+		base.Constructor(StatementType.ReadlineStatement);
+
+		mVariable = variable;
+	}
+
+	public string toString() const {
+		return "READLN(" + mVariable.toString() + ")";
 	}
 }
 
@@ -364,6 +365,22 @@ public object WhileStatement extends Statement {
 
 	public string toString() const {
 		return "WHILE " + mCondition.toString() + " DO " + mBody.toString();
+	}
+}
+
+public object WriteStatement extends Statement {
+	public Expression mExpression const;
+	public bool mLineBreak const;
+
+	public void Constructor(Expression exp, bool lineBreak = true) {
+		base.Constructor(StatementType.WriteStatement);
+
+		mExpression = exp;
+		mLineBreak = lineBreak;
+	}
+
+	public string toString() const {
+		return mLineBreak ? "WRITELN" : "WRITE" + "( " + (mExpression ? mExpression.toString() : "") + " )";
 	}
 }
 

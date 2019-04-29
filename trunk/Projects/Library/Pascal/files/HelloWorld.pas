@@ -4,7 +4,7 @@ VAR
 	B: INTEGER;
 	C: INTEGER;
 BEGIN
-	PRINT( 'Hello, World!' );
+	WRITELN( 'Hello, World!' );
 
 	A := 1;
 	B := 'Bla bla';

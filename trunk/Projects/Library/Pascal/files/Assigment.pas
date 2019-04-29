@@ -4,8 +4,8 @@ VAR
 	B: INTEGER;
 BEGIN
 	A := 173;
-	PRINT( 'A = ' + A );
+	WRITELN( 'A = ' + A );
 
 	B := -1;
-	PRINT( 'B = ' + B );
+	WRITELN( 'B = ' + B );
 END.
