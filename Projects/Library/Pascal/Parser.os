@@ -118,10 +118,10 @@ public object Parser {
 		while ( (token = peek()) != null ) {
 			ScopeStatement stmt;
 			if ( token.mType == TokenType.FUNCTION ) {
-				stmt = ScopeStatement parseFunction();
+				stmt = parseFunction();
 			}
 			else if ( token.mType == TokenType.PROCEDURE ) {
-				stmt = ScopeStatement parseProcedure();
+				stmt = parseProcedure();
 			}
 			else {
 				break;
@@ -162,7 +162,7 @@ public object Parser {
 		return stmt;
 	}
 
-	private DeclarationStatement parseDeclarationStatement() modify throws {
+	private DeclarationStatement parseDeclarationStatement(bool requireSemicolon = true) modify throws {
 		//print("parseDeclarationStatement()");
 
 		Token identifier = consume();
@@ -186,7 +186,9 @@ public object Parser {
 			value = expression();
 		}
 
-		require(TokenType.SEMICOLON);
+		if ( requireSemicolon ) {
+			require(TokenType.SEMICOLON);
+		}
 
 		return new DeclarationStatement(
 			identifier.mValue,
@@ -256,15 +258,55 @@ public object Parser {
 	}
 
 	private MethodCallStatement parseMethodCall() modify throws {
+		//print("parseMethodCall()");
+
 		Token name = consume();
 
-		// parameters are not supported at the moment
 		var sym = mCurrentScope.lookup(name.mValue);
 		if ( !(sym is MethodSymbol) ) {
 			throw new ParseException("invalid symbol '" + name.mValue + "' detected", name.mPosition);
 		}
 
-		return new MethodCallStatement(name.mValue, (MethodSymbol sym).mMethod);
+		// parameters are not supported at the moment
+
+		var params = new List<Expression>();
+
+		while ( peek().mType == TokenType.LPAREN ) {
+			params.push_back( expression() );
+
+			if ( peek().mType == TokenType.COMMA ) {
+				consume();	// consume ',' token
+			}
+		}
+
+		var method = new MethodCallStatement(name.mValue, (MethodSymbol sym).mMethod);
+		method.mParameters = params;
+
+		return method;
+	}
+
+	private List<DeclarationStatement> parseParameters() modify throws {
+		print("parseParameters()");
+
+		var declarations = new List<DeclarationStatement>();
+
+		Token start = peek();
+		while ( peek().mType == TokenType.IDENTIFIER ) {
+			var declStmt = parseDeclarationStatement(false);
+			declarations.push_back( declStmt );
+
+			if ( mCurrentScope.lookup(declStmt.mName, true) ) {
+				throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+			}
+
+			mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, true));
+
+			if ( peek().mType == TokenType.SEMICOLON ) {
+				consume();	// consume ';' token
+			}
+		}
+
+		return declarations;
 	}
 
 	private PrintStatement parsePrintStatement() modify throws {
@@ -281,20 +323,32 @@ public object Parser {
 		require(TokenType.PROCEDURE);
 
 		// name
-		Token token = consume();
-		if ( token.mType != TokenType.IDENTIFIER ) {
-			throw new ParseException("invalid token " + toString(token) + " found", token.mPosition);
+		Token name = consume();
+		if ( name.mType != TokenType.IDENTIFIER ) {
+			throw new ParseException("invalid token " + toString(name) + " found", name.mPosition);
+		}
+
+		List<DeclarationStatement> declarations;
+
+		Token token = peek();
+		if ( token.mType == TokenType.LPAREN ) {
+			require(TokenType.LPAREN);
+
+			declarations = parseParameters();
+
+			require(TokenType.RPAREN);
 		}
 
 		require(TokenType.SEMICOLON);
 
 		var oldScope = mCurrentScope;
-		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, token.mValue, oldScope);
+		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, name.mValue, oldScope);
 
-		var proc = ScopeStatement new ProcedureStatement(token.mValue, parseCompoundStatementWithDeclarations());
+		var proc = ScopeStatement new ProcedureStatement(name.mValue, parseCompoundStatementWithDeclarations());
+		proc.mParameters = declarations;
 
 		mCurrentScope = oldScope;
-		mCurrentScope.declare(Symbol new MethodSymbol(token.mValue, "void", proc));
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, "void", proc));
 
 		require(TokenType.SEMICOLON);
 
