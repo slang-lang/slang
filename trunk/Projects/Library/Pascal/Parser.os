@@ -203,9 +203,20 @@ public object Parser {
 		require(TokenType.FUNCTION);
 
 		// name
-		Token token = consume();
-		if ( token.mType != TokenType.IDENTIFIER ) {
-			throw new ParseException("invalid token " + toString(token) + " found", token.mPosition);
+		Token name = consume();
+		if ( name.mType != TokenType.IDENTIFIER ) {
+			throw new ParseException("invalid token " + toString(name) + " found", name.mPosition);
+		}
+
+		List<DeclarationStatement> declarations;
+
+		Token token = peek();
+		if ( token.mType == TokenType.LPAREN ) {
+			require(TokenType.LPAREN);
+
+			declarations = parseParameters();
+
+			require(TokenType.RPAREN);
 		}
 
 		require(TokenType.COLON);
@@ -218,13 +229,14 @@ public object Parser {
 		require(TokenType.SEMICOLON);
 
 		var oldScope = mCurrentScope;
-		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, token.mValue, oldScope);
+		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, name.mValue, oldScope);
 		mCurrentScope.declare(Symbol new LocalSymbol("RESULT", type.mValue));
 
-		var func = ScopeStatement new FunctionStatement(token.mValue, type.mValue, parseCompoundStatementWithDeclarations());
+		var func = ScopeStatement new FunctionStatement(name.mValue, type.mValue, parseCompoundStatementWithDeclarations());
+		func.mParameters = declarations;
 
 		mCurrentScope = oldScope;
-		mCurrentScope.declare(Symbol new MethodSymbol(token.mValue, type.mValue, func));
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, type.mValue, func));
 
 		require(TokenType.SEMICOLON);
 
@@ -267,8 +279,6 @@ public object Parser {
 			throw new ParseException("invalid symbol '" + name.mValue + "' detected", name.mPosition);
 		}
 
-		// parameters are not supported at the moment
-
 		var params = new List<Expression>();
 
 		while ( peek().mType == TokenType.LPAREN ) {
@@ -286,7 +296,7 @@ public object Parser {
 	}
 
 	private List<DeclarationStatement> parseParameters() modify throws {
-		print("parseParameters()");
+		//print("parseParameters()");
 
 		var declarations = new List<DeclarationStatement>();
 
@@ -696,7 +706,22 @@ public object Parser {
 			return Expression new VariableExpression(token, toUpper(token.mValue), sym.mType);
 		}
 		else if ( sym is MethodSymbol ) {
-			return Expression new MethodExpression(token, (MethodSymbol sym).mMethod, sym.mType);
+			// parse parameters
+			var params = new List<Expression>();
+
+			while ( peek().mType == TokenType.LPAREN ) {
+				params.push_back( expression() );
+
+				if ( peek().mType == TokenType.COMMA ) {
+					consume();	// consume ',' token
+				}
+			}
+
+
+			var method = new MethodExpression(token, (MethodSymbol sym).mMethod, sym.mType);
+			method.mParameters = params;
+
+			return Expression method;
 		}
 
 		throw new ParseException("invalid symbol '" + token.mValue + "' detected", token.mPosition);
