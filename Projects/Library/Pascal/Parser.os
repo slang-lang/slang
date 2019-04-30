@@ -197,6 +197,30 @@ public object Parser {
 		);
 	}
 
+	private List<DeclarationStatement> parseFormalParameters() modify throws {
+		//print("parseFormalParameters()");
+
+		var declarations = new List<DeclarationStatement>();
+
+		Token start = peek();
+		while ( peek().mType == TokenType.IDENTIFIER ) {
+			var declStmt = parseDeclarationStatement(false);
+			declarations.push_back( declStmt );
+
+			if ( mCurrentScope.lookup(declStmt.mName, true) ) {
+				throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+			}
+
+			mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, false));
+
+			if ( peek().mType == TokenType.SEMICOLON ) {
+				consume();	// consume ';' token
+			}
+		}
+
+		return declarations;
+	}
+
 	private ScopeStatement parseFunction() modify throws {
 		//print("parseFunction()");
 
@@ -214,7 +238,7 @@ public object Parser {
 		if ( token.mType == TokenType.LPAREN ) {
 			require(TokenType.LPAREN);
 
-			declarations = parseParameters();
+			declarations = parseFormalParameters();
 
 			require(TokenType.RPAREN);
 		}
@@ -301,13 +325,33 @@ public object Parser {
 			throw new ParseException("invalid symbol '" + name.mValue + "' detected", name.mPosition);
 		}
 
+		var method = new MethodCallStatement(name.mValue, (MethodSymbol sym).mMethod);
+		method.mParameters = parseMethodParameters(name, MethodSymbol sym);
+
+		return method;
+	}
+
+	private List<Expression> parseMethodParameters(Token name, MethodSymbol symbol) modify throws {
+		//print("parseMethodParameters()");
+
+		var formalParams = symbol.mMethod.mParameters;
 		var params = new List<Expression>();
+		var formalIt = formalParams.getIterator();
 
 		if ( peek().mType == TokenType.LPAREN ) {
 			require(TokenType.LPAREN);
 
 			Expression exp;
 			while ( (exp = expression()) != null ) {
+				if ( !formalIt.hasNext() ) {
+					throw new ParseException("provided more parameters than expected for method '" + name.mValue + "'", name.mPosition);
+				}
+
+				var decl = formalIt.next();
+				if ( decl.mType != exp.mResultType ) {
+					throw new ParseException("provided wrong type '" + exp.mResultType + "' instead of '" + decl.mType + "' for method '" + name.mValue + "'", name.mPosition);
+				}
+
 				params.push_back( exp );
 
 				if ( peek().mType == TokenType.COMMA ) {
@@ -321,34 +365,11 @@ public object Parser {
 			require(TokenType.RPAREN);
 		}
 
-		var method = new MethodCallStatement(name.mValue, (MethodSymbol sym).mMethod);
-		method.mParameters = params;
-
-		return method;
-	}
-
-	private List<DeclarationStatement> parseParameters() modify throws {
-		//print("parseParameters()");
-
-		var declarations = new List<DeclarationStatement>();
-
-		Token start = peek();
-		while ( peek().mType == TokenType.IDENTIFIER ) {
-			var declStmt = parseDeclarationStatement(false);
-			declarations.push_back( declStmt );
-
-			if ( mCurrentScope.lookup(declStmt.mName, true) ) {
-				throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
-			}
-
-			mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, false));
-
-			if ( peek().mType == TokenType.SEMICOLON ) {
-				consume();	// consume ';' token
-			}
+		if ( params.size() != formalParams.size() ) {
+			throw new ParseException("wrong number of parameters provided for method '" + name.mValue + "'", name.mPosition);
 		}
 
-		return declarations;
+		return params;
 	}
 
 	private ScopeStatement parseProcedure() modify throws {
@@ -368,7 +389,7 @@ public object Parser {
 		if ( token.mType == TokenType.LPAREN ) {
 			require(TokenType.LPAREN);
 
-			declarations = parseParameters();
+			declarations = parseFormalParameters();
 
 			require(TokenType.RPAREN);
 		}
@@ -756,30 +777,8 @@ public object Parser {
 			return Expression new VariableExpression(token, toUpper(token.mValue), sym.mType);
 		}
 		else if ( sym is MethodSymbol ) {
-			// parse parameters
-
-			var params = new List<Expression>();
-
-			if ( peek().mType == TokenType.LPAREN ) {
-				require(TokenType.LPAREN);
-
-				Expression exp;
-				while ( (exp = expression()) != null ) {
-					params.push_back( exp );
-
-					if ( peek().mType == TokenType.COMMA ) {
-						consume();	// consume ',' token
-						continue;
-					}
-
-					break;
-				}
-
-				require(TokenType.RPAREN);
-			}
-
 			var method = new MethodExpression(token, (MethodSymbol sym).mMethod, sym.mType);
-			method.mParameters = params;
+			method.mParameters = parseMethodParameters(token, MethodSymbol sym);
 
 			return Expression method;
 		}
