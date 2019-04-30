@@ -5,7 +5,7 @@ Begin
 	Writeln( 'For Test' );
 
 	for idx := 1 to 10 do
-		Write( idx );
+		WriteLn( idx );
 
 	Writeln( 'Done.' );
 End.
