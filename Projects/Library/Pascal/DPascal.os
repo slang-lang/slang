@@ -110,14 +110,14 @@ public object PascalDebugger {
 			print("");
 			print("Debug session exited.");
 		}
-		catch ( IException e ) {
-			print("Exception: " + e.what());
-		}
 		catch ( string e ) {
-			print("Exception: " + e);
+			print("Error: " + e);
+		}
+		catch ( IException e ) {
+			print("Error: " + e.what());
 		}
 		catch {
-			print("Exception: caught unknown exception!");
+			print("Error: caught unknown exception!");
 		}
 	}
 
