@@ -8,5 +8,6 @@ Begin
 End;
 
 Begin
+	Proc1(1, '2', true);
 End.
 
