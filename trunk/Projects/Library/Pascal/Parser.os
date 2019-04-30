@@ -62,9 +62,7 @@ public object Parser {
 	private AssignmentStatement parseAssignStatement() modify throws {
 		//print("parseAssignment()");
 
-		Token identifier = peek();
-
-		require(TokenType.IDENTIFIER);
+		Token identifier = consume();
 
 		var sym = mCurrentScope.lookup(identifier.mValue);
 		if ( !sym ) {
@@ -219,6 +217,46 @@ public object Parser {
 		}
 
 		return declarations;
+	}
+
+	private ForStatement parseForStatement() modify throws {
+		//print("parseForStatement()");
+
+		Token token = consume();
+
+		var varExp = expression();
+		if ( !(varExp is VariableExpression) ) {
+			throw new ParseException("variable expected", token.mPosition);
+		}
+		if ( varExp.mResultType != "INTEGER" ) {
+			throw new ParseException("INTEGER type required", token.mPosition);
+		}
+
+		require(TokenType.ASSIGN);
+
+		var startExp = expression();
+
+		require(TokenType.TO);
+
+		var targetExp = expression();
+
+		require(TokenType.DO);
+
+		Expression stepExp;
+		if ( peek().mType == TokenType.STEP ) {
+			require(TokenType.STEP);
+
+			stepExp = expression();
+		}
+		else {
+			stepExp = Expression new LiteralIntegerExpression(token, 1);
+		}
+
+		return new ForStatement(VariableExpression varExp,
+					startExp,
+					Expression new BooleanBinaryExpression(token, varExp, "<=", targetExp),
+					Expression new BinaryExpression(token, varExp, "+", stepExp, varExp.mResultType),
+					parseStatement(false));
 	}
 
 	private ScopeStatement parseFunction() modify throws {
@@ -452,6 +490,10 @@ public object Parser {
 			}
 			case TokenType.CONST: {
 				stmt = Statement parseCompoundStatementWithDeclarations();
+				break;
+			}
+			case TokenType.FOR: {
+				stmt = Statement parseForStatement();
 				break;
 			}
 			case TokenType.IDENTIFIER: {
