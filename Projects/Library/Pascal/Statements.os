@@ -127,15 +127,16 @@ public object DeclarationStatement extends Statement {
 public object DeclarationList extends List<DeclarationStatement>;
 
 public object ForStatement extends Statement {
+	public Statement mBody const;
 	public VariableExpression mLoopVariable const;
 	public Expression mStartExpression const;
 	public Expression mStepExpression const;
 	public Expression mTargetExpression const;
 
-	public void Constructor(VariableExpression variable, Expression startExpression,
-							Expression targetExpression, Expression stepExpression) {
+	public void Constructor(VariableExpression variable, Expression startExpression, Expression targetExpression, Expression stepExpression, Statement body) {
 		base.Constructor(StatementType.ForStatement);
 
+		mBody = body;
 		mLoopVariable = variable;
 		mStartExpression = startExpression;
 		mStepExpression = stepExpression;
@@ -143,9 +144,7 @@ public object ForStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "FOR " + mLoopVariable.toString() + " = " + mStartExpression.toString() +
-		       " TO " + mTargetExpression.toString() +
-			   " STEP " + (mStepExpression ? mStepExpression.toString() : "1");
+		return "FOR " + mLoopVariable.toString() + " := " + mStartExpression.toString() + " TO " + mTargetExpression.toString() + " STEP " + (mStepExpression ? mStepExpression.toString() : "1") + LINEBREAK + mBody.toString();
 	}
 }
 

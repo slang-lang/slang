@@ -335,6 +335,27 @@ public object Interpreter {
         }
     }
 
+    private void visitForStatement(ForStatement stmt) modify throws {
+        //print("visitForStatement()");
+
+	var sym = mCurrentScope.lookup(stmt.mLoopVariable.mVariable);
+	if ( !sym ) {
+		throw new RuntimeException("invalid symbol '" + stmt.mLoopVariable.mVariable + "'");
+	}
+	if ( !(LocalSymbol sym) ) {
+		throw new RuntimeException("invalid symbol type '" + stmt.mLoopVariable.mVariable + "'");
+	}
+
+	var obj = (LocalSymbol sym).mValue;
+	obj = processExpression(stmt.mStartExpression);
+
+	while ( processExpression(stmt.mTargetExpression) == "1" ) {
+		visitStatement(stmt.mBody);
+
+		obj = processExpression(stmt.mStepExpression);
+	}
+    }
+
     private void visitIfStatement(IfStatement stmt) modify {
         //print("visitIfStatement()");
 
@@ -412,6 +433,10 @@ public object Interpreter {
             }
             case StatementType.ConstantDeclarationStatement: {
                 throw new RuntimeException("inline constant declarations are not allowed");
+            }
+            case StatementType.ForStatement: {
+                visitForStatement(ForStatement stmt);
+                break;
             }
             case StatementType.IfStatement: {
                 visitIfStatement(IfStatement stmt);

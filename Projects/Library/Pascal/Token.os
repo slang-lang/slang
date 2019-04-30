@@ -20,6 +20,7 @@ public enum TokenType {
 	EOF,
 	EQUAL,
 	FALSE,
+	FOR,
 	FUNCTION,
 	GREATER,
 	GREATER_EQUAL,
@@ -44,8 +45,10 @@ public enum TokenType {
 	REAL,
 	RPAREN,
 	SEMICOLON,
+	STEP,
 	STRING,
 	THEN,
+	TO,
 	TRUE,
 	TYPE,
 	UNEQUAL,
@@ -74,6 +77,7 @@ public string TokenToString(TokenType type) {
 		case TokenType.EOF:			{ return "EOF"; }
 		case TokenType.EQUAL:			{ return "="; }
 		case TokenType.FALSE:			{ return "FALSE"; }
+		case TokenType.FOR:			{ return "FOR"; }
 		case TokenType.FUNCTION:		{ return "FUNCTION"; }
 		case TokenType.GREATER:			{ return ">"; }
 		case TokenType.GREATER_EQUAL:		{ return ">="; }
@@ -98,8 +102,10 @@ public string TokenToString(TokenType type) {
 		case TokenType.REAL:			{ return "REAL"; }
 		case TokenType.RPAREN:			{ return ")"; }
 		case TokenType.SEMICOLON:		{ return ";"; }
+		case TokenType.STEP:			{ return "STEP"; }
 		case TokenType.STRING:			{ return "STRING"; }
 		case TokenType.THEN:			{ return "THEN"; }
+		case TokenType.TO:			{ return "TO"; }
 		case TokenType.TRUE:			{ return "TRUE"; }
 		case TokenType.TYPE:			{ return "TYPE"; }
 		case TokenType.UNEQUAL:			{ return "<>"; }

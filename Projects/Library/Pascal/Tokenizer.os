@@ -24,6 +24,7 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.DO, "DO", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.ELSE, "ELSE", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.FOR, "FOR", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.FUNCTION, "FUNCTION", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.IF, "IF", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.IMPLEMENTATION, "IMPLEMENTATION", Position null));
@@ -33,7 +34,9 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.PROCEDURE, "PROCEDURE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROGRAM, "PROGRAM", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.READLN, "READLN", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.STEP, "STEP", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.THEN, "THEN", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.TO, "TO", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "BOOLEAN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "INTEGER", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.TYPE, "REAL", Position null));

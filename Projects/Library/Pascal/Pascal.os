@@ -44,11 +44,11 @@ public int Main(int argc, string args) modify {
 		var interpreter = new Interpreter(program);
 		return interpreter.run(debug);
 	}
-	catch ( IException e ) {
-		print("Error: " + typeid(e) + ": " + e.what());
-	}
 	catch ( string e ) {
 		print("Error: " + e);
+	}
+	catch ( IException e ) {
+		print("Error: " + e.what());
 	}
 	catch {
 		print("Error: caught unknown exception!");
