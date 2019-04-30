@@ -757,16 +757,26 @@ public object Parser {
 		}
 		else if ( sym is MethodSymbol ) {
 			// parse parameters
+
 			var params = new List<Expression>();
 
-			while ( peek().mType == TokenType.LPAREN ) {
-				params.push_back( expression() );
+			if ( peek().mType == TokenType.LPAREN ) {
+				require(TokenType.LPAREN);
 
-				if ( peek().mType == TokenType.COMMA ) {
-					consume();	// consume ',' token
+				Expression exp;
+				while ( (exp = expression()) != null ) {
+					params.push_back( exp );
+
+					if ( peek().mType == TokenType.COMMA ) {
+						consume();	// consume ',' token
+						continue;
+					}
+
+					break;
 				}
-			}
 
+				require(TokenType.RPAREN);
+			}
 
 			var method = new MethodExpression(token, (MethodSymbol sym).mMethod, sym.mType);
 			method.mParameters = params;
