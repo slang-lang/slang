@@ -43,6 +43,7 @@ public enum TokenType {
 	PROGRAM,
 	READLN,
 	REAL,
+	REPEAT,
 	RPAREN,
 	SEMICOLON,
 	STEP,
@@ -53,6 +54,7 @@ public enum TokenType {
 	TYPE,
 	UNEQUAL,
 	UNIT,
+	UNTIL,
 	USES,
 	VAR,
 	WHILE,
@@ -100,6 +102,7 @@ public string TokenToString(TokenType type) {
 		case TokenType.PROGRAM:			{ return "PROGRAM"; }
 		case TokenType.READLN:			{ return "READLN"; }
 		case TokenType.REAL:			{ return "REAL"; }
+		case TokenType.REPEAT:			{ return "REPEAT"; }
 		case TokenType.RPAREN:			{ return ")"; }
 		case TokenType.SEMICOLON:		{ return ";"; }
 		case TokenType.STEP:			{ return "STEP"; }
@@ -110,6 +113,7 @@ public string TokenToString(TokenType type) {
 		case TokenType.TYPE:			{ return "TYPE"; }
 		case TokenType.UNEQUAL:			{ return "<>"; }
 		case TokenType.UNIT:			{ return "UNIT"; }
+		case TokenType.UNTIL:			{ return "UNTIL"; }
 		case TokenType.USES:			{ return "USES"; }
 		case TokenType.VAR:			{ return "VAR"; }
 		case TokenType.WHILE:			{ return "WHILE"; }

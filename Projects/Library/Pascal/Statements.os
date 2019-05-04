@@ -19,6 +19,7 @@ public enum StatementType {
 	ProcedureStatement,
 	ProgramStatement,
 	ReadlineStatement,
+	RepeatStatement,
 	UnitStatement,
 	UsesStatement,
 	VariableDeclarationStatement,
@@ -269,6 +270,31 @@ public object ReadlineStatement extends Statement {
 
 	public string toString() const {
 		return "READLN( " + mVariable.toString() + " )";
+	}
+}
+
+public object RepeatStatement extends Statement {
+	public Expression mCondition const;
+	public List<Statement> mStatements const;
+
+	//public void Constructor(List<Statement> statements, Expression condition) {
+	public void Constructor(Object statements, Expression condition) {
+		base.Constructor(StatementType.RepeatStatement);
+
+		assert( statements is List<Statement> );
+
+		mCondition = condition;
+		mStatements = List<Statement> statements;
+	}
+
+	public string toString() const {
+		string stmts;
+		if ( mStatements ) {
+			foreach ( Statement stmt : mStatements ) {
+				stmts += stmt.toString() + LINEBREAK;
+			}
+		}
+		return "REPEAT" + LINEBREAK + stmts + "UNTIL " + mCondition.toString();
 	}
 }
 

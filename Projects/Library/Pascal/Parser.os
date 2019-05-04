@@ -477,6 +477,26 @@ public object Parser {
 		return new ProgramStatement(name.mValue, uses, statements);
 	}
 
+	private RepeatStatement parseRepeatStatement() modify throws {
+		//print("parseRepeatStatement()");
+
+		Token token = consume();
+		if ( !token || token.mType != TokenType.REPEAT ) {
+			throw new ParseException("invalid REPEAT statement found" + toString(token), token.mPosition);
+		}
+
+		var statements = new List<Statement>();
+		while ( (token = peek()) != null && token.mType != TokenType.UNTIL ) {
+			statements.push_back( parseStatement() );
+		}
+
+		require(TokenType.UNTIL);
+
+		var conditionExp = expression();
+
+		return new RepeatStatement(Object statements, conditionExp);
+	}
+
 	private Statement parseStatement(bool requiresSemicolon = true) modify throws {
 		//print("parseStatement()");
 
@@ -517,6 +537,10 @@ public object Parser {
 			}
 			case TokenType.READLN: {
 				stmt = Statement parseReadlineStatement();
+				break;
+			}
+			case TokenType.REPEAT: {
+				stmt = Statement parseRepeatStatement();
 				break;
 			}
 			case TokenType.VAR: {
