@@ -18,13 +18,13 @@ private object UserObject {
 	/////////////////////////////////////////////////////////////////////
 
 	public UserObject operator&(int other const) modify {
-		mValue = mValue & other;
+		mValue &= other;
 
 		return this;
 	}
 
 	public UserObject operator&(UserObject other const) modify {
-		mValue = mValue & other.getValue();
+		mValue &= other.mValue;
 
 		return this;
 	}
@@ -34,7 +34,7 @@ private object UserObject {
 	}
 
 	public bool operator==(UserObject other const) const {
-		return mValue == other.getValue();
+		return mValue == other.mValue;
 	}
 }
 
@@ -48,7 +48,7 @@ private bool TestCase1() const {
 
 	UserObject obj1 = new UserObject(1001);
 
-	obj1 = obj1 & 0110;
+	obj1 &= 0110;
 	//assert( obj1 == true );
 
 // this is a fake valid test
