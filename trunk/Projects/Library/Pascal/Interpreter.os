@@ -338,22 +338,22 @@ public object Interpreter {
     private void visitForStatement(ForStatement stmt) modify throws {
         //print("visitForStatement()");
 
-	var sym = mCurrentScope.lookup(stmt.mLoopVariable.mVariable);
-	if ( !sym ) {
-		throw new RuntimeException("invalid symbol '" + stmt.mLoopVariable.mVariable + "'");
-	}
-	if ( !(LocalSymbol sym) ) {
-		throw new RuntimeException("invalid symbol type '" + stmt.mLoopVariable.mVariable + "'");
-	}
+        var sym = mCurrentScope.lookup(stmt.mLoopVariable.mVariable);
+        if ( !sym ) {
+            throw new RuntimeException("invalid symbol '" + stmt.mLoopVariable.mVariable + "'");
+        }
+        if ( !(LocalSymbol sym) ) {
+            throw new RuntimeException("invalid symbol type '" + stmt.mLoopVariable.mVariable + "'");
+        }
 
-	var obj = (LocalSymbol sym).mValue;
-	obj = processExpression(stmt.mStartExpression);
+        var obj = (LocalSymbol sym).mValue;
+        obj = processExpression(stmt.mStartExpression);
 
-	while ( processExpression(stmt.mTargetExpression) == "1" ) {
-		visitStatement(stmt.mBody);
+        while ( processExpression(stmt.mTargetExpression) == "1" ) {
+            visitStatement(stmt.mBody);
 
-		obj = processExpression(stmt.mStepExpression);
-	}
+            obj = processExpression(stmt.mStepExpression);
+        }
     }
 
     private void visitIfStatement(IfStatement stmt) modify {
@@ -375,21 +375,21 @@ public object Interpreter {
         var oldScope = mCurrentScope;
         mCurrentScope = new SymbolTable(oldScope.mLevel + 1, stmt.mName, oldScope);
 
-	if ( stmt.mParameters && stmt.mMethod.mParameters ) {
-		// add symbols for parameters
-		var paramIt = stmt.mParameters.getIterator();
-		var sigIt = stmt.mMethod.mParameters.getIterator();
-		while ( paramIt.hasNext() && sigIt.hasNext() ) {
-			paramIt.next();
-			sigIt.next();
+        if ( stmt.mParameters && stmt.mMethod.mParameters ) {
+            // add symbols for parameters
+            var paramIt = stmt.mParameters.getIterator();
+            var sigIt = stmt.mMethod.mParameters.getIterator();
+            while ( paramIt.hasNext() && sigIt.hasNext() ) {
+                paramIt.next();
+                sigIt.next();
 
-			string symName = sigIt.current().mName;
-			string symType = sigIt.current().mType;
-			String symValue = new String( processExpression(paramIt.current()) );
+                string symName = sigIt.current().mName;
+                string symType = sigIt.current().mType;
+                String symValue = new String( processExpression(paramIt.current()) );
 
-			mCurrentScope.declare(Symbol new LocalSymbol(symName, symType, false, symValue));
-		}
-	}
+                mCurrentScope.declare(Symbol new LocalSymbol(symName, symType, false, symValue));
+            }
+        }
 
         visitStatement(Statement stmt.mMethod.mBody);
 
@@ -405,7 +405,22 @@ public object Interpreter {
         }
 
         var obj = (LocalSymbol sym).mValue;
-	obj = cin();
+	    obj = cin();
+    }
+
+    private void visitRepeatStatement(RepeatStatement repeatStmt) modify throws {
+        //print("visitRepeatStatement");
+
+        for ( ; ; ) {
+            foreach ( Statement stmt : repeatStmt.mStatements ) {
+                visitStatement(stmt);
+            }
+
+            var condition = processExpression( repeatStmt.mCondition );
+            if ( condition == "1" ) {
+                break;
+            }
+        }
     }
 
     private void visitWriteStatement(WriteStatement stmt) modify {
@@ -448,6 +463,10 @@ public object Interpreter {
             }
             case StatementType.ReadlineStatement: {
                  visitReadlineStatement(ReadlineStatement stmt);
+                 break;
+            }
+            case StatementType.RepeatStatement: {
+                 visitRepeatStatement(RepeatStatement stmt);
                  break;
             }
             case StatementType.VariableDeclarationStatement: {
