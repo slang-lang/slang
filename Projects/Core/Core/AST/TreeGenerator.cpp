@@ -574,7 +574,7 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 
 	while ( (token != end) && (token->type() != Token::Type::ENDOFFILE) ) {
 		if ( reachedControlFlowChanges == 1 ) {
-			OSinfo("Broke control flow, the following code will never be executed in " + token->position().toString());
+			OSinfo("Unreachable code detected, the following code will never be executed in " + token->position().toString());
 			reachedControlFlowChanges++;
 		}
 
@@ -587,10 +587,8 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 			  || dynamic_cast<ExitStatement*>(node)
 			  || dynamic_cast<ReturnStatement*>(node)
 			  || dynamic_cast<ThrowStatement*>(node) ) {
-				//break;	// use this as optimization to not parse unreachable code, instead of only informing the user about it
 				reachedControlFlowChanges++;
 			}
-
 		}
 	}
 
