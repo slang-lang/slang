@@ -142,91 +142,121 @@ public object Tokenizer {
 
 	private Token getNextToken() modify throws {
 		string c;
+		bool isComment;
 
 		while ( (c = peek()) != "" ) {
-			switch ( true ) {
-				case isCharacter(c): {
-					return getID();
-				}
-				case isDigit(c): {
-					return getDigit();
-				}
-				case isWhiteSpace(c): {
-					consume();
-					break;
-				}
-				case c == "'": {
-					int column = mColumn;
-					int line = mLine;
+			if ( !isComment && c == "{" ) {
+				consume();
+				isComment = true;
+			}
+			else if ( isComment && c == "}" ) {
+				consume();
+				isComment = false;
+			}
+			else if ( isComment ) {
+				consume();
+			}
+			else {
+				switch ( true ) {
+/*
+					case isComment && c != "}": {
+						consume();
+						break;
+					}
+					case isComment && c == "}": {
+						consume();
+						isComment = false;
+						break;
+					}
+					case !isComment && c == "{": {
+						consume();
+						isComment = true;
+						break;
+					}
+*/
+					case isCharacter(c) && !isComment: {
+						return getID();
+					}
+					case isDigit(c) && !isComment: {
+						return getDigit();
+					}
+					case isWhiteSpace(c): {
+						consume();
+						break;
+					}
+					case c == "'": {
+						int column = mColumn;
+						int line = mLine;
 
-					consume();			// consume '
+						consume();			// consume '
 
-					string value;
-					while ( peek() != "\'" ) {
-						value += consume();
+						string value;
+						while ( peek() != "\'" ) {
+							value += consume();
+						}
+
+						consume();			// consume '
+
+						return new Token(TokenType.STRING, value, new Position(line, column));
+					}
+					case c == ":" && peek(2) == "=": {
+						return new Token(TokenType.ASSIGN, consume(2), new Position(mLine, mColumn));
+					}
+					case c == ":": {
+						return new Token(TokenType.COLON, consume(), new Position(mLine, mColumn));
+					}
+					case c == ";": {
+						return new Token(TokenType.SEMICOLON, consume(), new Position(mLine, mColumn));
+					}
+					case c == ",": {
+						return new Token(TokenType.COMMA, consume(), new Position(mLine, mColumn));
+					}
+					case c == ".": {
+						return new Token(TokenType.DOT, consume(), new Position(mLine, mColumn));
 					}
 
-					consume();			// consume '
+					// Compare operators
+					case c == "=": {
+						return new Token(TokenType.EQUAL, consume(), new Position(mLine, mColumn));
+					}
+					case c == "<" && peek(2) == ">": {
+						return new Token(TokenType.UNEQUAL, consume(2), new Position(mLine, mColumn));
+					}
+					case c == "<" && peek(2) == "=": {
+						return new Token(TokenType.LESS_EQUAL, consume(2), new Position(mLine, mColumn));
+					}
+					case c == "<": {
+						return new Token(TokenType.LESS, consume(), new Position(mLine, mColumn));
+					}
+					case c == ">" && peek(2) == "=": {
+						return new Token(TokenType.GREATER_EQUAL, consume(2), new Position(mLine, mColumn));
+					}
+					case c == ">": {
+						return new Token(TokenType.GREATER, consume(), new Position(mLine, mColumn));
+					}
 
-					return new Token(TokenType.STRING, value, new Position(line, column));
-				}
-				case c == ":" && peek(2) == "=": {
-					return new Token(TokenType.ASSIGN, consume(2), new Position(mLine, mColumn));
-				}
-				case c == ":": {
-					return new Token(TokenType.COLON, consume(), new Position(mLine, mColumn));
-				}
-				case c == ";": {
-					return new Token(TokenType.SEMICOLON, consume(), new Position(mLine, mColumn));
-				}
-				case c == ",": {
-					return new Token(TokenType.COMMA, consume(), new Position(mLine, mColumn));
-				}
-				case c == ".": {
-					return new Token(TokenType.DOT, consume(), new Position(mLine, mColumn));
-				}
-
-				// Compare operators
-				case c == "=": {
-					return new Token(TokenType.EQUAL, consume(), new Position(mLine, mColumn));
-				}
-				case c == "<" && peek(2) == ">": {
-					return new Token(TokenType.UNEQUAL, consume(2), new Position(mLine, mColumn));
-				}
-				case c == "<" && peek(2) == "=": {
-					return new Token(TokenType.LESS_EQUAL, consume(2), new Position(mLine, mColumn));
-				}
-				case c == "<": {
-					return new Token(TokenType.LESS, consume(), new Position(mLine, mColumn));
-				}
-				case c == ">" && peek(2) == "=": {
-					return new Token(TokenType.GREATER_EQUAL, consume(2), new Position(mLine, mColumn));
-				}
-				case c == ">": {
-					return new Token(TokenType.GREATER, consume(), new Position(mLine, mColumn));
-				}
-
-				// Arithmetic operators
-				case c == "+": {
-					return new Token(TokenType.MATH_PLUS, consume(), new Position(mLine, mColumn));
-				}
-				case c == "-": {
-					return new Token(TokenType.MATH_MINUS, consume(), new Position(mLine, mColumn));
-				}
-				case c == "*": {
-					return new Token(TokenType.MATH_MULTIPLY, consume(), new Position(mLine, mColumn));
-				}
-				case c == "/": {
-					return new Token(TokenType.MATH_DIVIDE, consume(), new Position(mLine, mColumn));
-				}
-				case c == "(": {
-					return new Token(TokenType.LPAREN, consume(), new Position(mLine, mColumn));
-				}
-				case c == ")": {
-					return new Token(TokenType.RPAREN, consume(), new Position(mLine, mColumn));
-				}
-				default: {
-					throw new Exception("invalid token found at " + new Position(mLine, mColumn).toString());
+					// Arithmetic operators
+					case c == "+": {
+						return new Token(TokenType.MATH_PLUS, consume(), new Position(mLine, mColumn));
+					}
+					case c == "-": {
+						return new Token(TokenType.MATH_MINUS, consume(), new Position(mLine, mColumn));
+					}
+					case c == "*": {
+						return new Token(TokenType.MATH_MULTIPLY, consume(), new Position(mLine, mColumn));
+					}
+					case c == "/": {
+						return new Token(TokenType.MATH_DIVIDE, consume(), new Position(mLine, mColumn));
+					}
+					case c == "(": {
+						return new Token(TokenType.LPAREN, consume(), new Position(mLine, mColumn));
+					}
+					case c == ")": {
+						return new Token(TokenType.RPAREN, consume(), new Position(mLine, mColumn));
+					}
+					default: {
+						throw new Exception("invalid token found at " + new Position(mLine, mColumn).toString());
+					}
 				}
 			}
 		}

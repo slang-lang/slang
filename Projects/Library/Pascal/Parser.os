@@ -201,19 +201,25 @@ public object Parser {
 		var declarations = new List<DeclarationStatement>();
 
 		Token start = peek();
-		while ( peek().mType == TokenType.IDENTIFIER ) {
-			var declStmt = parseDeclarationStatement(false);
-			declarations.push_back( declStmt );
+		if ( start.mType == TokenType.LPAREN ) {
+			require(TokenType.LPAREN);
 
-			if ( mCurrentScope.lookup(declStmt.mName, true) ) {
-				throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+			while ( peek().mType == TokenType.IDENTIFIER ) {
+				var declStmt = parseDeclarationStatement(false);
+				declarations.push_back( declStmt );
+
+				if ( mCurrentScope.lookup(declStmt.mName, true) ) {
+					throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
+				}
+
+				mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, false));
+
+				if ( peek().mType == TokenType.SEMICOLON ) {
+					consume();	// consume ';' token
+				}
 			}
 
-			mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, false));
-
-			if ( peek().mType == TokenType.SEMICOLON ) {
-				consume();	// consume ';' token
-			}
+			require(TokenType.RPAREN);
 		}
 
 		return declarations;
@@ -270,16 +276,7 @@ public object Parser {
 			throw new ParseException("invalid token " + toString(name) + " found", name.mPosition);
 		}
 
-		List<DeclarationStatement> declarations;
-
-		Token token = peek();
-		if ( token.mType == TokenType.LPAREN ) {
-			require(TokenType.LPAREN);
-
-			declarations = parseFormalParameters();
-
-			require(TokenType.RPAREN);
-		}
+		List<DeclarationStatement> declarations = parseFormalParameters();
 
 		require(TokenType.COLON);
 
@@ -421,16 +418,7 @@ public object Parser {
 			throw new ParseException("invalid token " + toString(name) + " found", name.mPosition);
 		}
 
-		List<DeclarationStatement> declarations;
-
-		Token token = peek();
-		if ( token.mType == TokenType.LPAREN ) {
-			require(TokenType.LPAREN);
-
-			declarations = parseFormalParameters();
-
-			require(TokenType.RPAREN);
-		}
+		List<DeclarationStatement> declarations = parseFormalParameters();
 
 		require(TokenType.SEMICOLON);
 
