@@ -29,7 +29,7 @@ public void Main(int argc = 0, string args = "") {
 			return;
 		}
 
-		ISocketAddress sockaddr = ISocketAddress new IPv4Address(address, port);
+		var sockaddr = ISocketAddress new IPv4Address(address, port);
 
 		int result = connect(sockfd, sockaddr);
 		if ( result == -1 ) {
@@ -69,13 +69,13 @@ public void Main(int argc = 0, string args = "") {
 		result = close(sockfd);
 	}
 	catch ( string e ) {
-		print("Exception: " + e);
+		print("Error: " + e);
 	}
 	catch ( IException e ) {
-		print("Exception: " + e.what());
+		print("Error: " + e.what());
 	}
 	catch {
-		print("Exception: unknown exception");
+		print("Error: unknown exception");
 	}
 }
 

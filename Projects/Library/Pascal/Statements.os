@@ -355,7 +355,7 @@ public object UsesStatement extends Statement {
 			result += ", " + unit;
 		}
 
-		return result ? "USES " + result + ";" + LINEBREAK : "";
+		return result ? "USES " + result + ";" : "";
 	}
 }
 

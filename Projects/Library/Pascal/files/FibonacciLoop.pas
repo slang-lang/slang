@@ -33,7 +33,8 @@ BEGIN
 
 	WHILE ( i <= MAX ) DO
 	BEGIN
-		WRITE( fibonacciLoop(i) ); WRITE( ', ' );
+		WRITE( fibonacciLoop(i) );
+		WRITE( ', ' );
 
 		i := i + 1;
 	END;
