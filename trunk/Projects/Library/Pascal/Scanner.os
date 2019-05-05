@@ -8,7 +8,7 @@ import System.IO.File;
 
 
 public object Scanner implements IIterateable {
-	public void Constructor(System.IO.File file ref) {
+	public void Constructor(System.IO.File file) {
 		if ( file ) {
 			mFile = file;
 
@@ -31,12 +31,8 @@ public object Scanner implements IIterateable {
 	private void readAll(System.IO.File file) modify {
 		mText = "";
 
-		string ch;
-
 		while ( !file.isEOF() ) {
-			ch = file.readChar();
-
-			mText += ch;
+			mText += file.readChar();
 		}
 	}
 

@@ -158,22 +158,6 @@ public object Tokenizer {
 			}
 			else {
 				switch ( true ) {
-/*
-					case isComment && c != "}": {
-						consume();
-						break;
-					}
-					case isComment && c == "}": {
-						consume();
-						isComment = false;
-						break;
-					}
-					case !isComment && c == "{": {
-						consume();
-						isComment = true;
-						break;
-					}
-*/
 					case isCharacter(c) && !isComment: {
 						return getID();
 					}

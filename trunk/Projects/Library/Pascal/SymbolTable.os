@@ -16,12 +16,10 @@ public object SymbolTable {
 		mName = name;
 		mParent = parent;
 		mSymbols = new List<Symbol>();
-
-		//print("new SymbolTable(level: " + mLevel + ", name: \"" + mName + "\", parent: " + (mParent ? true : false) + ")");
 	}
 
 	public void Destructor() {
-		//print("delete SymbolTable(level: " + mLevel + ", name: \"" + mName + "\", parent: " + (mParent ? true : false) + ")");
+		// this is empty by intend
 	}
 
 	public void declare(Symbol symbol) modify throws {
