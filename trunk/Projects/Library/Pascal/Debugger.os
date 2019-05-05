@@ -15,21 +15,15 @@ public object Debugger extends Interpreter {
             return -1;
         }
 
-        print("Debugging \"" + (ProgramStatement mProgram).mName + "\"...");
+	    if ( debug ) {
+	        print("Debugging \"" + (ProgramStatement mProgram).mName + "\"...");
+	    }
 
-        var compound = (ProgramStatement mProgram).mStatements;
+        mCurrentScope = new SymbolTable(0, "global");
 
-        if ( compound.mConstantDeclarations ) {
-            visitConstantDeclarationStatement(compound.mConstantDeclarations);
-        }
+        visitCompoundStatement((ProgramStatement mProgram).mStatements);
 
-        if ( compound.mVariableDeclarations ) {
-            visitVariableDeclarationStatement(compound.mVariableDeclarations);
-        }
-
-        foreach ( Statement stmt : compound.mStatements ) {
-            visitStatement(stmt);
-        }
+        delete mCurrentScope;
 
         return 0;
     }
