@@ -29,7 +29,7 @@ public object PascalDebugger {
 
 		if ( !params.empty() ) {
 			// load file if any params are set
-			loadFile(string params.at(0));
+			loadFile(params.at(0).Key);
 		}
 	}
 
@@ -70,7 +70,7 @@ public object PascalDebugger {
 		}
 
 		var parser = new Parser();
-		mProgram = parser.parseFile(filename);
+		mProgram = parser.parseFile(filename, mDebugMode);
 
 		if ( mDebugMode ) {
 			print("");
