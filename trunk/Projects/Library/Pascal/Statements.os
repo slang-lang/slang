@@ -9,6 +9,7 @@ import Expressions;
 
 public enum StatementType {
 	AssignmentStatement,
+	CaseStatement,
 	CompoundStatement,
 	ConstantDeclarationStatement,
 	DeclarationStatement,
@@ -54,6 +55,49 @@ public object AssignmentStatement extends Statement {
 
 	public string toString() const {
 		return (mLeft ? mLeft.toString() : "") + " := " + (mRight ? mRight.toString() : "");
+	}
+}
+
+public object CasePart {
+	public List<Expression> mExpressions;
+	public Statement mStatement;
+	public string mType const;
+
+	public void Constructor(string type) {
+		mExpressions = new List<Expression>();
+		mType = type;
+	}
+
+	public string toString() const {
+		string result;
+		foreach ( Expression exp : mExpressions ) {
+			if ( result ) {
+				result += ", ";
+			}
+			result += exp.toString();
+		}
+		return result + ": " + mStatement ? mStatement.toString() : "";
+	}
+}
+
+public object CaseStatement extends Statement {
+	public List<CasePart> mCaseParts;
+	public Statement mElseStatement;
+	public Expression mExpression const;
+
+	public void Constructor(Expression exp) {
+		base.Constructor(StatementType.CaseStatement);
+
+		mCaseParts = new List<CasePart>();
+		mExpression = exp;
+	}
+
+	public string toString() const {
+		string result;
+		foreach ( CasePart part : mCaseParts ) {
+			result += part.toString() + ";" + LINEBREAK;
+		}
+		return "CASE " + mExpression.toString() + " OF" + LINEBREAK + result + (mElseStatement ? "ELSE " + mElseStatement.toString() + ";" + LINEBREAK : "") + "END";
 	}
 }
 

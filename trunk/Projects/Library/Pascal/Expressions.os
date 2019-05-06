@@ -86,7 +86,9 @@ public object ConstantExpression extends Expression {
 	}
 }
 
-public object LiteralBooleanExpression extends Expression {
+public object LiteralExpression extends Expression;
+
+public object LiteralBooleanExpression extends LiteralExpression {
 	public bool mValue const;
 
 	public void Constructor(Token token, bool value) {
@@ -101,7 +103,7 @@ public object LiteralBooleanExpression extends Expression {
 	}
 }
 
-public object LiteralIntegerExpression extends Expression {
+public object LiteralIntegerExpression extends LiteralExpression {
 	public int mValue const;
 
 	public void Constructor(Token token, int value) {
@@ -116,7 +118,7 @@ public object LiteralIntegerExpression extends Expression {
 	}
 }
 
-public object LiteralRealExpression extends Expression {
+public object LiteralRealExpression extends LiteralExpression {
 	public float mValue const;
 
 	public void Constructor(Token token, float value) {
@@ -131,7 +133,7 @@ public object LiteralRealExpression extends Expression {
 	}
 }
 
-public object LiteralStringExpression extends Expression {
+public object LiteralStringExpression extends LiteralExpression {
 	public string mValue const;
 
 	public void Constructor(Token token, string value) {

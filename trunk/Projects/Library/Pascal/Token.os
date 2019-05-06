@@ -10,6 +10,7 @@ public enum TokenType {
 	ASSIGN,
 	BEGIN,
 	BOOLEAN,
+	CASE,
 	COLON,
 	COMMA,
 	CONST,
@@ -38,6 +39,7 @@ public enum TokenType {
 	MATH_MINUS,
 	MATH_MULTIPLY,
 	MATH_PLUS,
+	OF,
 	OR,
 	PROCEDURE,
 	PROGRAM,
@@ -69,6 +71,7 @@ public string TokenToString(TokenType type) {
 		case TokenType.ASSIGN:			{ return ":="; }
 		case TokenType.BEGIN:			{ return "BEGIN"; }
 		case TokenType.BOOLEAN:			{ return "BOOLEAN"; }
+		case TokenType.CASE:			{ return "CASE"; }
 		case TokenType.COLON:			{ return ":"; }
 		case TokenType.COMMA:			{ return ","; }
 		case TokenType.CONST:                   { return "CONST"; }
@@ -97,6 +100,7 @@ public string TokenToString(TokenType type) {
 		case TokenType.MATH_MINUS:		{ return "MATH_MINUS"; }
 		case TokenType.MATH_MULTIPLY:		{ return "MATH_MULITPLY"; }
 		case TokenType.MATH_PLUS:		{ return "MATH_PLUS"; }
+		case TokenType.OF:			{ return "OF"; }
 		case TokenType.OR:			{ return "OR"; }
 		case TokenType.PROCEDURE:		{ return "PROCEDURE"; }
 		case TokenType.PROGRAM:			{ return "PROGRAM"; }

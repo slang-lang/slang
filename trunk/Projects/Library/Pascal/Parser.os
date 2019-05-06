@@ -87,6 +87,75 @@ public object Parser {
 		return new AssignmentStatement(identifierExp, assignmentExp);
 	}
 
+	private CasePart parseCasePart(string caseType) modify throws {
+		//print("parseCasePart()");
+
+		var casePart = new CasePart(caseType);
+
+		Token token = peek();
+		for ( ; ; ) {
+			var exp = expression();
+
+			if ( exp.mResultType != caseType ) {
+				throw new ParseException("expression type '" + exp.mResultType + "' does not match case-type '" + caseType + "'", token.mPosition);
+			}
+			if ( !(exp is LiteralExpression) ) {
+				throw new ParseException("literal expression expected but " + typeid(exp) + " detected", token.mPosition);
+			}
+
+			casePart.mExpressions.push_back(exp);
+
+			if ( peek().mType != TokenType.COMMA ) {
+				break;
+			}
+
+			consume();	// consume COMMA token
+		}
+
+		require(TokenType.COLON);
+
+		casePart.mStatement = parseStatement();
+
+		return casePart;
+	}
+
+	private CaseStatement parseCaseStatement() modify throws {
+		//print("parseCaseStatement()");
+
+		require(TokenType.CASE);
+
+		var caseExp = expression();
+
+		require(TokenType.OF);
+
+		var caseStmt = new CaseStatement(caseExp);
+
+		Token token;
+		for ( ; ; ) {
+			var casePart = parseCasePart(caseExp.mResultType);
+
+			if ( casePart.mType != caseExp.mResultType ) {
+				throw new ParseException("expression type '" + casePart.mType + "' does not match case-type '" + caseExp.mResultType + "'", token.mPosition);
+			}
+
+			caseStmt.mCaseParts.push_back(casePart);
+
+			if ( (token = peek()) != null && (token.mType == TokenType.ELSE || token.mType == TokenType.END) ) {
+				break;
+			}
+		}
+
+		if ( token.mType == TokenType.ELSE ) {
+			consume();	// consume ELSE token
+
+			caseStmt.mElseStatement = parseStatement();
+		}
+
+		require(TokenType.END);
+
+		return caseStmt;
+	}
+
 	private CompoundStatement parseCompoundStatement() modify throws {
 		//print("parseCompoundStatement()");
 
@@ -496,6 +565,10 @@ public object Parser {
 				stmt = Statement parseCompoundStatement();
 				break;
 			}
+			case TokenType.CASE: {
+				stmt = Statement parseCaseStatement();
+				break;
+			}
 			case TokenType.CONST: {
 				stmt = Statement parseCompoundStatementWithDeclarations();
 				break;
@@ -529,6 +602,10 @@ public object Parser {
 			}
 			case TokenType.REPEAT: {
 				stmt = Statement parseRepeatStatement();
+				break;
+			}
+			case TokenType.SEMICOLON: {
+				// nothing to do here
 				break;
 			}
 			case TokenType.VAR: {

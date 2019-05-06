@@ -127,6 +127,46 @@ public object Interpreter {
         return string obj;
     }
 
+    private string processExpression(Expression exp) modify throws {
+        //print("processExpression(" + exp.toString() + ")");
+
+        switch ( exp.mExpressionType ) {
+            case ExpressionType.BinaryExpression: {
+                return processBinaryExpression(BinaryExpression exp);
+            }
+            case ExpressionType.BooleanBinaryExpression: {
+                return string processBooleanBinaryExpression(BooleanBinaryExpression exp);
+            }
+            case ExpressionType.ConstantExpression: {
+	        return string processConstantExpression(ConstantExpression exp);
+            }
+            case ExpressionType.LiteralBooleanExpression: {
+                return string processLiteralBooleanExpression(LiteralBooleanExpression exp);
+            }
+            case ExpressionType.LiteralIntegerExpression: {
+                return string processLiteralIntegerExpression(LiteralIntegerExpression exp);
+            }
+            case ExpressionType.LiteralRealExpression: {
+                return string processLiteralRealExpression(LiteralRealExpression exp);
+            }
+            case ExpressionType.LiteralStringExpression: {
+                return processLiteralStringExpression(LiteralStringExpression exp);
+            }
+            case ExpressionType.MethodExpression: {
+                return processMethodExpression(MethodExpression exp);
+            }
+            case ExpressionType.UnaryExpression: {
+                return processUnaryExpression(UnaryExpression exp);
+            }
+            case ExpressionType.VariableExpression: {
+                return processVariableExpression(VariableExpression exp);
+            }
+            default: {
+                throw new RuntimeException("invalid expression type '" + typeid(exp) + "'!");
+            }
+        }
+    }
+
     private bool processLiteralBooleanExpression(LiteralBooleanExpression exp) const {
         //print("processLiteralBooleanExpression(" + exp.toString() + ")");
 
@@ -182,43 +222,6 @@ public object Interpreter {
         mCurrentScope = oldScope;
 
         return resultValue;
-    }
-
-    private string processExpression(Expression exp) modify throws {
-        //print("processExpression(" + exp.toString() + ")");
-
-        switch ( exp.mExpressionType ) {
-            case ExpressionType.BinaryExpression: {
-                return processBinaryExpression(BinaryExpression exp);
-            }
-            case ExpressionType.BooleanBinaryExpression: {
-                return string processBooleanBinaryExpression(BooleanBinaryExpression exp);
-            }
-            case ExpressionType.ConstantExpression: {
-	        return string processConstantExpression(ConstantExpression exp);
-            }
-            case ExpressionType.LiteralBooleanExpression: {
-                return string processLiteralBooleanExpression(LiteralBooleanExpression exp);
-            }
-            case ExpressionType.LiteralIntegerExpression: {
-                return string processLiteralIntegerExpression(LiteralIntegerExpression exp);
-            }
-            case ExpressionType.LiteralRealExpression: {
-                return string processLiteralRealExpression(LiteralRealExpression exp);
-            }
-            case ExpressionType.LiteralStringExpression: {
-                return processLiteralStringExpression(LiteralStringExpression exp);
-            }
-            case ExpressionType.MethodExpression: {
-                return processMethodExpression(MethodExpression exp);
-            }
-            case ExpressionType.UnaryExpression: {
-                return processUnaryExpression(UnaryExpression exp);
-            }
-            case ExpressionType.VariableExpression: {
-                return processVariableExpression(VariableExpression exp);
-            }
-        }
     }
 
     private string processUnaryExpression(UnaryExpression exp) modify throws {
@@ -293,6 +296,27 @@ public object Interpreter {
         obj = (LocalSymbol sym).mValue;
 
         obj = processExpression(assign.mRight);
+    }
+
+    private void visitCaseStatement(CaseStatement stmt) modify throws {
+        //print("visitCaseStatement()");
+
+        string caseValue = processExpression(stmt.mExpression);
+
+        foreach ( CasePart part : stmt.mCaseParts ) {
+            foreach ( Expression exp : part.mExpressions ) {
+                string expValue = processExpression(exp);
+
+                if ( expValue == caseValue ) {
+                    visitStatement(part.mStatement);
+                    return;
+                }
+            }
+        }
+
+        if ( stmt.mElseStatement ) {
+            visitStatement(stmt.mElseStatement);
+        }
     }
 
     protected void visitCompoundStatement(CompoundStatement compound) modify {
@@ -440,6 +464,10 @@ public object Interpreter {
         switch ( stmt.mStatementType ) {
             case StatementType.AssignmentStatement: {
                 visitAssignStatement(AssignmentStatement stmt);
+                break;
+            }
+            case StatementType.CaseStatement: {
+                visitCaseStatement(CaseStatement stmt);
                 break;
             }
             case StatementType.CompoundStatement: {

@@ -20,6 +20,7 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.BEGIN, "BEGIN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.BOOLEAN, "FALSE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.BOOLEAN, "TRUE", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.CASE, "CASE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.CONST, "CONST", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.DO, "DO", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
@@ -30,6 +31,7 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.IMPLEMENTATION, "IMPLEMENTATION", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.INTERFACE, "INTERFACE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.MATH_DIVIDE_INT, "DIV", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.OF, "OF", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.OR, "OR", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROCEDURE, "PROCEDURE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PROGRAM, "PROGRAM", Position null));
