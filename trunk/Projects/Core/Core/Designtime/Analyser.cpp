@@ -744,6 +744,7 @@ std::string Analyser::resolveType(const std::string& type, const TokenIterator& 
 Common::TypeDeclaration Analyser::resolveType(const Common::TypeDeclaration& type, const TokenIterator& token) const
 {
 	Common::TypeDeclaration result;
+	result.mMutability = type.mMutability;
 
 	// resolve type
 	result.mName = resolveType(type.mName, token);
