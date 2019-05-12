@@ -1,6 +1,6 @@
 program Main;
 var
-   x: real;
+   x : real;
    y : real;
    z : integer;
 
@@ -13,9 +13,12 @@ var
    function AlphaB(a : integer): integer;
    var b : integer;
    begin { AlphaB }
+      AlphaA(a);
    end;  { AlphaB }
 
 begin { Main }
    writeln( 'Nested functions' );
+
+   AlphaB(1);
 end.  { Main }
 
