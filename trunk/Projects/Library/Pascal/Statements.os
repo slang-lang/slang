@@ -169,8 +169,6 @@ public object DeclarationStatement extends Statement {
 	}
 }
 
-public object DeclarationList extends List<DeclarationStatement>;
-
 public object ForStatement extends Statement {
 	public Statement mBody const;
 	public VariableExpression mLoopVariable const;
