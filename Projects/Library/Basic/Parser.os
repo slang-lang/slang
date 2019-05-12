@@ -359,7 +359,7 @@ public object Parser {
 // Expression parsing
 
 	private Expression expression(CharacterIterator ci) throws {
-		var leftExp = parseExpression(ci);
+		var leftExp const = parseExpression(ci);
 
 		skipWhitespaces(ci);
 
