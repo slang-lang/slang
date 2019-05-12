@@ -345,7 +345,11 @@ public object Parser {
 			throw new ParseException("invalid token " + toString(name) + " found", name.mPosition);
 		}
 
-		List<DeclarationStatement> declarations = parseFormalParameters();
+		// store current scope and push a new one
+		var oldScope = mCurrentScope;
+		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, name.mValue, oldScope);
+
+		var params = parseFormalParameters();
 
 		require(TokenType.COLON);
 
@@ -356,18 +360,17 @@ public object Parser {
 
 		require(TokenType.SEMICOLON);
 
-		var oldScope = mCurrentScope;
-		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, name.mValue, oldScope);
-		mCurrentScope.declare(Symbol new LocalSymbol("RESULT", type.mValue));
-
 		var func = ScopeStatement new FunctionStatement(name.mValue, type.mValue);
-		func.mParameters = declarations;
+		func.mParameters = params;
 
+		// add local symbol "result" to store function return value
+		mCurrentScope.declare(Symbol new LocalSymbol("RESULT", type.mValue));
 		// add function to current scope to allow recursive calls to it
 		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, type.mValue, func));
 
 		func.mBody = parseCompoundStatementWithDeclarations();
 
+		// restore previous scope
 		mCurrentScope = oldScope;
 		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, type.mValue, func));
 
@@ -487,21 +490,23 @@ public object Parser {
 			throw new ParseException("invalid token " + toString(name) + " found", name.mPosition);
 		}
 
-		List<DeclarationStatement> declarations = parseFormalParameters();
-
-		require(TokenType.SEMICOLON);
-
+		// store current scope and push a new one
 		var oldScope = mCurrentScope;
 		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, name.mValue, oldScope);
 
+		var params = parseFormalParameters();
+
+		require(TokenType.SEMICOLON);
+
 		var proc = ScopeStatement new ProcedureStatement(name.mValue);
-		proc.mParameters = declarations;
+		proc.mParameters = params;
 
 		// add method symbol also to current scope to allow recursive method calls
 		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, "void", proc));
 
 		proc.mBody = parseCompoundStatementWithDeclarations();
 
+		// restore previous scope
 		mCurrentScope = oldScope;
 		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, "void", proc));
 
