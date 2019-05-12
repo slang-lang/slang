@@ -109,7 +109,7 @@ public object Parser {
 				break;
 			}
 
-			consume();	// consume COMMA token
+			require(TokenType.COMMA);
 		}
 
 		require(TokenType.COLON);
@@ -185,10 +185,10 @@ public object Parser {
 		while ( (token = peek()) != null ) {
 			ScopeStatement stmt;
 			if ( token.mType == TokenType.FUNCTION ) {
-				stmt = parseFunction();
+				stmt = ScopeStatement parseFunction();
 			}
 			else if ( token.mType == TokenType.PROCEDURE ) {
-				stmt = parseProcedure();
+				stmt = ScopeStatement parseProcedure();
 			}
 			else {
 				break;
@@ -334,7 +334,7 @@ public object Parser {
 					parseStatement(false));
 	}
 
-	private ScopeStatement parseFunction() modify throws {
+	private FunctionStatement parseFunction() modify throws {
 		//print("parseFunction()");
 
 		require(TokenType.FUNCTION);
@@ -360,19 +360,19 @@ public object Parser {
 
 		require(TokenType.SEMICOLON);
 
-		var func = ScopeStatement new FunctionStatement(name.mValue, type.mValue);
+		var func = new FunctionStatement(name.mValue, type.mValue);
 		func.mParameters = params;
 
 		// add local symbol "result" to store function return value
 		mCurrentScope.declare(Symbol new LocalSymbol("RESULT", type.mValue));
 		// add function to current scope to allow recursive calls to it
-		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, type.mValue, func));
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, type.mValue, ScopeStatement func));
 
 		func.mBody = parseCompoundStatementWithDeclarations();
 
 		// restore previous scope
 		mCurrentScope = oldScope;
-		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, type.mValue, func));
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, type.mValue, ScopeStatement func));
 
 		require(TokenType.SEMICOLON);
 
@@ -479,7 +479,7 @@ public object Parser {
 		return params;
 	}
 
-	private ScopeStatement parseProcedure() modify throws {
+	private ProcedureStatement parseProcedure() modify throws {
 		//print("parseProcedure()");
 
 		require(TokenType.PROCEDURE);
@@ -498,17 +498,17 @@ public object Parser {
 
 		require(TokenType.SEMICOLON);
 
-		var proc = ScopeStatement new ProcedureStatement(name.mValue);
+		var proc = new ProcedureStatement(name.mValue);
 		proc.mParameters = params;
 
 		// add method symbol also to current scope to allow recursive method calls
-		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, "void", proc));
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, "void", ScopeStatement proc));
 
 		proc.mBody = parseCompoundStatementWithDeclarations();
 
 		// restore previous scope
 		mCurrentScope = oldScope;
-		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, "void", proc));
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, "void", ScopeStatement proc));
 
 		require(TokenType.SEMICOLON);
 
@@ -652,7 +652,7 @@ public object Parser {
 		require(TokenType.SEMICOLON);
 
 		// push new scope
-		mCurrentScope = new SymbolTable(0, "global");
+		mCurrentScope = new SymbolTable(0, name.mValue);
 
 		var uses = parseUsesStatement();
 
