@@ -116,7 +116,7 @@ public object Interpreter {
         String obj;
         string name = (ConstantExpression exp).mConstant;
 
-        var sym = mCurrentScope.lookup(name);
+        var sym const = mCurrentScope.lookup(name);
         if ( !sym ) {
             throw new RuntimeException("Symbol '" + name + "' is unknown");
         }
@@ -245,7 +245,7 @@ public object Interpreter {
         String obj;
         string name = (VariableExpression exp).mVariable;
 
-        var sym = mCurrentScope.lookup(name);
+        var sym const = mCurrentScope.lookup(name);
         if ( !sym ) {
             throw new RuntimeException("Symbol '" + name + "' is unknown");
         }
