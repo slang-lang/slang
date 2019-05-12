@@ -57,7 +57,7 @@ public object Tokenizer {
 		WHITESPACES = WHITESPACES + LINEBREAK_UNIX;
 	}
 
-	public Token getToken(string word) {
+	public Token const getToken(string word) {
 		foreach ( Token token : RESERVED_WORDS ) {
 			if ( token == word ) {
 				return token;

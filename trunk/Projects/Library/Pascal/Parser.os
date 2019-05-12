@@ -764,10 +764,10 @@ public object Parser {
 // Expression parsing
 
 	private string evaluateType(Expression left, Expression right) const {
-		var leftToken = mTokenizer.getToken(left.mResultType);
+		var leftToken const = mTokenizer.getToken(left.mResultType);
 
 		if ( leftToken && leftToken.mType == TokenType.TYPE ) {
-			var rightToken = mTokenizer.getToken(right.mResultType);
+			var rightToken const = mTokenizer.getToken(right.mResultType);
 
 			if ( rightToken && rightToken.mType == TokenType.TYPE ) {
 				return leftToken.mValue;
