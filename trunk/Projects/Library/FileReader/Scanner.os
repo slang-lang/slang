@@ -7,10 +7,6 @@ import System.StringIterator;
 // Project imports
 
 public object Scanner implements IIterateable {
-	private System.IO.File mFile;
-	private string mSeparator;
-	private string mText;
-
 	public void Constructor(string filename) {
 		mFile = new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly);
 		mSeparator = LINEBREAK;
@@ -39,5 +35,9 @@ public object Scanner implements IIterateable {
 			mText += mFile.readChar();
 		}
 	}
+
+	private System.IO.File mFile;
+	private string mSeparator;
+	private string mText;
 }
 
