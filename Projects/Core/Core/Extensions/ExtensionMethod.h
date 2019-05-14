@@ -26,6 +26,7 @@ public:
 	{
 		mIsExtensionMethod = true;
 		mMethodMutability = mutabilty;
+		mMutability = Mutability::Modify;
 	}
 
 	virtual Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token) = 0;

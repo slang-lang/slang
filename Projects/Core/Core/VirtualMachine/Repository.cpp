@@ -403,7 +403,6 @@ void Repository::init()
 	// add predefined runtime objects
 	{	// null
 		Runtime::UserObject* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
-		nullObject->setConst(true);
 		nullObject->setIsReference(true);
 		nullObject->setMemoryLayout(MemoryLayout::Static);
 		nullObject->setMutability(Mutability::Const);

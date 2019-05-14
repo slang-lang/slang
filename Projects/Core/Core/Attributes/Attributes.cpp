@@ -57,20 +57,6 @@ bool GenericAttributes::isStatic() const
 	return mMemoryLayout == MemoryLayout::Static;
 }
 
-void GenericAttributes::setConst(bool state)
-{
-	checkSealState();
-
-	mMutability = state ? Mutability::Const : Mutability::Modify;
-}
-
-void GenericAttributes::setStatic(bool state)
-{
-	checkSealState();
-
-	mMemoryLayout = state ? MemoryLayout::Static : MemoryLayout::Instance;
-}
-
 void GenericAttributes::setLanguageFeatureState(LanguageFeatureState::E value)
 {
 	checkSealState();
@@ -141,11 +127,6 @@ bool MethodAttributes::isConstMethod() const
 bool MethodAttributes::isFinal() const
 {
 	return mVirtuality == Virtuality::Final;
-}
-
-bool MethodAttributes::isStatic() const
-{
-	return mMemoryLayout == MemoryLayout::Static;
 }
 
 void MethodAttributes::setAlgorithm(Algorithm::E value)
