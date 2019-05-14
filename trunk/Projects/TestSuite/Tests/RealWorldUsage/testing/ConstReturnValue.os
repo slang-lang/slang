@@ -12,12 +12,10 @@ public int Main(int argc, string args) {
 	assert( !"this is wrong!" );
 */
 
-/*
 	TestObject obj2 = ReturnConstObject();
 	obj2.mValue = 2;
 
 	assert( !"this is wrong!" );
-*/
 
 /*
 	int value = ConstReturnValue();
