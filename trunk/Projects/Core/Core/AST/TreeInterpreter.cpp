@@ -1024,7 +1024,7 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 			popScope();
 
 			// set mutability after initializing
-			loopVariable->setConst(typeDeclaration->mIsConst);
+			loopVariable->setMutability(typeDeclaration->mIsConst ? Mutability::Const : Mutability::Modify);
 
 			// execute statement
 			visit(node->mStatement);
@@ -1292,7 +1292,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 {
 	Runtime::Object* lvalue = mRepository->createInstance(node->mType, node->mName, node->mConstraints);
-	lvalue->setConst(node->mIsConst);
+	lvalue->setMutability(node->mIsConst ? Mutability::Const : Mutability::Modify);
 	lvalue->setIsReference(node->mIsReference);
 
 	getScope()->define(node->mName, lvalue);
