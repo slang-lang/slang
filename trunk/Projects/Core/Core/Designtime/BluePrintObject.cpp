@@ -202,7 +202,6 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 	replica->mBasedOnType = QualifiedTypename();
 
 	// replicate basic blueprint data
-	replica->setConst(isConst());
 	replica->setBluePrintType(getBluePrintType());
 	replica->setImplementationType(getImplementationType());
 	replica->setLanguageFeatureState(getLanguageFeatureState());

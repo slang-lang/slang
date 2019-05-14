@@ -80,9 +80,9 @@ Object& Object::operator= (const Object& other)
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
-		setConst(other.isConst());
 		setLanguageFeatureState(other.getLanguageFeatureState());
 		setMember(other.isMember());
+		setMutability(other.getMutability());
 
 		assignReference(other.mReference);
 	}
