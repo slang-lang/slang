@@ -30,9 +30,9 @@ public enum TokenType {
 	IMPLEMENTATION,
 	INTERFACE,
 	INTEGER,
+	LINECOMMENT,
 	LESS,
 	LESS_EQUAL,
-	LINECOMMENT,
 	LPAREN,
 	MATH_DIVIDE,
 	MATH_DIVIDE_INT,
@@ -91,9 +91,9 @@ public string TokenToString(TokenType type) {
 		case TokenType.IMPLEMENTATION:		{ return "IMPLEMENTATION"; }
 		case TokenType.INTERFACE:		{ return "INTERFACE"; }
 		case TokenType.INTEGER:			{ return "INTEGER"; }
+		case TokenType.LINECOMMENT:		{ return "#"; }
 		case TokenType.LESS:			{ return "<"; }
 		case TokenType.LESS_EQUAL:		{ return "<="; }
-		case TokenType.LINECOMMENT:		{ return "#"; }
 		case TokenType.LPAREN:			{ return "("; }
 		case TokenType.MATH_DIVIDE:		{ return "MATH_DIVIDE"; }
 		case TokenType.MATH_DIVIDE_INT:		{ return "MATH_DIVIDE_INT"; }

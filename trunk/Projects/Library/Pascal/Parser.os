@@ -29,10 +29,8 @@ public object ParseException const implements IException {
 
 public object Parser {
 	public Statement parseFile(string filename, bool debug = false) modify throws {
-		var tokenizer = new Tokenizer();
-
 		mTokenizer = new Tokenizer();
-		mTokens = tokenizer.parseFile(filename, debug);
+		mTokens = mTokenizer.parseFile(filename, debug);
 		mTokenIterator = mTokens.getIterator();
 
 		if ( debug ) {
