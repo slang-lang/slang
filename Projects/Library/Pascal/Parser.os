@@ -781,7 +781,8 @@ public object Parser {
 		Expression node = parseCondition();
 
 		Token op;
-		while ( (op = peek()) != null && (op.mType == TokenType.AND || op.mType == TokenType.OR) ) {
+		while ( (op = peek()) != null &&
+				(op.mType == TokenType.AND || op.mType == TokenType.OR) ) {
 			consume();
 
 			Expression exp = Expression new BooleanBinaryExpression(op, node, op.mValue, parseCondition());
@@ -813,7 +814,8 @@ public object Parser {
 		Expression left = parseFactor();
 
 		Token op;
-		while ( (op = peek()) != null && (op.mType == TokenType.MATH_MINUS || op.mType == TokenType.MATH_PLUS) ) {
+		while ( (op = peek()) != null &&
+				(op.mType == TokenType.MATH_MINUS || op.mType == TokenType.MATH_PLUS) ) {
 			consume();
 
 			Expression right = parseFactor();
@@ -832,9 +834,7 @@ public object Parser {
 
 		Token op;
 		while ( (op = peek()) != null &&
-			(op.mType == TokenType.MATH_DIVIDE
-			|| op.mType == TokenType.MATH_DIVIDE_INT
-			|| op.mType == TokenType.MATH_MULTIPLY) ) {
+				(op.mType == TokenType.MATH_DIVIDE || op.mType == TokenType.MATH_DIVIDE_INT || op.mType == TokenType.MATH_MULTIPLY) ) {
 			consume();
 
 			Expression right = parseTerm();
