@@ -7,7 +7,6 @@ import System.StringIterator;
 
 // project imports
 import Consts;
-import Debugger;
 import Interpreter;
 import Line;
 import Parser;
