@@ -810,13 +810,13 @@ public object Parser {
 	private Expression parseExpression() modify throws {
 		//print("parseExpression()");
 
-		Expression left = parseTerm();
+		Expression left = parseFactor();
 
 		Token op;
 		while ( (op = peek()) != null && (op.mType == TokenType.MATH_MINUS || op.mType == TokenType.MATH_PLUS) ) {
 			consume();
 
-			Expression right = parseTerm();
+			Expression right = parseFactor();
 
 			Expression exp = Expression new BinaryExpression(op, left, op.mValue, right, evaluateType(left, right));
 			left = exp;
@@ -828,54 +828,7 @@ public object Parser {
 	private Expression parseFactor() modify throws {
 		//print("parseFactor()");
 
-		Token token = peek();
-		switch ( token.mType ) {
-			case TokenType.BOOLEAN: {
-				require(TokenType.BOOLEAN);
-				return Expression new LiteralBooleanExpression(token, token.mValue == "TRUE");
-			}
-			case TokenType.IDENTIFIER: {
-				return Expression parseIdentifier();
-			}
-			case TokenType.INTEGER: {
-				require(TokenType.INTEGER);
-				return Expression new LiteralIntegerExpression(token, int token.mValue);
-			}
-			case TokenType.LPAREN: {
-				require(TokenType.LPAREN);
-				Expression node = expression();
-				require(TokenType.RPAREN);
-
-				return node;
-			}
-			case TokenType.MATH_MINUS: {
-				require(TokenType.MATH_MINUS);
-				return Expression new UnaryExpression(token, token.mValue, parseFactor());	
-			}
-			case TokenType.MATH_PLUS: {
-				require(TokenType.MATH_PLUS);
-				return Expression new UnaryExpression(token, token.mValue, parseFactor());	
-			}
-			case TokenType.REAL: {
-				require(TokenType.REAL);
-				return Expression new LiteralRealExpression(token, float token.mValue);
-			}
-			case TokenType.STRING: {
-				require(TokenType.STRING);
-				return Expression new LiteralStringExpression(token, token.mValue);
-			}
-			default: {
-				return Expression parseIdentifier();
-			}
-		}
-
-		throw new ParseException("invalid factor expression found" + toString(token), token.mPosition);
-	}
-
-	private Expression parseTerm() modify throws {
-		//print("parseTerm()");
-
-		Expression left = parseFactor();
+		Expression left = parseTerm();
 
 		Token op;
 		while ( (op = peek()) != null &&
@@ -884,7 +837,7 @@ public object Parser {
 			|| op.mType == TokenType.MATH_MULTIPLY) ) {
 			consume();
 
-			Expression right = parseFactor();
+			Expression right = parseTerm();
 
 			Expression exp = Expression new BinaryExpression(op, left, op.mValue, right, evaluateType(left, right));
 			left = exp;
@@ -918,6 +871,53 @@ public object Parser {
 		}
 
 		throw new ParseException("invalid symbol '" + token.mValue + "' detected", token.mPosition);
+	}
+
+	private Expression parseTerm() modify throws {
+		//print("parseTerm()");
+
+		Token token = peek();
+		switch ( token.mType ) {
+			case TokenType.BOOLEAN: {
+				require(TokenType.BOOLEAN);
+				return Expression new LiteralBooleanExpression(token, token.mValue == "TRUE");
+			}
+			case TokenType.IDENTIFIER: {
+				return Expression parseIdentifier();
+			}
+			case TokenType.INTEGER: {
+				require(TokenType.INTEGER);
+				return Expression new LiteralIntegerExpression(token, int token.mValue);
+			}
+			case TokenType.LPAREN: {
+				require(TokenType.LPAREN);
+				Expression node = expression();
+				require(TokenType.RPAREN);
+
+				return node;
+			}
+			case TokenType.MATH_MINUS: {
+				require(TokenType.MATH_MINUS);
+				return Expression new UnaryExpression(token, token.mValue, parseTerm());	
+			}
+			case TokenType.MATH_PLUS: {
+				require(TokenType.MATH_PLUS);
+				return Expression new UnaryExpression(token, token.mValue, parseTerm());	
+			}
+			case TokenType.REAL: {
+				require(TokenType.REAL);
+				return Expression new LiteralRealExpression(token, float token.mValue);
+			}
+			case TokenType.STRING: {
+				require(TokenType.STRING);
+				return Expression new LiteralStringExpression(token, token.mValue);
+			}
+			default: {
+				return Expression parseIdentifier();
+			}
+		}
+
+		throw new ParseException("invalid factor expression found" + toString(token), token.mPosition);
 	}
 
 // Expression parsing
