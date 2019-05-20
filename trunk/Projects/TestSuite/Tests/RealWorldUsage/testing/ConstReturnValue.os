@@ -5,17 +5,17 @@ object TestObject {
 }
 
 public int Main(int argc, string args) {
-/*
-	var obj1 = ReturnConstObject();
+	TestObject obj1 = ReturnConstObject();
 	obj1.mValue = 1;
 
 	assert( !"this is wrong!" );
-*/
 
-	TestObject obj2 = ReturnConstObject();
+/*
+	var obj2 = ReturnConstObject();
 	obj2.mValue = 2;
 
 	assert( !"this is wrong!" );
+*/
 
 /*
 	int value = ConstReturnValue();
