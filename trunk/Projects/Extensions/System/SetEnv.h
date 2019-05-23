@@ -5,6 +5,12 @@
 
 // Library includes
 #include <stdlib.h>
+#ifdef _WIN32
+	// Win32 only methods
+#	include <Windows.h>
+#else
+	// Unix/Linux only
+#endif
 
 // Project includes
 #include <Core/Common/Exceptions.h>
@@ -51,7 +57,11 @@ public:
 			std::string param_value = (*it++).value().toStdString();
 			int param_overwrite = (*it++).value().toInt();
 
+#ifdef _WIN32
+			*result = Runtime::IntegerObject(SetEnvironmentVariable(param_name.c_str(), param_value.c_str()));
+#else
 			*result = Runtime::IntegerObject(setenv(param_name.c_str(), param_value.c_str(), param_overwrite));
+#endif
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
