@@ -8,7 +8,6 @@
 // Project includes
 #include "Ascii.h"
 #include "AssertMsg.h"
-#include "Fork.h"
 #include "GetChar.h"
 #include "GetEnv.h"
 #include "PutEnv.h"
@@ -19,6 +18,13 @@
 #include "System.h"
 #include "Write.h"
 #include "WriteLn.h"
+
+#ifdef _WIN32
+	// Win32 only methods
+#else
+	// Unix/Linux only
+#	include "Fork.h"
+#endif
 
 // Namespace declarations
 
@@ -98,7 +104,6 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	// Generic methods
 	methods.push_back(new Ascii());
 	methods.push_back(new Assert());
-	methods.push_back(new Fork());
 	methods.push_back(new GetChar());
 	methods.push_back(new GetEnv());
 	methods.push_back(new PutEnv());
@@ -113,6 +118,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	// Win32 only methods
 #else
 	// Unix/Linux only methods
+	methods.push_back(new Fork());
 	methods.push_back(new SetKeyboardBlockingMode());
 #endif
 

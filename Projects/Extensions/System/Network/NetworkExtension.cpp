@@ -75,9 +75,13 @@ void SystemNetworkExtension::initialize(IScope* scope)
 	/*
 	 * howto arguments for shutdown(2), specified by Posix.1g.
 	 */
+#ifdef _WIN32
+	 // Win32 only
+#else
 	scope->define("SHUT_RD", new Runtime::IntegerObject(SHUT_RD));		// shut down the reading side
 	scope->define("SHUT_WR", new Runtime::IntegerObject(SHUT_WR));		// shut down the writing side
 	scope->define("SHUT_RDWR", new Runtime::IntegerObject(SHUT_RDWR));	// shut down both sides
+#endif
 
 	// finalize initialization
 	AExtension::initialize(scope);
