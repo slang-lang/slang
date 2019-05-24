@@ -113,18 +113,14 @@ public object Interpreter {
     private string processConstantExpression(ConstantExpression exp) const throws {
         //print("processConstantExpression(" + exp.toString() + ")");
 
-        String obj;
         string name = (ConstantExpression exp).mConstant;
 
-        var sym const = mCurrentScope.lookup(name);
+        var sym = mCurrentScope.lookup(name);
         if ( !sym ) {
             throw new RuntimeException("Symbol '" + name + "' is unknown");
         }
-        else {
-            obj = (LocalSymbol sym).mValue;
-        }
 
-        return string obj;
+        return cast<string>( (LocalSymbol sym).mValue );
     }
 
     private string processExpression(Expression exp) modify throws {
@@ -138,7 +134,7 @@ public object Interpreter {
                 return string processBooleanBinaryExpression(BooleanBinaryExpression exp);
             }
             case ExpressionType.ConstantExpression: {
-	        return string processConstantExpression(ConstantExpression exp);
+	            return string processConstantExpression(ConstantExpression exp);
             }
             case ExpressionType.LiteralBooleanExpression: {
                 return string processLiteralBooleanExpression(LiteralBooleanExpression exp);
@@ -242,18 +238,14 @@ public object Interpreter {
     private string processVariableExpression(VariableExpression exp) const throws {
         //print("processVariableExpression(" + exp.toString() + ")");
 
-        String obj;
         string name = (VariableExpression exp).mVariable;
 
-        var sym const = mCurrentScope.lookup(name);
+        var sym = mCurrentScope.lookup(name);
         if ( !sym ) {
             throw new RuntimeException("Symbol '" + name + "' is unknown");
         }
-        else {
-            obj = (LocalSymbol sym).mValue;
-        }
 
-        return string obj;
+        return cast<string>( (LocalSymbol sym).mValue );
     }
 
     private void visit(Node node) modify throws {
@@ -279,7 +271,6 @@ public object Interpreter {
     private void visitAssignStatement(AssignmentStatement assign) modify throws {
         //print("visitAssignStatement()");
 
-        String obj;
         string name = (VariableExpression assign.mLeft).mVariable;
 
         var sym = mCurrentScope.lookup(name);
@@ -293,7 +284,7 @@ public object Interpreter {
             throw new RuntimeException("Symbol '" + name + "' is const");
         }
 
-        obj = (LocalSymbol sym).mValue;
+        var obj = (LocalSymbol sym).mValue;
 
         obj = processExpression(assign.mRight);
     }
@@ -363,11 +354,8 @@ public object Interpreter {
         //print("visitForStatement()");
 
         var sym = mCurrentScope.lookup(stmt.mLoopVariable.mVariable);
-        if ( !sym ) {
+        if ( !sym || !(LocalSymbol sym) ) {
             throw new RuntimeException("invalid symbol '" + stmt.mLoopVariable.mVariable + "'");
-        }
-        if ( !(LocalSymbol sym) ) {
-            throw new RuntimeException("invalid symbol type '" + stmt.mLoopVariable.mVariable + "'");
         }
 
         var obj = (LocalSymbol sym).mValue;
