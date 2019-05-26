@@ -71,6 +71,11 @@ Runtime::ExceptionData& Thread::exception()
 	return mExceptionData;
 }
 
+void Thread::exception(Runtime::ExceptionData data)
+{
+	mExceptionData = data;
+}
+
 void Thread::exception(Runtime::Object* data, const Common::Position& position)
 {
 	mExceptionData = Runtime::ExceptionData(data, position, stackTrace());

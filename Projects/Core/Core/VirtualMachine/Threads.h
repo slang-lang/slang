@@ -70,6 +70,7 @@ public:	// StackFrame specificas
 	std::string stackTrace() const;
 
 	Runtime::ExceptionData& exception();
+	void exception(Runtime::ExceptionData data);
 	void exception(Runtime::Object* data, const Common::Position& position = Common::Position());
 
 	void popFrame();
