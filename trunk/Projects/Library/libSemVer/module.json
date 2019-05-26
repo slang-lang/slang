@@ -1,0 +1,13 @@
+{
+  "name": "Semantic version number library",
+  "name_short": "libSemVer",
+  "version": "0.0.1",
+  "description": "SemVer is an object that represents a semantic version number, which is able to serialize and deserialize itself from and to a string.
+Find out more about semantic versioning under https://semver.org",
+  "dependencies": [
+  ],
+  "target": {
+    "directory": "libSemVer",
+    "type": "internal"
+  }
+}
