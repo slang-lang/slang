@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Tools.h>
+#include <Utils.h>
 
 // Namespace declarations
 
@@ -21,18 +22,18 @@ const std::string DELIMITERS	= CONTROLCHARS + WHITESPACES;
 
 Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
 : mContent(content),
-  mFilename(filename)
+  mFilename(filename),
+  mLanguageFeatures(provideLanguageFeatures()),
+  mKeywords(provideKeyWords()),
+  mModifiers(provideModifiers()),
+  mReservedWords(provideReservedWords()),
+  mTypes(provideAtomicTypes())
 {
-	mLanguageFeatures = provideLanguageFeatures();
-	mKeywords = provideKeyWords();
-	mModifiers = provideModifiers();
-	mReservedWords = provideReservedWords();
-	mTypes = provideAtomicTypes();
 }
 
 void Tokenizer::addToken(const std::string& con, const Common::Position& position)
 {
-	std::string content = con;
+	std::string content = TRYMOVE(con);
 
 	Token::Category::E category = Token::Category::None;
 	bool isOptional = false;
