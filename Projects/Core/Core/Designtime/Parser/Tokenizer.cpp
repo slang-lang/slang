@@ -46,7 +46,6 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( content == ".." ) { type = Token::Type::OPERATOR_RANGE; }
 	else if ( content == ";" ) { type = Token::Type::SEMICOLON; }
 	else if ( content == ":" ) { type = Token::Type::COLON; }
-	//else if ( content == "\"" ) { type = Token::Type::QUOTATION_DOUBLE; }
 	else if ( content == "[" ) { type = Token::Type::BRACKET_OPEN; }
 	else if ( content == "]" ) { type = Token::Type::BRACKET_CLOSE; }
 	else if ( content == "{" ) { type = Token::Type::BRACKET_CURLY_OPEN; }
@@ -60,10 +59,10 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( content == "%" ) { category = Token::Category::Operator; type = Token::Type::MATH_MODULO; }
 	else if ( content == "*" ) { category = Token::Category::Operator; type = Token::Type::MATH_MULTIPLY; }
 	else if ( content == "-" ) { category = Token::Category::Operator; type = Token::Type::MATH_SUBTRACT; }
-	else if ( content == OPERATOR_IS ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_IS; }
 	else if ( content == "?" ) { category = Token::Category::Operator; type = Token::Type::QUESTION_MARK; }
 	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_NOT; }
 	else if ( content == "~" ) { category = Token::Category::Operator; type = Token::Type::TILDE; }
+	else if ( content == OPERATOR_IS ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_IS; }
 	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
 	else if ( isDouble(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_DOUBLE;
 		// remove trailing 'd' character
@@ -377,7 +376,7 @@ void Tokenizer::process()
 	char lastChar = 0;
 	Common::Position pos(mFilename, 1, 1);
 
-	while ( offset < size ) {
+	while ( offset <= size ) {
 		char thisChar = mContent[offset++];
 
 		// preprocessor directives as single line comments '#'
