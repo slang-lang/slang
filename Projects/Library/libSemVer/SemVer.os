@@ -9,7 +9,7 @@ private object SemVer {
 	 * Static factory, parses a string and returns a valid SemVer object
 	 * throws string exception
 	 */
-	public SemVer parseFromString(string version) static throws {
+	public SemVer FromString(string version) static throws {
 		int dot1 = strfind(version, ".");
 		if ( !dot1 ) {
 			throw "invalid semantic version number '" + version + "'";
@@ -24,28 +24,32 @@ private object SemVer {
 			throw "invalid semantic version number '" + version + "'";
 		}
 
+		var dash = strfind(version, "-", dot2 + 1);
+		var label = (dash != -1) ? substr(version, dash + 1) : "";
+
 		return new SemVer( cast<int>( substr(version, 0, dot1) ),
 				   cast<int>( substr(version, dot1 + 1, dot2) ),
-				   cast<int>( substr(version, dot2 + 1) ) );
+				   cast<int>( substr(version, dot2 + 1) ),
+				   label );
 	}
 
 
 	/*
-	 * Public members which indicate the major, minor and bugfix version
+	 * Public members which indicate the major, minor, bugfix version and an optional label
 	 */
 	public int Bugfix const;
-	//public string Label const;
+	public string Label const;
 	public int Major const;
 	public int Minor const;
 
 	/*
 	 * Default constructor
 	 */
-	public void Constructor(int _major, int _minor, int _bugfix /*, string _label = ""*/) {
+	public void Constructor(int _major, int _minor, int _bugfix , string _label = "") {
 		Major = _major;
 		Minor = _minor;
 		Bugfix = _bugfix;
-		//Label = _label;
+		Label = _label;
 	}
 
 	/*
@@ -75,11 +79,9 @@ private object SemVer {
 	public bool operator<(SemVer other const) const {
 		if ( Major == other.Major ) {
 			if ( Minor == other.Minor ) {
-/* additional labels are not supported yet
 				if ( Bugfix == other.Bugfix ) {
 					return Label < other.Label;
 				}
-*/
 
 				return Bugfix < other.Bugfix;
 			}
@@ -94,7 +96,10 @@ private object SemVer {
 	 * string cast operator
 	 */
 	public string =operator(string) const {
-		return cast<string>( Major ) + "." + cast<string>( Minor ) + "." + cast<string>( Bugfix );
+		return cast<string>( Major )
+			+ "." + cast<string>( Minor )
+			+ "." + cast<string>( Bugfix )
+			+ Label ? "-" + Label : "";
 	}
 }
 
