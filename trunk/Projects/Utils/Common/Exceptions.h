@@ -22,7 +22,7 @@ namespace Exceptions {
 class Exception : public std::exception
 {
 public:
-	Exception(const std::string& text)
+	explicit Exception(const std::string& text)
 	: mText(text)
 	{ }
 	virtual ~Exception() throw() { }
