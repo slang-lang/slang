@@ -323,11 +323,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	}
 
 	// create initialized reference of new object
-#if __cplusplus > 201103L
-	*result = std::move( *mRepository->createReference(exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final) );
-#else
-	*result = *mRepository->createReference(exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
-#endif
+	*result = TRYMOVE(*mRepository->createReference(exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final));
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
