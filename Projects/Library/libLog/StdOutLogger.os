@@ -6,12 +6,6 @@ import LibLog;
 
 
 public object StdOutLogger implements ILogger {
-	// Members
-	private IContext mContext;
-	private bool mHasParent const;
-	private string mKey const;
-	private int mKeyLength const;
-
 	/*
 	 * Specialised constructor
 	 */
@@ -30,7 +24,7 @@ public object StdOutLogger implements ILogger {
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(ILogger parent ref, string key, int keyLength) throws {
+	public void Constructor(ILogger parent, string key, int keyLength) throws {
 		if ( !parent ) {
 			throw new Exception("missing parent logger");
 		}
@@ -86,5 +80,13 @@ public object StdOutLogger implements ILogger {
 	public void warning(string message) modify {
 		mContext.write("[WARN ] [" + mKey + "]   " + message);
 	}
+
+	/*
+	 * Private members
+	 */
+	private IContext mContext;
+	private bool mHasParent const;
+	private string mKey const;
+	private int mKeyLength const;
 }
 

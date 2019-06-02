@@ -6,16 +6,11 @@ import LibLog;
 
 
 public object Logger implements ILogger {
-	// Members
-	private IContext mContext;
-	private string mKey const;
-    private int mKeyLength;
-
 	/*
 	 * Default constructor
      * expects a parent logger, uses parent's keylength
 	 */
-    public void Constructor(ILogger parent ref, string key) throws {
+    public void Constructor(ILogger parent, string key) throws {
 		if ( !parent ) {
 			throw new Exception("missing parent logger");
 		}
@@ -27,7 +22,7 @@ public object Logger implements ILogger {
      * Expended constructor
      * expects parent logger, uses provided key length
      */
-	public void Constructor(ILogger parent ref, string key, int keyLength) throws {
+	public void Constructor(ILogger parent, string key, int keyLength) throws {
 		if ( !parent ) {
 			throw new Exception("missing parent logger");
 		}
@@ -82,5 +77,12 @@ public object Logger implements ILogger {
 	public void warning(string message) modify {
 		mContext.write("[WARN ] [" + mKey + "]   " + message);
 	}
+
+	/*
+	 * Private members
+	 */
+	private IContext mContext;
+	private string mKey const;
+    private int mKeyLength;
 }
 
