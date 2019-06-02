@@ -37,6 +37,7 @@ private:
 
 private:
 	int mBugfix;
+	std::string mLabel;
 	bool mIsValid;
 	int mMajor;
 	int mMinor;
