@@ -78,7 +78,7 @@ static const char* TMP = "/tmp/";
 
 
 void addRestriction(const StringList& params);
-void checkOutdatedModules(Repository::Modules& outdatedModules);
+void checkOutdatedModules(Modules& outdatedModules);
 void cleanCache();
 Dependencies collectDependencies(const Json::Value& dependencies);
 void collectLocalModuleData();
@@ -185,17 +185,17 @@ void addRestriction(const StringList& params)
 	storeConfig();
 }
 
-void checkOutdatedModules(Repository::Modules& outdatedModules)
+void checkOutdatedModules(Modules& outdatedModules)
 {
 	// compare new index.json with local module information:
 	// find all folders in local <repo> folder and compare their corresponding <repo>/<module>/module.json [version] field
 	// with the version in the index.json file
 
-	Repository::Modules local = mLocalRepository.getModules();
-	Repository::Modules remote = mRemoteRepository.getModules();
+	Modules local = mLocalRepository.getModules();
+	Modules remote = mRemoteRepository.getModules();
 
-	for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
-		for ( Repository::Modules::const_iterator remoteIt = remote.begin(); remoteIt != remote.end(); ++remoteIt ) {
+	for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+		for ( Modules::const_iterator remoteIt = remote.begin(); remoteIt != remote.end(); ++remoteIt ) {
 			if ( localIt->mShortName == remoteIt->mShortName && localIt->mVersion < remoteIt->mVersion ) {
 				outdatedModules.insert(*remoteIt);
 			}
@@ -470,10 +470,10 @@ void info(const StringList& params)
 	collectLocalModuleData();
 
 	bool found = false;
-	Repository::Modules local = mLocalRepository.getModules();
+	Modules local = mLocalRepository.getModules();
 	std::string demandedModule = params.front();
 
-	for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+	for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
 		if ( localIt->mShortName == demandedModule ) {
 			found = true;
 
@@ -612,8 +612,8 @@ void install(const StringList& params)
 		);
 	}
 
-	Repository::Modules missing = mMissingDependencies.getModules();
-	for ( Repository::Modules::const_iterator moduleIt = missing.begin(); moduleIt != missing.end(); ++moduleIt ) {
+	Modules missing = mMissingDependencies.getModules();
+	for ( Modules::const_iterator moduleIt = missing.begin(); moduleIt != missing.end(); ++moduleIt ) {
 		Module tmp;
 
 		if ( mLocalRepository.getModule(moduleIt->mShortName, tmp) ) {
@@ -696,11 +696,11 @@ void list()
 {
 	collectLocalModuleData();
 
-	Repository::Modules local = mLocalRepository.getModules();
+	Modules local = mLocalRepository.getModules();
 
 	std::cout << local.size() << " module(s) installed." << std::endl;
 
-	for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+	for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
 		std::cout << localIt->mShortName << "(" << localIt->mVersion.toString() << "): " << localIt->mLongName << std::endl;
 	}
 }
@@ -853,12 +853,12 @@ void prepareModuleInstallation(const std::string& repo, const std::string& modul
 
 	Module module = collectModuleData(path, filename);
 
-	Repository::Modules local = mLocalRepository.getModules();
+	Modules local = mLocalRepository.getModules();
 	for ( Dependencies::const_iterator depIt = module.mDependencies.begin(); depIt != module.mDependencies.end(); ++depIt ) {
 		bool found = false;
 
 		// look up dependency in already installed modules
-		for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+		for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
 			if ( localIt->mShortName == depIt->mModule ) {
 				found = true;
 				break;
@@ -942,12 +942,12 @@ void remove(const StringList& params)
 
 	collectLocalModuleData();
 
-	Repository::Modules local = mLocalRepository.getModules();
+	Modules local = mLocalRepository.getModules();
 
 	for ( StringList::const_iterator moduleIt = params.begin(); moduleIt != params.end(); ++ moduleIt ) {
 		bool found = false;
 
-		for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+		for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
 			if ( localIt->mShortName == (*moduleIt) ) {
 				found = true;
 
@@ -1103,7 +1103,7 @@ void upgrade(StringList params)
 		update();
 	}
 
-	Repository::Modules outdatedModules;
+	Modules outdatedModules;
 	checkOutdatedModules(outdatedModules);
 
 	if ( outdatedModules.empty() ) {
@@ -1116,7 +1116,7 @@ void upgrade(StringList params)
 		mParameters.clear();
 
 		std::cout << "New module(s): ";
-		for ( Repository::Modules::const_iterator it = outdatedModules.begin(); it != outdatedModules.end(); ++it ) {
+		for ( Modules::const_iterator it = outdatedModules.begin(); it != outdatedModules.end(); ++it ) {
 			std::cout << it->mShortName << "(" << it->mVersion.toString() << ")" << " ";
 
 			// if params contains values upgrade only the modules that are set in mParameters

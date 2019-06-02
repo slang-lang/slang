@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <set>
 #include <string>
 
 // Project includes
@@ -55,6 +56,8 @@ public:
 	std::string mURL;
 	SemanticVersionNumber mVersion;
 };
+
+typedef std::set<Module> Modules;
 
 
 #endif
