@@ -150,12 +150,15 @@ void addRestriction(const StringList& params)
 
 	collectLocalModuleData();
 
+	Json::Value& restrictions = mConfig["restrictions"];
+
 	StringList::const_iterator paramIt = params.begin();
 
 	std::string module = (*paramIt);
 
-	Json::Value value;
+	restrictions.removeMember(module);
 
+	Json::Value value;
 	while ( paramIt != params.end() ) {
 		++paramIt;
 
@@ -175,7 +178,6 @@ void addRestriction(const StringList& params)
 		}
 	}
 
-	Json::Value& restrictions = mConfig["restrictions"];
 	restrictions[module] = value;
 
 	storeConfig();
@@ -204,11 +206,11 @@ bool checkRestrictions(const Module& module)
 	for ( Restrictions::const_iterator resIt = mLocalRestrictions.begin(); resIt != mLocalRestrictions.end(); ++resIt ) {
 		if ( resIt->mModule == module.mShortName ) {
 			// check minimal version
-			if ( module.mVersion < resIt->mMinVersion ) {
+			if ( resIt->mMinVersion.isValid() && module.mVersion < resIt->mMinVersion ) {
 				return false;
 			}
 			// check maximum version
-			if ( resIt->mMaxVersion < module.mVersion ) {
+			if ( resIt->mMaxVersion.isValid() && resIt->mMaxVersion < module.mVersion ) {
 				return false;
 			}
 		}
@@ -783,10 +785,20 @@ void loadConfig()
 
 void loadRestrictions()
 {
+	// add hardcoded max restriction for ObjectiveScript version (this can be overwritten by the real restriction config)
+	mLocalRestrictions.insert(
+		Restriction(PRODUCT_NAME, "", PRODUCT_VERSION)
+	);
+
+	// load restrictions from config
 	Json::Value restrictions = mConfig["restrictions"];
 	for ( Json::Value::Members::const_iterator it = restrictions.members().begin(); it != restrictions.members().end(); ++it ) {
 		std::string moduleName = (*it).key();
-		std::string versionMin = (*it)["version_min"].asString();
+
+		std::string versionMin;
+		if ( (*it).isMember("version_min") ) {
+			versionMin = (*it)["version_min"].asString();
+		}
 		std::string versionMax;
 		if ( (*it).isMember("version_max") ) {
 			versionMax = (*it)["version_max"].asString();
@@ -1066,18 +1078,18 @@ void search(const StringList& params)
 			return;
 		}
 
+		std::string description = (*it).isMember("description") ? (*it)["description"].asString() : "";
 		std::string name = (*it)["name"].asString();
+		std::string version = (*it).isMember("version") ? (*it)["version"].asString() : "";
 
 		if ( findCaseInsensitive(name, lookup) != std::string::npos ) {
-			result.push_back(name + "(" + (*it)["version"].asString() + ")");
+			result.push_back(name + "(" + version + ")" + (description.empty() ? "" : ": " + description));
+			continue;
 		}
 
-		if ( (*it).isMember("description") ) {
-			std::string description = (*it)["description"].asString();
-
-			if ( findCaseInsensitive(description, lookup) != std::string::npos ) {
-				result.push_back(name + "(" + (*it)["version"].asString() + ")");
-			}
+		if ( findCaseInsensitive(description, lookup) != std::string::npos ) {
+			result.push_back(name + "(" + version + ")" + (description.empty() ? "" : ": " + description));
+			continue;
 		}
 	}
 
