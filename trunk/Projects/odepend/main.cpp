@@ -684,19 +684,16 @@ void installModule(const std::string& repo, const std::string& module)
 	std::string type = config["target"]["type"].asString();
 	std::string url;
 
-	if ( type == "internal" ) {
-		if ( config["target"].isMember("url") ) {
-			url = repo + MODULES + config["target"]["url"].asString();
-		}
-		else {
-			url = repo + MODULES + config["name_short"].asString() + VERSION_SEPARATOR + config["version"].asString() + ".tar.gz";
-		}
+	if ( type == "external" ) {
+		// target is located on a different server
+		url = config["target"]["url"].asString();
 	}
-	else if ( type == "virtual" ) {
-		// no url
+	else if ( type == "internal" ) {
+		// target is located on our own server
+		url = repo + MODULES + config["name_short"].asString() + VERSION_SEPARATOR + config["version"].asString() + ".tar.gz";
 	}
 	else {
-		std::cout << "!!! Currently only internal targets are supported" << std::endl;
+		std::cout << "!!! invalid target type specified" << std::endl;
 		return;
 	}
 
@@ -708,14 +705,14 @@ void installModule(const std::string& repo, const std::string& module)
 		return;
 	}
 
-	if ( type != "virtual ") {	// extract module archive to "<module>/"
-		execute("tar xf " + module_archive + " -C " + mLibraryFolder);
-	}
+	execute("tar xf " + module_archive + " -C " + mLibraryFolder);
 
+/*
 	Module tmpModule = collectModuleData(mBaseFolder + CACHE_MODULES, module + ".json");
 
 	// copy module config to "<module>/module.json"
 	execute("cp " + module_config + " " + mLibraryFolder + tmpModule.mTargetDirectory + "/module.json");
+*/
 }
 
 bool isLocalLibrary()
