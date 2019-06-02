@@ -26,6 +26,7 @@
 #include <Utils.h>
 #include "Defines.h"
 #include "Repository.h"
+#include "Restriction.h"
 
 // Namespace declarations
 
@@ -80,8 +81,8 @@ static const char* VERSION_SEPARATOR = "_";
 
 void addRestriction(const StringList& params);
 void checkOutdatedModules(Modules& outdatedModules);
+bool checkRestrictions(const Module& module);
 void cleanCache();
-Dependencies collectDependencies(const Json::Value& dependencies);
 void collectLocalModuleData();
 Module collectModuleData(const std::string& path, const std::string& filename);
 bool contains(const StringList& list, const std::string& value);
@@ -99,7 +100,8 @@ void installModule(const std::string& repo, const std::string& module);
 bool isLocalLibrary();
 void list();
 void loadConfig();
-void prepareModuleInstallation(const std::string& repo, const std::string& moduleName, const std::string& version);
+void loadRestrictions();
+void prepareModuleInstallation(const std::string& repo, const Module& installModule);
 bool prepareRemoteRepository();
 void printUsage();
 void printVersion();
@@ -122,6 +124,7 @@ std::string mCurrentFolder;
 StringList mDownloadedFiles;
 std::string mLibraryFolder;
 Repository mLocalRepository("local");
+Restrictions mLocalRestrictions;
 Utils::Common::StdOutLogger mLogger;
 Repository mMissingDependencies("missing");
 StringList mParameters;
@@ -151,8 +154,6 @@ void addRestriction(const StringList& params)
 
 	std::string module = (*paramIt);
 
-	removeRestriction(module);
-
 	Json::Value value;
 
 	while ( paramIt != params.end() ) {
@@ -174,14 +175,8 @@ void addRestriction(const StringList& params)
 		}
 	}
 
-	if ( !mConfig.isMember("restrictions") ) {
-		mConfig.addMember("restrictions", "");
-	}
-
-	Json::Value restriction;
-	restriction.addMember(module, value);
-
-	mConfig["restrictions"].addElement(restriction);
+	Json::Value& restrictions = mConfig["restrictions"];
+	restrictions[module] = value;
 
 	storeConfig();
 }
@@ -204,6 +199,24 @@ void checkOutdatedModules(Modules& outdatedModules)
 	}
 }
 
+bool checkRestrictions(const Module& module)
+{
+	for ( Restrictions::const_iterator resIt = mLocalRestrictions.begin(); resIt != mLocalRestrictions.end(); ++resIt ) {
+		if ( resIt->mModule == module.mShortName ) {
+			// check minimal version
+			if ( module.mVersion < resIt->mMinVersion ) {
+				return false;
+			}
+			// check maximum version
+			if ( resIt->mMaxVersion < module.mVersion ) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 void cleanCache()
 {
 	// delete all downloaded files from cache
@@ -215,23 +228,6 @@ void cleanCache()
 	for ( StringList::const_iterator it = mDownloadedFiles.begin(); it != mDownloadedFiles.end(); ++it ) {
 		execute("rm " + (*it));
 	}
-}
-
-Dependencies collectDependencies(const Json::Value& dependencies)
-{
-	Dependencies result;
-
-	for ( Json::Value::Members::const_iterator depIt = dependencies.members().begin(); depIt != dependencies.members().end(); ++depIt ) {
-		std::string moduleName = (*depIt)["module"].asString();
-		std::string version_max = depIt->isMember("version_max") ? (*depIt)["version_max"].asString() : "";
-		std::string version_min = (*depIt)["version_min"].asString();
-
-		result.insert(
-			Dependency(moduleName, version_min, version_max)
-		);
-	}
-
-	return result;
 }
 
 void collectLocalModuleData()
@@ -365,11 +361,9 @@ void createLocalLibrary()
 		repository.addMember("name", "main");
 		repository.addMember("url", "https://objectivescript.ticketsharing.net/repo/stable");
 
-		Json::Array restrictions;
-
 		Json::Value config;
 		config.addMember("repository", repository);
-		config.addMember("restrictions", restrictions);
+		config.addMember("restrictions", Json::Value());
 
 		writeJsonFile(mCurrentFolder + CONFIG_FILE, config);
 	}
@@ -578,7 +572,8 @@ void install(const StringList& params)
 {
 	// (1) prepare dependencies
 	// (2) install missing dependencies
-	// (3) install requested modules
+	// (3) check if we don't violate any module restrictions
+	// (4) install requested modules
 
 	if ( params.empty() ) {
 		std::cout << "!!! Invalid number of parameters" << std::endl;
@@ -611,8 +606,10 @@ void install(const StringList& params)
 			forceVersion = true;
 		}
 
-		prepareModuleInstallation(mRemoteRepository.getURL(), moduleName, version);
+		prepareModuleInstallation(mRemoteRepository.getURL(), Module(moduleName, version));
 	}
+
+	bool allowInstall = true;
 
 	// add all other requested modules to missing modules to prevent multiple installations of the same modules
 	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
@@ -632,23 +629,30 @@ void install(const StringList& params)
 			forceVersion = true;
 		}
 
-		mMissingDependencies.addModule(
-			Module(moduleName, version)
-		);
-	}
+		Module missingModule(moduleName, version);
 
-	Modules missing = mMissingDependencies.getModules();
-	for ( Modules::const_iterator moduleIt = missing.begin(); moduleIt != missing.end(); ++moduleIt ) {
-		Module tmp;
-
-		if ( mLocalRepository.getModule(moduleIt->mShortName, tmp) ) {
-			if ( !forceVersion && !(tmp.mVersion < moduleIt->mVersion) ) {
-				std::cout << "Same or newer version (" << tmp.mVersion.toString() << " vs " << moduleIt->mVersion.toString() << ") of module \"" << moduleIt->mShortName << "\" already installed" << std::endl;
-				continue;
-			}
+		if ( !checkRestrictions(missingModule) ) {
+			allowInstall = false;
+			std::cout << "!!! Module " << missingModule.mShortName << "(" << missingModule.mVersion.toString() << ") cannot be installed due to current module restrictions" << std::endl;
 		}
 
-		installModule(mRemoteRepository.getURL(), moduleIt->mShortName);
+		mMissingDependencies.addModule(missingModule);
+	}
+
+	if ( allowInstall ) {
+		Modules missing = mMissingDependencies.getModules();
+		for ( Modules::const_iterator moduleIt = missing.begin(); moduleIt != missing.end(); ++moduleIt ) {
+			Module tmp;
+
+			if ( mLocalRepository.getModule(moduleIt->mShortName, tmp) ) {
+				if ( !forceVersion && !(tmp.mVersion < moduleIt->mVersion) ) {
+					std::cout << "Same or newer version (" << tmp.mVersion.toString() << " vs " << moduleIt->mVersion.toString() << ") of module \"" << moduleIt->mShortName << "\" already installed" << std::endl;
+					continue;
+				}
+			}
+
+			installModule(mRemoteRepository.getURL(), moduleIt->mShortName);
+		}
 	}
 }
 
@@ -771,7 +775,26 @@ void loadConfig()
 	}
 
 	if ( !mConfig.isMember("restrictions") ) {
-		mConfig.addMember("restrictions", Json::Array());
+		mConfig.addMember("restrictions", Json::Value());
+	}
+
+	loadRestrictions();
+}
+
+void loadRestrictions()
+{
+	Json::Value restrictions = mConfig["restrictions"];
+	for ( Json::Value::Members::const_iterator it = restrictions.members().begin(); it != restrictions.members().end(); ++it ) {
+		std::string moduleName = (*it).key();
+		std::string versionMin = (*it)["version_min"].asString();
+		std::string versionMax;
+		if ( (*it).isMember("version_max") ) {
+			versionMax = (*it)["version_max"].asString();
+		}
+
+		mLocalRestrictions.insert(
+			Restriction(moduleName, versionMin, versionMax)
+		);
 	}
 }
 
@@ -855,7 +878,7 @@ void processParameters(int argc, const char* argv[])
 	}
 }
 
-void prepareModuleInstallation(const std::string& repo, const std::string& moduleName, const std::string& version)
+void prepareModuleInstallation(const std::string& repo, const Module& installModule)
 {
 #ifdef ODEPEND_DEBUG
 	std::cout << "Preparing module \"" << moduleName << "(" << version << ")\" from \"" << repo << "\"..." << std::endl;
@@ -866,13 +889,13 @@ void prepareModuleInstallation(const std::string& repo, const std::string& modul
 	// (3) check dependencies against local repository and download module information for missing modules
 
 	std::string path = mBaseFolder + CACHE_MODULES;
-	std::string filename = moduleName + ".json";
+	std::string filename = installModule.mShortName + ".json";
 	std::string module_config = path + filename;
-	std::string url = repo + "/" + MODULES + moduleName + (version.empty() ? ".json" : VERSION_SEPARATOR + version + ".json");
+	std::string url = repo + "/" + MODULES + installModule.mShortName + (installModule.mVersion.isValid() ? VERSION_SEPARATOR + installModule.mVersion.toString() + ".json" : ".json");
 
 	bool result = download(url, module_config);
 	if ( !result ) {
-		std::cout << "!!! Download of module information for \"" << moduleName << "\" failed" << std::endl;
+		std::cout << "!!! Download of module information for \"" << installModule.mShortName << "\" failed" << std::endl;
 		return;
 	}
 
@@ -898,7 +921,7 @@ void prepareModuleInstallation(const std::string& repo, const std::string& modul
 
 			mMissingDependencies.addModule(dependent);
 
-			prepareModuleInstallation(repo, dependent.mShortName, dependent.mVersion.toString());
+			prepareModuleInstallation(repo, Module(dependent.mShortName, dependent.mVersion));
 		}
 	}
 }
@@ -927,6 +950,7 @@ void purge(const StringList& params)
 {
 	// (1) remove the configuration of the requested modules
 	// (2) remove the modules themselves
+	// (3) store configuration
 
 	if ( mParameters.empty() ) {
 		std::cout << "!!! Invalid number of parameters" << std::endl;
@@ -991,17 +1015,7 @@ void remove(const StringList& params)
 void removeRestriction(const std::string& module)
 {
 	Json::Value& restrictions = mConfig["restrictions"];
-	Json::Value::Members members = restrictions.members();
-
-	size_t count = 0;
-	while ( count < members.size() ) {
-		if ( members[count].isMember(module) ) {
-			restrictions.removeElement(count);
-			return;
-		}
-
-		count++;
-	}
+	restrictions.removeMember(module);
 }
 
 void removeRestriction(const StringList& params)
@@ -1042,7 +1056,7 @@ void search(const StringList& params)
 	}
 
 
-	std::string lookup = (!params.size() ? "" : params.front());
+	std::string lookup = params.empty() ? "" : params.front();
 	StringList result;
 
 	Json::Value::Members members = config["modules"].members();

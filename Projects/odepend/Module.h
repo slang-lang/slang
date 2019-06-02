@@ -34,6 +34,7 @@ public:
 public:
 	Module();
 	Module(const std::string& name_short, const std::string& version);
+	Module(const std::string& name_short, const SemanticVersionNumber& version);
 	~Module();
 
 public:
