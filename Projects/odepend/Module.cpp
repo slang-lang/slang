@@ -73,8 +73,11 @@ bool Module::loadFromJson(const Json::Value& value)
 		}
 	}
 
+	// short name is the default value for the target directory
+	mTargetDirectory = value["name_short"].asString();
+
 	if ( value.isMember("target") ) {
-		// directory
+		// override directory if present
 		if ( value["target"].isMember("directory") ) {
 			mTargetDirectory = value["target"]["directory"].asString();
 		}
@@ -83,12 +86,6 @@ bool Module::loadFromJson(const Json::Value& value)
 		if ( value["target"].isMember("url") ) {
 			mURL = value["target"]["url"].asString();
 		}
-		else {
-			mURL = mShortName + "_" + mVersion.toString() + ".tar.gz";
-		}
-	}
-	else {
-		mTargetDirectory = value["name_short"].asString();
 	}
 
 	return true;
