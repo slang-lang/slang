@@ -75,6 +75,7 @@ static const char* CONFIG_FILE = ".odepend/config.json";
 static const char* CONFIG_FOLDER = ".odepend/";
 static const char* MODULES = "modules/";
 static const char* TMP = "/tmp/";
+static const char* VERSION_SEPARATOR = "_";
 
 
 void addRestriction(const StringList& params);
@@ -283,7 +284,6 @@ Module collectModuleData(const std::string& path, const std::string& filename)
 		return module;
 	}
 
-	module.mDependencies = collectDependencies(config["dependencies"]);
 	module.mInstalledDirectory = path;
 
 	return module;
@@ -323,14 +323,14 @@ void create(const StringList& params)
 	std::string moduleName = module.mShortName;
 
 	{	// create version specific module information ("<module>_<version>.json")
-		std::cout << "Creating module information \"" << moduleName + "_" + module.mVersion.toString() + ".json\"" << std::endl;
+		std::cout << "Creating module information \"" << moduleName + VERSION_SEPARATOR + module.mVersion.toString() + ".json\"" << std::endl;
 
-		execute("cp " + path + "/" + filename + " " + moduleName + "_" + module.mVersion.toString() + ".json");
+		execute("cp " + path + "/" + filename + " " + moduleName + VERSION_SEPARATOR + module.mVersion.toString() + ".json");
 	}
 	{	// create package ("<module>_<version>.tar.gz")
-		std::cout << "Creating module package \"" << moduleName + "_" + module.mVersion.toString() + ".tar.gz\"" << std::endl;
+		std::cout << "Creating module package \"" << moduleName + VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz\"" << std::endl;
 
-		execute("tar -cjf " + moduleName + "_" + module.mVersion.toString() + ".tar.gz " + path);
+		execute("tar -cjf " + moduleName + VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz " + path);
 	}
 }
 
@@ -349,21 +349,18 @@ void createBasicFolderStructure()
 	if ( !Utils::Tools::Files::exists(path) ) {
 		execute("mkdir -p " + path);
 	}
-
-	// create config file
-	//execute("touch " + mLibraryFolder + CONFIG_FILE);
 }
 
 void createLocalLibrary()
 {
 	std::cout << "Preparing current directory for odepend..." << std::endl;
 
-	std::string filename = mCurrentFolder + CONFIG_FILE;
-
-	if ( !Utils::Tools::Files::exists(filename) ) {
+	if ( !Utils::Tools::Files::exists(mCurrentFolder + CONFIG_FOLDER) ) {
 		// create folder for library config
 		execute("mkdir " + mCurrentFolder + CONFIG_FOLDER);
+	}
 
+	if ( !Utils::Tools::Files::exists(mCurrentFolder + CONFIG_FILE) ) {
 		Json::Value repository;
 		repository.addMember("name", "main");
 		repository.addMember("url", "https://objectivescript.ticketsharing.net/repo/stable");
@@ -374,7 +371,7 @@ void createLocalLibrary()
 		config.addMember("repository", repository);
 		config.addMember("restrictions", restrictions);
 
-		writeJsonFile(filename, config);
+		writeJsonFile(mCurrentFolder + CONFIG_FILE, config);
 	}
 }
 
@@ -437,10 +434,6 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 
 void execute(const std::string& command)
 {
-//#ifdef ODEPEND_DEBUG
-//	std::cout << "Executing \"" << command << "\"" << std::endl;
-//#endif
-
 	system(command.c_str());
 }
 
@@ -460,7 +453,8 @@ size_t findCaseInsensitive(std::string data, std::string toSearch, size_t pos)
 void info(const StringList& params)
 {
 	// (1) collect local module data
-	// (2) print module information for requested module
+	// (2) update remote repository data
+	// (3) print module information for requested module
 
 	if ( params.empty() || params.size() != 1 ) {
 		std::cout << "!!! Invalid number of parameters" << std::endl;
@@ -468,26 +462,43 @@ void info(const StringList& params)
 	}
 
 	collectLocalModuleData();
+	if ( !prepareRemoteRepository() ) {
+		update();
+	}
 
 	bool found = false;
-	Modules local = mLocalRepository.getModules();
-	std::string demandedModule = params.front();
 
-	for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
-		if ( localIt->mShortName == demandedModule ) {
-			found = true;
+	std::string moduleName;
+	std::string moduleVersion;
 
-			std::cout << localIt->mShortName << "(" << localIt->mVersion.toString() << "): " << localIt->mLongName << std::endl;
-			std::cout << localIt->mDescription << std::endl;
+	Utils::Tools::splitBy(params.front(), ':', moduleName, moduleVersion);
+
+	if ( moduleVersion.empty() ) {
+		Module tmpModule;
+
+		if ( mRemoteRepository.getModule(moduleName, tmpModule) ) {
+			moduleVersion = tmpModule.mVersion.toString();
 		}
 	}
 
-	if ( !found ) {
-		// download module info from repository
+	Module infoModule;
+
+	{	// look up module in local repository
+		Modules local = mLocalRepository.getModules();
+		for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+			if ( localIt->mShortName == moduleName && localIt->mVersion == moduleVersion ) {
+				found = true;
+
+				infoModule = (*localIt);
+			}
+		}
+	}
+
+	if ( !found ) {	// lookup module in remote repository
 		std::string path = mBaseFolder + CACHE_MODULES;
-		std::string filename = demandedModule + ".json";
+		std::string filename = moduleName + ".json";
 		std::string module_config = path + filename;
-		std::string url = mRemoteRepository.getURL() + "/" + MODULES + demandedModule + ".json";
+		std::string url = mRemoteRepository.getURL() + "/" + MODULES + moduleName + VERSION_SEPARATOR + moduleVersion + ".json";
 
 		bool result = download(url, module_config);
 		if ( result ) {
@@ -495,14 +506,28 @@ void info(const StringList& params)
 			if ( tmpModule.isValid() ) {
 				found = true;
 
-				std::cout << tmpModule.mShortName << "(" << tmpModule.mVersion.toString() << "): " << tmpModule.mLongName << std::endl;
-				std::cout << tmpModule.mDescription << std::endl;
+				infoModule = tmpModule;
 			}
 		}
 	}
 
-	if ( !found ) {
-		std::cout << "!!! Requested module \"" << demandedModule << "\" not found" << std::endl;
+	if ( found ) {	// print out module information if found
+		std::cout << infoModule.mShortName << "(" << infoModule.mVersion.toString() << "): " << infoModule.mLongName << std::endl;
+		std::cout << infoModule.mDescription << std::endl;
+		std::cout << std::endl;
+		std::cout << "Dependencies:" << std::endl;
+
+		if ( infoModule.mDependencies.empty() ) {
+			std::cout << "<None>" << std::endl;
+		}
+		else {
+			for ( Dependencies::const_iterator depIt = infoModule.mDependencies.begin(); depIt != infoModule.mDependencies.end(); ++depIt ) {
+				std::cout << depIt->mModule << "\t\t" << "min: " << depIt->mMinVersion << "\t\t" << "max: " << depIt->mMaxVersion << std::endl;
+			}
+		}
+	}
+	else {
+		std::cout << "!!! Requested module \"" << moduleName << "\" not found" << std::endl;
 	}
 }
 
@@ -529,14 +554,14 @@ void init()
 	}
 
 	{	// set current folder
-		char cCurrentPath[FILENAME_MAX];
-		if ( !GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)) )  {
+		char currentPath[FILENAME_MAX];
+		if ( !GetCurrentDir(currentPath, sizeof(currentPath)) )  {
 			throw ObjectiveScript::Common::Exceptions::Exception("invalid current directory!");
 		}
 
-		cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
+		currentPath[sizeof(currentPath) - 1] = '\0'; /* not really required */
 
-		mCurrentFolder = std::string(cCurrentPath) + "/";
+		mCurrentFolder = std::string(currentPath) + "/";
 
 		if ( isLocalLibrary() ) {
 			mBaseFolder = mCurrentFolder + CONFIG_FOLDER;
@@ -658,7 +683,7 @@ void installModule(const std::string& repo, const std::string& module)
 			url = repo + MODULES + config["target"]["url"].asString();
 		}
 		else {
-			url = repo + MODULES + config["name_short"].asString() + "_" + config["version"].asString() + ".tar.gz";
+			url = repo + MODULES + config["name_short"].asString() + VERSION_SEPARATOR + config["version"].asString() + ".tar.gz";
 		}
 	}
 	else if ( type == "virtual" ) {
@@ -669,7 +694,7 @@ void installModule(const std::string& repo, const std::string& module)
 		return;
 	}
 
-	std::string module_archive = mBaseFolder + CACHE_MODULES + module + "_" + config["version"].asString() + ".tar.gz";
+	std::string module_archive = mBaseFolder + CACHE_MODULES + module + VERSION_SEPARATOR + config["version"].asString() + ".tar.gz";
 
 	bool result = download(url, module_archive);
 	if ( !result ) {
@@ -843,7 +868,7 @@ void prepareModuleInstallation(const std::string& repo, const std::string& modul
 	std::string path = mBaseFolder + CACHE_MODULES;
 	std::string filename = moduleName + ".json";
 	std::string module_config = path + filename;
-	std::string url = repo + "/" + MODULES + moduleName + (version.empty() ? ".json" : "_" + version + ".json");
+	std::string url = repo + "/" + MODULES + moduleName + (version.empty() ? ".json" : VERSION_SEPARATOR + version + ".json");
 
 	bool result = download(url, module_config);
 	if ( !result ) {

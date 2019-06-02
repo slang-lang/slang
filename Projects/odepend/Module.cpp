@@ -52,6 +52,20 @@ bool Module::loadFromJson(const Json::Value& value)
 	mShortName = value["name_short"].asString();
 	mVersion = value["version"].asString();
 
+	if ( value.isMember("dependencies") ) {
+		Json::Value dependencies = value["dependencies"];
+
+		for ( Json::Value::Members::const_iterator depIt = dependencies.members().begin(); depIt != dependencies.members().end(); ++depIt ) {
+			std::string moduleName = (*depIt)["module"].asString();
+			std::string version_max = depIt->isMember("version_max") ? (*depIt)["version_max"].asString() : "";
+			std::string version_min = (*depIt)["version_min"].asString();
+
+			mDependencies.insert(
+				Dependency(moduleName, version_min, version_max)
+			);
+		}
+	}
+
 	if ( value.isMember("target") ) {
 		// directory
 		if ( value["target"].isMember("directory") ) {
