@@ -55,7 +55,7 @@ bool Repository::getModule(const std::string& shortName, Module& module) const
 	return false;
 }
 
-const Repository::Modules& Repository::getModules() const
+const Modules& Repository::getModules() const
 {
 	return mModules;
 }
