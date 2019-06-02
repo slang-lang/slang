@@ -4,7 +4,9 @@
   "version": "0.2.3",
   "type": "library",
   "description": "ObjectiveScript core system library",
-  "dependencies": [],
+  "dependencies": [
+    { "module": "ObjectiveScript", "version_min": "0.6.0" }
+  ],
   "target": {
     "directory": "System",
     "type": "internal"
