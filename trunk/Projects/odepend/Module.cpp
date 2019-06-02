@@ -22,6 +22,13 @@ Module::Module(const std::string& name_short, const std::string& version)
 {
 }
 
+Module::Module(const std::string& name_short, const SemanticVersionNumber& version)
+: mActionNeeded(Action::None),
+  mShortName(name_short),
+  mVersion(version)
+{
+}
+
 Module::~Module()
 {
 }

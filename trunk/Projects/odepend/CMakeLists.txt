@@ -12,6 +12,7 @@ SET(HEADERS
 	Dependency.h
 	Module.h
 	Repository.h
+	Restriction.h
 	Version.h
 )
 
