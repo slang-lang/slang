@@ -36,7 +36,8 @@ bool Module::operator==(const Module& other) const
 	return mShortName == other.mShortName;
 }
 
-bool Module::isValid() const {
+bool Module::isValid() const
+{
 	return mVersion.isValid();
 }
 
