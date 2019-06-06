@@ -275,8 +275,6 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		methodSymbol = resolveMethod(getEnclosingMethodScope(scope), exp->mSymbolExpression, params, Visibility::Private);
 	}
 	if ( !methodSymbol ) {
-		//throw Runtime::Exceptions::RuntimeException("method " + (!scope->getFullScopeName().empty() ? scope->getFullScopeName() + "." : "") + exp->mSymbolExpression->toString() + "(" + toString(params) + ") not found");
-
 		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string("NullPointerException"));
 		//*data = Runtime::UserObject(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, std::string("NullPointerException"));
@@ -353,8 +351,6 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 	// resolve current symbol name
 	Symbol* lvalue = scope->resolve(exp->mName, false, Visibility::Designtime);
 	if ( !lvalue ) {
-		//throw Runtime::Exceptions::InvalidAssignment("lvalue '" + exp->mName + "' not found");
-
 		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string("NullPointerException"));
 
@@ -385,7 +381,7 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 		throw Runtime::Exceptions::RuntimeException("invalid lvalue symbol type");
 	}
 
-	*result = *static_cast<Runtime::Object*>(lvalue);
+	*result = *dynamic_cast<Runtime::Object*>(lvalue);
 }
 
 void TreeInterpreter::evaluateTernaryExpression(TernaryExpression* exp, Runtime::Object* result)
