@@ -309,7 +309,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						object->addInheritance((*ancestorIt), ancestor);
 					} break;
 					case Designtime::Ancestor::Type::Replicates: {
-
+						// this is empty by intend
 					} break;
 					case Designtime::Ancestor::Type::Unknown:
 						throw Common::Exceptions::Exception("invalid inheritance detected");
