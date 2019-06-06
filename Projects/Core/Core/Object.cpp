@@ -70,7 +70,6 @@ Object& Object::operator= (const Object& other)
 		mIsAtomicType = other.mIsAtomicType;
 		mIsReference = other.mIsReference;
 		mMemoryLayout = other.mMemoryLayout;
-		mName = other.mName;
 		mParent = other.mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -573,7 +572,7 @@ std::string Object::ToString(unsigned int indent) const
 	result += " " + Mutability::convert(mMutability);
 
 	if ( isAtomicType() ) {
-		result += " = " + getValue().toStdString();
+		result += " = '" + getValue().toStdString() + "'";
 	}
 	else if ( !isValid() ) {
 		result += " = null";
