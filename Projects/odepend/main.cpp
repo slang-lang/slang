@@ -514,11 +514,14 @@ void info(const StringList& params)
 		std::cout << "Dependencies:" << std::endl;
 
 		if ( infoModule.mDependencies.empty() ) {
-			std::cout << "<None>" << std::endl;
+			std::cout << "<none>" << std::endl;
 		}
 		else {
 			for ( Dependencies::const_iterator depIt = infoModule.mDependencies.begin(); depIt != infoModule.mDependencies.end(); ++depIt ) {
-				std::cout << depIt->mModule << "\t\t" << "min: " << depIt->mMinVersion << "\t\t" << "max: " << depIt->mMaxVersion << std::endl;
+				std::cout << depIt->mModule << "\t\t";
+				std::cout << "min: " << (depIt->mMinVersion.empty() ? "<not set>" : depIt->mMinVersion);
+				std::cout << "\t\t" << "max: " << (depIt->mMaxVersion.empty() ? "<not set>" : depIt->mMaxVersion);
+				std::cout << std::endl;
 			}
 		}
 	}
