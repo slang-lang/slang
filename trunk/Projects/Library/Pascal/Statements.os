@@ -13,6 +13,7 @@ public enum StatementType {
 	CompoundStatement,
 	ConstantDeclarationStatement,
 	DeclarationStatement,
+	ExitStatement,
 	ForStatement,
 	FunctionStatement,
 	IfStatement,
@@ -166,6 +167,16 @@ public object DeclarationStatement extends Statement {
 
 	public string toString() const {
 		return mName + ": " + mType + (mValue ? " := " + mValue.toString() : "") + ";";
+	}
+}
+
+public object ExitStatement extends Statement {
+	public void Constructor() {
+		base.Constructor(StatementType.ExitStatement);
+	}
+
+	public string toString() const {
+		return "EXIT";
 	}
 }
 

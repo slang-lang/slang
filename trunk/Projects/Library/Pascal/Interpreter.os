@@ -10,8 +10,11 @@ import SymbolTable;
 
 
 public enum ControlFlow {
-	Exit,
-	Normal;
+        Break,
+        Continue,
+        Exit,
+        Normal,
+        Return;
 }
 
 
@@ -30,8 +33,8 @@ public object RuntimeException const implements IException {
 
 public object Interpreter {
     public void Constructor(Statement program) {
-		mConstants = new Map<string, String>();
-		mProgram = program;
+         mConstants = new Map<string, String>();
+         mProgram = program;
     }
 
     public int run(bool debug = false) modify throws {
@@ -39,10 +42,11 @@ public object Interpreter {
             return -1;
         }
 
-	    if ( debug ) {
-	        print("Interpreting \"" + (ProgramStatement mProgram).mName + "\"...");
-	    }
+        if ( debug ) {
+           print("Interpreting \"" + (ProgramStatement mProgram).mName + "\"...");
+        }
 
+        mControlFlow = ControlFlow.Normal;
         mCurrentScope = new SymbolTable(0, "global");
 
         visitCompoundStatement((ProgramStatement mProgram).mStatements);
@@ -212,7 +216,13 @@ public object Interpreter {
         var result = new LocalSymbol("RESULT", exp.mResultType, false, new String());
         mCurrentScope.declare(Symbol result);
 
-        visitStatement(Statement exp.mMethod.mBody);
+        // reset control flow to normal to allow method execution
+	mControlFlow = ControlFlow.Normal;
+
+        visitCompoundStatement(exp.mMethod.mBody);
+
+        // reset control flow to normal after method execution
+	mControlFlow = ControlFlow.Normal;
 
         var resultValue = string result.mValue;
         mCurrentScope = oldScope;
@@ -285,7 +295,6 @@ public object Interpreter {
         }
 
         var obj = (LocalSymbol sym).mValue;
-
         obj = processExpression(assign.mRight);
     }
 
@@ -310,25 +319,34 @@ public object Interpreter {
         }
     }
 
-    protected void visitCompoundStatement(CompoundStatement compound) modify {
+    protected void visitCompoundStatement(CompoundStatement compound) modify throws {
         //print("visitCompoundStatement()");
 
         var oldScope = mCurrentScope;
         mCurrentScope = new SymbolTable(oldScope.mLevel + 1, "", oldScope);
 
-        if ( compound.mConstantDeclarations ) {
-            visitConstantDeclarationStatement(compound.mConstantDeclarations);
-        }
+        try {
+            if ( compound.mConstantDeclarations ) {
+                visitConstantDeclarationStatement(compound.mConstantDeclarations);
+            }
 
-        if ( compound.mVariableDeclarations ) {
-            visitVariableDeclarationStatement(compound.mVariableDeclarations);
-        }
+            if ( compound.mVariableDeclarations ) {
+                visitVariableDeclarationStatement(compound.mVariableDeclarations);
+            }
 
-        foreach ( Statement stmt : compound.mStatements ) {
-            visitStatement(stmt);
-        }
+            foreach ( Statement stmt : compound.mStatements ) {
+                visitStatement(stmt);
 
-        mCurrentScope = oldScope;
+                switch ( mControlFlow ) {
+                    case ControlFlow.Exit: { return; }
+                    case ControlFlow.Return: { return; }
+                    default: { break; }
+                }
+            }
+        }
+        finally {
+            mCurrentScope = oldScope;
+        }
     }
 
     protected void visitConstantDeclarationStatement(ConstantDeclarationStatement stmt) modify throws {
@@ -350,6 +368,12 @@ public object Interpreter {
         }
     }
 
+    private void visitExitStatement(ExitStatement stmt) modify throws {
+        //print("visitExitStatement()");
+
+        mControlFlow = ControlFlow.Return;
+    }
+
     private void visitForStatement(ForStatement stmt) modify throws {
         //print("visitForStatement()");
 
@@ -363,6 +387,12 @@ public object Interpreter {
 
         while ( processExpression(stmt.mTargetExpression) == "1" ) {
             visitStatement(stmt.mBody);
+
+            switch ( mControlFlow ) {
+                case ControlFlow.Exit: { return; }
+                case ControlFlow.Return: { return; }
+                default: { break; }
+            }
 
             obj = processExpression(stmt.mStepExpression);
         }
@@ -403,8 +433,13 @@ public object Interpreter {
             }
         }
 
-        visitStatement(Statement stmt.mMethod.mBody);
+        // reset control flow to normal to allow method execution
+	mControlFlow = ControlFlow.Normal;
 
+        visitCompoundStatement(stmt.mMethod.mBody);
+
+        // reset control flow to normal after method execution
+	mControlFlow = ControlFlow.Normal;
         mCurrentScope = oldScope;
     }
 
@@ -417,7 +452,7 @@ public object Interpreter {
         }
 
         var obj = (LocalSymbol sym).mValue;
-	    obj = cin();
+        obj = cin();
     }
 
     private void visitRepeatStatement(RepeatStatement repeatStmt) modify throws {
@@ -426,6 +461,12 @@ public object Interpreter {
         for ( ; ; ) {
             foreach ( Statement stmt : repeatStmt.mStatements ) {
                 visitStatement(stmt);
+
+                switch ( mControlFlow ) {
+                    case ControlFlow.Exit: { return; }
+                    case ControlFlow.Return: { return; }
+                    default: { break; }
+                }
             }
 
             var condition = processExpression( repeatStmt.mCondition );
@@ -464,6 +505,10 @@ public object Interpreter {
             }
             case StatementType.ConstantDeclarationStatement: {
                 throw new RuntimeException("inline constant declarations are not allowed");
+            }
+            case StatementType.ExitStatement: {
+                visitExitStatement(ExitStatement stmt);
+                break;
             }
             case StatementType.ForStatement: {
                 visitForStatement(ForStatement stmt);
@@ -521,18 +566,25 @@ public object Interpreter {
     }
 
     private void visitWhileStatement(WhileStatement stmt) modify throws {
-	    //print("visitWhileStatement()");
+        //print("visitWhileStatement()");
 
-        while ( true ) {
+        while ( mControlFlow == ControlFlow.Normal ) {
             var condition = processExpression( stmt.mCondition );
             if ( condition != "1" ) {
                 break;
             }
 
             visitStatement( stmt.mBody );
+
+            switch ( mControlFlow ) {
+                case ControlFlow.Exit: { return; }
+                case ControlFlow.Return: { return; }
+                default: { break; }
+            }
         }
     }
 
+    protected ControlFlow mControlFlow;
     protected SymbolTable mCurrentScope;
     protected Map<string, String> mConstants;
     protected Statement mProgram;

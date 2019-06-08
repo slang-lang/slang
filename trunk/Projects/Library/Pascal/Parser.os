@@ -292,6 +292,14 @@ public object Parser {
 		return declarations;
 	}
 
+	private ExitStatement parseExitStatement() modify throws {
+		//print("parseExitStatement()");
+
+		require(TokenType.EXIT);
+
+		return new ExitStatement();
+	}
+
 	private ForStatement parseForStatement() modify throws {
 		//print("parseForStatement()");
 
@@ -574,6 +582,10 @@ public object Parser {
 			}
 			case TokenType.CONST: {
 				stmt = Statement parseCompoundStatementWithDeclarations();
+				break;
+			}
+			case TokenType.EXIT: {
+				stmt = Statement parseExitStatement();
 				break;
 			}
 			case TokenType.FOR: {
