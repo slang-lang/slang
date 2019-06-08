@@ -25,6 +25,7 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.DO, "DO", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.ELSE, "ELSE", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.EXIT, "EXIT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.FOR, "FOR", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.FUNCTION, "FUNCTION", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.IF, "IF", Position null));
@@ -285,7 +286,7 @@ public object Tokenizer {
 	private String COMPARECHARS const;
 	private String DELIMITERCHARS const;
 	private String OPERATORCHARS const;
-	private List<Token> RESERVED_WORDS;
+	private List<Token> RESERVED_WORDS const;
 	private String WHITESPACES const;
 
 	// Private members

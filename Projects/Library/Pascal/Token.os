@@ -20,6 +20,7 @@ public enum TokenType {
 	ELSE,
 	EOF,
 	EQUAL,
+	EXIT,
 	FALSE,
 	FOR,
 	FUNCTION,
@@ -81,6 +82,7 @@ public string TokenToString(TokenType type) {
 		case TokenType.ELSE:			{ return "ELSE"; }
 		case TokenType.EOF:			{ return "EOF"; }
 		case TokenType.EQUAL:			{ return "="; }
+		case TokenType.EXIT:			{ return "EXIT"; }
 		case TokenType.FALSE:			{ return "FALSE"; }
 		case TokenType.FOR:			{ return "FOR"; }
 		case TokenType.FUNCTION:		{ return "FUNCTION"; }
