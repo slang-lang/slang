@@ -13,22 +13,32 @@ import Parser;
 
 
 public int Main(int argc, string args) modify {
-	if ( argc < 2 ) {
-		print("not enought parameters provided!");
-		return -1;
+	var debug = false;
+	var params = new ParameterHandler(argc, args);
+
+	// Handle parameters
+	// {
+	if ( params.contains("debug") ) {
+		debug = true;
+		params.remove("debug");
 	}
 
-	var params = new ParameterHandler(argc, args);
 	if ( params.contains("version") ) {
 		print(APPNAME + " " + VERSION);
 		return 0;
 	}
 
+	if ( params.empty() ) {
+		print("not enought parameters provided!");
+		return -1;
+	}
+	// }
+
 	try {
 		Parser parser = new Parser();
 
-		Interpreter interpreter = new Interpreter(Object parser.parseFile(params.at(0).Key));
-		return interpreter.run();
+		Interpreter interpreter = new Interpreter(Object parser.parseFile(params.at(0).Key, debug));
+		return interpreter.run(debug);
 	}
 	catch ( string e ) {
 		print("Exception: " + e);

@@ -43,8 +43,12 @@ public object Parser {
 		mVariables = new Set<string>();
 	}
 
-	public Map<int, Line> parseFile(string filename) modify {
-		Scanner scanner = new Scanner(new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly), LINEBREAK);
+	public Map<int, Line> parseFile(string filename, bool debug = false) modify {
+		if ( debug ) {
+			print("Building AST for \"" + filename + "\"...");
+		}
+
+		var scanner = new Scanner(new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly), LINEBREAK);
 
 		// reset members
 		mCurrentLine = 0;

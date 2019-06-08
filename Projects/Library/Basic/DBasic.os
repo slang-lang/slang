@@ -17,11 +17,21 @@ string filename;
 
 
 public int Main(int argc, string args) modify {
+	var debug = false;
 	var params = new ParameterHandler(argc, args);
+
+	// Handle parameters
+	// {
+	if ( params.contains("debug") ) {
+		debug = true;
+		params.remove("debug");
+	}
+
 	if ( params.contains("version") ) {
 		print(APPNAME + " " + VERSION);
 		return 0;
 	}
+	// }
 
 	if ( !params.empty() ) {
 		// set filename if any params are set
