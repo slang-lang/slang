@@ -38,6 +38,53 @@ public object Interpreter {
 		mVariables = new Map<string, String>();
 	}
 
+	public int run(bool debug = false) modify throws {
+		if ( !mLines || mLines.empty() ) {
+			throw new Exception("no valid lines to interpret!");
+		}
+
+		mForStack.clear();
+		mVariables.clear();
+
+		if ( debug ) {
+			print("Started interpreting statements...");
+		}
+
+		try {
+			Line line;
+
+			while ( mCurrentLine > 0 ) {
+				//print("LINE: " + mCurrentLine);
+
+				line = mLines.get(mCurrentLine);
+
+				mCurrentLine = process(line.mStatement) ?: line.nextLine();
+			}
+		}
+		catch ( ControlFlow e ) {
+			switch ( e ) {
+				case ControlFlow.Exit: {
+					//print("ControlFlow: Exit");
+					break;
+				}
+				case ControlFlow.Normal: {
+					//print("ControlFlow: Normal");
+					break;
+				}
+				default: {
+					print("ControlFlow: Unknown!");
+					break;
+				}
+			}
+		}
+
+		if ( debug ) {
+			print("Done interpreting.");
+		}
+
+		return 0;
+	}
+
 	protected int process(Statement stmt) modify throws {
 		//print("process(" + stmt.toString() + ")");
 
@@ -344,49 +391,6 @@ public object Interpreter {
 		print(processExpression(stmt.mExpression));
 
 		return stmt.mFollowingStatement ? process(stmt.mFollowingStatement) : 0;
-	}
-
-	public int run() modify throws {
-		if ( !mLines || mLines.empty() ) {
-			throw new Exception("no valid lines to interpret!");
-		}
-
-		mForStack.clear();
-		mVariables.clear();
-
-		//print("Started interpreting statements...");
-
-		try {
-			Line line;
-
-			while ( mCurrentLine > 0 ) {
-				//print("LINE: " + mCurrentLine);
-
-				line = mLines.get(mCurrentLine);
-
-				mCurrentLine = process(line.mStatement) ?: line.nextLine();
-			}
-		}
-		catch ( ControlFlow e ) {
-			switch ( e ) {
-				case ControlFlow.Exit: {
-					//print("ControlFlow: Exit");
-					break;
-				}
-				case ControlFlow.Normal: {
-					//print("ControlFlow: Normal");
-					break;
-				}
-				default: {
-					print("ControlFlow: Unknown!");
-					break;
-				}
-			}
-		}
-
-		//print("Done interpreting.");
-
-		return 0;
 	}
 
 	//////////////////////////////////////////////////////
