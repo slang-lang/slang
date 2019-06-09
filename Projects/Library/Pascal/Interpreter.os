@@ -117,7 +117,7 @@ public object Interpreter {
     private string processConstantExpression(ConstantExpression exp) const throws {
         //print("processConstantExpression(" + exp.toString() + ")");
 
-        string name = (ConstantExpression exp).mConstant;
+        string name = exp.mConstant;
 
         var sym = mCurrentScope.lookup(name);
         if ( !sym ) {
@@ -248,7 +248,7 @@ public object Interpreter {
     private string processVariableExpression(VariableExpression exp) const throws {
         //print("processVariableExpression(" + exp.toString() + ")");
 
-        string name = (VariableExpression exp).mVariable;
+        string name = exp.mVariable;
 
         var sym = mCurrentScope.lookup(name);
         if ( !sym ) {
@@ -382,6 +382,20 @@ public object Interpreter {
 
     private void visitExitStatement(ExitStatement stmt) modify throws {
         //print("visitExitStatement()");
+
+        var sym = mCurrentScope.lookup("RESULT");
+        if ( !sym ) {
+            throw new RuntimeException("Symbol 'RESULT' is unknown");
+        }
+        if ( !(sym is LocalSymbol) ) {
+            throw new RuntimeException("Symbol 'RESULT' is not of type LocalSymbol");
+        }
+        if ( (LocalSymbol sym).mIsConst ) {
+            throw new RuntimeException("Symbol 'RESULT' is const");
+        }
+
+        var obj = (LocalSymbol sym).mValue;
+        obj = processExpression(stmt.mReturnValue);
 
         mControlFlow = ControlFlow.Return;
     }
