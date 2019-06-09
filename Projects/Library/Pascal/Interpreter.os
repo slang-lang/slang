@@ -47,7 +47,7 @@ public object Interpreter {
         }
 
         mControlFlow = ControlFlow.Normal;
-        mCurrentScope = new SymbolTable(0, "global");
+        mCurrentScope = new SymbolTable("global");
 
         visitCompoundStatement((ProgramStatement mProgram).mStatements);
 
@@ -195,7 +195,7 @@ public object Interpreter {
         //print("processMethodExpression(" + exp.toString() + ")");
 
         var oldScope = mCurrentScope;
-        mCurrentScope = new SymbolTable(oldScope.mLevel + 1, exp.mMethod.mName, oldScope);
+        mCurrentScope = new SymbolTable(exp.mMethod.mName, oldScope);
 
         if ( exp.mParameters && exp.mMethod.mParameters ) {
             // add symbols for parameters
@@ -329,7 +329,7 @@ public object Interpreter {
         //print("visitCompoundStatement()");
 
         var oldScope = mCurrentScope;
-        mCurrentScope = new SymbolTable(oldScope.mLevel + 1, "", oldScope);
+        mCurrentScope = new SymbolTable("", oldScope);
 
         try {
             if ( compound.mConstantDeclarations ) {
@@ -441,7 +441,7 @@ public object Interpreter {
         //print("visitMethodStatement()");
 
         var oldScope = mCurrentScope;
-        mCurrentScope = new SymbolTable(oldScope.mLevel + 1, stmt.mName, oldScope);
+        mCurrentScope = new SymbolTable(stmt.mName, oldScope);
 
         if ( stmt.mParameters && stmt.mMethod.mParameters ) {
             // add symbols for parameters
