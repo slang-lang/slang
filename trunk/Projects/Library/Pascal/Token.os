@@ -10,10 +10,12 @@ public enum TokenType {
 	ASSIGN,
 	BEGIN,
 	BOOLEAN,
+	BREAK,
 	CASE,
 	COLON,
 	COMMA,
 	CONST,
+	CONTINUE,
 	DO,
 	DOT,
 	END,
@@ -72,10 +74,12 @@ public string TokenToString(TokenType type) {
 		case TokenType.ASSIGN:			{ return ":="; }
 		case TokenType.BEGIN:			{ return "BEGIN"; }
 		case TokenType.BOOLEAN:			{ return "BOOLEAN"; }
+		case TokenType.BREAK:			{ return "BREAK"; }
 		case TokenType.CASE:			{ return "CASE"; }
 		case TokenType.COLON:			{ return ":"; }
 		case TokenType.COMMA:			{ return ","; }
 		case TokenType.CONST:                   { return "CONST"; }
+		case TokenType.CONTINUE:                { return "CONTINUE"; }
 		case TokenType.DO:			{ return "DO"; }
 		case TokenType.DOT:			{ return "."; }
 		case TokenType.END:			{ return "END"; }

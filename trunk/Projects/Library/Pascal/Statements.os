@@ -9,9 +9,11 @@ import Expressions;
 
 public enum StatementType {
 	AssignmentStatement,
+	BreakStatement,
 	CaseStatement,
 	CompoundStatement,
 	ConstantDeclarationStatement,
+	ContinueStatement,
 	DeclarationStatement,
 	ExitStatement,
 	ForStatement,
@@ -56,6 +58,16 @@ public object AssignmentStatement extends Statement {
 
 	public string toString() const {
 		return (mLeft ? mLeft.toString() : "") + " := " + (mRight ? mRight.toString() : "");
+	}
+}
+
+public object BreakStatement extends Statement {
+	public void Constructor() {
+		base.Constructor(StatementType.BreakStatement);
+	}
+
+	public string toString() const {
+		return "BREAK";
 	}
 }
 
@@ -152,21 +164,33 @@ public object ConstantDeclarationStatement extends Statement {
 	}
 }
 
+public object ContinueStatement extends Statement {
+	public void Constructor() {
+		base.Constructor(StatementType.ContinueStatement);
+	}
+
+	public string toString() const {
+		return "CONTINUE";
+	}
+}
+
 public object DeclarationStatement extends Statement {
+	public bool mIsConst const;
 	public string mName const;
 	public string mType const;
 	public Expression mValue const;
 
-	public void Constructor(string name, string type, Expression value) {
+	public void Constructor(string name, string type, Expression value, bool isConst) {
 		base.Constructor(StatementType.DeclarationStatement);
 
+		mIsConst = isConst;
 		mName = name;
 		mType = type;
 		mValue = value;
 	}
 
 	public string toString() const {
-		return mName + ": " + mType + (mValue ? " := " + mValue.toString() : "") + ";";
+		return (mIsConst ? "CONST " : "") + mName + ": " + mType + (mValue ? " := " + mValue.toString() : "") + ";";
 	}
 }
 

@@ -298,6 +298,12 @@ public object Interpreter {
         obj = processExpression(assign.mRight);
     }
 
+    private void visitBreakStatement(BreakStatement stmt) modify throws {
+        print("visitBreakStatement()");
+
+        mControlFlow = ControlFlow.Break;
+    }
+
     private void visitCaseStatement(CaseStatement stmt) modify throws {
         //print("visitCaseStatement()");
 
@@ -366,6 +372,12 @@ public object Interpreter {
                 obj = processExpression(declStmt.mValue);
             }
         }
+    }
+
+    private void visitContinueStatement(ContinueStatement stmt) modify throws {
+        print("visitContinueStatement()");
+
+        mControlFlow = ControlFlow.Continue;
     }
 
     private void visitExitStatement(ExitStatement stmt) modify throws {
@@ -495,6 +507,10 @@ public object Interpreter {
                 visitAssignStatement(AssignmentStatement stmt);
                 break;
             }
+            case StatementType.BreakStatement: {
+                visitBreakStatement(BreakStatement stmt);
+                break;
+            }
             case StatementType.CaseStatement: {
                 visitCaseStatement(CaseStatement stmt);
                 break;
@@ -505,6 +521,10 @@ public object Interpreter {
             }
             case StatementType.ConstantDeclarationStatement: {
                 throw new RuntimeException("inline constant declarations are not allowed");
+            }
+            case StatementType.ContinueStatement: {
+                visitContinueStatement(ContinueStatement stmt);
+                break;
             }
             case StatementType.ExitStatement: {
                 visitExitStatement(ExitStatement stmt);
