@@ -20,8 +20,10 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.BEGIN, "BEGIN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.BOOLEAN, "FALSE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.BOOLEAN, "TRUE", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.BREAK, "BREAK", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.CASE, "CASE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.CONST, "CONST", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.CONTINUE, "CONTINUE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.DO, "DO", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.ELSE, "ELSE", Position null));

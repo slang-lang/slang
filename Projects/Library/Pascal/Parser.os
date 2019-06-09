@@ -85,6 +85,14 @@ public object Parser {
 		return new AssignmentStatement(identifierExp, assignmentExp);
 	}
 
+	private BreakStatement parseBreakStatement() modify throws {
+		//print("parseBreakStatement()");
+
+		require(TokenType.BREAK);
+
+		return new BreakStatement();
+	}
+
 	private CasePart parseCasePart(string caseType) modify throws {
 		//print("parseCasePart()");
 
@@ -213,7 +221,7 @@ public object Parser {
 			consume();	// consume CONST token
 
 			while ( peek().mType == TokenType.IDENTIFIER ) {
-				var declStmt = parseDeclarationStatement();
+				var declStmt = parseDeclarationStatement(true, true);
 				stmt.mDeclarations.push_back( declStmt );
 
 				if ( mCurrentScope.lookup(declStmt.mName, true) ) {
@@ -227,7 +235,15 @@ public object Parser {
 		return stmt;
 	}
 
-	private DeclarationStatement parseDeclarationStatement(bool requireSemicolon = true) modify throws {
+	private ContinueStatement parseContinueStatement() modify throws {
+		//print("parseContinueStatement()");
+
+		require(TokenType.CONTINUE);
+
+		return new ContinueStatement();
+	}
+
+	private DeclarationStatement parseDeclarationStatement(bool isConst, bool requireSemicolon) modify throws {
 		//print("parseDeclarationStatement()");
 
 		Token identifier = consume();
@@ -258,7 +274,8 @@ public object Parser {
 		return new DeclarationStatement(
 			identifier.mValue,
 			type ? type.mValue : "",
-			value
+			value,
+			isConst
 		);
 	}
 
@@ -272,7 +289,7 @@ public object Parser {
 			require(TokenType.LPAREN);
 
 			while ( peek().mType == TokenType.IDENTIFIER ) {
-				var declStmt = parseDeclarationStatement(false);
+				var declStmt = parseDeclarationStatement(false, false);
 				declarations.push_back( declStmt );
 
 				if ( mCurrentScope.lookup(declStmt.mName, true) ) {
@@ -724,7 +741,7 @@ public object Parser {
 			consume();	// consume VAR token
 
 			while ( peek().mType == TokenType.IDENTIFIER ) {
-				var declStmt = parseDeclarationStatement();
+				var declStmt = parseDeclarationStatement(false, true);
 				stmt.mDeclarations.push_back( declStmt );
 
 				if ( mCurrentScope.lookup(declStmt.mName, true) ) {
