@@ -3,9 +3,17 @@ PROGRAM FunctionTest;
 	FUNCTION GETSTRING: STRING;
 	BEGIN
 		Result := 'bla';
-		EXIT;
+		EXIT( 'exit' );
 
 		WriteLn( 'This should not be printed...' );
+	END;
+
+	PROCEDURE RETURNVALUE;
+	BEGIN
+		WRITELN( 'Return value' );
+
+		{EXIT( '10' );}
+		EXIT;
 	END;
 
 BEGIN
@@ -16,4 +24,6 @@ BEGIN
 	WRITELN( 'Another try' );
 
 	WRITELN( GETSTRING + ' vs ' + GETSTRING );
+
+	RETURNVALUE;
 END.

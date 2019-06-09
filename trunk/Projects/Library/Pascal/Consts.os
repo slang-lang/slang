@@ -6,5 +6,5 @@
 
 // public consts
 public string APPNAME const = "ObjectiveScript Pascal Interpreter";
-public string VERSION const = "0.1.1";
+public string VERSION const = "0.1.2";
 

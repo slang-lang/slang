@@ -195,8 +195,12 @@ public object DeclarationStatement extends Statement {
 }
 
 public object ExitStatement extends Statement {
-	public void Constructor() {
+	public Expression mReturnValue const;
+
+	public void Constructor(Expression returnValue) {
 		base.Constructor(StatementType.ExitStatement);
+
+		mReturnValue = returnValue;
 	}
 
 	public string toString() const {

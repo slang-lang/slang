@@ -314,7 +314,21 @@ public object Parser {
 
 		require(TokenType.EXIT);
 
-		return new ExitStatement();
+		Expression exp;
+		if ( peek().mType == TokenType.LPAREN ) {
+			consume();	// consume ( token
+
+			if ( !mCurrentScope.lookup("RESULT", true) ) {
+				// no RESULT symbol found => this is obviously no function
+				throw new ParseException("EXIT with return value can only be used in functions", peek().mPosition);
+			}
+
+			exp = expression();
+
+			require(TokenType.RPAREN);
+		}
+
+		return new ExitStatement(exp);
 	}
 
 	private ForStatement parseForStatement() modify throws {
