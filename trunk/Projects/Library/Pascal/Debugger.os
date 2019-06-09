@@ -19,7 +19,7 @@ public object Debugger extends Interpreter {
 	        print("Debugging \"" + (ProgramStatement mProgram).mName + "\"...");
 	    }
 
-        mCurrentScope = new SymbolTable(0, "global");
+        mCurrentScope = new SymbolTable("global");
 
         visitCompoundStatement((ProgramStatement mProgram).mStatements);
 

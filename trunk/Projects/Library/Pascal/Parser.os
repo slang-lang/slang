@@ -384,7 +384,7 @@ public object Parser {
 
 		// store current scope and push a new one
 		var oldScope = mCurrentScope;
-		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, name.mValue, oldScope);
+		mCurrentScope = new SymbolTable(name.mValue, oldScope);
 
 		var params = parseFormalParameters();
 
@@ -529,7 +529,7 @@ public object Parser {
 
 		// store current scope and push a new one
 		var oldScope = mCurrentScope;
-		mCurrentScope = new SymbolTable(oldScope.mLevel + 1, name.mValue, oldScope);
+		mCurrentScope = new SymbolTable(name.mValue, oldScope);
 
 		var params = parseFormalParameters();
 
@@ -562,7 +562,7 @@ public object Parser {
 
 		require(TokenType.SEMICOLON);
 
-		mCurrentScope = new SymbolTable(0, "global");
+		mCurrentScope = new SymbolTable("global");
 
 		Token token = peek();
 
@@ -693,7 +693,7 @@ public object Parser {
 		require(TokenType.SEMICOLON);
 
 		// push new scope
-		mCurrentScope = new SymbolTable(0, name.mValue);
+		mCurrentScope = new SymbolTable(name.mValue);
 
 		var uses = parseUsesStatement();
 

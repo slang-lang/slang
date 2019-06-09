@@ -11,8 +11,8 @@ public object SymbolTable {
 	public string mName const;
 	public SymbolTable mParent const;
 
-	public void Constructor(int level, string name, SymbolTable parent = null) {
-		mLevel = level;
+	public void Constructor(string name, SymbolTable parent = null) {
+		mLevel = parent ? parent.mLevel + 1 : 0;
 		mName = name;
 		mParent = parent;
 		mSymbols = new List<Symbol>();
