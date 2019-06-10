@@ -373,11 +373,17 @@ public object Parser {
 			stepExp = Expression new LiteralIntegerExpression(token, 1);
 		}
 
+		mCurrentScope.pushProperty(true);
+
+		var body = parseStatement(false);
+
+		mCurrentScope.popProperty();
+
 		return new ForStatement(VariableExpression varExp,
 					startExp,
 					Expression new BooleanBinaryExpression(token, varExp, "<=", targetExp),
 					Expression new BinaryExpression(token, varExp, "+", stepExp, varExp.mResultType),
-					parseStatement(false));
+					body);
 	}
 
 	private FunctionStatement parseFunction() modify throws {
@@ -593,10 +599,14 @@ public object Parser {
 			throw new ParseException("invalid REPEAT statement found" + toString(token), token.mPosition);
 		}
 
+		mCurrentScope.pushProperty(true);
+
 		var statements = new List<Statement>();
 		while ( (token = peek()) != null && token.mType != TokenType.UNTIL ) {
 			statements.push_back( parseStatement() );
 		}
+
+		mCurrentScope.popProperty();
 
 		require(TokenType.UNTIL);
 
