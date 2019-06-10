@@ -89,7 +89,7 @@ public object Parser {
 	private BreakStatement parseBreakStatement() modify throws {
 		//print("parseBreakStatement()");
 
-		if ( !mCurrentScope.AllowBreakAndContinue ) {
+		if ( !mCurrentScope.isBreakAllowed() ) {
 			throw new ParseException("break not allowed here", peek().mPosition);
 		}
 
@@ -243,7 +243,7 @@ public object Parser {
 	private ContinueStatement parseContinueStatement() modify throws {
 		//print("parseContinueStatement()");
 
-		if ( !mCurrentScope.AllowBreakAndContinue ) {
+		if ( !mCurrentScope.isContinueAllowed() ) {
 			throw new ParseException("continue not allowed here", peek().mPosition);
 		}
 
@@ -393,7 +393,7 @@ public object Parser {
 
 		// store current scope and push a new one
 		var oldScope = mCurrentScope;
-		mCurrentScope = new SymbolTable(name.mValue, oldScope);
+		mCurrentScope = new Scope(name.mValue, oldScope);
 
 		var params = parseFormalParameters();
 
@@ -538,7 +538,7 @@ public object Parser {
 
 		// store current scope and push a new one
 		var oldScope = mCurrentScope;
-		mCurrentScope = new SymbolTable(name.mValue, oldScope);
+		mCurrentScope = new Scope(name.mValue, oldScope);
 
 		var params = parseFormalParameters();
 
@@ -571,7 +571,7 @@ public object Parser {
 
 		require(TokenType.SEMICOLON);
 
-		mCurrentScope = new SymbolTable("global");
+		mCurrentScope = new Scope("global");
 
 		Token token = peek();
 
@@ -710,7 +710,7 @@ public object Parser {
 		require(TokenType.SEMICOLON);
 
 		// push new scope
-		mCurrentScope = new SymbolTable(name.mValue);
+		mCurrentScope = new Scope(name.mValue);
 
 		var uses = parseUsesStatement();
 
@@ -1043,7 +1043,7 @@ public object Parser {
 //////////////////////////////////////////////////////////////////////////////
 
 
-	private SymbolTable mCurrentScope;
+	private Scope mCurrentScope;
 	private Iterator<Token> mTokenIterator;
 	private Tokenizer mTokenizer;
 	private List<Token> mTokens;
