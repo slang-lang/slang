@@ -299,7 +299,7 @@ public object Interpreter {
     }
 
     private void visitBreakStatement(BreakStatement stmt) modify throws {
-        print("visitBreakStatement()");
+        //print("visitBreakStatement()");
 
         mControlFlow = ControlFlow.Break;
     }
@@ -343,10 +343,8 @@ public object Interpreter {
             foreach ( Statement stmt : compound.mStatements ) {
                 visitStatement(stmt);
 
-                switch ( mControlFlow ) {
-                    case ControlFlow.Exit: { return; }
-                    case ControlFlow.Return: { return; }
-                    default: { break; }
+                if ( mControlFlow != ControlFlow.Normal ) {
+                    break;
                 }
             }
         }
@@ -415,9 +413,11 @@ public object Interpreter {
             visitStatement(stmt.mBody);
 
             switch ( mControlFlow ) {
+                case ControlFlow.Break: { mControlFlow = ControlFlow.Normal; return; }
+                case ControlFlow.Continue: { mControlFlow = ControlFlow.Normal; break; }
                 case ControlFlow.Exit: { return; }
+                case ControlFlow.Normal: { break; }
                 case ControlFlow.Return: { return; }
-                default: { break; }
             }
 
             obj = processExpression(stmt.mStepExpression);
@@ -460,12 +460,12 @@ public object Interpreter {
         }
 
         // reset control flow to normal to allow method execution
-	mControlFlow = ControlFlow.Normal;
+	    mControlFlow = ControlFlow.Normal;
 
         visitCompoundStatement(stmt.mMethod.mBody);
 
         // reset control flow to normal after method execution
-	mControlFlow = ControlFlow.Normal;
+	    mControlFlow = ControlFlow.Normal;
         mCurrentScope = oldScope;
     }
 
@@ -611,9 +611,11 @@ public object Interpreter {
             visitStatement( stmt.mBody );
 
             switch ( mControlFlow ) {
+                case ControlFlow.Break: { mControlFlow = ControlFlow.Normal; return; }
+                case ControlFlow.Continue: { mControlFlow = ControlFlow.Normal; break; }
                 case ControlFlow.Exit: { return; }
+                case ControlFlow.Normal: { break; }
                 case ControlFlow.Return: { return; }
-                default: { break; }
             }
         }
     }

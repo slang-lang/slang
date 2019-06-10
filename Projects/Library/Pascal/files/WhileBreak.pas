@@ -1,4 +1,4 @@
-PROGRAM WhileTest;
+PROGRAM WhileBreak;
 VAR A: INTEGER;
 BEGIN
 	A := 10;
@@ -7,9 +7,9 @@ BEGIN
 	BEGIN
 		WRITELN( A );
 
-		EXIT;
-
 		A := A - 1;
+
+		BREAK;
 	END;
 
 	WHILE ( A < 10 ) DO

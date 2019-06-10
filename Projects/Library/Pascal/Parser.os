@@ -798,10 +798,13 @@ public object Parser {
 
 		require(TokenType.DO);
 
-		return new WhileStatement(
-			condition,
-			parseStatement(false)
-		);
+		mCurrentScope.pushProperty(true);
+
+		var body = parseStatement(false);
+
+		mCurrentScope.popProperty();
+
+		return new WhileStatement(condition, body);
 	}
 
 	private WriteStatement parseWriteStatement(bool lineBreak) modify throws {
