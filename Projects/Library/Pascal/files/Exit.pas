@@ -12,6 +12,8 @@ PROGRAM FunctionTest;
 	BEGIN
 		WRITELN( 'Return value' );
 
+		BREAK;
+
 		{EXIT( '10' );}
 		EXIT;
 	END;
