@@ -6,6 +6,7 @@ import System.IO.File;
 
 // project imports
 import Expressions;
+import Scope;
 import Statements;
 import SymbolTable;
 import Token;
@@ -87,6 +88,10 @@ public object Parser {
 
 	private BreakStatement parseBreakStatement() modify throws {
 		//print("parseBreakStatement()");
+
+		if ( !mCurrentScope.AllowBreakAndContinue ) {
+			throw new ParseException("break not allowed here", peek().mPosition);
+		}
 
 		require(TokenType.BREAK);
 
@@ -237,6 +242,10 @@ public object Parser {
 
 	private ContinueStatement parseContinueStatement() modify throws {
 		//print("parseContinueStatement()");
+
+		if ( !mCurrentScope.AllowBreakAndContinue ) {
+			throw new ParseException("continue not allowed here", peek().mPosition);
+		}
 
 		require(TokenType.CONTINUE);
 
@@ -607,12 +616,20 @@ public object Parser {
 				stmt = Statement parseCompoundStatement();
 				break;
 			}
+			case TokenType.BREAK: {
+				stmt = Statement parseBreakStatement();
+				break;
+			}
 			case TokenType.CASE: {
 				stmt = Statement parseCaseStatement();
 				break;
 			}
 			case TokenType.CONST: {
 				stmt = Statement parseCompoundStatementWithDeclarations();
+				break;
+			}
+			case TokenType.CONTINUE: {
+				stmt = Statement parseContinueStatement();
 				break;
 			}
 			case TokenType.EXIT: {
