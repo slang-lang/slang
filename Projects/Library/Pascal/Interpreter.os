@@ -373,7 +373,7 @@ public object Interpreter {
     }
 
     private void visitContinueStatement(ContinueStatement stmt) modify throws {
-        print("visitContinueStatement()");
+        //print("visitContinueStatement()");
 
         mControlFlow = ControlFlow.Continue;
     }
@@ -489,9 +489,11 @@ public object Interpreter {
                 visitStatement(stmt);
 
                 switch ( mControlFlow ) {
+                    case ControlFlow.Break: { mControlFlow = ControlFlow.Normal; return; }
+                    case ControlFlow.Continue: { mControlFlow = ControlFlow.Normal; break; }
                     case ControlFlow.Exit: { return; }
+                    case ControlFlow.Normal: { break; }
                     case ControlFlow.Return: { return; }
-                    default: { break; }
                 }
             }
 

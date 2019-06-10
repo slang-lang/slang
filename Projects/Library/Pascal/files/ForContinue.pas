@@ -1,4 +1,4 @@
-Program ForTest;
+Program ForContinue;
 Var
 	idx: Integer;
 Begin
@@ -7,7 +7,8 @@ Begin
 	for idx := 1 to 10 do
 	begin
 		WriteLn( idx );
-		Exit;
+		continue;
+		WriteLn( idx );
 	end;
 
 	Writeln( 'Done.' );
