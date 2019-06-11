@@ -1,0 +1,5 @@
+Package: ObjectiveScript
+Version: 0.6.7
+Maintainer: Michael Adelmann
+Architecture: armhf
+Description: ObjectiveScript interpreter, debugger & package manager

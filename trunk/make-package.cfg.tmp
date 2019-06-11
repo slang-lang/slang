@@ -1,0 +1,4 @@
+
+SOURCE_DIRECTORY="path/to/binaries"
+TARGET_DIRECTORY="path/to/package"
+
