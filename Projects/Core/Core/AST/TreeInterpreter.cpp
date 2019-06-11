@@ -1183,17 +1183,12 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 
 		// inspect control flow after the complete iteration
 		switch ( mControlFlow ) {
-			case Runtime::ControlFlow::Continue:
-				mControlFlow = Runtime::ControlFlow::Normal;
-				break;	// continue loop, reset current control flow state
-			case Runtime::ControlFlow::Break:
-			case Runtime::ControlFlow::Normal:
-				mControlFlow = Runtime::ControlFlow::Normal;
-				return;	// no further processing, reset current control flow state
+			case Runtime::ControlFlow::Break: mControlFlow = Runtime::ControlFlow::Normal; return;	// no further processing, reset current control flow state
+			case Runtime::ControlFlow::Continue: mControlFlow = Runtime::ControlFlow::Normal; break;	// continue loop, reset current control flow state
+			case Runtime::ControlFlow::Normal: mControlFlow = Runtime::ControlFlow::Normal; return;	// no further processing, reset current control flow state
 			case Runtime::ControlFlow::ExitProgram:
 			case Runtime::ControlFlow::Return:
-			case Runtime::ControlFlow::Throw:
-				return;	// no further processing, keep current control flow state
+			case Runtime::ControlFlow::Throw: return;	// no further processing, keep current control flow state
 		}
 	} while ( mControlFlow == Runtime::ControlFlow::Normal );
 }
