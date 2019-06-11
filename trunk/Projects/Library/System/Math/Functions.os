@@ -4,8 +4,6 @@ public namespace System { }
 
 public namespace Math {
 
-	public double PI const = 3.14159265359d;
-
 	public double power(double value) {
 		return value * value;
 	}
