@@ -62,6 +62,8 @@ rm -r ${PACKAGE_DIRECTORY_SHARE}/System
 
 # add new libraries
 echo "Deploying new libraries..."
+cp -r Projects/Library/.odepend ${PACKAGE_DIRECTORY_SHARE}
+cp -r Projects/Library/deploy.sh ${PACKAGE_DIRECTORY_SHARE}
 cp -r Projects/Library/ObjectiveScript ${PACKAGE_DIRECTORY_SHARE}
 cp -r Projects/Library/System ${PACKAGE_DIRECTORY_SHARE}
 
