@@ -1,6 +1,6 @@
 #!/bin/bash
 
-EXCLUDES="--exclude=cmake-build* --exclude=make-package.cfg"
+EXCLUDES="--exclude=.* --exclude=cmake-build* --exclude=make-package.cfg"
 RELEASE="ObjectiveScript-`cat version`_`svnversion`.tar.gz"
 
 echo "Packing files for release ${RELEASE} ..."
