@@ -12,7 +12,7 @@ public object Scope extends SymbolTable {
 
 		mProperties = new Stack<ScopeProperty>();
 
-		pushProperty(false);
+		pushProperty(allowBreakAndContinue);
 	}
 
 	public void Destructor() {
