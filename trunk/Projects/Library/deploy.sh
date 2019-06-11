@@ -1,6 +1,9 @@
 #!/bin/bash
 
-if [ x$1 != "x" ]; then
+if [ x$1 == "x" ]; then
+	echo "module name required"
+	exit -1
+else
 	odepend create $1
 fi
 
