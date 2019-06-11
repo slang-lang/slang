@@ -19,7 +19,7 @@ public object Symbol {
 		return mName == other;
 	}
 
-	public bool operator==(Symbol other) const {
+	public bool operator==(Symbol other const) const {
 		return mName == other.mName;
 	}
 
@@ -40,7 +40,7 @@ public object LocalSymbol extends Symbol {
 	}
 
 	public string =operator(string) const {
-		return mName + ":" + mType + "(Const:" + mIsConst + ")";
+		return (mIsConst ? "CONST " : "") + mName + ": " + mType;
 	}
 }
 
