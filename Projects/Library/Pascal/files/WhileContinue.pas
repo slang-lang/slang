@@ -5,11 +5,13 @@ BEGIN
 
 	WHILE ( A > 0 ) DO
 	BEGIN
-		WRITELN( A );
+		WRITELN('before continue');
+
+		A := A - 1;
 
 		CONTINUE;
 
-		A := A - 1;
+		WRITELN('after continue');
 	END;
 
 	WHILE ( A < 10 ) DO

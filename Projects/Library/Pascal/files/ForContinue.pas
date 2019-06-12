@@ -6,9 +6,9 @@ Begin
 
 	for idx := 1 to 10 do
 	begin
-		WriteLn( idx );
+		WriteLn( 'before continue' );
 		continue;
-		WriteLn( idx );
+		WriteLn( 'after continue' );
 	end;
 
 	Writeln( 'Done.' );

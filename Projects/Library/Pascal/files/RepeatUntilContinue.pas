@@ -6,9 +6,11 @@ begin
     repeat
         idx := idx + 1;
 
-        WriteLn('idx := ' + idx);
+        WriteLn('before continue');
 
         continue;
+
+        WriteLn('after continue');
     until ( idx >= 10 );
 
     WriteLn('Done.');

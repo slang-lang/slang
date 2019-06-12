@@ -217,12 +217,12 @@ public object Interpreter {
         mCurrentScope.declare(Symbol result);
 
         // reset control flow to normal to allow method execution
-	mControlFlow = ControlFlow.Normal;
+	    mControlFlow = ControlFlow.Normal;
 
         visitCompoundStatement(exp.mMethod.mBody);
 
         // reset control flow to normal after method execution
-	mControlFlow = ControlFlow.Normal;
+	    mControlFlow = ControlFlow.Normal;
 
         var resultValue = string result.mValue;
         mCurrentScope = oldScope;
@@ -484,17 +484,21 @@ public object Interpreter {
     private void visitRepeatStatement(RepeatStatement repeatStmt) modify throws {
         //print("visitRepeatStatement");
 
-        for ( ; ; ) {
+        while ( mControlFlow == ControlFlow.Normal ) {
             foreach ( Statement stmt : repeatStmt.mStatements ) {
                 visitStatement(stmt);
 
-                switch ( mControlFlow ) {
-                    case ControlFlow.Break: { mControlFlow = ControlFlow.Normal; return; }
-                    case ControlFlow.Continue: { mControlFlow = ControlFlow.Normal; break; }
-                    case ControlFlow.Exit: { return; }
-                    case ControlFlow.Normal: { break; }
-                    case ControlFlow.Return: { return; }
+                if ( mControlFlow != ControlFlow.Normal ) {
+                    break;
                 }
+            }
+
+            switch ( mControlFlow ) {
+                case ControlFlow.Break: { mControlFlow = ControlFlow.Normal; return; }
+                case ControlFlow.Continue: { mControlFlow = ControlFlow.Normal; break; }
+                case ControlFlow.Exit: { return; }
+                case ControlFlow.Normal: { break; }
+                case ControlFlow.Return: { return; }
             }
 
             var condition = processExpression( repeatStmt.mCondition );
