@@ -457,23 +457,6 @@ public object Parser {
 		return new IfStatement(conditionExp, ifBlock, elseBlock);
 	}
 
-	private ReadlineStatement parseReadlineStatement() modify throws {
-		//print("parseReadlineStatement()");
-
-		Token token = consume();
-
-		require(TokenType.LPAREN);
-
-		var varExp = expression();
-		if ( !(varExp is VariableExpression) ) {
-			throw new ParseException("variable expected", token.mPosition);
-		}
-
-		require(TokenType.RPAREN);
-
-		return new ReadlineStatement(VariableExpression varExp);
-	}
-
 	private MethodCallStatement parseMethodCall() modify throws {
 		//print("parseMethodCall()");
 
@@ -589,6 +572,23 @@ public object Parser {
 		require(TokenType.DOT);
 
 		return new ProgramStatement(name.mValue, uses, statements);
+	}
+
+	private ReadlineStatement parseReadlineStatement() modify throws {
+		//print("parseReadlineStatement()");
+
+		Token token = consume();
+
+		require(TokenType.LPAREN);
+
+		var varExp = expression();
+		if ( !(varExp is VariableExpression) ) {
+			throw new ParseException("variable expected", token.mPosition);
+		}
+
+		require(TokenType.RPAREN);
+
+		return new ReadlineStatement(VariableExpression varExp);
 	}
 
 	private RepeatStatement parseRepeatStatement() modify throws {
