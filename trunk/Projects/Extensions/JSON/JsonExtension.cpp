@@ -17,13 +17,6 @@ namespace Extensions {
 namespace Json {
 
 
-#ifdef USE_SHARED_LIBRARIES
-extern "C" AExtension* factory(void) {
-	return static_cast<AExtension*>( new JsonExtension() );
-}
-#endif
-
-
 JsonExtension::JsonExtension()
 : AExtension("Json")
 {
