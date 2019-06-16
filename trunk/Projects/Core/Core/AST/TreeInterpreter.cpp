@@ -1225,7 +1225,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 		// determine correct catch-block (if a correct one exists)
 		for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
-			if ( (*it)->mTypeDeclaration && !exception->isInstanceOf((*it)->mTypeDeclaration->mType) ) {
+			if ( (*it)->mTypeDeclaration && !(exception && exception->isInstanceOf((*it)->mTypeDeclaration->mType)) ) {
 				// exception type does not match
 				continue;
 			}
