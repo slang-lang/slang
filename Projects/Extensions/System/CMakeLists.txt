@@ -34,12 +34,10 @@ SET(DEPENDENCIES
 	ExtensionsSystemMath
 	ExtensionsSystemIO
     ExtensionsSystemConsole
-	Utils
-	Core
+	CoreExtensions
 )
 
 add_include(Projects/Core)
 add_include(Projects/Extensions)
-add_include(Projects/Utils)
 
 build_static_lib(ExtensionsSystem "")

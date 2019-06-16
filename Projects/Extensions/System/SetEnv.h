@@ -19,7 +19,6 @@
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
-#include <Tools/Strings.h>
 
 // Forward declarations
 

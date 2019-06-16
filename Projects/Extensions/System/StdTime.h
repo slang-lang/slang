@@ -13,7 +13,6 @@
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
-#include <Tools/Strings.h>
 
 // Forward declarations
 
