@@ -27,7 +27,7 @@ typedef std::list<ExtensionMethod*> ExtensionMethods;
 class AExtension
 {
 public:
-	AExtension(const std::string& name);
+	AExtension(const std::string& name, const std::string& path = "");
 	virtual ~AExtension();
 
 public:
@@ -36,9 +36,11 @@ public:
 
 public:
 	const std::string& getName() const;
+	const std::string& getPath() const;
 
 private:
 	std::string mName;
+	std::string mPath;
 };
 
 

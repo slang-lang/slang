@@ -14,8 +14,9 @@ namespace ObjectiveScript {
 namespace Extensions {
 
 
-AExtension::AExtension(const std::string& name)
-: mName(name)
+AExtension::AExtension(const std::string& name, const std::string& path)
+: mName(name),
+  mPath(path)
 {
 }
 
@@ -26,6 +27,11 @@ AExtension::~AExtension()
 const std::string& AExtension::getName() const
 {
 	return mName;
+}
+
+const std::string& AExtension::getPath() const
+{
+	return mPath;
 }
 
 
