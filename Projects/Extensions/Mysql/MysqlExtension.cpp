@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Defines.h>
 #include "MysqlAffectedRows.h"
 #include "MysqlClose.h"
 #include "MysqlDataSeek.h"
@@ -41,6 +42,13 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace Mysql {
+
+
+#ifdef USE_SHARED_LIBRARIES
+extern "C" AExtension* factory(void) {
+	return static_cast<AExtension*>( new MysqlExtension() );
+}
+#endif
 
 
 MysqlExtension::MysqlExtension()

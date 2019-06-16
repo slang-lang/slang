@@ -9,6 +9,7 @@
 #include <list>
 
 // Project includes
+#include <Defines.h>
 #include "Defs.h"
 #include "Get.h"
 #include "IsSet.h"
@@ -21,6 +22,13 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace Apache {
+
+
+#ifdef USE_SHARED_LIBRARIES
+extern "C" AExtension* factory(void) {
+	return static_cast<AExtension*>( new ApacheExtension() );
+}
+#endif
 
 
 const signed char HEX2DEC[256] = 

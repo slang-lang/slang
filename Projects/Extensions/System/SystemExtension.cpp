@@ -6,6 +6,7 @@
 #include <cerrno>
 
 // Project includes
+#include <Defines.h>
 #include "Ascii.h"
 #include "AssertMsg.h"
 #include "GetChar.h"
@@ -32,6 +33,13 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace System {
+
+
+#ifdef USE_SHARED_LIBRARIES
+extern "C" AExtension* factory(void) {
+	return static_cast<AExtension*>( new SystemExtension() );
+}
+#endif
 
 
 SystemExtension::SystemExtension()
