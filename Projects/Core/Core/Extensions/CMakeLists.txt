@@ -1,7 +1,6 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	AExtension.cpp
 	ExtensionManager.cpp
 )
 

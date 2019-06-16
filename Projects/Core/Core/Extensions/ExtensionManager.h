@@ -23,21 +23,17 @@ typedef void* dynamic_lib_handle;
 class ExtensionManager
 {
 public:
-	ExtensionManager();
-	~ExtensionManager();
-
-public:
-	bool load(const std::string& path);
+	AExtension* load(const std::string& path);
 
 private:
 	struct dynamic_lib
 	{
 	public:
-		dynamic_lib_handle  handle;
-		std::string			path;
+		dynamic_lib_handle handle;
+		std::string	path;
 
 	public:
-		dynamic_lib(const std::string& p)
+		explicit dynamic_lib(const std::string& p)
 		: handle(nullptr),
 		  path(p)
 		{ }
@@ -52,7 +48,6 @@ private:
 	};
 
 private:
-	typedef std::list<AExtension*> Extensions;
 	typedef std::list<dynamic_lib> Libraries;
 
 private:
@@ -61,10 +56,6 @@ private:
 	static AExtension* instantiate(const dynamic_lib_handle handle);
 
 private:
-	bool unload(AExtension* extension);
-
-private:
-	Extensions mExtensions;
 	Libraries mLibraries;
 };
 

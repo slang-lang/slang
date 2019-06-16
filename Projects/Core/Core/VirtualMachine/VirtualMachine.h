@@ -46,7 +46,7 @@ public:
 	~VirtualMachine();
 
 public:	// Setup
-	void addExtension(Extensions::AExtension *extension);
+	void addExtension(AExtension *extension);
 	void addLibraryFolder(const std::string &library);
 	void init();
 	Settings& settings();
