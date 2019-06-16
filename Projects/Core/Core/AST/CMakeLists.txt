@@ -1,6 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
+	Expression.cpp
 	Generator.cpp
 	PrintVisitor.cpp
 	TreeGenerator.cpp

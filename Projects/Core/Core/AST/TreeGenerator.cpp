@@ -815,10 +815,6 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 {
 	TokenIterator op = token;
 
-	if ( lhs->isConst() && !(mAllowConstModify && lhs->isMember()) ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + lhs->mName + "'", op->position());
-	}
-
 	Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
 
 	Expression* rhs = dynamic_cast<Expression*>(expression(++token));
@@ -866,11 +862,17 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 	}
 
 
-	if ( !inner->isAtomicType() && inner->isConst() ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("tried to assign const type '" + rhs->getResultType() + "' to non-const symbol '" + lhs->mName + "'", op->position());
+	if ( lhs->isConst() && !(mAllowConstModify && lhs->isMember()) ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + lhs->innerName() + "'", op->position());
 	}
 
-	if ( inner->isAtomicType() || inner->getResultType() == rhs->getResultType() ) {
+/*
+	if ( !lhs->isConst() && !lhs->isAtomicType() && rhs->isInnerConst() ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to assign const type '" + rhs->getResultType() + "' to non-const symbol '" + lhs->innerName() + "'", op->position());
+	}
+*/
+
+	if ( lhs->isAtomicType() || inner->getResultType() == rhs->getResultType() ) {
 		return new AssignmentExpression(lhs, rhs, resolveType(lhs, assignment, rhs));
 	}
 
@@ -887,7 +889,6 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 	params.emplace_back(rhs);
 
 	return process_method(lhs, (*token), params);
-
 }
 
 /*
@@ -1511,7 +1512,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	}
 
 	// prevent calls to modifiable method from const symbol (exception: constructors are allowed)
-	if ( symbol->isConst() && !method->isConstMethod() /*&& method->getMethodType() != MethodAttributes::MethodType::Constructor*/ ) {
+	if ( symbol->isConst() && !method->isConstMethod() ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed from within const symbol '" + mMethod->getFullScopeName() + "'", token.position());
 	}
 
@@ -2004,7 +2005,7 @@ Expression* TreeGenerator::process_typeid(TokenIterator& token)
 
 /*
  * syntax:
- * var <identifier> = <expression>;
+ * var <identifier> [const|modify] [ref|val] = <expression>;
  */
 TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 {
@@ -2024,17 +2025,20 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 	expect(Token::Type::ASSIGN, token);
 	++token;
 
-	Node* assignment = expression(token);
-	std::string type = dynamic_cast<Expression*>(assignment)->getResultType();
+	Expression* rhs = dynamic_cast<Expression*>(expression(token));
 
-	Runtime::Object* object = mRepository->createInstance(type, name, PrototypeConstraints(), Repository::InitilizationType::AllowAbstract);
+	if ( mutability == Mutability::Modify && rhs->isInnerConst() && !isAtomicType(rhs->getResultType()) ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to assign const type '" + rhs->getResultType() + "' to non-const symbol '" + name + "'", token->position());
+	}
+
+	Runtime::Object* object = mRepository->createInstance(rhs->getResultType(), name, PrototypeConstraints(), Repository::InitilizationType::AllowAbstract);
 	object->setMutability(mutability);
 	object->setIsReference(accessMode == AccessMode::ByReference);
 
 	getScope()->define(name, object);
 
 	// this could easily be changed to return a TypeDeclaration statement, which would be a little faster but during debugging the wrong statement would be shown
-	return new TypeInference(start, type, PrototypeConstraints(), name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
+	return new TypeInference(start, rhs->getResultType(), PrototypeConstraints(), name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, rhs);
 }
 
 /*
@@ -2098,7 +2102,9 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	// set scope & type according to symbol type
 	switch ( result->getSymbolType() ) {
 		case Symbol::IType::BluePrintObjectSymbol: {
-			type = dynamic_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
+			Designtime::BluePrintObject* bpo = dynamic_cast<Designtime::BluePrintObject*>(result);
+
+			type = bpo->QualifiedTypename();
 
 			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(type);
 			if ( !blueprint ) {
@@ -2115,7 +2121,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			scope = blueprint;
 
 			symbol = new DesigntimeSymbolExpression(name, type, constraints, blueprint->isAtomicType());
-			//symbol = new DesigntimeSymbolExpression(name, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), PrototypeConstraints(), blueprint->isAtomicType());
+			//symbol = new DesigntimeSymbolExpression(name, type, constraints, bpo->isConst(), bpo->isMember(), blueprint->isAtomicType());
 		} break;
 		case Symbol::IType::NamespaceSymbol: {
 			Common::Namespace* space = dynamic_cast<Common::Namespace*>(result);

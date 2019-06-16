@@ -21,6 +21,9 @@
 namespace ObjectiveScript {
 namespace AST {
 
+// Forward declarations
+//class Statements;
+
 
 class Expression : public Node
 {
@@ -83,6 +86,9 @@ public:
 		return mIsAtomicType;
 	}
 	virtual bool isConst() const {
+		return mIsConst;
+	}
+	virtual bool isInnerConst() const {
 		return mIsConst;
 	}
 	virtual bool isMember() const {
@@ -172,6 +178,7 @@ public:
 	{
 		mIsAtomicType = true;
 	}
+	virtual ~LiteralExpression() { }
 
 public:
 	Runtime::AtomicValue mValue;
@@ -342,6 +349,11 @@ public:
 		return mSymbolExpressionType;
 	}
 
+	std::string innerName() const {
+		// returns the name of the inner type in the chain
+		return mSymbolExpression ? mSymbolExpression->innerName() : mName;
+	}
+
 	bool isAtomicType() const {
 		// it's only important to know if the target type is atomic not if any one of the types is
 		return mSymbolExpression ? mSymbolExpression->isAtomicType() : mIsAtomicType;
@@ -350,6 +362,11 @@ public:
 	bool isConst() const {
 		// determines if at least one type in the chain is const
 		return mIsConst || (mSymbolExpression ? mSymbolExpression->isConst() : false);
+	}
+
+	bool isInnerConst() const {
+		// determines if the inner type in the chain is const
+		return mSymbolExpression ? mSymbolExpression->isInnerConst() : mIsConst;
 	}
 
 	bool isMember() const {
@@ -397,6 +414,15 @@ public:
 	  mConstraints(constraints)
 	{
 		mIsConst = false;
+		mSymbolExpressionType = SymbolExpressionType::DesigntimeSymbolExpression;
+	}
+
+	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, const PrototypeConstraints& constraints, bool isConst, bool isMember, bool isAtomicType)
+	: SymbolExpression(name, resultType, isAtomicType),
+	  mConstraints(constraints)
+	{
+		mIsConst = isConst;
+		mIsMember = isMember;
 		mSymbolExpressionType = SymbolExpressionType::DesigntimeSymbolExpression;
 	}
 
@@ -568,7 +594,7 @@ public:
 	  mParams(params),
 	  mSymbolExpression(symbol)
 	{
-		mIsConst = isConst || symbol->isConst();
+		mIsConst = isConst || symbol->isInnerConst();
 		mIsMember = isMember;
 		// due to the possibility of method overloading we cannot use the result type of our symbol expression
 		mResultType = resultType;
@@ -584,6 +610,22 @@ public:
 	ExpressionList mParams;
 	SymbolExpression* mSymbolExpression;
 };
+
+
+/*
+class LambdaExpression : public MethodExpression
+{
+public:
+	explicit LambdaExpression(const ExpressionList& params, const std::string& resultType, bool isConst, Statements* statements)
+	: MethodExpression(NULL, params, resultType, isConst, false),
+	  mStatements(statements)
+	{ }
+	virtual ~LambdaExpression();
+
+public:
+	Statements* mStatements;
+};
+*/
 
 // Method expressions
 ///////////////////////////////////////////////////////////////////////////////
