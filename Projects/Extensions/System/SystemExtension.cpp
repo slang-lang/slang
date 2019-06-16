@@ -35,13 +35,6 @@ namespace Extensions {
 namespace System {
 
 
-#ifdef USE_SHARED_LIBRARIES
-extern "C" AExtension* factory(void) {
-	return static_cast<AExtension*>( new SystemExtension() );
-}
-#endif
-
-
 SystemExtension::SystemExtension()
 : AExtension("System")
 {

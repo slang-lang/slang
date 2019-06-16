@@ -44,13 +44,6 @@ namespace Extensions {
 namespace Mysql {
 
 
-#ifdef USE_SHARED_LIBRARIES
-extern "C" AExtension* factory(void) {
-	return static_cast<AExtension*>( new MysqlExtension() );
-}
-#endif
-
-
 MysqlExtension::MysqlExtension()
 : AExtension("Mysql")
 {
