@@ -16,6 +16,7 @@
 
 
 namespace ObjectiveScript {
+namespace Extensions {
 
 
 class ExtensionMethod : public Common::Method
@@ -33,6 +34,7 @@ public:
 };
 
 
+}
 }
 
 
