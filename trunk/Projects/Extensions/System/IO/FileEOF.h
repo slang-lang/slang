@@ -16,7 +16,6 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Tools/Strings.h>
 #include "Defines.h"
 
 // Forward declarations
@@ -49,17 +48,13 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
-
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
-			*result = Runtime::BoolObject(
-				feof(mFileHandles[handle])
-			);
+			*result = Runtime::BoolObject( feof(mFileHandles[param_handle]) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
