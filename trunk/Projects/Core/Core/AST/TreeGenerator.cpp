@@ -658,7 +658,7 @@ Node* TreeGenerator::processPostfixObjectOperator(const std::string& objectType,
 	ExpressionList params;
 	params.push_back(baseExp);
 
-	NewExpression* newExp = new NewExpression(_string_object, process_method(stringExp, *start, params));
+	NewExpression* newExp = new NewExpression(objectType, process_method(stringExp, *start, params));
 
 	SymbolExpression* symbolExpression = resolve(start, scope, true, Visibility::Public);
 	if ( !symbolExpression ) {

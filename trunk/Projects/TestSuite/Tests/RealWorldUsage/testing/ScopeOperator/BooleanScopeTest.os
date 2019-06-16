@@ -11,6 +11,7 @@ private bool TestCase1() {
 	print("TestCase 1");
 
 	print( false.operator==(true) );
+	print( true.operator==(true) );
 
 	return true;
 }
