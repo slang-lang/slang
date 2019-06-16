@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <list>
 #include <string>
 
 // Project includes
@@ -32,6 +33,8 @@ public:
 
 	virtual Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token) = 0;
 };
+
+typedef std::list<ExtensionMethod*> ExtensionMethods;
 
 
 }

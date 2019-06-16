@@ -46,7 +46,7 @@ VirtualMachine::~VirtualMachine()
 	}
 }
 
-void VirtualMachine::addExtension(Extensions::AExtension *extension)
+void VirtualMachine::addExtension(AExtension *extension)
 {
 	assert(extension);
 
@@ -205,7 +205,7 @@ bool VirtualMachine::loadExtensions()
 			(*extIt)->provideMethods(methods);
 
 			for ( Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-				OSdebug("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
+				OSdebug("adding extension method '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
 
 				(*it)->setParent(globalScope);
 

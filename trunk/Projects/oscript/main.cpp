@@ -4,6 +4,7 @@
 // Project includes
 #include <Common/StdOutLogger.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Extensions/ExtensionManager.h>
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Script.h>
@@ -39,6 +40,8 @@
 #endif
 
 
+ObjectiveScript::Extensions::ExtensionManager mExtensionManager;
+StringSet mExtensions;
 std::string mFilename;
 StringSet mLibraryFolders;
 Utils::Common::StdOutLogger mLogger;
@@ -78,7 +81,16 @@ void processParameters(int argc, const char* argv[])
 
 	for ( int i = 1; i < argc; i++ ) {
 		if ( !scriptParams ) {
-			if ( Utils::Tools::StringCompare(argv[i], "-f") || Utils::Tools::StringCompare(argv[i], "--file") ) {
+			if ( Utils::Tools::StringCompare(argv[i], "-e") || Utils::Tools::StringCompare(argv[i], "--extension") ) {
+				if ( argc <= ++i ) {
+					std::cout << "invalid number of parameters provided!" << std::endl;
+
+					exit(-1);
+				}
+
+				mExtensions.insert(argv[i]);
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-f") || Utils::Tools::StringCompare(argv[i], "--file") ) {
 				if ( argc <= ++i ) {
 					std::cout << "invalid number of parameters provided!" << std::endl;
 
@@ -185,6 +197,11 @@ int main(int argc, const char* argv[])
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
+
+	// load user provided shared libraries
+	for ( auto ext : mExtensions ) {
+		mVirtualMachine.addExtension( mExtensionManager.load(ext) );
+	}
 
 	try {
 		ObjectiveScript::Runtime::Object result;
