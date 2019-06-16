@@ -48,6 +48,11 @@ MysqlExtension::MysqlExtension()
 {
 }
 
+void MysqlExtension::initialize(IScope* /*scope*/)
+{
+	// nothing to do here
+}
+
 void MysqlExtension::provideMethods(ExtensionMethods &methods)
 {
 	assert(methods.empty());

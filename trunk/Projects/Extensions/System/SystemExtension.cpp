@@ -91,10 +91,6 @@ void SystemExtension::initialize(IScope* scope)
 
 	// Strings
 	mStringsExtension.initialize(scope);
-
-
-	// finalize initialization
-	AExtension::initialize(scope);
 }
 
 void SystemExtension::provideMethods(ExtensionMethods &methods)

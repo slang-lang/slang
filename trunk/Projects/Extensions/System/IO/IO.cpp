@@ -32,6 +32,11 @@ SystemIOExtension::~SystemIOExtension()
 {
 }
 
+void SystemIOExtension::initialize(ObjectiveScript::IScope* /*scope*/)
+{
+	// nothing to do here
+}
+
 void SystemIOExtension::provideMethods(ExtensionMethods &methods)
 {
 	methods.push_back(new FileClose());

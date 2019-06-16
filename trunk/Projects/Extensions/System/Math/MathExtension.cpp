@@ -32,6 +32,11 @@ SystemMathExtension::~SystemMathExtension()
 {
 }
 
+void SystemMathExtension::initialize(ObjectiveScript::IScope* /*scope*/)
+{
+	// nothing to do here
+}
+
 void SystemMathExtension::provideMethods(ExtensionMethods &methods)
 {
 	methods.push_back(new AbsDouble());

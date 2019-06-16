@@ -21,6 +21,11 @@ JsonExtension::JsonExtension()
 {
 }
 
+void JsonExtension::initialize(IScope* /*scope*/)
+{
+	// nothing to do here
+}
+
 void JsonExtension::provideMethods(ExtensionMethods &methods)
 {
 	assert(methods.empty());

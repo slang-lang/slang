@@ -24,6 +24,7 @@ public:
 	MysqlExtension();
 
 public:
+	void initialize(IScope* scope);
 	void provideMethods(ExtensionMethods &methods);
 };
 

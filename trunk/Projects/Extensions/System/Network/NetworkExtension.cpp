@@ -82,9 +82,6 @@ void SystemNetworkExtension::initialize(IScope* scope)
 	scope->define("SHUT_WR", new Runtime::IntegerObject(SHUT_WR));		// shut down the writing side
 	scope->define("SHUT_RDWR", new Runtime::IntegerObject(SHUT_RDWR));	// shut down both sides
 #endif
-
-	// finalize initialization
-	AExtension::initialize(scope);
 }
 
 void SystemNetworkExtension::provideMethods(ExtensionMethods &methods)
