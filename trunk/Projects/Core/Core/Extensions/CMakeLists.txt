@@ -11,6 +11,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	dl
 )
 
 add_include(Projects/Core)
