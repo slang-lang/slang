@@ -68,11 +68,11 @@ SystemExtension::~SystemExtension()
 void SystemExtension::initialize(IScope* scope)
 {
 	// error constants
-	scope->define("EACCES", new Runtime::IntegerObject(EACCES));
-	scope->define("EINVAL", new Runtime::IntegerObject(EINVAL));
-	scope->define("EMFILE", new Runtime::IntegerObject(EMFILE));
-	scope->define("ENFILE", new Runtime::IntegerObject(ENFILE));
-	scope->define("ENOMEM", new Runtime::IntegerObject(ENOMEM));
+	scope->define("EACCES", new Runtime::IntegerObject("EACCES", EACCES));
+	scope->define("EINVAL", new Runtime::IntegerObject("EINVAL", EINVAL));
+	scope->define("EMFILE", new Runtime::IntegerObject("EMFILE", EMFILE));
+	scope->define("ENFILE", new Runtime::IntegerObject("ENFILE", ENFILE));
+	scope->define("ENOMEM", new Runtime::IntegerObject("ENOMEM", ENOMEM));
 
 #ifdef _WIN32
 	// Win32 only
