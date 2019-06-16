@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Defines.h>
 #include "FromJson.h"
 #include "ToJson.h"
 
@@ -14,6 +15,13 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace Json {
+
+
+#ifdef USE_SHARED_LIBRARIES
+extern "C" AExtension* factory(void) {
+	return static_cast<AExtension*>( new JsonExtension() );
+}
+#endif
 
 
 JsonExtension::JsonExtension()
