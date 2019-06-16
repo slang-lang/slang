@@ -4,12 +4,18 @@ SET(JSON_TARBALL "${JSON_PACKAGE_NAME}.tar.gz")
 SET(JSON_DOWNLOAD_URL "https://sourceforge.net/projects/libmyjson/files/libMyJson-0.2.4_51.tar.gz/download")
 
 
-function(build_static_testlib target modules)
+function(build_shared_lib target modules)
 
-    # append our utils testmanagement
-    list(APPEND DEPENDENCIES "UtilsTestManagement")
+    _handle_modules_pre_linker("${modules}")
 
-    build_static_lib(${target} "${modules}")
+    add_library(${target} SHARED ${SOURCES} ${HEADERS})
+
+    LIST(LENGTH DEPENDENCIES num_dependencies)
+    if ( num_dependencies GREATER 0 )
+        target_link_libraries(${target} ${DEPENDENCIES})
+    endif()
+
+    _handle_modules_post_linker("${modules}" ${target})
 
 endfunction()
 
@@ -18,7 +24,7 @@ function(build_static_lib target modules)
 
     _handle_modules_pre_linker("${modules}")
 
-    add_library(${target} ${SOURCES} ${HEADERS})
+    add_library(${target} STATIC ${SOURCES} ${HEADERS})
 
     LIST(LENGTH DEPENDENCIES num_dependencies)
     if ( num_dependencies GREATER 0 )
@@ -134,6 +140,7 @@ function(_curl_check_existence)
     if("${BUILD_CURL_INC}" STREQUAL "")
         MESSAGE(FATAL_ERROR "BUILD_CURL_INC needed for curl!")
     endif()
+
     if("${BUILD_CURL_LIB}" STREQUAL "")
         MESSAGE(FATAL_ERROR "BUILD_CURL_LIB needed for curl!")
     endif()
@@ -176,13 +183,13 @@ function(_json_check_existence)
        _could_not_find_json()
     else()
 
-    if("${BUILD_JSON_INC}" STREQUAL "")
-        MESSAGE(FATAL_ERROR "BUILD_JSON_INC needed for json!")
-    endif()
+        if("${BUILD_JSON_INC}" STREQUAL "")
+            MESSAGE(FATAL_ERROR "BUILD_JSON_INC needed for json!")
+        endif()
 
-    if("${BUILD_JSON_LIB}" STREQUAL "")
-        MESSAGE(FATAL_ERROR "BUILD_JSON_LIB needed for json!")
-    endif()
+        if("${BUILD_JSON_LIB}" STREQUAL "")
+            MESSAGE(FATAL_ERROR "BUILD_JSON_LIB needed for json!")
+        endif()
 
     endif()
 
