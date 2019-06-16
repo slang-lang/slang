@@ -143,12 +143,8 @@ ApacheExtension::ApacheExtension()
 {
 }
 
-void ApacheExtension::initialize(IScope* scope)
+void ApacheExtension::initialize(IScope* /*scope*/)
 {
-	// finalize initialization
-	AExtension::initialize(scope);
-
-	// run after initialization is done
 	readGetData();
 	readPostData();
 }

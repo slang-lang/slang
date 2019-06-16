@@ -28,6 +28,11 @@ SystemConsoleExtension::~SystemConsoleExtension()
 {
 }
 
+void SystemConsoleExtension::initialize(ObjectiveScript::IScope* /*scope*/)
+{
+	// nothing to do here
+}
+
 void SystemConsoleExtension::provideMethods(ExtensionMethods &methods)
 {
 	methods.push_back(new Cerr());

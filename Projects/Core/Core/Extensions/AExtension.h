@@ -31,14 +31,13 @@ public:
 	virtual ~AExtension();
 
 public:
-	virtual void initialize(IScope* scope);
+	virtual void initialize(IScope* scope) = 0;
 	virtual void provideMethods(ExtensionMethods& methods) = 0;
 
 public:
 	const std::string& getName() const;
 
 private:
-	bool mInitialized;
 	std::string mName;
 };
 
