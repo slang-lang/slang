@@ -21,11 +21,15 @@ SET(DEPENDENCIES
 	Utils
 )
 
+SET(MODULES
+	json
+	mysql
+)
+
 add_include(Projects/Core)
 add_include(Projects/Extensions)
 add_include(Projects/Utils)
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/oscript)
-SET(MODULES json mysql)
 build_app(oscript "${MODULES}")
 

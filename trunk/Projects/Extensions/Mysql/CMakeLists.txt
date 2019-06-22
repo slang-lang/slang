@@ -43,7 +43,11 @@ SET(DEPENDENCIES
 	CoreExtensions
 )
 
+SET(MODULES
+	mysql
+)
+
 add_include(Projects/Core)
 add_include(Projects/Extensions)
 
-build_static_lib(ExtensionsMysql "mysql")
+build_static_lib(ExtensionsMysql "${MODULES}")

@@ -27,11 +27,15 @@ SET(DEPENDENCIES
 	Utils
 )
 
+SET(MODULES
+	json
+	mysql
+)
+
 add_include(Projects/Core)
 add_include(Projects/odebugger)
 add_include(Projects/Utils)
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/odebugger)
-SET(MODULES json mysql)
 build_app(odebugger "${MODULES}")
 
