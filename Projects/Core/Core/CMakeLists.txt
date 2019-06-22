@@ -46,9 +46,12 @@ SET(DEPENDENCIES
 	Utils
 )
 
+SET(MODULES
+)
+
 add_include(Projects/Core)
 add_include(Projects/Debugger)
 add_include(Projects/Utils)
 
-build_static_lib(Core "")
+build_static_lib(Core "${MODULES}")
 

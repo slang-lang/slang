@@ -21,11 +21,15 @@ SET(DEPENDENCIES
 	Utils
 )
 
+SET(MODULES
+	curl
+	json
+)
+
 add_include(Projects/Core)
 add_include(Projects/odepend)
 add_include(Projects/Utils)
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/odepend)
-SET(MODULES curl json)
 build_app(odepend "${MODULES}")
 

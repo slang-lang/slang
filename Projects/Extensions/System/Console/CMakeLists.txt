@@ -19,8 +19,11 @@ SET(DEPENDENCIES
 	Core
 )
 
+SET(MODULES
+)
+
 add_include(Projects/Core)
 add_include(Projects/Extensions)
 add_include(Projects/Utils)
 
-build_static_lib(ExtensionsSystemConsole "")
+build_static_lib(ExtensionsSystemConsole "${MODULES}")
