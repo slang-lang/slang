@@ -145,6 +145,11 @@ public object Parser {
 				//print(result.toString());
 				break;
 			}
+			case "GOSUB": {
+				result = parseGOSUB(ci);
+				//print(result.toString());
+				break;
+			}
 			case "GOTO": {
 				result = parseGOTO(ci);
 				//print(result.toString());
@@ -177,6 +182,11 @@ public object Parser {
 			}
 			case "REM": {
 				result = parseREM(ci);
+				//print(result.toString());
+				break;
+			}
+			case "RETURN": {
+				result = parseRETURN(ci);
 				//print(result.toString());
 				break;
 			}
@@ -274,6 +284,14 @@ public object Parser {
 						  Expression new BinaryExpression(Expression varExp, "+", stepExp));
 	}
 
+	private Statement parseGOSUB(CharacterIterator ci) throws {
+		if ( !ci.hasNext() ) {
+			throw new ParseException("incomplete GOSUB!", mCurrentLine);
+		}
+
+		return Statement new GoSubStatement(int parseWord(ci));
+	}
+
 	private Statement parseGOTO(CharacterIterator ci) throws {
 		if ( !ci.hasNext() ) {
 			throw new ParseException("incomplete GOTO!", mCurrentLine);
@@ -356,6 +374,10 @@ public object Parser {
 	private Statement parseREM(CharacterIterator ci) throws {
 		// ignore everything on this line
 		return Statement new RemStatement(parseLine(ci));
+	}
+
+	private Statement parseRETURN(CharacterIterator ci) throws {
+		return Statement new ReturnStatement();
 	}
 
 
