@@ -69,7 +69,8 @@ namespace AST {
 
 
 TreeInterpreter::TreeInterpreter(Common::ThreadId id)
-: mControlFlow(Runtime::ControlFlow::Normal)
+: mControlFlow(Runtime::ControlFlow::Normal),
+  mFrame(NULL)
 {
 	// initialize virtual machine stuff
 	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : NULL;
@@ -86,6 +87,9 @@ void TreeInterpreter::deinitialize()
 {
 	// unwind stack
 	mThread->popFrame();
+
+    // reset current frame
+    mFrame = mThread->currentFrame();
 }
 
 void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
@@ -513,7 +517,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Object* self, Common::
 
 	// only set return value if we are a non-void method
 	if ( result && method->QualifiedTypename() != _void ) {
-		*result = mThread->currentFrame()->returnValue();
+		*result = mFrame->returnValue();
 	}
 
 	// deinitalize & pop scope
@@ -606,7 +610,7 @@ Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
 
 inline IScope* TreeInterpreter::getScope() const
 {
-	return mThread->currentFrame()->getScope();
+	return mFrame->getScope();
 }
 
 void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
@@ -636,11 +640,13 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 
 	// record stack
 	mThread->pushFrame(scope, TokenList(), params);
+	// set current frame
+	mFrame = mThread->currentFrame();
 }
 
 void TreeInterpreter::popScope()
 {
-	mThread->currentFrame()->popScope();
+	mFrame->popScope();
 }
 
 std::string TreeInterpreter::printExpression(Node* node) const
@@ -755,14 +761,12 @@ void TreeInterpreter::process(Statements* statements)
 
 void TreeInterpreter::pushScope(IScope* scope)
 {
-	StackFrame* stack = mThread->currentFrame();
-
 	bool allowDelete = !scope;
 	if ( allowDelete ) {
-		scope = new SymbolScope(stack->getScope());
+		scope = new SymbolScope(mFrame->getScope());
 	}
 
-	stack->pushScope(scope, allowDelete, true);
+	mFrame->pushScope(scope, allowDelete, true);
 }
 
 Runtime::Object& TreeInterpreter::resolveLValue(IScope *scope, SymbolExpression *symbol, bool onlyCurrentScope, Visibility::E visibility) const
@@ -1072,7 +1076,7 @@ void TreeInterpreter::visitReturn(ReturnStatement* node)
 
 		tryControl(evaluate(node->mExpression, &tmp));
 
-		Runtime::operator_binary_assign(&mThread->currentFrame()->returnValue(), &tmp);
+		Runtime::operator_binary_assign(&mFrame->returnValue(), &tmp);
 	}
 
 	mControlFlow = Runtime::ControlFlow::Return;
