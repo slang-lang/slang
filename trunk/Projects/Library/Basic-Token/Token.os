@@ -21,6 +21,7 @@ public enum TokenType {
 	FOR,
 	GREATER,
 	GREATER_EQUAL,
+	GOSUB,
 	GOTO,
 	IDENTIFIER,
 	IF,
@@ -38,9 +39,12 @@ public enum TokenType {
 	MATH_PLUS,
 	NEXT,
 	OR,
+	PEEK,
+	POKE,
 	PRINT,
 	REAL,
 	REM,
+	RETURN,
 	RPAREN,
 	SEMICOLON,
 	STEP,
@@ -70,6 +74,7 @@ public string TokenToString(TokenType type) {
 		case TokenType.FOR:			{ return "FOR"; }
 		case TokenType.GREATER:			{ return ">"; }
 		case TokenType.GREATER_EQUAL:		{ return ">="; }
+		case TokenType.GOSUB:			{ return "GOSUB"; }
 		case TokenType.GOTO:			{ return "GOTO"; }
 		case TokenType.IDENTIFIER:		{ return "IDENTIFIER"; }
 		case TokenType.IF:			{ return "IF"; }
@@ -87,10 +92,13 @@ public string TokenToString(TokenType type) {
 		case TokenType.MATH_PLUS:		{ return "MATH_PLUS"; }
 		case TokenType.NEXT:			{ return "NEXT"; }
 		case TokenType.OR:			{ return "OR"; }
+		case TokenType.PEEK:			{ return "PEEK"; }
+		case TokenType.POKE:			{ return "POKE"; }
+		case TokenType.PRINT:			{ return "PRINT"; }
 		case TokenType.REAL:			{ return "REAL"; }
 		case TokenType.REM:			{ return "REM"; }
+		case TokenType.RETURN:			{ return "RETURN"; }
 		case TokenType.RPAREN:			{ return ")"; }
-		case TokenType.PRINT:			{ return "PRINT"; }
 		case TokenType.SEMICOLON:		{ return ";"; }
 		case TokenType.STEP:			{ return "STEP"; }
 		case TokenType.STRING:			{ return "STRING"; }

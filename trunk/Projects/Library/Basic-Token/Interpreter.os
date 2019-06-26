@@ -1,6 +1,7 @@
 
 // library imports
 import System.Collections.Map;
+import System.Collections.Stack;
 import System.String;
 
 // project imports
@@ -35,6 +36,7 @@ public object Interpreter {
 		mCurrentLine = FIRST_LINE;
 		mForStack = new Map<string, int>();
 		mLines = Map<int, Line> lines;
+		mReturnStack = new Stack<int>();
 		mVariables = new Map<string, String>();
 	}
 
@@ -44,6 +46,7 @@ public object Interpreter {
 		}
 
 		mForStack.clear();
+		mReturnStack.clear();
 		mVariables.clear();
 
 		if ( debug ) {
@@ -88,33 +91,54 @@ public object Interpreter {
 	protected int process(Statement stmt) modify throws {
 		//print("process(" + stmt.toString() + ")");
 
-		switch ( true ) {
-			case stmt is DimStatement: {
+		switch ( stmt.mStatementType ) {
+			case StatementType.DimStatement: {
 				return processDIM(DimStatement stmt);
 			}
-			case stmt is EndStatement: {
+			case StatementType.EndStatement: {
 				return processEND(EndStatement stmt);
 			}
-			case stmt is ForStatement: {
+			case StatementType.ForStatement: {
 				return processFOR(ForStatement stmt);
 			}
-			case stmt is GotoStatement: {
+			case StatementType.GoSubStatement: {
+				return processGOSUB(GotoStatement stmt);
+			}
+			case StatementType.GotoStatement: {
 				return processGOTO(GotoStatement stmt);
 			}
-			case stmt is IfStatement: {
+			case StatementType.IfStatement: {
 				return processIF(IfStatement stmt);
 			}
-			case stmt is InputStatement: {
+			case StatementType.InputStatement: {
 				return processINPUT(InputStatement stmt);
 			}
-			case stmt is LetStatement: {
+			case StatementType.LetStatement: {
 				return processLET(LetStatement stmt);
 			}
-			case stmt is NextStatement: {
+			case StatementType.MethodStatement: {
+				throw "Method statement is not yet implemented";
+			}
+			case StatementType.NextStatement: {
 				return processNEXT(NextStatement stmt);
 			}
-			case stmt is PrintStatement: {
+			case StatementType.OnStatement: {
+				throw "ON is not yet implemented";
+			}
+			case StatementType.PeekStatement: {
+				throw "PEEK is not yet implemented";
+			}
+			case StatementType.PokeStatement: {
+				throw "POKE is not yet implemented";
+			}
+			case StatementType.PrintStatement: {
 				return processPRINT(PrintStatement stmt);
+			}
+			case StatementType.RemStatement: {
+				return 0;
+			}
+			case StatementType.ReturnStatement: {
+				return processRETURN(ReturnStatement stmt);
 			}
 		}
 
@@ -350,6 +374,21 @@ public object Interpreter {
 		return 0;
 	}
 
+	private int processGOSUB(GotoStatement stmt) modify throws {
+		assert(stmt);
+
+		if ( stmt.mFollowingStatement ) {
+			throw "GOTO does not support following statements!";
+		}
+
+		var line = mLines.get(mCurrentLine);
+		if ( line ) {
+			mReturnStack.push(line.nextLine());
+		}
+
+		return stmt.mLine;
+	}
+
 	private int processGOTO(GotoStatement stmt) const throws {
 		assert(stmt);
 
@@ -420,6 +459,15 @@ public object Interpreter {
 		return stmt.mFollowingStatement ? process(stmt.mFollowingStatement) : 0;
 	}
 
+	private int processRETURN(ReturnStatement stmt) modify {
+		assert(stmt);
+
+		var line = mReturnStack.peek();
+		mReturnStack.pop();
+
+		return line;
+	}
+
 	//////////////////////////////////////////////////////
 
 	private string functionABS(FunctionExpression exp) const throws {
@@ -468,6 +516,7 @@ public object Interpreter {
 	protected int mCurrentLine;
 	protected Map<string, int> mForStack;
 	protected Map<int, Line> mLines;
+	protected Stack<int> mReturnStack;
 	protected Map<string, String> mVariables;
 }
 

@@ -124,6 +124,10 @@ public object Parser {
 				result = Statement parseFOR();
 				break;
 			}
+			case TokenType.GOSUB: {
+				result = Statement parseGOSUB();
+				break;
+			}
 			case TokenType.GOTO: {
 				result = Statement parseGOTO();
 				break;
@@ -150,6 +154,10 @@ public object Parser {
 			}
 			case TokenType.REM: {
 				result = Statement parseREM();
+				break;
+			}
+			case TokenType.RETURN: {
+				result = Statement parseRETURN();
 				break;
 			}
 			default: {
@@ -221,6 +229,17 @@ public object Parser {
 		}
 
 		return new ForStatement(varExp, initExp, Expression new BooleanBinaryExpression(Expression varExp, "<", toExp), Expression new BinaryExpression(Expression varExp, "+", stepExp));
+	}
+
+	private GoSubStatement parseGOSUB() modify throws {
+		require(TokenType.GOSUB);
+
+		Token lineNumber = consume();
+		if ( !lineNumber || lineNumber.mType != TokenType.INTEGER ) {
+			throw "invalid token '" + toString(lineNumber) + "'";
+		}
+
+		return new GoSubStatement( cast<int>(lineNumber.mValue) );
 	}
 
 	private GotoStatement parseGOTO() modify throws {
@@ -302,6 +321,12 @@ public object Parser {
 		}
 
 		return new RemStatement(comment);
+	}
+
+	private ReturnStatement parseRETURN() modify throws {
+		require(TokenType.RETURN);
+
+		return new ReturnStatement();
 	}
 
 
