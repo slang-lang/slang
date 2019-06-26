@@ -23,14 +23,18 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back(new Token(TokenType.END, "END", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.ELSE, "ELSE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.FOR, "FOR", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.GOSUB, "GOSUB", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.GOTO, "GOTO", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.IF, "IF", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.INPUT, "INPUT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.LET, "LET", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.NEXT, "NEXT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.OR, "OR", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.PEEK, "PEEK", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.POKE, "POKE", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.PRINT, "PRINT", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.REM, "REM", Position null));
+		RESERVED_WORDS.push_back(new Token(TokenType.RETURN, "RETURN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.STEP, "STEP", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.THEN, "THEN", Position null));
 		RESERVED_WORDS.push_back(new Token(TokenType.TO, "TO", Position null));
