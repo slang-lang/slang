@@ -103,10 +103,12 @@ public object Stack<T> implements ICollection {
 		return mLast.mValue;
 	}
 
-	public void pop() modify throws {
+	public T pop() modify throws {
 		if ( mSize <= 0 ) {
 			throw new OutOfBoundsException("empty collection");
 		}
+
+		var last = mLast.mValue;
 
 		if ( mSize == 1 ) {
 			delete mFirst;
@@ -123,6 +125,8 @@ public object Stack<T> implements ICollection {
 		}
 
 		mSize--;
+
+		return last;
 	}
 
 	public void push(T value) modify {
