@@ -121,8 +121,12 @@ bool BluePrintObject::isIterable() const
 {
 	ParameterList params;
 
+	if ( isOfType("ICollection") ) {
+	    return true;
+	}
+
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->getName() == "getIterator" &&  (*it)->isSignatureValid(params) ) {
+		if ( (*it)->getName() == "getIterator" && (*it)->isSignatureValid(params) ) {
 			return true;
 		}
 	}
