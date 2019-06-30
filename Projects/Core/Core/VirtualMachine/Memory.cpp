@@ -63,7 +63,7 @@ void Memory::deleteObject(const Runtime::Reference& ref)
 
 	// reset reference counter
 	it->second.mCount = 0;
-	it->second.mObject = 0;
+	it->second.mObject = NULL;
 
 	// ... and remove address from memory
 	mMemory.erase(it);
@@ -85,7 +85,7 @@ Runtime::Object* Memory::get(const Runtime::Reference& ref) const
 		return it->second.mObject;
 	}
 
-	return 0;
+	return NULL;
 }
 
 void Memory::init()
@@ -117,7 +117,7 @@ void Memory::remove(const Runtime::Reference& ref)
 	}
 
 	it->second.mCount--;
-	if ( it->second.mCount == 0 ) {
+	if ( it->second.mCount == 0 && it->second.mObject ) {
 		deleteObject(it->first);
 	}
 }
