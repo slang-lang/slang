@@ -1,10 +1,10 @@
 
 // Connection settings
-public string Database = "ts_parking";
-public string Host const = "127.0.0.1";
-public string Password const = "";
-public int Port const = 3306;
-public string User const = "root";
+public string Database = "alpen";
+public string Host = "192.168.0.33";
+public string Password = "moviebase";
+public int Port = 3306;
+public string User = "moviebase";
 
 // Output settings
 public string TABLE_PREFIX const = "";
