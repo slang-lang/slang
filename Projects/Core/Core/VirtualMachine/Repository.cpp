@@ -604,6 +604,8 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	if ( blueprint->isEnumeration() ) {
 		// assignment operator
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+		mTypeSystem->define(_int, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+		mTypeSystem->define(_string, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 
 		// comparison operators
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,         blueprint->QualifiedTypename(), _bool);
@@ -619,6 +621,12 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MODULO,   blueprint->QualifiedTypename(), _float);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MULTIPLY, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_SUBTRACT, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+
+/*
+		// typecast operator
+		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _int, blueprint->QualifiedTypename());
+		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _string, blueprint->QualifiedTypename());
+*/
 
 		return;
 	}
