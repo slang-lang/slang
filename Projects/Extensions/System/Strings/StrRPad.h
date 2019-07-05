@@ -58,7 +58,9 @@ public:
 				throw Runtime::Exceptions::SizeException("invalid pattern size");
 			}
 
-			param_value.append(param_length, param_pattern[0]);
+			if ( (size_t)param_length > param_value.size() ) {
+			    param_value.append(param_length - param_value.size(), param_pattern[0]);
+            }
 
 			*result = Runtime::StringObject(param_value);
 		}
