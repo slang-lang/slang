@@ -11,32 +11,37 @@ public object StdOutLogger implements ILogger {
 	 */
 	public void Constructor(string key, int keyLength = 0) {
 		mContext = IContext new StdOutContext();
+		mKey = key;
 		mKeyLength = keyLength;
 
-		if ( keyLength && strlen(key) > keyLength ) {
-			mKey = substr(key, strlen(key) - keyLength, keyLength);
-		}
-		else {
-			mKey = key;
+		if ( mKeyLength ) {
+			if ( strlen(mKey) > mKeyLength ) {
+				mKey = substr(mKey, strlen(mKey) - mKeyLength, mKeyLength);
+			}
+
+			mKey = strrpad(mKey, mKeyLength, " ");
 		}
 	}
 
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(ILogger parent, string key, int keyLength) throws {
+	public void Constructor(ILogger parent, string key) throws {
 		if ( !parent ) {
 			throw new Exception("missing parent logger");
 		}
 
 		mContext = parent.getContext();
 		mHasParent = true;
-		mKeyLength = keyLength;
-
 		mKey = parent.getKey() + LibLog.KeySeparator + key;
+		mKeyLength = parent.getKeyLength();
 
-		if ( keyLength && strlen(mKey) > keyLength ) {
-			mKey = substr(mKey, strlen(mKey) - keyLength, keyLength);
+		if ( mKeyLength ) {
+			if ( strlen(mKey) > mKeyLength ) {
+				mKey = substr(mKey, strlen(mKey) - mKeyLength, mKeyLength);
+			}
+
+			mKey = strrpad(mKey, mKeyLength, " ");
 		}
 	}
 

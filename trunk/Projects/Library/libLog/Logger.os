@@ -8,31 +8,23 @@ import LibLog;
 public object Logger implements ILogger {
 	/*
 	 * Default constructor
-     * expects a parent logger, uses parent's keylength
-	 */
-    public void Constructor(ILogger parent, string key) throws {
-		if ( !parent ) {
-			throw new Exception("missing parent logger");
-		}
-
-		Constructor(parent, key, parent.getKeyLength());
-	}
-
-    /*
-     * Expended constructor
-     * expects parent logger, uses provided key length
+     * expects a parent logger and a key, uses parent's keylength
      */
-	public void Constructor(ILogger parent, string key, int keyLength) throws {
+	public void Constructor(ILogger parent, string key) throws {
 		if ( !parent ) {
 			throw new Exception("missing parent logger");
 		}
 
 		mContext = parent.getContext();
         mKey = parent.getKey() + LibLog.KeySeparator + key;
-        mKeyLength = keyLength;
+        mKeyLength = parent.getKeyLength();
 
-		if ( keyLength && strlen(mKey) > keyLength ) {
-			mKey = substr(mKey, strlen(mKey) - keyLength, keyLength);
+		if ( mKeyLength ) {
+			if ( strlen(mKey) > mKeyLength ) {
+				mKey = substr(mKey, strlen(mKey) - mKeyLength, mKeyLength);
+			}
+
+			mKey = strrpad(mKey, mKeyLength, " ");
 		}
 	}
 
