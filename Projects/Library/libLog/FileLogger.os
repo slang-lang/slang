@@ -11,13 +11,15 @@ public object FileLogger implements ILogger {
 	 */
 	public void Constructor(string filename, string key, int keyLength = 0) {
 		mContext = IContext new FileContext(filename);
+		mKey = key;
 		mKeyLength = keyLength;
 
-		if ( keyLength && strlen(key) > keyLength ) {
-			mKey = substr(key, strlen(key) - keyLength, keyLength);
-		}
-		else {
-			mKey = key;
+		if ( mKeyLength ) {
+			if ( strlen(mKey) > mKeyLength ) {
+				mKey = substr(mKey, strlen(mKey) - mKeyLength, mKeyLength);
+			}
+
+			mKey = strrpad(mKey, mKeyLength, " ");
 		}
 	}
 
@@ -31,12 +33,15 @@ public object FileLogger implements ILogger {
 
 		mContext = parent.getContext();
 		mHasParent = true;
-		mKeyLength = keyLength;
-
 		mKey = parent.getKey() + "::" + key;
+		mKeyLength = parent.getKeyLength();
 
-		if ( keyLength && strlen(mKey) > keyLength ) {
-			mKey = substr(mKey, strlen(mKey) - keyLength, keyLength);
+		if ( mKeyLength ) {
+			if ( strlen(mKey) > mKeyLength ) {
+				mKey = substr(mKey, strlen(mKey) - mKeyLength, mKeyLength);
+			}
+
+			mKey = strrpad(mKey, mKeyLength, " ");
 		}
 	}
 
