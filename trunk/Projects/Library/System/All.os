@@ -11,7 +11,7 @@ import Exception;
 import Float;
 import Integer;
 import IO.All;
-import Math;
+import Math.All;
 import Network.All;
 import String;
 import StringIterator;
