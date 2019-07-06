@@ -53,17 +53,29 @@ public object IPCService implements IIPCReceiver, IIPCSender {
 	}
 
 	public IPCMessage receive() modify {
-		var message = new IPCMessage();
+		IPCMessage message;
+
+		int result = DB.Query( "SELECT * FROM ipc_queue WHERE receiver = '" + mProcessName + "' AND received IS NULL" );
+		if ( result ) {
+			message = new IPCMessage(
+				mysql_get_field_value(result, "sender"),
+				mysql_get_field_value(result, "receiver"),
+				cast<int>( mysql_get_field_value(result, "message_id") ),
+				mysql_get_field_value(result, "message")
+			);
+
+			DB.Update( "UPDATE ipc_queue SET received = NOW() WHERE message_id = " + message.messageID );
+		}
 
 		return message;
 	}
 
 	public void send(IPCMessage message) modify {
-		print("send(" + cast<string>( message ) + ")");
+		send( message.receiver, message.message );
 	}
 
 	public void send(string receiver, string message) modify {
-		send( new IPCMessage(mProcessName, receiver, 0, message) );
+		DB.Insert( "INSERT INTO ipc_queue (sender, receiver, message, created) VALUES ('" + mProcessName + "', '" + receiver + "', '" + message + "', NOW())" );
 	}
 
 	private string mProcessName;
