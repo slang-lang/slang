@@ -10,11 +10,11 @@ import Dispatcher;
 
 public void Main(int argc, string args) {
     try {
-        var logger = new StdOutLogger("Main");
+        var logger = new StdOutLogger("Main", 15);
 
         DB.Connect();
 
-        var dispatcher = new Dispatcher(cast<ILogger>( new Logger(cast<ILogger>(logger), "OrderDispatcher") ), DB.Handle);
+        var dispatcher = new Dispatcher(cast<ILogger>( new Logger(cast<ILogger>(logger), "OrderDispatcher") ));
 
         while ( true ) {
             dispatcher.dispatch();

@@ -16,8 +16,7 @@ import DispatchSteps.SortShuttlesByDistance;
 
 
 public object Dispatcher {
-    public void Constructor(ILogger logger, int connection) {
-        mConnection = connection;
+    public void Constructor(ILogger logger) {
         mDispatchSteps = new List<IDispatchStep>();
         mLogger = logger;
         mOrders = new List<Order>();
@@ -41,13 +40,15 @@ public object Dispatcher {
             loadOrders();
             loadShuttles();
 
-            printStats();
-
             var data = new DispatchData( cast<Object>( mOrders ), cast<Object>( mShuttles) );
             if ( mOrders.empty() || mShuttles.empty() ) {
                 mLogger.warning("No dispatchable orders found");
                 return;
             }
+
+            mLogger.info("Starting new dispatch chain with " + data.shuttles.size() + " shuttles and " + data.orders.size() + " orders...");
+            printOrders(data);
+            printShuttles(data);
 
             // run through all dispatch steps as often valid results are still returned
             foreach ( IDispatchStep step : mDispatchSteps ) {
@@ -63,6 +64,9 @@ public object Dispatcher {
                 data = newData;
 
                 mLogger.info("Executed step '" + step.getName() + "' with " + cast<string>( data ));
+
+                printOrders(data);
+                printShuttles(data);
             }
 
             if ( !data.isValid() ) {
@@ -80,15 +84,14 @@ public object Dispatcher {
             shuttle.state = ShuttleState.Active;
             store(shuttle);
 
-
-            sleep(2000);
+            break;  // only iterate once to allow a better comprehensibility
         }
     }
 
     public void loadOrders() modify throws {
         mOrders.clear();
 
-        mLogger.debug("loadOrders(Query: '" + ORDER_QUERY + "')");
+        //mLogger.debug("loadOrders(Query: '" + ORDER_QUERY + "')");
 
         int result = execute(ORDER_QUERY);
         while ( mysql_next_row(result) ) {
@@ -99,7 +102,7 @@ public object Dispatcher {
     public void loadShuttles() modify throws {
         mShuttles.clear();
 
-        mLogger.debug("loadShuttles(Query: '" + SHUTTLE_QUERY + "')");
+        //mLogger.debug("loadShuttles(Query: '" + SHUTTLE_QUERY + "')");
 
         int result = execute(SHUTTLE_QUERY);
         while ( mysql_next_row(result) ) {
@@ -111,7 +114,6 @@ public object Dispatcher {
         int activeShuttles;
         foreach ( Shuttle shuttle : mShuttles ) {
             if ( shuttle.state == ShuttleState.Active ) {
-                print( cast<string>( shuttle ) );
                 activeShuttles++;
             }
         }
@@ -119,7 +121,6 @@ public object Dispatcher {
         int newOrders;
         foreach ( Order order : mOrders ) {
             if ( order.state == OrderState.New ) {
-                print( cast<string>( order ) );
                 newOrders++;
             }
         }
@@ -129,18 +130,19 @@ public object Dispatcher {
     }
 
     private int execute(string query) const throws {
-        int error = mysql_query(mConnection, query);
+        int error = mysql_query(DB.Handle, query);
         if ( error ) {
-            throw mysql_error(mConnection);
+            throw mysql_error(DB.Handle);
         }
 
-        try { return mysql_store_result(mConnection); }
+        try { return mysql_store_result(DB.Handle); }
 
         return 0;
     }
 
     private void init() modify {
         mLogger.info("Initializing...");
+
         initDispatchSteps();
     }
 
@@ -153,6 +155,18 @@ public object Dispatcher {
         mDispatchSteps.push_back( cast<IDispatchStep>( new FilterShuttlesCanAcceptOrders() ) );
         mDispatchSteps.push_back( cast<IDispatchStep>( new SortShuttlesByBatteryLevel() ) );
         mDispatchSteps.push_back( cast<IDispatchStep>( new SortShuttlesByDistance() ) );
+    }
+
+    private void printOrders(DispatchData data) const {
+        foreach ( Order order : data.orders ) {
+            mLogger.debug( cast<string>( order ) );
+        }
+    }
+
+    private void printShuttles(DispatchData data) const {
+        foreach ( Shuttle shuttle : data.shuttles ) {
+            mLogger.debug( cast<string>( shuttle ) );
+        }
     }
 
     private void store(Order order) const {
@@ -170,7 +184,6 @@ public object Dispatcher {
     }
 
     // Private members
-    private int mConnection;
     private List<IDispatchStep> mDispatchSteps;
     private ILogger mLogger;
     private List<Order> mOrders;
