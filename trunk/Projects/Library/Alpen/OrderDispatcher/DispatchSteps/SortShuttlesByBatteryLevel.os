@@ -13,7 +13,7 @@ private object SortByBatteryLevel implements IShuttleSortAlgorithm {
     public bool compare(Shuttle left const, Shuttle right const) const {
         //print(cast<string>(left) + " vs " + cast<string>(right));
 
-        return left.batteryLevelID < right.batteryLevelID;
+        return left.batteryLevelID > right.batteryLevelID;
     }
 }
 

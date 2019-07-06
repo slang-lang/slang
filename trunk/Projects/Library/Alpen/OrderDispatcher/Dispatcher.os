@@ -46,9 +46,11 @@ public object Dispatcher {
                 return;
             }
 
-            mLogger.info("Starting new dispatch chain with " + data.shuttles.size() + " shuttles and " + data.orders.size() + " orders...");
+            mLogger.info("Starting new dispatch chain with " + data.orders.size() + " orders and " + data.shuttles.size() + " shuttles...");
             printOrders(data);
             printShuttles(data);
+
+            bool assignableOrders = true;
 
             // run through all dispatch steps as often valid results are still returned
             foreach ( IDispatchStep step : mDispatchSteps ) {
@@ -58,6 +60,7 @@ public object Dispatcher {
 
                 if ( !newData.isValid() ) {
                     mLogger.debug("No valid result found");
+                    assignableOrders = false;
                     break;
                 }
 
@@ -69,7 +72,7 @@ public object Dispatcher {
                 printShuttles(data);
             }
 
-            if ( !data.isValid() ) {
+            if ( !assignableOrders ) {
                 mLogger.warning("No dispatchable orders found");
                 break;
             }
@@ -81,7 +84,7 @@ public object Dispatcher {
             order.state = OrderState.Assigned;
             store(order);
 
-            shuttle.state = ShuttleState.Active;
+            shuttle.stateID = ShuttleState.OCCUPIED;
             store(shuttle);
 
             break;  // only iterate once to allow a better comprehensibility
@@ -113,7 +116,7 @@ public object Dispatcher {
     public void printStats() const {
         int activeShuttles;
         foreach ( Shuttle shuttle : mShuttles ) {
-            if ( shuttle.state == ShuttleState.Active ) {
+            if ( shuttle.stateID == ShuttleState.OCCUPIED ) {
                 activeShuttles++;
             }
         }
@@ -177,7 +180,7 @@ public object Dispatcher {
     }
 
     private void store(Shuttle shuttle) const {
-        string query = "UPDATE shuttles SET state = " + cast<string>( shuttle.state ) + " WHERE shuttle_id = " + shuttle.shuttleID;
+        string query = "UPDATE shuttles SET shuttle_state_id = " + cast<string>( shuttle.stateID ) + " WHERE shuttle_id = " + shuttle.shuttleID;
         mLogger.debug(query);
 
         execute(query);
