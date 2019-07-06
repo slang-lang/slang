@@ -14,7 +14,7 @@ public object FilterDispatchableShuttles extends FilteringStep implements IDispa
         var filteredShuttles = new List<Shuttle>();
 
         foreach ( Shuttle shuttle : data.shuttles ) {
-            if ( shuttle.modeID == ShuttleMode.Automatic && shuttle.state == ShuttleState.Ready ) {
+            if ( shuttle.modeID == ShuttleMode.AUTOMATIC && shuttle.stateID == ShuttleState.READY ) {
                 filteredShuttles.push_back(shuttle);
             }
         }

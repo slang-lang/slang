@@ -15,7 +15,7 @@ public object FilterShuttlesCanAcceptOrders extends FilteringStep implements IDi
 
         foreach ( Shuttle shuttle : data.shuttles ) {
             foreach ( Order order : data.orders ) {
-                if ( shuttle.canAcceptOrder(order) && !acceptableOrders.contains(order) ) {
+                if ( shuttle.stateID == ShuttleState.READY && !acceptableOrders.contains(order) ) {
                     acceptableOrders.push_back(order);
                 }
             }
