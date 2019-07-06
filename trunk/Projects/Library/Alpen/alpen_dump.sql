@@ -16,30 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `ipc`
+-- Table structure for table `ipc_queue`
 --
 
-DROP TABLE IF EXISTS `ipc`;
+DROP TABLE IF EXISTS `ipc_queue`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ipc` (
+CREATE TABLE `ipc_queue` (
   `message_id` int(11) NOT NULL AUTO_INCREMENT,
-  `sender` varchar(32) DEFAULT NULL,
+  `sender` varchar(32) NOT NULL,
   `receiver` varchar(32) NOT NULL,
-  `message` varchar(1024) DEFAULT NULL,
+  `message` varchar(1024) NOT NULL,
   `created` timestamp NULL DEFAULT NULL,
   `received` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`message_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ipc`
+-- Dumping data for table `ipc_queue`
 --
 
-LOCK TABLES `ipc` WRITE;
-/*!40000 ALTER TABLE `ipc` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ipc` ENABLE KEYS */;
+LOCK TABLES `ipc_queue` WRITE;
+/*!40000 ALTER TABLE `ipc_queue` DISABLE KEYS */;
+INSERT INTO `ipc_queue` VALUES (1,'ORDERDISPATCHER','SHUTTLEMANAGER','new order assigned',NULL,NULL),(2,'ORDERDISPATCHER','SHUTTLEMANAGER','new order assigned',NULL,NULL);
+/*!40000 ALTER TABLE `ipc_queue` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -395,4 +396,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-06 14:05:57
+-- Dump completed on 2019-07-06 18:02:29
