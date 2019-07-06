@@ -55,7 +55,7 @@ public object Shuttle {
     }
 
     public bool canAcceptOrder(Order order) const {
-        print( "" + cast<string>( this ) + ": " + cast<string>( order ) );
+        //print( "" + cast<string>( this ) + ": " + cast<string>( order ) );
 
         return countAssignedOrders < containerLimit;
     }
