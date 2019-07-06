@@ -2,29 +2,65 @@
 // library imports
 
 // project imports
+import Database;
 
 
 public object IPCMessage {
-    public string message;
-    public int messageID;
-    public string receiver;
-    public string sender;
+	public string message;
+	public int messageID;
+	public string receiver;
+	public string sender;
+
+	public void Constructor() {
+		// nothing to do here
+	}
+
+	public void Constructor(string _sender, string _receiver, int _messageID, string _message) {
+		message = _message;
+		messageID = _messageID;
+		receiver = _receiver;
+		sender = _sender;
+	}
+
+	public string =operator(string) const {
+		return "IPCMessage: {" +
+			"sender: \"" + sender + "\", " +
+			"receiver: \"" + receiver + "\", " +
+			"messageID: " + messageID + ", " +
+			"message: \"" + message + " " +
+			"}";
+	}
 }
 
-
-public object IPCReceiver {
-    public string mReceiver const;
-
-    public void Constructor(string receiver) {
-        mReceiver = receiver;
-    }
+public interface IIPCReceiver {
+	public IPCMessage receive() modify;
 }
 
-public object IPCSender {
-    public string mSender const;
-
-    public void Constructor(string sender) {
-        mSender = sender;
-    }
+public interface IIPCSender {
+	public void send(IPCMessage) modify;
+	public void send(string receiver, string message) modify;
 }
+
+public object IPCService implements IIPCReceiver, IIPCSender {
+	public void Constructor(string processName) {
+		mProcessName = processName;
+	}
+
+	public IPCMessage receive() modify {
+		var message = new IPCMessage();
+
+		return message;
+	}
+
+	public void send(IPCMessage message) modify {
+		print("send(" + cast<string>( message ) + ")");
+	}
+
+	public void send(string receiver, string message) modify {
+		send( new IPCMessage(mProcessName, receiver, 0, message) );
+	}
+
+	private string mProcessName;
+}
+
 
