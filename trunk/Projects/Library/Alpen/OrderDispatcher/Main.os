@@ -5,22 +5,27 @@ import libLog.StdOutLogger;
 
 // project imports
 import libs.Database;
+import libs.IPCService;
 import Dispatcher;
 
 
 public void Main(int argc, string args) {
     try {
-        var logger = new StdOutLogger("Main", 15);
-
         DB.Connect();
 
-        var dispatcher = new Dispatcher(cast<ILogger>( new Logger(cast<ILogger>(logger), "OrderDispatcher") ));
+        var logger = new StdOutLogger("Main", 15);
+        var dispatcher = new Dispatcher( new Logger(cast<ILogger>(logger), "OrderDispatcher") );
+	var ipcService = new IPCService( ORDERDISPATCHER );
 
         while ( true ) {
             dispatcher.dispatch();
 
             logger.info("Waiting for new orders...");
-            sleep(5000);
+            //sleep(5000);
+
+            while ( !ipcService.receive() ) {
+                sleep( 100 );
+            }
         }
 
         DB.Disconnect();
@@ -32,3 +37,4 @@ public void Main(int argc, string args) {
         print("Exception: " + e.what());
     }
 }
+

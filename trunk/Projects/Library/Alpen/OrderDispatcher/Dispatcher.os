@@ -5,7 +5,7 @@ import libLog.Logger;
 
 // project imports
 import libs.Database;
-import libs.IPC;
+import libs.IPCService;
 import libs.Order;
 import libs.Shuttle;
 import DispatchSteps.FilterDispatchableShuttles;
@@ -17,8 +17,9 @@ import DispatchSteps.SortShuttlesByDistance;
 
 
 public object Dispatcher {
-    public void Constructor(ILogger logger) {
+    public void Constructor(Logger logger) {
         mDispatchSteps = new List<IDispatchStep>();
+        mIPCService = new IPCService(ORDERDISPATCHER);
         mLogger = logger;
         mOrders = new List<Order>();
         mShuttles = new List<Shuttle>();
@@ -88,14 +89,14 @@ public object Dispatcher {
             shuttle.stateID = ShuttleState.OCCUPIED;
             store(shuttle);
 
+            mIPCService.send(SHUTTLEMANAGER, "new order assigned");
+
             break;  // only iterate once to allow a better comprehensibility
         }
     }
 
     public void loadOrders() modify throws {
         mOrders.clear();
-
-        //mLogger.debug("loadOrders(Query: '" + ORDER_QUERY + "')");
 
         int result = DB.Execute(ORDER_QUERY);
         while ( mysql_next_row(result) ) {
@@ -106,8 +107,6 @@ public object Dispatcher {
     public void loadShuttles() modify throws {
         mShuttles.clear();
 
-        //mLogger.debug("loadShuttles(Query: '" + SHUTTLE_QUERY + "')");
-
         int result = DB.Execute(SHUTTLE_QUERY);
         while ( mysql_next_row(result) ) {
             mShuttles.push_back( new Shuttle(result) );
@@ -115,22 +114,8 @@ public object Dispatcher {
     }
 
     public void printStats() const {
-        int activeShuttles;
-        foreach ( Shuttle shuttle : mShuttles ) {
-            if ( shuttle.stateID == ShuttleState.OCCUPIED ) {
-                activeShuttles++;
-            }
-        }
-
-        int newOrders;
-        foreach ( Order order : mOrders ) {
-            if ( order.state == OrderState.New ) {
-                newOrders++;
-            }
-        }
-
-        print("Shuttles: " + mShuttles.size() + " (" + activeShuttles + ")");
-        print("Orders: " + mOrders.size() + " (" + newOrders + ")");
+        print("Orders: " + mOrders.size());
+        print("Shuttles: " + mShuttles.size());
     }
 
     private void init() modify {
@@ -143,33 +128,33 @@ public object Dispatcher {
         mLogger.info("Initializing dispatch steps...");
 
         mDispatchSteps.push_back( cast<IDispatchStep>( new FilterDispatchableShuttles() ) );
+        mDispatchSteps.push_back( cast<IDispatchStep>( new FilterShuttlesCanAcceptOrders() ) );
         mDispatchSteps.push_back( cast<IDispatchStep>( new SortOrdersByPriority() ) );
         mDispatchSteps.push_back( cast<IDispatchStep>( new FilterOrdersByPriority() ) );
-        mDispatchSteps.push_back( cast<IDispatchStep>( new FilterShuttlesCanAcceptOrders() ) );
         mDispatchSteps.push_back( cast<IDispatchStep>( new SortShuttlesByBatteryLevel() ) );
         mDispatchSteps.push_back( cast<IDispatchStep>( new SortShuttlesByDistance() ) );
     }
 
-    private void printOrders(DispatchData data) const {
+    private void printOrders(DispatchData data) modify {
         foreach ( Order order : data.orders ) {
             mLogger.debug( cast<string>( order ) );
         }
     }
 
-    private void printShuttles(DispatchData data) const {
+    private void printShuttles(DispatchData data) modify {
         foreach ( Shuttle shuttle : data.shuttles ) {
             mLogger.debug( cast<string>( shuttle ) );
         }
     }
 
-    private void store(Order order) const {
+    private void store(Order order) modify {
         string query = "UPDATE orders SET sequence = " + order.sequence + ", shuttle_id = " + order.shuttleID + ", state = " + cast<string>( order.state ) + " WHERE order_id = " + order.orderID;
         mLogger.debug(query);
 
         DB.Execute(query);
     }
 
-    private void store(Shuttle shuttle) const {
+    private void store(Shuttle shuttle) modify {
         string query = "UPDATE shuttles SET shuttle_state_id = " + cast<string>( shuttle.stateID ) + " WHERE shuttle_id = " + shuttle.shuttleID;
         mLogger.debug(query);
 
@@ -178,7 +163,8 @@ public object Dispatcher {
 
     // Private members
     private List<IDispatchStep> mDispatchSteps;
-    private ILogger mLogger;
+    private IPCService mIPCService;
+    private Logger mLogger;
     private List<Order> mOrders;
     private List<Shuttle> mShuttles;
 
@@ -186,3 +172,4 @@ public object Dispatcher {
     private string ORDER_QUERY const;
     private string SHUTTLE_QUERY const;
 }
+
