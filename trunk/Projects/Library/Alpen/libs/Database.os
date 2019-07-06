@@ -24,4 +24,48 @@ public namespace DB {
         mysql_close(handle ?: Handle);
     }
 
+    public int Execute(string query) const throws {
+        int error = mysql_query(DB.Handle, query);
+        if ( error ) {
+            throw mysql_error(Handle);
+        }
+
+        try { return mysql_store_result(Handle); }
+
+        return 0;
+    }
+
+    public bool Insert(string query) const throws {
+        int error = mysql_query(DB.Handle, query);
+        if ( error ) {
+            throw mysql_error(Handle);
+        }
+
+        try { return mysql_affected_rows(Handle) > 0; }
+
+        return false;
+    }
+
+    public int Query(string query) const throws {
+        int error = mysql_query(DB.Handle, query);
+        if ( error ) {
+            throw mysql_error(Handle);
+        }
+
+        try { return mysql_store_result(Handle); }
+
+        return 0;
+    }
+
+    public bool Update(string query) const throws {
+        int error = mysql_query(DB.Handle, query);
+        if ( error ) {
+            throw mysql_error(Handle);
+        }
+
+        try { return mysql_affected_rows(Handle) > 0; }
+
+        return false;
+    }
+
 }

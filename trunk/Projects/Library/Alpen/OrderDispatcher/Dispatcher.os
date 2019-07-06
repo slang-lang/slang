@@ -4,6 +4,7 @@ import System.Collections.List;
 import libLog.Logger;
 
 // project imports
+import libs.Database;
 import libs.IPC;
 import libs.Order;
 import libs.Shuttle;
@@ -96,7 +97,7 @@ public object Dispatcher {
 
         //mLogger.debug("loadOrders(Query: '" + ORDER_QUERY + "')");
 
-        int result = execute(ORDER_QUERY);
+        int result = DB.Execute(ORDER_QUERY);
         while ( mysql_next_row(result) ) {
             mOrders.push_back( new Order(result) );
         }
@@ -107,7 +108,7 @@ public object Dispatcher {
 
         //mLogger.debug("loadShuttles(Query: '" + SHUTTLE_QUERY + "')");
 
-        int result = execute(SHUTTLE_QUERY);
+        int result = DB.Execute(SHUTTLE_QUERY);
         while ( mysql_next_row(result) ) {
             mShuttles.push_back( new Shuttle(result) );
         }
@@ -130,17 +131,6 @@ public object Dispatcher {
 
         print("Shuttles: " + mShuttles.size() + " (" + activeShuttles + ")");
         print("Orders: " + mOrders.size() + " (" + newOrders + ")");
-    }
-
-    private int execute(string query) const throws {
-        int error = mysql_query(DB.Handle, query);
-        if ( error ) {
-            throw mysql_error(DB.Handle);
-        }
-
-        try { return mysql_store_result(DB.Handle); }
-
-        return 0;
     }
 
     private void init() modify {
@@ -176,14 +166,14 @@ public object Dispatcher {
         string query = "UPDATE orders SET sequence = " + order.sequence + ", shuttle_id = " + order.shuttleID + ", state = " + cast<string>( order.state ) + " WHERE order_id = " + order.orderID;
         mLogger.debug(query);
 
-        execute(query);
+        DB.Execute(query);
     }
 
     private void store(Shuttle shuttle) const {
         string query = "UPDATE shuttles SET shuttle_state_id = " + cast<string>( shuttle.stateID ) + " WHERE shuttle_id = " + shuttle.shuttleID;
         mLogger.debug(query);
 
-        execute(query);
+        DB.Execute(query);
     }
 
     // Private members
