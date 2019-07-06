@@ -5,6 +5,12 @@
 import Database;
 
 
+public string ORDERDISPATCHER const = "ORDERDISPATCHER";
+public string SHUTTLEADAPTER const = "SHUTTLEADAPTER";
+public string SHUTTLEMANAGER const = "SHUTTLEMANAGER";
+public string STATIONMANAGER const = "STATIONMANAGER";
+
+
 public object IPCMessage {
 	public string message;
 	public int messageID;
