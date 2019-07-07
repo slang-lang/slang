@@ -20,7 +20,7 @@ public void Main(int argc, string args) {
         logger.info("Connecting to IPC queue...");
 
         var dispatcher = new Dispatcher(new Logger(cast<ILogger>(logger), "OrderDispatcher"));
-	var ipcService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER);
+	    var ipcService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER);
 
         bool running = true;
 
@@ -34,13 +34,13 @@ public void Main(int argc, string args) {
                 logger.info("Waiting for new orders...");
 
                 message = ipcService.receive();
-		if ( message ) {
-			if ( message.message == MSG_SHUTDOWN ) {
-				running = false;
-			}
+                if ( message ) {
+                    if ( message.message == MSG_SHUTDOWN ) {
+                        running = false;
+                    }
 
-			break;
-		}
+                    break;
+                }
 
                 sleep( DISPATCH_WAIT_TIME );
                 counter++;
