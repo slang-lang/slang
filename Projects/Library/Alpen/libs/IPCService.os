@@ -82,11 +82,9 @@ public object IPCService implements IIPCReceiver, IIPCSender {
 	}
 
 	public bool send(int queueID, IPCMessage message) modify {
-		print("message: " + cast<string>( message ));
-
 		string msg = ToJsonString(message);
 
-		print("send(\"" + msg + "\")");
+		//print("send(\"" + msg + "\")");
 
 		return msgsnd(queueID, msg) != -1;
 	}
