@@ -1,8 +1,8 @@
 
 // Connection settings
 public string Database = "alpen";
-public string Host = "192.168.0.33";
-public string Password = "moviebase";
+public string Host = "127.0.0.1";
+public string Password = "";
 public int Port = 3306;
-public string User = "moviebase";
+public string User = "root";
 

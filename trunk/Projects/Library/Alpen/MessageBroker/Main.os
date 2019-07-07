@@ -24,7 +24,7 @@ public void Main(int argc, string args) {
 		if ( (message = self.receive()) != null ) {
 			logger.info("Received: " + cast<string>( message ));
 
-			if ( message.message == "shutdown" ) {
+			if ( message.message == MSG_SHUTDOWN ) {
 				break;
 			}
 		}
