@@ -4,6 +4,7 @@
 
 
 //#define USE_AST_OPTIMIZATION
+#define SHARED_LIBRARY_DIRECTORY "/usr/share/oscript/libs"
 
 
 #endif

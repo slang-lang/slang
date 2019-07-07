@@ -1,8 +1,5 @@
 
 // Library includes
-#include <sys/types.h>
-#include <dirent.h>
-#include <vector>
 
 // Project includes
 #include <Common/StdOutLogger.h>
@@ -44,7 +41,6 @@
 
 
 ObjectiveScript::Extensions::ExtensionManager mExtensionManager;
-StringSet mExtensions;
 std::string mFilename;
 StringSet mLibraryFolders;
 Utils::Common::StdOutLogger mLogger;
@@ -84,16 +80,7 @@ void processParameters(int argc, const char* argv[])
 
 	for ( int i = 1; i < argc; i++ ) {
 		if ( !scriptParams ) {
-			if ( Utils::Tools::StringCompare(argv[i], "-e") || Utils::Tools::StringCompare(argv[i], "--extension") ) {
-				if ( argc <= ++i ) {
-					std::cout << "invalid number of parameters provided!" << std::endl;
-
-					exit(-1);
-				}
-
-				mExtensions.insert(argv[i]);
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-f") || Utils::Tools::StringCompare(argv[i], "--file") ) {
+			if ( Utils::Tools::StringCompare(argv[i], "-f") || Utils::Tools::StringCompare(argv[i], "--file") ) {
 				if ( argc <= ++i ) {
 					std::cout << "invalid number of parameters provided!" << std::endl;
 
@@ -163,22 +150,6 @@ void processParameters(int argc, const char* argv[])
 	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
 }
 
-void read_directory(const std::string& dirname, std::vector<std::string>& v)
-{
-	DIR* dirp = opendir(dirname.c_str());
-	struct dirent * dp;
-
-	while ( (dp = readdir(dirp)) != NULL ) {
-		std::string file(dp->d_name);
-
-		if ( file != "." && file != ".." ) {
-			v.push_back(dirname + "/" + file);
-		}
-	}
-
-	closedir(dirp);
-}
-
 int main(int argc, const char* argv[])
 {
 #ifdef _WIN32
@@ -216,21 +187,6 @@ int main(int argc, const char* argv[])
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-
-	std::vector<std::string> extensions;
-	read_directory("/usr/share/oscript/libs", extensions);
-
-	// load installed shared libraries
-	for ( auto ext : extensions ) {
-		//std::cout << "Loading extensions " << ext << std::endl;
-
-		mVirtualMachine.addExtension( mExtensionManager.load(ext) );
-	}
-
-	// load user provided shared libraries
-	for ( auto ext : mExtensions ) {
-		mVirtualMachine.addExtension( mExtensionManager.load(ext) );
-	}
 
 	try {
 		ObjectiveScript::Runtime::Object result;

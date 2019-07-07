@@ -3,6 +3,7 @@
 #include "VirtualMachine.h"
 
 // Library includes
+#include <dirent.h>
 #include <fstream>
 
 // Project includes
@@ -24,6 +25,23 @@
 
 
 namespace ObjectiveScript {
+
+
+void read_directory(const std::string& dirname, std::vector<std::string>& files)
+{
+    DIR* dirp = opendir(dirname.c_str());
+    struct dirent * dp;
+
+    while ( (dp = readdir(dirp)) != NULL ) {
+        std::string file(dp->d_name);
+
+        if ( file != "." && file != ".." ) {
+			files.push_back(dirname + "/" + file);
+        }
+    }
+
+    closedir(dirp);
+}
 
 
 VirtualMachine::VirtualMachine()
@@ -183,6 +201,19 @@ void VirtualMachine::init()
 			path = right;
 		}
 	}
+
+#ifdef _WIN32
+#else
+    std::vector<std::string> sharedLibraries;
+	read_directory(SHARED_LIBRARY_DIRECTORY, sharedLibraries);
+
+	// load installed shared libraries
+	for ( std::string library : sharedLibraries ) {
+		OSdebug("Loading extensions " + library);
+
+		addExtension( mExtensionManager.load(library) );
+	}
+#endif
 
 	loadExtensions();
 
