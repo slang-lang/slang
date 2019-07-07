@@ -26,7 +26,10 @@ fi
 # set up environment
 PACKAGE_DIRECTORY="${TARGET_DIRECTORY}/oscript-${VERSION}-${PLATFORM}"
 PACKAGE_DIRECTORY_BIN="${PACKAGE_DIRECTORY}/usr/local/bin"
-PACKAGE_DIRECTORY_SHARE="${PACKAGE_DIRECTORY}/usr/share/oscript/Library"
+PACKAGE_DIRECTORY_SHARE="${PACKAGE_DIRECTORY}/usr/share/oscript"
+PACKAGE_DIRECTORY_SHARED_LIBRARIES="${PACKAGE_DIRECTORY_SHARE}/libs"
+PACKAGE_DIRECTORY_LIBRARY="${PACKAGE_DIRECTORY_SHARE}/Library"
+
 
 echo "Building ObjectiveScript debian package version ${VERSION} for platform '${PLATFORM}'..."
 echo ""
@@ -37,12 +40,13 @@ rm -r ${PACKAGE_DIRECTORY} 2>&1
 echo "Creating package directories '${PACKAGE_DIRECTORY}'."
 #echo "PACKAGE_DIRECTORY='${PACKAGE_DIRECTORY}'"
 #echo "PACKAGE_DIRECTORY_BIN='${PACKAGE_DIRECTORY_BIN}'"
-#echo "PACKAGE_DIRECTORY_SHARE='${PACKAGE_DIRECTORY_SHARE}'"
+#echo "PACKAGE_DIRECTORY_LIBRARY='${PACKAGE_DIRECTORY_LIBRARY}'"
 echo ""
 
 mkdir -p "${PACKAGE_DIRECTORY}"
 mkdir -p "${PACKAGE_DIRECTORY_BIN}"
-mkdir -p "${PACKAGE_DIRECTORY_SHARE}"
+mkdir -p "${PACKAGE_DIRECTORY_SHARED_LIBRARIES}"
+mkdir -p "${PACKAGE_DIRECTORY_LIBRARY}"
 
 # copying DEBIAN base structure
 cp -r Env/DEBIAN ${PACKAGE_DIRECTORY}
@@ -55,10 +59,16 @@ cp ${SOURCE_DIRECTORY}/bin/oscript/oscript ${PACKAGE_DIRECTORY_BIN}
 
 # add new libraries
 echo "Deploying new libraries..."
-cp -r Projects/Library/.odepend ${PACKAGE_DIRECTORY_SHARE}
-cp -r Projects/Library/deploy.sh ${PACKAGE_DIRECTORY_SHARE}
-cp -r Projects/Library/ObjectiveScript ${PACKAGE_DIRECTORY_SHARE}
-cp -r Projects/Library/System ${PACKAGE_DIRECTORY_SHARE}
+cp -r Projects/Library/.odepend ${PACKAGE_DIRECTORY_LIBRARY}
+cp -r Projects/Library/deploy.sh ${PACKAGE_DIRECTORY_LIBRARY}
+cp -r Projects/Library/ObjectiveScript ${PACKAGE_DIRECTORY_LIBRARY}
+cp -r Projects/Library/System ${PACKAGE_DIRECTORY_LIBRARY}
+
+# add new shared libraries
+echo "Deploying new shared libraries..."
+cp ${EXTENSIONS_DIRECTORY}/lib/* ${PACKAGE_DIRECTORY_SHARED_LIBRARIES}
+# remove MySQL extension since it is still statically linked into oscript
+rm ${PACKAGE_DIRECTORY_SHARED_LIBRARIES}/libObjectiveScriptMysql*
 
 echo ""
 echo "Building package..."
