@@ -11,6 +11,7 @@
 // Project includes
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Extensions/AExtension.h>
+#include <Core/Extensions/ExtensionManager.h>
 #include <Core/Parameter.h>
 #include <Core/Types.h>
 
@@ -69,6 +70,7 @@ private:
 	void printLibraryFolders();
 
 private:
+	Extensions::ExtensionManager mExtensionManager;
 	Extensions::ExtensionList mExtensions;
 	StringSet mImportedLibraries;
 	bool mIsInitialized;
