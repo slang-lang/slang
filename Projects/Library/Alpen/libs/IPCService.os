@@ -1,20 +1,10 @@
 
 // library imports
+import System.Collections.Map;
 
 // project imports
+import Consts;
 import Database;
-
-
-public string MESSAGEBROKER const = "MESSAGEBROKER";
-public int MESSAGEBROKER_QUEUE const = 655361;
-public string ORDERDISPATCHER const = "ORDERDISPATCHER";
-public int ORDERDISPATCHER_QUEUE const = 655362;
-public string SHUTTLEADAPTER const = "SHUTTLEADAPTER";
-public int SHUTTLEADAPTER_QUEUE const = 655363;
-public string SHUTTLEMANAGER const = "SHUTTLEMANAGER";
-public int SHUTTLEMANAGER_QUEUE const = 655364;
-public string STATIONMANAGER const = "STATIONMANAGER";
-public int STATIONMANAGER_QUEUE const = 655365;
 
 
 public object IPCMessage {
@@ -54,10 +44,11 @@ public interface IIPCSender {
 }
 
 public object IPCService implements IIPCReceiver, IIPCSender {
-	public void Constructor(int queueID, string processName, bool create = false) {
+	public void Constructor(int queueID, string processName, bool isOwner = false) {
+		mConnectedQueues = new Map<int, int>();
 		mProcessName = processName;
-		mQueueHandle = msgget(queueID, create);
-		mQueueOwner = create;
+		mQueueHandle = msgget(queueID, isOwner);
+		mQueueOwner = isOwner;
 	}
 
 	public void Destructor() {
@@ -66,8 +57,18 @@ public object IPCService implements IIPCReceiver, IIPCSender {
 		}
 	}
 
-	public IPCMessage receive() modify {
-		string msg = msgrcv(mQueueHandle);
+	public bool connect(int queueID) modify {
+		if ( mConnectedQueues.contains(queueID) ) {
+			mConnectedQueues.remove(queueID);
+		}
+
+		mConnectedQueues.insert(queueID, msgget(queueID));
+
+		return mConnectedQueues[queueID] != -1;
+	}
+
+	public IPCMessage receive(bool waitForMessage = false) modify {
+		string msg = msgrcv(mQueueHandle, waitForMessage);
 		if ( msg ) {
 			var message = new IPCMessage();
 
@@ -80,16 +81,21 @@ public object IPCService implements IIPCReceiver, IIPCSender {
 		return IPCMessage null;
 	}
 
-	public bool send(IPCMessage message) modify {
+	public bool send(int queueID, IPCMessage message) modify {
+		print("message: " + cast<string>( message ));
+
 		string msg = ToJsonString(message);
 
-		return msgsnd(mQueueHandle, msg) != -1;
+		print("send(\"" + msg + "\")");
+
+		return msgsnd(queueID, msg) != -1;
 	}
 
-	public bool send(string receiver, string message) modify {
-		return send( new IPCMessage(mProcessName, receiver, 0, message) );
+	public bool send(int queueID, string receiver, string message) modify {
+		return send( queueID, new IPCMessage(mProcessName, receiver, 0, message) );
 	}
 
+	private Map<int, int> mConnectedQueues;
 	private string mProcessName;
 	private int mQueueHandle;
 	private bool mQueueOwner;

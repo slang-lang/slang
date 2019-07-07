@@ -19,7 +19,7 @@ import DispatchSteps.SortShuttlesByDistance;
 public object Dispatcher {
     public void Constructor(Logger logger) {
         mDispatchSteps = new List<IDispatchStep>();
-        mIPCService = new IPCService(ORDERDISPATCHER);
+        mIPCService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER);
         mLogger = logger;
         mOrders = new List<Order>();
         mShuttles = new List<Shuttle>();
@@ -89,9 +89,7 @@ public object Dispatcher {
             shuttle.stateID = ShuttleState.OCCUPIED;
             store(shuttle);
 
-            mIPCService.send(SHUTTLEMANAGER, "new order assigned");
-
-            break;  // only iterate once to allow a better comprehensibility
+            notifyShuttleManager(MSG_WORK_RECEIVED);
         }
     }
 
@@ -133,6 +131,10 @@ public object Dispatcher {
         mDispatchSteps.push_back( cast<IDispatchStep>( new FilterOrdersByPriority() ) );
         mDispatchSteps.push_back( cast<IDispatchStep>( new SortShuttlesByBatteryLevel() ) );
         mDispatchSteps.push_back( cast<IDispatchStep>( new SortShuttlesByDistance() ) );
+    }
+
+    private void notifyShuttleManager(string message) modify {
+        mIPCService.send(SHUTTLEMANAGER_QUEUE, SHUTTLEMANAGER, message);
     }
 
     private void printOrders(DispatchData data) modify {
