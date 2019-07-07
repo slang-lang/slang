@@ -48,7 +48,7 @@ public object Dispatcher {
                 return;
             }
 
-            mLogger.info("Starting new dispatch chain with " + data.orders.size() + " orders and " + data.shuttles.size() + " shuttles...");
+            mLogger.info("Starting new dispatch chain with " + data.orders.size() + " order(s) and " + data.shuttles.size() + " shuttle(s)...");
             printOrders(data);
             printShuttles(data);
 

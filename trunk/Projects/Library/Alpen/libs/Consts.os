@@ -21,3 +21,7 @@ public int STATIONMANAGER_QUEUE const = 655365;
 public string MSG_WORK_RECEIVED const = "WORK_RECEIVED";
 public string MSG_SHUTDOWN const = "SHUTDOWN";
 
+
+// Dispatch timing
+public int DISPATCH_WAIT_TIME const = 1000;
+

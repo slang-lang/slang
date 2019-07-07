@@ -4,6 +4,7 @@
 import libLog.StdOutLogger;
 
 // project imports
+import libs.Consts;
 import libs.Database;
 import libs.IPCService;
 import Dispatcher;
@@ -11,13 +12,19 @@ import Dispatcher;
 
 public void Main(int argc, string args) {
     try {
+        var logger = new StdOutLogger("Main", 15);
+
+        logger.info("Connecting to database...");
         DB.Connect();
 
-        var logger = new StdOutLogger("Main", 15);
-        var dispatcher = new Dispatcher(new Logger(cast<ILogger>(logger), "OrderDispatcher"));
-	var ipcService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER, true);
+        logger.info("Connecting to IPC queue...");
 
-        while ( true ) {
+        var dispatcher = new Dispatcher(new Logger(cast<ILogger>(logger), "OrderDispatcher"));
+	var ipcService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER);
+
+        bool running = true;
+
+        while ( running ) {
             dispatcher.dispatch();
 
             int counter;
@@ -29,17 +36,19 @@ public void Main(int argc, string args) {
                 message = ipcService.receive();
 		if ( message ) {
 			if ( message.message == MSG_SHUTDOWN ) {
-				return;
+				running = false;
 			}
 
 			break;
 		}
 
-                sleep( 1000 );
+                sleep( DISPATCH_WAIT_TIME );
                 counter++;
             }
         }
 
+        logger.info("Shutting down...");
+        logger.info("Disconnecting from database...");
         DB.Disconnect();
     }
     catch ( string e ) {
