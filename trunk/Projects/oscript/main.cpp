@@ -1,5 +1,8 @@
 
 // Library includes
+#include <sys/types.h>
+#include <dirent.h>
+#include <vector>
 
 // Project includes
 #include <Common/StdOutLogger.h>
@@ -160,6 +163,22 @@ void processParameters(int argc, const char* argv[])
 	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
 }
 
+void read_directory(const std::string& dirname, std::vector<std::string>& v)
+{
+	DIR* dirp = opendir(dirname.c_str());
+	struct dirent * dp;
+
+	while ( (dp = readdir(dirp)) != NULL ) {
+		std::string file(dp->d_name);
+
+		if ( file != "." && file != ".." ) {
+			v.push_back(dirname + "/" + file);
+		}
+	}
+
+	closedir(dirp);
+}
+
 int main(int argc, const char* argv[])
 {
 #ifdef _WIN32
@@ -197,6 +216,16 @@ int main(int argc, const char* argv[])
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
+
+	std::vector<std::string> extensions;
+	read_directory("/usr/share/oscript/libs", extensions);
+
+	// load installed shared libraries
+	for ( auto ext : extensions ) {
+		//std::cout << "Loading extensions " << ext << std::endl;
+
+		mVirtualMachine.addExtension( mExtensionManager.load(ext) );
+	}
 
 	// load user provided shared libraries
 	for ( auto ext : mExtensions ) {
