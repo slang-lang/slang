@@ -5,10 +5,16 @@
 import Database;
 
 
+public string MESSAGEBROKER const = "MESSAGEBROKER";
+public int MESSAGEBROKER_QUEUE const = 655361;
 public string ORDERDISPATCHER const = "ORDERDISPATCHER";
+public int ORDERDISPATCHER_QUEUE const = 655362;
 public string SHUTTLEADAPTER const = "SHUTTLEADAPTER";
+public int SHUTTLEADAPTER_QUEUE const = 655363;
 public string SHUTTLEMANAGER const = "SHUTTLEMANAGER";
+public int SHUTTLEMANAGER_QUEUE const = 655364;
 public string STATIONMANAGER const = "STATIONMANAGER";
+public int STATIONMANAGER_QUEUE const = 655365;
 
 
 public object IPCMessage {
@@ -33,7 +39,7 @@ public object IPCMessage {
 			"sender: \"" + sender + "\", " +
 			"receiver: \"" + receiver + "\", " +
 			"messageID: " + messageID + ", " +
-			"message: \"" + message + " " +
+			"message: \"" + message + "\" " +
 			"}";
 	}
 }
@@ -48,37 +54,45 @@ public interface IIPCSender {
 }
 
 public object IPCService implements IIPCReceiver, IIPCSender {
-	public void Constructor(string processName) {
+	public void Constructor(int queueID, string processName, bool create = false) {
 		mProcessName = processName;
+		mQueueHandle = msgget(queueID, create);
+		mQueueOwner = create;
+	}
+
+	public void Destructor() {
+		if ( mQueueOwner ) {
+			msgctl(mQueueHandle);
+		}
 	}
 
 	public IPCMessage receive() modify {
-		IPCMessage message;
+		string msg = msgrcv(mQueueHandle);
+		if ( msg ) {
+			var message = new IPCMessage();
 
-		int result = DB.Query( "SELECT * FROM ipc_queue WHERE receiver = '" + mProcessName + "' AND received IS NULL" );
-		if ( result ) {
-			message = new IPCMessage(
-				mysql_get_field_value(result, "sender"),
-				mysql_get_field_value(result, "receiver"),
-				cast<int>( mysql_get_field_value(result, "message_id") ),
-				mysql_get_field_value(result, "message")
-			);
+			// unserialize JSON message
+			FromJsonString(message, msg);
 
-			DB.Update( "UPDATE ipc_queue SET received = NOW() WHERE message_id = " + message.messageID );
+			return message;
 		}
 
-		return message;
+		return IPCMessage null;
 	}
 
-	public void send(IPCMessage message) modify {
-		send( message.receiver, message.message );
+	public bool send(IPCMessage message) modify {
+		string msg = ToJsonString(message);
+
+		return msgsnd(mQueueHandle, msg) != -1;
 	}
 
-	public void send(string receiver, string message) modify {
-		DB.Insert( "INSERT INTO ipc_queue (sender, receiver, message, created) VALUES ('" + mProcessName + "', '" + receiver + "', '" + message + "', NOW())" );
+	public bool send(string receiver, string message) modify {
+		return send( new IPCMessage(mProcessName, receiver, 0, message) );
 	}
 
 	private string mProcessName;
+	private int mQueueHandle;
+	private bool mQueueOwner;
 }
 
 
