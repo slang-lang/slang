@@ -1,6 +1,9 @@
 #!/usr/local/bin/oscript
 
+// library imports
 import libParam.ParameterHandler;
+
+// project imports
 
 
 public void Main(int argc, string args) {
