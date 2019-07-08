@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
+-- MySQL dump 10.16  Distrib 10.1.38-MariaDB, for debian-linux-gnueabihf (armv7l)
 --
 -- Host: localhost    Database: alpen
 -- ------------------------------------------------------
--- Server version	5.7.26-0ubuntu0.16.04.1
+-- Server version	10.1.38-MariaDB-0+deb9u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -16,30 +16,56 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `ipc`
+-- Table structure for table `graph_node_type`
 --
 
-DROP TABLE IF EXISTS `ipc`;
+DROP TABLE IF EXISTS `graph_node_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ipc` (
-  `message_id` int(11) NOT NULL AUTO_INCREMENT,
-  `sender` varchar(32) DEFAULT NULL,
-  `receiver` varchar(32) NOT NULL,
-  `message` varchar(1024) DEFAULT NULL,
-  `created` timestamp NULL DEFAULT NULL,
-  `received` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`message_id`)
+CREATE TABLE `graph_node_type` (
+  `node_type_id` int(11) NOT NULL,
+  `token` varchar(32) NOT NULL,
+  `description` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`node_type_id`),
+  UNIQUE KEY `graph_node_type_token_uindex` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ipc`
+-- Dumping data for table `graph_node_type`
 --
 
-LOCK TABLES `ipc` WRITE;
-/*!40000 ALTER TABLE `ipc` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ipc` ENABLE KEYS */;
+LOCK TABLES `graph_node_type` WRITE;
+/*!40000 ALTER TABLE `graph_node_type` DISABLE KEYS */;
+INSERT INTO `graph_node_type` VALUES (1,'PARKINGPOS','Parking spot'),(2,'CROSSING','Crossing'),(3,'STATION','Station');
+/*!40000 ALTER TABLE `graph_node_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `graph_nodes`
+--
+
+DROP TABLE IF EXISTS `graph_nodes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `graph_nodes` (
+  `level_id` int(11) NOT NULL DEFAULT '1',
+  `position_id` int(11) NOT NULL,
+  `node_type_id` int(11) NOT NULL,
+  `viz_x` int(11) NOT NULL DEFAULT '0',
+  `viz_y` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`level_id`,`position_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `graph_nodes`
+--
+
+LOCK TABLES `graph_nodes` WRITE;
+/*!40000 ALTER TABLE `graph_nodes` DISABLE KEYS */;
+INSERT INTO `graph_nodes` VALUES (1,100100,1,100,100),(1,100400,3,100,400),(1,200200,2,200,200),(1,200300,2,200,330),(1,300200,2,300,200),(1,300300,2,300,300),(1,400100,3,400,100),(1,400400,3,400,400);
+/*!40000 ALTER TABLE `graph_nodes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -119,7 +145,7 @@ CREATE TABLE `jobs` (
   CONSTRAINT `jobs_job_type_job_type_id_fk` FOREIGN KEY (`job_type_id`) REFERENCES `job_type` (`job_type_id`),
   CONSTRAINT `jobs_order_id_fk` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
   CONSTRAINT `jobs_shuttles_shuttle_id_fk` FOREIGN KEY (`shuttle_id`) REFERENCES `shuttles` (`shuttle_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,7 +154,7 @@ CREATE TABLE `jobs` (
 
 LOCK TABLES `jobs` WRITE;
 /*!40000 ALTER TABLE `jobs` DISABLE KEYS */;
-INSERT INTO `jobs` VALUES (1,1,NULL,2,1,100,1,1),(2,1,NULL,3,1,200,1,2),(7,11,NULL,1,1,300,1,1),(8,12,NULL,2,1,200,1,1),(9,12,NULL,3,1,400,1,2);
+INSERT INTO `jobs` VALUES (1,1,NULL,2,1,1,100,1),(2,1,NULL,3,1,1,200,2);
 /*!40000 ALTER TABLE `jobs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,7 +201,7 @@ CREATE TABLE `orders` (
   PRIMARY KEY (`order_id`),
   KEY `orders_order_type_order_type_id_fk` (`order_type_id`),
   CONSTRAINT `orders_order_type_order_type_id_fk` FOREIGN KEY (`order_type_id`) REFERENCES `order_type` (`order_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,7 +210,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (1,1,1,NULL,1,1),(2,1,3,NULL,1,2),(3,1,2,NULL,1,2),(4,1,0,NULL,1,0),(5,1,2,NULL,1,0),(6,1,5,NULL,1,2),(10,2,10,NULL,1,0),(11,2,10,NULL,1,0),(12,1,5,NULL,1,0);
+INSERT INTO `orders` VALUES (1,1,1,NULL,1,1),(2,1,3,NULL,1,2),(3,1,2,NULL,1,2);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -326,7 +352,7 @@ CREATE TABLE `shuttles` (
 
 LOCK TABLES `shuttles` WRITE;
 /*!40000 ALTER TABLE `shuttles` DISABLE KEYS */;
-INSERT INTO `shuttles` VALUES (1,2,2,1,1,1,201),(2,2,2,1,3,1,199),(3,2,0,0,0,-1,-1);
+INSERT INTO `shuttles` VALUES (1,2,2,1,1,1,100100),(2,2,2,1,3,1,400400),(3,2,0,0,0,-1,-1);
 /*!40000 ALTER TABLE `shuttles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -423,4 +449,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-07 20:22:00
+-- Dump completed on 2019-07-08 21:02:23
