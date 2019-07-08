@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
+-- MySQL dump 10.16  Distrib 10.1.38-MariaDB, for debian-linux-gnueabihf (armv7l)
 --
 -- Host: localhost    Database: alpen
 -- ------------------------------------------------------
--- Server version	5.7.26-0ubuntu0.16.04.1
+-- Server version	10.1.38-MariaDB-0+deb9u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -69,33 +69,6 @@ INSERT INTO `graph_nodes` VALUES (-1,-1,0,0,0),(1,100100,1,100,100),(1,100400,3,
 UNLOCK TABLES;
 
 --
--- Table structure for table `ipc`
---
-
-DROP TABLE IF EXISTS `ipc`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ipc` (
-  `message_id` int(11) NOT NULL AUTO_INCREMENT,
-  `sender` varchar(32) DEFAULT NULL,
-  `receiver` varchar(32) NOT NULL,
-  `message` varchar(1024) DEFAULT NULL,
-  `created` timestamp NULL DEFAULT NULL,
-  `received` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`message_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ipc`
---
-
-LOCK TABLES `ipc` WRITE;
-/*!40000 ALTER TABLE `ipc` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ipc` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `ipc_queue`
 --
 
@@ -121,6 +94,32 @@ LOCK TABLES `ipc_queue` WRITE;
 /*!40000 ALTER TABLE `ipc_queue` DISABLE KEYS */;
 INSERT INTO `ipc_queue` VALUES (1,'ORDERDISPATCHER','SHUTTLEMANAGER','new order assigned',NULL,NULL),(2,'ORDERDISPATCHER','SHUTTLEMANAGER','new order assigned',NULL,NULL);
 /*!40000 ALTER TABLE `ipc_queue` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `job_state`
+--
+
+DROP TABLE IF EXISTS `job_state`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `job_state` (
+  `job_state_id` int(11) NOT NULL,
+  `token` varchar(32) NOT NULL,
+  `description` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`job_state_id`),
+  UNIQUE KEY `job_state_token_uindex` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `job_state`
+--
+
+LOCK TABLES `job_state` WRITE;
+/*!40000 ALTER TABLE `job_state` DISABLE KEYS */;
+INSERT INTO `job_state` VALUES (1,'NEW','This is a brand new job'),(2,'STARTED','This job is already started'),(3,'DONE','This job has been finished successfully'),(4,'CANCELLED','This job has been cancelled for whatever reason');
+/*!40000 ALTER TABLE `job_state` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -157,21 +156,23 @@ DROP TABLE IF EXISTS `jobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `jobs` (
-  `job_id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
+  `job_id` int(11) NOT NULL AUTO_INCREMENT,
   `shuttle_id` int(11) DEFAULT NULL,
   `job_type_id` int(11) NOT NULL,
-  `state` int(11) NOT NULL DEFAULT '0',
-  `position_id` int(11) DEFAULT NULL,
-  `level_id` int(11) DEFAULT NULL,
+  `job_state_id` int(11) NOT NULL DEFAULT '1',
+  `level_id` int(11) NOT NULL DEFAULT '-1',
+  `position_id` int(11) NOT NULL DEFAULT '-1',
   `sequence` int(11) DEFAULT NULL,
   PRIMARY KEY (`job_id`),
   KEY `jobs_order_id_fk` (`order_id`),
   KEY `jobs_shuttles_shuttle_id_fk` (`shuttle_id`),
   KEY `jobs_job_type_job_type_id_fk` (`job_type_id`),
-  CONSTRAINT `jobs_job_type_job_type_id_fk` FOREIGN KEY (`job_type_id`) REFERENCES `job_type` (`job_type_id`),
+  KEY `jobs_job_state_job_state_id_fk` (`job_state_id`),
+  CONSTRAINT `jobs_job_state_job_state_id_fk` FOREIGN KEY (`job_state_id`) REFERENCES `job_state` (`job_state_id`) ON DELETE CASCADE,
+  CONSTRAINT `jobs_job_type_job_type_id_fk` FOREIGN KEY (`job_type_id`) REFERENCES `job_type` (`job_type_id`) ON DELETE CASCADE,
   CONSTRAINT `jobs_order_id_fk` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
-  CONSTRAINT `jobs_shuttles_shuttle_id_fk` FOREIGN KEY (`shuttle_id`) REFERENCES `shuttles` (`shuttle_id`)
+  CONSTRAINT `jobs_shuttles_shuttle_id_fk` FOREIGN KEY (`shuttle_id`) REFERENCES `shuttles` (`shuttle_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -181,7 +182,6 @@ CREATE TABLE `jobs` (
 
 LOCK TABLES `jobs` WRITE;
 /*!40000 ALTER TABLE `jobs` DISABLE KEYS */;
-INSERT INTO `jobs` VALUES (1,1,NULL,2,1,1,100,1),(2,1,NULL,3,1,1,200,2);
 /*!40000 ALTER TABLE `jobs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -379,7 +379,7 @@ CREATE TABLE `shuttles` (
 
 LOCK TABLES `shuttles` WRITE;
 /*!40000 ALTER TABLE `shuttles` DISABLE KEYS */;
-INSERT INTO `shuttles` VALUES (1,2,2,1,1,1,100100),(2,2,2,1,3,1,400400),(3,2,0,0,0,-1,-1),(4,2,0,0,0,-1,-1),(5,2,0,0,0,-1,-1);
+INSERT INTO `shuttles` VALUES (1,2,2,2,1,1,100100),(2,2,2,2,3,1,400400),(3,2,0,0,0,-1,-1),(4,2,0,0,0,-1,-1),(5,2,0,0,0,-1,-1);
 /*!40000 ALTER TABLE `shuttles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -476,4 +476,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-08 21:54:36
+-- Dump completed on 2019-07-08 22:03:42
