@@ -47,7 +47,6 @@ public void BeginArray() {
 	}
 
 	mIsFirstElement = true;
-
 	mValue += "[";
 }
 
@@ -61,8 +60,11 @@ public void BeginArray(string key) {
 }
 
 public void BeginObject() {
-	mIsFirstElement = true;
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
 
+	mIsFirstElement = true;
 	mValue += "{";
 }
 
