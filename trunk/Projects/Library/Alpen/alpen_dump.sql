@@ -1,13 +1,13 @@
--- MySQL dump 10.16  Distrib 10.1.38-MariaDB, for debian-linux-gnueabihf (armv7l)
+-- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
 --
 -- Host: localhost    Database: alpen
 -- ------------------------------------------------------
--- Server version	10.1.38-MariaDB-0+deb9u1
+-- Server version	5.7.26-0ubuntu0.16.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -37,7 +37,7 @@ CREATE TABLE `graph_node_type` (
 
 LOCK TABLES `graph_node_type` WRITE;
 /*!40000 ALTER TABLE `graph_node_type` DISABLE KEYS */;
-INSERT INTO `graph_node_type` VALUES (1,'PARKINGPOS','Parking spot'),(2,'CROSSING','Crossing'),(3,'STATION','Station');
+INSERT INTO `graph_node_type` VALUES (0,'INVALID','Invalid node'),(1,'PARKINGPOS','Parking spot'),(2,'CROSSING','Crossing'),(3,'STATION','Station');
 /*!40000 ALTER TABLE `graph_node_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,8 +64,35 @@ CREATE TABLE `graph_nodes` (
 
 LOCK TABLES `graph_nodes` WRITE;
 /*!40000 ALTER TABLE `graph_nodes` DISABLE KEYS */;
-INSERT INTO `graph_nodes` VALUES (1,100100,1,100,100),(1,100400,3,100,400),(1,200200,2,200,200),(1,200300,2,200,330),(1,300200,2,300,200),(1,300300,2,300,300),(1,400100,3,400,100),(1,400400,3,400,400);
+INSERT INTO `graph_nodes` VALUES (-1,-1,0,0,0),(1,100100,1,100,100),(1,100400,3,100,400),(1,200200,2,200,200),(1,200300,2,200,330),(1,300200,2,300,200),(1,300300,2,300,300),(1,400100,3,400,100),(1,400400,3,400,400);
 /*!40000 ALTER TABLE `graph_nodes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ipc`
+--
+
+DROP TABLE IF EXISTS `ipc`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ipc` (
+  `message_id` int(11) NOT NULL AUTO_INCREMENT,
+  `sender` varchar(32) DEFAULT NULL,
+  `receiver` varchar(32) NOT NULL,
+  `message` varchar(1024) DEFAULT NULL,
+  `created` timestamp NULL DEFAULT NULL,
+  `received` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`message_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ipc`
+--
+
+LOCK TABLES `ipc` WRITE;
+/*!40000 ALTER TABLE `ipc` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ipc` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -449,4 +476,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-08 21:45:17
+-- Dump completed on 2019-07-08 21:54:36
