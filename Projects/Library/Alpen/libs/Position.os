@@ -6,7 +6,7 @@
 
 public object Position {
     public int levelID;
-    public in positionID;
+    public int positionID;
 
     public void Constructor() {
         // this is empty by intend

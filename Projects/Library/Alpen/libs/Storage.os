@@ -9,9 +9,9 @@ import Shuttle;
 
 
 private string QUERY_JOB_FULL const = "SELECT * FROM jobs WHERE job_id = ";
-private string QUERY_ORDER_FULL const = "SELECT o.*, j.* FROM orders o LEFT JOIN jobs j ON (j.order_id = o.order_id) WHERE o.order_id = ";
-private string QUERY_SHUTTLE_FULL const = "SELECT s.*, o.*, j.* FROM shuttles s LEFT JOIN orders o ON (o.shuttle_id = s.shuttle_id) LEFT JOIN jobs j ON (j.order_id = o.order_id) WHERE s.shuttle_id = ";
-private string QUERY_SHUTTLE_LIGHT const = "SELECT s.*, o.order_id FROM shuttles s LEFT JOIN orders o ON (o.shuttle_id = s.shuttle_id) WHERE s.shuttle_id = ";
+private string QUERY_ORDER_FULL const = "SELECT o.*, j.* FROM orders o LEFT JOIN jobs j ON (j.order_id = o.order_id AND j.job_state_id < 3) WHERE o.order_id = ";
+private string QUERY_SHUTTLE_FULL const = "SELECT s.*, o.*, j.* FROM shuttles s LEFT JOIN orders o ON (o.shuttle_id = s.shuttle_id AND o.order_state_id < 4) LEFT JOIN jobs j ON (j.order_id = o.order_id AND j.job_state_id < 3) WHERE s.shuttle_id = ";
+private string QUERY_SHUTTLE_LIGHT const = "SELECT s.*, o.order_id FROM shuttles s LEFT JOIN orders o ON (o.shuttle_id = s.shuttle_id AND o.order_state_id < 4) WHERE s.shuttle_id = ";
 
 public object Storage {
     public void Constructor(ILogger logger) {
@@ -19,6 +19,8 @@ public object Storage {
     }
 
     public Job LoadJobByID(int jobID) modify throws {
+        mLogger.debug("LoadJobByID(" + jobID + ")");
+
         int result = DB.Query( QUERY_JOB_FULL + jobID );
         if ( !result ) {
             throw DB.Error();
@@ -30,7 +32,7 @@ public object Storage {
             job = LoadJobByResult(result);
         }
 
-        //mLogger.debug( cast<string>( job ));
+        mLogger.debug( cast<string>( job ));
         return job;
     }
 
@@ -38,15 +40,19 @@ public object Storage {
         Job job = new Job();
         job.jobID = int mysql_get_field_value(result, "job_id");
         job.jobTypeID = JobType cast<int>( mysql_get_field_value(result, "job_type_id") );
-        job.levelID = int mysql_get_field_value(result, "level_id");
         job.orderID = int mysql_get_field_value(result, "order_id");
-        job.positionID = int mysql_get_field_value(result, "position_id");
+        job.position.levelID = int mysql_get_field_value(result, "level_id");
+        job.position.positionID = int mysql_get_field_value(result, "position_id");
         job.sequence = int mysql_get_field_value(result, "sequence");
+        job.shuttleID = int mysql_get_field_value(result, "shuttle_id");
+        job.startTime = int mysql_get_field_value(result, "start_time");
         job.stateID = JobState cast<int>( mysql_get_field_value(result, "job_state_id") );
         return job;
     }
 
     public Order LoadOrderByID(int orderID) modify throws {
+        mLogger.debug("LoadOrderByID(" + orderID + ")");
+
         int result = DB.Query( QUERY_ORDER_FULL + orderID );
         if ( !result ) {
             throw DB.Error();
@@ -59,10 +65,13 @@ public object Storage {
                 order = LoadOrderByResult(result);
             }
 
-            order.jobs.push_back( LoadJobByResult(result) );
+            int jobID = mysql_get_field_value(result, "job_id");
+            if ( jobID ) {
+                order.jobs.push_back( LoadJobByID( jobID ) );
+            }
         }
 
-        //mLogger.debug( cast<string>( order ));
+        mLogger.debug( cast<string>( order ));
         return order;
     }
 
@@ -78,6 +87,8 @@ public object Storage {
     }
 
     public Shuttle LoadShuttleByID(int shuttleID) modify throws {
+        mLogger.debug("LoadShuttleByID(" + shuttleID + ")");
+
         int result = DB.Query( QUERY_SHUTTLE_LIGHT + shuttleID );
         if ( !result ) {
             throw DB.Error();
@@ -105,12 +116,12 @@ public object Storage {
         Shuttle shuttle = new Shuttle();
         shuttle.batteryLevelID = ShuttleBatteryLevel cast<int>( mysql_get_field_value(result, "shuttle_battery_level_id") );
         //shuttle.containerLimit = int mysql_get_field_value(result, "container_limit");
-        shuttle.levelID = int mysql_get_field_value(result, "level_id");
+        shuttle.position.levelID = int mysql_get_field_value(result, "level_id");
         shuttle.modeID = ShuttleMode cast<int>( mysql_get_field_value(result, "shuttle_mode_id") );
-        shuttle.positionID = int mysql_get_field_value(result, "position_id");
-        shuttle.stateID = ShuttleState cast<int>( mysql_get_field_value(result, "shuttle_id") );
-        shuttle.shuttleTypeID = ShuttleType cast<int>( mysql_get_field_value(result, "shuttle_id") );
+        shuttle.position.positionID = int mysql_get_field_value(result, "position_id");
+        shuttle.stateID = ShuttleState cast<int>( mysql_get_field_value(result, "shuttle_state_id") );
         shuttle.shuttleID = int mysql_get_field_value(result, "shuttle_id");
+        shuttle.shuttleTypeID = ShuttleType cast<int>( mysql_get_field_value(result, "shuttle_id") );
         return shuttle;
     }
 

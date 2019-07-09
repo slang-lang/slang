@@ -2,6 +2,7 @@
 // library imports
 
 // project imports
+import Position;
 
 
 public enum JobState {
@@ -23,10 +24,15 @@ public object Job {
     public JobType jobTypeID;
     public int levelID;
     public int orderID;
-    public int positionID;
+    public Position position;
     public int sequence;
     public int shuttleID;
     public JobState stateID;
+    public int startTime;
+
+    public void Constructor() {
+        position = new Position();
+    }
 
     public string =operator(string) const {
         return "Job { jobID: " + jobID +
@@ -34,9 +40,9 @@ public object Job {
                 ", stateID: " + cast<string>( stateID ) +
                 ", shuttleID: " + shuttleID +
                 ", orderID: " + orderID +
-                ", levelID: " + levelID +
-                ", positionID: " + positionID +
+                ", position: " + cast<string>(position) +
                 ", sequence: " + sequence +
+                ", startTime: " + startTime +
                 " }";
     }
 }

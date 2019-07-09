@@ -43,6 +43,26 @@ public object Order {
         load(dbresult);
     }
 
+    public bool canProceed() const {
+        foreach ( Job job : jobs ) {
+            if ( job.stateID < JobState.Started ) {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    public bool hasOpenJobs() const {
+        foreach ( Job job : jobs ) {
+            if ( job.stateID < JobState.Done ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public bool operator==(Order other const) const {
         return orderID == other.orderID;
     }

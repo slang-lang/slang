@@ -1,7 +1,7 @@
 {
   "name": "Alpen Shuttle System prototype",
   "name_short": "Alpen",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "type": "library",
   "description": "Alpen Shuttle System minimal prototype",
   "dependencies": [
