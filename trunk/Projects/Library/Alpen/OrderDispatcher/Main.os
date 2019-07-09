@@ -7,7 +7,7 @@ import libLog.StdOutLogger;
 import libs.Consts;
 import libs.Database;
 import libs.IPCService;
-import Dispatcher;
+import OrderDispatcher;
 
 
 public void Main(int argc, string args) {
@@ -19,8 +19,8 @@ public void Main(int argc, string args) {
 
         logger.info("Connecting to IPC queue...");
 
-        var dispatcher = new Dispatcher(new Logger(cast<ILogger>(logger), "OrderDispatcher"));
-	    var ipcService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER);
+        var dispatcher = new OrderDispatcher(new Logger(cast<ILogger>(logger), "OrderDispatcher"));
+        var ipcService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER);
 
         bool running = true;
 

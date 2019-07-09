@@ -16,7 +16,7 @@ import DispatchSteps.SortShuttlesByBatteryLevel;
 import DispatchSteps.SortShuttlesByDistance;
 
 
-public object Dispatcher {
+public object OrderDispatcher {
     public void Constructor(Logger logger) {
         mDispatchSteps = new List<IDispatchStep>();
         mIPCService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER);
