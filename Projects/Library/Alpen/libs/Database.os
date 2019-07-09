@@ -35,6 +35,16 @@ public namespace DB {
         return 0;
     }
 
+    private int getLastInsertId() const {
+        int result = Query( "SELECT LAST_INSERT_ID() AS ID" );
+
+        if ( mysql_next_row(result) ) {
+                return int mysql_get_field_value(result, "ID");
+        }
+
+        return 0;
+    }
+
     public bool Insert(string query) const throws {
         int error = mysql_query(DB.Handle, query);
         if ( error ) {
