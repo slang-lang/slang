@@ -32,6 +32,10 @@ public namespace DB {
         mysql_close(handle ?: Handle);
     }
 
+    public string Error() const {
+        return mysql_error(Handle);
+    }
+
     public int Execute(string query) const throws {
         int error = mysql_query(DB.Handle, query);
         if ( error ) {
