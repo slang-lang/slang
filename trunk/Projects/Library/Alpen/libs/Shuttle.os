@@ -4,6 +4,8 @@ import System.Collections.List;
 
 // project imports
 import Order;
+import Path;
+import Position;
 
 
 public interface IShuttleSortAlgorithm {
@@ -54,7 +56,8 @@ public object Shuttle {
     public int levelID;
     public ShuttleMode modeID;
     public List<Order> orders;
-    public int positionID;
+    public Path path;
+    public Position position;
     public int shuttleID;
     public IShuttleSortAlgorithm sortAlgorithm;
     public ShuttleState stateID;
@@ -62,10 +65,12 @@ public object Shuttle {
 
     public void Constructor() {
         orders = new List<Order>();
+        position = new Position();
     }
 
     public void Constructor(int dbresult) {
         orders = new List<Order>();
+        position = new Position();
 
         load(dbresult);
     }
@@ -95,8 +100,7 @@ public object Shuttle {
                ", modeID: " + cast<string>( modeID ) +
                ", stateID: " + cast<string>( stateID ) +
                ", batteryLevelID: " + cast<string>( batteryLevelID ) +
-               ", levelID: " + levelID +
-               ", positionID: " + positionID +
+               ", position: " + cast<string>(position) +
                ", containerLimit: " + containerLimit +
                ", countAssignedOrders: " + countAssignedOrders +
                "}";
@@ -106,11 +110,16 @@ public object Shuttle {
         batteryLevelID = ShuttleBatteryLevel cast<int>( mysql_get_field_value(dbresult, "shuttle_battery_level_id") );
         containerLimit = cast<int>( mysql_get_field_value(dbresult, "container_limit") );
         //countAssignedOrders = cast<int>( mysql_get_field_value(dbresult, "count_assigned_orders") );
-        levelID = cast<int>( mysql_get_field_value(dbresult, "level_id") );
+        //levelID = cast<int>( mysql_get_field_value(dbresult, "level_id") );
         modeID = ShuttleMode cast<int>( mysql_get_field_value(dbresult, "shuttle_mode_id") );
-        positionID = cast<int>( mysql_get_field_value(dbresult, "position_id") );
+        //positionID = mysql_get_field_value(dbresult, "position_id");
         shuttleID = cast<int>( mysql_get_field_value(dbresult, "shuttle_id") );
         stateID = ShuttleState cast<int>( mysql_get_field_value(dbresult, "shuttle_state_id") );
         shuttleTypeID = ShuttleType cast<int>( mysql_get_field_value(dbresult, "shuttle_type_id") );
+
+        position = new Position(
+            cast<int>( mysql_get_field_value(dbresult, "level_id") ),
+            cast<int>( mysql_get_field_value(dbresult, "position_id") )
+        );
     }
 }

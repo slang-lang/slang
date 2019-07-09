@@ -25,3 +25,5 @@ public string MSG_SHUTDOWN const = "SHUTDOWN";
 // Dispatch timing
 public int DISPATCH_WAIT_TIME const = 1000;
 
+// Testing
+public int JOB_DURATION const = 10;

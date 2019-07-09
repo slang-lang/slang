@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
+-- MySQL dump 10.16  Distrib 10.1.38-MariaDB, for debian-linux-gnueabihf (armv7l)
 --
 -- Host: localhost    Database: alpen
 -- ------------------------------------------------------
--- Server version	5.7.26-0ubuntu0.16.04.1
+-- Server version	10.1.38-MariaDB-0+deb9u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -124,6 +124,32 @@ INSERT INTO `ipc_queue` VALUES (1,'ORDERDISPATCHER','SHUTTLEMANAGER','new order 
 UNLOCK TABLES;
 
 --
+-- Table structure for table `job_state`
+--
+
+DROP TABLE IF EXISTS `job_state`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `job_state` (
+  `job_state_id` int(11) NOT NULL,
+  `token` varchar(32) NOT NULL,
+  `description` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`job_state_id`),
+  UNIQUE KEY `job_state_token_uindex` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `job_state`
+--
+
+LOCK TABLES `job_state` WRITE;
+/*!40000 ALTER TABLE `job_state` DISABLE KEYS */;
+INSERT INTO `job_state` VALUES (1,'NEW','This is a brand new job'),(2,'STARTED','This job is already started'),(3,'DONE','This job has been finished successfully'),(4,'CANCELLED','This job has been cancelled for whatever reason');
+/*!40000 ALTER TABLE `job_state` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `job_type`
 --
 
@@ -161,14 +187,17 @@ CREATE TABLE `jobs` (
   `order_id` int(11) NOT NULL,
   `shuttle_id` int(11) DEFAULT NULL,
   `job_type_id` int(11) NOT NULL,
-  `state` int(11) NOT NULL DEFAULT '0',
-  `position_id` int(11) DEFAULT NULL,
+  `job_state_id` int(11) NOT NULL DEFAULT '0',
   `level_id` int(11) DEFAULT NULL,
+  `position_id` int(11) DEFAULT NULL,
   `sequence` int(11) DEFAULT NULL,
+  `start_time` int(11) DEFAULT '0',
   PRIMARY KEY (`job_id`),
   KEY `jobs_order_id_fk` (`order_id`),
   KEY `jobs_shuttles_shuttle_id_fk` (`shuttle_id`),
   KEY `jobs_job_type_job_type_id_fk` (`job_type_id`),
+  KEY `jobs_job_state_job_state_id_fk` (`job_state_id`),
+  CONSTRAINT `jobs_job_state_job_state_id_fk` FOREIGN KEY (`job_state_id`) REFERENCES `job_state` (`job_state_id`),
   CONSTRAINT `jobs_job_type_job_type_id_fk` FOREIGN KEY (`job_type_id`) REFERENCES `job_type` (`job_type_id`),
   CONSTRAINT `jobs_order_id_fk` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE,
   CONSTRAINT `jobs_shuttles_shuttle_id_fk` FOREIGN KEY (`shuttle_id`) REFERENCES `shuttles` (`shuttle_id`)
@@ -181,8 +210,34 @@ CREATE TABLE `jobs` (
 
 LOCK TABLES `jobs` WRITE;
 /*!40000 ALTER TABLE `jobs` DISABLE KEYS */;
-INSERT INTO `jobs` VALUES (13,10,NULL,2,1,100100,1,1),(14,10,NULL,3,1,400400,1,2),(15,11,NULL,2,1,100400,1,1),(16,11,NULL,3,1,300300,1,2);
+INSERT INTO `jobs` VALUES (13,10,2,2,1,1,100100,1,1562712971),(14,10,2,3,1,1,400400,2,1562713065),(15,11,NULL,2,1,1,100400,1,0),(16,11,NULL,3,1,1,300300,2,0);
 /*!40000 ALTER TABLE `jobs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `order_state`
+--
+
+DROP TABLE IF EXISTS `order_state`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `order_state` (
+  `order_state_id` int(11) NOT NULL,
+  `token` varchar(32) NOT NULL,
+  `description` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`order_state_id`),
+  UNIQUE KEY `order_state_token_uindex` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `order_state`
+--
+
+LOCK TABLES `order_state` WRITE;
+/*!40000 ALTER TABLE `order_state` DISABLE KEYS */;
+INSERT INTO `order_state` VALUES (1,'NEW','Order is new'),(2,'ASSIGNED','Order is assigned to a shuttle'),(3,'STARTED','A shuttle is actively working on this order'),(4,'DONE','Order has been finished sucessfully'),(5,'CANCELLED','Order has been cancelled for any reason');
+/*!40000 ALTER TABLE `order_state` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -221,12 +276,14 @@ DROP TABLE IF EXISTS `orders`;
 CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL AUTO_INCREMENT,
   `order_type_id` int(11) NOT NULL,
-  `priority` int(11) NOT NULL,
   `shuttle_id` int(11) DEFAULT NULL,
-  `state` int(11) NOT NULL DEFAULT '1',
+  `order_state_id` int(11) NOT NULL DEFAULT '1',
+  `priority` int(11) NOT NULL,
   `sequence` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`order_id`),
   KEY `orders_order_type_order_type_id_fk` (`order_type_id`),
+  KEY `orders_order_state_order_state_id_fk` (`order_state_id`),
+  CONSTRAINT `orders_order_state_order_state_id_fk` FOREIGN KEY (`order_state_id`) REFERENCES `order_state` (`order_state_id`),
   CONSTRAINT `orders_order_type_order_type_id_fk` FOREIGN KEY (`order_type_id`) REFERENCES `order_type` (`order_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -237,7 +294,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (10,1,10,NULL,1,0),(11,1,10,NULL,1,0);
+INSERT INTO `orders` VALUES (10,1,2,2,10,0),(11,1,NULL,1,10,0);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -379,7 +436,7 @@ CREATE TABLE `shuttles` (
 
 LOCK TABLES `shuttles` WRITE;
 /*!40000 ALTER TABLE `shuttles` DISABLE KEYS */;
-INSERT INTO `shuttles` VALUES (1,2,2,2,1,1,400100),(2,2,2,2,3,1,400400),(3,2,0,0,0,-1,-1),(4,2,0,0,0,-1,-1),(5,2,0,0,0,-1,-1);
+INSERT INTO `shuttles` VALUES (1,2,2,1,1,1,400100),(2,2,2,2,3,1,400400),(3,2,0,0,0,-1,-1),(4,2,0,0,0,-1,-1),(5,2,0,0,0,-1,-1);
 /*!40000 ALTER TABLE `shuttles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -476,4 +533,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-09 22:46:27
+-- Dump completed on 2019-07-10  1:14:05
