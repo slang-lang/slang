@@ -9,6 +9,14 @@ public namespace DB {
 
     public int Handle;
 
+    public void BeginTransaction() const {
+        Execute( "BEGIN" );
+    }
+
+    public void CommitTransaction() const {
+        Execute( "COMMIT" );
+    }
+
     public int Connect() modify throws {
         Handle = mysql_init();
         Handle = mysql_real_connect(Handle, Host, Port, User, Password, Database);
@@ -35,7 +43,7 @@ public namespace DB {
         return 0;
     }
 
-    private int getLastInsertId() const {
+    public int getLastInsertId() const {
         int result = Query( "SELECT LAST_INSERT_ID() AS ID" );
 
         if ( mysql_next_row(result) ) {
@@ -65,6 +73,10 @@ public namespace DB {
         try { return mysql_store_result(Handle); }
 
         return 0;
+    }
+
+    public void RollbackTransaction() const {
+        Execute( "ROLLBACK" );
     }
 
     public bool Update(string query) const throws {
