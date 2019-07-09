@@ -19,13 +19,13 @@ public void Main(int argc, string args) {
 
         logger.info("Connecting to IPC queue...");
 
-        var dispatcher = new ShuttleManager(new Logger(cast<ILogger>(logger), "ShuttleManager"));
         var ipcService = new IPCService(SHUTTLEMANAGER_QUEUE, SHUTTLEMANAGER);
+        var shuttleManager = new ShuttleManager(cast<ILogger>(logger));
 
         bool running = true;
 
         while ( running ) {
-            //dispatcher.dispatch();
+            shuttleManager.process();
 
             int counter;
             IPCMessage message;

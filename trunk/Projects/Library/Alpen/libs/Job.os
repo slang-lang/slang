@@ -27,5 +27,17 @@ public object Job {
     public int sequence;
     public int shuttleID;
     public JobState stateID;
+
+    public string =operator(string) const {
+        return "Job { jobID: " + jobID +
+                ", jobTypeID: " + cast<string>( jobTypeID ) +
+                ", stateID: " + cast<string>( stateID ) +
+                ", shuttleID: " + shuttleID +
+                ", orderID: " + orderID +
+                ", levelID: " + levelID +
+                ", positionID: " + positionID +
+                ", sequence: " + sequence +
+                " }";
+    }
 }
 

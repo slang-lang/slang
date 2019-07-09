@@ -19,7 +19,7 @@ public void Main(int argc, string args) {
 
         logger.info("Connecting to IPC queue...");
 
-        var dispatcher = new OrderDispatcher(new Logger(cast<ILogger>(logger), "OrderDispatcher"));
+        var dispatcher = new OrderDispatcher(Logger logger);
         var ipcService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER);
 
         bool running = true;

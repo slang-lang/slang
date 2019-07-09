@@ -1,5 +1,6 @@
 
 // library imports
+import System.Collections.List;
 
 // project imports
 import Order;
@@ -7,6 +8,18 @@ import Order;
 
 public interface IShuttleSortAlgorithm {
     public bool compare(Shuttle left const, Shuttle right const) const;
+}
+
+public object ShuttleID {
+    public int ID const;
+
+    public void Constructor(int id) {
+        ID = id;
+    }
+
+    public string =operator(string) const {
+        return "ShuttleID{" + ID + "}";
+    }
 }
 
 public enum ShuttleBatteryLevel {
@@ -40,6 +53,7 @@ public object Shuttle {
     public int countAssignedOrders;
     public int levelID;
     public ShuttleMode modeID;
+    public List<Order> orders;
     public int positionID;
     public int shuttleID;
     public IShuttleSortAlgorithm sortAlgorithm;
@@ -47,10 +61,12 @@ public object Shuttle {
     public ShuttleType shuttleTypeID;
 
     public void Constructor() {
-        // nothing to do here
+        orders = new List<Order>();
     }
 
     public void Constructor(int dbresult) {
+        orders = new List<Order>();
+
         load(dbresult);
     }
 
@@ -74,7 +90,7 @@ public object Shuttle {
     }
 
     public string =operator(string) const {
-        return "{ shuttleID: " + shuttleID +
+        return "Shuttle { shuttleID: " + shuttleID +
                ", shuttleTypeID: " + cast<string>( shuttleTypeID ) +
                ", modeID: " + cast<string>( modeID ) +
                ", stateID: " + cast<string>( stateID ) +
@@ -82,6 +98,7 @@ public object Shuttle {
                ", levelID: " + levelID +
                ", positionID: " + positionID +
                ", containerLimit: " + containerLimit +
+               ", countAssignedOrders: " + countAssignedOrders +
                "}";
     }
 

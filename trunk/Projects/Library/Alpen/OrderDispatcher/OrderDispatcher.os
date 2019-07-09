@@ -10,7 +10,7 @@ import libs.Order;
 import libs.Shuttle;
 import DispatchSteps.FilterDispatchableShuttles;
 import DispatchSteps.FilterOrdersByPriority;
-import DispatchSteps.FilterShuttlesCanAcceptOrders;
+import DispatchSteps.FilterShuttlesByBatteryLevel;
 import DispatchSteps.SortOrdersByPriority;
 import DispatchSteps.SortShuttlesByBatteryLevel;
 import DispatchSteps.SortShuttlesByDistance;
@@ -20,16 +20,14 @@ public object OrderDispatcher {
     public void Constructor(Logger logger) {
         mDispatchSteps = new List<IDispatchStep>();
         mIPCService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER);
-        mLogger = logger;
+        mLogger = new Logger(cast<ILogger>(logger), "OrderDispatcher");
         mOrders = new List<Order>();
         mShuttles = new List<Shuttle>();
 
-        ORDER_QUERY = "SELECT * FROM orders WHERE state = " + string OrderState.New;
+        ORDER_QUERY = "SELECT * FROM orders WHERE order_state_id = " + string OrderState.New;
         SHUTTLE_QUERY = "SELECT s.*, st.* FROM shuttles s " +
                         "JOIN shuttle_type st ON (st.shuttle_type_id = s.shuttle_type_id) " +
-                        "LEFT JOIN orders ord ON (ord.shuttle_id = s.shuttle_id) "; /* +
-                        "WHERE s.mode = " + cast<string>( ShuttleMode.Automatic ) + " AND s.state = " + cast<string>( ShuttleState.Ready );
-                        */
+                        "LEFT JOIN orders ord ON (ord.shuttle_id = s.shuttle_id) ";
 
         init();
     }
@@ -83,7 +81,7 @@ public object OrderDispatcher {
             var shuttle = data.shuttles.first();
 
             order.shuttleID = shuttle.shuttleID;
-            order.state = OrderState.Assigned;
+            order.stateID = OrderState.Assigned;
             store(order);
 
             shuttle.stateID = ShuttleState.OCCUPIED;
@@ -126,10 +124,10 @@ public object OrderDispatcher {
         mLogger.info("Initializing dispatch steps...");
 
         mDispatchSteps.push_back( cast<IDispatchStep>( new FilterDispatchableShuttles() ) );
-        mDispatchSteps.push_back( cast<IDispatchStep>( new FilterShuttlesCanAcceptOrders() ) );
+        mDispatchSteps.push_back( cast<IDispatchStep>( new SortShuttlesByBatteryLevel() ) );
+        mDispatchSteps.push_back( cast<IDispatchStep>( new FilterShuttlesByBatteryLevel() ) );
         mDispatchSteps.push_back( cast<IDispatchStep>( new SortOrdersByPriority() ) );
         mDispatchSteps.push_back( cast<IDispatchStep>( new FilterOrdersByPriority() ) );
-        mDispatchSteps.push_back( cast<IDispatchStep>( new SortShuttlesByBatteryLevel() ) );
         mDispatchSteps.push_back( cast<IDispatchStep>( new SortShuttlesByDistance() ) );
     }
 
@@ -150,7 +148,7 @@ public object OrderDispatcher {
     }
 
     private void store(Order order) modify {
-        string query = "UPDATE orders SET sequence = " + order.sequence + ", shuttle_id = " + order.shuttleID + ", state = " + cast<string>( order.state ) + " WHERE order_id = " + order.orderID;
+        string query = "UPDATE orders SET sequence = " + order.sequence + ", shuttle_id = " + order.shuttleID + ", order_state_id = " + cast<string>( order.stateID ) + " WHERE order_id = " + order.orderID;
         mLogger.debug(query);
 
         DB.Execute(query);
