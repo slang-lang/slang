@@ -32,20 +32,29 @@ public object ShuttleManager {
 	public void process() modify {
 		mLogger.info("Start processing...");
 
-		loadShuttles();
+		bool finishedAJob = true;
+		while ( finishedAJob ) {
+			loadShuttles();
 
-		dispatchJobs();
+			dispatchJobs();
 
-		processJobs();
+			finishedAJob = processJobs();
+		}
 
 		mLogger.info("Done processing...");
 	}
 
 	private void dispatchJobs() modify {
-		mLogger.info("Dispatching new jobs...");
+		mLogger.info("Start dispatching jobs...");
 
 		foreach ( Shuttle shuttle : mShuttles ) {
 			if ( shuttle.orders.empty() ) {
+				if ( shuttle.stateID == ShuttleState.OCCUPIED ) {
+					// reset shuttle state since it has clearly been forgotten;
+					shuttle.stateID = ShuttleState.READY;
+					store(shuttle);
+				}
+
 				continue;
 			}
 
@@ -65,14 +74,16 @@ public object ShuttleManager {
 				store(order);
 			}
 		}
+
+		mLogger.info("Finished dispatching jobs...");
 	}
 
 	private bool executeJob(Shuttle shuttle, Job job) modify throws {
-		mLogger.info("executeJob(" + cast<string>(shuttle) + ", " + cast<string>(job) + ")");
-
 		if ( !job ) {
 			throw "invalid job provided!";
 		}
+
+		mLogger.info("executeJob(" + cast<string>(shuttle) + ", " + cast<string>(job) + ")");
 
 		var path = mPathFinder.findPathForShuttle(shuttle, job.position);
 		if ( !path ) {
@@ -103,8 +114,10 @@ public object ShuttleManager {
 		}
 	}
 
-	private void processJobs() modify {
+	private bool processJobs() modify {
 		mLogger.info("Start processing jobs...");
+
+		bool finishedAJob = false;
 
 		foreach ( Shuttle shuttle : mShuttles ) {
 			if ( shuttle.orders.empty() ) {
@@ -123,6 +136,8 @@ public object ShuttleManager {
 
 						job.stateID = JobState.Done;
 						store(job);
+
+						finishedAJob = true;
 					}
 				}
 
@@ -131,11 +146,16 @@ public object ShuttleManager {
 
 					order.stateID = OrderState.Done;
 					store(order);
+
+					shuttle.stateID = ShuttleState.READY;
+					store(shuttle);
 				}
 			}
 		}
 
-		mLogger.info("Done processing jobs...");
+		mLogger.info("Finished processing jobs...");
+
+		return finishedAJob;
 	}
 
     private void store(Job job) modify {

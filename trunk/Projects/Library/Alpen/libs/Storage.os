@@ -19,7 +19,7 @@ public object Storage {
     }
 
     public Job LoadJobByID(int jobID) modify throws {
-        mLogger.debug("LoadJobByID(" + jobID + ")");
+        //mLogger.debug("LoadJobByID(" + jobID + ")");
 
         int result = DB.Query( QUERY_JOB_FULL + jobID );
         if ( !result ) {
@@ -51,7 +51,7 @@ public object Storage {
     }
 
     public Order LoadOrderByID(int orderID) modify throws {
-        mLogger.debug("LoadOrderByID(" + orderID + ")");
+        //mLogger.debug("LoadOrderByID(" + orderID + ")");
 
         int result = DB.Query( QUERY_ORDER_FULL + orderID );
         if ( !result ) {
@@ -64,10 +64,10 @@ public object Storage {
             if ( !order ) {
                 order = LoadOrderByResult(result);
             }
-
             int jobID = mysql_get_field_value(result, "job_id");
             if ( jobID ) {
-                order.jobs.push_back( LoadJobByID( jobID ) );
+                //order.jobs.push_back( LoadJobByID( jobID ) );
+                order.jobs.push_back( LoadJobByResult( result ) );
             }
         }
 
@@ -87,7 +87,7 @@ public object Storage {
     }
 
     public Shuttle LoadShuttleByID(int shuttleID) modify throws {
-        mLogger.debug("LoadShuttleByID(" + shuttleID + ")");
+        //mLogger.debug("LoadShuttleByID(" + shuttleID + ")");
 
         int result = DB.Query( QUERY_SHUTTLE_LIGHT + shuttleID );
         if ( !result ) {

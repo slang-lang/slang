@@ -35,6 +35,8 @@ public void Main(int argc, string args) {
 
                 message = ipcService.receive();
                 if ( message ) {
+                    logger.info("IPCMessage received: " + cast<string>(message));
+
                     if ( message.message == MSG_SHUTDOWN ) {
                         running = false;
                     }
