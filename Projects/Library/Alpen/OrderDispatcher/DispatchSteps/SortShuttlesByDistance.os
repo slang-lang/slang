@@ -16,7 +16,7 @@ public object SortByDistance implements IShuttleSortAlgorithm {
     public bool compare(Shuttle left const, Shuttle right const) const {
         //print(cast<string>(left) + " vs " + cast<string>(right));
 
-        return left.positionID * left.positionID * order.orderID < right.positionID * right.positionID * order.orderID;
+        return left.position.positionID * left.position.positionID < right.position.positionID * right.position.positionID;
     }
 
     private Order order const;
