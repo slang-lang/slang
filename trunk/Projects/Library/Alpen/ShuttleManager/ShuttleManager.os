@@ -16,7 +16,8 @@ private string SHUTTLE_QUERY const = "SELECT shuttle_id FROM shuttles ORDER BY s
 
 
 public object ShuttleManager {
-	public void Constructor(ILogger logger) {
+	public void Constructor(ILogger logger, IPCService ipcService) {
+		mIPCService = ipcService;
 		mLogger = new Logger(logger, "ShuttleManager");
 		mPathFinder = new PathFinder(logger);
 		mShuttles = new List<Shuttle>();
@@ -96,6 +97,8 @@ public object ShuttleManager {
 		job.stateID = JobState.Started;
 		store(job);
 
+		notifyShuttleAdapter(MSG_WORK_RECEIVED);
+
 		return true;
 	}
 
@@ -113,6 +116,10 @@ public object ShuttleManager {
 			mLogger.info( cast<string>( mShuttles.last() ) );
 		}
 	}
+
+    private void notifyShuttleAdapter(string message) modify {
+        mIPCService.send(SHUTTLEADAPTER_QUEUE, message);
+    }
 
 	private bool processJobs() modify {
 		mLogger.info("Start processing jobs...");
@@ -191,6 +198,7 @@ public object ShuttleManager {
         DB.Execute(query);
     }
 
+	private IPCService mIPCService;
 	private Logger mLogger;
 	private PathFinder mPathFinder;
 	private List<Shuttle> mShuttles;

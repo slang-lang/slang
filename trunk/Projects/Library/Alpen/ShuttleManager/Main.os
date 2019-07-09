@@ -20,7 +20,7 @@ public void Main(int argc, string args) {
         logger.info("Connecting to IPC queue...");
 
         var ipcService = new IPCService(SHUTTLEMANAGER_QUEUE, SHUTTLEMANAGER);
-        var shuttleManager = new ShuttleManager(cast<ILogger>(logger));
+        var shuttleManager = new ShuttleManager(cast<ILogger>(logger), ipcService);
 
         bool running = true;
 

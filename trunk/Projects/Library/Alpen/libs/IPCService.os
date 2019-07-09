@@ -84,13 +84,13 @@ public object IPCService implements IIPCReceiver, IIPCSender {
 	public bool send(int queueID, IPCMessage message) modify {
 		string msg = ToJsonString(message);
 
-		//print("send(\"" + msg + "\")");
+		print("send(\"" + msg + "\")");
 
 		return msgsnd(queueID, msg) != -1;
 	}
 
-	public bool send(int queueID, string receiver, string message) modify {
-		return send( queueID, new IPCMessage(mProcessName, receiver, 0, message) );
+	public bool send(int queueID, string message) modify {
+		return send( queueID, new IPCMessage(mProcessName, "", 0, message) );
 	}
 
 	private Map<int, int> mConnectedQueues;

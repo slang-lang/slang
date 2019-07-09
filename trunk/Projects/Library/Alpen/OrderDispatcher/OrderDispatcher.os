@@ -17,9 +17,9 @@ import DispatchSteps.SortShuttlesByDistance;
 
 
 public object OrderDispatcher {
-    public void Constructor(Logger logger) {
+    public void Constructor(Logger logger, IPCService ipcService) {
         mDispatchSteps = new List<IDispatchStep>();
-        mIPCService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER);
+        mIPCService = ipcService;
         mLogger = new Logger(cast<ILogger>(logger), "OrderDispatcher");
         mOrders = new List<Order>();
         mShuttles = new List<Shuttle>();
@@ -132,7 +132,7 @@ public object OrderDispatcher {
     }
 
     private void notifyShuttleManager(string message) modify {
-        mIPCService.send(SHUTTLEMANAGER_QUEUE, SHUTTLEMANAGER, message);
+        mIPCService.send(SHUTTLEMANAGER_QUEUE, message);
     }
 
     private void printOrders(DispatchData data) modify {
