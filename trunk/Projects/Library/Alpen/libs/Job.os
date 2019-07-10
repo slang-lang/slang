@@ -28,7 +28,11 @@ public object Job {
     public int sequence;
     public int shuttleID;
     public JobState stateID;
+
+    // For testing only - begin
+    public int endTime;
     public int startTime;
+    // For testing only - end;
 
     public void Constructor() {
         position = new Position();
@@ -43,6 +47,7 @@ public object Job {
                 ", position: " + cast<string>(position) +
                 ", sequence: " + sequence +
                 ", startTime: " + startTime +
+                ", endTime: " + endTime +
                 " }";
     }
 }
