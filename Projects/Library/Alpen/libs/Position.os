@@ -17,6 +17,10 @@ public object Position {
         positionID = _positionID;
     }
 
+    public bool operator==(Position other const) const {
+        return levelID == other.levelID && positionID == other.positionID;
+    }
+
     public string =operator(string) const {
         return "Position { levelID: " + levelID + ", positionID: " + positionID + " }";
     }

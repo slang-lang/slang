@@ -93,8 +93,11 @@ public object ShuttleManager {
 		}
 
 		job.shuttleID = shuttle.shuttleID;
-		job.startTime = time();
 		job.stateID = JobState.Started;
+		// For testing only - begin
+		job.startTime = time();
+		job.endTime = job.startTime + JOB_DURATION + ((shuttle.position == job.position) ? 0 : MOVE_DURATION);
+		// For testing only - end
 		store(job);
 
 		notifyShuttleAdapter(MSG_WORK_RECEIVED);
@@ -117,9 +120,9 @@ public object ShuttleManager {
 		}
 	}
 
-    private void notifyShuttleAdapter(string message) modify {
-        mIPCService.send(SHUTTLEADAPTER_QUEUE, message);
-    }
+	private void notifyShuttleAdapter(string message) modify {
+		mIPCService.send(SHUTTLEADAPTER_QUEUE, message);
+	}
 
 	private bool processJobs() modify {
 		mLogger.info("Start processing jobs...");
@@ -135,7 +138,7 @@ public object ShuttleManager {
 			if ( order ) {
 				if ( !order.jobs.empty() ) {
 					var job = order.jobs.first();
-					if ( time() - job.startTime > JOB_DURATION ) {
+					if ( time() > job.endTime ) {
 						mLogger.info(cast<string>(job) + " is done.");
 
 						shuttle.position = job.position;
@@ -170,6 +173,7 @@ public object ShuttleManager {
 						" shuttle_id = " + job.shuttleID +
 						", job_state_id = " + cast<string>( job.stateID ) +
 						", start_time = " + job.startTime +
+						", end_time = " + job.endTime +
 						" WHERE job_id = " + job.jobID;
         mLogger.debug(query);
 

@@ -45,8 +45,11 @@ public object Storage {
         job.position.positionID = int mysql_get_field_value(result, "position_id");
         job.sequence = int mysql_get_field_value(result, "sequence");
         job.shuttleID = int mysql_get_field_value(result, "shuttle_id");
-        job.startTime = int mysql_get_field_value(result, "start_time");
         job.stateID = JobState cast<int>( mysql_get_field_value(result, "job_state_id") );
+
+        job.endTime = int mysql_get_field_value(result, "end_time");
+        job.startTime = int mysql_get_field_value(result, "start_time");
+
         return job;
     }
 
