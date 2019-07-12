@@ -35,10 +35,12 @@ public:
 	public:
 		Settings()
 		: DoSanityCheck(true),
+		  DoSkipExtensions(false),
 		  DoSyntaxCheck(false)
 		{ }
 
 		bool DoSanityCheck;
+		bool DoSkipExtensions;
 		bool DoSyntaxCheck;
 	};
 

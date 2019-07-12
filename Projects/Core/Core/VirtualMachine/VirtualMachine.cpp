@@ -202,18 +202,20 @@ void VirtualMachine::init()
 		}
 	}
 
+	if ( !mSettings.DoSkipExtensions ) {
 #ifdef _WIN32
 #else
-    std::vector<std::string> sharedLibraries;
-	read_directory(SHARED_LIBRARY_DIRECTORY, sharedLibraries);
+		std::vector<std::string> sharedLibraries;
+		read_directory(SHARED_LIBRARY_DIRECTORY, sharedLibraries);
 
-	// load installed shared libraries
-	for ( std::string library : sharedLibraries ) {
-		OSdebug("Loading extensions " + library);
+		// load installed shared libraries
+		for ( std::string library : sharedLibraries ) {
+			OSdebug("Loading extensions " + library);
 
-		addExtension( mExtensionManager.load(library) );
-	}
+			addExtension( mExtensionManager.load(library) );
+		}
 #endif
+	}
 
 	loadExtensions();
 
