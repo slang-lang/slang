@@ -92,6 +92,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\AST\Expression.cpp" />
     <ClCompile Include="Core\AST\Generator.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
@@ -210,10 +211,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Extensions\AExtension.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Core\Parameter.cpp" />
     <ClCompile Include="Core\Runtime\AtomicValue.cpp">
@@ -256,7 +253,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\Interpreter.cpp" />
     <ClCompile Include="Core\Runtime\OperatorOverloading.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
@@ -387,7 +383,6 @@
     <ClInclude Include="Core\Runtime\ControlFlow.h" />
     <ClInclude Include="Core\Runtime\ExceptionData.h" />
     <ClInclude Include="Core\Runtime\Exceptions.h" />
-    <ClInclude Include="Core\Runtime\Interpreter.h" />
     <ClInclude Include="Core\Runtime\OperatorOverloading.h" />
     <ClInclude Include="Core\Runtime\Reference.h" />
     <ClInclude Include="Core\Runtime\Script.h" />
