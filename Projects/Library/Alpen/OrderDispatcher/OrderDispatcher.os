@@ -25,9 +25,7 @@ public object OrderDispatcher {
         mShuttles = new List<Shuttle>();
 
         ORDER_QUERY = "SELECT * FROM orders WHERE order_state_id = " + string OrderState.New;
-        SHUTTLE_QUERY = "SELECT s.*, st.* FROM shuttles s " +
-                        "JOIN shuttle_type st ON (st.shuttle_type_id = s.shuttle_type_id) " +
-                        "LEFT JOIN orders ord ON (ord.shuttle_id = s.shuttle_id) ";
+        SHUTTLE_QUERY = "SELECT s.*, st.* FROM shuttles s JOIN shuttle_type st ON (st.shuttle_type_id = s.shuttle_type_id) WHERE shuttle_mode_id <> " + string ShuttleMode.OUTOFORDER;
 
         init();
     }
