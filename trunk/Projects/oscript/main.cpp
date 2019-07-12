@@ -4,7 +4,6 @@
 // Project includes
 #include <Common/StdOutLogger.h>
 #include <Core/Common/Exceptions.h>
-#include <Core/Extensions/ExtensionManager.h>
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Script.h>
@@ -40,7 +39,6 @@
 #endif
 
 
-ObjectiveScript::Extensions::ExtensionManager mExtensionManager;
 std::string mFilename;
 StringSet mLibraryFolders;
 Utils::Common::StdOutLogger mLogger;

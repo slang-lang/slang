@@ -11,7 +11,11 @@
 // Project includes
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Extensions/AExtension.h>
-#include <Core/Extensions/ExtensionManager.h>
+#ifdef _WIN32
+	// Extension loading is not supported under Windows
+#else
+#	include <Core/Extensions/ExtensionManager.h>
+#endif
 #include <Core/Parameter.h>
 #include <Core/Types.h>
 
@@ -72,7 +76,11 @@ private:
 	void printLibraryFolders();
 
 private:
+#ifdef _WIN32
+	// Extension loading is not supported under Windows
+#else
 	Extensions::ExtensionManager mExtensionManager;
+#endif
 	Extensions::ExtensionList mExtensions;
 	StringSet mImportedLibraries;
 	bool mIsInitialized;

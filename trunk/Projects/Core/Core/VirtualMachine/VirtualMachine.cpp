@@ -3,7 +3,11 @@
 #include "VirtualMachine.h"
 
 // Library includes
+#ifdef _WIN32
+	// Extension loading is not supported under Windows
+#else
 #include <dirent.h>
+#endif
 #include <fstream>
 
 // Project includes
@@ -27,6 +31,9 @@
 namespace ObjectiveScript {
 
 
+#ifdef _WIN32
+	// Extension loading is not supported under Windows
+#else
 void read_directory(const std::string& dirname, std::vector<std::string>& files)
 {
     DIR* dirp = opendir(dirname.c_str());
@@ -42,6 +49,7 @@ void read_directory(const std::string& dirname, std::vector<std::string>& files)
 
     closedir(dirp);
 }
+#endif
 
 
 VirtualMachine::VirtualMachine()
@@ -204,6 +212,7 @@ void VirtualMachine::init()
 
 	if ( !mSettings.DoSkipExtensions ) {
 #ifdef _WIN32
+		// Extension loading is not supported under Windows
 #else
 		std::vector<std::string> sharedLibraries;
 		read_directory(SHARED_LIBRARY_DIRECTORY, sharedLibraries);
