@@ -81,6 +81,10 @@ public object Shuttle {
         return countAssignedOrders < containerLimit;
     }
 
+    public bool hasWork() const {
+        return orders.size() > 0;
+    }
+
     public bool operator==(Shuttle other const) const {
         return shuttleID == other.shuttleID;
     }
