@@ -26,14 +26,14 @@ public object FileLogger implements ILogger {
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(ILogger parent, string key, int keyLength = 0) throws {
+	public void Constructor(ILogger parent, string key) throws {
 		if ( !parent ) {
 			throw new Exception("missing parent logger");
 		}
 
 		mContext = parent.getContext();
 		mHasParent = true;
-		mKey = parent.getKey() + "::" + key;
+		mKey = parent.getKey() + LibLog.KeySeparator + key;
 		mKeyLength = parent.getKeyLength();
 
 		if ( mKeyLength ) {
@@ -66,27 +66,26 @@ public object FileLogger implements ILogger {
 		return mKeyLength;
 	}
 
-	// Public methods
 	public void debug(string message) modify {
-		mContext.write("[DEBUG] " + mKey + "::" + message);
+		mContext.write("[DEBUG] [" + mKey + "]   " + message);
 	}
 
 	public void error(string message) modify {
-		mContext.write("[ERROR] " + mKey + "::" + message);
+		mContext.write("[ERROR] [" + mKey + "]   " + message);
 	}
 
 	public void fatal(string message) modify throws {
 		mContext.write("[FATAL] [" + mKey + "]   " + message);
 
-        throw new FatalError(message);
+		throw new FatalError(message);
 	}
 
 	public void info(string message) modify {
-		mContext.write("[INFO ] " + mKey + "::" + message);
+		mContext.write("[INFO ] [" + mKey + "]   " + message);
 	}
 
 	public void warning(string message) modify {
-		mContext.write("[WARN ] " + mKey + "::" + message);
+		mContext.write("[WARN ] [" + mKey + "]   " + message);
 	}
 
 	/*
