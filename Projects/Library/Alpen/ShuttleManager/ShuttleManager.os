@@ -12,9 +12,6 @@ import libs.Shuttle;
 import libs.Storage;
 
 
-private string SHUTTLE_QUERY_BY_ID const = "SELECT shuttle_id FROM shuttles ORDER BY shuttle_id ASC";
-
-
 public object ShuttleManager {
 	public void Constructor(ILogger logger, IPCService ipcService) {
 		mIPCService = ipcService;
@@ -51,15 +48,11 @@ public object ShuttleManager {
 		foreach ( Shuttle shuttle : mShuttles ) {
 			if ( shuttle.orders.empty() ) {
 				if ( shuttle.stateID == ShuttleState.OCCUPIED ) {
-					// reset shuttle state since it has clearly been forgotten;
+					// reset shuttle state since it has clearly been forgotten
 					shuttle.stateID = ShuttleState.READY;
 					mStorage.Update(shuttle);
 				}
 
-				continue;
-			}
-
-			if ( shuttle.orders.empty() ) {
 				// this shuttle has no assigned orders
 				continue;
 			}
@@ -72,6 +65,11 @@ public object ShuttleManager {
 				}
 
 				if ( order.jobs.empty() ) {
+					if ( order.stateID < OrderState.Done ) {
+						order.stateID = OrderState.Done;
+						mStorage.Update(order);
+					}
+
 					// this order has no jobs!?
 					continue;
 				}
@@ -118,7 +116,7 @@ public object ShuttleManager {
 	private void loadShuttles() modify throws {
 		mShuttles.clear();
 
-		int result = DB.Query( SHUTTLE_QUERY_BY_ID );
+		int result = DB.Query( SHUTTLE_QUERY );
 		if ( !result ) {
 			throw DB.Error();
 		}
