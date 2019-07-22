@@ -61,7 +61,7 @@ public object Shuttle {
     public int shuttleID;
     public IShuttleSortAlgorithm sortAlgorithm;
     public ShuttleState stateID;
-    public ShuttleType shuttleTypeID;
+    public ShuttleType typeID;
 
     public void Constructor() {
         orders = new List<Order>();
@@ -100,7 +100,7 @@ public object Shuttle {
 
     public string =operator(string) const {
         return "Shuttle { shuttleID: " + shuttleID +
-               ", shuttleTypeID: " + cast<string>( shuttleTypeID ) +
+               ", typeID: " + cast<string>( typeID ) +
                ", modeID: " + cast<string>( modeID ) +
                ", stateID: " + cast<string>( stateID ) +
                ", batteryLevelID: " + cast<string>( batteryLevelID ) +
@@ -119,7 +119,7 @@ public object Shuttle {
         //positionID = mysql_get_field_value(dbresult, "position_id");
         shuttleID = cast<int>( mysql_get_field_value(dbresult, "shuttle_id") );
         stateID = ShuttleState cast<int>( mysql_get_field_value(dbresult, "shuttle_state_id") );
-        shuttleTypeID = ShuttleType cast<int>( mysql_get_field_value(dbresult, "shuttle_type_id") );
+        typeID = ShuttleType cast<int>( mysql_get_field_value(dbresult, "shuttle_type_id") );
 
         position = new Position(
             cast<int>( mysql_get_field_value(dbresult, "level_id") ),

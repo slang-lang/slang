@@ -13,15 +13,14 @@ public enum JobState {
 }
 
 public enum JobType {
-	Unkown = 0,
-	Park, 
+	Park = 1,
 	Get,
 	Put;
 }
 
 public object Job {
     public int jobID;
-    public JobType jobTypeID;
+    public JobType typeID;
     public int levelID;
     public int orderID;
     public Position position;
@@ -40,7 +39,7 @@ public object Job {
 
     public string =operator(string) const {
         return "Job { jobID: " + jobID +
-                ", jobTypeID: " + cast<string>( jobTypeID ) +
+                ", typeID: " + cast<string>( typeID ) +
                 ", stateID: " + cast<string>( stateID ) +
                 ", shuttleID: " + shuttleID +
                 ", orderID: " + orderID +
