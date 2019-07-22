@@ -16,3 +16,4 @@ public namespace LibLog {
     public string KeySeparator modify = "::";
 
 }
+
