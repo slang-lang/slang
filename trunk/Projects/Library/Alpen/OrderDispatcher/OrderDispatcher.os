@@ -8,6 +8,7 @@ import libs.Database;
 import libs.IPCService;
 import libs.Order;
 import libs.Shuttle;
+import libs.Storage;
 import DispatchSteps.FilterDispatchableShuttles;
 import DispatchSteps.FilterOrdersByPriority;
 import DispatchSteps.FilterShuttlesByBatteryLevel;
@@ -16,16 +17,20 @@ import DispatchSteps.SortShuttlesByBatteryLevel;
 import DispatchSteps.SortShuttlesByDistance;
 
 
+//private string SHUTTLE_QUERY const = "SELECT s.*, st.* FROM shuttles s JOIN shuttle_type st ON (st.shuttle_type_id = s.shuttle_type_id) WHERE shuttle_mode_id <> " + string ShuttleMode.OUTOFORDER;
+
+
 public object OrderDispatcher {
-    public void Constructor(Logger logger, IPCService ipcService) {
+    public void Constructor(ILogger logger, IPCService ipcService) {
         mDispatchSteps = new List<IDispatchStep>();
         mIPCService = ipcService;
-        mLogger = new Logger(cast<ILogger>(logger), "OrderDispatcher");
+        mLogger = new Logger(logger, "OrderDispatcher");
         mOrders = new List<Order>();
         mShuttles = new List<Shuttle>();
+        mStorage = new Storage();
 
         ORDER_QUERY = "SELECT * FROM orders WHERE order_state_id = " + string OrderState.New;
-        SHUTTLE_QUERY = "SELECT s.*, st.* FROM shuttles s JOIN shuttle_type st ON (st.shuttle_type_id = s.shuttle_type_id) WHERE shuttle_mode_id <> " + string ShuttleMode.OUTOFORDER;
+        PARKINGPOSITION = new Position(1, 100100);
 
         init();
     }
@@ -41,7 +46,7 @@ public object OrderDispatcher {
             var data = new DispatchData( cast<Object>( mOrders ), cast<Object>( mShuttles) );
             if ( mOrders.empty() || mShuttles.empty() ) {
                 mLogger.warning("No dispatchable orders found");
-                return;
+                break;
             }
 
             mLogger.info("Starting new dispatch chain with " + data.orders.size() + " order(s) and " + data.shuttles.size() + " shuttle(s)...");
@@ -80,13 +85,15 @@ public object OrderDispatcher {
 
             order.shuttleID = shuttle.shuttleID;
             order.stateID = OrderState.Assigned;
-            store(order);
+            mStorage.Update(order);
 
             shuttle.stateID = ShuttleState.OCCUPIED;
-            store(shuttle);
+            mStorage.Update(shuttle);
 
             notifyShuttleManager(MSG_WORK_RECEIVED);
         }
+
+        handleUnoccupiedShuttles();
     }
 
     public void loadOrders() modify throws {
@@ -98,6 +105,7 @@ public object OrderDispatcher {
         }
     }
 
+/*
     public void loadShuttles() modify throws {
         mShuttles.clear();
 
@@ -106,10 +114,42 @@ public object OrderDispatcher {
             mShuttles.push_back( new Shuttle(result) );
         }
     }
+*/
+
+	private void loadShuttles() modify throws {
+		mShuttles.clear();
+
+		int result = DB.Query( SHUTTLE_QUERY );
+		if ( !result ) {
+			throw DB.Error();
+		}
+
+		while ( mysql_next_row(result) ) {
+			mShuttles.push_back( mStorage.LoadShuttleByID( cast<int>( mysql_get_field_value(result, "shuttle_id") ) ) );
+
+			mLogger.info( cast<string>( mShuttles.last() ) );
+		}
+	}
 
     public void printStats() const {
         print("Orders: " + mOrders.size());
         print("Shuttles: " + mShuttles.size());
+    }
+
+    private void handleUnoccupiedShuttles() modify {
+        mLogger.info("Start handling unoccupied shuttles...");
+
+        foreach ( Shuttle shuttle : mShuttles ) {
+            if ( shuttle.hasWork() ) {
+                continue;
+            }
+
+            if ( shuttle.position != PARKINGPOSITION ) {
+                sendToParkingSpot(shuttle);
+            }
+        }
+
+        mLogger.info("Finished handling unoccupied shuttles.");
     }
 
     private void init() modify {
@@ -145,18 +185,26 @@ public object OrderDispatcher {
         }
     }
 
-    private void store(Order order) modify {
-        string query = "UPDATE orders SET sequence = " + order.sequence + ", shuttle_id = " + order.shuttleID + ", order_state_id = " + cast<string>( order.stateID ) + " WHERE order_id = " + order.orderID;
-        mLogger.debug(query);
+    private void sendToParkingSpot(Shuttle shuttle) modify {
+        mLogger.info("sendToParkingSpot(" + cast<string>( shuttle ) + ")");
 
-        DB.Execute(query);
-    }
+        var order = new Order();
+        //order.jobs.push_back( job );
+        order.stateID = OrderState.Assigned;
+        order.orderTypeID = OrderType.Park;
+        order.shuttleID = shuttle.shuttleID;
+        mStorage.Insert(order);
 
-    private void store(Shuttle shuttle) modify {
-        string query = "UPDATE shuttles SET shuttle_state_id = " + cast<string>( shuttle.stateID ) + " WHERE shuttle_id = " + shuttle.shuttleID;
-        mLogger.debug(query);
+        var job = new Job();
+        job.stateID = JobState.New;
+        job.typeID = JobType.Park;
+        job.orderID = DB.getLastInsertId();
+        job.position = PARKINGPOSITION;
+        job.shuttleID = shuttle.shuttleID;
+        mStorage.Insert(job);
 
-        DB.Execute(query);
+        shuttle.stateID = ShuttleState.OCCUPIED;
+        mStorage.Update(shuttle);
     }
 
     // Private members
@@ -165,9 +213,10 @@ public object OrderDispatcher {
     private Logger mLogger;
     private List<Order> mOrders;
     private List<Shuttle> mShuttles;
+    private Storage mStorage;
 
     // Private consts
     private string ORDER_QUERY const;
-    private string SHUTTLE_QUERY const;
+    private Position PARKINGPOSITION const;
 }
 
