@@ -29,14 +29,14 @@ public object OrderDispatcher {
         mShuttles = new List<Shuttle>();
         mStorage = new Storage();
 
-        ORDER_QUERY = "SELECT * FROM orders WHERE order_state_id = " + string OrderState.New;
+        ORDER_QUERY = "SELECT * FROM orders WHERE order_state_id = " + cast<string>( OrderState.New );
         PARKINGPOSITION = new Position(1, 100100);
 
         init();
     }
 
     public void dispatch() modify {
-        mLogger.info("Dispatching new orders...");
+        mLogger.info("Dispatching orders...");
 
         // loop as long as there are free shuttles and dispatchable orders available
         while ( true ) {
@@ -69,6 +69,7 @@ public object OrderDispatcher {
 
                 data = newData;
 
+                assert(data);
                 mLogger.info("Executed step '" + step.getName() + "' with " + cast<string>( data ));
 
                 printOrders(data);
@@ -94,6 +95,8 @@ public object OrderDispatcher {
         }
 
         handleUnoccupiedShuttles();
+
+        mLogger.info("Finished dispatching orders...");
     }
 
     public void loadOrders() modify throws {
@@ -105,35 +108,19 @@ public object OrderDispatcher {
         }
     }
 
-/*
-    public void loadShuttles() modify throws {
+    private void loadShuttles() modify throws {
         mShuttles.clear();
 
-        int result = DB.Execute(SHUTTLE_QUERY);
-        while ( mysql_next_row(result) ) {
-            mShuttles.push_back( new Shuttle(result) );
+        int result = DB.Query( SHUTTLE_QUERY );
+        if ( !result ) {
+            throw DB.Error();
         }
-    }
-*/
 
-	private void loadShuttles() modify throws {
-		mShuttles.clear();
+        while ( mysql_next_row(result) ) {
+            mShuttles.push_back( mStorage.LoadShuttleByID( cast<int>( mysql_get_field_value(result, "shuttle_id") ) ) );
 
-		int result = DB.Query( SHUTTLE_QUERY );
-		if ( !result ) {
-			throw DB.Error();
-		}
-
-		while ( mysql_next_row(result) ) {
-			mShuttles.push_back( mStorage.LoadShuttleByID( cast<int>( mysql_get_field_value(result, "shuttle_id") ) ) );
-
-			mLogger.info( cast<string>( mShuttles.last() ) );
-		}
-	}
-
-    public void printStats() const {
-        print("Orders: " + mOrders.size());
-        print("Shuttles: " + mShuttles.size());
+            mLogger.info( cast<string>( mShuttles.last() ) );
+        }
     }
 
     private void handleUnoccupiedShuttles() modify {
@@ -174,12 +161,20 @@ public object OrderDispatcher {
     }
 
     private void printOrders(DispatchData data) modify {
+        assert( data.orders );
+
+        mLogger.debug("printOrders(" + data.orders.size() + ")");
+
         foreach ( Order order : data.orders ) {
             mLogger.debug( cast<string>( order ) );
         }
     }
 
     private void printShuttles(DispatchData data) modify {
+        assert( data.shuttles );
+
+        mLogger.debug("printShuttles(" + data.shuttles.size() + ")");
+
         foreach ( Shuttle shuttle : data.shuttles ) {
             mLogger.debug( cast<string>( shuttle ) );
         }
@@ -189,7 +184,6 @@ public object OrderDispatcher {
         mLogger.info("sendToParkingSpot(" + cast<string>( shuttle ) + ")");
 
         var order = new Order();
-        //order.jobs.push_back( job );
         order.stateID = OrderState.Assigned;
         order.orderTypeID = OrderType.Park;
         order.shuttleID = shuttle.shuttleID;
@@ -203,8 +197,12 @@ public object OrderDispatcher {
         job.shuttleID = shuttle.shuttleID;
         mStorage.Insert(job);
 
+        order.jobs.push_back( job );
+
         shuttle.stateID = ShuttleState.OCCUPIED;
         mStorage.Update(shuttle);
+
+        notifyShuttleManager(MSG_WORK_RECEIVED);
     }
 
     // Private members

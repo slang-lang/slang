@@ -32,6 +32,10 @@ public object IPCMessage {
 			"message: \"" + message + "\" " +
 			"}";
 	}
+
+	public string toString() const {
+		return "{ \"sender\": \"" + sender + "\", \"receiver\": \"" + receiver + "\", \"messageID\": " + messageID + ", \"message\": \"" + message + "\" }";
+	}
 }
 
 public interface IIPCReceiver {
@@ -82,9 +86,8 @@ public object IPCService implements IIPCReceiver, IIPCSender {
 	}
 
 	public bool send(int queueID, IPCMessage message) modify {
-		string msg = ToJsonString(message);
-
-		print("send(\"" + msg + "\")");
+		//string msg = ToJsonString(message);
+		string msg = message.toString();
 
 		return msgsnd(queueID, msg) != -1;
 	}
