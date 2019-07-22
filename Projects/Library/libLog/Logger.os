@@ -28,13 +28,6 @@ public object Logger implements ILogger {
 		}
 	}
 
-	/*
-	 * Default destructor
-	 */
-	public void Destructor() {
-		// this is empty by intend
-	}
-
 	public IContext getContext() const {
 		return mContext;
 	}
@@ -47,7 +40,6 @@ public object Logger implements ILogger {
 		return mKeyLength;
 	}
 
-	// Public methods
 	public void debug(string message) modify {
 		mContext.write("[DEBUG] [" + mKey + "]   " + message);
 	}
@@ -71,10 +63,10 @@ public object Logger implements ILogger {
 	}
 
 	/*
-	 * Private members
+	 * Protected members
 	 */
-	private IContext mContext const;
-	private string mKey const;
-	private int mKeyLength const;
+	protected IContext mContext const;
+	protected string mKey const;
+	protected int mKeyLength const;
 }
 

@@ -5,7 +5,7 @@
 import LibLog;
 
 
-public object FileLogger implements ILogger {
+public object FileLogger extends Logger {
 	/*
 	 * Specialised constructor
 	 */
@@ -27,22 +27,9 @@ public object FileLogger implements ILogger {
 	 * Copy constructor
 	 */
 	public void Constructor(ILogger parent, string key) throws {
-		if ( !parent ) {
-			throw new Exception("missing parent logger");
-		}
+		base.Constructor(parent, key);
 
-		mContext = parent.getContext();
 		mHasParent = true;
-		mKey = strrtrim(parent.getKey()) + LibLog.KeySeparator + key;
-		mKeyLength = parent.getKeyLength();
-
-		if ( mKeyLength ) {
-			if ( strlen(mKey) > mKeyLength ) {
-				mKey = substr(mKey, strlen(mKey) - mKeyLength, mKeyLength);
-			}
-
-			mKey = strrpad(mKey, mKeyLength, " ");
-		}
 	}
 
 	/*
@@ -54,46 +41,28 @@ public object FileLogger implements ILogger {
 		}
 	}
 
-	public IContext getContext() const {
-		return mContext;
-	}
-
-	public string getKey() const {
-		return mKey;
-	}
-
-	public int getKeyLength() const {
-		return mKeyLength;
-	}
-
-	public void debug(string message) modify {
-		mContext.write("[DEBUG] [" + mKey + "]   " + message);
-	}
-
-	public void error(string message) modify {
-		mContext.write("[ERROR] [" + mKey + "]   " + message);
-	}
-
-	public void fatal(string message) modify throws {
-		mContext.write("[FATAL] [" + mKey + "]   " + message);
-
-		throw new FatalError(message);
-	}
-
-	public void info(string message) modify {
-		mContext.write("[INFO ] [" + mKey + "]   " + message);
-	}
-
-	public void warning(string message) modify {
-		mContext.write("[WARN ] [" + mKey + "]   " + message);
-	}
-
 	/*
-	 * Private members
+	 * Protected members
 	 */
-	private IContext mContext;
-	private bool mHasParent const;
-	private string mKey const;
-	private int mKeyLength const;
+	protected bool mHasParent const;
+}
+
+public object AppendingFileLogger extends FileLogger {
+	/*
+	 * Specialised constructor
+	 */
+	public void Constructor(string filename, string key, int keyLength = 0) {
+		mContext = IContext new FileContext(filename, true);
+		mKey = key;
+		mKeyLength = keyLength;
+
+		if ( mKeyLength ) {
+			if ( strlen(mKey) > mKeyLength ) {
+				mKey = substr(mKey, strlen(mKey) - mKeyLength, mKeyLength);
+			}
+
+			mKey = strrpad(mKey, mKeyLength, " ");
+		}
+	}
 }
 
