@@ -12,7 +12,7 @@ import libs.Shuttle;
 import libs.Storage;
 
 
-private string SHUTTLE_QUERY const = "SELECT shuttle_id FROM shuttles ORDER BY shuttle_id ASC";
+private string SHUTTLE_QUERY_BY_ID const = "SELECT shuttle_id FROM shuttles ORDER BY shuttle_id ASC";
 
 
 public object ShuttleManager {
@@ -53,9 +53,14 @@ public object ShuttleManager {
 				if ( shuttle.stateID == ShuttleState.OCCUPIED ) {
 					// reset shuttle state since it has clearly been forgotten;
 					shuttle.stateID = ShuttleState.READY;
-					store(shuttle);
+					mStorage.Update(shuttle);
 				}
 
+				continue;
+			}
+
+			if ( shuttle.orders.empty() ) {
+				// this shuttle has no assigned orders
 				continue;
 			}
 
@@ -66,13 +71,18 @@ public object ShuttleManager {
 					continue;
 				}
 
+				if ( order.jobs.empty() ) {
+					// this order has no jobs!?
+					continue;
+				}
+
 				if ( !executeJob(shuttle, order.jobs.first()) ) {
 					mLogger.warning("Could not start " + cast<string>(order) + "!");
 					continue;
 				}
 
 				order.stateID = OrderState.Started;
-				store(order);
+				mStorage.Update(order);
 			}
 		}
 
@@ -98,7 +108,7 @@ public object ShuttleManager {
 		job.startTime = time();
 		job.endTime = job.startTime + JOB_DURATION + ((shuttle.position == job.position) ? 0 : MOVE_DURATION);
 		// For testing only - end
-		store(job);
+		mStorage.Update(job);
 
 		notifyShuttleAdapter(MSG_WORK_RECEIVED);
 
@@ -108,7 +118,7 @@ public object ShuttleManager {
 	private void loadShuttles() modify throws {
 		mShuttles.clear();
 
-		int result = DB.Query( SHUTTLE_QUERY );
+		int result = DB.Query( SHUTTLE_QUERY_BY_ID );
 		if ( !result ) {
 			throw DB.Error();
 		}
@@ -142,10 +152,10 @@ public object ShuttleManager {
 						mLogger.info(cast<string>(job) + " is done.");
 
 						shuttle.position = job.position;
-						store(shuttle);
+						mStorage.Update(shuttle);
 
 						job.stateID = JobState.Done;
-						store(job);
+						mStorage.Update(job);
 
 						finishedAJob = true;
 					}
@@ -155,10 +165,10 @@ public object ShuttleManager {
 					mLogger.info(cast<string>(order) + " is done.");
 
 					order.stateID = OrderState.Done;
-					store(order);
+					mStorage.Update(order);
 
 					shuttle.stateID = ShuttleState.READY;
-					store(shuttle);
+					mStorage.Update(shuttle);
 				}
 			}
 		}
@@ -167,40 +177,6 @@ public object ShuttleManager {
 
 		return finishedAJob;
 	}
-
-    private void store(Job job) modify {
-        string query = "UPDATE jobs SET" +
-						" shuttle_id = " + job.shuttleID +
-						", job_state_id = " + cast<string>( job.stateID ) +
-						", start_time = " + job.startTime +
-						", end_time = " + job.endTime +
-						" WHERE job_id = " + job.jobID;
-        mLogger.debug(query);
-
-        DB.Execute(query);
-    }
-
-    private void store(Order order) modify {
-        string query = "UPDATE orders SET" +
-						" shuttle_id = " + order.shuttleID +
-						", order_state_id = " + cast<string>( order.stateID ) +
-						" WHERE order_id = " + order.orderID;
-        mLogger.debug(query);
-
-        DB.Execute(query);
-    }
-
-    private void store(Shuttle shuttle) modify {
-        string query = "UPDATE shuttles SET" +
-						" level_id = " + cast<string>(shuttle.position.levelID) +
-						", position_id = " + cast<string>(shuttle.position.positionID) +
-						", shuttle_mode_id = " + cast<string>(shuttle.modeID) +
-						", shuttle_state_id = " + cast<string>( shuttle.stateID ) +
-						" WHERE shuttle_id = " + shuttle.shuttleID;
-        mLogger.debug(query);
-
-        DB.Execute(query);
-    }
 
 	private IPCService mIPCService;
 	private Logger mLogger;
