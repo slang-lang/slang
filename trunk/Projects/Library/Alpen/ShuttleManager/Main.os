@@ -12,29 +12,28 @@ import ShuttleManager;
 
 public void Main(int argc, string args) {
     try {
-        var logger = new StdOutLogger("Main", 15);
+        var logger = ILogger new StdOutLogger("Main", 20);
 
         logger.info("Connecting to database...");
+
         DB.Connect();
 
         logger.info("Connecting to IPC queue...");
 
         var ipcService = new IPCService(SHUTTLEMANAGER_QUEUE, SHUTTLEMANAGER);
-        var shuttleManager = new ShuttleManager(cast<ILogger>(logger), ipcService);
+        var shuttleManager = new ShuttleManager(logger, ipcService);
+
+        IPCMessage message;
 
         bool running = true;
-
         while ( running ) {
             shuttleManager.process();
 
             int counter;
-            IPCMessage message;
-
             while ( counter < DISPATCH_MESSAGE_RETRIES ) {
                 logger.info("Waiting for new orders...");
 
-                message = ipcService.receive();
-                if ( message ) {
+                if ( (message = ipcService.receive()) != null ) {
                     logger.info("IPCMessage received: " + cast<string>(message));
 
                     if ( message.message == MSG_SHUTDOWN ) {
@@ -51,6 +50,7 @@ public void Main(int argc, string args) {
 
         logger.info("Shutting down...");
         logger.info("Disconnecting from database...");
+
         DB.Disconnect();
     }
     catch ( string e ) {
