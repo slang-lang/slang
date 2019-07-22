@@ -45,8 +45,8 @@ public void Main(int argc, string args) {
 	DB.Insert( "INSERT INTO orders (order_type_id, priority, sequence) VALUES (" + cast<string>( order.orderTypeID ) + ", " + order.priority + ", " + order.sequence + ")" );
 
 	switch ( order.orderTypeID ) {
-		case OrderType.Charge: {
-			createChargeOrder( getLastInsertId() );
+		case OrderType.Park: {
+			createParkOrder( getLastInsertId() );
 			break;
 		}
 		case OrderType.Transport: {
@@ -66,14 +66,14 @@ public void Main(int argc, string args) {
 	}
 }
 
-private void createChargeOrder(int orderID) const {
+private void createParkOrder(int orderID) const {
 	if ( !orderID ) {
 		print("Invalid orderID provided!");
 		return;
 	}
 
 	var job = new Job();
-	job.jobTypeID = JobType.Park;
+	job.typeID = JobType.Park;
 	job.orderID = orderID;
 	job.sequence = 1;
 
@@ -83,12 +83,12 @@ private void createChargeOrder(int orderID) const {
 private void createJob(Job job) const {
 	if ( !job.levelID ) {
 		cout("LevelID: ");
-		job.levelID = cast<int>( cin() );
+		job.position.levelID = cast<int>( cin() );
 	}
 
-	if ( !job.positionID ) {
+	if ( !job.position.positionID ) {
 		cout("PositionID: ");
-		job.positionID = cast<int>( cin() );
+		job.position.positionID = cast<int>( cin() );
 	}
 
 	if ( !job.sequence ) {
@@ -96,8 +96,8 @@ private void createJob(Job job) const {
 		job.sequence = cast<int>( cin() );
 	}
 
-	DB.Insert( "INSERT INTO jobs (order_id, job_type_id, state, level_id, position_id, sequence) " +
-		   "VALUES (" + job.orderID + ", " + cast<string>( job.jobTypeID ) + ", " + cast<string>( JobState.New ) + ", " + job.levelID + ", " + job.positionID + ", " + job.sequence + ")" );
+	DB.Insert( "INSERT INTO jobs (order_id, job_type_id, job_state_id, level_id, position_id, sequence) " +
+		   "VALUES (" + job.orderID + ", " + cast<string>( job.typeID ) + ", " + cast<string>( JobState.New ) + ", " + job.position.levelID + ", " + job.position.positionID + ", " + job.sequence + ")" );
 
 }
 
@@ -108,13 +108,13 @@ private void createTransportOrder(int orderID) const {
 	}
 
 	var getJob = new Job();
-	getJob.jobTypeID = JobType.Get;
+	getJob.typeID = JobType.Get;
 	getJob.orderID = orderID;
 	getJob.sequence = 1;
 	createJob(getJob);
 
 	var putJob = new Job();
-	putJob.jobTypeID = JobType.Put;
+	putJob.typeID = JobType.Put;
 	putJob.orderID = orderID;
 	putJob.sequence = 2;
 	createJob(putJob);
