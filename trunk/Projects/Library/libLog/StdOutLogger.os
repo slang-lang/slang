@@ -33,7 +33,7 @@ public object StdOutLogger implements ILogger {
 
 		mContext = parent.getContext();
 		mHasParent = true;
-		mKey = parent.getKey() + LibLog.KeySeparator + key;
+		mKey = strrtrim(parent.getKey()) + LibLog.KeySeparator + key;
 		mKeyLength = parent.getKeyLength();
 
 		if ( mKeyLength ) {
