@@ -16,7 +16,7 @@ public enum OrderState {
 
 public enum OrderType {
     Transport = 1,
-    Charge;
+    Park;
 }
 
 public interface IOrderSortAlgorithm {
