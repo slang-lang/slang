@@ -49,6 +49,9 @@ public object StdOutLogger implements ILogger {
 	 * Default destructor
 	 */
 	public void Destructor() {
+		if ( !mHasParent ) {
+			delete mContext;
+		}
 	}
 
 	public IContext getContext() const {
@@ -63,7 +66,6 @@ public object StdOutLogger implements ILogger {
 		return mKeyLength;
 	}
 
-	// Public methods
 	public void debug(string message) modify {
 		mContext.write("[DEBUG] [" + mKey + "]   " + message);
 	}
@@ -75,7 +77,7 @@ public object StdOutLogger implements ILogger {
 	public void fatal(string message) modify throws {
 		mContext.write("[FATAL] [" + mKey + "]   " + message);
 
-        throw new FatalError(message);
+		throw new FatalError(message);
 	}
 
 	public void info(string message) modify {
