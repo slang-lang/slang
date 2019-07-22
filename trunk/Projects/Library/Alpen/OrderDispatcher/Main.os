@@ -15,12 +15,14 @@ public void Main(int argc, string args) {
         var logger = new StdOutLogger("Main", 15);
 
         logger.info("Connecting to database...");
+
         DB.Connect();
 
         logger.info("Connecting to IPC queue...");
 
         var ipcService = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER);
         var dispatcher = new OrderDispatcher(Logger logger, ipcService);
+
 
         bool running = true;
 
@@ -30,7 +32,7 @@ public void Main(int argc, string args) {
             int counter;
             IPCMessage message;
 
-            while ( counter < 10 ) {
+            while ( counter < DISPATCH_MESSAGE_RETRIES ) {
                 logger.info("Waiting for new orders...");
 
                 message = ipcService.receive();
@@ -51,6 +53,7 @@ public void Main(int argc, string args) {
 
         logger.info("Shutting down...");
         logger.info("Disconnecting from database...");
+
         DB.Disconnect();
     }
     catch ( string e ) {
