@@ -16,7 +16,7 @@ public object Logger implements ILogger {
 		}
 
 		mContext = parent.getContext();
-		mKey = parent.getKey() + LibLog.KeySeparator + key;
+		mKey = strrtrim(parent.getKey()) + LibLog.KeySeparator + key;
 		mKeyLength = parent.getKeyLength();
 
 		if ( mKeyLength ) {
