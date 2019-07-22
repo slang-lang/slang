@@ -10,6 +10,7 @@ import Shuttle;
 
 private string QUERY_JOB_FULL const = "SELECT * FROM jobs WHERE job_id = ";
 private string QUERY_ORDER_FULL const = "SELECT o.*, j.* FROM orders o LEFT JOIN jobs j ON (j.order_id = o.order_id AND j.job_state_id < 3) WHERE o.order_id = ";
+private string QUERY_ORDER_LIGHT const = "SELECT o.*, j.job_id FROM orders o LEFT JOIN jobs j ON (j.order_id = o.order_id AND j.job_state_id < 3) WHERE o.order_id = ";
 private string QUERY_SHUTTLE_FULL const = "SELECT s.*, o.*, j.* FROM shuttles s LEFT JOIN orders o ON (o.shuttle_id = s.shuttle_id AND o.order_state_id < 4) LEFT JOIN jobs j ON (j.order_id = o.order_id AND j.job_state_id < 3) WHERE s.shuttle_id = ";
 private string QUERY_SHUTTLE_LIGHT const = "SELECT s.*, o.order_id FROM shuttles s LEFT JOIN orders o ON (o.shuttle_id = s.shuttle_id AND o.order_state_id < 4) WHERE s.shuttle_id = ";
 
@@ -53,7 +54,7 @@ public object Storage {
             job = LoadJobByResult(result);
         }
 
-        mLogger.debug( cast<string>( job ));
+        //mLogger.debug( cast<string>( job ));
         return job;
     }
 
@@ -91,12 +92,15 @@ public object Storage {
 
             int jobID = mysql_get_field_value(result, "job_id");
             if ( jobID ) {
+                assert( order );
+                assert( order.jobs );
+
                 //order.jobs.push_back( LoadJobByID( jobID ) );
                 order.jobs.push_back( LoadJobByResult( result ) );
             }
         }
 
-        mLogger.debug( cast<string>( order ));
+        //mLogger.debug( cast<string>( order ));
         return order;
     }
 
@@ -128,6 +132,9 @@ public object Storage {
 
             int orderID = int mysql_get_field_value(result, "order_id");
             if ( orderID ) {
+                assert( shuttle );
+                assert( shuttle.orders );
+
                 shuttle.orders.push_back( LoadOrderByID( orderID ) );
                 shuttle.countAssignedOrders = shuttle.orders.size();
             }
@@ -183,3 +190,4 @@ public object Storage {
 
     private Logger mLogger;
 }
+
