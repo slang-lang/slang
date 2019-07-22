@@ -284,6 +284,10 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		//*data = Runtime::UserObject(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, std::string("NullPointerException"));
 
 		mThread->exception() = Runtime::ExceptionData(data);
+
+		// notify our debugger that an exception has been thrown
+		DEBUGGER( notifyExceptionThrow(getScope(), Token()) );
+
 		throw Runtime::ControlFlow::Throw;				// promote control flow
 	}
 
@@ -359,6 +363,10 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 		*data = Runtime::StringObject(std::string("NullPointerException"));
 
 		mThread->exception() = Runtime::ExceptionData(data);
+
+		// notify our debugger that an exception has been thrown
+		DEBUGGER( notifyExceptionThrow(getScope(), Token()) );
+
 		throw Runtime::ControlFlow::Throw;				// promote control flow
 	}
 
