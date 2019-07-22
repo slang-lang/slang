@@ -1,6 +1,7 @@
 #!/usr/local/bin/oscript
 
 // library imports
+import libLog.FileLogger;
 import libLog.StdOutLogger;
 
 // project imports
@@ -10,7 +11,8 @@ import libs.IPCService;
 public void Main(int argc, string args) {
 	// open System V message queues for all processes (including ourself)
 
-	var logger = new StdOutLogger("Main", 15);
+	var logger = new StdOutLogger("Main", 20);
+	//var logger = new FileLogger("MessageBroker.log", "Main", 20);
 
 	logger.info("Opening message queues...");
 	var self = new IPCService(MESSAGEBROKER_QUEUE, MESSAGEBROKER, true);
