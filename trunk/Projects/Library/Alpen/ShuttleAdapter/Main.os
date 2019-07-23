@@ -20,7 +20,7 @@ public void Main(int argc, string args) {
 
         logger.info("Connecting to IPC queue...");
 
-        var ipcService = new IPCService(STATIONMANAGER_QUEUE, STATIONMANAGER);
+        var ipcService = new IPCService(SHUTTLEADAPTER_QUEUE, SHUTTLEADAPTER);
         //var shuttleManager = new ShuttleManager(logger, ipcService);
 
         IPCMessage message;

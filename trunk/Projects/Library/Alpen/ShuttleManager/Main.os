@@ -1,6 +1,7 @@
 #!/usr/local/bin/oscript
 
 // library imports
+import libLog.Logger;
 import libLog.StdOutLogger;
 
 // project imports
