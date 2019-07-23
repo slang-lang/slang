@@ -8,6 +8,7 @@ import libLog.StdOutLogger;
 import libs.Consts;
 import libs.Database;
 import libs.IPCService;
+import ShuttleAdapter;
 
 
 public void Main(int argc, string args) {
@@ -21,13 +22,13 @@ public void Main(int argc, string args) {
         logger.info("Connecting to IPC queue...");
 
         var ipcService = new IPCService(SHUTTLEADAPTER_QUEUE, SHUTTLEADAPTER);
-        //var shuttleManager = new ShuttleManager(logger, ipcService);
+        var shuttleAdapter = new ShuttleAdapter(logger, ipcService);
 
         IPCMessage message;
 
         bool running = true;
         while ( running ) {
-            //shuttleManager.process();
+            //shuttleAdapter.process();
 
             int counter;
             while ( counter < DISPATCH_MESSAGE_RETRIES ) {
