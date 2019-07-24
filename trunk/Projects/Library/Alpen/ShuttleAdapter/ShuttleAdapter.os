@@ -5,6 +5,7 @@ import libLog.Logger;
 // project imports
 import libs.Consts;
 import libs.IPCService;
+import libs.Telegrams.All;
 
 
 public object ShuttleAdapter {
