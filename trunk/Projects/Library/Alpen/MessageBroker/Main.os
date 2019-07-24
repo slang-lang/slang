@@ -3,18 +3,29 @@
 // library imports
 import libLog.Logger;
 import libLog.StdOutLogger;
+import libParam.ParameterHandler;
 
 // project imports
 import libs.IPCService;
 
 
+/*
+ * open System V message queues for all processes (including ourself)
+ */
+
 public void Main(int argc, string args) {
-	// open System V message queues for all processes (including ourself)
+	var params = new ParameterHandler(argc, args);
+	if ( params.contains("version") ) {
+		print("Alpen MessageBroker Version 0.1.0");
+		return;
+	}
+
 
 	var logger = new StdOutLogger("Main", 20);
 	//var logger = new FileLogger("MessageBroker.log", "Main", 20);
 
 	logger.info("Opening message queues...");
+
 	var self = new IPCService(MESSAGEBROKER_QUEUE, MESSAGEBROKER, true);
 	var orderDispatcher = new IPCService(ORDERDISPATCHER_QUEUE, ORDERDISPATCHER, true);
 	var shuttleAdatpter = new IPCService(SHUTTLEADAPTER_QUEUE, SHUTTLEADAPTER, true);

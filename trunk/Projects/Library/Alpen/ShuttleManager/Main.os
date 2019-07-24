@@ -3,6 +3,7 @@
 // library imports
 import libLog.Logger;
 import libLog.StdOutLogger;
+import libParam.ParameterHandler;
 
 // project imports
 import libs.Consts;
@@ -12,6 +13,12 @@ import ShuttleManager;
 
 
 public void Main(int argc, string args) {
+    var params = new ParameterHandler(argc, args);
+    if ( params.contains("version") ) {
+        print("Alpen ShuttleManager Version 0.0.1");
+        return;
+    }
+
     try {
         var logger = ILogger new StdOutLogger("Main", 20);
 
