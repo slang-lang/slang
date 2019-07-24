@@ -3,6 +3,7 @@
 // library imports
 import libLog.Logger;
 import libLog.StdOutLogger;
+import libParams.ParameterHandler;
 
 // project imports
 import libs.Consts;
@@ -11,6 +12,12 @@ import libs.IPCService;
 
 
 public void Main(int argc, string args) {
+    var params = new ParameterHandler(argc, args);
+    if ( params.contains("version") ) {
+        print("Alpen StationManager Version 0.0.0");
+        return;
+    }
+
     try {
         var logger = ILogger new StdOutLogger("Main", 20);
 
