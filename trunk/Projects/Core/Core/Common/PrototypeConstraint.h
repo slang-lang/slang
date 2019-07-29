@@ -16,8 +16,6 @@
 
 namespace ObjectiveScript {
 
-// Forward declarations
-class PrototypeConstraints;
 
 class PrototypeConstraint
 {

@@ -38,7 +38,7 @@ public:
 	{ }
 
 	bool operator==(const std::string& type) const {
-		return mCombinedName.size() ? (mCombinedName == type) : (mName == type);
+		return mCombinedName.empty() ? (mName == type) : (mCombinedName == type);
 	}
 
 public:
