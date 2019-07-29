@@ -662,7 +662,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		}
 
 		params.push_back(
-			Parameter::CreateDesigntime(name, Common::TypeDeclaration(type.mName, type.mConstraints), value, hasDefaultValue, mutability, accessMode)
+			Parameter::CreateDesigntime(name, type, value, hasDefaultValue, mutability, accessMode)
 		);
 
 		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {

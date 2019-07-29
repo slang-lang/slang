@@ -38,7 +38,7 @@ void BoolObject::initialize()
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _bool)
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_bool))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

@@ -39,7 +39,7 @@ void StringObject::initialize()
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _string)
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_string))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

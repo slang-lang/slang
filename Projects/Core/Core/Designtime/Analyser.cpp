@@ -176,7 +176,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	// in case this object has no inheritance set, we inherit from 'Object'
 	if ( isImplemented && !extends ) {
-		blueprint->addInheritance(Ancestor(Common::TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
+		blueprint->addInheritance(Ancestor(Common::TypeDeclaration(std::string(_object)), Ancestor::Type::Extends, Visibility::Public));
 	}
 
 	// validate mutability
@@ -393,7 +393,7 @@ bool Analyser::createMemberOrMethod(TokenIterator& token)
 	return createMemberStub(token, visibility, languageFeatureState, type, name);
 }
 
-bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name)
+bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name)
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
@@ -453,7 +453,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	return true;
 }
 
-bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name)
+bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name)
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 

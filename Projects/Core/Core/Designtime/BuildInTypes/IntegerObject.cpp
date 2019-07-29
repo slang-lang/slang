@@ -38,7 +38,7 @@ void IntegerObject::initialize()
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _int)
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_int))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

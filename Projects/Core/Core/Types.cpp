@@ -124,7 +124,7 @@ StringSet provideReservedWords()
 std::string toString(const Parameter& param)
 {
 	std::string result = param.type();
-	if ( !param.type().empty() ) {
+	if ( !result.empty() ) {
 		result += " ";
 		result += param.name();
 	}
