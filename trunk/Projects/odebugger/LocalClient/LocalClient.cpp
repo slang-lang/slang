@@ -1109,7 +1109,7 @@ void LocalClient::start()
 
 		mVirtualMachine->run(script, mParameters, &result);
 
-		writeln("[Process finished" + (result.getValue().type() == Runtime::AtomicValue::Type::UNKOWN ? "" : " with exit code " + result.getValue().toStdString()) + "]");
+		writeln("[Process finished" + (result.getValue().type() == Runtime::AtomicValue::Type::UNKNOWN ? "" : " with exit code " + result.getValue().toStdString()) + "]");
 
 		if ( mSettings->autoStop() ) {
 			mRunning = false;

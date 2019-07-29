@@ -39,7 +39,7 @@ void DoubleObject::initialize()
 	{
 		ParameterList params;
 		params.push_back(
-				Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _double)
+            Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_double))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

@@ -39,7 +39,7 @@ void FloatObject::initialize()
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _float)
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_float))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

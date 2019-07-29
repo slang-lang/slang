@@ -38,7 +38,7 @@ void VoidObject::initialize()
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _void)
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_void))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);
