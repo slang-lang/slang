@@ -15,7 +15,7 @@ namespace ObjectiveScript {
 
 Parameter Parameter::CreateDesigntime(const std::string& name,
 									  const Common::TypeDeclaration& type,
-									  Runtime::AtomicValue value,
+									  const Runtime::AtomicValue& value,
 									  bool hasDefaultValue,
 									  Mutability::E mutability,
 									  AccessMode::E access)
@@ -32,7 +32,7 @@ Parameter Parameter::CreateDesigntime(const std::string& name,
 }
 
 Parameter Parameter::CreateRuntime(const std::string& type,
-								   Runtime::AtomicValue value,
+								   const Runtime::AtomicValue& value,
 								   Runtime::Reference reference)
 {
 	if ( reference.isValid() ) {
@@ -65,7 +65,7 @@ Parameter::Parameter()
 {
 }
 
-Parameter::Parameter(const std::string& name, const Common::TypeDeclaration& type, Runtime::AtomicValue value,
+Parameter::Parameter(const std::string& name, const Common::TypeDeclaration& type, const Runtime::AtomicValue& value,
 					 bool hasDefaultValue, Mutability::E mutability, AccessMode::E access, Runtime::Reference reference)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
@@ -117,7 +117,7 @@ const Common::TypeDeclaration& Parameter::typeDeclaration() const
 	return mType;
 }
 
-Runtime::AtomicValue Parameter::value() const
+const Runtime::AtomicValue& Parameter::value() const
 {
 	return mValue;
 }
