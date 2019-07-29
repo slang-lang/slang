@@ -30,19 +30,19 @@ class Parameter
 public:
 	static Parameter CreateDesigntime(const std::string& name,
 									  const Common::TypeDeclaration& type,
-									  Runtime::AtomicValue value = Runtime::AtomicValue(),
+									  const Runtime::AtomicValue& value = Runtime::AtomicValue(),
 									  bool hasDefaultValue = false,
 									  Mutability::E mutability = Mutability::Modify,
 									  AccessMode::E access = AccessMode::ByValue);
 	static Parameter CreateRuntime(const std::string& type,
-								   Runtime::AtomicValue value,
+								   const Runtime::AtomicValue& value,
 								   Runtime::Reference reference = Runtime::Reference());
 
 public:
 	Parameter();
 	Parameter(const std::string& name,
 			  const Common::TypeDeclaration& type,
-			  Runtime::AtomicValue value,
+			  const Runtime::AtomicValue& value,
 			  bool hasDefaultValue,
 			  Mutability::E mutability,
 			  AccessMode::E access,
@@ -57,7 +57,7 @@ public:
 	const std::string& type() const;
 	const PrototypeConstraints& typeConstraints() const;
 	const Common::TypeDeclaration& typeDeclaration() const;
-	Runtime::AtomicValue value() const;
+	const Runtime::AtomicValue& value() const;
 
 public:
 	AccessMode::E mAccessMode;
