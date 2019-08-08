@@ -12,7 +12,7 @@ SET(HEADERS
 
 SET(DEPENDENCIES
     ExtensionsSystem
-    ExtensionsMysql
+#    ExtensionsMysql
     ExtensionsJson
 #   ExtensionsApache
     DebuggerCommon
