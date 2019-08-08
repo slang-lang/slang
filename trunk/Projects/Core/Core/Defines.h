@@ -4,7 +4,14 @@
 
 
 //#define USE_AST_OPTIMIZATION
-#define SHARED_LIBRARY_DIRECTORY "/usr/share/oscript/libs"
+
+#ifdef __APPLE__
+#define SHARED_LIBRARY_DIRECTORY "/usr/local/share/oscript/libs"
+#elif _WIN32
+#define SHARED_LIBRARY_DIRECTORY ""
+#elif __linux__
+#define SHARED_LIBRARY_DIRECTORY "/usr/local/share/oscript/libs"
+#endif
 
 
 #endif
