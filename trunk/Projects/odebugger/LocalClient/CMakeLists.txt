@@ -14,7 +14,7 @@ SET(DEPENDENCIES
 	ExtensionsSystem
 	ExtensionsMysql
 	ExtensionsJson
-	ExtensionsApache
+#	ExtensionsApache
 	DebuggerCommon
 )
 

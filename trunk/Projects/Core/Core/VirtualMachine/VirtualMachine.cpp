@@ -74,7 +74,10 @@ VirtualMachine::~VirtualMachine()
 
 void VirtualMachine::addExtension(AExtension *extension)
 {
-	assert(extension);
+	if ( !extension ) {
+		// provided an invalid extension - ignore it...
+		return;
+	}
 
 	mExtensions.push_back(extension);
 }

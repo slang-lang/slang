@@ -17,7 +17,7 @@ SET(DEPENDENCIES
 	ExtensionsSystem
 	ExtensionsMysql
 	ExtensionsJson
-	ExtensionsApache
+#	ExtensionsApache
 	DebuggerVSCodeRemoteClient
 	DebuggerLocalClient
 	DebuggerCommon

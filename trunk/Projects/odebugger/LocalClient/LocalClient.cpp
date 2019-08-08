@@ -1087,7 +1087,7 @@ void LocalClient::start()
 
 	// add extensions
 #ifdef USE_APACHE_EXTENSION
-	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
+	//mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
 #endif
 #ifdef USE_JSON_EXTENSION
 	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
