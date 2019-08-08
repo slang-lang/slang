@@ -13,7 +13,7 @@ else
 
 	cp ${CONFIG_FILE}.tmp ${CONFIG_FILE}
 
-	exit -1
+	exit 255
 fi
 
 # read config file
@@ -35,7 +35,7 @@ echo "Building ObjectiveScript debian package version ${VERSION} for platform '$
 echo ""
 
 #echo "Removing old package directory."
-rm -r ${PACKAGE_DIRECTORY} 2>&1
+rm -r "${PACKAGE_DIRECTORY}" 2>&1
 
 echo "Creating package directories '${PACKAGE_DIRECTORY}'."
 #echo "PACKAGE_DIRECTORY='${PACKAGE_DIRECTORY}'"
@@ -49,30 +49,30 @@ mkdir -p "${PACKAGE_DIRECTORY_SHARED_LIBRARIES}"
 mkdir -p "${PACKAGE_DIRECTORY_LIBRARY}"
 
 # copying DEBIAN base structure
-cp -r Env/DEBIAN ${PACKAGE_DIRECTORY}
+cp -r Env/DEBIAN "${PACKAGE_DIRECTORY}"
 
 # add new binaries
 echo "Deploying new binaries..."
-cp ${SOURCE_DIRECTORY}/bin/odebugger/odebugger ${PACKAGE_DIRECTORY_BIN}
-cp ${SOURCE_DIRECTORY}/bin/odepend/odepend ${PACKAGE_DIRECTORY_BIN}
-cp ${SOURCE_DIRECTORY}/bin/oscript/oscript ${PACKAGE_DIRECTORY_BIN}
+cp "${SOURCE_DIRECTORY}/bin/odebugger/odebugger" "${PACKAGE_DIRECTORY_BIN}"
+cp "${SOURCE_DIRECTORY}/bin/odepend/odepend" "${PACKAGE_DIRECTORY_BIN}"
+cp "${SOURCE_DIRECTORY}/bin/oscript/oscript" "${PACKAGE_DIRECTORY_BIN}"
 
 # add new libraries
 echo "Deploying new libraries..."
-cp -r Projects/Library/.odepend ${PACKAGE_DIRECTORY_LIBRARY}
-cp -r Projects/Library/deploy.sh ${PACKAGE_DIRECTORY_LIBRARY}
-cp -r Projects/Library/ObjectiveScript ${PACKAGE_DIRECTORY_LIBRARY}
-cp -r Projects/Library/System ${PACKAGE_DIRECTORY_LIBRARY}
+cp -r Projects/Library/.odepend "${PACKAGE_DIRECTORY_LIBRARY}"
+cp -r Projects/Library/deploy.sh "${PACKAGE_DIRECTORY_LIBRARY}"
+cp -r Projects/Library/ObjectiveScript "${PACKAGE_DIRECTORY_LIBRARY}"
+cp -r Projects/Library/System "${PACKAGE_DIRECTORY_LIBRARY}"
 
 # add new shared libraries
 echo "Deploying new shared libraries..."
-cp ${EXTENSIONS_DIRECTORY}/lib/* ${PACKAGE_DIRECTORY_SHARED_LIBRARIES}
+cp "${EXTENSIONS_DIRECTORY}/lib/*" "${PACKAGE_DIRECTORY_SHARED_LIBRARIES}"
 # remove MySQL extension since it is still statically linked into oscript
-rm ${PACKAGE_DIRECTORY_SHARED_LIBRARIES}/libObjectiveScriptMysql*
+rm "${PACKAGE_DIRECTORY_SHARED_LIBRARIES}/libObjectiveScriptMysql*"
 
 echo ""
 echo "Building package..."
-dpkg-deb --build ${PACKAGE_DIRECTORY} > /dev/null
+dpkg-deb --build "${PACKAGE_DIRECTORY}" > /dev/null
 
 echo "Done."
 
