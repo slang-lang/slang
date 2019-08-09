@@ -66,9 +66,7 @@ cp -r Projects/Library/System "${PACKAGE_DIRECTORY_LIBRARY}"
 
 # add new shared libraries
 echo "Deploying new shared libraries..."
-cp "${EXTENSIONS_DIRECTORY}/lib/*" "${PACKAGE_DIRECTORY_SHARED_LIBRARIES}"
-# remove MySQL extension since it is still statically linked into oscript
-rm "${PACKAGE_DIRECTORY_SHARED_LIBRARIES}/libObjectiveScriptMysql*"
+cp "${EXTENSIONS_DIRECTORY}"/lib/* "${PACKAGE_DIRECTORY_SHARED_LIBRARIES}"
 
 echo ""
 echo "Building package..."
