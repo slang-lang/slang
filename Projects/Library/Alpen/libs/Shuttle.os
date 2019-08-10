@@ -8,22 +8,6 @@ import Path;
 import Position;
 
 
-public interface IShuttleSortAlgorithm {
-    public bool compare(Shuttle left const, Shuttle right const) const;
-}
-
-public object ShuttleID {
-    public int ID const;
-
-    public void Constructor(int id) {
-        ID = id;
-    }
-
-    public string =operator(string) const {
-        return "ShuttleID{" + ID + "}";
-    }
-}
-
 public enum ShuttleBatteryLevel {
     UNKNOWN = 0,
     CRITICAL,
@@ -49,6 +33,22 @@ public enum ShuttleType {
     OpenShuttle;
 }
 
+public interface IShuttleSortAlgorithm {
+    public bool compare(Shuttle left const, Shuttle right const) const;
+}
+
+public object ShuttleID {
+    public int ID const;
+
+    public void Constructor(int id) {
+        ID = id;
+    }
+
+    public string =operator(string) const {
+        return "ShuttleID{" + ID + "}";
+    }
+}
+
 public object Shuttle {
     public ShuttleBatteryLevel batteryLevelID;
     public int containerLimit;
@@ -68,14 +68,13 @@ public object Shuttle {
         position = new Position();
     }
 
-    public void Constructor(int dbresult) {
-        orders = new List<Order>();
-        position = new Position();
+    public void Constructor(int dbResult) {
+        Constructor();
 
-        load(dbresult);
+        load(dbResult);
     }
 
-    public bool canAcceptOrder(Order order) const {
+    public bool canAcceptOrder(Order order const) const {
         //print( "" + cast<string>( this ) + ": " + cast<string>( order ) );
 
         return countAssignedOrders < containerLimit;
@@ -104,26 +103,23 @@ public object Shuttle {
                ", modeID: " + cast<string>( modeID ) +
                ", stateID: " + cast<string>( stateID ) +
                ", batteryLevelID: " + cast<string>( batteryLevelID ) +
-               ", position: " + cast<string>(position) +
+               ", position: " + cast<string>( position ) +
                ", containerLimit: " + containerLimit +
                ", countAssignedOrders: " + countAssignedOrders +
                "}";
     }
 
-    private void load(int dbresult) modify {
-        batteryLevelID = ShuttleBatteryLevel cast<int>( mysql_get_field_value(dbresult, "shuttle_battery_level_id") );
-        containerLimit = cast<int>( mysql_get_field_value(dbresult, "container_limit") );
-        //countAssignedOrders = cast<int>( mysql_get_field_value(dbresult, "count_assigned_orders") );
-        //levelID = cast<int>( mysql_get_field_value(dbresult, "level_id") );
-        modeID = ShuttleMode cast<int>( mysql_get_field_value(dbresult, "shuttle_mode_id") );
-        //positionID = mysql_get_field_value(dbresult, "position_id");
-        shuttleID = cast<int>( mysql_get_field_value(dbresult, "shuttle_id") );
-        stateID = ShuttleState cast<int>( mysql_get_field_value(dbresult, "shuttle_state_id") );
-        typeID = ShuttleType cast<int>( mysql_get_field_value(dbresult, "shuttle_type_id") );
-
+    private void load(int dbResult) modify {
+        batteryLevelID = ShuttleBatteryLevel cast<int>( mysql_get_field_value(dbResult, "shuttle_battery_level_id") );
+        containerLimit = cast<int>( mysql_get_field_value(dbResult, "container_limit") );
+        //countAssignedOrders = cast<int>( mysql_get_field_value(dbResult, "count_assigned_orders") );
+        modeID = ShuttleMode cast<int>( mysql_get_field_value(dbResult, "shuttle_mode_id") );
         position = new Position(
-            cast<int>( mysql_get_field_value(dbresult, "level_id") ),
-            cast<int>( mysql_get_field_value(dbresult, "position_id") )
+            cast<int>( mysql_get_field_value(dbResult, "level_id") ),
+            cast<int>( mysql_get_field_value(dbResult, "position_id") )
         );
+        shuttleID = cast<int>( mysql_get_field_value(dbResult, "shuttle_id") );
+        stateID = ShuttleState cast<int>( mysql_get_field_value(dbResult, "shuttle_state_id") );
+        typeID = ShuttleType cast<int>( mysql_get_field_value(dbResult, "shuttle_type_id") );
     }
 }
