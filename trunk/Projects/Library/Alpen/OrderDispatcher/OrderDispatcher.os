@@ -17,9 +17,6 @@ import DispatchSteps.SortShuttlesByBatteryLevel;
 import DispatchSteps.SortShuttlesByDistance;
 
 
-//private string SHUTTLE_QUERY const = "SELECT s.*, st.* FROM shuttles s JOIN shuttle_type st ON (st.shuttle_type_id = s.shuttle_type_id) WHERE shuttle_mode_id <> " + string ShuttleMode.OUTOFORDER;
-
-
 public object OrderDispatcher {
     public void Constructor(ILogger logger, IPCService ipcService) {
         mDispatchSteps = new List<IDispatchStep>();
@@ -43,19 +40,20 @@ public object OrderDispatcher {
             loadOrders();
             loadShuttles();
 
-            var data = new DispatchData( cast<Object>( mOrders ), cast<Object>( mShuttles) );
+            mLogger.info("Starting new dispatch chain with " + mOrders.size() + " order(s) and " + mShuttles.size() + " shuttle(s)...");
+
             if ( mOrders.empty() || mShuttles.empty() ) {
                 mLogger.warning("No dispatchable orders found");
                 break;
             }
 
-            mLogger.info("Starting new dispatch chain with " + data.orders.size() + " order(s) and " + data.shuttles.size() + " shuttle(s)...");
+            var data = new DispatchData( cast<Object>( mOrders ), cast<Object>( mShuttles) );
             printOrders(data);
             printShuttles(data);
 
-            bool assignableOrders = true;
+            bool foundAssignableOrders = true;
 
-            // run through all dispatch steps as often valid results are still returned
+            // run through all dispatch steps as often as valid results are returned
             foreach ( IDispatchStep step : mDispatchSteps ) {
                 mLogger.info("Executing step '" + step.getName() + "' with " + cast<string>( data ));
 
@@ -63,21 +61,21 @@ public object OrderDispatcher {
 
                 if ( !newData.isValid() ) {
                     mLogger.debug("No valid result found");
-                    assignableOrders = false;
+                    foundAssignableOrders = false;
                     break;
                 }
 
                 data = newData;
-
                 assert(data);
+
                 mLogger.info("Executed step '" + step.getName() + "' with " + cast<string>( data ));
 
                 printOrders(data);
                 printShuttles(data);
             }
 
-            if ( !assignableOrders ) {
-                mLogger.warning("No dispatchable orders found");
+            if ( !foundAssignableOrders ) {
+                mLogger.warning("No assignable orders found");
                 break;
             }
 
@@ -102,9 +100,11 @@ public object OrderDispatcher {
     public void loadOrders() modify throws {
         mOrders.clear();
 
-        int result = DB.Execute(ORDER_QUERY);
+        int result = DB.Query( ORDER_QUERY );
         while ( mysql_next_row(result) ) {
-            mOrders.push_back( new Order(result) );
+            mOrders.push_back( mStorage.LoadOrderByID( cast<int>( mysql_get_field_value(result, "order_id") ) ) );
+
+            mLogger.info( cast<string>( mOrders.last() ) );
         }
     }
 
@@ -112,10 +112,6 @@ public object OrderDispatcher {
         mShuttles.clear();
 
         int result = DB.Query( SHUTTLE_QUERY );
-        if ( !result ) {
-            throw DB.Error();
-        }
-
         while ( mysql_next_row(result) ) {
             mShuttles.push_back( mStorage.LoadShuttleByID( cast<int>( mysql_get_field_value(result, "shuttle_id") ) ) );
 

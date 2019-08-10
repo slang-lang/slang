@@ -23,6 +23,18 @@ public interface IOrderSortAlgorithm {
     public bool compare(Order left const, Order right const) const;
 }
 
+public object OrderID {
+    public int ID const;
+
+    public void Constructor(int id) {
+        ID = id;
+    }
+
+    public string =operator(string) const {
+        return "OrderID{" + ID + "}";
+    }
+}
+
 public object Order {
     public List<Job> jobs;
     public int orderID;
@@ -37,10 +49,10 @@ public object Order {
         jobs = new List<Job>();
     }
 
-    public void Constructor(int dbresult) {
-        jobs = new List<Job>();
+    public void Constructor(int dbResult) {
+        Constructor();
 
-        load(dbresult);
+        load(dbResult);
     }
 
     public bool canProceed() const {
@@ -86,12 +98,12 @@ public object Order {
                "}";
     }
 
-    private void load(int dbresult) modify {
-        orderID = cast<int>( mysql_get_field_value(dbresult, "order_id") );
-        orderTypeID = OrderType cast<int>( mysql_get_field_value(dbresult, "order_type_id") );
-        priority = cast<int>( mysql_get_field_value(dbresult, "priority") );
-        sequence = cast<int>( mysql_get_field_value(dbresult, "sequence") );
-        shuttleID = cast<int>( mysql_get_field_value(dbresult, "shuttle_id") );
-        stateID = OrderState cast<int>( mysql_get_field_value(dbresult, "order_state_id") );
+    private void load(int dbResult) modify {
+        orderID = cast<int>( mysql_get_field_value(dbResult, "order_id") );
+        orderTypeID = OrderType cast<int>( mysql_get_field_value(dbResult, "order_type_id") );
+        priority = cast<int>( mysql_get_field_value(dbResult, "priority") );
+        sequence = cast<int>( mysql_get_field_value(dbResult, "sequence") );
+        shuttleID = cast<int>( mysql_get_field_value(dbResult, "shuttle_id") );
+        stateID = OrderState cast<int>( mysql_get_field_value(dbResult, "order_state_id") );
     }
 }
