@@ -14,7 +14,6 @@
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Files.h>
@@ -206,6 +205,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	mScope = tmpScope;
 
+/*
 	// create default constructor if blueprint has no constructor at all, except it is a replication
 	if ( !isReplication && implementationType == ImplementationType::Concrete && !blueprint->hasConstructor() ) {
 		ParameterList params;
@@ -223,6 +223,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 		blueprint->defineMethod(CONSTRUCTOR, defaultConstructor);
 	}
+*/
 
 	mRepository->addBluePrint(blueprint);
 
@@ -515,7 +516,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	}
 
 	// create a new method with the corresponding return type
-	Common::Method* method = new Common::Method(mScope, name, type.mName);
+	Common::Method* method = new Common::Method(mScope, name, type);
 	method->setExceptions(exceptions);
 	method->setLanguageFeatureState(languageFeature);
 	method->setMemoryLayout(memoryLayout);
@@ -523,7 +524,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	method->setMethodType(methodType);
 	method->setMutability(type.mMutability);
 	method->setParent(mScope);
-	method->setPrototypeConstraints(type.mConstraints);
 	method->setSignature(params);
 	method->setTokens(tokens);
 	method->setVirtuality(virtuality);
@@ -748,6 +748,7 @@ Common::TypeDeclaration Analyser::resolveType(const Common::TypeDeclaration& typ
 
 	// resolve type
 	result.mName = resolveType(type.mName, token);
+	result.mCombinedName = result.mName;
 
 	// resolve prototype constraints
 	for ( PrototypeConstraints::const_iterator it = type.mConstraints.begin(); it != type.mConstraints.end(); ++it ) {

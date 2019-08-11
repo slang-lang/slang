@@ -18,12 +18,12 @@ namespace ObjectiveScript {
 namespace Common {
 
 
-Method::Method(IScope* parent, const std::string& name, const std::string& type)
+Method::Method(IScope* parent, const std::string& name, const TypeDeclaration& type)
 : NamedScope(name, parent),
   MethodSymbol(name),
   mIsExtensionMethod(false),
   mAllowDelete(true),
-  mReturnType(TypeDeclaration(type)),
+  mReturnType(type),
   mRootNode(0)
 {
 }

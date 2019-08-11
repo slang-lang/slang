@@ -38,7 +38,7 @@ public:
 	: ExtensionMethod(0, "abs", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("value", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -75,7 +75,7 @@ public:
 	: ExtensionMethod(0, "abs", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("value", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -112,7 +112,7 @@ public:
 	: ExtensionMethod(0, "abs", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("value", Common::TypeDeclaration(Designtime::IntegerObject::TYPENAME)));
 
 		setSignature(params);
 	}

@@ -500,7 +500,7 @@ void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::
 		}
 
 		// create new method and ...
-		Common::Method* method = new Common::Method(destObj, (*it)->getName(), (*it)->QualifiedTypename());
+		Common::Method* method = new Common::Method(destObj, (*it)->getName(), Common::TypeDeclaration((*it)->QualifiedTypename()));
 
 		// ... copy its data from our template method
 		*method = *(*it);

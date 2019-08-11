@@ -34,7 +34,7 @@ const std::string& VoidObject::getTypeName() const
 
 void VoidObject::initialize()
 {
-	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
+	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
 		params.push_back(
