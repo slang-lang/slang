@@ -35,7 +35,7 @@ const std::string& StringObject::getTypeName() const
 
 void StringObject::initialize()
 {
-	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
+	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
 		params.push_back(

@@ -24,7 +24,7 @@ class ExtensionMethod : public Common::Method
 {
 public:
 	ExtensionMethod(IScope* parent, const std::string& name, const std::string& type, Mutability::E mutabilty = Mutability::Const)
-	: Common::Method(parent, name, type)
+	: Common::Method(parent, name, Common::TypeDeclaration(type))
 	{
 		mIsExtensionMethod = true;
 		mMethodMutability = mutabilty;

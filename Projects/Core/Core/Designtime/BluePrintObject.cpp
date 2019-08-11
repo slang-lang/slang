@@ -255,7 +255,7 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 	// replicate methods
 	for ( MethodScope::MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		// create new method and ...
-		Common::Method* method = new Common::Method(replica, (*it)->getName(), (*it)->QualifiedTypename());
+		Common::Method* method = new Common::Method(replica, (*it)->getName(), Common::TypeDeclaration((*it)->QualifiedTypename()));
 		// ... copy its data from our template method
 		*method = *(*it);
 

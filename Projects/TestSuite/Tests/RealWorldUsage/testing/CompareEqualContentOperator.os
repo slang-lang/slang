@@ -6,6 +6,12 @@ public object CompareEqualContent {
 	public bool operator==(int other) const {
 		return mValue == other;
 	}
+
+/*
+	public bool operator==(CompareEqualContent other) const {
+		return mValue == other.mValue;
+	}
+*/
 }
 
 public void Main(int argc, string args) {
