@@ -153,16 +153,12 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	BluePrintObject* blueprint = new BluePrintObject(type.mName, mFilename);
 	bool extends = false;
-	bool isReplication = false;
 
 	// set up inheritance (if present)
 	if ( !inheritance.empty() ) {
 		for ( Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
 			if ( it->ancestorType() == Ancestor::Type::Extends ) {
 				extends = true;
-			}
-			else if ( it->ancestorType() == Ancestor::Type::Replicates ) {
-				isReplication = true;
 			}
 
 			blueprint->addInheritance((*it));
