@@ -454,10 +454,15 @@ void info(const StringList& params)
 	// (2) update remote repository data
 	// (3) print module information for requested module
 
-	if ( params.empty() || params.size() != 1 ) {
+	if ( params.empty() /*|| params.size() != 1*/ ) {
 		std::cout << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
+
+	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
+		if ( it != params.begin() ) {
+			std::cout << std::endl;
+		}
 
 	collectLocalModuleData();
 	if ( !prepareRemoteRepository() ) {
@@ -469,7 +474,7 @@ void info(const StringList& params)
 	std::string moduleName;
 	std::string moduleVersion;
 
-	Utils::Tools::splitBy(params.front(), VERSION_DEPERATOR, moduleName, moduleVersion);
+	Utils::Tools::splitBy((*it), VERSION_DEPERATOR, moduleName, moduleVersion);
 
 	if ( moduleVersion.empty() ) {
 		Module tmpModule;
@@ -529,6 +534,8 @@ void info(const StringList& params)
 	}
 	else {
 		std::cout << "!!! Requested module \"" << moduleName << "\" not found" << std::endl;
+	}
+
 	}
 }
 
