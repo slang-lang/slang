@@ -74,9 +74,10 @@ static const char* CACHE_MODULES = "cache/modules/";
 static const char* CACHE_REPOSITORIES = "cache/repositories/";
 static const char* CONFIG_FILE = ".odepend/config.json";
 static const char* CONFIG_FOLDER = ".odepend/";
+static const char* FILE_VERSION_SEPARATOR = "_";
 static const char* MODULES = "modules/";
 static const char* TMP = "/tmp/";
-static const char* VERSION_SEPARATOR = "_";
+static const char  VERSION_DEPERATOR = ':';
 
 
 void addRestriction(const StringList& params);
@@ -118,6 +119,7 @@ void update();
 void upgrade(StringList params);
 
 
+e_Action mAction = None;
 std::string mBaseFolder;
 Json::Value mConfig;
 std::string mCurrentFolder;
@@ -129,7 +131,7 @@ Utils::Common::StdOutLogger mLogger;
 Repository mMissingDependencies("missing");
 StringList mParameters;
 Repository mRemoteRepository;
-e_Action mAction = None;
+bool mSkipDependencies = false;
 
 
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
@@ -321,14 +323,14 @@ void create(const StringList& params)
 	std::string moduleName = module.mShortName;
 
 	{	// create version specific module information ("<module>_<version>.json")
-		std::cout << "Creating module information \"" << moduleName + VERSION_SEPARATOR + module.mVersion.toString() + ".json\"" << std::endl;
+		std::cout << "Creating module information \"" << moduleName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".json\"" << std::endl;
 
-		execute("cp " + path + "/" + filename + " " + moduleName + VERSION_SEPARATOR + module.mVersion.toString() + ".json");
+		execute("cp " + path + "/" + filename + " " + moduleName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".json");
 	}
 	{	// create package ("<module>_<version>.tar.gz")
-		std::cout << "Creating module package \"" << moduleName + VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz\"" << std::endl;
+		std::cout << "Creating module package \"" << moduleName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz\"" << std::endl;
 
-		execute("tar -cjf " + moduleName + VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz " + path);
+		execute("tar -cjf " + moduleName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz " + path);
 	}
 }
 
@@ -467,7 +469,7 @@ void info(const StringList& params)
 	std::string moduleName;
 	std::string moduleVersion;
 
-	Utils::Tools::splitBy(params.front(), ':', moduleName, moduleVersion);
+	Utils::Tools::splitBy(params.front(), VERSION_DEPERATOR, moduleName, moduleVersion);
 
 	if ( moduleVersion.empty() ) {
 		Module tmpModule;
@@ -494,7 +496,7 @@ void info(const StringList& params)
 		std::string path = mBaseFolder + CACHE_MODULES;
 		std::string filename = moduleName + ".json";
 		std::string module_config = path + filename;
-		std::string url = mRemoteRepository.getURL() + "/" + MODULES + moduleName + VERSION_SEPARATOR + moduleVersion + ".json";
+		std::string url = mRemoteRepository.getURL() + "/" + MODULES + moduleName + FILE_VERSION_SEPARATOR + moduleVersion + ".json";
 
 		bool result = download(url, module_config);
 		if ( result ) {
@@ -545,7 +547,7 @@ void init()
 				std::string left;
 				std::string right;
 
-				Utils::Tools::splitBy(path, ':', left, right);
+				Utils::Tools::splitBy(path, VERSION_DEPERATOR, left, right);
 
 				mLibraryFolder = left + "/";
 			}
@@ -598,7 +600,7 @@ void install(const StringList& params)
 		std::string moduleName;
 		std::string version;
 
-		Utils::Tools::splitBy((*it), ':', moduleName, version);
+		Utils::Tools::splitBy((*it), VERSION_DEPERATOR, moduleName, version);
 
 		if ( version.empty() ) {
 			Module tmpModule;
@@ -621,7 +623,7 @@ void install(const StringList& params)
 		std::string moduleName;
 		std::string version;
 
-		Utils::Tools::splitBy((*it), ':', moduleName, version);
+		Utils::Tools::splitBy((*it), VERSION_DEPERATOR, moduleName, version);
 
 		if ( version.empty() ) {
 			Module tmpModule;
@@ -693,14 +695,14 @@ void installModule(const std::string& repo, const std::string& module)
 	}
 	else if ( type == "internal" ) {
 		// target is located on our own server
-		url = repo + MODULES + config["name_short"].asString() + VERSION_SEPARATOR + config["version"].asString() + ".tar.gz";
+		url = repo + MODULES + config["name_short"].asString() + FILE_VERSION_SEPARATOR + config["version"].asString() + ".tar.gz";
 	}
 	else {
 		std::cout << "!!! invalid target type specified" << std::endl;
 		return;
 	}
 
-	std::string module_archive = mBaseFolder + CACHE_MODULES + module + VERSION_SEPARATOR + config["version"].asString() + ".tar.gz";
+	std::string module_archive = mBaseFolder + CACHE_MODULES + module + FILE_VERSION_SEPARATOR + config["version"].asString() + ".tar.gz";
 
 	bool result = download(url, module_archive);
 	if ( !result ) {
@@ -826,6 +828,7 @@ void printUsage()
 	std::cout << "update                     Update repository indices" << std::endl;
 	std::cout << "upgrade                    Upgrade outdated modules" << std::endl;
 	std::cout << "--locallibrary             Use current directory as library" << std::endl;
+	std::cout << "--skip-dependencies        Skip dependencies while installing or removing modules" << std::endl;
 	std::cout << "--version                  Version information" << std::endl;
 	std::cout << std::endl;
 }
@@ -886,7 +889,12 @@ void processParameters(int argc, const char* argv[])
 	}
 
 	for ( int i = 2; i < argc; ++i ) {
-		mParameters.push_back(std::string(argv[i]));
+		if ( Utils::Tools::StringCompare(argv[i], "--skip-dependencies") ) {
+			mSkipDependencies = true;
+		}
+		else {
+			mParameters.push_back(std::string(argv[i]));
+		}
 	}
 }
 
@@ -903,11 +911,16 @@ void prepareModuleInstallation(const std::string& repo, const Module& installMod
 	std::string path = mBaseFolder + CACHE_MODULES;
 	std::string filename = installModule.mShortName + ".json";
 	std::string module_config = path + filename;
-	std::string url = repo + "/" + MODULES + installModule.mShortName + (installModule.mVersion.isValid() ? VERSION_SEPARATOR + installModule.mVersion.toString() + ".json" : ".json");
+	std::string url = repo + "/" + MODULES + installModule.mShortName + (installModule.mVersion.isValid() ? FILE_VERSION_SEPARATOR + installModule.mVersion.toString() + ".json" : ".json");
 
 	bool result = download(url, module_config);
 	if ( !result ) {
 		std::cout << "!!! Download of module information for \"" << installModule.mShortName << "\" failed" << std::endl;
+		return;
+	}
+
+	if ( mSkipDependencies ) {
+		// skipping dependencies as requested
 		return;
 	}
 
