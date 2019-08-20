@@ -293,11 +293,9 @@ void OperatorTest::testRangeOperator()
 
 void OperatorTest::testUnaryMinus()
 {
-	//TSKIP("unary minus is not yet implemented");
-
 	try {
 		VirtualMachine vm;
-		vm.runScriptFromFile("Tests/Operator/UnaryMinus.os");
+		TTHROWS(vm.runScriptFromFile("Tests/Operator/UnaryMinus.os"), ObjectiveScript::Common::Exceptions::UnknownOperation);
 
 		// automatic success
 	}
@@ -309,11 +307,9 @@ void OperatorTest::testUnaryMinus()
 
 void OperatorTest::testUnaryPlus()
 {
-	//TSKIP("unary plus is not yet implemented");
-
 	try {
 		VirtualMachine vm;
-		vm.runScriptFromFile("Tests/Operator/UnaryPlus.os");
+		TTHROWS(vm.runScriptFromFile("Tests/Operator/UnaryPlus.os"), ObjectiveScript::Common::Exceptions::UnknownOperation);
 
 		// automatic success
 	}

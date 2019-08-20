@@ -437,7 +437,11 @@ Node* TreeGenerator::parseInfix(TokenIterator &start)
 		case Token::Type::MATH_SUBTRACT: {		// infix +/- operators
 			Token operation = (*start);
 
-			infix = new UnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::RValue);
+			Expression* exp = dynamic_cast<Expression*>( parseTerm(++start) );
+
+			resolveType(exp->getResultType(), operation, std::string(__unary__));
+
+			infix = new UnaryExpression(operation, exp, UnaryExpression::ValueType::RValue);
 		} break;
 		case Token::Type::OPERATOR_NOT: {		// infix ! operator
 			Token operation = (*start);
