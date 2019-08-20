@@ -116,6 +116,7 @@ static const char* _object = "Object";
 static const char* _string = "string";
 static const char* _string_object = "String";
 static const char* _void = "void";
+static const char* __unary__ = "__unary__";			// special type to handle unary type operation checks
 
 // Values
 static const char* VALUE_NONE = "";
