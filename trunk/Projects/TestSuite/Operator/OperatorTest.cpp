@@ -321,8 +321,6 @@ void OperatorTest::testUnaryPlus()
 
 void OperatorTest::testUnaryValidate()
 {
-TSKIP("unary validate is not yet implemented");
-
 	try {
 		VirtualMachine vm;
 		vm.runScriptFromFile("Tests/Operator/UnaryValidate.os");
