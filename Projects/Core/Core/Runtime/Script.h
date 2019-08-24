@@ -29,8 +29,8 @@ public:
 	~Script();
 
 public:	//Helpers
-	Symbol* resolve(const std::string &symbol);
-	Symbol* resolveMethod(const std::string &method, const ParameterList &params);
+	Symbol* resolve(const std::string& symbol);
+	Symbol* resolveMethod(const std::string& method, const ParameterList& params);
 
 public:	// Execution
 	void execute(Common::ThreadId threadId, const std::string& method, const ParameterList& params, Runtime::Object* result);
