@@ -11,58 +11,64 @@ import libs.Order;
 
 public void Main(int argc, string args) {
 	try {
-	var params = new ParameterHandler(argc, args);
-	var order = new Order();
+		var params = new ParameterHandler(argc, args);
+		var order = new Order();
 
-	if ( params.contains("OrderTypeID") ) {
-		order.orderTypeID = OrderType cast<int>( params.getParameter("OrderTypeID").Value );
-	}
-	else {
-		cout("OrderTypeID: ");
-		order.orderTypeID = OrderType cast<int>( cin() );
-	}
-
-	if ( params.contains("Priority") ) {
-		order.priority = cast<int>( params.getParameter("Priority").Value );
-	}
-	else {
-		cout("Priority: ");
-		order.priority = cast<int>( cin() );
-	}
-
-	if ( params.contains("Sequence") ) {
-		order.sequence = cast<int>( params.getParameter("Sequence").Value );
-	}
-	else {
-		cout("Sequence: ");
-		order.sequence = cast<int>( cin() );
-	}
-
-
-	DB.Connect();
-	DB.Execute( "BEGIN" );
-
-	DB.Insert( "INSERT INTO orders (order_type_id, priority, sequence) VALUES (" + cast<string>( order.orderTypeID ) + ", " + order.priority + ", " + order.sequence + ")" );
-
-	switch ( order.orderTypeID ) {
-		case OrderType.Park: {
-			createParkOrder( getLastInsertId() );
-			break;
+		if ( params.contains("OrderTypeID") ) {
+			order.orderTypeID = OrderType cast<int>( params.getParameter("OrderTypeID").Value );
 		}
-		case OrderType.Transport: {
-			createTransportOrder( getLastInsertId() );
-			break;
+		else {
+			cout("OrderTypeID: ");
+			order.orderTypeID = OrderType cast<int>( cin() );
 		}
-	}
 
-	DB.Execute( "COMMIT" );
-	DB.Disconnect();
+		if ( params.contains("Priority") ) {
+			order.priority = cast<int>( params.getParameter("Priority").Value );
+		}
+		else {
+			cout("Priority: ");
+			order.priority = cast<int>( cin() );
+		}
+
+		if ( params.contains("Sequence") ) {
+			order.sequence = cast<int>( params.getParameter("Sequence").Value );
+		}
+		else {
+			cout("Sequence: ");
+			order.sequence = cast<int>( cin() );
+		}
+
+
+		DB.Connect();
+		DB.Execute( "BEGIN" );
+
+		DB.Insert( "INSERT INTO orders (order_type_id, priority, sequence) VALUES (" + cast<string>( order.orderTypeID ) + ", " + order.priority + ", " + order.sequence + ")" );
+
+		switch ( order.orderTypeID ) {
+			case OrderType.Park: {
+				createParkOrder( getLastInsertId() );
+				break;
+			}
+			case OrderType.Transport: {
+				createTransportOrder( getLastInsertId() );
+				break;
+			}
+		}
+
+		DB.Execute( "COMMIT" );
 	}
 	catch ( string e ) {
 		print("Exception: " + e);
+
+		DB.Execute( "ROLLBACK" );
 	}
 	catch ( IException e ) {
 		print("Exception: " + e.what());
+
+		DB.Execute( "ROLLBACK" );
+	}
+	finally {
+		DB.Disconnect();
 	}
 }
 

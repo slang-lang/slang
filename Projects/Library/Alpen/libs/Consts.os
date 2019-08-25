@@ -17,6 +17,7 @@ public string STATIONMANAGER const = "STATIONMANAGER";
 public int STATIONMANAGER_QUEUE const = 655365;
 
 // IPC Message constants
+public string MSG_WORK_DONE const = "WORK_DONE";
 public string MSG_WORK_RECEIVED const = "WORK_RECEIVED";
 public string MSG_SHUTDOWN const = "SHUTDOWN";
 

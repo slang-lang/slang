@@ -29,22 +29,26 @@ public void Main(int argc, string args) {
         logger.info("Connecting to IPC queue...");
 
         var ipcService = new IPCService(SHUTTLEMANAGER_QUEUE, SHUTTLEMANAGER);
+
+        logger.info("Starting ShuttleManager...");
+
         var shuttleManager = new ShuttleManager(logger, ipcService);
 
-        IPCMessage message;
+
+        IPCMessage msg;
 
         bool running = true;
         while ( running ) {
-            shuttleManager.process();
+            shuttleManager.process(msg);
 
             int counter;
             while ( counter < DISPATCH_MESSAGE_RETRIES ) {
                 logger.info("Waiting for new orders...");
 
-                if ( (message = ipcService.receive()) != null ) {
-                    logger.info("IPCMessage received: " + cast<string>(message));
+                if ( (msg = ipcService.receive()) != null ) {
+                    logger.info("IPCMessage received: " + cast<string>(msg));
 
-                    if ( message.message == MSG_SHUTDOWN ) {
+                    if ( msg.message == MSG_SHUTDOWN ) {
                         running = false;
                     }
 

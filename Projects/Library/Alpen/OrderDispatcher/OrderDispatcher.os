@@ -27,13 +27,25 @@ public object OrderDispatcher {
         mStorage = new Storage();
 
         ORDER_QUERY = "SELECT * FROM orders WHERE order_state_id = " + cast<string>( OrderState.New );
-        PARKINGPOSITION = new Position(1, 100100);
+        PARKINGPOSITION = new Position(1, 0);
 
         init();
     }
 
-    public void dispatch() modify {
+    public void ChargeBatteries() modify {
+        mLogger.info("Send shuttles battery charging...");
+
+        handleUnoccupiedShuttles();
+    }
+
+    public void dispatch(IPCMessage message = null) modify {
         mLogger.info("Dispatching orders...");
+
+        if ( message ) {
+            if ( message.message == "CHARGE" ) {
+                ChargeBatteries();
+            }
+        }
 
         // loop as long as there are free shuttles and dispatchable orders available
         while ( true ) {
@@ -92,7 +104,7 @@ public object OrderDispatcher {
             notifyShuttleManager(MSG_WORK_RECEIVED);
         }
 
-        handleUnoccupiedShuttles();
+        //handleUnoccupiedShuttles();
 
         mLogger.info("Finished dispatching orders...");
     }
