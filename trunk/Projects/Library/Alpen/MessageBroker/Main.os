@@ -32,12 +32,12 @@ public void Main(int argc, string args) {
 	var shuttleManager = new IPCService(SHUTTLEMANAGER_QUEUE, SHUTTLEMANAGER, true);
 	var stationManager = new IPCService(STATIONMANAGER_QUEUE, STATIONMANAGER, true);
 
-	IPCMessage message;
+	IPCMessage msg;
 	while ( true ) {
-		if ( (message = self.receive()) != null ) {
-			logger.info("Received: " + cast<string>( message ));
+		if ( (msg = self.receive()) != null ) {
+			logger.info("Received: " + cast<string>( msg ));
 
-			if ( message.message == MSG_SHUTDOWN ) {
+			if ( msg.message == MSG_SHUTDOWN ) {
 				break;
 			}
 		}
