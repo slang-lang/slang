@@ -27,7 +27,7 @@ public object ShuttleManager {
 		mLogger.info("Destructor()");
 	}
 
-	public void process() modify {
+	public void process(IPCMessage message = null) modify {
 		mLogger.info("Start processing...");
 
 		bool finishedAJob = true;

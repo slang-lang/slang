@@ -36,7 +36,7 @@ public void Main(int argc, string args) {
 
         bool running = true;
         while ( running ) {
-            dispatcher.dispatch();
+            dispatcher.dispatch(message);
 
             int counter;
             while ( counter < DISPATCH_MESSAGE_RETRIES ) {
