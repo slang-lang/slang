@@ -9,7 +9,6 @@ import Database;
 
 public object IPCMessage {
 	public string message;
-	public int messageID;
 	public string receiver;
 	public string sender;
 
@@ -17,9 +16,8 @@ public object IPCMessage {
 		// nothing to do here
 	}
 
-	public void Constructor(string _sender, string _receiver, int _messageID, string _message) {
+	public void Constructor(string _sender, string _receiver, string _message) {
 		message = _message;
-		messageID = _messageID;
 		receiver = _receiver;
 		sender = _sender;
 	}
@@ -28,13 +26,12 @@ public object IPCMessage {
 		return "IPCMessage: {" +
 			"sender: \"" + sender + "\", " +
 			"receiver: \"" + receiver + "\", " +
-			"messageID: " + messageID + ", " +
 			"message: \"" + message + "\" " +
 			"}";
 	}
 
 	public string toString() const {
-		return "{ \"sender\": \"" + sender + "\", \"receiver\": \"" + receiver + "\", \"messageID\": " + messageID + ", \"message\": \"" + message + "\" }";
+		return "{ \"sender\": \"" + sender + "\", \"receiver\": \"" + receiver + "\", \"message\": \"" + message + "\" }";
 	}
 }
 
@@ -93,7 +90,7 @@ public object IPCService implements IIPCReceiver, IIPCSender {
 	}
 
 	public bool send(int queueID, string message) modify {
-		return send( queueID, new IPCMessage(mProcessName, "", 0, message) );
+		return send( queueID, new IPCMessage(mProcessName, "", message) );
 	}
 
 	private Map<int, int> mConnectedQueues;
