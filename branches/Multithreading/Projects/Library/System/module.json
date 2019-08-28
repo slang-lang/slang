@@ -1,0 +1,14 @@
+{
+  "name": "System Library",
+  "name_short": "System",
+  "version": "0.2.7",
+  "type": "library",
+  "description": "ObjectiveScript core system library",
+  "dependencies": [
+    { "module": "ObjectiveScript", "version_min": "0.6.7" }
+  ],
+  "target": {
+    "directory": "System",
+    "type": "internal"
+  }
+}

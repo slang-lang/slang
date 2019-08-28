@@ -1,0 +1,11 @@
+{
+  "name": "ObjectiveScript JSON builder library",
+  "name_short": "libJsonBuilder",
+  "version": "0.1.1",
+  "description": "The ObjectiveScript JSON library provides a way to generate JSON objects.",
+  "dependencies": [],
+  "target": {
+    "directory": "libJsonBuilder",
+    "type": "internal"
+  }
+}
