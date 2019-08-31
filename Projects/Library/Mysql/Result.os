@@ -9,7 +9,7 @@ import Row;
 
 public namespace Mysql { }
 
-public object MysqlResult implements ICollection, IIterateable {
+public object MysqlResult implements ICollection, IIterable {
 // Public interface
 
 	public void Constructor(int handle) {

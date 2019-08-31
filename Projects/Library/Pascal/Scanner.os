@@ -1,13 +1,13 @@
 
 // library imports
 import System.CharacterIterator;
-import System.Collections.IIterateable;
+import System.Collections.IIterable;
 import System.IO.File;
 
 // project imports
 
 
-public object Scanner implements IIterateable {
+public object Scanner implements IIterable {
 	public void Constructor(System.IO.File file) {
 		if ( file ) {
 			mFile = file;

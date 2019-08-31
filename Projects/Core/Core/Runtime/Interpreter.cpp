@@ -1174,8 +1174,8 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	if ( !collection->isValid() ) {
 		throw Runtime::Exceptions::NullPointerException("null pointer access", token->position());
 	}
-	if ( !collection->isInstanceOf("IIterateable") ) {
-		throw Designtime::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIteratable", token->position());
+	if ( !collection->isInstanceOf("IIterable") ) {
+		throw Designtime::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIterable", token->position());
 	}
 	++token;
 

@@ -33,7 +33,7 @@ public object Parameter {
 	}
 }
 
-public object ParameterHandler implements IIterateable {
+public object ParameterHandler implements IIterable {
 /*
  * Public
  */

@@ -1,12 +1,12 @@
 
 // Library imports
-import System.Collections.IIterateable;
+import System.Collections.IIterable;
 import System.IO.File;
 import System.StringIterator;
 
 // Project imports
 
-public object Scanner implements IIterateable {
+public object Scanner implements IIterable {
 	public void Constructor(string filename) {
 		mFile = new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly);
 		mSeparator = LINEBREAK;
