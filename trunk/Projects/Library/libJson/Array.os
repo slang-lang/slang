@@ -9,7 +9,7 @@ import Value;
 
 public namespace Json { }
 
-public object JsonArray extends JsonValue implements IIterateable {
+public object JsonArray extends JsonValue implements IIterable {
 	public void Constructor(string key) {
 		base.Constructor();
 

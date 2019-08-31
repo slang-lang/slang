@@ -1,12 +1,12 @@
 
 import System.Exception;
 import ICollection;
-import IIterateable;
+import IIterable;
 
 // declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
 
-public object Range implements ICollection, IIterateable {
+public object Range implements ICollection, IIterable {
 
 	/*
 	 * Range factory method

@@ -1,13 +1,13 @@
 
 // library imports
-import System.Collections.IIterateable;
+import System.Collections.IIterable;
 import System.IO.File;
 import System.StringIterator;
 
 // project imports
 
 
-public object Scanner implements IIterateable {
+public object Scanner implements IIterable {
 	private System.IO.File mFile;
 	private string mSeparator = " ";
 	private string mText;

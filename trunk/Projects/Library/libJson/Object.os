@@ -10,7 +10,7 @@ import Value;
 
 public namespace Json { }
 
-public object JsonObject extends JsonValue implements IIterateable {
+public object JsonObject extends JsonValue implements IIterable {
 	public void Constructor() {
 		base.Constructor();
 
