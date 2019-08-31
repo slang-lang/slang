@@ -149,7 +149,7 @@ public namespace System.IO {
 			case FileAccessMode.WriteUpdate: { return "w+"; }
 		}
 
-		throw new Exception("invalid access mode(" + (string mode) + ") provided!");
+		throw new Exception("invalid access mode(" + cast<string>(mode) + ") provided!");
 	}
 
 	private FileAccessMode MapStringToFileAccessMode(string mode) const throws {
