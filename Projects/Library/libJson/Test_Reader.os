@@ -17,11 +17,13 @@ bool TestCase1() {
         //var str = "{ \"key1\": [1, 2] }";
         var str = "{ \"key1\": [ { \"key2\": \"value\" }, 2] }";
 
+        print( str );               // input string
+
         var reader = new JsonReader();
         var value = reader.process(str);
         assert( value );
 
-        print(value.toString());
+        print( value.toString() );  // output string
 
         return true;
 	}
