@@ -10,7 +10,6 @@
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
-#include <Tools/Tools.h>
 #include <Utils.h>
 
 // Fixtures
@@ -51,7 +50,10 @@ Utils::Printer* mPrinter = 0;
 
 
 void cleanup() {
-	SafeDelete( mLogger );
+	if ( mLogger ) {
+		delete mLogger;
+		mLogger = 0;
+	}
 }
 
 void initialize() {

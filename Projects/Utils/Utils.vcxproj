@@ -115,10 +115,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Math\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Math\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Parsers\ConfigParser.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Parsers\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Parsers\</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="Parsers\Evaluator.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Parsers\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Parsers\</ObjectFileName>
@@ -148,10 +144,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Tools\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Tools\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Tools\Tools.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Tools\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Tools\</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,7 +158,6 @@
     <ClInclude Include="Math\Vector2.h" />
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />
-    <ClInclude Include="Parsers\ConfigParser.h" />
     <ClInclude Include="Parsers\Evaluator.h" />
     <ClInclude Include="Parsers\LineParser.h" />
     <ClInclude Include="Parsers\Tokenizer.h" />
@@ -175,7 +166,6 @@
     <ClInclude Include="Tools\Files.h" />
     <ClInclude Include="Tools\Printer.h" />
     <ClInclude Include="Tools\Strings.h" />
-    <ClInclude Include="Tools\Tools.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
