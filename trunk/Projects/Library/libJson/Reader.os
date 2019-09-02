@@ -18,7 +18,7 @@ public object JsonReader {
     }
 
     public JsonValue process(string text) modify throws {
-        print("process(" + text + ")");
+        //print("process(" + text + ")");
 
         tokenizer.parseString(text);
 
@@ -60,8 +60,6 @@ public object JsonReader {
             return JsonValue null;
         }
 
-        //print("Array::Begin");
-
         require(t, TokenType.BRACKET_OPEN);
 
         JsonArray result = new JsonArray();
@@ -77,8 +75,6 @@ public object JsonReader {
 
         require(t, TokenType.BRACKET_CLOSE);
 
-        //print("Array::End");
-
         return JsonValue result;
     }
 
@@ -87,15 +83,12 @@ public object JsonReader {
             return JsonValue null;
         }
 
-        //print("Object::Begin");
-
         require(t, TokenType.CURLY_BRACKET_OPEN);
 
         JsonObject result = new JsonObject();
 
         while ( t.currentToken().mType != TokenType.CURLY_BRACKET_CLOSE ) {
             string key = t.currentToken().mValue;
-            //print("key: '" + key + "'");
             t.nextToken();
 
             require(t, TokenType.COLON);
@@ -110,8 +103,6 @@ public object JsonReader {
 
         require(t, TokenType.CURLY_BRACKET_CLOSE);
 
-        //print("Object::End");
-
         return JsonValue result;
     }
 
@@ -119,8 +110,6 @@ public object JsonReader {
         if ( !t ) {
             return JsonValue null;
         }
-
-        //print("Value::Begin");
 
         JsonValue value;
 
@@ -159,21 +148,17 @@ public object JsonReader {
                 break;
             }
             default: {
-                throw "invalid JsonValue";
+                throw "invalid token at " + t.currentToken().mPosition.toString();
             }
         }
-
-        //print("value: '" + value.toString() + "'");
-        //print("Value::End");
 
         return value;
     }
 
-    private void require(Tokenizer t, TokenType type) {
-        //print("require: '" + TokenToString(type) + "'" +
-        //      " got: '" + TokenToString(t.currentToken().mType) + "'");
-
-        assert( t.currentToken().mType == type );
+    private void require(Tokenizer t, TokenType type) throws {
+        if ( t.currentToken().mType != type ) {
+            throw "required '" + TokenToString(type) + "' but got '" + TokenToString(t.currentToken().mType) + "'";
+        }
 
         if ( t.hasNextToken() ) {
             t.nextToken();
