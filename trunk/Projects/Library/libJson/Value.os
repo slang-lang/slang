@@ -16,9 +16,8 @@ public enum JsonType {
 
 public enum JsonValueType {
 	Bool,
-	Double,
-	Float,
-	Int,
+	Null,
+	Number,
 	Object,
 	String
 	;
@@ -30,7 +29,7 @@ public object JsonValue {
 	public void Constructor() {
 		mNumberValue = 0;
 		mStringValue = "null";
-		mValueType = JsonValueType.Object;
+		mValueType = JsonValueType.Null;
 	}
 
 	public void Constructor(bool value) {
@@ -122,16 +121,12 @@ public object JsonValue {
 		return mValueType == JsonValueType.Bool;
 	}
 
-	public bool isDouble() const {
-		return mValueType == JsonValueType.Double;
+	public bool isNull() const {
+		return mValueType == JsonValueType.Null;
 	}
 
-	public bool isFloat() const {
-		return mValueType == JsonValueType.Float;
-	}
-
-	public bool isInt() const {
-		return mValueType == JsonValueType.Int;
+	public bool isNumber() const {
+		return mValueType == JsonValueType.Number;
 	}
 
 	public bool isString() const {
@@ -151,7 +146,7 @@ public object JsonValue {
 		mObjectValue = JsonValue null;
 		mStringValue = "";
 		mType = JsonType.Value;
-		mValueType = JsonValueType.Double;
+		mValueType = JsonValueType.Number;
 	}
 
 	public void setValue(float value) modify {
@@ -159,7 +154,7 @@ public object JsonValue {
 		mObjectValue = JsonValue null;
 		mStringValue = "";
 		mType = JsonType.Value;
-		mValueType = JsonValueType.Float;
+		mValueType = JsonValueType.Number;
 	}
 
 	public void setValue(int value) modify {
@@ -167,7 +162,7 @@ public object JsonValue {
 		mObjectValue = JsonValue null;
 		mStringValue = "";
 		mType = JsonType.Value;
-		mValueType = JsonValueType.Int;
+		mValueType = JsonValueType.Number;
 	}
 
 	public void setValue(string value) modify {
