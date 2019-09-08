@@ -151,12 +151,6 @@ Script* VirtualMachine::createScript(const std::string& content, bool collectErr
 
 #endif
 
-	if ( mSettings.DoSyntaxCheck ) {
-		std::cout << "Syntax check done, no errors found." << std::endl;
-
-		throw Runtime::ControlFlow::ExitProgram;
-	}
-
 	return script;
 }
 

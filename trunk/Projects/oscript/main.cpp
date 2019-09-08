@@ -192,10 +192,15 @@ int main(int argc, const char* argv[])
 		ObjectiveScript::Script* script = mVirtualMachine.createScriptFromFile(mFilename, true);
 		assert(script);
 
-		mVirtualMachine.run(script, mParameters, &result);
+		if ( mSyntaxCheck ) {
+			std::cout << "Syntax check done, no errors found." << std::endl;
+		}
+		else {
+			mVirtualMachine.run(script, mParameters, &result);
 
-		if ( result.getValue().type() == ObjectiveScript::Runtime::AtomicValue::Type::INT ) {
-			return result.getValue().toInt();
+			if ( result.getValue().type() == ObjectiveScript::Runtime::AtomicValue::Type::INT ) {
+				return result.getValue().toInt();
+			}
 		}
 
 		return 0;
