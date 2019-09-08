@@ -4,9 +4,6 @@
 
 
 // Extension includes
-//#ifdef USE_APACHE_EXTENSION
-//#	include <Apache/ApacheExtension.h>
-//#endif
 #ifdef USE_JSON_EXTENSION
 #	include <JSON/JsonExtension.h>
 #endif
