@@ -169,6 +169,7 @@ int main(int argc, const char* argv[])
 		mVirtualMachine.addLibraryFolder((*it));
 	}
 
+	mVirtualMachine.settings().DoCollectErrors = true;
 	mVirtualMachine.settings().DoSanityCheck = mSanityCheck;
 	mVirtualMachine.settings().DoSyntaxCheck = mSyntaxCheck;
 
@@ -183,7 +184,7 @@ int main(int argc, const char* argv[])
 	try {
 		ObjectiveScript::Runtime::Object result;
 
-		ObjectiveScript::Script* script = mVirtualMachine.createScriptFromFile(mFilename, true);
+		ObjectiveScript::Script* script = mVirtualMachine.createScriptFromFile(mFilename);
 		assert(script);
 
 		if ( mSyntaxCheck ) {
