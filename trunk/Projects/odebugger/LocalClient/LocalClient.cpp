@@ -1089,9 +1089,6 @@ void LocalClient::start()
 #ifdef USE_JSON_EXTENSION
 	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
 #endif
-//#ifdef USE_MYSQL_EXTENSION
-//	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
-//#endif
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
