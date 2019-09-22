@@ -14,6 +14,7 @@ SET(SOURCES
 SET(HEADERS
 	Ascii.h
 	AssertMsg.h
+	CreateInstance.h
 	Fork.h
 	GetChar.h
 	GetEnv.h
