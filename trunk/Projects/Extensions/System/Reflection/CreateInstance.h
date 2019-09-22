@@ -23,6 +23,7 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace System {
+namespace Reflection {
 
 
 class CreateInstance : public ExtensionMethod
@@ -65,6 +66,7 @@ public:
 };
 
 
+}
 }
 }
 }
