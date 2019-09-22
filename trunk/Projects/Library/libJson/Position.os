@@ -4,6 +4,9 @@
 // project imports
 
 
+public namespace Json {
+}
+
 public object Position const {
 	public int mColumn const;
 	public int mLine const;
@@ -21,4 +24,3 @@ public object Position const {
 		return "Line " + mLine + ", Column " + mColumn;
 	}
 }
-

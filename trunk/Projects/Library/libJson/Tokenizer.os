@@ -8,6 +8,9 @@ import System.IO.File;
 import Token;
 
 
+public namespace Json {
+}
+
 public object Tokenizer {
 	public void Constructor() {
 		CHARS = new String("ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz_");
@@ -212,4 +215,3 @@ public object Tokenizer {
 	private int mLine;
 	private List<Token> mTokens;
 }
-
