@@ -6,6 +6,7 @@ SET(SOURCES
 
 SET(HEADERS
 	CreateInstance.h
+	IsKnownType.h
 	ReflectionExtension.h
 )
 

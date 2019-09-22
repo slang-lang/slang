@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_CreateInstance_h
-#define ObjectiveScript_Extensions_System_CreateInstance_h
+#ifndef ObjectiveScript_Extensions_System_IsKnownType_h
+#define ObjectiveScript_Extensions_System_IsKnownType_h
 
 
 // Library includes
@@ -8,11 +8,11 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Designtime/BuildInTypes/UserObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Runtime/BuildInTypes/BoolObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/UserObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -27,11 +27,11 @@ namespace System {
 namespace Reflection {
 
 
-class CreateInstance : public ExtensionMethod
+class IsKnownType : public ExtensionMethod
 {
 public:
-	CreateInstance()
-	: ExtensionMethod(0, "createInstance", Designtime::UserObject::TYPENAME)
+	IsKnownType()
+	: ExtensionMethod(0, "isKnownType", Designtime::BoolObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("type", Designtime::StringObject::TYPENAME));
@@ -49,9 +49,7 @@ public:
 
 			std::string param_type = (*it++).value().toStdString();
 
-			Runtime::Object* newInstance = Controller::Instance().repository()->createReference(param_type, ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
-
-			*result = *newInstance;
+			*result = Runtime::BoolObject( Controller::Instance().repository()->findBluePrintObject(param_type) != NULL );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

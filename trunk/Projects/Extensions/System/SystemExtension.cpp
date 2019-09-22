@@ -136,6 +136,9 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	mNetworkExtension.provideMethods(methods);
 #endif
 
+	// Reflection
+	mReflectionExtension.provideMethods(methods);
+
 	// Strings
 	mStringsExtension.provideMethods(methods);
 }

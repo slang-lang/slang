@@ -16,6 +16,7 @@
 	// Unix/Linux only
 #	include <System/Network/NetworkExtension.h>
 #endif
+#include <System/Reflection/ReflectionExtension.h>
 #include <System/Strings/StringsExtension.h>
 
 // Forward declarations
@@ -48,6 +49,7 @@ private:
 	// Unix/Linux only
 	Network::SystemNetworkExtension mNetworkExtension;
 #endif
+	Reflection::SystemReflectionExtension mReflectionExtension;
 	Strings::SystemStringsExtension mStringsExtension;
 };
 
