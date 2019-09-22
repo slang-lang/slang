@@ -23,8 +23,6 @@ std::string UserObject::TYPENAME = _object;
 UserObject::UserObject()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
-	//addInheritance(Ancestor(TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
-
 	initialize();
 }
 
