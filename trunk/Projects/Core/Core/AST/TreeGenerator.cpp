@@ -586,11 +586,7 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 		if ( node ) {
 			statements->mNodes.push_back(node);
 
-			if ( dynamic_cast<BreakStatement*>(node)
-			  || dynamic_cast<ContinueStatement*>(node)
-			  || dynamic_cast<ExitStatement*>(node)
-			  || dynamic_cast<ReturnStatement*>(node)
-			  || dynamic_cast<ThrowStatement*>(node) ) {
+			if ( dynamic_cast<ControlFlowStatement*>(node) ) {
 				reachedControlFlowChanges++;
 			}
 		}

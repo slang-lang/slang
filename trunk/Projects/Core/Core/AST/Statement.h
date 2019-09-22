@@ -71,6 +71,15 @@ protected:
 };
 
 
+class ControlFlowStatement : public Statement
+{
+public:
+	explicit ControlFlowStatement(StatementType::E statementType, const Token& token)
+	: Statement(statementType, token)
+	{ }
+};
+
+
 class Statements : public Statement
 {
 public:
@@ -117,6 +126,9 @@ public:
 };
 
 
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+
 
 class AssertStatement : public Statement
 {
@@ -136,11 +148,11 @@ public:
 };
 
 
-class BreakStatement : public Statement
+class BreakStatement : public ControlFlowStatement
 {
 public:
 	explicit BreakStatement(const Token& token)
-	: Statement(StatementType::BreakStatement, token)
+	: ControlFlowStatement(StatementType::BreakStatement, token)
 	{ }
 };
 
@@ -187,11 +199,11 @@ public:
 typedef std::list<CatchStatement*> CatchStatements;
 
 
-class ContinueStatement : public Statement
+class ContinueStatement : public ControlFlowStatement
 {
 public:
 	explicit ContinueStatement(const Token& token)
-	: Statement(StatementType::ContinueStatement, token)
+	: ControlFlowStatement(StatementType::ContinueStatement, token)
 	{ }
 };
 
@@ -212,11 +224,11 @@ public:
 };
 
 
-class ExitStatement : public Statement
+class ExitStatement : public ControlFlowStatement
 {
 public:
 	explicit ExitStatement(const Token& token, Node* exp)
-	: Statement(StatementType::ExitStatement, token),
+	: ControlFlowStatement(StatementType::ExitStatement, token),
 	  mExpression(exp)
 	{ }
 	~ExitStatement() {
@@ -325,11 +337,11 @@ public:
 };
 
 
-class ReturnStatement : public Statement
+class ReturnStatement : public ControlFlowStatement
 {
 public:
 	explicit ReturnStatement(const Token& token, Node* exp)
-	: Statement(StatementType::ReturnStatement, token),
+	: ControlFlowStatement(StatementType::ReturnStatement, token),
 	  mExpression(exp)
 	{ }
 	~ReturnStatement() {
@@ -365,11 +377,11 @@ public:
 };
 
 
-class ThrowStatement : public Statement
+class ThrowStatement : public ControlFlowStatement
 {
 public:
 	explicit ThrowStatement(const Token& token, Node* exp)
-	: Statement(StatementType::ThrowStatement, token),
+	: ControlFlowStatement(StatementType::ThrowStatement, token),
 	  mExpression(exp)
 	{ }
 	~ThrowStatement() {
