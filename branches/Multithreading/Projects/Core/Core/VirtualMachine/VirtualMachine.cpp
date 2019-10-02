@@ -95,7 +95,7 @@ void VirtualMachine::addLibraryFolder(const std::string &library)
 #endif
 }
 
-Script* VirtualMachine::createScript(const std::string& content, bool collectErrors)
+Script* VirtualMachine::createScript(const std::string& content)
 {
 	if ( !mIsInitialized ) {
 		init();
@@ -134,7 +134,7 @@ Script* VirtualMachine::createScript(const std::string& content, bool collectErr
 
 	Controller::Instance().phase(Controller::Phase::Generation);
 
-	AST::Generator generator(collectErrors);
+	AST::Generator generator(mSettings.DoCollectErrors);
 	generator.process(globalScope);
 
 	int errors = generator.hasErrors();
@@ -151,16 +151,10 @@ Script* VirtualMachine::createScript(const std::string& content, bool collectErr
 
 #endif
 
-	if ( mSettings.DoSyntaxCheck ) {
-		std::cout << "Syntax check done, no errors found." << std::endl;
-
-		throw Runtime::ControlFlow::ExitProgram;
-	}
-
 	return script;
 }
 
-Script* VirtualMachine::createScriptFromFile(const std::string& filename, bool collectErrors)
+Script* VirtualMachine::createScriptFromFile(const std::string& filename)
 {
 	OSdebug("processing script '" + filename + "'...");
 
@@ -182,16 +176,16 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, bool c
 	addLibraryFolder(Utils::Tools::Files::ExtractPathname(Utils::Tools::Files::GetFullname(filename)));
 	mScriptFile = Utils::Tools::Files::GetFullname(filename);
 
-	return createScript(content, collectErrors);
+	return createScript(content);
 }
 
-Script* VirtualMachine::createScriptFromString(const std::string& content, bool collectErrors)
+Script* VirtualMachine::createScriptFromString(const std::string& content)
 {
 	OSdebug("processing string...");
 
 	mScriptFile = "";
 
-	return createScript(content, collectErrors);
+	return createScript(content);
 }
 
 void VirtualMachine::init()

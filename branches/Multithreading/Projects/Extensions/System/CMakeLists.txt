@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY(Console)
 ADD_SUBDIRECTORY(IO)
 ADD_SUBDIRECTORY(Math)
 ADD_SUBDIRECTORY(Network)
+ADD_SUBDIRECTORY(Reflection)
 ADD_SUBDIRECTORY(Strings)
 
 SET(SOURCES
@@ -30,10 +31,11 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	ExtensionsSystemStrings
+	ExtensionsSystemReflection
 	ExtensionsSystemNetwork
 	ExtensionsSystemMath
 	ExtensionsSystemIO
-    ExtensionsSystemConsole
+	ExtensionsSystemConsole
 	CoreExtensions
 )
 

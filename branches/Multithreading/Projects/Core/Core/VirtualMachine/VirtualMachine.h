@@ -38,11 +38,13 @@ public:
 	class Settings {
 	public:
 		Settings()
-		: DoSanityCheck(true),
+		: DoCollectErrors(false),
+		  DoSanityCheck(true),
 		  DoSkipExtensions(false),
 		  DoSyntaxCheck(false)
 		{ }
 
+		bool DoCollectErrors;
 		bool DoSanityCheck;
 		bool DoSkipExtensions;
 		bool DoSyntaxCheck;
@@ -59,8 +61,8 @@ public:	// Setup
 	Settings& settings();
 
 public:
-	Script* createScriptFromFile(const std::string& filename, bool collectErrors = false);
-	Script* createScriptFromString(const std::string& content, bool collectErrors = false);
+	Script* createScriptFromFile(const std::string& filename);
+	Script* createScriptFromString(const std::string& content);
 
 	void run(Script* script, const ParameterList& params = ParameterList(), Runtime::Object* result = NULL);
 	void runScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList(), Runtime::Object* result = NULL);
@@ -70,7 +72,7 @@ private:
 	typedef std::set<Script*> ScriptCollection;
 
 private:
-	Script* createScript(const std::string& content, bool collectErrors = false);
+	Script* createScript(const std::string& content);
 	bool loadExtensions();
 	bool loadLibrary(const std::string& library);
 	void printLibraryFolders();

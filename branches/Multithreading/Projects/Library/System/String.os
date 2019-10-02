@@ -1,13 +1,13 @@
 
 import CharacterIterator;
-import Collections.IIterateable;
+import Collections.IIterable;
 import Exception;
 import StringIterator;
 
 // declare 'System' namespace to prevent a user defined private 'System' namespace
 public namespace System { }
 
-public object String implements IIterateable {
+public object String implements IIterable {
 	/*
 	 * Standard & default constructor
 	 */

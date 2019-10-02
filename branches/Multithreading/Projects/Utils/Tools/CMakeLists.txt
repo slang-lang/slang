@@ -4,14 +4,12 @@ SET(SOURCES
 	Files.cpp
 	Printer.cpp
 	Strings.cpp
-	Tools.cpp
 )
 
 SET(HEADERS
 	Files.h
 	Printer.h
 	Strings.h
-	Tools.h
 )
 
 SET(DEPENDENCIES )

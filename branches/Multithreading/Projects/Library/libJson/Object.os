@@ -10,7 +10,7 @@ import Value;
 
 public namespace Json { }
 
-public object JsonObject extends JsonValue implements IIterateable {
+public object JsonObject extends JsonValue implements IIterable {
 	public void Constructor() {
 		base.Constructor();
 
@@ -62,10 +62,14 @@ public object JsonObject extends JsonValue implements IIterateable {
 	public string toString() const {
 		string members;
 		foreach ( JsonValue value : mMembers ) {
-			members += (members ? "," : "") + value.toString();
+			members += (members ? ", " : "") + value.toString();
 		}
 
-		return "{ \"" + mKey + "\": " + (members ?: "null") + " }";
+        if ( mKey ) {
+		    return "\"" + mKey + "\": " + (members ?: "null");
+		}
+
+		return "{ " + members + " }";
 	}
 
 	private string mKey;
