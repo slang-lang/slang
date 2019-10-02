@@ -169,19 +169,14 @@ int main(int argc, const char* argv[])
 		mVirtualMachine.addLibraryFolder((*it));
 	}
 
+	mVirtualMachine.settings().DoCollectErrors = true;
 	mVirtualMachine.settings().DoSanityCheck = mSanityCheck;
 	mVirtualMachine.settings().DoSyntaxCheck = mSyntaxCheck;
 
 	// add extensions
-//#ifdef USE_APACHE_EXTENSION
-//	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
-//#endif
 #ifdef USE_JSON_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
 #endif
-//#ifdef USE_MYSQL_EXTENSION
-//	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
-//#endif
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
@@ -189,13 +184,18 @@ int main(int argc, const char* argv[])
 	try {
 		ObjectiveScript::Runtime::Object result;
 
-		ObjectiveScript::Script* script = mVirtualMachine.createScriptFromFile(mFilename, true);
+		ObjectiveScript::Script* script = mVirtualMachine.createScriptFromFile(mFilename);
 		assert(script);
 
-		mVirtualMachine.run(script, mParameters, &result);
+		if ( mSyntaxCheck ) {
+			std::cout << "Syntax check done, no errors found." << std::endl;
+		}
+		else {
+			mVirtualMachine.run(script, mParameters, &result);
 
-		if ( result.getValue().type() == ObjectiveScript::Runtime::AtomicValue::Type::INT ) {
-			return result.getValue().toInt();
+			if ( result.getValue().type() == ObjectiveScript::Runtime::AtomicValue::Type::INT ) {
+				return result.getValue().toInt();
+			}
 		}
 
 		return 0;

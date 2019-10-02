@@ -30,10 +30,10 @@ public void Main(int argc, string args) {
 
         var ipcService = new IPCService(SHUTTLEADAPTER_QUEUE, SHUTTLEADAPTER);
 
-	logger.info("Starting ShuttleAdapter...");
+	    logger.info("Starting ShuttleAdapter...");
 
         var shuttleAdapter = new ShuttleAdapter(logger, ipcService);
-	shuttleAdapter.init();
+	    shuttleAdapter.init();
 
         IPCMessage msg;
 

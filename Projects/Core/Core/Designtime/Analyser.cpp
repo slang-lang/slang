@@ -201,12 +201,11 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	mScope = tmpScope;
 
-/*
 	// create default constructor if blueprint has no constructor at all, except it is a replication
-	if ( !isReplication && implementationType == ImplementationType::Concrete && !blueprint->hasConstructor() ) {
+	if ( isImplemented && implementationType == ImplementationType::Concrete && !blueprint->hasConstructor() ) {
 		ParameterList params;
 
-		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, _void);
+		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, Common::TypeDeclaration(_void));
 		defaultConstructor->setExceptions(CheckedExceptions::Nothrow);
 		defaultConstructor->setLanguageFeatureState(LanguageFeatureState::Stable);
 		defaultConstructor->setMemoryLayout(MemoryLayout::Instance);
@@ -219,7 +218,6 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 		blueprint->defineMethod(CONSTRUCTOR, defaultConstructor);
 	}
-*/
 
 	mRepository->addBluePrint(blueprint);
 

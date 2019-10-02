@@ -1,7 +1,6 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	ConfigParser.cpp
 	Evaluator.cpp
 	LineParser.cpp
 	Tokenizer.cpp
@@ -10,7 +9,6 @@ SET(SOURCES
 )
 
 SET(HEADERS
-	ConfigParser.h
 	Evaluator.h
 	LineParser.h
 	Tokenizer.h
