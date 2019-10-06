@@ -33,8 +33,7 @@ public:
 
 public:
 	Module();
-	Module(const std::string& name_short, const std::string& version);
-	Module(const std::string& name_short, const SemanticVersionNumber& version);
+	Module(const std::string& name_short, const std::string& version, const std::string& source);
 	~Module();
 
 public:
@@ -53,6 +52,7 @@ public:
 	std::string mInstalledDirectory;
 	std::string mLongName;
 	std::string mShortName;
+	std::string mSource;
 	std::string mTargetDirectory;
 	std::string mURL;
 	SemanticVersionNumber mVersion;
