@@ -33,15 +33,13 @@ class Repository;
 
 namespace Runtime {
 
-// Forward declarations
-class Method;
 
 class Object : public MethodScope,
 			   public ObjectSymbol
 {
 public:
 	Object();
-	Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value);
+	Object(const std::string& name, const std::string& filename, const std::string& type, const AtomicValue& value);
 	virtual ~Object();
 
 public:
@@ -80,8 +78,8 @@ public:	// Type
 	bool isInstanceOf(const std::string& type) const;
 
 public:	// Value
-	AtomicValue getValue() const;
-	void setValue(AtomicValue value);
+	const AtomicValue& getValue() const;
+	void setValue(const AtomicValue& value);
 
 	Object* getThis() const { return mThis; }
 

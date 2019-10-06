@@ -36,7 +36,7 @@ public:
 									  AccessMode::E access = AccessMode::ByValue);
 	static Parameter CreateRuntime(const std::string& type,
 								   const Runtime::AtomicValue& value,
-								   Runtime::Reference reference = Runtime::Reference());
+								   const Runtime::Reference& reference = Runtime::Reference());
 
 public:
 	Parameter();
@@ -46,7 +46,7 @@ public:
 			  bool hasDefaultValue,
 			  Mutability::E mutability,
 			  AccessMode::E access,
-			  Runtime::Reference reference);
+			  const Runtime::Reference& reference);
 
 public:
 	AccessMode::E access() const;
