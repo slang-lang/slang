@@ -17,10 +17,11 @@
 class Dependency
 {
 public:
-	Dependency(const std::string& module, const std::string& version_min, const std::string& version_max)
+	Dependency(const std::string& module, const std::string& version_min, const std::string& version_max, const std::string& source)
 	: mMaxVersion(version_max),
 	  mMinVersion(version_min),
-	  mModule(module)
+	  mModule(module),
+	  mSource(source)
 	{ }
 
 public:
@@ -32,6 +33,7 @@ public:
 	std::string mMaxVersion;
 	std::string mMinVersion;
 	std::string mModule;
+	std::string mSource;
 };
 
 typedef std::set<Dependency> Dependencies;
