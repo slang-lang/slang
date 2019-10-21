@@ -6,7 +6,7 @@ import Node;
 
 
 public enum DirectionType {
-	BiDirectional = 0
+	BiDirectional = 0,
 	SourceToTarget,
 	TargetToSource;
 }
