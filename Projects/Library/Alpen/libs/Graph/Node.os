@@ -10,7 +10,7 @@ public enum NodeType {
 	NODE = 0,
 	CROSSING,
 	STATION,
-	PARKING
+	PARKING;
 }
 
 public object Node {
