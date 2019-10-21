@@ -4,10 +4,10 @@ import libLog.Logger;
 
 // project imports
 import libs.Consts;
+import libs.Graph.PathFinder;
 import libs.IPCService;
 import libs.Job;
 import libs.Order;
-import libs.Path.PathFinder;
 import libs.Shuttle;
 import libs.Storage;
 
