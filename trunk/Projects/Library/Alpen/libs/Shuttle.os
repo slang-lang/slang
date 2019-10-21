@@ -3,8 +3,8 @@
 import System.Collections.List;
 
 // project imports
+import Graph.Path;
 import Order;
-import Path.Path;
 import Position;
 
 
