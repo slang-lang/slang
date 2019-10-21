@@ -4,7 +4,7 @@ import System.Collections.List;
 
 // project imports
 import Order;
-import Path;
+import Path.Path;
 import Position;
 
 
