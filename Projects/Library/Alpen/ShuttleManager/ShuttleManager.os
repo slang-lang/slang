@@ -7,7 +7,7 @@ import libs.Consts;
 import libs.IPCService;
 import libs.Job;
 import libs.Order;
-import libs.PathFinder;
+import libs.Path.PathFinder;
 import libs.Shuttle;
 import libs.Storage;
 
