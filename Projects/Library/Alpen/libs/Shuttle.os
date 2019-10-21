@@ -13,7 +13,7 @@ public enum ShuttleBatteryLevel {
     CRITICAL,
     LOW,
     NORMAL,
-    FULL;
+    HIGH;
 }
 
 public enum ShuttleMode {
