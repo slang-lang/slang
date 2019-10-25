@@ -3,8 +3,8 @@
 import System.Collections.List;
 
 // project imports
+import Graph.Path;
 import Order;
-import Path;
 import Position;
 
 
@@ -13,7 +13,7 @@ public enum ShuttleBatteryLevel {
     CRITICAL,
     LOW,
     NORMAL,
-    FULL;
+    HIGH;
 }
 
 public enum ShuttleMode {

@@ -15,16 +15,10 @@ Module::Module()
 {
 }
 
-Module::Module(const std::string& name_short, const std::string& version)
+Module::Module(const std::string& name_short, const std::string& version, const std::string& source)
 : mActionNeeded(Action::None),
   mShortName(name_short),
-  mVersion(version)
-{
-}
-
-Module::Module(const std::string& name_short, const SemanticVersionNumber& version)
-: mActionNeeded(Action::None),
-  mShortName(name_short),
+  mSource(source),
   mVersion(version)
 {
 }
@@ -57,18 +51,22 @@ bool Module::loadFromJson(const Json::Value& value)
 	mDescription = value["description"].asString();
 	mLongName = value["name"].asString();
 	mShortName = value["name_short"].asString();
+	mSource = value.isMember("source") ? value["source"].asString() : "";
 	mVersion = value["version"].asString();
 
 	if ( value.isMember("dependencies") ) {
 		Json::Value dependencies = value["dependencies"];
 
 		for ( Json::Value::Members::const_iterator depIt = dependencies.members().begin(); depIt != dependencies.members().end(); ++depIt ) {
-			std::string moduleName = (*depIt)["module"].asString();
-			std::string version_max = depIt->isMember("version_max") ? (*depIt)["version_max"].asString() : "";
-			std::string version_min = (*depIt)["version_min"].asString();
+			Json::Value dependency = (*depIt);
+
+			std::string moduleName = dependency["module"].asString();
+			std::string source = dependency.isMember("source") ? dependency["source"].asString() : "";
+			std::string version_max = dependency.isMember("version_max") ? dependency["version_max"].asString() : "";
+			std::string version_min = dependency.isMember("version_min") ? dependency["version_min"].asString() : "";
 
 			mDependencies.insert(
-				Dependency(moduleName, version_min, version_max)
+				Dependency(moduleName, version_min, version_max, source)
 			);
 		}
 	}
