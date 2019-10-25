@@ -1,0 +1,420 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>ObjectiveScript</ProjectName>
+    <ProjectGuid>{C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29}</ProjectGuid>
+    <RootNamespace>ObjectiveScript</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.26919.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\..\Projects\Libs\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(UniversalCRT_IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\..\Projects\Libs\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;..\Externals;..\Utils;$(JSON);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <StringPooling>true</StringPooling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader />
+      <WarningLevel>Level4</WarningLevel>
+      <ShowIncludes>false</ShowIncludes>
+      <UseFullPaths>true</UseFullPaths>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>..\Externals;..\Libs;$(JSON)\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>.\;..\Externals;..\Utils;$(JSON);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <PrecompiledHeader />
+      <WarningLevel>Level4</WarningLevel>
+      <UseFullPaths>true</UseFullPaths>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>..\Externals;..\Libs;$(JSON)\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Core\AST\Expression.cpp" />
+    <ClCompile Include="Core\AST\Generator.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\AST\PrintVisitor.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\AST\TreeGenerator.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\AST\TreeInterpreter.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\AST\TreeLineBuffer.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\AST\TreeOptimizer.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\AST\TreeVisitor.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Attributes\Attributes.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Attributes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Attributes\Types.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Attributes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Attributes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Common\Exceptions.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Common\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Common\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Common\Method.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Common\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Common\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Common\Namespace.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Common\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Common\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Common\Position.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Common\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Common\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Common\PrototypeConstraint.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Common\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Common\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Common\Types.cpp" />
+    <ClCompile Include="Core\Common\Visibility.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Common\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Common\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\Analyser.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\Ancestor.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\BluePrintGeneric.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\BluePrintObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\BuildInTypes\BoolObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\BuildInTypes\DoubleObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\BuildInTypes\FloatObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\BuildInTypes\IntegerObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\BuildInTypes\StringObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\BuildInTypes\UserObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\BuildInTypes\VoidObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\Parser\Parser.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\Parser\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\Parser\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\Parser\Token.cpp" />
+    <ClCompile Include="Core\Designtime\Parser\Tokenizer.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\Parser\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\Parser\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Designtime\SanityChecker.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Object.cpp" />
+    <ClCompile Include="Core\Parameter.cpp" />
+    <ClCompile Include="Core\Runtime\AtomicValue.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\BoolObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\DoubleObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\EnumerationObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\FloatObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\IntegerObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\StringObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\UserObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\BuildInTypes\VoidObject.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\ExceptionData.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\OperatorOverloading.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\Reference.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\Script.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\TypeCast.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Runtime\Types.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\Scope.cpp" />
+    <ClCompile Include="Core\Symbol.cpp" />
+    <ClCompile Include="Core\Tools.cpp" />
+    <ClCompile Include="Core\Types.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Common\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Common\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\VirtualMachine\Controller.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\VirtualMachine\Memory.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\VirtualMachine\Repository.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\VirtualMachine\StackFrame.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\VirtualMachine\Threads.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\VirtualMachine\TypeSystem.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Core\VirtualMachine\VirtualMachine.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)VirtualMachine\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Debugger\BreakPoint.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Debugger\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Debugger\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Debugger\Condition.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Debugger\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Debugger\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Debugger\Debugger.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Debugger\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Debugger\</ObjectFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\AST\ControlStatements.h" />
+    <ClInclude Include="Core\AST\Expression.h" />
+    <ClInclude Include="Core\AST\Generator.h" />
+    <ClInclude Include="Core\AST\Keywords.h" />
+    <ClInclude Include="Core\AST\Node.h" />
+    <ClInclude Include="Core\AST\Operator.h" />
+    <ClInclude Include="Core\AST\PrintVisitor.h" />
+    <ClInclude Include="Core\AST\Statement.h" />
+    <ClInclude Include="Core\AST\TreeGenerator.h" />
+    <ClInclude Include="Core\AST\TreeInterpreter.h" />
+    <ClInclude Include="Core\AST\TreeLineBuffer.h" />
+    <ClInclude Include="Core\AST\TreeOptimizer.h" />
+    <ClInclude Include="Core\AST\TreeVisitor.h" />
+    <ClInclude Include="Core\Attributes\Attributes.h" />
+    <ClInclude Include="Core\Attributes\Types.h" />
+    <ClInclude Include="Core\Common\Exceptions.h" />
+    <ClInclude Include="Core\Common\Method.h" />
+    <ClInclude Include="Core\Common\Namespace.h" />
+    <ClInclude Include="Core\Common\Position.h" />
+    <ClInclude Include="Core\Common\PrototypeConstraint.h" />
+    <ClInclude Include="Core\Common\TypeDeclaration.h" />
+    <ClInclude Include="Core\Common\Types.h" />
+    <ClInclude Include="Core\Common\Visibility.h" />
+    <ClInclude Include="Core\Consts.h" />
+    <ClInclude Include="Core\Defines.h" />
+    <ClInclude Include="Core\Designtime\Analyser.h" />
+    <ClInclude Include="Core\Designtime\Ancestor.h" />
+    <ClInclude Include="Core\Designtime\BluePrintGeneric.h" />
+    <ClInclude Include="Core\Designtime\BluePrintObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\BoolObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\DoubleObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\FloatObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\IntegerObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\StringObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\UserObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\VoidObject.h" />
+    <ClInclude Include="Core\Designtime\Exceptions.h" />
+    <ClInclude Include="Core\Designtime\Parser\Parser.h" />
+    <ClInclude Include="Core\Designtime\Parser\Token.h" />
+    <ClInclude Include="Core\Designtime\Parser\Tokenizer.h" />
+    <ClInclude Include="Core\Designtime\SanityChecker.h" />
+    <ClInclude Include="Core\Exceptions.h" />
+    <ClInclude Include="Core\Extensions\AExtension.h" />
+    <ClInclude Include="Core\Extensions\ExtensionMethod.h" />
+    <ClInclude Include="Core\Interfaces\IPrinter.h" />
+    <ClInclude Include="Core\Interfaces\IScope.h" />
+    <ClInclude Include="Core\Object.h" />
+    <ClInclude Include="Core\ObjectiveScript.h" />
+    <ClInclude Include="Core\Parameter.h" />
+    <ClInclude Include="Core\Runtime\AtomicValue.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\BoolObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\DoubleObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\EnumerationObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\FloatObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\IntegerObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\StringObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\UserObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\VoidObject.h" />
+    <ClInclude Include="Core\Runtime\ControlFlow.h" />
+    <ClInclude Include="Core\Runtime\ExceptionData.h" />
+    <ClInclude Include="Core\Runtime\Exceptions.h" />
+    <ClInclude Include="Core\Runtime\OperatorOverloading.h" />
+    <ClInclude Include="Core\Runtime\Reference.h" />
+    <ClInclude Include="Core\Runtime\Script.h" />
+    <ClInclude Include="Core\Runtime\TypeCast.h" />
+    <ClInclude Include="Core\Runtime\Types.h" />
+    <ClInclude Include="Core\Scope.h" />
+    <ClInclude Include="Core\Symbol.h" />
+    <ClInclude Include="Core\SystemExtension.h" />
+    <ClInclude Include="Core\Tools.h" />
+    <ClInclude Include="Core\Types.h" />
+    <ClInclude Include="Core\Utils\Position.h" />
+    <ClInclude Include="Core\Utils\Utils.h" />
+    <ClInclude Include="Core\VirtualMachine\Controller.h" />
+    <ClInclude Include="Core\VirtualMachine\Memory.h" />
+    <ClInclude Include="Core\VirtualMachine\Repository.h" />
+    <ClInclude Include="Core\VirtualMachine\StackFrame.h" />
+    <ClInclude Include="Core\VirtualMachine\Threads.h" />
+    <ClInclude Include="Core\VirtualMachine\TypeSystem.h" />
+    <ClInclude Include="Core\VirtualMachine\VirtualMachine.h" />
+    <ClInclude Include="Debugger\BreakPoint.h" />
+    <ClInclude Include="Debugger\Condition.h" />
+    <ClInclude Include="Debugger\Debugger.h" />
+    <ClInclude Include="Debugger\IDebugger.h" />
+    <ClInclude Include="Debugger\IReceiver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utils\Utils.vcxproj">
+      <Project>{13a4f4fc-06d3-441f-b235-320d9c145bfa}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

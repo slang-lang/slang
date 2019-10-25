@@ -1,0 +1,9 @@
+
+#if( "${USE_JSON_EXTENSION}" STREQUAL "" OR "${USE_JSON_EXTENSION}" STREQUAL "1" )
+	add_definitions(-DUSE_JSON_EXTENSION)
+#endif()
+
+#if ( "${USE_SYSTEM_EXTENSION}" STREQUAL "" OR "${USE_SYSTEM_EXTENSION}" STREQUAL "1" )
+	add_definitions(-DUSE_SYSTEM_EXTENSION)
+#endif()
+
