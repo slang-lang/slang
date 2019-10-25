@@ -4,8 +4,9 @@
   "version": "0.1.6",
   "description": "BASIC Interpreter parses and interprets (=runs) .bas scripts.",
   "dependencies": [
-    { "module": "libParam", "version_min": "0.2.0" },
-    { "module": "System", "version_min": "0.2.0" }
+    { "module": "ObjectiveScript", "version_min": "0.6.5" },
+    { "module": "System", "version_min": "0.2.0" },
+    { "module": "libParam", "version_min": "0.2.0" }
   ],
   "target": {
     "directory": "Basic-Token",

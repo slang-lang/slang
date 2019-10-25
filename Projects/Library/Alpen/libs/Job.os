@@ -15,7 +15,8 @@ public enum JobState {
 public enum JobType {
 	Park = 1,
 	Get,
-	Put;
+	Put,
+	Wait;
 }
 
 public object Job {

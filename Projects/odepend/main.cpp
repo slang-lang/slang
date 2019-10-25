@@ -69,13 +69,12 @@ enum e_Action {
 };
 
 
-static const char* CACHE = "cache/";
-static const char* CACHE_MODULES = "cache/modules/";
-static const char* CACHE_REPOSITORIES = "cache/repositories/";
+static const char* CACHE_MODULES = "/cache/modules/";
+static const char* CACHE_REPOSITORIES = "/cache/repositories/";
 static const char* CONFIG_FILE = ".odepend/config.json";
 static const char* CONFIG_FOLDER = ".odepend/";
 static const char* FILE_VERSION_SEPARATOR = "_";
-static const char* MODULES = "modules/";
+static const char* MODULES = "/modules/";
 static const char* TMP = "/tmp/";
 static const char  VERSION_DEPERATOR = ':';
 
@@ -501,7 +500,7 @@ void info(const StringList& params)
 		std::string path = mBaseFolder + CACHE_MODULES;
 		std::string filename = moduleName + ".json";
 		std::string module_config = path + filename;
-		std::string url = mRemoteRepository.getURL() + "/" + MODULES + moduleName + FILE_VERSION_SEPARATOR + moduleVersion + ".json";
+		std::string url = mRemoteRepository.getURL() + MODULES + moduleName + FILE_VERSION_SEPARATOR + moduleVersion + ".json";
 
 		bool result = download(url, module_config);
 		if ( result ) {
@@ -527,7 +526,8 @@ void info(const StringList& params)
 			for ( Dependencies::const_iterator depIt = infoModule.mDependencies.begin(); depIt != infoModule.mDependencies.end(); ++depIt ) {
 				std::cout << depIt->mModule << "\t\t";
 				std::cout << "min: " << (depIt->mMinVersion.empty() ? "<not set>" : depIt->mMinVersion);
-				std::cout << "\t\t" << "max: " << (depIt->mMaxVersion.empty() ? "<not set>" : depIt->mMaxVersion);
+				std::cout << "\t\tmax: " << (depIt->mMaxVersion.empty() ? "<not set>" : depIt->mMaxVersion);
+				std::cout << "\t\tsource: " << (depIt->mSource.empty() ? "<not set>" : depIt->mSource);
 				std::cout << std::endl;
 			}
 		}
@@ -605,6 +605,7 @@ void install(const StringList& params)
 
 	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
 		std::string moduleName;
+		std::string source;
 		std::string version;
 
 		Utils::Tools::splitBy((*it), VERSION_DEPERATOR, moduleName, version);
@@ -613,6 +614,7 @@ void install(const StringList& params)
 			Module tmpModule;
 
 			if ( mRemoteRepository.getModule(moduleName, tmpModule) ) {
+				source = tmpModule.mSource;
 				version = tmpModule.mVersion.toString();
 			}
 		}
@@ -620,7 +622,7 @@ void install(const StringList& params)
 			forceVersion = true;
 		}
 
-		prepareModuleInstallation(mRemoteRepository.getURL(), Module(moduleName, version));
+		prepareModuleInstallation(mRemoteRepository.getURL(), Module(moduleName, version, source));
 	}
 
 	bool allowInstall = true;
@@ -628,6 +630,7 @@ void install(const StringList& params)
 	// add all other requested modules to missing modules to prevent multiple installations of the same modules
 	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
 		std::string moduleName;
+		std::string source;
 		std::string version;
 
 		Utils::Tools::splitBy((*it), VERSION_DEPERATOR, moduleName, version);
@@ -636,6 +639,7 @@ void install(const StringList& params)
 			Module tmpModule;
 
 			if ( mRemoteRepository.getModule(moduleName, tmpModule) ) {
+				source = tmpModule.mSource;
 				version = tmpModule.mVersion.toString();
 			}
 		}
@@ -643,7 +647,7 @@ void install(const StringList& params)
 			forceVersion = true;
 		}
 
-		Module missingModule(moduleName, version);
+		Module missingModule(moduleName, version, source);
 
 		if ( !checkRestrictions(missingModule) ) {
 			allowInstall = false;
@@ -918,7 +922,7 @@ void prepareModuleInstallation(const std::string& repo, const Module& installMod
 	std::string path = mBaseFolder + CACHE_MODULES;
 	std::string filename = installModule.mShortName + ".json";
 	std::string module_config = path + filename;
-	std::string url = repo + "/" + MODULES + installModule.mShortName + (installModule.mVersion.isValid() ? FILE_VERSION_SEPARATOR + installModule.mVersion.toString() + ".json" : ".json");
+	std::string url = repo + MODULES + installModule.mShortName + (installModule.mVersion.isValid() ? FILE_VERSION_SEPARATOR + installModule.mVersion.toString() + ".json" : ".json");
 
 	bool result = download(url, module_config);
 	if ( !result ) {
@@ -949,11 +953,11 @@ void prepareModuleInstallation(const std::string& repo, const Module& installMod
 			// dependent module is not yet installed
 			std::cout << "Need to install dependent module \"" << depIt->mModule << "\"" << std::endl;
 
-			Module dependent(depIt->mModule, depIt->mMinVersion);
+			Module dependent(depIt->mModule, depIt->mMinVersion, depIt->mSource);
 
 			mMissingDependencies.addModule(dependent);
 
-			prepareModuleInstallation(repo, Module(dependent.mShortName, dependent.mVersion));
+			prepareModuleInstallation(repo, dependent);
 		}
 	}
 }

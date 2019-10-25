@@ -9,9 +9,14 @@ import Shuttle;
 
 
 public object PathFinder {
-    public void Constructor(ILogger logger) {
+    public void Constructor(ILogger logger, GraphStorage storage) {
         mLogger = new Logger(logger, "PathFinder");
         mPaths = new Map<Shuttle, Path>();
+        mStorage = storage;
+
+	if ( !mStorage.dataIsLoaded() ) {
+		mStorage.load();
+	}
     }
 
     public Path findGenericPath(Position start, Position end) modify {
@@ -35,4 +40,5 @@ public object PathFinder {
 
     private Logger mLogger;
     private Map<Shuttle, Path> mPaths;
+    private GraphStorage mStorage;
 }
