@@ -1,14 +1,11 @@
 
-import System.Network.Exception;
-import System.Network.Socket;
+import Exception;
+import Socket;
 
+// declare 'System.Network' namespace to prevent a user defined private 'System.Network' namespace
 public namespace System.Network { }
 
 public object ClientSocket {
-	private IPv4Address mEndPoint;
-	private bool mIsConnected;
-	private int mSocket;
-
 	public void Constructor() {
 		mIsConnected = false;
 
@@ -105,5 +102,9 @@ public object ClientSocket {
 
 		writes(mSocket, data);
 	}
+
+	private IPv4Address mEndPoint;
+	private bool mIsConnected;
+	private int mSocket;
 }
 

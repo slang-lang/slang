@@ -5,45 +5,31 @@
 import LibLog;
 
 
-public object FileLogger implements ILogger {
-	// Members
-	private IContext mContext;
-	private bool mHasParent const;
-	private string mKey const;
-	private int mKeyLength const;
-
+public object FileLogger extends Logger {
 	/*
 	 * Specialised constructor
 	 */
 	public void Constructor(string filename, string key, int keyLength = 0) {
 		mContext = IContext new FileContext(filename);
+		mKey = key;
 		mKeyLength = keyLength;
 
-		if ( keyLength && strlen(key) > keyLength ) {
-			mKey = substr(key, strlen(key) - keyLength, keyLength);
-		}
-		else {
-			mKey = key;
+		if ( mKeyLength ) {
+			if ( strlen(mKey) > mKeyLength ) {
+				mKey = substr(mKey, strlen(mKey) - mKeyLength, mKeyLength);
+			}
+
+			mKey = strrpad(mKey, mKeyLength, " ");
 		}
 	}
 
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(ILogger parent ref, string key, int keyLength = 0) throws {
-		if ( !parent ) {
-			throw new Exception("missing parent logger");
-		}
+	public void Constructor(ILogger parent, string key) throws {
+		base.Constructor(parent, key);
 
-		mContext = parent.getContext();
 		mHasParent = true;
-		mKeyLength = keyLength;
-
-		mKey = parent.getKey() + "::" + key;
-
-		if ( keyLength && strlen(mKey) > keyLength ) {
-			mKey = substr(mKey, strlen(mKey) - keyLength, keyLength);
-		}
 	}
 
 	/*
@@ -55,39 +41,28 @@ public object FileLogger implements ILogger {
 		}
 	}
 
-	public IContext getContext() const {
-		return mContext;
-	}
+	/*
+	 * Protected members
+	 */
+	protected bool mHasParent const;
+}
 
-	public string getKey() const {
-		return mKey;
-	}
+public object AppendingFileLogger extends FileLogger {
+	/*
+	 * Specialised constructor
+	 */
+	public void Constructor(string filename, string key, int keyLength = 0) {
+		mContext = IContext new FileContext(filename, true);
+		mKey = key;
+		mKeyLength = keyLength;
 
-	public int getKeyLength() const {
-		return mKeyLength;
-	}
+		if ( mKeyLength ) {
+			if ( strlen(mKey) > mKeyLength ) {
+				mKey = substr(mKey, strlen(mKey) - mKeyLength, mKeyLength);
+			}
 
-	// Public methods
-	public void debug(string message) modify {
-		mContext.write("[DEBUG] " + mKey + "::" + message);
-	}
-
-	public void error(string message) modify {
-		mContext.write("[ERROR] " + mKey + "::" + message);
-	}
-
-	public void fatal(string message) modify throws {
-		mContext.write("[FATAL] [" + mKey + "]   " + message);
-
-        throw new FatalError(message);
-	}
-
-	public void info(string message) modify {
-		mContext.write("[INFO ] " + mKey + "::" + message);
-	}
-
-	public void warning(string message) modify {
-		mContext.write("[WARN ] " + mKey + "::" + message);
+			mKey = strrpad(mKey, mKeyLength, " ");
+		}
 	}
 }
 

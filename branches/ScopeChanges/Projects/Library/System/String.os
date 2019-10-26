@@ -1,36 +1,75 @@
 
 import CharacterIterator;
-import Collections.IIterateable;
+import Collections.IIterable;
 import Exception;
 import StringIterator;
 
 // declare 'System' namespace to prevent a user defined private 'System' namespace
 public namespace System { }
 
-public object String implements IIterateable {
-	private int mSize;
-	private string mValue;
-
+public object String implements IIterable {
 	/*
 	 * Standard & default constructor
 	 */
-	public void Constructor(string value val = "") {
-		mSize = strlen(value);
+	public void Constructor(string value = "") {
 		mValue = value;
+		mSize = strlen(mValue);
+	}
+
+	/*
+	 * double cast constructor
+	 */
+	public void Constructor(double value) {
+		mValue = string value;
+		mSize = strlen(mValue);
+	}
+
+	/*
+	 * float cast constructor
+	 */
+	public void Constructor(float value) {
+		mValue = string value;
+		mSize = strlen(mValue);
+	}
+
+	/*
+	 * int cast constructor
+	 */
+	public void Constructor(int value) {
+		mValue = string value;
+		mSize = strlen(mValue);
 	}
 
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(String value ref) {
+	public void Constructor(String value) {
 		Constructor(string value);
+	}
+
+	/*
+	 * Destructor
+	 */
+	public void Destructor() {
+		// this is empty by intend
+	}
+
+	/*
+	 * Copy operator
+	 */
+	public String Copy() {
+		return new String(mValue);
 	}
 
 	/*
 	 * Returns the character at the given position
 	 */
 	public string CharAt(int index) const throws {
-		return operator[](index);
+		if ( index < 0 || index >= mSize ) {
+			throw new OutOfBoundsException("index(" + index + ") is out of bounds!");
+		}
+
+		return substr(mValue, index, 1);
 	}
 
 	/*
@@ -92,8 +131,8 @@ public object String implements IIterateable {
 			string tmp = substr(mValue, 0, position) + newStr + substr(mValue, position + strlen(oldStr));
 
 			// update members
-			mSize = strlen(tmp);
 			mValue = tmp;
+			mSize = strlen(mValue);
 
 			return true;
 		}
@@ -112,7 +151,7 @@ public object String implements IIterateable {
 		}
 
 		// update size
-		mSize = strlen(mValue);
+		//mSize = strlen(mValue);	// this should already be updated
 
 		return hasFound;
 	}
@@ -130,9 +169,16 @@ public object String implements IIterateable {
 	}
 
 	/*
-	 * Splits the held string into strings by a given separator
+	 * Splits the held string into substrings using a single whitespace as separator
 	 */
-	public StringIterator Split(string separator = " ") const {
+	public StringIterator Split() const {
+		return new StringIterator(this, " ");
+	}
+
+	/*
+	 * Splits the held string into substrings using the given separator
+	 */
+	public StringIterator SplitBy(string separator) const {
 		return new StringIterator(this, separator);
 	}
 
@@ -160,8 +206,76 @@ public object String implements IIterateable {
 	/*
 	 * Returns the held string in lower case letters
 	 */
+	public String ToLower() const {
+		return new String(toLower(mValue));
+	}
+
+	/*
+	 * Returns the held string in lower case letters
+	 */
 	public string ToLowerCase() const {
 		return toLower(mValue);
+	}
+
+	/*
+	 * Trims whitespaces from the left side of the held string value
+	 */
+	public string TrimLeft() modify {
+		mValue = strltrim(mValue);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Cuts away from the left side of the held string value
+	 */
+	public string TrimLeft(int index) modify throws {
+		if ( index < 0 || index >= mSize ) {
+			throw new OutOfBoundsException("index(" + index + ") is out of bounds!");
+		}
+
+		mValue = substr(mValue, index);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Trims whitespaces from the right side of the held string value
+	 */
+	public string TrimRight() modify {
+		mValue = strrtrim(mValue);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Cuts away from the right side of the held string value
+	 */
+	public string TrimRight(int index) modify {
+		mValue = substr(mValue, 0, strlen(mValue) - index);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Trims whitespaces from both sides of the held string value
+	 */
+	public string Trim() modify {
+		mValue = strltrim(mValue);
+		mValue = strrtrim(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Returns the held string in capital letters
+	 */
+	public String ToUpper() const {
+		return new String(toUpper(mValue));
 	}
 
 	/*
@@ -172,7 +286,7 @@ public object String implements IIterateable {
 	}
 
 	/*
-	 * String value operator
+	 * string typecast operator
 	 */
 	public string =operator(string) const {
 		return mValue;
@@ -188,24 +302,24 @@ public object String implements IIterateable {
 	/*
 	 * string compare operator
 	 */
-	public bool operator==(string other val) const {
-		return (mValue == other);
+	public bool operator==(string other) const {
+		return mValue == other;
 	}
 
 	/*
 	 * String compare operator
 	 */
-	public bool operator==(String other const ref) const {
-		return operator==(string other);
+	public bool operator==(String other const) const {
+		return mValue == other.mValue;
 	}
 
 	/*
 	 * string assignment operator
 	 */
-	public String operator=(string other val) modify {
+	public String operator=(string other) modify {
 		// update members
-		mSize = strlen(other);
 		mValue = other;
+		mSize = strlen(mValue);
 
 		return this;
 	}
@@ -213,54 +327,52 @@ public object String implements IIterateable {
 	/*
 	 * String assignment operator
 	 */
-	public String operator=(String other const ref) modify {
+	public String operator=(String other const) modify {
 		return operator=(string other);
 	}
 
 	/*
 	 * string concatenation operator
 	 */
-	public String operator+(string other val) modify {
-		// update members
-		mSize += strlen(other);
-		mValue += other;
-
+	public String operator+(string other) const {
 		return new String(mValue + other);
 	}
 
 	/*
 	 * String concatenation operator
 	 */
-	public String operator+(String other const ref) modify {
-		return operator+(string other);
+	public String operator+(String other const) const {
+		return new String(mValue + other.mValue);
 	}
 
 	/*
 	 * string less compare operator
 	 */
-	public bool operator<(string other val) const {
+	public bool operator<(string other) const {
 		return mValue < other;
 	}
 
 	/*
 	 * String less compare operator
 	 */
-	public bool operator<(String other const ref) const {
-		return operator<(string other);
+	public bool operator<(String other const) const {
+		return mValue < other.mValue;
 	}
 
 	/*
 	 * Returns the character at the given position
 	 */
 	public string operator[](int index) const throws {
-		if ( index < 0 || index >= mSize ) {
-			throw new OutOfBoundsException("index(" + index + ") is out of bounds!");
-		}
-
-		return substr(mValue, index, 1);
+		return CharAt(index);
 	}
+
+	private int mSize;
+	private string mValue;
 }
 
+/*
+ * String cast constructor
+ */
 public String String(string value) const {
 	return new String(value);
 }

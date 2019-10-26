@@ -18,12 +18,12 @@ namespace ObjectiveScript {
 namespace Common {
 
 
-Method::Method(IScope* parent, const std::string& name, const std::string& type)
+Method::Method(IScope* parent, const std::string& name, const TypeDeclaration& type)
 : NamedScope(name, parent),
   MethodSymbol(name),
   mIsExtensionMethod(false),
   mAllowDelete(true),
-  mReturnType(TypeDeclaration(type)),
+  mReturnType(type),
   mRootNode(0)
 {
 }
@@ -33,7 +33,7 @@ Method::Method(const Method& other, bool shallowCopy)
   MethodSymbol(other.getName())
 {
 	mAlgorithm = other.mAlgorithm;
-	mAllowDelete = false;
+	mAllowDelete = !shallowCopy;
 	mCheckedExceptions = other.mCheckedExceptions;
 	mIsExtensionMethod = other.mIsExtensionMethod;
 	mIsSealed = other.mIsSealed;
@@ -286,7 +286,7 @@ bool Method::isSignatureValid(const ParameterList& params) const
 ParameterList Method::mergeParameters(const ParameterList& params) const
 {
 	if ( !isSignatureValid(params) ) {
-		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
+		throw Common::Exceptions::ParameterCountMismatch("incorrect number or type of parameters");
 	}
 
 	ParameterList result;

@@ -6,9 +6,7 @@ public stable interface IException {
 	public string what() const;
 }
 
-public object Exception implements IException {
-	private string _exception;
-
+public object Exception const implements IException {
 	public void Constructor(string ex) {
 		_exception = ex;
 	}
@@ -16,11 +14,11 @@ public object Exception implements IException {
 	public string what() const {
 		return _exception;
 	}
+
+	private string _exception const;
 }
 
-public object ArithmeticException implements IException {
-	private string _exception;
-
+public object ArithmeticException const implements IException {
 	public void Constructor(string ex) {
 		_exception = ex;
 	}
@@ -28,11 +26,11 @@ public object ArithmeticException implements IException {
 	public string what() const {
 		return _exception;
 	}
+
+	private string _exception const;
 }
 
-public object InvalidArgumentException implements IException {
-	private string _exception;
-
+public object InvalidArgumentException const implements IException {
 	public void Constructor(string ex) {
 		_exception = ex;
 	}
@@ -40,11 +38,11 @@ public object InvalidArgumentException implements IException {
 	public string what() const {
 		return _exception;
 	}
+
+	private string _exception const;
 }
 
-public object InvalidLengthException implements IException {
-	private string _exception;
-
+public object InvalidLengthException const implements IException {
 	public void Constructor(string ex) {
 		_exception = ex;
 	}
@@ -52,11 +50,11 @@ public object InvalidLengthException implements IException {
 	public string what() const {
 		return _exception;
 	}
+
+	private string _exception const;
 }
 
-public object IOException implements IException {
-	private string _exception;
-
+public object IOException const implements IException {
 	public void Constructor(string ex) {
 		_exception = ex;
 	}
@@ -64,11 +62,11 @@ public object IOException implements IException {
 	public string what() const {
 		return _exception;
 	}
+
+	private string _exception const;
 }
 
-public object NotInitializedException implements IException {
-	private string _exception;
-
+public object NotInitializedException const implements IException {
 	public void Constructor(string ex) {
 		_exception = ex;
 	}
@@ -76,11 +74,11 @@ public object NotInitializedException implements IException {
 	public string what() const {
 		return _exception;
 	}
+
+	private string _exception const;
 }
 
-public object NullPointerException implements IException {
-	private string _exception;
-
+public object NullPointerException const implements IException {
 	public void Constructor(string ex) {
 		_exception = ex;
 	}
@@ -88,11 +86,11 @@ public object NullPointerException implements IException {
 	public string what() const {
 		return _exception;
 	}
+
+	private string _exception const;
 }
 
-public object OutOfBoundsException implements IException {
-	private string _exception;
-
+public object OutOfBoundsException const implements IException {
 	public void Constructor(string ex) {
 		_exception = ex;
 	}
@@ -100,11 +98,11 @@ public object OutOfBoundsException implements IException {
 	public string what() const {
 		return _exception;
 	}
+
+	private string _exception const;
 }
 
-public object SecurityException implements IException {
-	private string _exception;
-
+public object SecurityException const implements IException {
 	public void Constructor(string ex) {
 		_exception = ex;
 	}
@@ -112,5 +110,7 @@ public object SecurityException implements IException {
 	public string what() const {
 		return _exception;
 	}
+
+	private string _exception const;
 }
 

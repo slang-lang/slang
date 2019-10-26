@@ -16,6 +16,7 @@ SET(HEADERS
 	Read.h
 	#Receive.h
 	#Send.h
+	Shutdown.h
 	Socket.h
 	Write.h
 )
@@ -25,8 +26,11 @@ SET(DEPENDENCIES
 	Core
 )
 
+SET(MODULES
+)
+
 add_include(Projects/Core)
 add_include(Projects/Extensions)
 add_include(Projects/Utils)
 
-build_static_lib(ExtensionsSystemNetwork "")
+build_static_lib(ExtensionsSystemNetwork "${MODULES}")

@@ -12,13 +12,15 @@ bool TestCase1() {
 
 	try {
 		int argc = 2;
-		string args = "./Test_ParameterHandler.os" + ascii(10) + "this is a parameter";
+		string args = "./Test_ParameterHandler.os \"this is a parameter\"";
 
-		var params = new ParameterHandler(argc, args);
+		var params = new ParameterHandler(argc, args, false);
 
-		int count;
-		foreach ( Parameter param : params ) {
-			print((string count++) + ": " + param.FullValue);
+		{	// debug print
+			int count;
+			foreach ( Parameter param : params ) {
+				print((string count++) + ": " + param.toString());
+			}
 		}
 	}
 	catch ( IException e ) {
@@ -32,49 +34,76 @@ bool TestCase1() {
 bool TestCase2() {
 	print("TestCase 2");
 
-	int argc = 3;
-	string args = "--one=true" + ascii(10) + "--two" + ascii(10) + "--three=";
+	int argc = 4;
+	string args = "--one=true --two --three= four";
 
-	var params = new ParameterHandler(argc, args);
+	var params = new ParameterHandler(argc, args, false);
+
+	{	// debug print
+		int count;
+		foreach ( Parameter param : params ) {
+			print((string count++) + ": " + param.toString());
+		}
+	}
 
 	assert( params.size() == argc );
 
 
-	Parameter param = params.at(0);
-	print(string param);
+	Parameter param;
 
-	assert( "true" == string param );
+	{	// --one=true
+		param = params.at(0);
+		assert( "true" == string param );
 
-	print("Key: " + param.Key);
-	assert( param.Key == "one" );
+		print("Key: " + param.Key);
+		assert( param.Key == "one" );
 
-	print("Value: " + param.Value);
-	assert( param.Value == "true" );
+		print("Value: " + param.Value);
+		assert( param.Value == "true" );
+	}
 
+	{	// --two
+		param = params.at(1);
+		assert( param == "two" );
 
-	param = params.at(1);
-	print(string param);
+		print("Key: " + param.Key);
+		assert( param.Key == "two" );
 
-	assert( "two" == string param );
+		print("Value: " + param.Value);
+		assert( param.Value == "" );
+	}
 
-	print("Key: " + param.Key);
-	assert( param.Key == "two" );
+	{	// --three=
+		param = params.at(2);
+		assert( param == "three" );
 
-	print("Value: " + param.Key);
-	assert( param.Value == "two" );
+		print("Key: " + param.Key);
+		assert( param.Key == "three" );
 
+		print("Value: " + param.Value);
+		assert( param.Value == "" );
+	}
 
-	param = params.at(2);
-	print(string param);
+	{	// four
+		param = params.at(3);
+		assert( param == "four" );
 
-	assert( "" == string param );
-	assert( string param == "" );
+		print("Key: " + param.Key);
+		assert( param.Key == "four" );
 
-	print("Key: " + param.Key);
-	assert( param.Key == "three" );
+		print("Value: " + param.Value);
+		assert( param.Value == "" );
+	}
 
-	print("Value: " + param.Value);
-	assert( param.Value == "" );
+	{	// remove a parameter
+		param = params.at(2);
+		assert( param == "three" );
+		assert( params.size() == 4 );
+
+		params.remove( "three" );
+
+		assert( params.size() == 3 );
+	}
 
 	return true;
 }

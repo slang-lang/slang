@@ -55,7 +55,7 @@ bool Repository::getModule(const std::string& shortName, Module& module) const
 	return false;
 }
 
-const Repository::Modules& Repository::getModules() const
+const Modules& Repository::getModules() const
 {
 	return mModules;
 }
@@ -80,9 +80,10 @@ bool Repository::processIndex(const Json::Value& value)
 
 	for ( Json::Value::Members::const_iterator it = modules.members().cbegin(); it != modules.members().cend(); ++it ) {
 		std::string name_short = (*it)["name"].asString();
+		std::string source = it->isMember("source") ? (*it)["source"].asString() : mURL;
 		std::string version = (*it)["version"].asString();
 
-		Module module(name_short, version);
+		Module module(name_short, version, source);
 
 		mModules.insert(module);
 	}

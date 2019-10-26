@@ -167,30 +167,6 @@
 			>
 		</Filter>
 		<File
-			RelativePath=".\Parsers\ConfigParser.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Parsers\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Parsers\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\Parsers\ConfigParser.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Common\Configuration\Configurator.cpp"
 			>
 			<FileConfiguration
@@ -447,26 +423,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Tools\Tools.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Tools\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Tools\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath=".\Math\Tools.cpp"
 			>
 			<FileConfiguration
@@ -485,10 +441,6 @@
 					ObjectFile="$(IntDir)\Math\"
 				/>
 			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\Tools\Tools.h"
-			>
 		</File>
 		<File
 			RelativePath=".\Math\Tools.h"

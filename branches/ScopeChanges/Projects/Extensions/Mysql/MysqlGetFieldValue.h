@@ -49,7 +49,7 @@ public:
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Common::Exceptions::Exception("no valid result handle: " + Utils::Tools::toString(param_handle));
+				throw Common::Exceptions::Exception("no valid result handle: " + std::to_string(param_handle));
 			}
 
 			MYSQL_ROW row = myResult->current_row;
@@ -102,7 +102,7 @@ public:
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Common::Exceptions::Exception("no valid result handle: " + Utils::Tools::toString(param_handle));
+				throw Common::Exceptions::Exception("no valid result handle: " + std::to_string(param_handle));
 			}
 
 			bool foundField = false;
@@ -110,7 +110,7 @@ public:
 
 			for ( unsigned int idx = 0; idx < myResult->field_count; ++idx ) {
 				if ( !myResult->fields[idx].name ) {
-					throw Common::Exceptions::Exception("invalid field name detected at field index: " + Utils::Tools::toString(idx));
+					throw Common::Exceptions::Exception("invalid field name detected at field index: " + std::to_string(idx));
 				}
 
 				if ( std::string(myResult->fields[idx].name) == param_field_name ) {

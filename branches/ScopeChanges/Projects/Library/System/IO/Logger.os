@@ -2,9 +2,6 @@
 public namespace System.IO {
 
 	public object Logger const {
-		// Members
-		private string mKey const;
-
 		/*
 		 * Specialised constructor
 		 */
@@ -33,6 +30,9 @@ public namespace System.IO {
 		public void warning(string message) {
 			print("[WARN ] " + mKey + "::" + message);
 		}
+
+		// Members
+		private string mKey const;
 	}
 
 }

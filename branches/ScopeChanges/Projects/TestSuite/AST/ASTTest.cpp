@@ -50,6 +50,7 @@ void ASTTest::process()
 	TEST(testConstCorrectness2);
 	TEST(testConstCorrectness3);
 	TEST(testConstCorrectness4);
+	TEST(testConstCorrectness5);
 	TEST(testExit);
 	TEST(testExpression);
 	TEST(testFor);
@@ -67,6 +68,7 @@ void ASTTest::process()
 	TEST(testThrow);
 	TEST(testTry);
 	TEST(testTypecast);
+	TEST(testTypecastExpression);
 	TEST(testTypeDeclaration);
 	TEST(testTypeInference);
 	TEST(testTypeSystem);
@@ -199,6 +201,20 @@ void ASTTest::testConstCorrectness4()
 	try {
 		VirtualMachine vm;
 		TTHROWS(vm.runScriptFromFile("Tests/AST/ConstCorrectnessTest4.os"), Common::Exceptions::StaticException);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testConstCorrectness5()
+{
+	try {
+		VirtualMachine vm;
+		TTHROWS(vm.runScriptFromFile("Tests/AST/ConstCorrectnessTest5.os"), Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -444,6 +460,23 @@ void ASTTest::testTypecast()
 	try {
 		VirtualMachine vm;
 		vm.runScriptFromFile("Tests/AST/TypecastTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testTypecastExpression()
+{
+	try {
+		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
+		vm.runScriptFromFile("Tests/AST/TypecastExpression.os");
 
 		// automatic success
 	}

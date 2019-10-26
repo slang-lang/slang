@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Defines.h>
 #include "MysqlAffectedRows.h"
 #include "MysqlClose.h"
 #include "MysqlDataSeek.h"
@@ -46,6 +47,11 @@ namespace Mysql {
 MysqlExtension::MysqlExtension()
 : AExtension("Mysql")
 {
+}
+
+void MysqlExtension::initialize(IScope* /*scope*/)
+{
+	// nothing to do here
 }
 
 void MysqlExtension::provideMethods(ExtensionMethods &methods)

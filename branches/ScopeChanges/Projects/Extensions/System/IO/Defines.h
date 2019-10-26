@@ -4,12 +4,13 @@
 
 
 // Library includes
+#include <stdio.h>
 #include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #ifdef __APPLE__
-#	include <unistd.h>
+//#	include <unistd.h>
 #elif defined _WIN32
-#	include <sys/stat.h>
-#	include <sys/types.h>
 #	include <io.h>
 #	pragma warning(disable:4996)
 

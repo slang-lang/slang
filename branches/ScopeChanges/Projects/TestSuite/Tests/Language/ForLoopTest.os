@@ -14,24 +14,34 @@ public void Main(int argc = 0, string argv = "") {
 }
 
 private bool TestCase1() const {
-	for ( int loop1 = 0; loop1 < 5; loop1 += 1 ) {
+	int count;
+
+	for ( int loop1 = 0; loop1 < 5; loop1++ ) {
 		print("loop1 = " + loop1);
 		assert( loop1 < 5 );
+
+		count++;
 	}
 
-	return loop1 == 5;
+	return count == 5;
 }
 
 private bool TestCase2() const {
+	int count;
+
 	for ( int loop2 = 0; loop2 < 10; loop2 += 1 ) {
+		count++;
+
 		print("loop2 = " + loop2);
 		assert( loop2 < 10 );
 	}
 
-	return loop2 == 10;
+	return count == 10;
 }
 
 private bool TestCase3() const {
+	int count;
+
 	for ( int loop3 = 0; loop3 < 5; loop3 += 1 ) {
 		print("loop3 = " + loop3);
 		assert( loop3 < 5 );
@@ -39,11 +49,13 @@ private bool TestCase3() const {
 		if ( loop3 > 2 ) {
 			break;
 		}
+
+		count++;
 	}
 
-	print("loop3 = " + loop3);
+	print("count = " + count);
 
-	return loop3 == 3;
+	return count == 3;
 }
 
 private bool TestCase4() const {
@@ -88,27 +100,33 @@ private bool TestCase6() {
 private bool TestCase7() {
 	print("TestCase 7: for ( <initialization>; ; <expression> )");
 
-	for ( int i = 0; ; i += 1 ) {
+	int count;
+
+	for ( int i = 0; ; i++ ) {
 		print("" + i + ": for loop without condition");
 
 		if ( i == 5 ) {
 			break;
 		}
+
+		count++;
 	}
 
-	return i == 5;
+	return count == 5;
 }
 
 private bool TestCase8() {
 	print("TestCase 8: for ( <initialization>; <condition>; )");
 
+	int count;
 	for ( int i = 0; i < 5; ) {
 		print("" + i + ": for loop without expression");
 
-		i += 1;
+		i++;
+		count++;
 	}
 
-	return i == 5;
+	return count == 5;
 }
 
 private bool TestCase9() const {

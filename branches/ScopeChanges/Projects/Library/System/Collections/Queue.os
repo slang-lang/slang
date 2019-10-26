@@ -5,15 +5,10 @@ import ICollection;
 import Iterator;
 import List;
 
+// declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
 
 public object Queue<T> implements ICollection {
-	private bool mIsObjectType;
-	private List<T> mItems;
-
-	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
-	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
-
 	public void Constructor() {
 		// this determines if we are dealing with an object type or a native data type
 		T check;
@@ -24,6 +19,10 @@ public object Queue<T> implements ICollection {
 
 	public void Destructor() {
 		clear();
+	}
+
+	public T at(int index) const throws {
+		return mItems.at(index);
 	}
 
 	public void clear() modify {
@@ -61,5 +60,15 @@ public object Queue<T> implements ICollection {
 	public int size() const {
 		return mItems.size();
 	}
+
+	public T operator[](int index) const throws {
+		return mItems.at(index);
+	}
+
+	private bool mIsObjectType;
+	private List<T> mItems;
+
+	private Iterator<T> __iterator;						// this is a hack to automatically initialize a generic type
+	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
 }
 

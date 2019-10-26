@@ -21,9 +21,15 @@ namespace Exceptions {
 class RuntimeException : public ::ObjectiveScript::Common::Exceptions::Exception
 {
 public:
+#ifdef _WIN32
+	explicit RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
+	: ::ObjectiveScript::Common::Exceptions::Exception(text, position)
+	{ }
+#else
 	explicit RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position()) noexcept
 	: ::ObjectiveScript::Common::Exceptions::Exception(text, position)
 	{ }
+#endif
 };
 
 
@@ -31,7 +37,7 @@ class AccessViolation : public RuntimeException
 {
 public:
 	explicit AccessViolation(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("AccessViolation: " + text, position)
+	: RuntimeException("Access violation: " + text, position)
 	{ }
 };
 
@@ -40,7 +46,7 @@ class AssertionFailed : public RuntimeException
 {
 public:
 	explicit AssertionFailed(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("AssertionFailed: " + text, position)
+	: RuntimeException("Assertion failed: " + text, position)
 	{ }
 };
 
@@ -49,7 +55,7 @@ class ExplicitCastRequired : public RuntimeException
 {
 public:
 	explicit ExplicitCastRequired(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("ExplicitCastRequired: " + text, position)
+	: RuntimeException("Explicit cast required: " + text, position)
 	{ }
 };
 
@@ -58,7 +64,7 @@ class InvalidAssignment : public RuntimeException
 {
 public:
 	explicit InvalidAssignment(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("InvalidAssignment: " + text, position)
+	: RuntimeException("Invalid assignment: " + text, position)
 	{ }
 };
 
@@ -67,7 +73,7 @@ class InvalidOperation : public RuntimeException
 {
 public:
 	explicit InvalidOperation(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("InvalidOperation: " + text, position)
+	: RuntimeException("Invalid operation: " + text, position)
 	{ }
 };
 
@@ -76,7 +82,7 @@ class InvalidSymbol : public RuntimeException
 {
 public:
 	explicit InvalidSymbol(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("InvalidSymbol: " + text, position)
+	: RuntimeException("Invalid symbol: " + text, position)
 	{ }
 };
 

@@ -24,8 +24,6 @@ IntegerObject::IntegerObject()
 {
 	mIsAtomicType = true;
 
-	//addInheritance(Ancestor(TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
-
 	initialize();
 }
 
@@ -36,11 +34,11 @@ const std::string& IntegerObject::getTypeName() const
 
 void IntegerObject::initialize()
 {
-	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
+	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _int)
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_int))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

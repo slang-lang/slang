@@ -14,7 +14,6 @@
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Files.h>
@@ -127,16 +126,14 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for an optional modifier token
-	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::FullyImplemented);
+	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::Concrete);
 	// look for the object token, BluePrintType::Object is required
 	BluePrintType::E blueprintType = Parser::parseBluePrintType(token);
 	if ( blueprintType != BluePrintType::Object ) {
 		throw Designtime::Exceptions::SyntaxError("object expected", token->position());
 	}
 	// look for the type declaration
-	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
-	// look for an optional modifier token
-	//Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
+	Common::TypeDeclaration type = parseTypeDeclaration(token, mScope);
 	// collect inheritance (if present)
 	Ancestors inheritance = collectInheritance(token);
 
@@ -156,16 +153,12 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	BluePrintObject* blueprint = new BluePrintObject(type.mName, mFilename);
 	bool extends = false;
-	bool isReplication = false;
 
 	// set up inheritance (if present)
 	if ( !inheritance.empty() ) {
 		for ( Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
 			if ( it->ancestorType() == Ancestor::Type::Extends ) {
 				extends = true;
-			}
-			else if ( it->ancestorType() == Ancestor::Type::Replicates ) {
-				isReplication = true;
 			}
 
 			blueprint->addInheritance((*it));
@@ -178,7 +171,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	// in case this object has no inheritance set, we inherit from 'Object'
 	if ( isImplemented && !extends ) {
-		blueprint->addInheritance(Ancestor(Common::TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
+		blueprint->addInheritance(Ancestor(Common::TypeDeclaration(std::string(_object)), Ancestor::Type::Extends, Visibility::Public));
 	}
 
 	// validate mutability
@@ -186,12 +179,13 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		throw Designtime::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(type.mMutability) + "' for " + getQualifiedTypename(type.mName), token->position());
 	}
 
-	blueprint->setPrototypeConstraints(type.mConstraints);
+	blueprint->setBluePrintType(blueprintType);
 	blueprint->setImplementationType(implementationType);
 	blueprint->setIsReference(true);
 	blueprint->setLanguageFeatureState(languageFeatureState);
-	//blueprint->setMutability(type.mMutability);
+	blueprint->setMutability(type.mMutability);
 	blueprint->setParent(mScope);
+	blueprint->setPrototypeConstraints(type.mConstraints);
 	blueprint->setQualifiedTypename(getQualifiedTypename(type.mName));
 	blueprint->setTokens(tokens);
 	blueprint->setVisibility(visibility);
@@ -208,10 +202,10 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	mScope = tmpScope;
 
 	// create default constructor if blueprint has no constructor at all, except it is a replication
-	if ( !isReplication && implementationType == ImplementationType::FullyImplemented && !blueprint->hasConstructor() ) {
+	if ( isImplemented && implementationType == ImplementationType::Concrete && !blueprint->hasConstructor() ) {
 		ParameterList params;
 
-		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, _void);
+		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, Common::TypeDeclaration(_void));
 		defaultConstructor->setExceptions(CheckedExceptions::Nothrow);
 		defaultConstructor->setLanguageFeatureState(LanguageFeatureState::Stable);
 		defaultConstructor->setMemoryLayout(MemoryLayout::Instance);
@@ -227,7 +221,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	mRepository->addBluePrint(blueprint);
 
-	return blueprint != 0;
+	return blueprint != NULL;
 }
 
 bool Analyser::createEnum(TokenIterator& token)
@@ -240,9 +234,11 @@ bool Analyser::createEnum(TokenIterator& token)
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
+	// look for an optional modifier token
+	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::Concrete);
 	// look for the object token, BluePrintType::Enum is required
-	BluePrintType::E objectType = Parser::parseBluePrintType(token);
-	if ( objectType != BluePrintType::Enum ) {
+	BluePrintType::E bluePrintType = Parser::parseBluePrintType(token);
+	if ( bluePrintType != BluePrintType::Enum ) {
 		throw Designtime::Exceptions::SyntaxError("enum type expected", token->position());
 	}
 	// look for the type declaration
@@ -255,7 +251,8 @@ bool Analyser::createEnum(TokenIterator& token)
 	TokenList tokens = Parser::collectScopeTokens(token);
 
 	BluePrintObject* symbol = new BluePrintObject(type.mName, mFilename);
-	symbol->setIsEnumeration(true);
+	symbol->setBluePrintType(bluePrintType);
+	symbol->setImplementationType(implementationType);
 	symbol->setLanguageFeatureState(languageFeatureState);
 	symbol->setMutability(Mutability::Modify);
 	symbol->setParent(mScope);
@@ -283,6 +280,11 @@ bool Analyser::createInterface(TokenIterator& token)
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token, default is unstable
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Unstable);
+	// look for an optional modifier token
+	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::Abstract);
+	if ( implementationType != ImplementationType::Abstract ) {
+		throw Designtime::Exceptions::SyntaxError("interfaces cannot be concrete", token->position());
+	}
 	// look for the object token, BluePrintType::Interface is required
 	BluePrintType::E blueprintType = Parser::parseBluePrintType(token);
 	if ( blueprintType != BluePrintType::Interface ) {
@@ -290,8 +292,6 @@ bool Analyser::createInterface(TokenIterator& token)
 	}
 	// look for the type declaration
 	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
-	// look for an optional mutability token
-	//Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
 	if ( type.mMutability == Mutability::Unknown ) {
 		throw Designtime::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(type.mMutability) + "' for " + getQualifiedTypename(type.mName), token->position());
 	}
@@ -315,12 +315,13 @@ bool Analyser::createInterface(TokenIterator& token)
 
 	TokenList tokens = Parser::collectScopeTokens(token);
 
-	blueprint->setPrototypeConstraints(type.mConstraints);
-	blueprint->setImplementationType(ImplementationType::Interface);
+	blueprint->setBluePrintType(blueprintType);
+	blueprint->setImplementationType(implementationType);
 	blueprint->setIsReference(true);
 	blueprint->setLanguageFeatureState(languageFeatureState);
 	blueprint->setMutability(type.mMutability);
 	blueprint->setParent(mScope);
+	blueprint->setPrototypeConstraints(type.mConstraints);
 	blueprint->setQualifiedTypename(getQualifiedTypename(type.mName));
 	blueprint->setTokens(tokens);
 	blueprint->setVisibility(visibility);
@@ -339,7 +340,7 @@ bool Analyser::createInterface(TokenIterator& token)
 
 	mRepository->addBluePrint(blueprint);
 
-	return blueprint != 0;
+	return blueprint != NULL;
 }
 
 bool Analyser::createLibraryReference(TokenIterator& token)
@@ -387,7 +388,7 @@ bool Analyser::createMemberOrMethod(TokenIterator& token)
 	return createMemberStub(token, visibility, languageFeatureState, type, name);
 }
 
-bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name)
+bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name)
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
@@ -408,7 +409,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	if ( token->type() == Token::Type::ASSIGN ) {
 		++token;
 
-		value = Parser::parseValueInitialization(token);
+		value = Parser::parseValueInitialization(token, type.mName);
 
 		++token;
 	}
@@ -447,7 +448,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	return true;
 }
 
-bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name)
+bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name)
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
@@ -494,7 +495,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	TokenList tokens;
 	if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
 		if ( virtuality == Virtuality::Abstract ) {
-			throw Designtime::Exceptions::SyntaxError("interface methods are not allowed to be implemented", token->position());
+			throw Designtime::Exceptions::SyntaxError("abstract methods are not allowed to be implemented", token->position());
 		}
 
 		tokens = Parser::collectScopeTokens(token);
@@ -509,7 +510,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	}
 
 	// create a new method with the corresponding return type
-	Common::Method* method = new Common::Method(mScope, name, type.mName);
+	Common::Method* method = new Common::Method(mScope, name, type);
 	method->setExceptions(exceptions);
 	method->setLanguageFeatureState(languageFeature);
 	method->setMemoryLayout(memoryLayout);
@@ -517,7 +518,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	method->setMethodType(methodType);
 	method->setMutability(type.mMutability);
 	method->setParent(mScope);
-	method->setPrototypeConstraints(type.mConstraints);
 	method->setSignature(params);
 	method->setTokens(tokens);
 	method->setVirtuality(virtuality);
@@ -552,7 +552,7 @@ bool Analyser::createNamespace(TokenIterator& token)
 			++token;
 		}
 
-		Common::Namespace* space = 0;
+		Common::Namespace* space = NULL;
 
 		// check for an existing namespace with this name
 		Symbol* symbol = mScope->resolve(name, true, Visibility::Designtime);
@@ -738,9 +738,11 @@ std::string Analyser::resolveType(const std::string& type, const TokenIterator& 
 Common::TypeDeclaration Analyser::resolveType(const Common::TypeDeclaration& type, const TokenIterator& token) const
 {
 	Common::TypeDeclaration result;
+	result.mMutability = type.mMutability;
 
 	// resolve type
 	result.mName = resolveType(type.mName, token);
+	result.mCombinedName = result.mName;
 
 	// resolve prototype constraints
 	for ( PrototypeConstraints::const_iterator it = type.mConstraints.begin(); it != type.mConstraints.end(); ++it ) {

@@ -13,7 +13,6 @@
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Tools/Strings.h>
 #include "Types.h"
 
 
@@ -50,7 +49,7 @@ public:
 
 			MYSQL *myConn = mMysqlConnections[param_handle];
 			if ( !myConn ) {
-				throw Common::Exceptions::Exception("no valid mysql connection handle: " + Utils::Tools::toString(param_handle));
+				throw Common::Exceptions::Exception("no valid mysql connection handle: " + std::to_string(param_handle));
 			}
 
 			*result = Runtime::IntegerObject((int)mysql_affected_rows(myConn));

@@ -25,14 +25,16 @@ public:
 	TypeDeclaration()
 	: mMutability(Mutability::Modify)
 	{ }
-	TypeDeclaration(const char* type)
-	: mMutability(Mutability::Modify),
-	  mName(type)
-	{ }
 	TypeDeclaration(const std::string& type)
 	: mCombinedName(type),
 	  mMutability(Mutability::Modify),
 	  mName(type)
+	{ }
+	TypeDeclaration(const TypeDeclaration& other)
+	: mCombinedName(other.mCombinedName),
+	  mConstraints(other.mConstraints),
+	  mMutability(other.mMutability),
+	  mName(other.mName)
 	{ }
 	TypeDeclaration(const std::string& type, const PrototypeConstraints& constraints, Mutability::E mutability = Mutability::Modify)
 	: mCombinedName(type),
@@ -42,7 +44,7 @@ public:
 	{ }
 
 	bool operator==(const std::string& type) const {
-		return mCombinedName.size() ? (mCombinedName == type) : (mName == type);
+		return mCombinedName.empty() ? (mName == type) : (mCombinedName == type);
 	}
 
 public:

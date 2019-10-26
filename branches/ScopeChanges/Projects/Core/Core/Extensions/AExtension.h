@@ -20,27 +20,32 @@ namespace ObjectiveScript {
 // Forward declarations
 class IScope;
 
-namespace Extensions {
-
-typedef std::list<ExtensionMethod*> ExtensionMethods;
+}
 
 class AExtension
 {
 public:
-	AExtension(const std::string& name);
-	virtual ~AExtension();
+	AExtension(const std::string& name)
+	: mName(name)
+	{ }
+	virtual ~AExtension() { }
 
 public:
-	virtual void initialize(IScope* scope);
-	virtual void provideMethods(ExtensionMethods& methods) = 0;
+	virtual void initialize(ObjectiveScript::IScope* scope) = 0;
+	virtual void provideMethods(ObjectiveScript::Extensions::ExtensionMethods& methods) = 0;
 
 public:
-	const std::string& getName() const;
+	const std::string& getName() const {
+		return mName;
+	}
 
 private:
-	bool mInitialized;
 	std::string mName;
 };
+
+
+namespace ObjectiveScript {
+namespace Extensions {
 
 
 typedef std::list<AExtension*> ExtensionList;

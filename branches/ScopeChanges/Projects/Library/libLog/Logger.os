@@ -6,46 +6,26 @@ import LibLog;
 
 
 public object Logger implements ILogger {
-	// Members
-	private IContext mContext;
-	private string mKey const;
-    private int mKeyLength;
-
 	/*
 	 * Default constructor
-     * expects a parent logger, uses parent's keylength
+	 * expects a parent logger and a key, uses parent's keylength
 	 */
-    public void Constructor(ILogger parent ref, string key) throws {
-		if ( !parent ) {
-			throw new Exception("missing parent logger");
-		}
-
-		Constructor(parent, key, parent.getKeyLength());
-	}
-
-    /*
-     * Expended constructor
-     * expects parent logger, uses provided key length
-     */
-	public void Constructor(ILogger parent ref, string key, int keyLength) throws {
+	public void Constructor(ILogger parent, string key) throws {
 		if ( !parent ) {
 			throw new Exception("missing parent logger");
 		}
 
 		mContext = parent.getContext();
-        mKey = parent.getKey() + LibLog.KeySeparator + key;
-        mKeyLength = keyLength;
+		mKey = strrtrim(parent.getKey()) + LibLog.KeySeparator + key;
+		mKeyLength = parent.getKeyLength();
 
-		if ( keyLength && strlen(mKey) > keyLength ) {
-			mKey = substr(mKey, strlen(mKey) - keyLength, keyLength);
+		if ( mKeyLength ) {
+			if ( strlen(mKey) > mKeyLength ) {
+				mKey = substr(mKey, strlen(mKey) - mKeyLength, mKeyLength);
+			}
+
+			mKey = strrpad(mKey, mKeyLength, " ");
 		}
-	}
-
-	/*
-	 * Default destructor
-	 */
-	public void Destructor() {
-        // this is empty by intend
 	}
 
 	public IContext getContext() const {
@@ -56,11 +36,10 @@ public object Logger implements ILogger {
 		return mKey;
 	}
 
-    public int getKeyLength() const {
-        return mKeyLength;
-    }
+	public int getKeyLength() const {
+		return mKeyLength;
+	}
 
-	// Public methods
 	public void debug(string message) modify {
 		mContext.write("[DEBUG] [" + mKey + "]   " + message);
 	}
@@ -72,7 +51,7 @@ public object Logger implements ILogger {
 	public void fatal(string message) modify throws {
 		mContext.write("[FATAL] [" + mKey + "]   " + message);
 
-        throw new FatalError("fatal error: " + message);
+		throw new FatalError("fatal error: " + message);
 	}
 
 	public void info(string message) modify {
@@ -82,5 +61,12 @@ public object Logger implements ILogger {
 	public void warning(string message) modify {
 		mContext.write("[WARN ] [" + mKey + "]   " + message);
 	}
+
+	/*
+	 * Protected members
+	 */
+	protected IContext mContext const;
+	protected string mKey const;
+	protected int mKeyLength const;
 }
 

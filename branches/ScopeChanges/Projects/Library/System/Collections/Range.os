@@ -1,25 +1,31 @@
 
 import System.Exception;
 import ICollection;
-import IIterateable;
+import IIterable;
 
+// declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
 
-public object Range implements ICollection, IIterateable {
-/*
-	public Range Create(int start, int end, int step = 1) static {
-		return new Range(start, end, step);
-	}
-*/
+public object Range implements ICollection, IIterable {
 
-	public void Constructor(int start, int end, int step = 1) throws {
-		if ( !step ) {
+	/*
+	 * Range factory method
+	 */
+	public Range Create(int _start, int _end, int _step = 1) static {
+		return new Range(_start, _end, _step);
+	}
+
+	/*
+	 * Default constructor
+	 */
+	public void Constructor(int _start, int _end, int _step = 1) throws {
+		if ( !_step ) {
 			throw new InvalidArgumentException("invalid step size provided!");
 		}
 
-		mEnd = end;
-		mStart = start;
-		mStep = step;
+		mEnd = _end;
+		mStart = _start;
+		mStep = _step;
 	}
 
 	public int at(int index) const throws {
@@ -30,8 +36,32 @@ public object Range implements ICollection, IIterateable {
 		return mStart + index * mStep;
 	}
 
+	public int getEnd() const {
+		return mEnd;
+	}
+
 	public Iterator<int> getIterator() const {
 		return new Iterator<int>(ICollection this);
+	}
+
+	public int getStart() const {
+		return mStart;
+	}
+
+	public int getStep() const {
+		return mStep;
+	}
+
+	/*
+	 * returns a new Range object with given step size
+	 * throws Exception
+	 */
+	public Range step(int stepSize) throws {
+		if ( stepSize == 0 ) {
+			throw new Exception("invalid step size(" + stepSize + ") provided");
+		}
+
+		return new Range(mStart, mEnd, stepSize);
 	}
 
 	public int size() const {
@@ -41,7 +71,6 @@ public object Range implements ICollection, IIterateable {
 	public int operator[](int index) const throws {
 		return at(index);
 	}
-
 
 	private int mEnd const;
 	private int mStart const;

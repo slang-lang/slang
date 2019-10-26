@@ -1,15 +1,83 @@
 #!/usr/local/bin/oscript
 
 // Library imports
+import libParam.ParameterHandler;
 import System.IO.File;
 
 // Project imports
 import DatatypeMapper;
 import Generator;
-import TableLookup;
+import Lookup;
 
 
-int DBHandle = 0;
+public void Main(int argc, string args) modify throws {
+	var params = new ParameterHandler(argc, args);
+	if ( !params.empty()) {
+		if ( params.contains("database") ) {
+			Database = params.getParameter("database").Value;
+		}
+		if ( params.contains("host") ) {
+			Host = params.getParameter("host").Value;
+		}
+		if ( params.contains("password") ) {
+			Password = params.getParameter("password").Value;
+		}
+		if ( params.contains("port") ) {
+			Port = cast<int>( params.getParameter("port").Value );
+		}
+		if ( params.contains("user") ) {
+			User = params.getParameter("user").Value;
+		}
+	}
+
+	try {
+		int DBHandle = connect();
+
+		var lookup = new Lookup(DBHandle);
+
+		prepareFolders();
+
+		// generate tables
+		{
+			var tables = lookup.getTables(Database);
+
+			int count;
+			foreach ( string tableName : tables ) {
+				generateTable(DBHandle, tableName);
+
+				count++;
+			}
+
+			print("" + count + " table objects generated.");
+		}
+
+		// generate views
+		{
+			var views = lookup.getViews(Database);
+
+			int count;
+			foreach ( string tableName : views ) {
+				generateView(DBHandle, tableName);
+
+				count++;
+			}
+
+			print("" + count + " view objects generated.");
+		}
+
+		disconnect(DBHandle);
+	}
+	catch ( string e ) {
+		print("Exception: " + e);
+	}
+	catch ( IException e ) {
+		print("Exception: " + e.what());
+	}
+	catch {
+		print("Exception: caught unknown exception");
+	}
+}
+
 
 
 int connect() modify throws {
@@ -27,49 +95,40 @@ void disconnect(int handle) modify {
 	mysql_close(handle);
 }
 
-void generateTable(string tableName) const {
-	Generator generator = new Generator(DBHandle);
-
-	var table = generator.generate(tableName);
+void generateTable(int dbHandle, string name) modify {
+	var generator = new Generator(dbHandle);
+	var table = generator.generate(name);
 
 	string tableData = LINEBREAK;
-	tableData += "public object " + tableName + " {" + LINEBREAK;
+	tableData += "public object " + TABLE_PREFIX + toUpper(name) + TABLE_POSTFIX + " {" + LINEBREAK;
 	foreach ( Pair<string, string> field : table ) {
 		tableData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
 	}
 	tableData += "}" + LINEBREAK + LINEBREAK;
 
-	var outFile = new System.IO.File("output/Table_" + tableName + ".os", System.IO.FileAccessMode.WriteOnly);
+	var outFile = new System.IO.File("output/" + Database + "/Tables/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
 	outFile.write(tableData);
 	outFile.close();
 }
 
-public void Main(int argc, string args) modify throws {
-	try {
-		DBHandle = connect();
+void generateView(int dbHandle, string name) modify {
+	var generator = new Generator(dbHandle);
+	var view = generator.generate(name);
 
-		var lookup = new TableLookup(DBHandle);
-		var tables = lookup.getTables(Database);
-
-		int count;
-		foreach ( string tableName : tables ) {
-			generateTable(tableName);
-
-			count++;
-		}
-
-		print("" + count + " table objects generated.");
-
-		disconnect(DBHandle);
+	string viewData = LINEBREAK;
+	viewData += "public object " + VIEW_PREFIX + toUpper(name) + VIEW_POSTFIX + " {" + LINEBREAK;
+	foreach ( Pair<string, string> field : view ) {
+		viewData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
 	}
-	catch ( string e ) {
-		print("Exception: " + e);
-	}
-	catch ( IException e ) {
-		print("Exception: " + e.what());
-	}
-	catch {
-		print("Exception: caught unknown exception");
-	}
+	viewData += "}" + LINEBREAK + LINEBREAK;
+
+	var outFile = new System.IO.File("output/" + Database + "/Views/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
+	outFile.write(viewData);
+	outFile.close();
+}
+
+void prepareFolders() modify {
+	system("mkdir -p output/" + Database + "/Tables");
+	system("mkdir -p output/" + Database + "/Views");
 }
 

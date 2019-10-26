@@ -5,7 +5,7 @@ public void Main(int argc, string argv) modify {
 	int handle = mysql_init();
 	int result_handle = 0;
 
-	handle = mysql_real_connect(handle, "192.168.0.30", 3306, "root", "admin", "");
+	handle = mysql_real_connect(handle, "127.0.0.1", 3306, "root", "", "test_objectivescript");
 	if ( !handle ) {
 		print("error while connecting to database!");
 		return;

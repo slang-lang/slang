@@ -9,6 +9,7 @@
 #include <list>
 
 // Project includes
+#include <Defines.h>
 #include "Defs.h"
 #include "Get.h"
 #include "IsSet.h"
@@ -23,7 +24,7 @@ namespace Extensions {
 namespace Apache {
 
 
-const char HEX2DEC[256] = 
+const signed char HEX2DEC[256] = 
 {
     /*       0  1  2  3   4  5  6  7   8  9  A  B   C  D  E  F */
     /* 0 */ -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1, -1,-1,-1,-1,
@@ -48,7 +49,7 @@ const char HEX2DEC[256] =
 };
 
 // Only alphanum is safe.
-const char SAFE[256] =
+const signed char SAFE[256] =
 {
     /*      0 1 2 3  4 5 6 7  8 9 A B  C D E F */
     /* 0 */ 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
@@ -79,7 +80,7 @@ std::string UriDecode(const std::string & sSrc)
     // for future extension"
     
     const unsigned char * pSrc = (const unsigned char *)sSrc.c_str();
-	const int SRC_LEN = sSrc.length();
+    const int SRC_LEN = sSrc.length();
     const unsigned char * const SRC_END = pSrc + SRC_LEN;
     const unsigned char * const SRC_LAST_DEC = SRC_END - 2;   // last decodable '%' 
 
@@ -143,12 +144,8 @@ ApacheExtension::ApacheExtension()
 {
 }
 
-void ApacheExtension::initialize(IScope* scope)
+void ApacheExtension::initialize(IScope* /*scope*/)
 {
-	// finalize initialization
-	AExtension::initialize(scope);
-
-	// run after initialization is done
 	readGetData();
 	readPostData();
 }

@@ -11,12 +11,14 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-	Utils
-	Core
+	CoreExtensions
+)
+
+SET(MODULES
+	json
 )
 
 add_include(Projects/Core)
 add_include(Projects/Extensions)
-add_include(Projects/Utils)
 
-build_static_lib(ExtensionsJson "json")
+build_static_lib(ExtensionsJson "${MODULES}")

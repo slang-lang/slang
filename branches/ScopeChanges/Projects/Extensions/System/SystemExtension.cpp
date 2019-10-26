@@ -6,16 +6,26 @@
 #include <cerrno>
 
 // Project includes
+#include <Defines.h>
 #include "Ascii.h"
 #include "AssertMsg.h"
 #include "GetChar.h"
 #include "GetEnv.h"
+#include "PutEnv.h"
+#include "SetEnv.h"
 #include "SetKeyboardBlockingMode.h"
 #include "Sleep.h"
 #include "StdTime.h"
 #include "System.h"
 #include "Write.h"
 #include "WriteLn.h"
+
+#ifdef _WIN32
+	// Win32 only methods
+#else
+	// Unix/Linux only
+#	include "Fork.h"
+#endif
 
 // Namespace declarations
 
@@ -51,11 +61,11 @@ SystemExtension::~SystemExtension()
 void SystemExtension::initialize(IScope* scope)
 {
 	// error constants
-	scope->define("EACCES", new Runtime::IntegerObject(EACCES));
-	scope->define("EINVAL", new Runtime::IntegerObject(EINVAL));
-	scope->define("EMFILE", new Runtime::IntegerObject(EMFILE));
-	scope->define("ENFILE", new Runtime::IntegerObject(ENFILE));
-	scope->define("ENOMEM", new Runtime::IntegerObject(ENOMEM));
+	scope->define("EACCES", new Runtime::IntegerObject("EACCES", EACCES));
+	scope->define("EINVAL", new Runtime::IntegerObject("EINVAL", EINVAL));
+	scope->define("EMFILE", new Runtime::IntegerObject("EMFILE", EMFILE));
+	scope->define("ENFILE", new Runtime::IntegerObject("ENFILE", ENFILE));
+	scope->define("ENOMEM", new Runtime::IntegerObject("ENOMEM", ENOMEM));
 
 #ifdef _WIN32
 	// Win32 only
@@ -82,10 +92,6 @@ void SystemExtension::initialize(IScope* scope)
 
 	// Strings
 	mStringsExtension.initialize(scope);
-
-
-	// finalize initialization
-	AExtension::initialize(scope);
 }
 
 void SystemExtension::provideMethods(ExtensionMethods &methods)
@@ -97,6 +103,8 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new Assert());
 	methods.push_back(new GetChar());
 	methods.push_back(new GetEnv());
+	methods.push_back(new PutEnv());
+	methods.push_back(new SetEnv());
 	methods.push_back(new Sleep());
 	methods.push_back(new StdTime());
 	methods.push_back(new SystemExecute());
@@ -107,6 +115,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	// Win32 only methods
 #else
 	// Unix/Linux only methods
+	methods.push_back(new Fork());
 	methods.push_back(new SetKeyboardBlockingMode());
 #endif
 
@@ -126,6 +135,9 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	// Unix/Linux only
 	mNetworkExtension.provideMethods(methods);
 #endif
+
+	// Reflection
+	mReflectionExtension.provideMethods(methods);
 
 	// Strings
 	mStringsExtension.provideMethods(methods);

@@ -25,6 +25,7 @@ typedef std::set<std::string> StringSet;
 
 namespace ObjectiveScript {
 
+bool isAtomicType(const std::string& type);
 
 std::string toString(const Parameter& param);
 std::string toString(const ParameterList& list);

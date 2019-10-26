@@ -280,7 +280,7 @@ void TreeVisitor::visitTry(TryStatement* node)
 {
 	visitStatement(node->mTryBlock);
 
-	// TODO: handle catch statements
+	// TODO: handle catch statements correctly
 
 	for ( CatchStatements::const_iterator it = node->mCatchStatements.cbegin(); it != node->mCatchStatements.cend(); ++it ) {
 		if ( (*it)->mTypeDeclaration ) {

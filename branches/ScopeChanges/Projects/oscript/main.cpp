@@ -7,6 +7,7 @@
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Script.h>
+#include <Core/Version.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Tools/Printer.h>
@@ -63,8 +64,8 @@ void printUsage()
 
 void printVersion()
 {
-	std::cout << "ObjectiveScript Interpreter 0.6.5 (cli)" << std::endl;
-	std::cout << "Copyright (c) 2014-2018 Michael Adelmann" << std::endl;
+	std::cout << PRODUCT_NAME << " Interpreter " << PRODUCT_VERSION << " (cli)" << std::endl;
+	std::cout << COPYRIGHT << std::endl;
 	std::cout << "" << std::endl;
 }
 
@@ -168,18 +169,13 @@ int main(int argc, const char* argv[])
 		mVirtualMachine.addLibraryFolder((*it));
 	}
 
+	mVirtualMachine.settings().DoCollectErrors = true;
 	mVirtualMachine.settings().DoSanityCheck = mSanityCheck;
 	mVirtualMachine.settings().DoSyntaxCheck = mSyntaxCheck;
 
 	// add extensions
-#ifdef USE_APACHE_EXTENSION
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
-#endif
 #ifdef USE_JSON_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
-#endif
-#ifdef USE_MYSQL_EXTENSION
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
 #endif
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
@@ -188,21 +184,28 @@ int main(int argc, const char* argv[])
 	try {
 		ObjectiveScript::Runtime::Object result;
 
-		ObjectiveScript::Script* script = mVirtualMachine.createScriptFromFile(mFilename, true);
+		ObjectiveScript::Script* script = mVirtualMachine.createScriptFromFile(mFilename);
 		assert(script);
 
-		mVirtualMachine.run(script, mParameters, &result);
+		if ( mSyntaxCheck ) {
+			std::cout << "Syntax check done, no errors found." << std::endl;
+		}
+		else {
+			mVirtualMachine.run(script, mParameters, &result);
 
-		if ( result.getValue().type() == ObjectiveScript::Runtime::AtomicValue::Type::INT ) {
-			return result.getValue().toInt();
+			if ( result.getValue().type() == ObjectiveScript::Runtime::AtomicValue::Type::INT ) {
+				return result.getValue().toInt();
+			}
 		}
 
 		return 0;
 	}
 	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
-		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
-			OSerror("abnormal program termination!");
+		if ( e == ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
+			return 0;
 		}
+
+		OSerror("abnormal program termination!");
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());

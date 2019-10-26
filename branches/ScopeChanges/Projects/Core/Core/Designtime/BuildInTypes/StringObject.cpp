@@ -25,8 +25,6 @@ StringObject::StringObject()
 {
 	mIsAtomicType = true;
 
-	//addInheritance(Ancestor(TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
-
 	initialize();
 }
 
@@ -37,11 +35,11 @@ const std::string& StringObject::getTypeName() const
 
 void StringObject::initialize()
 {
-	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
+	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _string)
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_string))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

@@ -12,7 +12,6 @@
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Tools/Strings.h>
 #include "Defines.h"
 
 // Forward declarations
@@ -33,7 +32,7 @@ public:
 	: ExtensionMethod(0, "cerr", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
+		params.push_back(Parameter::CreateDesigntime("text", Common::TypeDeclaration(Designtime::StringObject::TYPENAME), VALUE_NONE, true));
 
 		setSignature(params);
 	}

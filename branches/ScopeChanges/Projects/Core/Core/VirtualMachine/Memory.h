@@ -7,7 +7,6 @@
 #include <map>
 
 // Project includes
-#include <Core/Object.h>
 #include <Core/Runtime/Reference.h>
 #include <Core/Runtime/Types.h>
 
@@ -17,6 +16,11 @@
 
 
 namespace ObjectiveScript {
+
+// Forward declarations
+namespace Runtime {
+	class Object;
+}
 
 
 class Memory
@@ -30,11 +34,11 @@ public:
 	void init();
 
 public:
-	Runtime::Object* get(const Runtime::Reference &ref) const;
-	const Runtime::Reference& newObject(Runtime::Object *obj);
+	Runtime::Object* get(const Runtime::Reference& ref) const;
+	const Runtime::Reference& newObject(Runtime::Object* obj);
 
-	void add(const Runtime::Reference &ref);
-	void remove(const Runtime::Reference &ref);
+	void add(const Runtime::Reference& ref);
+	void remove(const Runtime::Reference& ref);
 
 private:
 	class RefCount

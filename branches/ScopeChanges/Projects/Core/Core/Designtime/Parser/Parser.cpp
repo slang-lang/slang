@@ -9,6 +9,7 @@
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Interfaces/IScope.h>
 #include <Core/Tools.h>
+#include <Core/Types.h>
 #include <Tools/Strings.h>
 
 // Namespace declarations
@@ -602,23 +603,6 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		AccessMode::E accessMode = AccessMode::Unspecified;
-		bool hasDefaultValue = false;
-		Mutability::E mutability = Mutability::Modify;
-		Runtime::AtomicValue value;
-
-		if ( token->type() == Token::Type::IDENTIFIER ) {
-			// set default access mode for complex types
-			accessMode = AccessMode::ByReference;
-		}
-		else if ( token->type() == Token::Type::TYPE ) {
-			// set default access mode for atomic parameters
-			accessMode = AccessMode::ByValue;
-		}
-		else {
-			throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
-		}
-
 		Common::TypeDeclaration type = parseTypeDeclaration(token, scope);
 
 		// this allows unnamed parameters that are not instantiated, just to satisfy an interface or similar
@@ -631,6 +615,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		}
 		// }
 
+		Mutability::E mutability = Mutability::Modify;
 		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_CONST ) {
 				mutability = Mutability::Const;
@@ -645,13 +630,10 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			}
 		}
 
+		AccessMode::E accessMode = AccessMode::Unspecified;
 		if ( token->category() == Token::Category::ReservedWord ) {
 			if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
 				accessMode = AccessMode::ByReference;
-				++token;
-			}
-			else if ( token->content() == RESERVED_WORD_BY_VALUE ) {
-				accessMode = AccessMode::ByValue;
 				++token;
 			}
 			else {
@@ -659,6 +641,8 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			}
 		}
 
+		bool hasDefaultValue = false;
+		Runtime::AtomicValue value;
 		if ( token->type() == Token::Type::ASSIGN ) {
 			if ( name.empty() ) {
 				throw Designtime::Exceptions::SyntaxError("cannot use default values for unnamed parameters", token->position());
@@ -667,7 +651,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			hasDefaultValue = true;
 			++token;
 
-			value = parseValueInitialization(token);
+			value = parseValueInitialization(token, type.mName);
 
 			++token;
 		}
@@ -678,7 +662,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		}
 
 		params.push_back(
-			Parameter::CreateDesigntime(name, Common::TypeDeclaration(type.mName, type.mConstraints), value, hasDefaultValue, mutability, accessMode)
+			Parameter::CreateDesigntime(name, type, value, hasDefaultValue, mutability, accessMode)
 		);
 
 		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
@@ -709,7 +693,7 @@ Common::TypeDeclaration Parser::parseTypeDeclaration(TokenIterator& token, IScop
 	return result;
 }
 
-Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
+Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, const std::string& type)
 {
 	Runtime::AtomicValue value;
 	std::string sign;
@@ -721,6 +705,9 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 
 	switch ( token->type() ) {
 		case Token::Type::CONST_BOOLEAN:
+			if ( type != _bool ) {
+				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+			}
 			if ( !sign.empty() ) {
 				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
@@ -728,20 +715,61 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 			value = Utils::Tools::stringToBool(token->content());
 			break;
 		case Token::Type::CONST_DOUBLE:
+			if ( type != _double ) {
+				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+			}
+
 			value = Utils::Tools::stringToDouble(sign + token->content());
 			break;
 		case Token::Type::CONST_FLOAT:
+			if ( type != _float ) {
+				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+			}
+
 			value = Utils::Tools::stringToFloat(sign + token->content());
 			break;
 		case Token::Type::CONST_INTEGER:
+			if ( type != _int ) {
+				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+			}
+
 			value = Utils::Tools::stringToInt(sign + token->content());
 			break;
 		case Token::Type::CONST_LITERAL:
+			if ( type != _string ) {
+				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+			}
 			if ( !sign.empty() ) {
 				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
 			value = token->content();
+			break;
+/* this is not yet usable, handling of "null" needs to be refactored before
+		case Token::Type::CONST_NULL:
+			if ( type != _object ) {
+				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+			}
+			if ( !sign.empty() ) {
+				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+			}
+
+			value = Runtime::null;
+			break;
+*/
+		// this is a hack to support null as default value for parameters without completely refactoring handling of null values
+		case Token::Type::IDENTIFIER:
+			if ( isAtomicType(type) ) {
+				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+			}
+			if ( token->content() != VALUE_NULL ) {
+				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+			}
+			if ( !sign.empty() ) {
+				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+			}
+
+			value = Runtime::null;
 			break;
 		default:
 			if ( !sign.empty() ) {

@@ -9,13 +9,20 @@ import Value;
 
 public namespace Json { }
 
-public object JsonArray extends JsonValue implements IIterateable {
+public object JsonArray extends JsonValue implements IIterable {
+	public void Constructor() {
+		base.Constructor();
+
+		mMembers = new Vector<JsonValue>();
+		mType = JsonType.Object;
+	}
+
 	public void Constructor(string key) {
 		base.Constructor();
 
 		mKey = key;
 		mMembers = new Vector<JsonValue>();
-		mType = Json.Type.Array;
+		mType = JsonType.Array;
 	}
 
 	public void addMember(JsonValue value) modify {
@@ -40,12 +47,15 @@ public object JsonArray extends JsonValue implements IIterateable {
 
 	public string toString() const {
 		string members;
-
 		foreach ( JsonValue value : mMembers ) {
-			members += (members ? "," : "") + value.toString();
+			members += (members ? ", " : "") + value.toString();
 		}
 
-		return "{ \"" + mKey + "\": [" + (members ?: "") + "] }";
+        if ( mKey ) {
+		    return "\"" + mKey + "\": [" + (members ?: "") + "]";
+		}
+
+		return "[ " + members + "]";
 	}
 
 	private string mKey;

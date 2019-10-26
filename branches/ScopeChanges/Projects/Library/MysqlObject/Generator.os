@@ -37,7 +37,7 @@ public object Generator {
 			string column = mysql_get_field_value(result, "COLUMN_NAME");
 			string type = mysql_get_field_value(result, "DATA_TYPE");
 
-			//print(type + " " + column + " => " + lookupType(type) + " " + column);
+			//print(type + " " + column + " => " + mDatatypeMapper.lookupType(type) + " " + column);
 
 			try {
 				resultTable.insert(column, mDatatypeMapper.lookupType(type));

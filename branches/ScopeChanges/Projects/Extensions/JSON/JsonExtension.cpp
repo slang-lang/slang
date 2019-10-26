@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Defines.h>
 #include "FromJson.h"
 #include "ToJson.h"
 
@@ -19,6 +20,11 @@ namespace Json {
 JsonExtension::JsonExtension()
 : AExtension("Json")
 {
+}
+
+void JsonExtension::initialize(IScope* /*scope*/)
+{
+	// nothing to do here
 }
 
 void JsonExtension::provideMethods(ExtensionMethods &methods)

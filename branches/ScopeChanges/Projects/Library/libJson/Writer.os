@@ -13,12 +13,12 @@ public namespace Json {
 
 public object JsonWriter {
 // Public
-    public void Constructor() {
+	public void Constructor() {
 		mIndentation = 0;
-        mWhiteSpaceEnd = "";
+		mWhiteSpaceEnd = "";
 		mWhiteSpaceIndent = "";
-        mWhiteSpaceStart = "";
-    }
+		mWhiteSpaceStart = "";
+	}
 
 	public string toString(JsonArray root const ref) modify throws {
 		return toString(JsonValue root);
@@ -30,7 +30,7 @@ public object JsonWriter {
 
 	public string toString(JsonValue root const ref) modify throws {
 		if ( !root ) {
-			throw new Exception("invalid Json Value provided!");
+			throw new JsonException("invalid Json Value provided!");
 		}
 
 		string result;
@@ -52,7 +52,7 @@ public object JsonWriter {
 
 	public string toString2(JsonValue root const) modify throws {
 		if ( !root ) {
-			throw new Exception("invalid Json Value provided!");
+			throw new JsonException("invalid Json Value provided!");
 		}
 
 		string result;
@@ -153,9 +153,9 @@ public object JsonStyledWriter extends JsonWriter {
 // Public
 	public void Constructor() {
 		mIndentation = 0;
-		mWhiteSpaceEnd = ascii(10);
+		mWhiteSpaceEnd = LINEBREAK_UNIX;
 		mWhiteSpaceIndent = "     ";
-		mWhiteSpaceStart = ascii(10);
+		mWhiteSpaceStart = LINEBREAK_UNIX;
 	}
 
 // Protected

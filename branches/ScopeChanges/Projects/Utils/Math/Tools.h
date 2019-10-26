@@ -22,12 +22,6 @@ class vector3f;
 extern const float fPi;
 extern const double dPi;
 
-
-extern vector3f cross(const vector3f& v1, const vector3f& v2);
-extern float distance(const vector3f& v1, const vector3f& v2);
-extern inline float fastsqrtf(const float x);
-extern inline float fastSquareRoot(float x);
-extern float magnitude(const vector3f& vNormal);
 extern float power(float p);
 
 

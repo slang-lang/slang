@@ -25,7 +25,7 @@ public:
 	class Type {
 	public:
 		enum E {
-			UNKOWN,
+			UNKNOWN,
 			BOOL,
 			DOUBLE,
 			FLOAT,

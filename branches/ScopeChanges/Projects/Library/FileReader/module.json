@@ -1,15 +1,15 @@
 {
   "name": "FileReader",
   "name_short": "FileReader",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Script which reads in a complete text file and prints its contents to stdout.",
   "dependencies": [
-    { "module": "libparam", "version_min": "0.1.0" },
-    { "module": "system", "version_min": "0.1.0" }
+    { "module": "ObjectiveScript", "version_min": "0.6.5" },
+    { "module": "System", "version_min": "0.2.0" },
+    { "module": "libParam", "version_min": "0.2.0" }
   ],
   "target": {
     "directory": "FileReader",
-    "type": "internal",
-    "url": "FileReader_0.1.1.tar.gz"
+    "type": "internal"
   }
 }

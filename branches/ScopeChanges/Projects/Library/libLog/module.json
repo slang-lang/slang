@@ -1,14 +1,14 @@
 {
   "name": "ObjectiveScript logging library",
   "name_short": "libLog",
-  "version": "0.1.4",
+  "version": "0.3.0",
   "description": "The ObjectiveScript logging library provides standard out and file logging capabilities.",
   "dependencies": [
-    { "module": "system", "version_min": "0.0.1" }
+    { "module": "ObjectiveScript", "version_min": "0.6.5" },
+    { "module": "System", "version_min": "0.2.0" }
   ],
   "target": {
     "directory": "libLog",
-    "type": "internal",
-    "url": "libLog_0.1.4.tar.gz"
+    "type": "internal"
   }
 }

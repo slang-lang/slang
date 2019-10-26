@@ -3,6 +3,11 @@
 #include "VirtualMachine.h"
 
 // Library includes
+#ifdef _WIN32
+	// Extension loading is not supported under Windows
+#else
+#include <dirent.h>
+#endif
 #include <fstream>
 
 // Project includes
@@ -26,6 +31,27 @@
 namespace ObjectiveScript {
 
 
+#ifdef _WIN32
+	// Extension loading is not supported under Windows
+#else
+void read_directory(const std::string& dirname, std::vector<std::string>& files)
+{
+    DIR* dirp = opendir(dirname.c_str());
+    struct dirent * dp;
+
+    while ( (dp = readdir(dirp)) != NULL ) {
+        std::string file(dp->d_name);
+
+        if ( file != "." && file != ".." ) {
+			files.push_back(dirname + "/" + file);
+        }
+    }
+
+    closedir(dirp);
+}
+#endif
+
+
 VirtualMachine::VirtualMachine()
 : mIsInitialized(false)
 {
@@ -46,9 +72,12 @@ VirtualMachine::~VirtualMachine()
 	}
 }
 
-void VirtualMachine::addExtension(Extensions::AExtension *extension)
+void VirtualMachine::addExtension(AExtension *extension)
 {
-	assert(extension);
+	if ( !extension ) {
+		// provided an invalid extension - ignore it...
+		return;
+	}
 
 	mExtensions.push_back(extension);
 }
@@ -66,7 +95,7 @@ void VirtualMachine::addLibraryFolder(const std::string &library)
 #endif
 }
 
-Script* VirtualMachine::createScript(const std::string& content, bool collectErrors)
+Script* VirtualMachine::createScript(const std::string& content)
 {
 	if ( !mIsInitialized ) {
 		init();
@@ -105,7 +134,7 @@ Script* VirtualMachine::createScript(const std::string& content, bool collectErr
 
 	Controller::Instance().phase(Controller::Phase::Generation);
 
-	AST::Generator generator(collectErrors);
+	AST::Generator generator(mSettings.DoCollectErrors);
 	generator.process(globalScope);
 
 	int errors = generator.hasErrors();
@@ -122,16 +151,10 @@ Script* VirtualMachine::createScript(const std::string& content, bool collectErr
 
 #endif
 
-	if ( mSettings.DoSyntaxCheck ) {
-		std::cout << "Syntax check done, no errors found." << std::endl;
-
-		throw Runtime::ControlFlow::ExitProgram;
-	}
-
 	return script;
 }
 
-Script* VirtualMachine::createScriptFromFile(const std::string& filename, bool collectErrors)
+Script* VirtualMachine::createScriptFromFile(const std::string& filename)
 {
 	OSdebug("processing script '" + filename + "'...");
 
@@ -153,16 +176,16 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, bool c
 	addLibraryFolder(Utils::Tools::Files::ExtractPathname(Utils::Tools::Files::GetFullname(filename)));
 	mScriptFile = Utils::Tools::Files::GetFullname(filename);
 
-	return createScript(content, collectErrors);
+	return createScript(content);
 }
 
-Script* VirtualMachine::createScriptFromString(const std::string& content, bool collectErrors)
+Script* VirtualMachine::createScriptFromString(const std::string& content)
 {
 	OSdebug("processing string...");
 
 	mScriptFile = "";
 
-	return createScript(content, collectErrors);
+	return createScript(content);
 }
 
 void VirtualMachine::init()
@@ -182,6 +205,22 @@ void VirtualMachine::init()
 
 			path = right;
 		}
+	}
+
+	if ( !mSettings.DoSkipExtensions ) {
+#ifdef _WIN32
+		// Extension loading is not supported under Windows
+#else
+		std::vector<std::string> sharedLibraries;
+		read_directory(SHARED_LIBRARY_DIRECTORY, sharedLibraries);
+
+		// load installed shared libraries
+		for ( std::string library : sharedLibraries ) {
+			OSdebug("Loading extensions " + library);
+
+			addExtension( mExtensionManager.load(library) );
+		}
+#endif
 	}
 
 	loadExtensions();
@@ -205,7 +244,7 @@ bool VirtualMachine::loadExtensions()
 			(*extIt)->provideMethods(methods);
 
 			for ( Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-				OSdebug("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
+				OSdebug("adding extension method '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
 
 				(*it)->setParent(globalScope);
 

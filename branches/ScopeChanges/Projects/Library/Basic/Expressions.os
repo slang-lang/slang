@@ -1,5 +1,6 @@
 
 // library imports
+import System.Collections.List;
 
 // project imports
 import Nodes;
@@ -9,6 +10,7 @@ public enum ExpressionType {
 	BinaryExpression = 0,
 	ConstNumberExpression,
 	ConstStringExpression,
+	FunctionExpression,
 	VariableExpression;
 }
 
@@ -16,7 +18,7 @@ public enum ExpressionType {
 public abstract object Expression extends Node {
 	public ExpressionType mExpressionType const;
 
-	public void Constructor(ExpressionType expressionType val) {
+	public void Constructor(ExpressionType expressionType) {
 		base.Constructor(NodeType.ExpressionNode);
 
 		mExpressionType = expressionType;
@@ -99,6 +101,50 @@ public object ConstStringExpression extends Expression {
 
 	public string toString() const {
 		return "ConstStringExpression('" + mValue + "')";
+	}
+}
+
+public object FunctionExpression extends Expression {
+	public string mName const;
+	public List<Expression> mParameters;
+
+	public void Constructor(string name) {
+		base.Constructor(ExpressionType.FunctionExpression);
+
+		mName = name;
+		mParameters = new List<Expression>();
+	}
+
+	public bool istString() const {
+		return false;
+	}
+
+	public string toPrettyString() const {
+		string params;
+
+		foreach ( Expression exp : mParameters ) {
+			if ( params ) {
+				params += ", ";
+			}
+
+			params += exp.toPrettyString();
+		}
+
+		return mName + "(" + params + ")";
+	}
+
+	public string toString() const {
+		string params;
+
+		foreach ( Expression exp : mParameters ) {
+			if ( params ) {
+				params += ", ";
+			}
+
+			params += exp.toString();
+		}
+
+		return "FunctionExpression(" + mName + "(" + params + ")" + ")";
 	}
 }
 

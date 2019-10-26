@@ -21,7 +21,6 @@ namespace Designtime {
 
 BluePrintObject::BluePrintObject()
 : MethodScope(ANONYMOUS_OBJECT, 0),
-  mIsEnumeration(false),
   mIsPrepared(false),
   mIsReference(false)
 {
@@ -32,7 +31,6 @@ BluePrintObject::BluePrintObject()
 BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
   MethodScope(type, 0),
-  mIsEnumeration(false),
   mIsPrepared(false),
   mIsReference(false)
 {
@@ -116,15 +114,19 @@ bool BluePrintObject::hasDefaultConstructor() const
 
 bool BluePrintObject::isEnumeration() const
 {
-	return mIsEnumeration;
+	return mBluePrintType == BluePrintType::Enum;
 }
 
 bool BluePrintObject::isIterable() const
 {
 	ParameterList params;
 
+	if ( isOfType("ICollection") ) {
+	    return true;
+	}
+
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->getName() == "getIterator" &&  (*it)->isSignatureValid(params) ) {
+		if ( (*it)->getName() == "getIterator" && (*it)->isSignatureValid(params) ) {
 			return true;
 		}
 	}
@@ -158,7 +160,7 @@ void BluePrintObject::prepareParents(Repository* repository)
 		BluePrintObject* parent = repository->findBluePrintObject(it->typeDeclaration());
 
 		if ( !parent ) {
-			throw Common::Exceptions::UnknownIdentifer("Unknown parent identifier '" + it->typeDeclaration().mName + "'");
+			throw Common::Exceptions::UnknownIdentifier("Unknown parent identifier '" + it->typeDeclaration().mName + "'");
 		}
 
 		if ( !parent->isPrepared() ) {
@@ -204,7 +206,7 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 	replica->mBasedOnType = QualifiedTypename();
 
 	// replicate basic blueprint data
-	replica->setConst(isConst());
+	replica->setBluePrintType(getBluePrintType());
 	replica->setImplementationType(getImplementationType());
 	replica->setLanguageFeatureState(getLanguageFeatureState());
 	replica->setMember(isMember());
@@ -236,7 +238,7 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 		Designtime::BluePrintObject* blue = dynamic_cast<Designtime::BluePrintObject*>(symIt->second);
 
 		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(blue->QualifiedTypename(), blue->Filename(), blue->getName());
-		member->setIsEnumeration(blue->isEnumeration());
+		member->setBluePrintType(BluePrintType::Enum);
 		member->setLanguageFeatureState(blue->getLanguageFeatureState());
 		member->setMember(blue->isMember());
 		member->setMemoryLayout(blue->getMemoryLayout());
@@ -253,7 +255,7 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 	// replicate methods
 	for ( MethodScope::MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		// create new method and ...
-		Common::Method* method = new Common::Method(replica, (*it)->getName(), (*it)->QualifiedTypename());
+		Common::Method* method = new Common::Method(replica, (*it)->getName(), Common::TypeDeclaration((*it)->QualifiedTypename()));
 		// ... copy its data from our template method
 		*method = *(*it);
 
@@ -261,11 +263,6 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 	}
 
 	return replica;
-}
-
-void BluePrintObject::setIsEnumeration(bool state)
-{
-	mIsEnumeration = state;
 }
 
 void BluePrintObject::setIsReference(bool state)

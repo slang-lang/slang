@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY(Console)
 ADD_SUBDIRECTORY(IO)
 ADD_SUBDIRECTORY(Math)
 ADD_SUBDIRECTORY(Network)
+ADD_SUBDIRECTORY(Reflection)
 ADD_SUBDIRECTORY(Strings)
 
 SET(SOURCES
@@ -14,8 +15,11 @@ SET(SOURCES
 SET(HEADERS
 	Ascii.h
 	AssertMsg.h
+	Fork.h
 	GetChar.h
 	GetEnv.h
+	PutEnv.h
+	SetEnv.h
 	SetKeyboardBlockingMode.h
 	Sleep.h
 	StdTime.h
@@ -27,16 +31,18 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	ExtensionsSystemStrings
+	ExtensionsSystemReflection
 	ExtensionsSystemNetwork
 	ExtensionsSystemMath
 	ExtensionsSystemIO
-    ExtensionsSystemConsole
-	Utils
-	Core
+	ExtensionsSystemConsole
+	CoreExtensions
+)
+
+SET(MODULES
 )
 
 add_include(Projects/Core)
 add_include(Projects/Extensions)
-add_include(Projects/Utils)
 
-build_static_lib(ExtensionsSystem "")
+build_static_lib(ExtensionsSystem "${MODULES}")

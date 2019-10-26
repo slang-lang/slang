@@ -19,11 +19,11 @@ public void Main(int argc, string args) {
 		print("o = " + string o);
 	}
 
-	foreach ( string p : new String(args).Split() ) {
+	foreach ( string p : new String(args) ) {
 		print("p = " + p);
 	}
 
-	foreach ( string s : String("1 2 3").Split() ) {
+	foreach ( string s : String("1 2 3") ) {
 		print("s = " + s);
 	}
 }

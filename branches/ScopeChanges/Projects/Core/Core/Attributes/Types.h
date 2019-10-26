@@ -80,8 +80,7 @@ public:
 	enum E {
 		Unspecified = 0,
 		Abstract,
-		FullyImplemented,
-		Interface
+		Concrete
 	};
 
 	static E convert(const std::string& v);

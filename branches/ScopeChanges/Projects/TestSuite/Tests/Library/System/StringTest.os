@@ -18,6 +18,9 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase13() );
 	assert( TestCase14() );
 	assert( TestCase15() );
+	assert( TestCase16() );
+	assert( TestCase17() );
+	assert( TestCase18() );
 }
 
 private bool TestCase1() const {
@@ -43,7 +46,7 @@ private bool TestCase3() const {
 	print("TestCase 3: String.ToLowerCase");
 
 	String str = new String("This is a string");
-	print("str.ToLowerCase() = " + (str.ToLowerCase() == "this is a string"));
+	print("str.ToLowerCase() = " + str.ToLowerCase());
 
 	return str.ToLowerCase() == "this is a string";
 }
@@ -52,7 +55,7 @@ private bool TestCase4() const {
 	print("TestCase 4: String.ToUpperCase");
 
 	String str = new String("This is a string");
-	print("str.ToUpperCase() = " + (str.ToUpperCase() == "THIS IS A STRING"));
+	print("str.ToUpperCase() = " + str.ToUpperCase());
 
 	return str.ToUpperCase() == "THIS IS A STRING";
 }
@@ -128,7 +131,6 @@ private bool TestCase10() const {
 		it.next();
 
 		print("it.current() = '" + it.current() + "'");
-
 	}
 
 	return true;
@@ -150,7 +152,6 @@ private bool TestCase11() const {
 	count = 0;
 	write("'");
 	foreach ( string c : str ) {
-		//print("str[" + count + "] = '" + c + "'");
 		write(c);
 
 		count++;
@@ -200,6 +201,50 @@ private bool TestCase15() const {
 	str.RemoveCharAt(12);
 
 	assert( str.Length() == 14 );
+
+	return true;
+}
+
+private bool TestCase16() const {
+	print("TestCase 16: String.SplitBy");
+
+	String str = new String("This is a string");
+
+	StringIterator it = str.SplitBy("i");
+	assert( it );
+
+	while ( it.hasNext() ) {
+		it.next();
+
+		print("it.current() = '" + it.current() + "'");
+
+	}
+
+	return true;
+}
+
+private bool TestCase17() const {
+	print("TestCase 17: operator+");
+
+	String str1 = new String("This is a string");
+	String str2 = new String("This is another string");
+
+	print("str1 + str2 = " + string str1 + str2);
+	assert( str1 == "This is a string" );
+	assert( str2 == "This is another string" );
+
+	return true;
+}
+
+private bool TestCase18() const {
+	print("TestCase 18: operator+=");
+
+	String str = new String("This is a string");
+
+	str += " and another";
+	print("str = " + string str);
+
+	assert( str == "This is a string and another" );
 
 	return true;
 }

@@ -41,10 +41,7 @@ public:
 	bool hasDefaultConstructor() const;
 
 	bool isEnumeration() const;
-	void setIsEnumeration(bool state);
-
 	bool isIterable() const;
-
 	bool isOfType(const std::string& type) const;
 
 	bool isPrepared() const;
@@ -68,7 +65,6 @@ public:
 
 private:
 	std::string mBasedOnType;
-	bool mIsEnumeration;
 	bool mIsPrepared;
 	bool mIsReference;
 	Runtime::AtomicValue mValue;

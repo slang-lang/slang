@@ -193,7 +193,7 @@ int LocalClient::exec()
 			run(StringList());
 		}
 
-		notify(0, Core::Debugger::immediateBreakPoint);
+		handleBreakpoint(0, Core::Debugger::immediateBreakPoint);
 	}
 
 	// unregister SIGINT handler
@@ -490,6 +490,40 @@ Symbol* LocalClient::getSymbol(std::string name) const
 	return 0;
 }
 
+int LocalClient::handleBreakpoint(IScope* scope, const Core::BreakPoint& breakpoint)
+{
+    mContinue = false;
+    mScope = scope;
+
+    mBreakpoint = breakpoint;
+
+    // automatically print scope
+    if ( mSettings->autoList() ) {
+        printScope(mScope);
+    }
+
+    // automatically update watches
+    if ( mSettings->autoWatch() && mScope ) {
+        refreshWatches();
+    }
+
+    while ( mRunning && !mContinue ) {
+        if ( !mSettings->remoteClient() ) {			// only print prompt for local clients
+            write(mSettings->prompt());
+        }
+
+        std::string command = read();				// read command from local or remote terminal
+
+        executeCommand(
+            parseCommands(command)
+        );
+    }
+
+    mScope = 0;
+
+    return 0;
+}
+
 void LocalClient::loadConfig()
 {
 	std::string filename = mSettings->filename() + ".dbg";
@@ -597,93 +631,60 @@ bool LocalClient::modifySymbol(const StringList& tokens)
 
 int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	mContinue = false;
-	mScope = scope;
+    writeln("[Breakpoint " + breakpoint.toString() + " reached]");
 
-	// Condition check
-	Core::Condition condition = breakpoint.getCondition();
-	Symbol* lhs = getSymbol(condition.lhs());
-	Symbol* rhs = getSymbol(condition.rhs());
+    // Condition check
+    Core::Condition condition = breakpoint.getCondition();
+    Symbol* lhs = getSymbol(condition.lhs());
+    Symbol* rhs = getSymbol(condition.rhs());
 
-	if ( !condition.lhs().empty() && !lhs ) {
-		if ( addLiteralSymbol(condition.lhs(), condition.lhs()) ) {
-			lhs = getCachedSymbol(condition.lhs());
-		}
-	}
-	if ( !condition.rhs().empty() && !rhs ) {
-		if ( addLiteralSymbol(condition.rhs(), condition.rhs()) ) {
-			rhs = getCachedSymbol(condition.rhs());
-		}
-	}
+    if ( !condition.lhs().empty() && !lhs ) {
+        if ( addLiteralSymbol(condition.lhs(), condition.lhs()) ) {
+            lhs = getCachedSymbol(condition.lhs());
+        }
+    }
+    if ( !condition.rhs().empty() && !rhs ) {
+        if ( addLiteralSymbol(condition.rhs(), condition.rhs()) ) {
+            rhs = getCachedSymbol(condition.rhs());
+        }
+    }
 
-	if ( condition.isValid() && !condition.evaluate(lhs, rhs) ) {
-		mContinue = true;
-		mScope = 0;
-		return 0;
-	}
+    if ( condition.isValid() && !condition.evaluate(lhs, rhs) ) {
+        mContinue = true;
+        return 0;
+    }
 
-	mSettings->autoStop(false);
+    mSettings->autoStop(false);
 
-	// Breakpoint check
-	if ( scope && !(breakpoint == Core::Debugger::immediateBreakPoint) ) {
-		writeln("[Breakpoint " + breakpoint.toString() + " reached]");
-	}
-
-	mBreakpoint = breakpoint;
-
-	// automatically print scope
-	if ( mSettings->autoList() ) {
-		printScope(mScope);
-	}
-
-	// automatically update watches
-	if ( mSettings->autoWatch() && mScope ) {
-		refreshWatches();
-	}
-
-	while ( mRunning && !mContinue ) {
-		if ( !mSettings->remoteClient() ) {			// only print prompt for local clients
-			write(mSettings->prompt());
-		}
-
-		std::string command = read();				// read command from local or remote terminal
-
-		executeCommand(
-			parseCommands(command)
-		);
-	}
-
-	mScope = 0;
-
-	return 0;
+    return handleBreakpoint(scope, breakpoint);
 }
 
 int LocalClient::notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping into " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
+    writeln("[Stepping into " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
 
-	return notify(scope, breakpoint);
+    return handleBreakpoint(scope, breakpoint);
 }
 
 int LocalClient::notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint)
 {
 	writeln("[Caught exception in " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
 
-	return notify(scope, breakpoint);
+	return handleBreakpoint(scope, breakpoint);
 }
 
 int LocalClient::notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint)
 {
 	writeln("[Exception has been thrown in " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
 
-	return notify(scope, breakpoint);
+	return handleBreakpoint(scope, breakpoint);
 }
 
 int LocalClient::notifyExit(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping out of " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
+    writeln("[Stepping out of " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
 
-	return notify(scope, breakpoint);
+    return handleBreakpoint(scope, breakpoint);
 }
 
 StringList LocalClient::parseCommands(const std::string& commands) const
@@ -1077,6 +1078,7 @@ void LocalClient::start()
 	mDebugger->breakOnExceptionCatch(mSettings->breakOnExceptionCatch());
 	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->init();
+    mDebugger->stepInto();      // automatically stop before executing the first line
 
 	mVirtualMachine = new VirtualMachine();
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {
@@ -1084,14 +1086,8 @@ void LocalClient::start()
 	}
 
 	// add extensions
-#ifdef USE_APACHE_EXTENSION
-	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
-#endif
 #ifdef USE_JSON_EXTENSION
 	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
-#endif
-#ifdef USE_MYSQL_EXTENSION
-	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
 #endif
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
@@ -1107,7 +1103,7 @@ void LocalClient::start()
 
 		mVirtualMachine->run(script, mParameters, &result);
 
-		writeln("[Process finished" + (result.getValue().type() == Runtime::AtomicValue::Type::UNKOWN ? "" : " with exit code " + result.getValue().toStdString()) + "]");
+		writeln("[Process finished" + (result.getValue().type() == Runtime::AtomicValue::Type::UNKNOWN ? "" : " with exit code " + result.getValue().toStdString()) + "]");
 
 		if ( mSettings->autoStop() ) {
 			mRunning = false;

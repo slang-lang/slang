@@ -36,6 +36,7 @@ namespace Runtime {
 	class Object;
 }
 class Repository;
+class StackFrame;
 class Thread;
 
 namespace AST {
@@ -104,8 +105,8 @@ private:
 	void evaluateIsExpression(IsExpression* exp, Runtime::Object* result);
 	void evaluateLiteral(LiteralExpression* exp, Runtime::Object* result);
 	void evaluateMethodExpression(MethodExpression* exp, Runtime::Object* result);
-	void evaluateScopeExpression(ScopeExpression* exp, Runtime::Object* result);
 	void evaluateNewExpression(NewExpression* exp, Runtime::Object* result);
+	void evaluateScopeExpression(ScopeExpression* exp, Runtime::Object* result);
 	void evaluateSymbolExpression(SymbolExpression *exp, Runtime::Object *result, IScope *scope);
 	void evaluateTernaryExpression(TernaryExpression* exp, Runtime::Object* result);
 	void evaluateTypeCastExpression(TypecastExpression* exp, Runtime::Object* result);
@@ -128,6 +129,7 @@ private:	// Interpreter stuff
 
 private:	// Virtual machine stuff
 	Core::Debugger* mDebugger;
+	StackFrame* mFrame;
 	Memory* mMemory;
 	Repository *mRepository;
 	Thread* mThread;

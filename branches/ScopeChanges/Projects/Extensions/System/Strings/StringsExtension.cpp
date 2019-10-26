@@ -69,10 +69,6 @@ void SystemStringsExtension::initialize(IScope* scope)
 
 		scope->define("LINEBREAK_UNIX", new Runtime::StringObject(character.str()));
 	}
-
-
-	// finalize initialization
-	AExtension::initialize(scope);
 }
 
 void SystemStringsExtension::provideMethods(ExtensionMethods &methods)

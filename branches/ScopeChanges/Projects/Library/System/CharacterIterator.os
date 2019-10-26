@@ -7,14 +7,24 @@ public namespace System { }
 
 public object CharacterIterator extends Iterator<string> {
 	/*
-	 * Standard constructor
+	 * Standard string constructor
 	 */
 	public void Constructor(string value = "") {
 		reset(value);
 	}
 
+	/*
+	 * Standard String constructor
+	 */
 	public void Constructor(String value const) {
 		reset(string value);
+	}
+
+	/*
+	 * Copy operator
+	 */
+	public CharacterIterator Copy() const {
+		return new CharacterIterator(mValue);
 	}
 
 	/*
@@ -26,7 +36,7 @@ public object CharacterIterator extends Iterator<string> {
 		if ( mCurrentIndex < 0 ) {
 			throw new NotInitializedException("iterator not initialized");
 		}
-		if ( mCurrentIndex > mLength ) {
+		if ( mCurrentIndex > mLength) {
 			throw new OutOfBoundsException("index(" + mCurrentIndex + ") out of bounds");
 		}
 
@@ -45,10 +55,7 @@ public object CharacterIterator extends Iterator<string> {
 	 * throws OutOfBoundsException
 	 */
 	public string lookAHead(int offset = 1) const throws {
-		if ( offset <= 0 ) {
-			throw new Exception("invalid look ahead offset(" + offset + ")");
-		}
-		if ( mCurrentIndex + offset >= mLength ) {
+		if ( mCurrentIndex + offset < 0 || mCurrentIndex + offset > mLength ) {
 			throw new OutOfBoundsException("index(" + mCurrentIndex + offset + ") out of bounds");
 		}
 
@@ -69,6 +76,18 @@ public object CharacterIterator extends Iterator<string> {
 	}
 
 	/*
+	 * returns the next character of the held string value without changing the current iteration index
+	 * throws OutOfBoundsException
+	 */
+	public string peek(int pos = 1) modify throws {
+		if ( mCurrentIndex + pos < 0 || mCurrentIndex + pos > mLength ) {
+			throw new OutOfBoundsException("index(" + mCurrentIndex + pos + ") out of bounds");
+		}
+
+		return substr(mValue, mCurrentIndex, pos);
+	}
+
+	/*
 	 * resets the current iteration
 	 */
 	public void reset(string value = "") modify {
@@ -80,10 +99,17 @@ public object CharacterIterator extends Iterator<string> {
 	/*
 	 * returns the value of the current iteration
 	 * equivalent to calling current()
-	 * throws OutOfBoundsException
+	 * throws NotInitializedException, OutOfBoundsException
 	 */
 	public string =operator(string) const throws {
 		return current();
+	}
+
+	/*
+	 * Equality operator
+	 */
+	public bool operator==(CharacterIterator other const) const {
+		return mValue == other.mValue && mCurrentIndex == other.mCurrentIndex;
 	}
 
 	/*
@@ -96,7 +122,7 @@ public object CharacterIterator extends Iterator<string> {
 	}
 
 	private int mCurrentIndex;
-	private int mLength;
-	private string mValue;
+	private int mLength const;
+	private string mValue const;
 }
 

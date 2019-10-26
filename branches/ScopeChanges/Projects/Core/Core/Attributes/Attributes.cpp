@@ -57,20 +57,6 @@ bool GenericAttributes::isStatic() const
 	return mMemoryLayout == MemoryLayout::Static;
 }
 
-void GenericAttributes::setConst(bool state)
-{
-	checkSealState();
-
-	mMutability = state ? Mutability::Const : Mutability::Modify;
-}
-
-void GenericAttributes::setStatic(bool state)
-{
-	checkSealState();
-
-	mMemoryLayout = state ? MemoryLayout::Static : MemoryLayout::Instance;
-}
-
 void GenericAttributes::setLanguageFeatureState(LanguageFeatureState::E value)
 {
 	checkSealState();
@@ -143,11 +129,6 @@ bool MethodAttributes::isFinal() const
 	return mVirtuality == Virtuality::Final;
 }
 
-bool MethodAttributes::isStatic() const
-{
-	return mMemoryLayout == MemoryLayout::Static;
-}
-
 void MethodAttributes::setAlgorithm(Algorithm::E value)
 {
 	checkSealState();
@@ -206,10 +187,16 @@ void NamespaceAttributes::setSealed(bool state)
 
 
 ObjectAttributes::ObjectAttributes()
-: mImplementationType(ImplementationType::Unspecified),
+: mBluePrintType(BluePrintType::Unknown),
+  mImplementationType(ImplementationType::Unspecified),
   mIsMember(false)
 {
 	setMutability(Mutability::Modify);
+}
+
+BluePrintType::E ObjectAttributes::getBluePrintType() const
+{
+	return mBluePrintType;
 }
 
 ImplementationType::E ObjectAttributes::getImplementationType() const
@@ -225,6 +212,11 @@ bool ObjectAttributes::isMember() const
 bool ObjectAttributes::isSealed() const
 {
 	return mIsSealed;
+}
+
+void ObjectAttributes::setBluePrintType(ObjectiveScript::BluePrintType::E value)
+{
+	mBluePrintType = value;
 }
 
 void ObjectAttributes::setImplementationType(ImplementationType::E value)

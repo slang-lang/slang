@@ -67,7 +67,7 @@ private:
 private: // Execution
 	void collectScopeTokens(TokenIterator& token, TokenList& tokens);
 
-	Statements* generate(const TokenList &tokens, bool allowBreakAndContinue = false, bool needsControlStatement = false);
+	Statements* generate(const TokenList& tokens, bool allowBreakAndContinue = false, bool needsControlStatement = false);
 
 	// token processing
 	// {
@@ -75,6 +75,7 @@ private: // Execution
 	Statement* process_assert(TokenIterator& token);
 	Expression* process_assignment(TokenIterator& token, SymbolExpression* lhs);
 	Statement* process_break(TokenIterator& token);
+	Expression* process_cast(TokenIterator& token);
 	Statement* process_continue(TokenIterator& token);
 	Expression* process_copy(TokenIterator& token);
 	Statement* process_delete(TokenIterator& token);
@@ -109,7 +110,8 @@ private: // Execution
 	Node* parseCondition(TokenIterator& start);
 	Node* parseExpression(TokenIterator& start);
 	Node* parseFactor(TokenIterator &start);
-	Node* parseInfixPostfix(TokenIterator& start);
+	Node* parseInfix(TokenIterator &start);
+	Node* parsePostfix(TokenIterator& start, Node* baseExp);
 	Node* parseTerm(TokenIterator& start);
 	// }
 
@@ -118,6 +120,7 @@ private: // Execution
 	Node* processIsOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixIncDecOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixNotOperator(TokenIterator& start, Node* baseExp);
+	Node* processPostfixObjectOperator(const std::string& objectType, TokenIterator& start, Expression* baseExp);
 	Node* processPostfixRangeOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixScopeOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixSubscriptOperator(TokenIterator& start, Node* baseExp);
@@ -145,8 +148,8 @@ private: // Execution
 	// Token stack
 	// {
 	inline const TokenList& getTokens() const;
-	void popTokens();
-	void pushTokens(const TokenList& tokens);
+	inline void popTokens();
+	inline void pushTokens(const TokenList& tokens);
 	// }
 
 private:	// Initialization

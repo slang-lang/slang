@@ -36,13 +36,24 @@ SemanticVersionNumber& SemanticVersionNumber::operator=(const std::string& versi
 
 bool SemanticVersionNumber::operator==(const SemanticVersionNumber& other) const
 {
-	return mMajor == other.mMajor && mMinor == other.mMinor && mBugfix == other.mBugfix;
+	return mMajor == other.mMajor && mMinor == other.mMinor && mBugfix == other.mBugfix && mLabel == other.mLabel;
+}
+
+bool SemanticVersionNumber::operator==(const std::string& other) const
+{
+	SemanticVersionNumber otherVersion(other);
+
+	return operator==(otherVersion);
 }
 
 bool SemanticVersionNumber::operator<(const SemanticVersionNumber& other) const
 {
 	if ( mMajor == other.mMajor ) {
 		if ( mMinor == other.mMinor ) {
+			if ( mBugfix == other.mBugfix ) {
+				return mLabel < other.mLabel;
+			}
+
 			return mBugfix < other.mBugfix;
 		}
 
@@ -66,21 +77,24 @@ void SemanticVersionNumber::parse(const std::string& version)
 	}
 
 	std::string bugfix;
+	std::string label;
 	std::string major;
 	std::string minor;
-	std::string tmp;
+	std::string tmp = version;
 
-	Utils::Tools::splitBy(version, '.', major, tmp);
-	Utils::Tools::splitBy(tmp, '.', minor, bugfix);
+	Utils::Tools::splitBy(tmp, '.', major, tmp);
+	Utils::Tools::splitBy(tmp, '.', minor, tmp);
+	Utils::Tools::splitBy(tmp, '-', bugfix, label);
 
 	mMajor = Utils::Tools::stringToInt(major);
 	mMinor = Utils::Tools::stringToInt(minor);
 	mBugfix = Utils::Tools::stringToInt(bugfix);
+	mLabel = label;
 
-	mIsValid = mMajor != 0 || mMinor != 0 || mBugfix != 0;
+	mIsValid = mMajor != 0 || mMinor != 0 || mBugfix != 0 || !mLabel.empty();
 }
 
 std::string SemanticVersionNumber::toString() const
 {
-	return Utils::Tools::toString(mMajor) + "." + Utils::Tools::toString(mMinor) + "." + Utils::Tools::toString(mBugfix);
+	return Utils::Tools::toString(mMajor) + "." + Utils::Tools::toString(mMinor) + "." + Utils::Tools::toString(mBugfix) + (!mLabel.empty() ? "-" + mLabel : "");
 }

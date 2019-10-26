@@ -55,7 +55,7 @@ public void Main(int argc, string args) {
 	}
 }
 
-private string alphabetize(String word ref) {
+private string alphabetize(String word) {
 	StringSet sorted = new StringSet();
 
 	int length = word.Length();
@@ -65,7 +65,7 @@ private string alphabetize(String word ref) {
 
 	word = "";
 	foreach ( String s : sorted ) {
-		word = word + s;
+		word += s;
 	}
 
 	return string word;

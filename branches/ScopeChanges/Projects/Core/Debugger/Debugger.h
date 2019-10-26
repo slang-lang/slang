@@ -70,7 +70,6 @@ public:
 
 private:
 	BreakPointCollection::iterator findBreakPoint(const Token& token);
-	void resetCurrentScope(IScope* scope = 0);
 
 private:
 	Debugger();
@@ -82,7 +81,6 @@ private:
 	bool mBreakOnExceptionCatch;
 	bool mBreakOnExceptionThrow;
 	BreakPointCollection mBreakPoints;
-	IScope* mCurrentScope;
 	NextAction::E mNextAction;
 	Core::IReceiver* mReceiver;
 	bool mUseDebugger;

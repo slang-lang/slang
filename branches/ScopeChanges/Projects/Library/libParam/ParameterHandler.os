@@ -1,26 +1,21 @@
 
 // Library imports
-import System.Collections.IIterateable;
+import System.CharacterIterator;
 import System.Collections.List;
 import System.Exception;
-import System.StringIterator;
 
 // Project imports
 
 
 public object Parameter {
-	public string FullValue;
+/*
+ * Public
+ */
+
 	public string Key;
 	public string Value;
 
-	public void Constructor(string fullValue) {
-		FullValue = fullValue;
-		Key = fullValue;
-		Value = fullValue;
-	}
-
-	public void Constructor(string key, string value, string fullValue) {
-		FullValue = fullValue;
+	public void Constructor(string key, string value) {
 		Key = key;
 		Value = value;
 	}
@@ -32,29 +27,33 @@ public object Parameter {
 	public string =operator(string) const {
 		return Value;
 	}
+
+	public string toString() const {
+		return "Key: '" + Key + "', Value: '" + Value + "'";
+	}
 }
 
-public object ParameterHandler implements IIterateable {
-// Public interface
+public object ParameterHandler implements IIterable {
+/*
+ * Public
+ */
 
-	public void Constructor(int argc, string args, bool skipProgramName = false) {
-		mArgc = argc;
-		mArgs = args;
+	public void Constructor(int argc, string args, bool skipProgramName = true) {
 		mParameters = new List<Parameter>();
 
-		process();
+		process(args);
 
 		if ( skipProgramName && mParameters.size() > 0 ) {
+			argc--;
 			// remove first parameter
 			mParameters.erase(0);
 		}
+
+		// verify that we correctly parsed all arguments
+		assert( argc == mParameters.size() );
 	}
 
 	public Parameter at(int index) const throws {
-		if ( index < 0 || index >= mParameters.size() ) {
-			throw new OutOfBoundsException("Index (" + index + ") out of bounds");
-		}
-
 		return mParameters.at(index);
 	}
 
@@ -86,43 +85,93 @@ public object ParameterHandler implements IIterateable {
 		throw new Exception("key('" + key + "') not found!");
 	}
 
+	public bool remove(string key) modify throws {
+		int idx;
+
+		foreach ( Parameter p : mParameters ) {
+			if ( p == key ) {
+				mParameters.erase( idx );
+				return true;
+			}
+
+			idx++;
+		}
+
+		return false;
+	}
+
 	public int size() const {
 		return mParameters.size();
 	}
 
-// Private
+/*
+ * Private
+ */
+	private void insertParameter(string key, string value) modify {
+		int startPos;
 
-	private void process() modify {
-		StringIterator it = new StringIterator(mArgs, LINEBREAK_UNIX);
-
-		while ( it.hasNext() ) {
-			string current = it.next();
-			int keyPos = 0;
-			int startPos = 0;
-
-			if ( substr(current, 0, 1) == "-" ) {
-				startPos = 1;
-
-				if ( substr(current, 1, 1) == "-" ) {
-					startPos = 2;
-				}
+		if ( substr(key, 0, 1) == "-" ) {
+			startPos = 1;
+			if ( substr(key, 0, 2) == "--" ) {
+				startPos = 2;
 			}
-
-			if ( (keyPos = strfind(current, "=")) > 0 ) {
-				// extract key, value
-				mParameters.push_back(new Parameter(substr(current, startPos, keyPos - startPos), substr(current, keyPos + 1, strlen(current)), current));
-				continue;
-			}
-
-			mParameters.push_back(new Parameter(substr(current, startPos)));
 		}
 
-		// verify that we correctly parsed all arguments
-		assert( mArgc == mParameters.size() );
+		mParameters.push_back(new Parameter(substr(key, startPos), value));
 	}
 
-	private int mArgc;
-	private string mArgs;
+	private void process(string args) modify {
+		bool isEscape;
+		bool isString;
+		bool isValue;
+		string key;
+		string param;
+
+		var it = new CharacterIterator(args);
+
+		string c;
+		while ( it.hasNext() ) {
+			c = it.next();
+
+			switch ( true ) {
+				case !isEscape && c == "\"": {
+					isString = !isString;
+					break;
+				}
+				case !isEscape && c == "\\": {
+					isEscape = !isEscape;
+					break;
+				}
+				case !isString && (c == " " || c == LINEBREAK): {
+					if ( param || isValue ) {
+						insertParameter(isValue ? key : param, isValue ? param : "");
+					}
+
+					isEscape = false;
+					isString = false;
+					isValue = false;
+					key = "";
+					param = "";
+					break;
+				}
+				case !isString && c == "=": {
+					isValue = true;
+
+					key = param;
+					param = "";
+					break;
+				}
+				default: {
+					isEscape = false;
+					param += c;
+					break;
+				}
+			}
+		}
+
+		insertParameter(isValue ? key : param, isValue ? param : "");
+	}
+
 	private List<Parameter> mParameters;
 }
 

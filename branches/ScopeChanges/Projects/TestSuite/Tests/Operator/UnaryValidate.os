@@ -11,9 +11,9 @@ private object TestObject {
 	}
 }
 
-public void Main(int argc, string argv) {
+public void Main(int argc = 0, string argv = "") {
 	assert( TestCase1() );
-	//assert( TestCase2() );
+	assert( TestCase2() );
 	//assert( TestCase3() );
 }
 
@@ -31,7 +31,7 @@ private bool TestCase2() const {
 
 	try {
 		TestObject obj;
-		obj.getValue();
+		return bool obj!.getValue();
 
 		assert(!"obj validation failed!");
 	}

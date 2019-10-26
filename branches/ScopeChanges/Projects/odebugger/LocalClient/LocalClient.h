@@ -46,23 +46,19 @@ public:
 	bool addBreakPoint(const StringList& tokens);
 	bool removeBreakPoint(const StringList& tokens);
 
-	void continueExecution();
 	void executeMethod(const StringList &tokens);
 	MethodSymbol* getMethod(std::string name, const ParameterList& params) const;
 	Symbol* getSymbol(std::string name) const;
 	bool modifySymbol(const StringList& tokens);
-	void printBreakPoints();
-	void printStackTrace();
-	void printSymbol(const StringList& tokens);
-	void printThreads();
-	void printWatches();
 	void setCurrentFrame(Common::FrameId frameId);
 	void setCurrentFrame(const StringList& tokens);
 	void setCurrentThread(Common::ThreadId threadId);
 	void setCurrentThread(const StringList& tokens);
 
+    void continueExecution();
 	void run(const StringList &tokens);
 	void shutdown();
+    void start();
 	void stop();
 
 public:	// IReceiver implementation
@@ -71,6 +67,8 @@ public:	// IReceiver implementation
 	int notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint);
 	int notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint);
 	int notifyExit(IScope* scope, const Core::BreakPoint& breakpoint);
+
+    int handleBreakpoint(IScope* scope, const Core::BreakPoint& breakpoint);
 
 private:	// Configuration
 	void loadConfig();
@@ -98,9 +96,13 @@ private:
 	StringList parseCommands(const std::string& commands) const;
 	void prepare(const StringList& tokens);
 	void printHelp();
-	void printScope(IScope* scope);
+    void printBreakPoints();
+    void printScope(IScope* scope);
+    void printStackTrace();
+    void printSymbol(const StringList& tokens);
+    void printThreads();
+    void printWatches();
 	std::string read();
-	void start();
 	void toggleAutoList();
 	void toggleAutoStart();
 	void toggleAutoStop();

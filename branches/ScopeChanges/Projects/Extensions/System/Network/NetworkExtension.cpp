@@ -11,6 +11,7 @@
 #include "Connect.h"
 #include "Listen.h"
 #include "Read.h"
+#include "Shutdown.h"
 #include "Socket.h"
 #include "Write.h"
 
@@ -71,8 +72,16 @@ void SystemNetworkExtension::initialize(IScope* scope)
 	scope->define("INADDR_ANY", new Runtime::StringObject(std::string("0.0.0.0")));
 
 
-	// finalize initialization
-	AExtension::initialize(scope);
+	/*
+	 * howto arguments for shutdown(2), specified by Posix.1g.
+	 */
+#ifdef _WIN32
+	 // Win32 only
+#else
+	scope->define("SHUT_RD", new Runtime::IntegerObject(SHUT_RD));		// shut down the reading side
+	scope->define("SHUT_WR", new Runtime::IntegerObject(SHUT_WR));		// shut down the writing side
+	scope->define("SHUT_RDWR", new Runtime::IntegerObject(SHUT_RDWR));	// shut down both sides
+#endif
 }
 
 void SystemNetworkExtension::provideMethods(ExtensionMethods &methods)
@@ -87,6 +96,7 @@ void SystemNetworkExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new ReadFloat());
 	methods.push_back(new ReadInt());
 	methods.push_back(new ReadString());
+	methods.push_back(new Shutdown());
 	methods.push_back(new Socket());
 	methods.push_back(new WriteBool());
 	methods.push_back(new WriteDouble());

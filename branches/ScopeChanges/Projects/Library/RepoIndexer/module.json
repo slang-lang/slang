@@ -1,0 +1,16 @@
+{
+  "name": "ObjectiveScript repository indexer",
+  "name_short": "RepoIndexer",
+  "version": "1.0.0",
+  "description": "Creates an index of an ObjectiveScript repository",
+  "dependencies": [
+    { "module": "ObjectiveScript", "version_min": "0.6.5" },
+    { "module": "System", "version_min": "0.2.3" },
+    { "module": "libParam", "version_min": "0.2.3" }
+  ],
+  "target": {
+    "directory": "RepoIndexer",
+    "type": "internal"
+  },
+  "type": "application"
+}

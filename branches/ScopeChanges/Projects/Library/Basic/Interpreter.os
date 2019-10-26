@@ -1,10 +1,12 @@
 
 // library imports
 import System.Collections.Map;
+import System.Collections.Stack;
 import System.String;
 
 // project imports
 import Line;
+
 
 public int FIRST_LINE const = 10;
 
@@ -13,51 +15,121 @@ public enum ControlFlow {
 	Normal;
 }
 
-public object Interpreter {
-	protected int mCurrentLine;
-	protected Map<string, int> mForStack;
-	protected Map<int, Line> mLines;
-	protected Map<string, String> mVariables;
 
+public object RuntimeException const implements IException {
+    public void Constructor(string msg) {
+        mMessage = msg;
+    }
+
+    public string what() const {
+        return mMessage;
+    }
+
+    private string mMessage const;
+}
+
+
+public object Interpreter {
 	public void Constructor(Object lines) {
 		assert(lines is Map<int, Line>);
 
 		mCurrentLine = FIRST_LINE;
 		mForStack = new Map<string, int>();
 		mLines = Map<int, Line> lines;
+		mReturnStack = new Stack<int>();
 		mVariables = new Map<string, String>();
+	}
+
+	public int run(bool debug = false) modify throws {
+		if ( !mLines || mLines.empty() ) {
+			throw new Exception("no valid lines to interpret!");
+		}
+
+		mForStack.clear();
+		mReturnStack.clear();
+		mVariables.clear();
+
+		if ( debug ) {
+			print("Started interpreting statements...");
+		}
+
+		try {
+			Line line;
+
+			while ( mCurrentLine > 0 ) {
+				//print("LINE: " + mCurrentLine);
+
+				line = mLines.get(mCurrentLine);
+
+				mCurrentLine = process(line.mStatement) ?: line.nextLine();
+			}
+		}
+		catch ( ControlFlow e ) {
+			switch ( e ) {
+				case ControlFlow.Exit: {
+					//print("ControlFlow: Exit");
+					break;
+				}
+				case ControlFlow.Normal: {
+					//print("ControlFlow: Normal");
+					break;
+				}
+				default: {
+					print("ControlFlow: Unknown!");
+					break;
+				}
+			}
+		}
+
+		if ( debug ) {
+			print("Done interpreting.");
+		}
+
+		return 0;
 	}
 
 	protected int process(Statement stmt) modify throws {
 		//print("process(" + stmt.toString() + ")");
 
-		switch ( true ) {
-			case stmt is DimStatement: {
+		switch ( stmt.mStatementType ) {
+			case StatementType.DimStatement: {
 				return processDIM(DimStatement stmt);
 			}
-			case stmt is EndStatement: {
+			case StatementType.EndStatement: {
 				return processEND(EndStatement stmt);
 			}
-			case stmt is ForStatement: {
+			case StatementType.ForStatement: {
 				return processFOR(ForStatement stmt);
 			}
-			case stmt is GotoStatement: {
+			case StatementType.GoSubStatement: {
+				return processGOSUB(GotoStatement stmt);
+			}
+			case StatementType.GotoStatement: {
 				return processGOTO(GotoStatement stmt);
 			}
-			case stmt is IfStatement: {
+			case StatementType.IfStatement: {
 				return processIF(IfStatement stmt);
 			}
-			case stmt is InputStatement: {
+			case StatementType.InputStatement: {
 				return processINPUT(InputStatement stmt);
 			}
-			case stmt is LetStatement: {
+			case StatementType.LetStatement: {
 				return processLET(LetStatement stmt);
 			}
-			case stmt is NextStatement: {
+			case StatementType.NextStatement: {
 				return processNEXT(NextStatement stmt);
 			}
-			case stmt is PrintStatement: {
+			case StatementType.PrintStatement: {
 				return processPRINT(PrintStatement stmt);
+			}
+			case StatementType.RemStatement: {
+				return 0;
+			}
+			case StatementType.ReturnStatement: {
+				return processRETURN(ReturnStatement stmt);
+			}
+			default: {
+				throw "invalid statement type";
 			}
 		}
 
@@ -178,12 +250,27 @@ public object Interpreter {
 			case exp is ConstStringExpression: {
 				return processConstStringExpression(ConstStringExpression exp);
 			}
+			case exp is FunctionExpression: {
+				return processFunctionExpression(FunctionExpression exp);
+			}
 			case exp is VariableExpression: {
 				return processVariableExpression(VariableExpression exp);
 			}
 		}
 
 		throw "Unhandled expression found!";
+	}
+
+	private string processFunctionExpression(FunctionExpression exp) const throws {
+		print("processFunctionExpression(" + exp.toString() + ")");
+
+		switch ( exp.mName ) {
+			case "ABS": { return functionABS(exp); }
+			case "POW": { return functionPOW(exp); }
+			case "SQR": { return functionSQR(exp); }
+		}
+
+		return "";
 	}
 
 	private string processVariableExpression(VariableExpression exp) const throws {
@@ -249,6 +336,21 @@ public object Interpreter {
 		}
 
 		return 0;
+	}
+
+	private int processGOSUB(GotoStatement stmt) modify throws {
+		assert(stmt);
+
+		if ( stmt.mFollowingStatement ) {
+			throw "GOTO does not support following statements!";
+		}
+
+		var line = mLines.get(mCurrentLine);
+		if ( line ) {
+			mReturnStack.push(line.nextLine());
+		}
+
+		return stmt.mLine;
 	}
 
 	private int processGOTO(GotoStatement stmt) const throws {
@@ -321,47 +423,64 @@ public object Interpreter {
 		return stmt.mFollowingStatement ? process(stmt.mFollowingStatement) : 0;
 	}
 
-	public int run() modify throws {
-		if ( !mLines || mLines.empty() ) {
-			throw new Exception("no valid lines to interpret!");
-		}
+	private int processRETURN(ReturnStatement stmt) modify {
+		assert(stmt);
 
-		mForStack.clear();
-		mVariables.clear();
+		var line = mReturnStack.peek();
+		mReturnStack.pop();
 
-		//print("Started interpreting statements...");
-
-		try {
-			Line line;
-
-			while ( mCurrentLine > 0 ) {
-				//print("LINE: " + mCurrentLine);
-
-				line = mLines.get(mCurrentLine);
-
-				mCurrentLine = process(line.mStatement) ?: line.nextLine();
-			}
-		}
-		catch ( ControlFlow e ) {
-			switch ( e ) {
-				case ControlFlow.Exit: {
-					//print("ControlFlow: Exit");
-					break;
-				}
-				case ControlFlow.Normal: {
-					//print("ControlFlow: Normal");
-					break;
-				}
-				default: {
-					print("ControlFlow: Unknown!");
-					break;
-				}
-			}
-		}
-
-		//print("Done interpreting.");
-
-		return 0;
+		return line;
 	}
+
+	//////////////////////////////////////////////////////
+
+	private string functionABS(FunctionExpression exp) const throws {
+		print("functionABS(" + exp.toString() + ")");
+
+		if ( exp.mParameters.size() != 1 ) {
+			throw new RuntimeException("invalid number of parameters for function ABS()");
+		}
+
+		var param1 = float processExpression(exp.mParameters.at(0));
+		print("param1 = '" + param1 + "'");
+
+		return "" + (param1 >= 0 ? param1 : param1 * -1);
+	}
+
+	private string functionPOW(FunctionExpression exp) const throws {
+		print("functionPOW(" + exp.toString() + ")");
+
+		if ( exp.mParameters.size() != 2 ) {
+			throw new RuntimeException("invalid number of parameters for function POW()");
+		}
+
+		var param1 = float processExpression(exp.mParameters.at(0));
+		print("param1 = '" + param1 + "'");
+
+		var param2 = float processExpression(exp.mParameters.at(0));
+		print("param2 = '" + param2 + "'");
+
+		return "" + param1 * param2;
+	}
+
+	private string functionSQR(FunctionExpression exp) const throws {
+		print("functionSQR(" + exp.toString() + ")");
+
+		if ( exp.mParameters.size() != 1 ) {
+			throw new RuntimeException("invalid number of parameters for function SQR()");
+		}
+
+		var param1 = float processExpression(exp.mParameters.at(0));
+		print("param1 = '" + param1 + "'");
+
+		return "" + param1 * param1;
+	}
+
+
+	protected int mCurrentLine;
+	protected Map<string, int> mForStack;
+	protected Map<int, Line> mLines;
+	protected Stack<int> mReturnStack;
+	protected Map<string, String> mVariables;
 }
 

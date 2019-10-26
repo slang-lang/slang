@@ -14,19 +14,20 @@
     <ProjectGuid>{E4C9A60C-AA55-424F-8ABA-B82E60316724}</ProjectGuid>
     <RootNamespace>Extensions</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v100</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -53,15 +54,12 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>.\;..\Core;..\Extensions;..\Externals;..\Utils;$(JSON);$(MYSQL)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FloatingPointModel>Precise</FloatingPointModel>
       <PrecompiledHeader />
       <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ShowIncludes>false</ShowIncludes>
       <UseFullPaths>true</UseFullPaths>
       <OmitDefaultLibName>false</OmitDefaultLibName>
@@ -76,17 +74,14 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>.\;..\Core;..\Externals;..\Utils;$(JSON);$(MYSQL)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;..\Core;..\Extensions;..\Externals;..\Utils;$(JSON);$(MYSQL)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <StringPooling>true</StringPooling>
-      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointModel>Precise</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <PrecompiledHeader />
       <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat />
       <UseFullPaths>true</UseFullPaths>
       <OmitDefaultLibName>true</OmitDefaultLibName>
     </ClCompile>
@@ -106,37 +101,6 @@
     <ClInclude Include="JSON\FromJson.h" />
     <ClInclude Include="JSON\JsonExtension.h" />
     <ClInclude Include="JSON\ToJson.h" />
-    <ClInclude Include="Mysql\MysqlAffectedRows.h" />
-    <ClInclude Include="Mysql\MysqlClose.h" />
-    <ClInclude Include="Mysql\MysqlDataSeek.h" />
-    <ClInclude Include="Mysql\MysqlErrno.h" />
-    <ClInclude Include="Mysql\MysqlError.h" />
-    <ClInclude Include="Mysql\MysqlExtension.h" />
-    <ClInclude Include="Mysql\MysqlFieldCount.h" />
-    <ClInclude Include="Mysql\MysqlFieldSeek.h" />
-    <ClInclude Include="Mysql\MysqlFieldTell.h" />
-    <ClInclude Include="Mysql\MysqlFreeResult.h" />
-    <ClInclude Include="Mysql\MysqlGetClientInfo.h" />
-    <ClInclude Include="Mysql\MysqlGetFieldName.h" />
-    <ClInclude Include="Mysql\MysqlGetFieldValue.h" />
-    <ClInclude Include="Mysql\MysqlInfo.h" />
-    <ClInclude Include="Mysql\MysqlInit.h" />
-    <ClInclude Include="Mysql\MysqlNextResult.h" />
-    <ClInclude Include="Mysql\MysqlNextRow.h" />
-    <ClInclude Include="Mysql\MysqlNumFields.h" />
-    <ClInclude Include="Mysql\MysqlNumRows.h" />
-    <ClInclude Include="Mysql\MysqlPing.h" />
-    <ClInclude Include="Mysql\MysqlQuery.h" />
-    <ClInclude Include="Mysql\MysqlRealConnect.h" />
-    <ClInclude Include="Mysql\MysqlRealEscapeString.h" />
-    <ClInclude Include="Mysql\MysqlRowCount.h" />
-    <ClInclude Include="Mysql\MysqlRowSeek.h" />
-    <ClInclude Include="Mysql\MysqlRowTell.h" />
-    <ClInclude Include="Mysql\MysqlSelectDB.h" />
-    <ClInclude Include="Mysql\MysqlStat.h" />
-    <ClInclude Include="Mysql\MysqlStoreResult.h" />
-    <ClInclude Include="Mysql\MysqlUseResult.h" />
-    <ClInclude Include="Mysql\Types.h" />
     <ClInclude Include="System\Ascii.h" />
     <ClInclude Include="System\AssertMsg.h" />
     <ClInclude Include="System\Console\Cerr.h" />
@@ -178,6 +142,8 @@
     <ClInclude Include="System\Network\Socket.h" />
     <ClInclude Include="System\Network\Write.h" />
     <ClInclude Include="System\Print.h" />
+    <ClInclude Include="System\PutEnv.h" />
+    <ClInclude Include="System\SetEnv.h" />
     <ClInclude Include="System\SetKeyboardBlockingMode.h" />
     <ClInclude Include="System\Sleep.h" />
     <ClInclude Include="System\StdTime.h" />
@@ -209,11 +175,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Json\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Json\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Mysql\MysqlExtension.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Mysql\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Mysql\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Mysql\Types.cpp" />
     <ClCompile Include="System\Console\Console.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
