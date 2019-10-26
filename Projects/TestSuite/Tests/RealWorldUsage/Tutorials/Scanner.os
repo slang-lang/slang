@@ -1,9 +1,9 @@
 
-import System.Collections.IIterateable;
+import System.Collections.IIterable;
 import System.IO.File;
 import System.StringIterator;
 
-public object Scanner implements IIterateable {
+public object Scanner implements IIterable {
 	private string mSeparator = " ";
 	private string mText;
 

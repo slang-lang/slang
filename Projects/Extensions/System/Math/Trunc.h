@@ -14,7 +14,6 @@
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Tools.h>
-#include <Tools/Strings.h>
 #include "Defines.h"
 
 // Forward declarations

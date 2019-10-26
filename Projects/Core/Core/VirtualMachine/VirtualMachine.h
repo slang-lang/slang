@@ -11,6 +11,11 @@
 // Project includes
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Extensions/AExtension.h>
+#ifdef _WIN32
+	// Extension loading is not supported under Windows
+#else
+#	include <Core/Extensions/ExtensionManager.h>
+#endif
 #include <Core/Parameter.h>
 #include <Core/Types.h>
 
@@ -33,11 +38,15 @@ public:
 	class Settings {
 	public:
 		Settings()
-		: DoSanityCheck(true),
+		: DoCollectErrors(false),
+		  DoSanityCheck(true),
+		  DoSkipExtensions(false),
 		  DoSyntaxCheck(false)
 		{ }
 
+		bool DoCollectErrors;
 		bool DoSanityCheck;
+		bool DoSkipExtensions;
 		bool DoSyntaxCheck;
 	};
 
@@ -46,29 +55,34 @@ public:
 	~VirtualMachine();
 
 public:	// Setup
-	void addExtension(Extensions::AExtension *extension);
+	void addExtension(AExtension *extension);
 	void addLibraryFolder(const std::string &library);
 	void init();
 	Settings& settings();
 
 public:
-	Script* createScriptFromFile(const std::string& filename, bool collectErrors = false);
-	Script* createScriptFromString(const std::string& content, bool collectErrors = false);
+	Script* createScriptFromFile(const std::string& filename);
+	Script* createScriptFromString(const std::string& content);
 
-	void run(Script* script, const ParameterList& params = ParameterList(), Runtime::Object* result = 0);
-	void runScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList(), Runtime::Object* result = 0);
-	void runScriptFromString(const std::string& content, const ParameterList& params = ParameterList(), Runtime::Object* result = 0);
+	void run(Script* script, const ParameterList& params = ParameterList(), Runtime::Object* result = NULL);
+	void runScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList(), Runtime::Object* result = NULL);
+	void runScriptFromString(const std::string& content, const ParameterList& params = ParameterList(), Runtime::Object* result = NULL);
 
 private:
 	typedef std::set<Script*> ScriptCollection;
 
 private:
-	Script* createScript(const std::string& content, bool collectErrors = false);
+	Script* createScript(const std::string& content);
 	bool loadExtensions();
 	bool loadLibrary(const std::string& library);
 	void printLibraryFolders();
 
 private:
+#ifdef _WIN32
+	// Extension loading is not supported under Windows
+#else
+	Extensions::ExtensionManager mExtensionManager;
+#endif
 	Extensions::ExtensionList mExtensions;
 	StringSet mImportedLibraries;
 	bool mIsInitialized;

@@ -13,7 +13,7 @@ public enum Day {
 public object EnumTest {
 	private Day mDay;
     
-	public void Constructor(Day day val) {
+	public void Constructor(Day day) {
 		mDay = day;
 	}
     

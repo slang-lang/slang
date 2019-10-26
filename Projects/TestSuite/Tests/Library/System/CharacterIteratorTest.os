@@ -13,7 +13,7 @@ private bool TestCase1() {
 	string source = "This is a string";
 	string target;
 
-	CharacterIterator it = new CharacterIterator(source);
+	var it = new CharacterIterator(source);
 
 	while ( it.hasNext() ) {
 		it.next();
@@ -36,7 +36,7 @@ private bool TestCase2() {
 	string source = "This is a string";
 	string target;
 
-	for ( CharacterIterator it = new CharacterIterator(source); it.hasNext(); ) {
+	for ( var it = new CharacterIterator(source); it.hasNext(); ) {
 		it.next();
 
 		target += it.current();

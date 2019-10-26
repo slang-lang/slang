@@ -40,6 +40,7 @@ private:	// Tests
 	void testConstCorrectness2();
 	void testConstCorrectness3();
 	void testConstCorrectness4();
+	void testConstCorrectness5();
 	void testExit();
 	void testExpression();
 	void testFor();
@@ -57,6 +58,7 @@ private:	// Tests
 	void testThrow();
 	void testTry();
 	void testTypecast();
+	void testTypecastExpression();
 	void testTypeDeclaration();
 	void testTypeInference();
 	void testTypeSystem();

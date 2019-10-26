@@ -26,7 +26,7 @@ private bool TestRecursion(int value) {
 		return true;
 	}
 
-	value = value - 1;
+	value--;
 
 	return TestRecursion(value);
 }

@@ -114,12 +114,12 @@ bool BluePrintGeneric::isAtomicType() const
 
 bool BluePrintGeneric::isAbstract() const
 {
-	return getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
+	return mImplementationType == ImplementationType::Abstract || mBluePrintType == BluePrintType::Interface;
 }
 
 bool BluePrintGeneric::isInterface() const
 {
-	return getImplementationType() == ImplementationType::Interface;
+	return mBluePrintType == BluePrintType::Interface;
 }
 
 bool BluePrintGeneric::isPrototype() const

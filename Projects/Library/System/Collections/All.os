@@ -4,7 +4,7 @@
 import CollectionItem;
 import DoubleLinkedList;
 import ICollection;
-import IIterateable;
+import IIterable;
 import Iterator;
 import List;
 import Map;

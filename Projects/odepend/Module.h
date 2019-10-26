@@ -4,14 +4,17 @@
 
 
 // Library includes
+#include <set>
 #include <string>
-#include <Json/Value.h>
 
 // Project includes
 #include "Dependency.h"
 #include "Version.h"
 
 // Forward declarations
+namespace Json {
+	class Value;
+}
 
 // Namespace declarations
 
@@ -30,7 +33,7 @@ public:
 
 public:
 	Module();
-	Module(const std::string& name_short, const std::string& version);
+	Module(const std::string& name_short, const std::string& version, const std::string& source);
 	~Module();
 
 public:
@@ -38,6 +41,7 @@ public:
 	bool operator==(const Module& other) const;
 
 public:
+	bool isValid() const;
 	bool loadFromJson(const Json::Value& value);
 	std::string toVersionString() const;
 
@@ -48,10 +52,14 @@ public:
 	std::string mInstalledDirectory;
 	std::string mLongName;
 	std::string mShortName;
+	std::string mSource;
 	std::string mTargetDirectory;
 	std::string mURL;
 	SemanticVersionNumber mVersion;
 };
 
+typedef std::set<Module> Modules;
+
 
 #endif
+

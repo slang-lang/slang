@@ -67,13 +67,14 @@ void split(const std::string& str, std::string& p, std::string& c)
 
 void splitBy(const std::string& str, char splitter, std::string& p, std::string& c)
 {
-	c = "";
-
 	unsigned long pos = str.find_first_of(splitter);
 
 	p = str.substr(0, pos);
 	if ( p.size() != str.size() ) {
-		c = str.substr(pos + 1, str.size());
+		c = str.substr(pos + 1, str.size() - pos - 1);
+	}
+	else {
+		c = "";
 	}
 }
 

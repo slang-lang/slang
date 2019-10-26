@@ -7,44 +7,22 @@ public namespace System.IO {
 		Append = 0,
 		AppendUpdate = 1,
 		ReadOnly = 2,
-		ReadWrite = 3,
-		ReadUpdate = 4,
+		ReadUpdate = 3,
+		ReadWrite = 4,
 		WriteOnly = 5,
 		WriteUpdate = 6;
 	}
 
-	private string MapFileAccessModeToString(FileAccessMode mode const) const throws {
-		switch ( mode ) {
-			case FileAccessMode.Append: { return "a"; }
-			case FileAccessMode.AppendUpdate: { return "a+"; }
-			case FileAccessMode.ReadOnly: { return "r"; }
-			case FileAccessMode.ReadWrite: { return "rw"; }
-			case FileAccessMode.ReadUpdate: { return "r+"; }
-			case FileAccessMode.WriteOnly: { return "w"; }
-			case FileAccessMode.WriteUpdate: { return "w+"; }
-		}
-
-		throw new Exception("invalid access mode(" + (string mode) + ") provided!");
-	}
-
 	public object File {
-		private string mAccessMode;
-		private string mFilename;
-		private int mHandle;
-
 		public void Constructor() {
 			cleanup();
 		}
 
-		public void Constructor(string filename, FileAccessMode mode const val) {
-			cleanup();
-
-			open(filename, MapFileAccessModeToString(mode));
+		public void Constructor(string filename, FileAccessMode mode const) {
+			Constructor(filename, MapFileAccessModeToString(mode));
 		}
 
-		public void Constructor(string filename, string mode) {
-			cleanup();
-
+		public void Constructor(string filename, string mode = "r") {
 			open(filename, mode);
 		}
 
@@ -83,7 +61,11 @@ public namespace System.IO {
 		}
 
 		public bool isOpen() const {
-			return (mHandle != 0);
+			return mHandle != 0;
+		}
+
+		public bool open(string filename, FileAccessMode mode const) modify throws {
+			return open(filename, MapFileAccessModeToString(mode));
 		}
 
 		public bool open(string filename, string mode) modify throws {
@@ -150,7 +132,38 @@ public namespace System.IO {
 		public bool write(string value) {
 			return fwrites(mHandle, value) == 0;
 		}
+
+		private string mAccessMode;
+		private string mFilename;
+		private int mHandle;
 	}
 
+	private string MapFileAccessModeToString(FileAccessMode mode const) const throws {
+		switch ( mode ) {
+			case FileAccessMode.Append: { return "a"; }
+			case FileAccessMode.AppendUpdate: { return "a+"; }
+			case FileAccessMode.ReadOnly: { return "r"; }
+			case FileAccessMode.ReadUpdate: { return "r+"; }
+			case FileAccessMode.ReadWrite: { return "rw"; }
+			case FileAccessMode.WriteOnly: { return "w"; }
+			case FileAccessMode.WriteUpdate: { return "w+"; }
+		}
+
+		throw new Exception("invalid access mode(" + cast<string>(mode) + ") provided!");
+	}
+
+	private FileAccessMode MapStringToFileAccessMode(string mode) const throws {
+		switch ( mode ) {
+			case "a":  { return FileAccessMode.Append; }
+			case "a+": { return FileAccessMode.AppendUpdate; }
+			case "r":  { return FileAccessMode.ReadOnly; }
+			case "r+": { return FileAccessMode.ReadUpdate; }
+			case "rw": { return FileAccessMode.ReadWrite; }
+			case "w":  { return FileAccessMode.WriteOnly; }
+			case "w+": { return FileAccessMode.WriteUpdate; }
+		}
+
+		throw new Exception("invalid mode(\"" + mode + "\") provided!");
+	}
 }
 

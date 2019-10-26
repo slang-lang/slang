@@ -10,11 +10,11 @@ public void Main(int argc, string args) {
 }
 
 private void Reference(int value ref) {
-	value = value + 2;
+	value += 2;
 }
 
 private void Reference(Integer value ref) {
-	value = value + 2;
+	value += 2;
 }
 
 private bool TestCase1() const {

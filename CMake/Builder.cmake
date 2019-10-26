@@ -1,10 +1,21 @@
 
-function(build_static_testlib target modules)
+SET(JSON_PACKAGE_NAME "libMyJson-0.2.4_51")
+SET(JSON_TARBALL "${JSON_PACKAGE_NAME}.tar.gz")
+SET(JSON_DOWNLOAD_URL "https://sourceforge.net/projects/libmyjson/files/libMyJson-0.2.4_51.tar.gz/download")
 
-    # append our utils testmanagement
-    list(APPEND DEPENDENCIES "UtilsTestManagement")
 
-    build_static_lib(${target} "${modules}")
+function(build_shared_lib target modules)
+
+    _handle_modules_pre_linker("${modules}")
+
+    add_library(${target} SHARED ${SOURCES} ${HEADERS})
+
+    LIST(LENGTH DEPENDENCIES num_dependencies)
+    if ( num_dependencies GREATER 0 )
+        target_link_libraries(${target} ${DEPENDENCIES})
+    endif()
+
+    _handle_modules_post_linker("${modules}" ${target})
 
 endfunction()
 
@@ -13,7 +24,7 @@ function(build_static_lib target modules)
 
     _handle_modules_pre_linker("${modules}")
 
-    add_library(${target} ${SOURCES} ${HEADERS})
+    add_library(${target} STATIC ${SOURCES} ${HEADERS})
 
     LIST(LENGTH DEPENDENCIES num_dependencies)
     if ( num_dependencies GREATER 0 )
@@ -129,11 +140,13 @@ function(_curl_check_existence)
     if("${BUILD_CURL_INC}" STREQUAL "")
         MESSAGE(FATAL_ERROR "BUILD_CURL_INC needed for curl!")
     endif()
+
     if("${BUILD_CURL_LIB}" STREQUAL "")
         MESSAGE(FATAL_ERROR "BUILD_CURL_LIB needed for curl!")
     endif()
 
 endfunction()
+
 
 function(_handle_post_curl target)
 
@@ -141,6 +154,7 @@ function(_handle_post_curl target)
     target_link_libraries(${target} curl)
 
 endfunction()
+
 
 function(_handle_pre_curl)
 
@@ -155,18 +169,32 @@ endfunction()
 ###############################
 ### JSON
 
+function(_could_not_find_json)
+  MESSAGE(STATUS "Could not find (the correct version of) Json.")
+  MESSAGE(STATUS "ObjectiveScript currently requires ${JSON_PACKAGE_NAME}\n")
+  MESSAGE(FATAL_ERROR "You can download from ${JSON_DOWNLOAD_URL}")
+endfunction()
+
+
 function(_json_check_existence)
 
     # make sure the appropriate environment variable is set!
-    if("${BUILD_JSON_INC}" STREQUAL "")
-        MESSAGE(FATAL_ERROR "BUILD_JSON_INC needed for json!")
-    endif()
+    if(NOT BUILD_JSON_INC)
+       _could_not_find_json()
+    else()
 
-    if("${BUILD_JSON_LIB}" STREQUAL "")
-        MESSAGE(FATAL_ERROR "BUILD_JSON_LIB needed for json!")
+        if("${BUILD_JSON_INC}" STREQUAL "")
+            MESSAGE(FATAL_ERROR "BUILD_JSON_INC needed for json!")
+        endif()
+
+        if("${BUILD_JSON_LIB}" STREQUAL "")
+            MESSAGE(FATAL_ERROR "BUILD_JSON_LIB needed for json!")
+        endif()
+
     endif()
 
 endfunction()
+
 
 function(_handle_post_json target)
 
@@ -174,6 +202,7 @@ function(_handle_post_json target)
     target_link_libraries(${target} Json)
 
 endfunction()
+
 
 function(_handle_pre_json)
 

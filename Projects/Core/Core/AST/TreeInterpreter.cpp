@@ -45,13 +45,13 @@
 			return; \
 		}
 
-#define tryEvalute(left, right) \
+#define tryControlReturnNull( exp ) \
 		try { \
-			evaluate(left, right); \
+			exp; \
 		} \
 		catch ( Runtime::ControlFlow::E &e ) { \
 			mControlFlow = e; \
-			return; \
+			return NULL; \
 		}
 
 #define tryEvaluteReturnNull(left, right) \
@@ -69,7 +69,8 @@ namespace AST {
 
 
 TreeInterpreter::TreeInterpreter(Common::ThreadId id)
-: mControlFlow(Runtime::ControlFlow::Normal)
+: mControlFlow(Runtime::ControlFlow::Normal),
+  mFrame(NULL)
 {
 	// initialize virtual machine stuff
 	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : NULL;
@@ -86,6 +87,9 @@ void TreeInterpreter::deinitialize()
 {
 	// unwind stack
 	mThread->popFrame();
+
+    // reset current frame
+    mFrame = mThread->currentFrame();
 }
 
 void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result, Runtime::Object* scope)
@@ -236,14 +240,13 @@ void TreeInterpreter::evaluateCopyExpression(CopyExpression* exp, Runtime::Objec
 
 	evaluate(exp->mExpression, &obj);
 
-	result->copy(obj);
+	*result = obj;
 }
 
 void TreeInterpreter::evaluateIsExpression(IsExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object tmp;
 
-	// evaluate left expression
 	evaluate(exp->mExpression, &tmp);
 
 	*result = Runtime::BoolObject(tmp.isInstanceOf(exp->mMatchType));
@@ -258,7 +261,7 @@ void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* r
 		case Runtime::AtomicValue::Type::INT:       *result = Runtime::IntegerObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::REFERENCE: *result = *mMemory->get(Runtime::Reference(exp->mValue.toReference())); break;
 		case Runtime::AtomicValue::Type::STRING:    *result = Runtime::StringObject(exp->mValue); break;
-		case Runtime::AtomicValue::Type::UNKOWN:    throw Common::Exceptions::NotSupported("UNKNOWN type");
+		case Runtime::AtomicValue::Type::UNKNOWN:    throw Common::Exceptions::NotSupported("UNKNOWN type");
 	}
 }
 
@@ -284,14 +287,23 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		methodSymbol = resolveMethod(getEnclosingMethodScope(scope), exp->mSymbolExpression, params, Visibility::Private);
 	}
 	if ( !methodSymbol ) {
-		throw Runtime::Exceptions::RuntimeException("method " + (!scope->getFullScopeName().empty() ? scope->getFullScopeName() + "." : "") + exp->mSymbolExpression->toString() + "(" + toString(params) + ") not found");
+		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(std::string("NullPointerException"));
+		//*data = Runtime::UserObject(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, std::string("NullPointerException"));
+
+		mThread->exception() = Runtime::ExceptionData(data);
+
+		// notify our debugger that an exception has been thrown
+		DEBUGGER( notifyExceptionThrow(getScope(), Token()) );
+
+		throw Runtime::ControlFlow::Throw;				// promote control flow
 	}
 
 	Common::Method* method = dynamic_cast<Common::Method*>(methodSymbol);
 	assert(method);
 
 	if ( method->isExtensionMethod() ) {
-		mControlFlow = dynamic_cast<ObjectiveScript::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
+		mControlFlow = dynamic_cast<ObjectiveScript::Extensions::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
 	}
 	else {
 		mControlFlow = execute(dynamic_cast<Runtime::Object*>(method->getEnclosingScope()), method, params, result);
@@ -302,21 +314,6 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		case Runtime::ControlFlow::Throw: throw Runtime::ControlFlow::Throw;				// promote control flow
 		default: mControlFlow = Runtime::ControlFlow::Normal; break;
 	}
-}
-
-void TreeInterpreter::evaluateScopeExpression(ScopeExpression* exp, Runtime::Object* result)
-{
-	Runtime::Object left;
-	evaluate(exp->mLHS, &left);
-
-	//pushScope(&left);
-
-	Runtime::Object right;
-	evaluate(exp->mRHS, &right, &left);
-
-	//popScope();
-
-	*result = *static_cast<Runtime::Object*>(&right);
 }
 
 void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object* result)
@@ -340,10 +337,25 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	}
 
 	// create initialized reference of new object
-	*result = *mRepository->createReference(exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
+	*result = TRYMOVE(*mRepository->createReference(exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final));
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
+}
+
+void TreeInterpreter::evaluateScopeExpression(ScopeExpression* exp, Runtime::Object* result)
+{
+	Runtime::Object left;
+	evaluate(exp->mLHS, &left);
+
+	pushScope(&left);
+
+	Runtime::Object right;
+	evaluate(exp->mRHS, &right);
+
+	popScope();
+
+	*result = *static_cast<Runtime::Object*>(&right);
 }
 
 void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::Object *result, IScope *scope)
@@ -363,7 +375,15 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 	// resolve current symbol name
 	Symbol* lvalue = scope->resolve(exp->mName, false, Visibility::Designtime);
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + exp->mName + "' not found");
+		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(std::string("NullPointerException"));
+
+		mThread->exception() = Runtime::ExceptionData(data);
+
+		// notify our debugger that an exception has been thrown
+		DEBUGGER( notifyExceptionThrow(getScope(), Token()) );
+
+		throw Runtime::ControlFlow::Throw;				// promote control flow
 	}
 
 	// evaluate sub expression?
@@ -389,7 +409,7 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 		throw Runtime::Exceptions::RuntimeException("invalid lvalue symbol type");
 	}
 
-	*result = *static_cast<Runtime::Object*>(lvalue);
+	*result = *dynamic_cast<Runtime::Object*>(lvalue);
 }
 
 void TreeInterpreter::evaluateTernaryExpression(TernaryExpression* exp, Runtime::Object* result)
@@ -522,7 +542,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Object* self, Common::
 
 	// only set return value if we are a non-void method
 	if ( result && method->QualifiedTypename() != _void ) {
-		*result = mThread->currentFrame()->returnValue();
+		*result = mFrame->returnValue();
 	}
 
 	// deinitalize & pop scope
@@ -615,47 +635,11 @@ Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
 
 inline IScope* TreeInterpreter::getScope() const
 {
-	return mThread->currentFrame()->getScope();
+	return mFrame->getScope();
 }
 
 void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 {
-/*
-	// add parameters as locale variables
-	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
-		if ( it->name().empty() ) {
-			// skip unnamed parameters
-			continue;
-		}
-
-		Runtime::Object* object = mRepository->createInstance(it->type(), it->name());
-
-		object->setMutability(it->mutability());
-		object->setValue(it->value());
-
-		switch ( it->access() ) {
-			case AccessMode::ByReference: {
-				object->setIsReference(true);
-
-				if ( it->reference().isValid() ) {
-					object->assign(*mMemory->get(it->reference()));
-				}
-			} break;
-			case AccessMode::ByValue: {
-				object->setIsReference(false);
-
-				if ( it->reference().isValid() ) {
-					throw Common::Exceptions::NotSupported("by value calls not allowed for objects in " + scope->getFullScopeName());
-				}
-			} break;
-			case AccessMode::Unspecified:
-				throw Common::Exceptions::AccessMode("unspecified access mode");
-		}
-
-		scope->define(it->name(), object);
-	}
-*/
-
 	mThread->pushFrame(scope, TokenList(), params);
 
 	// add parameters as locale variables
@@ -683,11 +667,13 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 
 	// record stack
 	//mThread->pushFrame(scope, TokenList(), params);
+	// set current frame
+	mFrame = mThread->currentFrame();
 }
 
 void TreeInterpreter::popScope()
 {
-	mThread->currentFrame()->popScope();
+	mFrame->popScope();
 }
 
 void TreeInterpreter::popStack()
@@ -807,14 +793,12 @@ void TreeInterpreter::process(Statements* statements)
 
 void TreeInterpreter::pushScope(IScope* scope)
 {
-	StackFrame* stack = mThread->currentFrame();
-
 	bool allowDelete = !scope;
 	if ( allowDelete ) {
-		scope = new SymbolScope(stack->getScope());
+		scope = new SymbolScope(mFrame->getScope());
 	}
 
-	stack->pushScope(scope, allowDelete, true);
+	mFrame->pushScope(scope, allowDelete, true);
 }
 
 void TreeInterpreter::pushStack()
@@ -986,10 +970,11 @@ void TreeInterpreter::visitExpression(Expression* expression)
 
 void TreeInterpreter::visitFor(ForStatement* node)
 {
+	// push new scope for loop variable
+	pushScope();
+
 	// execute initialization statement
 	visit(node->mInitialization);
-
-	//pushScope();	// push new scope for loop variable
 
 	Runtime::Object condition;
 	for  ( ; ; ) {
@@ -1019,7 +1004,8 @@ void TreeInterpreter::visitFor(ForStatement* node)
 		visit(node->mIteration);
 	}
 
-	//popScope();		// pop scope and remove loop variable
+	// pop scope to remove loop variable
+	popScope();
 }
 
 void TreeInterpreter::visitForeach(ForeachStatement* node)
@@ -1068,7 +1054,7 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 			evaluate(node->mNextExpression, loopVariable, &iterator);
 
 			// set mutability after initializing
-			loopVariable->setConst(typeDeclaration->mIsConst);
+			loopVariable->setMutability(typeDeclaration->mIsConst ? Mutability::Const : Mutability::Modify);
 
 			// execute statement
 			visit(node->mStatement);
@@ -1125,7 +1111,7 @@ void TreeInterpreter::visitReturn(ReturnStatement* node)
 
 		tryControl(evaluate(node->mExpression, &tmp));
 
-		Runtime::operator_binary_assign(&mThread->currentFrame()->returnValue(), &tmp);
+		Runtime::operator_binary_assign(&mFrame->returnValue(), &tmp);
 	}
 
 	mControlFlow = Runtime::ControlFlow::Return;
@@ -1213,16 +1199,13 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 	do {
 		// reset this for every loop
 		bool caseMatched = false;
-		bool evaluateCaseExpression = true;
+
+		if ( !node->mCaseStatements.empty() ) {
+			tryControl(evaluate(node->mExpression, &value));
+		}
 
 		// loop over all case statements
 		for ( CaseStatements::const_iterator it = node->mCaseStatements.cbegin(); it != node->mCaseStatements.cend(); ++it ) {
-			if ( evaluateCaseExpression ) {
-				tryControl(evaluate(node->mExpression, &value));
-
-				evaluateCaseExpression = false;
-			}
-
 			Runtime::Object caseValue;
 			tryControl(evaluate((*it)->mCaseExpression, &caseValue));
 
@@ -1230,6 +1213,7 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 				caseMatched = true;
 
 				visitStatements((*it)->mCaseBlock);
+				break;
 			}
 		}
 
@@ -1240,17 +1224,12 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 
 		// inspect control flow after the complete iteration
 		switch ( mControlFlow ) {
-			case Runtime::ControlFlow::Continue:
-				mControlFlow = Runtime::ControlFlow::Normal;
-				break;	// continue loop, reset current control flow state
-			case Runtime::ControlFlow::Break:
-			case Runtime::ControlFlow::Normal:
-				mControlFlow = Runtime::ControlFlow::Normal;
-				return;	// no further processing, reset current control flow state
+			case Runtime::ControlFlow::Break: mControlFlow = Runtime::ControlFlow::Normal; return;	// no further processing, reset current control flow state
+			case Runtime::ControlFlow::Continue: mControlFlow = Runtime::ControlFlow::Normal; break;	// continue loop, reset current control flow state
+			case Runtime::ControlFlow::Normal: mControlFlow = Runtime::ControlFlow::Normal; return;	// no further processing, reset current control flow state
 			case Runtime::ControlFlow::ExitProgram:
 			case Runtime::ControlFlow::Return:
-			case Runtime::ControlFlow::Throw:
-				return;	// no further processing, keep current control flow state
+			case Runtime::ControlFlow::Throw: return;	// no further processing, keep current control flow state
 		}
 	} while ( mControlFlow == Runtime::ControlFlow::Normal );
 }
@@ -1287,7 +1266,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 		// determine correct catch-block (if a correct one exists)
 		for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
-			if ( (*it)->mTypeDeclaration && !exception->isInstanceOf((*it)->mTypeDeclaration->mType) ) {
+			if ( (*it)->mTypeDeclaration && !(exception && exception->isInstanceOf((*it)->mTypeDeclaration->mType)) ) {
 				// exception type does not match
 				continue;
 			}
@@ -1343,7 +1322,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 {
 	Runtime::Object* lvalue = mRepository->createInstance(node->mType, node->mName, node->mConstraints);
-	lvalue->setConst(node->mIsConst);
+	lvalue->setMutability(node->mIsConst ? Mutability::Const : Mutability::Modify);
 	lvalue->setIsReference(node->mIsReference);
 
 	//getScope()->define(node->mName, lvalue);

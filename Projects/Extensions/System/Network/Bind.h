@@ -37,7 +37,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("sockaddr", "ISocketAddress"));
+		params.push_back(Parameter::CreateDesigntime("sockaddr", Common::TypeDeclaration("ISocketAddress")));
 
 		setSignature(params);
 	}

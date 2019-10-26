@@ -24,10 +24,7 @@ public:
 
 public:
 	bool isConst() const;
-	void setConst(bool state);
-
 	bool isStatic() const;
-	void setStatic(bool state);
 
 	LanguageFeatureState::E getLanguageFeatureState() const;
 	void setLanguageFeatureState(LanguageFeatureState::E value);
@@ -70,7 +67,6 @@ public:
 	bool isAbstract() const;
 	bool isConstMethod() const;
 	bool isFinal() const;
-	bool isStatic() const;
 	bool throws() const;
 
 	Algorithm::E getAlgorithm() const;
@@ -114,6 +110,9 @@ public:
 	ObjectAttributes();
 
 public:
+	BluePrintType::E getBluePrintType() const;
+	void setBluePrintType(BluePrintType::E value);
+
 	ImplementationType::E getImplementationType() const;
 	void setImplementationType(ImplementationType::E value);
 
@@ -124,6 +123,7 @@ public:
 	void setSealed(bool state);
 
 protected:
+	BluePrintType::E mBluePrintType;
 	ImplementationType::E mImplementationType;
 	bool mIsMember;
 };

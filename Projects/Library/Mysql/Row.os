@@ -8,7 +8,7 @@ import Exceptions;
 
 public namespace Mysql { }
 
-public object MysqlRow implements ICollection, IIterateable {
+public object MysqlRow implements ICollection, IIterable {
 // Public
 
 	public void Constructor(int handle) {

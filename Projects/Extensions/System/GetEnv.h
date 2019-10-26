@@ -12,7 +12,6 @@
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
-#include <Tools/Strings.h>
 
 // Forward declarations
 
@@ -31,7 +30,7 @@ public:
 	: ExtensionMethod(0, "getenv", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("name", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("envvar", Designtime::StringObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -48,8 +47,8 @@ public:
 
 			std::string result_value;
 
-			char *val = getenv(param_name.c_str());
-			if (val) {
+			char* val = getenv(param_name.c_str());
+			if ( val ) {
 				result_value = std::string(val);
 			}
 

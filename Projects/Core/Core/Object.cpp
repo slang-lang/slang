@@ -29,7 +29,6 @@ Object::Object()
   mBluePrint(0),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
-  mIsEnumerationValue(false),
   mIsReference(false),
   mQualifiedOuterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
@@ -44,7 +43,6 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mBluePrint(0),
   mFilename(filename),
   mIsAtomicType(false),
-  mIsEnumerationValue(false),
   mIsReference(false),
   mQualifiedOuterface(type),
   mQualifiedTypename(type),
@@ -65,14 +63,13 @@ Object& Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
 		mBluePrint = other.mBluePrint;
+		mBluePrintType = other.mBluePrintType;
 		mFilename = other.mFilename;
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
-		mIsEnumerationValue = other.mIsEnumerationValue;
 		mIsReference = other.mIsReference;
 		mMemoryLayout = other.mMemoryLayout;
-		mName = other.mName;
 		mParent = other.mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -82,9 +79,9 @@ Object& Object::operator= (const Object& other)
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
-		setConst(other.isConst());
 		setLanguageFeatureState(other.getLanguageFeatureState());
 		setMember(other.isMember());
+		setMutability(other.getMutability());
 
 		assignReference(other.mReference);
 	}
@@ -96,6 +93,7 @@ void Object::assign(const Object& other)
 {
 	if ( this != &other ) {
 		mBluePrint = other.mBluePrint;
+		mBluePrintType = other.mBluePrintType;
 		mFilename = other.mFilename;
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
@@ -144,7 +142,9 @@ void Object::assignReference(const Reference& ref)
 		mThis = this;
 	}
 
-	Controller::Instance().memory()->remove(old);
+	if ( old.isValid() ) {
+		Controller::Instance().memory()->remove(old);
+	}
 }
 
 bool Object::CanExecuteDefaultConstructor() const
@@ -167,7 +167,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	if ( mIsAtomicType ) {	// hack to initialize atomic types
 		if ( !params.empty() ) {
 			if ( params.size() != 1 ) {
-				throw Common::Exceptions::ParameterCountMissmatch("atomic types only support one constructor parameter");
+				throw Common::Exceptions::ParameterCountMismatch("atomic types only support one constructor parameter");
 			}
 
 			setValue(params.front().value());
@@ -194,61 +194,6 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	return controlflow;
-}
-
-void Object::copy(const Object& other)
-{
-	if ( this != &other ) {
-		mBluePrint = other.mBluePrint;
-		mFilename = other.mFilename;
-		mImplementationType = other.mImplementationType;
-		mInheritance = other.mInheritance;
-		mIsAtomicType = other.mIsAtomicType;
-		mFilename = other.mFilename;
-		mParent = other.mParent ? other.mParent : mParent;
-		mQualifiedOuterface = other.mQualifiedTypename;
-		mQualifiedTypename = other.mQualifiedTypename;
-		mScopeName = other.mScopeName;
-		mScopeType = other.mScopeType;
-		mTypename = other.mTypename;
-		mValue = other.mValue;
-
-		if ( mIsReference ) {
-			// this object has a reference to a third object
-			// we also have to copy this third object by creating a fourth
-
-			assert(!"not implemented");
-		}
-		else {
-			garbageCollector();
-
-			// register this
-			define(IDENTIFIER_THIS, this);
-
-			// register new members
-			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( it->first == IDENTIFIER_THIS || !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol) {
-					continue;
-				}
-
-				Object* source = dynamic_cast<Object*>(it->second);
-				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), PrototypeConstraints());
-				target->copy(*source);
-
-				defineMember(target->getName(), target);
-			}
-
-			// register new methods
-			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				// create new method and ...
-				Common::Method* method = new Common::Method(this, (*it)->getName(), (*it)->QualifiedTypename());
-				// ... copy its data from our template method
-				*method = *(*it);
-
-				defineMethod((*it)->getName(), method);
-			}
-		}
-	}
 }
 
 void Object::defineMember(const std::string& name, Symbol* symbol)
@@ -302,7 +247,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 {
 	Common::Method *method = dynamic_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
 	if ( !method ) {
-		throw Common::Exceptions::UnknownIdentifer("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
+		throw Common::Exceptions::UnknownIdentifier("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
 
 	return Controller::Instance().thread(0)->execute(mThis, method, params, result);
@@ -360,7 +305,7 @@ bool Object::isAbstract() const
 		}
 	}
 
-	return getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
+	return mImplementationType == ImplementationType::Abstract || mBluePrintType == BluePrintType::Interface;
 }
 
 bool Object::isAtomicType() const
@@ -370,7 +315,7 @@ bool Object::isAtomicType() const
 
 bool Object::isEnumerationValue() const
 {
-	return mIsEnumerationValue;
+	return mBluePrintType == BluePrintType::Enum;
 }
 
 bool Object::isInstanceOf(const std::string& type) const
@@ -451,7 +396,13 @@ bool Object::operator_equal(const Object *other)
 		return mReference == other->mReference;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	if ( QualifiedTypename() == NULL_TYPE && (other->QualifiedTypename() == NULL_TYPE || other->QualifiedTypename() == _object) ) {
+		return isValid() == other->isValid();
+	}
+
+	//throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+
+	return mValue.toInt() == other->mValue.toInt() && mReference == other->mReference;
 }
 
 bool Object::operator_greater(const Object *other)
@@ -582,7 +533,7 @@ void Object::setBluePrint(Designtime::BluePrintObject* blueprint)
 	mBluePrint = blueprint;
 }
 
-	void Object::setIsReference(bool state)
+void Object::setIsReference(bool state)
 {
 	mIsReference = state;
 }
@@ -621,7 +572,7 @@ std::string Object::ToString(unsigned int indent) const
 	result += " " + Mutability::convert(mMutability);
 
 	if ( isAtomicType() ) {
-		result += " = " + getValue().toStdString();
+		result += " = '" + getValue().toStdString() + "'";
 	}
 	else if ( !isValid() ) {
 		result += " = null";

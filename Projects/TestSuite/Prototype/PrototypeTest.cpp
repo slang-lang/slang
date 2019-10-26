@@ -139,7 +139,7 @@ void PrototypeTest::testFail_PrototypeAssignment()
 	try {
 		VirtualMachine vm;
 		//TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::TypeMismatch);
-		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::UnknownIdentifer);
+		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::UnknownIdentifier);
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!

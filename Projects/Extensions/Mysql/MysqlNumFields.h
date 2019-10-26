@@ -47,7 +47,7 @@ public:
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Common::Exceptions::Exception("no valid mysql result handle: " + Utils::Tools::toString(param_handle));
+				throw Common::Exceptions::Exception("no valid mysql result handle: " + std::to_string(param_handle));
 			}
 
 			*result = Runtime::IntegerObject(

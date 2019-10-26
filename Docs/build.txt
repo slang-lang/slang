@@ -5,6 +5,7 @@ Prerequisities:
 	currently libMyJson C++ is used but should be easily replaceable by the library of your choice (i.e. json-cpp)
 	libMyJson C++: https://sourceforge.net/projects/libmyjson/
 - MySQL Connector/C (https://dev.mysql.com/downloads/connector/)
+- curl library
 
 
 

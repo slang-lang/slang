@@ -12,6 +12,15 @@
 // Namespace declarations
 
 
+#if __cplusplus > 201103L
+#define TRYMOVE(e) \
+	std::move(e)
+#else
+#define TRYMOVE(e) \
+	e
+#endif
+
+
 #define OSdebug(message) (const char*)message;
 #define OSdeprecated(message) (const char*)message;
 #define OSerror(message) (const char*)message;

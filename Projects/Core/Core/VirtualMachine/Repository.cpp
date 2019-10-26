@@ -72,7 +72,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		Designtime::BluePrintObject* generic = findBluePrintObject(constIt->mRunType);
 
 		if ( !generic ) {
-			throw Common::Exceptions::UnknownIdentifer(constIt->mRunType + " is unknown");
+			throw Common::Exceptions::UnknownIdentifier(constIt->mRunType + " is unknown");
 		}
 		if ( !constIt->mConstraint.empty() && generic->QualifiedTypename() != constIt->mConstraint && !generic->inheritsFrom(constIt->mConstraint) ) {
 			throw Common::Exceptions::TypeMismatch(constIt->mRunType + " is no or does not inherit from " + constIt->mConstraint);
@@ -309,7 +309,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						object->addInheritance((*ancestorIt), ancestor);
 					} break;
 					case Designtime::Ancestor::Type::Replicates: {
-
+						// this is empty by intend
 					} break;
 					case Designtime::Ancestor::Type::Unknown:
 						throw Common::Exceptions::Exception("invalid inheritance detected");
@@ -403,7 +403,6 @@ void Repository::init()
 	// add predefined runtime objects
 	{	// null
 		Runtime::UserObject* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
-		nullObject->setConst(true);
 		nullObject->setIsReference(true);
 		nullObject->setMemoryLayout(MemoryLayout::Static);
 		nullObject->setMutability(Mutability::Const);
@@ -501,7 +500,7 @@ void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::
 		}
 
 		// create new method and ...
-		Common::Method* method = new Common::Method(destObj, (*it)->getName(), (*it)->QualifiedTypename());
+		Common::Method* method = new Common::Method(destObj, (*it)->getName(), Common::TypeDeclaration((*it)->QualifiedTypename()));
 
 		// ... copy its data from our template method
 		*method = *(*it);
@@ -535,7 +534,7 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 
 		Designtime::BluePrintObject* baseType = findBluePrintObject(member->QualifiedTypename());
 		if ( !baseType ) {
-			throw Common::Exceptions::UnknownIdentifer("unknown member type '" + member->QualifiedTypename() + "'!");
+			throw Common::Exceptions::UnknownIdentifier("unknown member type '" + member->QualifiedTypename() + "'!");
 		}
 		if ( !baseType->isPrototype() && member->isPrototype() ) {
 			throw Common::Exceptions::TypeMismatch("base type '" + baseType->QualifiedTypename() + "' is no prototype!");
@@ -563,7 +562,7 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 
 		Designtime::BluePrintObject* baseType = findBluePrintObject(method->QualifiedTypename());
 		if ( !baseType ) {
-			throw Common::Exceptions::UnknownIdentifer("unknown type '" + method->QualifiedTypename() + "'!");
+			throw Common::Exceptions::UnknownIdentifier("unknown type '" + method->QualifiedTypename() + "'!");
 		}
 		if ( !baseType->isPrototype() && method->isPrototype() ) {
 			throw Common::Exceptions::TypeMismatch("base type '" + baseType->QualifiedTypename() + "' is no prototype!");
@@ -605,6 +604,8 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	if ( blueprint->isEnumeration() ) {
 		// assignment operator
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+		mTypeSystem->define(_int, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+		mTypeSystem->define(_string, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 
 		// comparison operators
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,         blueprint->QualifiedTypename(), _bool);
@@ -620,6 +621,12 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MODULO,   blueprint->QualifiedTypename(), _float);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MULTIPLY, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_SUBTRACT, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+
+/*
+		// typecast operator
+		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _int, blueprint->QualifiedTypename());
+		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _string, blueprint->QualifiedTypename());
+*/
 
 		return;
 	}
@@ -643,7 +650,7 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		}
 		else if ( name == "operator==" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, params.front().type(), (*it)->QualifiedTypename());
-			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, params.front().type(), (*it)->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL_CONTENT, params.front().type(), (*it)->QualifiedTypename());
 		}
 		else if ( name == "operator<" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS, params.front().type(), (*it)->QualifiedTypename());
@@ -680,6 +687,7 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		}
 		else if ( name == "=operator" && params.size() == 1 ) {
 			mTypeSystem->define((*it)->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), (*it)->QualifiedTypename());
+			mTypeSystem->define((*it)->QualifiedTypename(), Token::Type::TYPECAST, blueprint->QualifiedTypename(), (*it)->QualifiedTypename());
 		}
 	}
 
@@ -688,27 +696,22 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	mTypeSystem->define(_object,                        Token::Type::COMPARE_EQUAL,   blueprint->QualifiedTypename(), _bool);
 
 	// add default assignment entry for type system if it doesn't exist yet
-	//if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename()) ) {
-		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-	//}
+	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN,   blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+	//mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+
+	// add equality operator entries for type system if it doesn't exist yet
+	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,   blueprint->QualifiedTypename(), _bool);
+	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL_CONTENT, blueprint->QualifiedTypename(), _bool);
 
 	// add assignment entries for extended and implemented objects
 	{
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
 
 		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-			//if ( !mTypeSystem->exists(it->name(), Token::Type::ASSIGN, blueprint->QualifiedTypename()) ) {
-				mTypeSystem->define(it->name(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), it->name());
-			//}
+			mTypeSystem->define(it->name(), Token::Type::ASSIGN,   blueprint->QualifiedTypename(), it->name());
+			mTypeSystem->define(it->name(), Token::Type::TYPECAST, blueprint->QualifiedTypename(), it->name());
 		}
 	}
-
-	// add equality operator entries for type system if it doesn't exist yet
-	//if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, blueprint->QualifiedTypename()) ) {
-		// compare with same type
-		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,   blueprint->QualifiedTypename(), _bool);
-		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, blueprint->QualifiedTypename(), _bool);
-	//}
 }
 
 void Repository::prepareType(const Common::TypeDeclaration& type)
@@ -724,7 +727,7 @@ void Repository::prepareType(const Common::TypeDeclaration& type)
 
 		if ( !blueprint ) {
 			// pure type not available
-			throw Common::Exceptions::UnknownIdentifer(resolvedType);
+			throw Common::Exceptions::UnknownIdentifier(resolvedType);
 		}
 
 		// build new prototype from pure type with constraints
@@ -734,3 +737,4 @@ void Repository::prepareType(const Common::TypeDeclaration& type)
 
 
 }
+

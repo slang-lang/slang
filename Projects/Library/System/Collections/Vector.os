@@ -4,17 +4,10 @@ import CollectionItem;
 import ICollection;
 import Iterator;
 
+// declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
 
 public object Vector<T> implements ICollection {
-	private CollectionItem<T> mFirst;
-	private bool mIsObjectType;
-	private CollectionItem<T> mLast;
-	private int mSize = 0;
-
-	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
-	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
-
 	public void Constructor() {
 		// this determines if we are dealing with an object type or a native data type
 		T check;
@@ -157,5 +150,13 @@ public object Vector<T> implements ICollection {
 	public T operator[](int index) const throws {
 		return at(index);
 	}
+
+	private CollectionItem<T> mFirst;
+	private bool mIsObjectType;
+	private CollectionItem<T> mLast;
+	private int mSize = 0;
+
+	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
+	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
 }
 

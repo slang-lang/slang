@@ -20,7 +20,6 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Tools/Strings.h>
 #include "Defines.h"
 
 // Forward declarations

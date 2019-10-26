@@ -31,7 +31,7 @@ public:
 class Context : public IContext
 {
 public:
-	Context(const char* file);
+	explicit Context(const char* file);
 	~Context();
 
 public:

@@ -7,8 +7,6 @@ import IContext;
 
 
 public object FileContext implements IContext {
-	private System.IO.File mFile;
-
 	public void Constructor(string filename, bool append = false) {
 		mFile = new System.IO.File(filename, append ? System.IO.FileAccessMode.WriteUpdate : System.IO.FileAccessMode.WriteOnly);
 	}
@@ -22,6 +20,8 @@ public object FileContext implements IContext {
 	public void write(string message) modify {
 		mFile.write(message);
 	}
+
+	private System.IO.File mFile;
 }
 
 public object StdOutContext implements IContext {

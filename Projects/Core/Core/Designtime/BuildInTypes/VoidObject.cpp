@@ -24,8 +24,6 @@ VoidObject::VoidObject()
 {
 	mIsAtomicType = true;
 
-	//addInheritance(Ancestor(_object, Ancestor::Type::Extends, Visibility::Public));
-
 	initialize();
 }
 
@@ -36,11 +34,11 @@ const std::string& VoidObject::getTypeName() const
 
 void VoidObject::initialize()
 {
-	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
+	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _void)
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_void))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

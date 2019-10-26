@@ -16,7 +16,6 @@ namespace ObjectiveScript {
 AccessMode::E AccessMode::convert(const std::string& v)
 {
 	if ( v == RESERVED_WORD_BY_REFERENCE ) { return AccessMode::ByReference; }
-	else if ( v == RESERVED_WORD_BY_VALUE ) { return AccessMode::ByValue; }
 
 	return AccessMode::Unspecified;
 }
@@ -25,7 +24,7 @@ std::string AccessMode::convert(AccessMode::E e)
 {
 	switch ( e ) {
 		case AccessMode::ByReference: return RESERVED_WORD_BY_REFERENCE;
-		case AccessMode::ByValue: return RESERVED_WORD_BY_VALUE;
+		case AccessMode::ByValue: return EMPTY;
 		case AccessMode::Unspecified: return UNKNOWN;
 	}
 
@@ -98,8 +97,7 @@ std::string CheckedExceptions::convert(CheckedExceptions::E e)
 ImplementationType::E ImplementationType::convert(const std::string& v)
 {
 	if ( v == MODIFIER_ABSTRACT ) { return ImplementationType::Abstract; }
-	else if ( v == "FullyImplemented" ) { return ImplementationType::FullyImplemented; }
-	else if ( v == RESERVED_WORD_INTERFACE ) { return ImplementationType::Interface; }
+	else if ( v == MODIFIER_CONCRETE ) { return ImplementationType::Concrete; }
 
 	return ImplementationType::Unspecified;
 }
@@ -108,8 +106,7 @@ std::string ImplementationType::convert(ImplementationType::E e)
 {
 	switch ( e ) {
 		case ImplementationType::Abstract: return MODIFIER_ABSTRACT;
-		case ImplementationType::FullyImplemented: return "FullyImplemented";
-		case ImplementationType::Interface: return RESERVED_WORD_INTERFACE;
+		case ImplementationType::Concrete: return MODIFIER_CONCRETE;
 		case ImplementationType::Unspecified: return UNKNOWN;
 	}
 

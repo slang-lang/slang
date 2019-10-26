@@ -81,20 +81,22 @@ private bool TestCase41() {
 private bool TestCase5() {
 	print("TestCase 5: type inference during for-loop");
 
-	for ( var i = 0; i < 5; i += 1) {
+	int count;
+
+	for ( var i = 0; i < 5; { i++; count++ } ) {
 		print("i = " + i);
 	}
 
-	return i == 5;
+	return count == 5;
 }
 
 private bool TestCase6() {
 	print("TestCase 6: type inference during foreach-loop");
 
-	var list = new List();
-	list.push_back(Object new Integer(1));
-	list.push_back(Object new Integer(2));
-	list.push_back(Object new Integer(3));
+	var list = new List<Integer>();
+	list.push_back(new Integer(1));
+	list.push_back(new Integer(2));
+	list.push_back(new Integer(3));
 
 	//foreach ( var i : list ) {
 	foreach ( Integer i : list ) {

@@ -35,7 +35,7 @@ private void ModifyByReferenceParameter(int value ref) modify {
 	value = 1;		// valid
 }
 
-private void ModifyByValueParameter(int value val) modify {
+private void ModifyByValueParameter(int value) modify {
 	mNumber = 1;		// valid
 	value = 1;		// valid, but argh...
 }

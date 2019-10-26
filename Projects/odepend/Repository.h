@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <set>
 #include <string>
 
 // Project includes
@@ -18,9 +17,6 @@
 
 class Repository
 {
-public:
-	typedef std::set<Module> Modules;
-
 public:
 	explicit Repository(const std::string& name = "");
 	~Repository();

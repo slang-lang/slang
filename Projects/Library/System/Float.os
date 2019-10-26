@@ -3,91 +3,85 @@
 public namespace System { }
 
 public object Float {
-	private float mValue;
-
 	/*
 	 * Default constructor
 	 */
-	public void Constructor(float value val = 0f) {
+	public void Constructor(float value = 0f) {
 		mValue = value;
 	}
 
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(Float value ref) {
+	public void Constructor(Float value const) {
 		mValue = float value;
+	}
+
+	/*
+	 * Copy operator
+	 */
+	public Float Copy() const {
+		return new Float(mValue);
 	}
 
 	public bool operator!() const {
 		return !mValue;
 	}
 
-	public bool operator==(float other val) const {
+	public bool operator==(float other) const {
 		return mValue == other;
 	}
-	public bool operator==(Float other ref) const {
-		return mValue == float other;
+	public bool operator==(Float other const) const {
+		return mValue == other.mValue;
 	}
 
-	public Float operator=(float other val) modify {
+	public Float operator=(float other) modify {
 		mValue = other;
 
 		return this;
 	}
-	public Float operator=(Float other ref) modify {
-		mValue = float other;
+	public Float operator=(Float other const) modify {
+		mValue = other.mValue;
 
 		return this;
 	}
 
-	public float =operator(float other val) const {
+	public bool =operator(bool) const {
+		return bool mValue;
+	}
+	public float =operator(float) const {
 		return mValue;
 	}
 
-	public Float operator+(float other) modify {
-		mValue = mValue + other;
-
-		return this;
+	public Float operator+(float other) const {
+		return new Float(mValue + other);
 	}
-	public Float operator+(Float other ref) modify {
-		mValue = mValue + float other;
-
-		return this;
+	public Float operator+(Float other const) const {
+		return new Float(mValue + other.mValue);
 	}
 
-	public Float operator-(float other val) modify {
-		mValue = mValue - other;
-
-		return this;
+	public Float operator-(float other) const {
+		return new Float(mValue - other);
 	}
-	public Float operator-(Float other ref) modify {
-		mValue = mValue - float other;
-
-		return this;
+	public Float operator-(Float other const) const {
+		return new Float(mValue - other.mValue);
 	}
 
-	public Float operator*(float other val) modify {
-		mValue = mValue * other;
-
-		return this;
+	public Float operator*(float other) const {
+		return new Float(mValue * other);
 	}
-	public Float operator*(Float other ref) modify {
-		mValue = mValue * float other;
-
-		return this;
+	public Float operator*(Float other const) const {
+		return new Float(mValue * other.mValue);
 	}
 
-	public Float operator/(float other val) modify {
-		mValue = mValue / other;
-
-		return this;
+	public Float operator/(float other) const {
+		return new Float(mValue / other);
 	}
-	public Float operator/(Float other ref) modify {
-		mValue = mValue / float other;
-
-		return this;
+	public Float operator/(Float other const) const {
+		return new Float(mValue / other.mValue);
 	}
+
+	private float mValue;
 }
 
 public Float Float(float value) const {

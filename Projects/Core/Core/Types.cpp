@@ -18,6 +18,15 @@
 namespace ObjectiveScript {
 
 
+bool isAtomicType(const std::string& type)
+{
+	static const StringSet atomicTypes = provideAtomicTypes();
+
+	StringSet::const_iterator it = atomicTypes.find(type);
+
+	return it != atomicTypes.end();
+}
+
 StringSet provideAtomicTypes()
 {
 	StringSet types;
@@ -51,6 +60,7 @@ StringSet provideKeyWords()
 	keywords.insert(KEYWORD_ASSERT);
 	keywords.insert(KEYWORD_BREAK);
 	keywords.insert(KEYWORD_CASE);
+	keywords.insert(KEYWORD_CAST);
 	keywords.insert(KEYWORD_CATCH);
 	keywords.insert(KEYWORD_CONTINUE);
 	keywords.insert(KEYWORD_COPY);
@@ -97,7 +107,6 @@ StringSet provideReservedWords()
 	StringSet reservedWords;
 
 	reservedWords.insert(RESERVED_WORD_BY_REFERENCE);
-	reservedWords.insert(RESERVED_WORD_BY_VALUE);
 	reservedWords.insert(RESERVED_WORD_ENUM);
 	reservedWords.insert(RESERVED_WORD_EXTENDS);
 	reservedWords.insert(RESERVED_WORD_IMPLEMENTS);
@@ -115,7 +124,7 @@ StringSet provideReservedWords()
 std::string toString(const Parameter& param)
 {
 	std::string result = param.type();
-	if ( !param.type().empty() ) {
+	if ( !result.empty() ) {
 		result += " ";
 		result += param.name();
 	}

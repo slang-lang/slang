@@ -29,6 +29,7 @@ static const char* IDENTIFIER_THIS = "this";
 static const char* KEYWORD_ASSERT = "assert";
 static const char* KEYWORD_BREAK = "break";
 static const char* KEYWORD_CASE = "case";
+static const char* KEYWORD_CAST = "cast";
 static const char* KEYWORD_CATCH = "catch";
 static const char* KEYWORD_CONTINUE = "continue";
 static const char* KEYWORD_COPY = "copy";
@@ -60,12 +61,13 @@ static const char* LANGUAGE_FEATURE_UNSTABLE = "unstable";
 // Modifiers
 static const char* MODIFIER_ABSTRACT = "abstract";
 static const char* MODIFIER_CONST = "const";
+static const char* MODIFIER_CONCRETE = "concrete";		// no reserved word, antonym to "abstract"
 static const char* MODIFIER_FINAL = "final";
 static const char* MODIFIER_HEURISTIC = "heuristic";	// no reserved word, antonym to "recursive"
 static const char* MODIFIER_INSTANCE = "instance";		// no reserved word, antonym to "static"
 static const char* MODIFIER_MODIFY = "modify";
 static const char* MODIFIER_NOTHROW = "nothrow";		// no reserved word, antonym to "throws"
-static const char* MODIFIER_RECURSIVE = "recursive";
+static const char* MODIFIER_RECURSIVE = "recursive";	// no reserved word
 static const char* MODIFIER_SEALED = "sealed";
 static const char* MODIFIER_STATIC = "static";
 static const char* MODIFIER_THROWS = "throws";
@@ -102,13 +104,19 @@ static const char* UNKNOWN = "unknown";
 // Types
 static const char* _any = "";
 static const char* _bool = "bool";
+static const char* _bool_object = "Boolean";
 static const char* _double = "double";
+static const char* _double_object = "Double";
 static const char* _enum = "enum";
 static const char* _float = "float";
+static const char* _float_object = "Float";
 static const char* _int = "int";
+static const char* _int_object = "Integer";
 static const char* _object = "Object";
 static const char* _string = "string";
+static const char* _string_object = "String";
 static const char* _void = "void";
+static const char* __unary__ = "__unary__";			// special type to handle unary type operation checks
 
 // Values
 static const char* VALUE_NONE = "";
@@ -118,6 +126,9 @@ static const char* VALUE_NULL = "null";
 static const char* PRIVATE = "private";
 static const char* PROTECTED = "protected";
 static const char* PUBLIC = "public";
+
+// Unsorted
+static const char* EMPTY = "";
 
 
 }

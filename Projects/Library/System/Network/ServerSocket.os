@@ -1,28 +1,21 @@
 
-import System.Network.Exception;
-import System.Network.Socket;
+import Exception;
+import Socket;
 
+// declare 'System.Network' namespace to prevent a user defined private 'System.Network' namespace
 public namespace System.Network { }
 
 public object ServerSocket {
 	/*
 	 * Public constants
 	 */
-	public int DEFAULT_QUEUE_LENGTH const = 50;
-
-	/*
-	 * Private members
-	 */
-	private IPv4Address mEndpoint;
-	private int mListenerSocket = 0;
-	private int mMasterSocket;
-	private int mQueueLength;
+	public int DEFAULT_QUEUE_LENGTH const static = 50;
 
 	/*
 	 * Default constructor
 	 */
 	public void Constructor() {
-		mQueueLength = DEFAULT_QUEUE_LENGTH;
+		mQueueLength = ServerSocket.DEFAULT_QUEUE_LENGTH;
 
 		Init();
 	}
@@ -33,7 +26,7 @@ public object ServerSocket {
 	public void Constructor(int port) {
 		mEndpoint = new IPv4Address(INADDR_ANY, port);
 
-		Constructor(mEndpoint, DEFAULT_QUEUE_LENGTH);
+		Constructor(mEndpoint, ServerSocket.DEFAULT_QUEUE_LENGTH);
 	}
 
 	/*
@@ -173,5 +166,13 @@ public object ServerSocket {
 
 	    return reads(mListenerSocket, length);
 	}
+
+	/*
+	 * Private members
+	 */
+	private IPv4Address mEndpoint;
+	private int mListenerSocket;
+	private int mMasterSocket;
+	private int mQueueLength;
 }
 

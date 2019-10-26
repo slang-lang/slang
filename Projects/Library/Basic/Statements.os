@@ -6,45 +6,28 @@ import System.String;
 import Expressions;
 
 
-string KEYWORD_DIM const = "DIM";
-int KEYWORD_DIM_ID const = 1;
-string KEYWORD_FOR const = "FOR";
-int KEYWORD_FOR_ID const = 2;
-string KEYWORD_GOTO const = "GOTO";
-int KEYWORD_GOTO_ID const = 3;
-string KEYWORD_IF const = "IF";
-int KEYWORD_IF_ID const = 4;
-string KEYWORD_INPUT const = "INPUT";
-int KEYWORD_INPUT_ID const = 5;
-string KEYWORD_NEXT const = "NEXT";
-int KEYWORD_NEXT_ID const = 6;
-string KEYWORD_LABEL const = "LABEL";
-int KEYWORD_LABEL_ID const = 7;
-string KEYWORD_PRINT const = "PRINT";
-int KEYWORD_PRINT_ID const = 8;
-string KEYWORD_REM const = "REM";
-int KEYWORD_REM_ID const = 9;
-
-
 public enum StatementType {
 	DimStatement = 0,
 	EndStatement,
 	ForStatement,
+	GoSubStatement,
 	GotoStatement,
 	IfStatement,
 	InputStatement,
 	LetStatement,
 	MethodStatement,
 	NextStatement,
+	OnStatement,
 	PrintStatement,
-	RemStatement;
+	RemStatement,
+	ReturnStatement;
 }
 
 public object Statement extends Node {
 	public Statement mFollowingStatement;
 	public StatementType mStatementType const;
 
-	public void Constructor(StatementType statementType val) {
+	public void Constructor(StatementType statementType) {
 		base.Constructor(NodeType.StatementNode);
 
 		mStatementType = statementType;
@@ -124,6 +107,24 @@ public object ForStatement extends Statement {
 		return "FOR " + mLoopVariable.toString() + " = " + mStartExpression.toString() +
 		       " TO " + mTargetExpression.toString() +
 			   " STEP " + (mStepExpression ? mStepExpression.toString() : "1") + following();
+	}
+}
+
+public object GoSubStatement extends Statement {
+	public int mLine const;
+
+	public void Constructor(int line) {
+		base.Constructor(StatementType.GoSubStatement);
+
+		mLine = line;
+	}
+
+	public string toPrettyString() const {
+		return "GOSUB " + mLine + prettyFollowing();
+	}
+
+	public string toString() const {
+		return "GOSUB " + mLine + following();
 	}
 }
 
@@ -252,6 +253,26 @@ public object NextStatement extends Statement {
 	}
 }
 
+public object OnStatement extends Statement {
+	public Expression mExpression const;
+	public List<int> mLines;
+
+	public void Constructor(Expression exp) {
+		base.Constructor(StatementType.OnStatement);
+
+		mExpression = exp;
+		mLines = new List<int>();
+	}
+
+	public string toPrettyString() const {
+		return "ON " + mExpression.toPrettyString() + " GOTO " + prettyFollowing();
+	}
+
+	public string toString() const {
+		return "ON " + mExpression.toString() + " GOTO " + following();
+	}
+}
+
 public object PrintStatement extends Statement {
 	public Expression mExpression const;
 
@@ -285,6 +306,20 @@ public object RemStatement extends Statement {
 
 	public string toString() const {
 		return "REM " + mComment + following();
+	}
+}
+
+public object ReturnStatement extends Statement {
+	public void Constructor() {
+		base.Constructor(StatementType.ReturnStatement);
+	}
+
+	public string toPrettyString() const {
+		return "RETURN";
+	}
+
+	public string toString() const {
+		return "RETURN";
 	}
 }
 

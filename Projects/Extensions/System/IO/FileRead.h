@@ -21,7 +21,6 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Tools/Strings.h>
 #include "Defines.h"
 
 // Forward declarations
@@ -54,17 +53,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
-
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			bool value = false;
 
-			long size = fread(&value, 1, sizeof(bool), mFileHandles[handle]);
+			long size = fread(&value, 1, sizeof(bool), mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while reading
 				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
@@ -103,17 +100,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
-
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			double value = 0.0;
 
-			long size = fread(&value, 1, sizeof(double), mFileHandles[handle]);
+			long size = fread(&value, 1, sizeof(double), mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while reading
 				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
@@ -152,17 +147,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
-
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			float value = 0.f;
 
-			long size = fread(&value, 1, sizeof(float), mFileHandles[handle]);
+			long size = fread(&value, 1, sizeof(float), mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while reading
 				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
@@ -201,17 +194,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
-
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			int value = 0;
 
-			long size = fread(&value, 1, sizeof(int), mFileHandles[handle]);
+			long size = fread(&value, 1, sizeof(int), mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while reading
 				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
@@ -251,12 +242,10 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 			int param_length = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
-
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
@@ -265,7 +254,7 @@ public:
 			while ( param_length > 0 || param_length == -1 ) {
 				char charValue;
 
-				long size = fread(&charValue, 1, sizeof(char), mFileHandles[handle]);
+				long size = fread(&charValue, 1, sizeof(char), mFileHandles[param_handle]);
 				if ( size == -1 ) {    // error while reading
 					return Runtime::ControlFlow::Throw;
 				}

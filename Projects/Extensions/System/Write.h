@@ -11,7 +11,6 @@
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
-#include <Tools/Strings.h>
 
 // Forward declarations
 

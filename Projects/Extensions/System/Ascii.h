@@ -14,7 +14,6 @@
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Tools/Strings.h>
 
 // Forward declarations
 

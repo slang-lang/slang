@@ -51,11 +51,11 @@ public:
 	virtual bool isBreakPoint(const BreakPoint& breakpoint) const = 0;
 	virtual NextAction::E nextAction() const = 0;
 
-	virtual void notify(IScope* scope, const Token& token = Token()) = 0;
-	virtual void notifyEnter(IScope* scope, const Token& token = Token()) = 0;
-	virtual void notifyExceptionCatch(IScope *scope, const Token &token = Token()) = 0;
-	virtual void notifyExceptionThrow(IScope *scope, const Token &token = Token()) = 0;
-	virtual void notifyExit(IScope* scope, const Token& token = Token()) = 0;
+	virtual void notify(IScope* scope, const Token& token) = 0;
+	virtual void notifyEnter(IScope* scope, const Token& token) = 0;
+	virtual void notifyExceptionCatch(IScope *scope, const Token &token) = 0;
+	virtual void notifyExceptionThrow(IScope *scope, const Token &token) = 0;
+	virtual void notifyExit(IScope* scope, const Token& token) = 0;
 
 	virtual void resume() = 0;
 	virtual void resumeWithoutBreaks() = 0;

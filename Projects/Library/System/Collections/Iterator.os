@@ -2,13 +2,11 @@
 import ICollection;
 import System.Exception;
 
+// declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
 
 public object Iterator<T> {
-	private ICollection mCollection;
-	private int mCurrentIndex;
-
-	public void Constructor(ICollection collection ref) {
+	public void Constructor(ICollection collection ref const) {
 		mCollection = collection;
 
 		reset();
@@ -43,8 +41,16 @@ public object Iterator<T> {
 		return T mCollection.at(mCurrentIndex);
 	}
 
+	public T peek(int position = 1) const throws {
+		return T mCollection.at(mCurrentIndex + position);
+	}
+
 	public void reset() modify {
 		mCurrentIndex = -1;
+	}
+
+	public bool operator==(Iterator<T> other const) const {
+		return mCurrentIndex == other.mCurrentIndex;
 	}
 
 	public T =operator(T) const throws {
@@ -54,13 +60,13 @@ public object Iterator<T> {
 	public T operator++() modify throws {
 		return next();	
 	}
+
+	private ICollection mCollection;
+	private int mCurrentIndex;
 }
 
 public object ReverseIterator<T> {
-	private ICollection mCollection;
-	private int mCurrentIndex;
-
-	public void Constructor(ICollection collection ref) {
+	public void Constructor(ICollection collection ref const) {
 		mCollection = collection;
 
 		reset();
@@ -95,8 +101,16 @@ public object ReverseIterator<T> {
 		return T mCollection.at(mCurrentIndex);
 	}
 
+	public T peek(int position = 1) const throws {
+		return T mCollection.at(mCurrentIndex + position);
+	}
+
 	public void reset() modify {
 		mCurrentIndex = mCollection.size();
+	}
+
+	public bool operator==(ReverseIterator<T> other const) const {
+		return mCurrentIndex == other.mCurrentIndex;
 	}
 
 	public T =operator(T) const throws {
@@ -106,5 +120,8 @@ public object ReverseIterator<T> {
 	public T operator++() modify throws {
 		return next();		
 	}
+
+	private ICollection mCollection;
+	private int mCurrentIndex;
 }
 

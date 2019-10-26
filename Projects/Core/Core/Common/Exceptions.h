@@ -42,6 +42,7 @@ public:
 			mMessage += " in " + mPosition.toString();
 		}
 	}
+
 	virtual ~Exception() noexcept { }
 #endif
 
@@ -78,7 +79,7 @@ class AbstractException : public Exception
 {
 public:
 	explicit AbstractException(const std::string& text, const Position& position = Position())
-	: Exception("AbstractException: " + text, position)
+	: Exception("Abstract error: " + text, position)
 	{ }
 };
 
@@ -87,7 +88,7 @@ class AccessMode : public Exception
 {
 public:
 	explicit AccessMode(const std::string& text, const Position& position = Position())
-	: Exception("AccessModeException: " + text, position)
+	: Exception("Access mode error: " + text, position)
 	{ }
 };
 
@@ -96,7 +97,7 @@ class ControlFlowException : public Exception
 {
 public:
 	explicit ControlFlowException(const std::string& text, const Position& position = Position())
-	: Exception("ControlFlowException: " + text, position)
+	: Exception("Control flow error: " + text, position)
 	{ }
 };
 
@@ -105,7 +106,7 @@ class ConstCorrectnessViolated : public Exception
 {
 public:
 	explicit ConstCorrectnessViolated(const std::string& text, const Position& position = Position())
-	: Exception("ConstCorrectnessViolated: " + text, position)
+	: Exception("Const correctness violated: " + text, position)
 	{ }
 };
 
@@ -114,7 +115,7 @@ class DuplicateIdentifier : public Exception
 {
 public:
 	explicit DuplicateIdentifier(const std::string& text, const Position& position = Position())
-	: Exception("DuplicateIdentifier: " + text, position)
+	: Exception("Duplicate identifier: " + text, position)
 	{ }
 };
 
@@ -123,7 +124,7 @@ class InvalidSymbol : public Exception
 {
 public:
 	explicit InvalidSymbol(const std::string& text, const Position& position = Position())
-	: Exception("InvalidSymbol: " + text, position)
+	: Exception("Invalid symbol: " + text, position)
 	{ }
 };
 
@@ -132,7 +133,7 @@ class NotImplemented : public Exception
 {
 public:
 	explicit NotImplemented(const std::string& text, const Position& position = Position())
-	: Exception("NotImplemented: " + text, position)
+	: Exception("Not implemented: " + text, position)
 	{ }
 };
 
@@ -141,16 +142,16 @@ class NotSupported : public Exception
 {
 public:
 	explicit NotSupported(const std::string& text, const Position& position = Position())
-	: Exception("NotSupported: " + text, position)
+	: Exception("Not supported: " + text, position)
 	{ }
 };
 
 
-class ParameterCountMissmatch : public Exception
+class ParameterCountMismatch : public Exception
 {
 public:
-	explicit ParameterCountMissmatch(const std::string& text, const Position& position = Position())
-	: Exception("ParameterCountMissmatch: " + text, position)
+	explicit ParameterCountMismatch(const std::string& text, const Position& position = Position())
+	: Exception("Parameter count mismatch: " + text, position)
 	{ }
 };
 
@@ -168,16 +169,16 @@ class TypeMismatch : public Exception
 {
 public:
 	explicit TypeMismatch(const std::string& text, const Position& position = Position())
-	: Exception("TypeMismatch: " + text, position)
+	: Exception("Type mismatch: " + text, position)
 	{ }
 };
 
 
-class UnknownIdentifer : public Exception
+class UnknownIdentifier : public Exception
 {
 public:
-	explicit UnknownIdentifer(const std::string& text, const Position& position = Position())
-	: Exception("UnknownIdentifer: " + text, position)
+	explicit UnknownIdentifier(const std::string& text, const Position& position = Position())
+	: Exception("Unknown identifier: " + text, position)
 	{ }
 };
 
@@ -186,7 +187,7 @@ class UnknownOperation : public Exception
 {
 public:
 	explicit UnknownOperation(const std::string& text, const Position& position = Position())
-	: Exception("UnknownOperation: " + text, position)
+	: Exception("Unknown operation: " + text, position)
 	{ }
 };
 
@@ -195,7 +196,7 @@ class VisibilityError : public Exception
 {
 public:
 	explicit VisibilityError(const std::string& text, const Position& position = Position())
-	: Exception("VisibilityError: " + text, position)
+	: Exception("Visibility error: " + text, position)
 	{ }
 };
 

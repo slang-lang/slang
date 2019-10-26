@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-public int Main(int argc = 0, string args = "") modify {
+public void Main(int argc = 0, string args = "") modify {
 	print("Starting endless loop with sleep(1)");
 
 	bool run = true;
@@ -10,7 +10,5 @@ public int Main(int argc = 0, string args = "") modify {
 	}
 
 	print("Finished endless loop...?");
-
-	return 0;
 }
 

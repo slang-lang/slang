@@ -701,7 +701,7 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 			Symbol* symbol = identify(start);
 			if ( !symbol ) {
-				throw Common::Exceptions::UnknownIdentifer("unkown identifier '" + start->content() + "' found", start->position());
+				throw Common::Exceptions::UnknownIdentifier("unkown identifier '" + start->content() + "' found", start->position());
 			}
 
 			++start;
@@ -789,7 +789,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			TokenIterator tmpToken = start;
 			Symbol *symbol = identify(start);
 			if ( !symbol ) {
-				throw Common::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
+				throw Common::Exceptions::UnknownIdentifier("unknown/unexpected identifier '" + start->content() + "' found", start->position());
 			}
 
 			switch ( symbol->getSymbolType() ) {
@@ -966,7 +966,7 @@ void Interpreter::process_copy(TokenIterator& token, Object* result)
 {
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + token->content() + "'");
+		throw Common::Exceptions::UnknownIdentifier("unknown identifier '" + token->content() + "'");
 	}
 	if ( symbol->getSymbolType() != Symbol::IType::ObjectSymbol ) {
 		throw Common::Exceptions::Exception("object symbol expected!");
@@ -984,7 +984,7 @@ void Interpreter::process_copy(TokenIterator& token, Object* result)
 		throw Common::Exceptions::Exception("object copies are only allowed to same types");
 	}
 
-	result->copy(*source);
+	*result = *source;
 }
 
 /*
@@ -997,7 +997,7 @@ void Interpreter::process_delete(TokenIterator& token)
 
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer(token->content(), token->position());
+		throw Common::Exceptions::UnknownIdentifier(token->content(), token->position());
 	}
 
 	switch ( symbol->getSymbolType() ) {
@@ -1153,7 +1153,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	// identify the loop variable's type
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("identifier '" + typedefIt->content() + "' not found", token->position());
+		throw Common::Exceptions::UnknownIdentifier("identifier '" + typedefIt->content() + "' not found", token->position());
 	}
 	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 		throw Designtime::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", token->position());
@@ -1174,8 +1174,8 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	if ( !collection->isValid() ) {
 		throw Runtime::Exceptions::NullPointerException("null pointer access", token->position());
 	}
-	if ( !collection->isInstanceOf("IIterateable") ) {
-		throw Designtime::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIteratable", token->position());
+	if ( !collection->isInstanceOf("IIterable") ) {
+		throw Designtime::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIterable", token->position());
 	}
 	++token;
 
@@ -1242,7 +1242,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
+		throw Common::Exceptions::UnknownIdentifier("identifier '" + token->content() + "' not found", token->position());
 	}
 
 	try {
@@ -1403,6 +1403,9 @@ void Interpreter::process_keyword(TokenIterator& token, Object *result)
 	else if ( keyword == KEYWORD_BREAK ) {
 		process_break(token);
 	}
+	else if ( keyword == KEYWORD_CAST ) {
+		//process_cast(token);
+	}
 	else if ( keyword == KEYWORD_CONTINUE ) {
 		process_continue(token);
 	}
@@ -1471,7 +1474,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	Common::Method* method = dynamic_cast<Common::Method*>(symbol);
 	if ( !method) {
-		throw Common::Exceptions::UnknownIdentifer("could not resolve identifier '" + tmp->content() + "' with parameters '" + toString(params) + "'", tmp->position());
+		throw Common::Exceptions::UnknownIdentifier("could not resolve identifier '" + tmp->content() + "' with parameters '" + toString(params) + "'", tmp->position());
 	}
 
 	// compare callee's constness with its parent's constness
@@ -1520,7 +1523,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + start->content() + "'");
+		throw Common::Exceptions::UnknownIdentifier("unknown identifier '" + start->content() + "'");
 	}
 	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 		throw Common::Exceptions::Exception("blueprint symbol expected!");
@@ -1886,7 +1889,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 				Symbol* symbol = identify(catchIt);
 				if ( !symbol ) {
-					throw Common::Exceptions::UnknownIdentifer("identifier '" + catchIt->content() + "' not found", catchIt->position());
+					throw Common::Exceptions::UnknownIdentifier("identifier '" + catchIt->content() + "' not found", catchIt->position());
 				}
 				if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 					throw Designtime::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
