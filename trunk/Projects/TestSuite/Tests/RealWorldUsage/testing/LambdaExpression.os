@@ -3,7 +3,7 @@
 import System.Collections.List;
 
 private object IntList extends List<int> {
-	public void sort(int less[int a, int b]) {
+	public void sort(bool less[int a, int b]) {
 		int tmp;
 
 		for ( int value : this ) {
