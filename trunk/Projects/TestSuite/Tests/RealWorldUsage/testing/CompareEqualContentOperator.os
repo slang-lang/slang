@@ -7,11 +7,9 @@ public object CompareEqualContent {
 		return mValue == other;
 	}
 
-/*
 	public bool operator==(CompareEqualContent other) const {
 		return mValue == other.mValue;
 	}
-*/
 }
 
 public void Main(int argc, string args) {
