@@ -6,10 +6,15 @@ public object CompareUnequalContent {
 	public bool operator==(int other) const {
 		return mValue == other;
 	}
+
+	public bool operator==(CompareUnequalContent other const) const {
+		return mValue == other.mValue;
+	}
 }
 
 public void Main(int argc, string args) {
 	var value = new CompareUnequalContent();
+	value.mValue = 174;
 
 	if ( value != 173 ) {
 		print("1: Compare unequal operator");
