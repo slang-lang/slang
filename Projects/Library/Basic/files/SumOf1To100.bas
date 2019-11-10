@@ -8,3 +8,4 @@
 170 NEXT I
 180 PRINT "The total of all digits between 1 and 100 is " + A
 190 END
+
