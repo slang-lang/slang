@@ -43,8 +43,8 @@ public object String implements IIterable {
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(String value) {
-		Constructor(string value);
+	public void Constructor(String value const) {
+		Constructor( cast<string>( value ) );
 	}
 
 	/*
@@ -150,9 +150,6 @@ public object String implements IIterable {
 			hasFound = true;
 		}
 
-		// update size
-		//mSize = strlen(mValue);	// this should already be updated
-
 		return hasFound;
 	}
 
@@ -218,6 +215,20 @@ public object String implements IIterable {
 	}
 
 	/*
+	 * Returns the held string in capital letters
+	 */
+	public String ToUpper() const {
+		return new String(toUpper(mValue));
+	}
+
+	/*
+	 * Returns the held string in capital letters
+	 */
+	public string ToUpperCase() const {
+		return toUpper(mValue);
+	}
+
+	/*
 	 * Trims whitespaces from the left side of the held string value
 	 */
 	public string TrimLeft() modify {
@@ -269,20 +280,6 @@ public object String implements IIterable {
 		mValue = strrtrim(mValue);
 
 		return mValue;
-	}
-
-	/*
-	 * Returns the held string in capital letters
-	 */
-	public String ToUpper() const {
-		return new String(toUpper(mValue));
-	}
-
-	/*
-	 * Returns the held string in capital letters
-	 */
-	public string ToUpperCase() const {
-		return toUpper(mValue);
 	}
 
 	/*
