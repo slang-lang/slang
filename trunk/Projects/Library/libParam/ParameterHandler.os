@@ -53,6 +53,14 @@ public object ParameterHandler implements IIterable {
 		assert( argc == mParameters.size() );
 	}
 
+	public Parameter operator[](int index) const throws {
+		return at(index);
+	}
+
+	public Parameter operator[](string key) const throws {
+		return getParameter(key);
+	}
+
 	public Parameter at(int index) const throws {
 		return mParameters.at(index);
 	}
