@@ -6,7 +6,7 @@ import System.Exception;
 // Project imports
 
 
-public object JsonException implements IException {
+public object JsonException const implements IException {
 	public void Constructor(string msg) {
 		_ex = msg;
 	}
@@ -15,12 +15,10 @@ public object JsonException implements IException {
 		return _ex;
 	}
 
-	private string _ex;
+	private string _ex const;
 }
 
-public object InvalidTypeException implements IException {
-	private string _ex;
-
+public object InvalidTypeException const implements IException {
 	public void Constructor(string msg) {
 		_ex = msg;
 	}
@@ -28,5 +26,7 @@ public object InvalidTypeException implements IException {
 	public string what() const {
 		return _ex;
 	}
+
+	private string _ex const;
 }
 
