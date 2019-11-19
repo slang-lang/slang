@@ -13,12 +13,10 @@ public enum TokenType {
 	COMMA,
 	CURLY_BRACKET_CLOSE,
 	CURLY_BRACKET_OPEN,
-	DOT,
 	FALSE,
 	IDENTIFIER,
 	NULL,
 	NUMBER,
-	SEMICOLON,
 	STRING,
 	TRUE,
 	TYPE
@@ -34,12 +32,10 @@ public string TokenToString(TokenType type) {
 		case TokenType.COMMA:			{ return ","; }
 		case TokenType.CURLY_BRACKET_CLOSE:	{ return "}"; }
 		case TokenType.CURLY_BRACKET_OPEN:	{ return "{"; }
-		case TokenType.DOT:				{ return "."; }
 		case TokenType.FALSE:			{ return "FALSE"; }
 		case TokenType.IDENTIFIER:		{ return "IDENTIFIER"; }
 		case TokenType.NULL:			{ return "NULL"; }
 		case TokenType.NUMBER:			{ return "NUMBER"; }
-		case TokenType.SEMICOLON:		{ return ";"; }
 		case TokenType.STRING:			{ return "STRING"; }
 		case TokenType.TRUE:			{ return "TRUE"; }
 		case TokenType.TYPE:			{ return "TYPE"; }

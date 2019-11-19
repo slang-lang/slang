@@ -53,11 +53,11 @@ public object JsonValue {
 	}
 
 	public void Constructor(JsonArray array) {
-		setValue(JsonValue array);
+		setValue( cast<JsonValue>(array) );
 	}
 
 	public void Constructor(JsonObject obj) {
-		setValue(JsonValue obj);
+		setValue( cast<JsonValue>(obj) );
 	}
 
 	public bool asBool() const {
@@ -226,7 +226,7 @@ public object JsonValue {
 	}
 
 	public JsonObject operator=(JsonObject value) modify {
-		setValue(JsonValue value);
+		setValue( cast<JsonValue>(value) );
 
 		return JsonObject mObjectValue;
 	}
