@@ -8,8 +8,7 @@ import System.IO.File;
 import Token;
 
 
-public namespace Json {
-}
+public namespace Json { }
 
 public object Tokenizer {
 	public void Constructor() {
@@ -141,14 +140,8 @@ public object Tokenizer {
                 case c == ":": {
                     return new Token(TokenType.COLON, consume(), new Position(mLine, mColumn));
                 }
-                case c == ";": {
-                    return new Token(TokenType.SEMICOLON, consume(), new Position(mLine, mColumn));
-                }
                 case c == ",": {
                     return new Token(TokenType.COMMA, consume(), new Position(mLine, mColumn));
-                }
-                case c == ".": {
-                    return new Token(TokenType.DOT, consume(), new Position(mLine, mColumn));
                 }
                 case c == "[": {
                     return new Token(TokenType.BRACKET_OPEN, consume(), new Position(mLine, mColumn));
