@@ -18,8 +18,7 @@ public enum TokenType {
 	NULL,
 	NUMBER,
 	STRING,
-	TRUE,
-	TYPE
+	TRUE
 	;
 }
 
@@ -38,7 +37,6 @@ public string TokenToString(TokenType type) {
 		case TokenType.NUMBER:			{ return "NUMBER"; }
 		case TokenType.STRING:			{ return "STRING"; }
 		case TokenType.TRUE:			{ return "TRUE"; }
-		case TokenType.TYPE:			{ return "TYPE"; }
 	}
 
 	return "<invalid token type>";
