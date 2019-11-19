@@ -17,8 +17,8 @@ public object JsonReader {
         tokenizer = new Tokenizer();
     }
 
-    public JsonValue process(string text) modify throws {
-        //print("process(" + text + ")");
+    public JsonValue parse(string text) modify throws {
+        //print("parse(" + text + ")");
 
         tokenizer.parseString(text);
 

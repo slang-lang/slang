@@ -14,6 +14,7 @@ public void Main(int argc, string args) {
 private bool TestCase1() {
 	print("Test Case 1: JsonWriter");
 
+try {
 	var writer = new JsonWriter();
 
 	var value = new JsonValue("value");
@@ -27,10 +28,20 @@ private bool TestCase1() {
 
 	return true;
 }
+catch ( string e ) {
+	print("Exception: " + e);
+}
+catch ( IException e ) {
+	print("Exception: " + e.what());
+}
+
+return false;
+}
 
 private bool TestCase2() {
 	print("Test Case 2: JsonStyledWriter");
 
+try {
 	var writer = new JsonStyledWriter();
 
 	var array = new JsonArray("array");
@@ -44,5 +55,14 @@ private bool TestCase2() {
 	print(writer.toString2(JsonValue array));
 
 	return true;
+}
+catch ( string e ) {
+	print("Exception: " + e);
+}
+catch ( IException e ) {
+	print("Exception: " + e.what());
+}
+
+return false;
 }
 
