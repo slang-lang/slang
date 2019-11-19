@@ -25,10 +25,6 @@ public object Tokenizer {
 		WHITESPACES = WHITESPACES + LINEBREAK_UNIX;
 	}
 
-	public Token currentToken() const {
-	    return mCurrentToken.current();
-	}
-
 	public bool hasNextToken() const {
         return mCurrentToken.hasNext();
 	}
