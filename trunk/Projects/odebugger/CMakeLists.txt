@@ -15,9 +15,7 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	ExtensionsSystem
-#	ExtensionsMysql
 	ExtensionsJson
-#	ExtensionsApache
 	DebuggerVSCodeRemoteClient
 	DebuggerLocalClient
 	DebuggerCommon
@@ -29,7 +27,6 @@ SET(DEPENDENCIES
 
 SET(MODULES
 	json
-	mysql
 )
 
 add_include(Projects/Core)
