@@ -252,7 +252,7 @@ bool VirtualMachine::loadExtensions()
 			}
 		}
 		catch ( std::exception &e ) {
-			std::cout << "error while loading extension: " << e.what() << std::endl;
+			std::cerr << "error while loading extension: " << e.what() << std::endl;
 		}
 	}
 
