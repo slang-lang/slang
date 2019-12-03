@@ -43,7 +43,7 @@ void read_directory(const std::string& dirname, std::vector<std::string>& files)
         std::string file(dp->d_name);
 
         if ( file != "." && file != ".." ) {
-			files.push_back(dirname + "/" + file);
+		files.push_back(dirname + "/" + file);
         }
     }
 
@@ -72,10 +72,12 @@ VirtualMachine::~VirtualMachine()
 	}
 }
 
-void VirtualMachine::addExtension(AExtension *extension)
+void VirtualMachine::addExtension(AExtension *extension, const std::string& library)
 {
 	if ( !extension ) {
 		// provided an invalid extension - ignore it...
+		OSerror("invalid extension '" + library + "' detected!");
+
 		return;
 	}
 
@@ -218,7 +220,7 @@ void VirtualMachine::init()
 		for ( std::string library : sharedLibraries ) {
 			OSdebug("Loading extensions " + library);
 
-			addExtension( mExtensionManager.load(library) );
+			addExtension( mExtensionManager.load(library), library );
 		}
 #endif
 	}
@@ -252,7 +254,7 @@ bool VirtualMachine::loadExtensions()
 			}
 		}
 		catch ( std::exception &e ) {
-			std::cerr << "error while loading extension: " << e.what() << std::endl;
+			OSerror("error while loading extension: " << e.what());
 		}
 	}
 
