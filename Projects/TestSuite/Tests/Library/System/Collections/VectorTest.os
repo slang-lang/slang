@@ -14,6 +14,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase7() );
 	assert( TestCase8() );
 	assert( TestCase9() );
+	assert( TestCase10() );
 }
 
 private bool TestCase1() const {
@@ -280,6 +281,29 @@ private bool TestCase9() const {
 		assert( vector.size() == 3 );
 
 		assert( (vector.at(0) + vector.at(1) + vector.at(2)) == "blafoobar" );
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase10() const {
+	print("TestCase 10: foreach");
+
+	try {
+		var vector = new Vector<string>();
+		assert( vector is ICollection );
+
+		vector.insert( 0, "bla" );
+		vector.insert( 1, "bar" );
+		vector.insert( 1, "foo" );
+
+		assert( vector.size() == 3 );
+
+		foreach ( string s : vector ) {
+			//print("s = " + s);
+		}
 
 		return true;
 	}

@@ -10,6 +10,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase4() );
 	assert( TestCase5() );
 	assert( TestCase6() );
+	assert( TestCase7() );
 }
 
 private bool TestCase1() const {
@@ -230,6 +231,38 @@ private bool TestCase6() const {
 
 			string value = it.current();
 			//print(value);
+		}
+
+		list.clear();
+
+		assert( list.empty() );
+
+		return true;
+	}
+	catch {
+		return false;
+	}
+
+	return false;
+}
+
+private bool TestCase7() const {
+	print("TestCase 7: foreach");
+
+	try {
+		List<string> list = new List<string>();
+
+		assert( list );
+		assert( list is Object );
+
+		list.push_back("1");
+		list.push_back("2");
+		list . push_back("3");
+
+		assert( list.size() == 3 );
+
+		foreach ( string s : list ) {
+			//print("s = " + s);
 		}
 
 		list.clear();
