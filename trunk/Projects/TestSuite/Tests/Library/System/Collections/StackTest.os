@@ -14,6 +14,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase6() );
 	assert( TestCase7() );
 	assert( TestCase8() );
+	assert( TestCase9() );
 }
 
 private bool TestCase1() const {
@@ -287,6 +288,26 @@ private bool TestCase8() const {
 
 		assert( stack.contains( 2 ) );
 		assert( stack.contains( 1 ) );
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase9() const {
+	print("TestCase 9: foreach");
+
+	try {
+		var stack = new Stack<int>();
+		assert( stack is ICollection );
+
+		stack.push( 1 );
+		stack.push( 2 );
+
+		foreach ( int i : stack ) {
+			//print("i = " + i);
+		}
 
 		return true;
 	}
