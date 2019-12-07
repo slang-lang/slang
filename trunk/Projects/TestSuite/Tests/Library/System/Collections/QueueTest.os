@@ -122,39 +122,39 @@ private bool TestCase4() {
 }
 
 private bool TestCase5() {
-        print("TestCase 5: native data types");
+	print("TestCase 5: native data types");
 
-        try {
-                Queue<string> queue = new Queue<string>();
+	try {
+		Queue<string> queue = new Queue<string>();
 
-                assert( queue );
-                assert( queue is Object );
+		assert( queue );
+		assert( queue is Object );
 
-                queue.enqueue("1");
-                queue.enqueue("2");
-                queue.enqueue("3");
+		queue.enqueue("1");
+		queue.enqueue("2");
+		queue.enqueue("3");
 
-                assert( queue.size() == 3 );
+		assert( queue.size() == 3 );
 
-                Iterator<string> it = queue.getIterator();
-                while ( it.hasNext() ) {
-                        it.next();
+		Iterator<string> it = queue.getIterator();
+		while ( it.hasNext() ) {
+			it.next();
 
-                        string value = it.current();
-                        //print(value);
-                }
+			string value = it.current();
+			//print(value);
+		}
 
-                queue.clear();
+		queue.clear();
 
-                assert( queue.empty() );
+		assert( queue.empty() );
 
-                return true;
-        }
-        catch {
-                return false;
-        }
+		return true;
+	}
+	catch {
+		return false;
+	}
 
-        return false;
+	return false;
 }
 
 private bool TestCase6() {
