@@ -182,7 +182,7 @@ public object Parser {
 
 		require(TokenType.END);
 
-		return new CompoundStatement( Object statements );
+		return new CompoundStatement( statements );
 	}
 
 	private CompoundStatement parseCompoundStatementWithDeclarations() modify throws {
@@ -612,7 +612,7 @@ public object Parser {
 
 		var conditionExp = expression();
 
-		return new RepeatStatement(Object statements, conditionExp);
+		return new RepeatStatement(statements, conditionExp);
 	}
 
 	private Statement parseStatement(bool requiresSemicolon = true) modify throws {

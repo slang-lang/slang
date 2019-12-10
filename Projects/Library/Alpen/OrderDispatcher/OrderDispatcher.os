@@ -59,7 +59,7 @@ public object OrderDispatcher {
                 break;
             }
 
-            var data = new DispatchData( cast<Object>( mOrders ), cast<Object>( mShuttles) );
+            var data = new DispatchData( mOrders, mShuttles );
             printOrders(data);
             printShuttles(data);
 

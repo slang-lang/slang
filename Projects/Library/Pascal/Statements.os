@@ -120,10 +120,7 @@ public object CompoundStatement extends Statement {
 	public List<Statement> mStatements const;
 	public VariableDeclarationStatement mVariableDeclarations const;
 
-	//public void Constructor(List<Statement> statements) {
-	public void Constructor(Object statements) {
-		assert( statements is List<Statement> );
-
+	public void Constructor(List<Statement> statements) {
 		base.Constructor(StatementType.CompoundStatement);
 
 		mStatements = List<Statement> statements;
@@ -358,11 +355,8 @@ public object RepeatStatement extends Statement {
 	public Expression mCondition const;
 	public List<Statement> mStatements const;
 
-	//public void Constructor(List<Statement> statements, Expression condition) {
-	public void Constructor(Object statements, Expression condition) {
+	public void Constructor(List<Statement> statements, Expression condition) {
 		base.Constructor(StatementType.RepeatStatement);
-
-		assert( statements is List<Statement> );
 
 		mCondition = condition;
 		mStatements = List<Statement> statements;

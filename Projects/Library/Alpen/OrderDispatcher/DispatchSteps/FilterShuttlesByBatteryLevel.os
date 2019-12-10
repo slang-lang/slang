@@ -19,7 +19,7 @@ public object FilterShuttlesByBatteryLevel extends FilteringStep implements IDis
             }
         }
 
-        return new DispatchData(cast<Object>(data.orders), cast<Object>(dispatchableShuttles));
+        return new DispatchData(data.orders, dispatchableShuttles);
     }
 
     public string getName() const {

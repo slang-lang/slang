@@ -19,7 +19,7 @@ public object FilterDispatchableShuttles extends FilteringStep implements IDispa
             }
         }
 
-        return new DispatchData(cast<Object>(data.orders), cast<Object>(filteredShuttles));
+        return new DispatchData(List<Order> data.orders, filteredShuttles);
     }
 
     public string getName() const {

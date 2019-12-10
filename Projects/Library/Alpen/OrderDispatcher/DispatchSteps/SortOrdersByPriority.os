@@ -33,7 +33,7 @@ public object SortOrdersByPriority extends SortingStep implements IDispatchStep 
             sortedOrders.push_back(order);
         }
 
-        return new DispatchData(cast<Object>(sortedOrders), cast<Object>(data.shuttles));
+        return new DispatchData(sortedOrders, data.shuttles);
     }
 
     public string getName() const {
