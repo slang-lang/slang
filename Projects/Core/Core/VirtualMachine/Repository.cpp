@@ -581,6 +581,8 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 			// reset constraints
 			method->setPrototypeConstraints(PrototypeConstraints());
 		}
+
+		method->initialize();
 	}
 
 	if ( !blueprint->isPrepared() ) {

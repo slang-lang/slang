@@ -23,6 +23,7 @@ Method::Method(IScope* parent, const std::string& name, const TypeDeclaration& t
   MethodSymbol(name),
   mIsExtensionMethod(false),
   mAllowDelete(true),
+  mIsInitialized(false),
   mReturnType(type),
   mRootNode(0)
 {
@@ -36,6 +37,7 @@ Method::Method(const Method& other, bool shallowCopy)
 	mAllowDelete = !shallowCopy;
 	mCheckedExceptions = other.mCheckedExceptions;
 	mIsExtensionMethod = other.mIsExtensionMethod;
+	mIsInitialized = other.mIsInitialized;
 	mIsSealed = other.mIsSealed;
 	mLanguageFeatureState = other.mLanguageFeatureState;
 	mMemoryLayout = other.mMemoryLayout;
@@ -124,6 +126,7 @@ Method& Method::operator= (const Method& other)
 		mAllowDelete = false;
 		mCheckedExceptions = other.mCheckedExceptions;
 		mIsExtensionMethod = other.mIsExtensionMethod;
+		mIsInitialized = other.mIsInitialized;
 		mIsSealed = other.mIsSealed;
 		mLanguageFeatureState = other.mLanguageFeatureState;
 		mMemoryLayout = other.mMemoryLayout;
@@ -160,6 +163,10 @@ const TokenList& Method::getTokens() const
 
 void Method::initialize(const PrototypeConstraints& constraints)
 {
+	if ( mIsInitialized ) {
+		return;	// no need for doing this twice
+	}
+
 	// Prepare return type
 	// {
 	std::string type = constraints.lookupType(mReturnType.mName);
@@ -214,6 +221,8 @@ void Method::initialize(const PrototypeConstraints& constraints)
 		}
 	}
 	// }
+
+	mIsInitialized = true;
 }
 
 bool Method::isEmpty() const

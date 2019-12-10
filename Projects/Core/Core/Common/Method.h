@@ -88,6 +88,7 @@ protected:
 
 private:
 	bool mAllowDelete;
+	bool mIsInitialized;
 	TypeDeclaration mReturnType;
 	AST::Statements* mRootNode;
 	ParameterList mSignature;
