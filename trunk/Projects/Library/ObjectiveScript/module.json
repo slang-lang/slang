@@ -1,7 +1,7 @@
 {
   "name": "ObjectiveScript interpreter, debugger and package manager",
   "name_short": "ObjectiveScript",
-  "version": "0.6.8",
+  "version": "0.6.9",
   "type": "library",
   "description": "Virtual module to prevent installation of modules that are not compatible with your version of the ObjectiveScript interpreter",
   "dependencies": [],
