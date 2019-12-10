@@ -35,7 +35,7 @@ public object Parser {
 		OPERATORCHARS = new String("+-*/%");
 		WHITESPACES = new String(" ");
 
-		DELIMITERCHARS = new String( (string COMPARECHARS) + (string OPERATORCHARS) + (string WHITESPACES) + ",()" );
+		DELIMITERCHARS = new String( cast<string>(COMPARECHARS) + cast<string>(OPERATORCHARS) + cast<string>(WHITESPACES) + ",()" );
 		FUNCTIONS.insert("ABS");
 		FUNCTIONS.insert("POW");
 		FUNCTIONS.insert("SQR");
