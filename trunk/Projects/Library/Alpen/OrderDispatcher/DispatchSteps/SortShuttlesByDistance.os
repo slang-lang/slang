@@ -41,7 +41,7 @@ public object SortShuttlesByDistance extends SortingStep implements IDispatchSte
             sortedShuttles.push_back(shuttle);
         }
 
-        return new DispatchData(cast<Object>(data.orders), cast<Object>(sortedShuttles));
+        return new DispatchData(data.orders, sortedShuttles);
     }
 
     public string getName() const {

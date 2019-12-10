@@ -34,7 +34,7 @@ public object SortShuttlesByBatteryLevel extends SortingStep implements IDispatc
             usableShuttles.push_back(shuttle);
         }
 
-        return new DispatchData(cast<Object>(data.orders), cast<Object>(usableShuttles));
+        return new DispatchData(data.orders, usableShuttles);
     }
 
     public string getName() const {
