@@ -25,7 +25,7 @@ private bool TestCase1() {
 	return MethodWithPrototypeParameter(proto);
 }
 
-private bool MethodWithPrototypeParameter(Prototype<int> proto ref) {
+private bool MethodWithPrototypeParameter(Prototype<int> proto) {
 	print("proto.getValue() = " + proto.getValue());
 	return proto.getValue() == 173;
 }
