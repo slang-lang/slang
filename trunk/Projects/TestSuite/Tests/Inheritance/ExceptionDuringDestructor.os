@@ -1,8 +1,5 @@
 #!/usr/local/bin/oscript
 
-import System.Exception;
-import System.String;
-
 private object TestObject {
 	public void Constructor() {
 		print("Constructor()");
@@ -12,7 +9,7 @@ private object TestObject {
 		print("Destructor()");
 
 		print("throw in destructor");
-		throw new Exception("42");
+		throw 42;
 	}
 }
 
@@ -20,8 +17,8 @@ public void Main(int argc = 0, string argv = "") {
 	try {
 		TestObject obj = new TestObject();
 	}
-	catch ( Exception e ) {
-		print("e.what() = " + e.what());
+	catch ( int e ) {
+		print("e.what() = " + e);
 	}
 }
 
