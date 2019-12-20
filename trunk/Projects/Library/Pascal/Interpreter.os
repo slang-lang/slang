@@ -57,35 +57,31 @@ public object Interpreter {
     }
 
     private string processBinaryExpression(BinaryExpression exp) modify throws {
-        //print("processBinaryExpression(" + exp.toString() + ")");
-
         string left = processExpression(exp.mLeft);
         string right = processExpression(exp.mRight);
-
-        //print("BinaryExpression: " + left + " " + exp.mOperator + " " + right);
 
         switch ( exp.mOperator ) {
 			// arithmetic operators
 			case "DIV": {
-				return "" + int "" + ((int left) / (int right));
+				return cast<string>( cast<int>( left ) / cast<int>( right ) );
 			}
 			case "+": {
 				if ( exp.mLeft.mResultType == "STRING" ) {
 					return left + right;
 				}
-				return "" + ((float left) + (float right));
+				return cast<string>( cast<float>( left ) + cast<float>( right ) );
 			}
 			case "-": {
-				return "" + ((float left) - (float right));
+				return cast<string>( cast<float>( left ) - cast<float>( right ) );
 			}
 			case "*": {
-				return "" + ((float left) * (float right));
+				return cast<string>( cast<float>( left ) * cast<float>( right ) );
 			}
 			case "/": {
-				return "" + ((float left) / (float right));
+				return cast<string>( cast<float>( left ) / cast<float>( right ) );
 			}
 			case "%": {
-				return "" + ((int left) % (int right));
+				return cast<string>( cast<int>( left ) % cast<int>( right ) );
 			}
         }
 
@@ -93,21 +89,17 @@ public object Interpreter {
     }
 
     private bool processBooleanBinaryExpression(BooleanBinaryExpression exp) modify throws {
-        //print("processBooleanBinaryExpression(" + exp.toString() + ")");
-
         string left = processExpression(exp.mLeft);
         string right = processExpression(exp.mRight);
 
-        //print("BooleanBinaryExpression: " + left + " " + exp.mOperator + " " + right);
-
         switch ( exp.mOperator ) {
-            case "AND": { return (float left) && (float right); }
-            case "OR" : { return (float left) || (float right); }
+            case "AND": { return cast<float>( left ) && cast<float>( right ); }
+            case "OR" : { return cast<float>( left ) || cast<float>( right ); }
             case "="  : { return left == right; }
-            case "<"  : { return (float left) < (float right); }
-            case "<=" : { return (float left) <= (float right); }
-            case ">"  : { return (float left) > (float right); }
-            case ">=" : { return (float left) >= (float right); }
+            case "<"  : { return cast<float>( left ) < cast<float>( right ); }
+            case "<=" : { return cast<float>( left ) <= cast<float>( right ); }
+            case ">"  : { return cast<float>( left ) > cast<float>( right ); }
+            case ">=" : { return cast<float>( left ) >= cast<float>( right ); }
             case "<>" : { return left != right; }
         }
 
@@ -115,8 +107,6 @@ public object Interpreter {
     }
 
     private string processConstantExpression(ConstantExpression exp) const throws {
-        //print("processConstantExpression(" + exp.toString() + ")");
-
         string name = exp.mConstant;
 
         var sym = mCurrentScope.lookup(name);
@@ -128,26 +118,24 @@ public object Interpreter {
     }
 
     private string processExpression(Expression exp) modify throws {
-        //print("processExpression(" + exp.toString() + ")");
-
         switch ( exp.mExpressionType ) {
             case ExpressionType.BinaryExpression: {
                 return processBinaryExpression(BinaryExpression exp);
             }
             case ExpressionType.BooleanBinaryExpression: {
-                return string processBooleanBinaryExpression(BooleanBinaryExpression exp);
+                return cast<string>( processBooleanBinaryExpression(BooleanBinaryExpression exp) );
             }
             case ExpressionType.ConstantExpression: {
-	            return string processConstantExpression(ConstantExpression exp);
+		return cast<string>( processConstantExpression(ConstantExpression exp) );
             }
             case ExpressionType.LiteralBooleanExpression: {
-                return string processLiteralBooleanExpression(LiteralBooleanExpression exp);
+                return cast<string>( processLiteralBooleanExpression(LiteralBooleanExpression exp) );
             }
             case ExpressionType.LiteralIntegerExpression: {
-                return string processLiteralIntegerExpression(LiteralIntegerExpression exp);
+                return cast<string>( processLiteralIntegerExpression(LiteralIntegerExpression exp) );
             }
             case ExpressionType.LiteralRealExpression: {
-                return string processLiteralRealExpression(LiteralRealExpression exp);
+                return cast<string>( processLiteralRealExpression(LiteralRealExpression exp) );
             }
             case ExpressionType.LiteralStringExpression: {
                 return processLiteralStringExpression(LiteralStringExpression exp);
@@ -168,32 +156,22 @@ public object Interpreter {
     }
 
     private bool processLiteralBooleanExpression(LiteralBooleanExpression exp) const {
-        //print("processLiteralBooleanExpression(" + exp.toString() + ")");
-
         return exp.mValue;
     }
 
     private int processLiteralIntegerExpression(LiteralIntegerExpression exp) const {
-        //print("processLiteralIntegerExpression(" + exp.toString() + ")");
-
         return exp.mValue;
     }
 
     private float processLiteralRealExpression(LiteralRealExpression exp) const {
-        //print("processLiteralRealExpression(" + exp.toString() + ")");
-
         return exp.mValue;
     }
 
     private string processLiteralStringExpression(LiteralStringExpression exp) const {
-        //print("processLiteralStringExpression(" + exp.toString() + ")");
-
         return exp.mValue;
     }
 
     private string processMethodExpression(MethodExpression exp) modify {
-        //print("processMethodExpression(" + exp.toString() + ")");
-
         var oldScope = mCurrentScope;
         mCurrentScope = new SymbolTable(exp.mMethod.mName, oldScope);
 
@@ -209,7 +187,7 @@ public object Interpreter {
                 string symType = sigIt.current().mType;
                 String symValue = new String( processExpression(paramIt.current()) );
 
-                mCurrentScope.declare(Symbol new LocalSymbol(symName, symType, false, symValue));
+                mCurrentScope.declare(cast<Symbol>( new LocalSymbol(symName, symType, false, symValue) ));
             }
         }
 
@@ -217,22 +195,20 @@ public object Interpreter {
         mCurrentScope.declare(Symbol result);
 
         // reset control flow to normal to allow method execution
-	    mControlFlow = ControlFlow.Normal;
+        mControlFlow = ControlFlow.Normal;
 
         visitCompoundStatement(exp.mMethod.mBody);
 
         // reset control flow to normal after method execution
-	    mControlFlow = ControlFlow.Normal;
+        mControlFlow = ControlFlow.Normal;
 
-        var resultValue = string result.mValue;
+        var resultValue = cast<string>( result.mValue );
         mCurrentScope = oldScope;
 
         return resultValue;
     }
 
     private string processUnaryExpression(UnaryExpression exp) modify throws {
-        //print("processUnaryExpression(" + exp.toString() + ")");
-
         switch ( exp.mOperator ) {
             case "+": {
                 return processExpression(exp.mExpression);
@@ -246,8 +222,6 @@ public object Interpreter {
     }
 
     private string processVariableExpression(VariableExpression exp) const throws {
-        //print("processVariableExpression(" + exp.toString() + ")");
-
         string name = exp.mVariable;
 
         var sym = mCurrentScope.lookup(name);
@@ -279,8 +253,6 @@ public object Interpreter {
     }
 
     private void visitAssignStatement(AssignmentStatement assign) modify throws {
-        //print("visitAssignStatement()");
-
         string name = (VariableExpression assign.mLeft).mVariable;
 
         var sym = mCurrentScope.lookup(name);
@@ -299,14 +271,10 @@ public object Interpreter {
     }
 
     private void visitBreakStatement(BreakStatement stmt) modify throws {
-        //print("visitBreakStatement()");
-
         mControlFlow = ControlFlow.Break;
     }
 
     private void visitCaseStatement(CaseStatement stmt) modify throws {
-        //print("visitCaseStatement()");
-
         string caseValue = processExpression(stmt.mExpression);
 
         foreach ( CasePart part : stmt.mCaseParts ) {
@@ -326,8 +294,6 @@ public object Interpreter {
     }
 
     protected void visitCompoundStatement(CompoundStatement compound) modify throws {
-        //print("visitCompoundStatement()");
-
         var oldScope = mCurrentScope;
         mCurrentScope = new SymbolTable("", oldScope);
 
@@ -354,8 +320,6 @@ public object Interpreter {
     }
 
     protected void visitConstantDeclarationStatement(ConstantDeclarationStatement stmt) modify throws {
-        //print("visitConstantDeclarationStatement()");
-
         foreach ( DeclarationStatement declStmt : stmt.mDeclarations ) {
             string name = declStmt.mName;
 
@@ -373,14 +337,10 @@ public object Interpreter {
     }
 
     private void visitContinueStatement(ContinueStatement stmt) modify throws {
-        //print("visitContinueStatement()");
-
         mControlFlow = ControlFlow.Continue;
     }
 
     private void visitExitStatement(ExitStatement stmt) modify throws {
-        //print("visitExitStatement()");
-
         var sym = mCurrentScope.lookup("RESULT");
         if ( !sym ) {
             throw new RuntimeException("Symbol 'RESULT' is unknown");
@@ -399,8 +359,6 @@ public object Interpreter {
     }
 
     private void visitForStatement(ForStatement stmt) modify throws {
-        //print("visitForStatement()");
-
         var sym = mCurrentScope.lookup(stmt.mLoopVariable.mVariable);
         if ( !sym || !(LocalSymbol sym) ) {
             throw new RuntimeException("invalid symbol '" + stmt.mLoopVariable.mVariable + "'");
@@ -425,8 +383,6 @@ public object Interpreter {
     }
 
     private void visitIfStatement(IfStatement stmt) modify {
-        //print("visitIfStatement()");
-
         var condition = processExpression(stmt.mCondition);
 
         if ( condition == "1" ) {
@@ -438,8 +394,6 @@ public object Interpreter {
     }
 
     private void visitMethodStatement(MethodCallStatement stmt) modify throws {
-        //print("visitMethodStatement()");
-
         var oldScope = mCurrentScope;
         mCurrentScope = new SymbolTable(stmt.mName, oldScope);
 
@@ -460,18 +414,16 @@ public object Interpreter {
         }
 
         // reset control flow to normal to allow method execution
-	    mControlFlow = ControlFlow.Normal;
+	mControlFlow = ControlFlow.Normal;
 
         visitCompoundStatement(stmt.mMethod.mBody);
 
         // reset control flow to normal after method execution
-	    mControlFlow = ControlFlow.Normal;
+	mControlFlow = ControlFlow.Normal;
         mCurrentScope = oldScope;
     }
 
     private void visitReadlineStatement(ReadlineStatement stmt) modify throws {
-        //print("visitReadlineStatement()");
-
         var sym = mCurrentScope.lookup(stmt.mVariable.mVariable);
         if ( !sym || !(sym is LocalSymbol) ) {
             throw new RuntimeException("invalid symbol '" + stmt.mVariable.mVariable + "'");
@@ -482,8 +434,6 @@ public object Interpreter {
     }
 
     private void visitRepeatStatement(RepeatStatement repeatStmt) modify throws {
-        //print("visitRepeatStatement");
-
         while ( mControlFlow == ControlFlow.Normal ) {
             foreach ( Statement stmt : repeatStmt.mStatements ) {
                 visitStatement(stmt);
@@ -509,8 +459,6 @@ public object Interpreter {
     }
 
     private void visitWriteStatement(WriteStatement stmt) modify {
-        //print("visitWriteStatement()");
-
         cout( processExpression(stmt.mExpression) );
         if ( stmt.mLineBreak ) {
             endl();
@@ -588,8 +536,6 @@ public object Interpreter {
     }
 
     protected void visitVariableDeclarationStatement(VariableDeclarationStatement stmt) modify throws {
-        //print("visitVariableDeclarationStatement()");
-
         foreach ( DeclarationStatement declStmt : stmt.mDeclarations ) {
             string name = declStmt.mName;
             if ( mCurrentScope.lookup(name, true) ) {
@@ -606,8 +552,6 @@ public object Interpreter {
     }
 
     private void visitWhileStatement(WhileStatement stmt) modify throws {
-        //print("visitWhileStatement()");
-
         while ( mControlFlow == ControlFlow.Normal ) {
             var condition = processExpression( stmt.mCondition );
             if ( condition != "1" ) {
@@ -631,3 +575,4 @@ public object Interpreter {
     protected Map<string, String> mConstants;
     protected Statement mProgram;
 }
+
