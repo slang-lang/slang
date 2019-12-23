@@ -12,6 +12,6 @@ public object MysqlException const implements IException {
 		return _exception;
 	}
 
-	private string _exception;
+	private string _exception const;
 }
 
