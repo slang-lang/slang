@@ -20,27 +20,27 @@ public object JsonWriter {
 		mWhiteSpaceStart = "";
 	}
 
-	public string toString(JsonArray root const ref) modify throws {
-		return toString(JsonValue root);
+	public string toString(JsonArray root const) modify throws {
+		return toString( cast<JsonValue>( root ) );
 	}
 
-	public string toString(JsonObject root const ref) modify throws {
-		return toString(JsonValue root);
+	public string toString(JsonObject root const) modify throws {
+		return toString( cast<JsonValue>( root ) );
 	}
 
-	public string toString(JsonValue root const ref) modify throws {
+	public string toString(JsonValue root const) modify throws {
 		if ( !root ) {
-			throw new JsonException("invalid Json Value provided!");
+			throw new JsonException("invalid JsonValue provided!");
 		}
 
 		string result;
 
 		// handle complex types
 		if ( root is JsonArray ) {
-			result += _toString(JsonArray root);
+			result += _toString( JsonArray root );
 		}
 		else if ( root is JsonObject ) {
-			result += _toString(JsonObject root);
+			result += _toString( JsonObject root );
 		}
 		else {
 			result += root.asString();
@@ -69,7 +69,7 @@ public object JsonWriter {
 
 			string inner;
 			mIndentation++;
-			foreach ( JsonValue value : (JsonObject root) ) {
+			foreach ( JsonValue value : JsonObject root ) {
 				if ( inner ) {
 					inner += "," + mWhiteSpaceEnd + indent(mIndentation);
 				}
@@ -107,7 +107,7 @@ public object JsonWriter {
 		return "";
 	}
 
-	protected string _toString(JsonArray root const ref) modify {
+	protected string _toString(JsonArray root const) modify {
 		string result;
 
 		mIndentation++;
@@ -127,7 +127,7 @@ public object JsonWriter {
 		return "{" + mWhiteSpaceStart + indent(mIndentation + 1) + "\"" + root.getKey() + "\": " + (result ?: "[]") + mWhiteSpaceEnd + indent(mIndentation) + "}";
 	}
 
-	protected string _toString(JsonObject root const ref) modify {
+	protected string _toString(JsonObject root const) modify {
 		string result;
 
 		mIndentation++;
