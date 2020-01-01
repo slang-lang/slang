@@ -26,15 +26,15 @@ public object Tokenizer {
 	}
 
 	public bool hasNextToken() const {
-        return mCurrentToken.hasNext();
+		return mCurrentToken.hasNext();
 	}
 
 	public Token nextToken() modify {
-	    return mCurrentToken.next();
+		return mCurrentToken.next();
 	}
 
 	public void parseString(string text) modify throws {
-	    mCharIterator = new String(text).getIterator();
+		mCharIterator = new String(text).getIterator();
 		mColumn = 1;
 		mLine = 1;
 		mTokens = new List<Token>();
@@ -107,54 +107,54 @@ public object Tokenizer {
 		string c;
 
 		while ( (c = peek()) != "" ) {
-            switch ( true ) {
-                case isCharacter(c): {
-                    return getID();
-                }
-                case isDigit(c): {
-                    return getDigit();
-                }
-                case isWhiteSpace(c): {
-                    consume();
-                    break;
-                }
-                case c == "\"": {
-                    int column = mColumn;
-                    int line = mLine;
+			switch ( true ) {
+				case isCharacter(c): {
+					return getID();
+				}
+				case isDigit(c): {
+					return getDigit();
+				}
+				case isWhiteSpace(c): {
+					consume();
+					break;
+				}
+				case c == "\"": {
+					int column = mColumn;
+					int line = mLine;
 
-                    consume();			// consume "
+					consume();			// consume "
 
-                    string value;
-                    while ( peek() != "\"" ) {
-                        value += consume();
-                    }
+					string value;
+					while ( peek() != "\"" ) {
+						value += consume();
+					}
 
-                    consume();			// consume "
+					consume();			// consume "
 
-                    return new Token(TokenType.STRING, value, new Position(line, column));
-                }
-                case c == ":": {
-                    return new Token(TokenType.COLON, consume(), new Position(mLine, mColumn));
-                }
-                case c == ",": {
-                    return new Token(TokenType.COMMA, consume(), new Position(mLine, mColumn));
-                }
-                case c == "[": {
-                    return new Token(TokenType.BRACKET_OPEN, consume(), new Position(mLine, mColumn));
-                }
-                case c == "]": {
-                    return new Token(TokenType.BRACKET_CLOSE, consume(), new Position(mLine, mColumn));
-                }
-                case c == "{": {
-                    return new Token(TokenType.CURLY_BRACKET_OPEN, consume(), new Position(mLine, mColumn));
-                }
-                case c == "}": {
-                    return new Token(TokenType.CURLY_BRACKET_CLOSE, consume(), new Position(mLine, mColumn));
-                }
-                default: {
-                    throw new Exception("invalid token found at " + new Position(mLine, mColumn).toString());
-                }
-            }
+					return new Token(TokenType.STRING, value, new Position(line, column));
+				}
+				case c == ":": {
+					return new Token(TokenType.COLON, consume(), new Position(mLine, mColumn));
+				}
+				case c == ",": {
+					return new Token(TokenType.COMMA, consume(), new Position(mLine, mColumn));
+				}
+				case c == "[": {
+					return new Token(TokenType.BRACKET_OPEN, consume(), new Position(mLine, mColumn));
+				}
+				case c == "]": {
+					return new Token(TokenType.BRACKET_CLOSE, consume(), new Position(mLine, mColumn));
+				}
+				case c == "{": {
+					return new Token(TokenType.CURLY_BRACKET_OPEN, consume(), new Position(mLine, mColumn));
+				}
+				case c == "}": {
+					return new Token(TokenType.CURLY_BRACKET_CLOSE, consume(), new Position(mLine, mColumn));
+				}
+				default: {
+					throw new Exception("invalid token found at " + new Position(mLine, mColumn).toString());
+				}
+			}
 		}
 	}
 
@@ -204,3 +204,4 @@ public object Tokenizer {
 	private int mLine;
 	private List<Token> mTokens;
 }
+
