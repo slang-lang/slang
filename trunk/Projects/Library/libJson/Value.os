@@ -33,23 +33,23 @@ public object JsonValue {
 	}
 
 	public void Constructor(bool value) {
-		setValue(value);
+		setValue( value );
 	}
 
 	public void Constructor(double value) {
-		setValue(value);
+		setValue( value );
 	}
 
 	public void Constructor(float value) {
-		setValue(value);
+		setValue( value );
 	}
 
 	public void Constructor(int value) {
-		setValue(value);
+		setValue( value );
 	}
 
 	public void Constructor(string value) {
-		setValue(value);
+		setValue( value );
 	}
 
 	public void Constructor(JsonArray array) {
@@ -95,7 +95,7 @@ public object JsonValue {
 			throw new InvalidTypeException();
 		}
 
-		return int mNumberValue;
+		return cast<int>( mNumberValue );
 	}
 
 	public string asString() const {
@@ -190,37 +190,37 @@ public object JsonValue {
 	}
 
 	public bool operator=(bool value) modify {
-		setValue(value);
+		setValue( value );
 
 		return value;
 	}
 
 	public double operator=(double value) modify {
-		setValue(value);
+		setValue( value );
 
 		return value;
 	}
 
 	public float operator=(float value) modify {
-		setValue(value);
+		setValue( value );
 
 		return value;
 	}
 
 	public int operator=(int value) modify {
-		setValue(value);
+		setValue( value );
 
 		return value;
 	}
 
 	public string operator=(string value) modify {
-		setValue(value);
+		setValue( value );
 
 		return value;
 	}
 
 	public JsonArray operator=(JsonArray value) modify {
-		setValue(JsonValue value);
+		setValue( cast<JsonValue>( value ) );
 
 		return JsonArray mObjectValue;
 	}
@@ -232,7 +232,7 @@ public object JsonValue {
 	}
 
 	public JsonValue operator=(JsonValue value) modify {
-		setValue(value);
+		setValue( value );
 
 		return this;
 	}
