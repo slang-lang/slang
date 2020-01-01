@@ -20,6 +20,7 @@ bool TestCase1() {
 
 	//JsonValue tmpObj = array[1];
 	//assert( tmpObj.asString() == "1389" );
+	//print( tmpObj.toString() );
 
 	return bool array;
 }
