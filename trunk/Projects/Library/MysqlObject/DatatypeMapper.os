@@ -29,8 +29,10 @@ public object DatatypeMapper {
 	}
 
 	private void InitDataTypes() modify {
+		DataTypes.insert("datetime", "string");
 		DataTypes.insert("float", "float");
 		DataTypes.insert("int", "int");
+		DataTypes.insert("mediumtext", "string");
 		DataTypes.insert("text", "string");
 		DataTypes.insert("tinyint", "bool");
 		DataTypes.insert("timestamp", "int");
