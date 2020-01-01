@@ -30,11 +30,11 @@ public object JsonArray extends JsonValue implements IIterable {
 	}
 
 	public void addMember(JsonObject value) modify {
-		mMembers.insert(mMembers.size(), JsonValue value);
+		mMembers.insert(mMembers.size(), cast<JsonValue>( value ) );
 	}
 
 	public Iterator getIterator() const {
-		return new Iterator(ICollection mMembers);
+		return new Iterator( cast<ICollection>( mMembers ) );
 	}
 
 	public string getKey() const {
@@ -51,11 +51,15 @@ public object JsonArray extends JsonValue implements IIterable {
 			members += (members ? ", " : "") + value.toString();
 		}
 
-        if ( mKey ) {
+		if ( mKey ) {
 		    return "\"" + mKey + "\": [" + (members ?: "") + "]";
 		}
 
 		return "[ " + members + "]";
+	}
+
+	public JsonValue operator[](int index) const throws {
+		return mMembers[index];
 	}
 
 	private string mKey;
