@@ -52,7 +52,7 @@ public object JsonObject extends JsonValue implements IIterable {
 	}
 
 	public Iterator getIterator() const {
-		return new Iterator(ICollection mMembers);
+		return new Iterator( cast<ICollection>( mMembers ) );
 	}
 
 	public bool isMember(string key) const {
@@ -75,11 +75,21 @@ public object JsonObject extends JsonValue implements IIterable {
 			members += (members ? ", " : "") + value.toString();
 		}
 
-        if ( mKey ) {
+		if ( mKey ) {
 		    return "\"" + mKey + "\": " + (members ?: "null");
 		}
 
 		return "{ " + members + " }";
+	}
+
+	public JsonObject operator[](string key) const throws {
+		foreach ( JsonObject value : mMembers ) {
+			if ( value.mKey == key ) {
+				return value;
+			}
+		}
+
+		throw "invalid key!";
 	}
 
 	private string mKey;

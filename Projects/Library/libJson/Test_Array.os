@@ -18,6 +18,9 @@ bool TestCase1() {
 	array.addMember(new JsonValue("1389"));
 	print(array.toString());
 
+	//JsonValue tmpObj = array[1];
+	//assert( tmpObj.asString() == "1389" );
+
 	return bool array;
 }
 
