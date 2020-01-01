@@ -25,6 +25,8 @@ bool TestCase1() {
 	);
 	print(o1.toString());
 
+	assert( o1.isMember( "o2" ) );
+
 	o1.addMember(new JsonObject("another", new JsonValue("object")));
 	print(o1.toString());
 

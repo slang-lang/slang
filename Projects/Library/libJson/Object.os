@@ -22,7 +22,7 @@ public object JsonObject extends JsonValue implements IIterable {
 		Constructor();
 
 		mKey = key;
-		mMembers.push_back(JsonValue value);
+		mMembers.push_back( cast<JsonValue>( value ) );
 	}
 
 	public void Constructor(string key, JsonValue value) {
@@ -36,15 +36,15 @@ public object JsonObject extends JsonValue implements IIterable {
 		Constructor();
 
 		mKey = key;
-		mMembers.push_back(JsonValue value);
+		mMembers.push_back( cast<JsonValue>( value ) );
 	}
 
 	public void addMember(JsonObject value) modify {
-		mMembers.push_back(JsonValue value);
+		mMembers.push_back( cast<JsonValue>( value ) );
 	}
 
 	public void addMember(string key, JsonValue value) modify {
-		mMembers.push_back(JsonValue new JsonObject(key, value));
+		mMembers.push_back( cast<JsonValue>( new JsonObject(key, value) ) );
 	}
 
 	public string getKey() const {
@@ -53,6 +53,16 @@ public object JsonObject extends JsonValue implements IIterable {
 
 	public Iterator getIterator() const {
 		return new Iterator(ICollection mMembers);
+	}
+
+	public bool isMember(string key) const {
+		foreach ( JsonObject value : mMembers ) {
+			if ( value.mKey == key ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public int size() const {
