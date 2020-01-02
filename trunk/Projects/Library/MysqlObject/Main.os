@@ -5,6 +5,7 @@ import libParam.ParameterHandler;
 import System.IO.File;
 
 // Project imports
+import ConfigLoader;
 import DatatypeMapper;
 import Generator;
 import Lookup;
@@ -31,6 +32,10 @@ public void Main(int argc, string args) modify throws {
 	}
 
 	try {
+		var configLoader = new ConfigLoader( "config.json" );
+		configLoader.load();
+		configLoader.store();
+
 		int DBHandle = connect();
 
 		var lookup = new Lookup(DBHandle);
