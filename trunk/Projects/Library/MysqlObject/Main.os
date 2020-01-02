@@ -111,7 +111,7 @@ void generateTable(int dbHandle, string name) modify {
 	}
 	tableData += "}" + LINEBREAK + LINEBREAK;
 
-	var outFile = new System.IO.File("output/" + Database + "/Tables/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
+	var outFile = new System.IO.File(Database + "/Tables/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
 	outFile.write(tableData);
 	outFile.close();
 }
@@ -127,13 +127,13 @@ void generateView(int dbHandle, string name) modify {
 	}
 	viewData += "}" + LINEBREAK + LINEBREAK;
 
-	var outFile = new System.IO.File("output/" + Database + "/Views/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
+	var outFile = new System.IO.File(Database + "/Views/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
 	outFile.write(viewData);
 	outFile.close();
 }
 
 void prepareFolders() modify {
-	system("mkdir -p output/" + Database + "/Tables");
-	system("mkdir -p output/" + Database + "/Views");
+	system("mkdir -p " + Database + "/Tables");
+	system("mkdir -p " + Database + "/Views");
 }
 
