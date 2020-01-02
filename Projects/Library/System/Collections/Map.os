@@ -49,15 +49,15 @@ public object Map<K, V> implements ICollection {
 		}
 
 		throw new Exception("unknown key!");
-		//throw new Exception("unknown key '" + (string key) + "'!");
+		//throw new Exception("unknown key '" + cast<string>( key ) + "'!");
 	}
 
 	public Iterator<Object> getIterator() const {
-		return new Iterator<Object>(ICollection mItems);
+		return new Iterator<Object>(cast<ICollection>( mItems ) );
 	}
 
 	public ReverseIterator<Object> getReverseIterator() const {
-		return new ReverseIterator<Object>(ICollection mItems);
+		return new ReverseIterator<Object>(cast<ICollection>( mItems ) );
 	}
 
 	public int indexOf(K key) const throws {
@@ -73,9 +73,7 @@ public object Map<K, V> implements ICollection {
 	}
 
 	public void insert(K k, V v) modify {
-		mItems.push_back(
-			Object new Pair<K, V>(k, v)
-		);
+		mItems.push_back( cast<Object>( new Pair<K, V>(k, v) ) );
 	}
 
 	public V last() const throws {
@@ -92,6 +90,7 @@ public object Map<K, V> implements ICollection {
 		}
 
 		throw new Exception("unknown key!");
+		//throw new Exception("unknown key '" + cast<string>( key ) + "'!");
 	}
 
 	public void remove(K key) modify {
@@ -112,7 +111,7 @@ public object Map<K, V> implements ICollection {
 	}
 
 	public V operator[](K key) const throws {
-		return get(key);
+		return get( key );
 	}
 
 	private List<Object> mItems;		// a list of Pair<K, V>
