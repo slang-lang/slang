@@ -43,7 +43,7 @@ public object Set<T> implements ICollection {
 	}
 
 	public bool contains(T value) const {
-		return indexOf(value) != -1;
+		return indexOf( value ) != -1;
 	}
 
 	public bool empty() const {
@@ -84,11 +84,11 @@ public object Set<T> implements ICollection {
 	}
 
 	public Iterator<T> getIterator() const {
-		return new Iterator<T>(ICollection this);
+		return new Iterator<T>(cast<ICollection>( this ) );
 	}
 
 	public ReverseIterator<T> getReverseIterator() const {
-		return new ReverseIterator<T>(ICollection this);
+		return new ReverseIterator<T>(cast<ICollection>( this ) );
 	}
 
 	public int indexOf(T value) const {
@@ -157,7 +157,7 @@ public object Set<T> implements ICollection {
 	}
 
 	public T operator[](int index) const throws {
-		return at(index);
+		return at( index );
 	}
 
 	private bool mAllowDuplicates;
