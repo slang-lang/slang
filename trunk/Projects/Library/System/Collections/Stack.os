@@ -18,6 +18,17 @@ public object Stack<T> implements ICollection {
 		clear();
 	}
 
+	public Stack<T> Copy() const {
+		Stack<T> result = new Stack<T>();
+
+		result.mFirst = mFirst;
+		result.mIsObjectType = mIsObjectType;
+		result.mLast = mLast;
+		result.mSize = mSize;
+
+		return result;
+	}
+
 	public T at(int index) const throws {
 		if ( index < 0 || index >= mSize ) {
 			throw new OutOfBoundsException("index(" + index + ") out of bounds");

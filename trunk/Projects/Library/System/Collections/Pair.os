@@ -14,6 +14,15 @@ public object Pair<F, S> {
 		second = s;
 	}
 
+	public Pair<F, S> Copy() const {
+		Pair<F, S> result = new Pair<F, S>();
+
+		result.first = fist;
+		result.second = second
+
+		return result;
+	}
+
 	public bool operator==(Pair<F, S> other) const {
 		return first == other.first;
 	}

@@ -18,6 +18,14 @@ public object Map<K, V> implements ICollection {
 		clear();
 	}
 
+	public Map<K, V> Copy() const {
+		Map<K, V> result = new Map<K, V>();
+
+		result.mItems = mItems;
+
+		return result;
+	}
+
 	public void clear() modify {
 		mItems.clear();
 	}

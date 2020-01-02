@@ -22,6 +22,16 @@ private object CollectionItem<T> {
 		// this is empty by intend
 	}
 
+	public CellectionItem<T> Copy() const {
+		CollectionItem<T> result = new CollectionItem<T>();
+
+		result.mNext = mNext;
+		result.mPrevious = mPrevious;
+		result.mValue = mValue;
+
+		return result;
+	}
+
 	public T get() const {
 		return mValue;
 	}
@@ -30,8 +40,16 @@ private object CollectionItem<T> {
 		return mNext;
 	}
 
+	public void next(CollectionItem<T> n) modify {
+		mNext = n;
+	}
+
 	public CollectionItem<T> previous() const {
 		return mPrevious;
+	}
+
+	public void previous(CollectionItem<T> p) modify {
+		mPrevious = p;
 	}
 
 	public void set(T value) modify {

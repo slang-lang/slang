@@ -18,6 +18,17 @@ public object List<T> implements ICollection {
 		clear();
 	}
 
+	public List<T> Copy() const {
+		List<T> result = new List<T>();
+
+		result.mFirst = mFirst;
+		result.mIsObjectType = mIsObjectType;
+		result.mLast = mLast;
+		result.mSize = mSize;
+
+		return result;
+	}
+
 	public T at(int index) const throws {
 		if ( index < 0 || index >= mSize ) {
 			throw new OutOfBoundsException("index(" + index + ") out of bounds");

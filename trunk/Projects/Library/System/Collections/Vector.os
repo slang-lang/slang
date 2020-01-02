@@ -18,6 +18,17 @@ public object Vector<T> implements ICollection {
 		clear();
 	}
 
+	public Vector<T> Copy() const {
+		Vector<T> result = new Vector<T>();
+
+		result.mFirst = mFirst;
+		result.mIsObjectType = mIsObjectType;
+		result.mLast = mLast;
+		result.mSize = mSize;
+
+		return result;
+	}
+
 	public T at(int index) const throws {
 		if ( index < 0 || index >= mSize ) {
 			throw new OutOfBoundsException("index(" + index + ") out of bounds");
