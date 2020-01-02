@@ -14,7 +14,7 @@ public object Pair<F, S> {
 		second = s;
 	}
 
-	public bool operator==(Pair<F, S> other ref) const {
+	public bool operator==(Pair<F, S> other) const {
 		return first == other.first;
 	}
 
@@ -22,7 +22,7 @@ public object Pair<F, S> {
 		return first == other;
 	}
 
-	public bool operator<(Pair<F, S> other ref) const {
+	public bool operator<(Pair<F, S> other) const {
 		return first < other.first;
 	}
 

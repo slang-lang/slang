@@ -6,7 +6,7 @@ import System.Exception;
 public namespace System.Collections { }
 
 public object Iterator<T> {
-	public void Constructor(ICollection collection ref const) {
+	public void Constructor(ICollection collection const) {
 		mCollection = collection;
 
 		reset();
@@ -66,7 +66,7 @@ public object Iterator<T> {
 }
 
 public object ReverseIterator<T> {
-	public void Constructor(ICollection collection ref const) {
+	public void Constructor(ICollection collection const) {
 		mCollection = collection;
 
 		reset();
