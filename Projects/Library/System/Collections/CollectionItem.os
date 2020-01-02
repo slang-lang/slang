@@ -22,7 +22,7 @@ private object CollectionItem<T> {
 		// this is empty by intend
 	}
 
-	public CellectionItem<T> Copy() const {
+	public CollectionItem<T> Copy() const {
 		CollectionItem<T> result = new CollectionItem<T>();
 
 		result.mNext = mNext;
