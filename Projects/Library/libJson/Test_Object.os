@@ -10,8 +10,11 @@ public void Main(int argc, string args) {
 }
 
 bool TestCase1() {
+try {
 	var value = new JsonObject("key", new JsonValue("value"));
-	print(value.toString());
+	print( value.toString() );
+	value.set( "key", new JsonValue( "bla" ) );
+	print( value.toString() );
 
 	var o1 = new JsonObject(
 		"o1",
@@ -38,5 +41,13 @@ bool TestCase1() {
 	print( tmpObj.toString() );
 
 	return bool value;
+}
+catch ( string e ) {
+	print( "Exception: " + e );
+}
+catch ( IException e ) {
+	print( "Exception: " + e.what() );
+}
+	return false;
 }
 

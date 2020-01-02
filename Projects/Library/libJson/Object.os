@@ -65,6 +65,17 @@ public object JsonObject extends JsonValue implements IIterable {
 		return false;
 	}
 
+	public void set(string key, JsonValue value) modify {
+		foreach ( JsonObject member : mMembers ) {
+			if ( member is JsonObject && member.mKey == key ) {
+				member = value;
+				return;
+			}
+		}
+
+		addMember( key, value );
+	}
+
 	public int size() const {
 		return mMembers.size();
 	}
@@ -84,7 +95,7 @@ public object JsonObject extends JsonValue implements IIterable {
 
 	public JsonObject operator[](string key) const throws {
 		foreach ( JsonObject value : mMembers ) {
-			if ( value.mKey == key ) {
+			if ( value is JsonObject && value.mKey == key ) {
 				return value;
 			}
 		}
