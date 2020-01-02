@@ -28,6 +28,10 @@ public object Range implements ICollection, IIterable {
 		mStep = _step;
 	}
 
+	public Range Copy() const {
+		return new Range(mStart, mEnd, mStep);
+	}
+
 	public int at(int index) const throws {
 		if ( index < 0 || index * mStep > mEnd - mStart ) {
 			throw new OutOfBoundsException("index (" + index + ") is out of bounds");

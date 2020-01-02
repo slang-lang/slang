@@ -20,6 +20,19 @@ public object Set<T> implements ICollection {
 		clear();
 	}
 
+	public Set<T> Copy() const {
+		Set<T> result = new Set<T>();
+
+		result.mAllowDuplicates = mAllowDuplicates;
+		result.mFirst = mFirst;
+		result.mIsObjectType = mIsObjectType;
+		result.mItems = mItems;
+		result.mLast = mLast;
+		result.mSize = mSize;
+
+		return result;
+	}
+
 	public T at(int index) const throws {
 		if ( index < 0 || index >= mSize ) {
 			throw new OutOfBoundsException("index(" + index + ") out of bounds");

@@ -21,6 +21,15 @@ public object Queue<T> implements ICollection {
 		clear();
 	}
 
+	public Queue<T> Copy() const {
+		Queue<T> result = new Queue<T>();
+
+		result.mIsObjectType = mIsObjectType;
+		result.mItems = mItems;
+
+		return result;
+	}
+
 	public T at(int index) const throws {
 		return mItems.at(index);
 	}
