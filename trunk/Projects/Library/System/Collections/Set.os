@@ -26,7 +26,6 @@ public object Set<T> implements ICollection {
 		result.mAllowDuplicates = mAllowDuplicates;
 		result.mFirst = mFirst;
 		result.mIsObjectType = mIsObjectType;
-		result.mItems = mItems;
 		result.mLast = mLast;
 		result.mSize = mSize;
 

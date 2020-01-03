@@ -21,10 +21,11 @@ public object List<T> implements ICollection {
 	public List<T> Copy() const {
 		List<T> result = new List<T>();
 
-		result.mFirst = mFirst;
-		result.mIsObjectType = mIsObjectType;
-		result.mLast = mLast;
-		result.mSize = mSize;
+		// deactivated because this is currently not compatible with 'replicates'
+		//result.mFirst = mFirst;
+		//result.mIsObjectType = mIsObjectType;
+		//result.mLast = mLast;
+		//result.mSize = mSize;
 
 		return result;
 	}
