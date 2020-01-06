@@ -4,8 +4,6 @@ SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)      # library root
 
 SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -std=c++14")
 
-#add_definition(-Wno-deprecated-copy)			# this is not yet compatible with clang
-
 if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
 
     # by default we build debug!
