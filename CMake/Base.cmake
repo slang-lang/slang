@@ -2,20 +2,19 @@
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)   # binary root
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)      # library root
 
-SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -Wnon-virtual-dtor -std=c++14")
+SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -std=c++14")
 
 if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
 
     # by default we build debug!
     # MESSAGE("Setting default build to: Debug")
     SET(CMAKE_BUILD_TYPE "Debug")
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-variable -Wno-unused-value")
 
     # do more logging
     add_definitions(-DDEBUG)
 
-    # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
-    add_definitions(-Wno-write-strings -Wno-unused-variable)
+    # suppress "deprecated conversion from string constant to ‘char*’ [-Werror=write-strings]"
+    add_definitions(-Wno-write-strings)
 
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -g")
 
@@ -24,8 +23,8 @@ elseif( "${BUILD}" MATCHES "Release")
     # MESSAGE("Setting default build to: Release")
     SET(CMAKE_BUILD_TYPE "Release")
 
-    # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
-    add_definitions(-Wno-write-strings -Wno-unused-variable -Wno-unused-result -Wno-unused-value)
+    # suppress "deprecated conversion from string constant to ‘char*’ [-Werror=write-strings]"
+    add_definitions(-Wno-write-strings -Wno-unused-result -Wno-unused-value -Wno-unused-variable)
 
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -O4")
 
