@@ -187,7 +187,8 @@ std::string GetFullname(const std::string& filename)
 #else
 
 	char full_path[PATH_MAX];
-	realpath(filename.c_str(), full_path);
+	char* result = realpath(filename.c_str(), full_path);
+	(void)result;
 
 	return std::string(full_path);
 

@@ -431,7 +431,8 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 
 void execute(const std::string& command)
 {
-	system(command.c_str());
+	int result = system(command.c_str());
+	(void)result;
 }
 
 /*
