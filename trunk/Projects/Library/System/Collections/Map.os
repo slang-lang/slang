@@ -21,7 +21,7 @@ public object Map<K, V> implements ICollection {
 	public Map<K, V> Copy() const {
 		Map<K, V> result = new Map<K, V>();
 
-		result.mItems = mItems;
+		result.mItems = /*copy*/ mItems;
 
 		return result;
 	}
@@ -57,7 +57,6 @@ public object Map<K, V> implements ICollection {
 		}
 
 		throw new Exception("unknown key!");
-		//throw new Exception("unknown key '" + cast<string>( key ) + "'!");
 	}
 
 	public Iterator<Object> getIterator() const {
@@ -98,7 +97,6 @@ public object Map<K, V> implements ICollection {
 		}
 
 		throw new Exception("unknown key!");
-		//throw new Exception("unknown key '" + cast<string>( key ) + "'!");
 	}
 
 	public void remove(K key) modify {
