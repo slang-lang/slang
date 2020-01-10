@@ -708,12 +708,13 @@ std::string TreeInterpreter::printExpression(Node* node) const
 		case Expression::ExpressionType::MethodExpression: {
 			MethodExpression* method = dynamic_cast<MethodExpression*>(expression);
 
-			result += printExpression(method->mSymbolExpression);
-			result += "(";
+			std::string params;
 			for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
-				result += printExpression((*it));
+				params += (params.empty() ? "" : ", ") + printExpression((*it));
 			}
-			result += ")";
+
+			result += printExpression(method->mSymbolExpression);
+			result += "(" + params + ")";
 		} break;
 		case Expression::ExpressionType::ScopeExpression: {
 			ScopeExpression* scope = dynamic_cast<ScopeExpression*>(expression);
@@ -892,9 +893,9 @@ void TreeInterpreter::visitAssert(AssertStatement* node)
 	tryControl(evaluate(node->mExpression, &condition));
 
 	if ( !isTrue(condition) ) {
-		std::cout << "assert(" << printExpression(node->mExpression) << ");" << std::endl;
+		//std::cout << "assert( " << printExpression(node->mExpression) << " );" << std::endl;
 
-		throw Runtime::Exceptions::AssertionFailed(condition.ToString(), node->mPosition);
+		throw Runtime::Exceptions::AssertionFailed(printExpression(node->mExpression), node->mPosition);
 	}
 }
 
