@@ -93,18 +93,37 @@ public object Board {
 	}
 
 	public bool isSafe(int x, int y, int value) const {
-		return  !isUsedInBox( (x - 1) / SizeX, (y - 1) / SizeY, value ) &&
+		return	!isUsedInBox( x, y, value ) &&
 			!isUsedInLine( y, value ) &&
 			!isUsedInRow( x, value );
 	}
 
-	public bool isUsedInBox(int bx, int by, int value) const {
+	public bool isSane() const {
+		foreach ( int y : 1..SizeY * Repeat ) {
+			foreach ( int x : 1..SizeX * Repeat ) {
+				var xy = cast<string>( x ) + "," + cast<string>( y );
+				var cell const = Cells.get( xy );
+
+				if ( !cell.Value || !isSafe(x, y, cell.Value) ) {
+					print( xy + "(" + cell.Value + ") is not safe" );
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	public bool isUsedInBox(int ox, int oy, int value) const {
+		int bx = (ox - 1) / SizeX;
+		int by = (oy - 1) / SizeY;
+
 		foreach ( int y : 1..Repeat ) {
 			foreach ( int x : 1..Repeat ) {
 				var xy = cast<string>( bx * SizeX + x ) + "," + cast<string>( by * SizeY + y );
 				var cell const = Cells.get( xy );
 
-				if ( cell.Value == value ) {
+				if ( /*cell.X != ox && cell.Y != oy &&*/ cell.Value == value ) {
 					return true;
 				}
 			}
@@ -115,9 +134,10 @@ public object Board {
 
 	public bool isUsedInLine(int y, int value) const {
 		foreach ( int x : 1..SizeX * Repeat ) {
-			var cell const = Cells.get( cast<string>( x ) + "," + cast<string>( y ) );
+			var xy = cast<string>( x ) + "," + cast<string>( y );
+			var cell const = Cells.get( xy );
 
-			if ( cell.Value == value ) {
+			if ( /*cell.Y != y &&*/ cell.Value == value ) {
 				return true;
 			}
 		}
@@ -127,9 +147,10 @@ public object Board {
 
 	public bool isUsedInRow(int x, int value) const {
 		foreach ( int y : 1..SizeY * Repeat ) {
-			var cell const = Cells.get( cast<string>( x ) + "," + cast<string>( y ) );
+			var xy = cast<string>( x ) + "," + cast<string>( y );
+			var cell const = Cells.get( xy );
 
-			if ( cell.Value == value ) {
+			if ( /*cell.X != x &&*/ cell.Value == value ) {
 				return true;
 			}
 		}
@@ -171,36 +192,36 @@ public object Board {
 		if ( !Solved ) {
 			Solved = solve( cells, 0 );
 		}
-
-		print( "Solved: " + Solved );
+		//Solved = isSane();
+		//print("Solved: " + Solved);
 	}
 
 	private bool solve(Vector<Cell> cells, int index) const {
-		//print( "index: " + index );
-
+		// clear all non-fixed values
+		// {
 		foreach ( int idx : index..(cells.size() - 1) ) {
 			var cell = cells.at(idx);
 			cell.Value = 0;
 		}
+		// }
 
 		foreach ( int idx : index..(cells.size() - 1) ) {
-			//print( "idx: " + idx );
-
 			var cell = cells.at(idx);
-			cell.Value = 0;
 
 			foreach ( int value : cell.PossibleValues ) {
 				if ( isSafe(cell.X, cell.Y, value) ) {
-					//print( cast<string>( cell.X ) + "," + cast<string>( cell.Y ) + ": " + value );
 					cell.Value = value;
 
 					print( toString() );
+					//sleep(1000);
 
 					if ( solve(cells, index + 1) ) {
 						return true;
 					}
 				}
 			}
+
+			index++;
 		}
 
 		return false;
@@ -217,7 +238,6 @@ public object Board {
 
 				var cell const = Cells.get( xy );
 
-				//result += ((x - 1 == Repeat) ? "| " : " ") + cast<string>( cell );
 				result += " " + cast<string>( cell );
 
 				string possibleValues;
@@ -234,12 +254,6 @@ public object Board {
 			}
 
 			result += "]" + LINEBREAK;
-
-/*
-			if ( y == Repeat ) {
-				result += "_______________" + LINEBREAK + LINEBREAK;
-			}
-*/
 		}
 
 		return result;
