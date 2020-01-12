@@ -21,7 +21,7 @@ public object Map<K, V> implements ICollection {
 	public Map<K, V> Copy() const {
 		Map<K, V> result = new Map<K, V>();
 
-		result.mItems = /*copy*/ mItems;
+		result.mItems = mItems;
 
 		return result;
 	}
