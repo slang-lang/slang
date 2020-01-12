@@ -15,6 +15,10 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase8() );
 	assert( TestCase9() );
 	assert( TestCase10() );
+	assert( TestCase11() );
+	assert( TestCase12() );
+	assert( TestCase13() );
+	assert( TestCase14() );
 }
 
 private bool TestCase1() const {
@@ -310,4 +314,159 @@ private bool TestCase10() const {
 
 	return false;
 }
+
+private bool TestCase11() const {
+        print("TestCase 11: push_back");
+
+        try {
+                Vector<Integer> list = new Vector<Integer>();
+
+                // Setup
+                list.push_back(new Integer(664));
+                list.push_back(new Integer(173));
+                list.push_back(new Integer(1389));
+
+                // Usage
+                assert( list.size() == 3 );
+
+                Integer item = Integer list.at(0);
+                assert( item == 664 );
+
+                item = Integer list.at(1);
+                assert( item == 173 );
+
+                item = Integer list.at(2);
+                assert( item == 1389 );
+
+                return true;
+        }
+        catch ( OutOfBoundsException e ) {
+                print(e.what());
+
+                return false;
+        }
+
+        return false;
+}
+
+private bool TestCase12() const {
+        print("TestCase 12: push_front");
+
+        try {
+                Vector<Integer> list = new Vector<Integer>();
+
+                list.push_front(new Integer(1389));
+                list.push_front(new Integer(173));
+                list.push_front(new Integer(664));
+
+                // Usage
+                assert( list.size() == 3 );
+
+                Integer item = Integer list.at(0);
+                assert( item == 664 );
+
+                item = Integer list.at(1);
+                assert( item == 173 );
+
+                item = Integer list.at(2);
+                assert( item == 1389 );
+
+                return true;
+        }
+
+        return false;
+}
+
+private bool TestCase13() const {
+        print("TestCase 13: pop_front");
+
+        try {
+                Vector<Integer> list = new Vector<Integer>();
+
+                // Setup
+                list.push_back(new Integer(664));
+                list.push_back(new Integer(173));
+                list.push_back(new Integer(1389));
+
+                // Usage
+                assert( list.size() == 3 );
+
+                list.pop_front();
+
+                assert( list.size() == 2 );
+
+                Integer item = Integer list.at(0);
+                assert( item == 173 );
+
+                item = Integer list.at(1);
+                assert( item == 1389 );
+
+                list.pop_front();
+
+                assert( list.size() == 1 );
+
+                item = Integer list.at(0);
+                assert( item == 1389 );
+
+                list.pop_front();
+
+                assert( list.size() == 0 );
+
+                return true;
+        }
+        catch ( OutOfBoundsException e ) {
+                print(e.what());
+
+                return false;
+        }
+
+        return false;
+}
+
+private bool TestCase14() const {
+        print("TestCase 14: pop_back");
+
+        try {
+                Vector<Integer> list = new Vector<Integer>();
+
+                // Setup
+                list.push_back(new Integer(664));
+                list.push_back(new Integer(173));
+                list.push_back(new Integer(1389));
+
+                // Usage
+                assert( list.size() == 3 );
+
+                list.pop_back();
+
+                assert( list.size() == 2 );
+
+                Integer item = Integer list.at(0);
+                assert( item == 664 );
+
+                item = Integer list.at(1);
+                assert( item == 173 );
+
+                list.pop_back();
+
+                assert( list.size() == 1 );
+
+                item = Integer list.at(0);
+                assert( item == 664 );
+
+                list.pop_back();
+
+                assert( list.size() == 0 );
+
+                return true;
+        }
+        catch ( OutOfBoundsException e ) {
+                print(e.what());
+
+                return false;
+        }
+
+        return false;
+}
+
 
