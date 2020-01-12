@@ -35,7 +35,7 @@ public object Vector<T> implements ICollection {
 		}
 
 		CollectionItem<T> item = mFirst;
-		for ( int i = 0; i < index; i++ ) {
+		for ( int idx = 0; idx < index; idx++ ) {
 			item = item.mNext;
 		}
 
@@ -43,7 +43,7 @@ public object Vector<T> implements ICollection {
 	}
 
 	public void clear() modify {
-		for ( int i = 0; i < mSize; i++ ) {
+		for ( int idx = 0; idx < mSize; idx++ ) {
 			delete mFirst.mValue;
 			mFirst = mFirst.mNext;
 		}
@@ -69,7 +69,7 @@ public object Vector<T> implements ICollection {
 		}
 		else {	                        // default handling for erasing
 			CollectionItem<T> prev = mFirst;
-			for ( int i = 0; i < index - 1; i++ ) {
+			for ( int idx = 0; idx < index - 1; idx++ ) {
 				prev = prev.mNext;
 			}
 
@@ -103,9 +103,9 @@ public object Vector<T> implements ICollection {
 	public int indexOf(T value) const {
 		CollectionItem<T> item = mFirst;
 
-		for ( int i = 0; i < mSize; i++ ) {
+		for ( int idx = 0; idx < mSize; idx++ ) {
 			if ( item.mValue == value ) {
-				return i;
+				return idx;
 			}
 
 			item = item.mNext;
@@ -135,7 +135,7 @@ public object Vector<T> implements ICollection {
 		}
 		else {					// default handling for insertions
 			CollectionItem<T> tmp = mFirst;
-			for ( int i = 0; i < index - 1; i++ ) {
+			for ( int idx = 0; idx < index - 1; idx++ ) {
 				tmp = tmp.mNext;
 			}
 
@@ -153,6 +153,69 @@ public object Vector<T> implements ICollection {
 
 		return mLast.mValue;
 	}
+
+        public void pop_back() modify throws {
+                if ( mSize <= 0 ) {
+                        throw new OutOfBoundsException("empty collection");
+                }
+
+                if ( mSize == 1 ) {                     // special handling for 1st item
+                        delete mFirst;
+                        delete mLast;
+                }
+                else {                                  // generic handling
+                        CollectionItem<T> item = mFirst;
+                        for ( int idx = 0; idx < mSize - 1; idx++ ) {
+                                item = item.mNext;
+                        }
+
+                        mLast = item;
+                        delete item.mNext;
+                }
+
+                mSize--;
+        }
+
+        public void pop_front() modify throws {
+                if ( mSize <= 0 ) {
+                        throw new OutOfBoundsException("empty collection");
+                }
+
+                mFirst = mFirst.mNext;
+                if ( !mFirst ) {
+                        delete mLast;
+                }
+
+                mSize--;
+        }
+
+        public void push_back(T value) modify {
+                CollectionItem<T> item = new CollectionItem<T>(value);
+
+                if ( mSize == 0 ) {                     // special handling for 1st item
+                        mFirst = item;
+                }
+                else {                                  // generic handling
+                        mLast.mNext = item;
+                }
+
+                mLast = item;
+
+                mSize++;
+        }
+
+        public void push_front(T value) modify {
+                CollectionItem<T> item = new CollectionItem<T>(value);
+
+                item.mNext = mFirst;
+                mFirst = item;
+
+                if ( mSize == 0 ) {
+                        mLast = item;
+                }
+
+                mSize++;
+        }
 
 	public int size() const {
 		return mSize;
