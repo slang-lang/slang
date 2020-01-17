@@ -2,10 +2,9 @@
 
 # set up essential stuff
 CONFIG_FILE="make-package.cfg"
-DEPENDS=""
-DESCRIPTION="ObjectiveScript interpreter, debugger & package manager"
-MAINTAINER="Michael Adelmann"
-PACKAGE="ObjectiveScript"
+DESCRIPTION="Is an interpreter, debugger & package manager for the ObjectiveScript programming language"
+MAINTAINER="Michael Adelmann <michael.adelmann@gmail.com>"
+PACKAGE="objectivescript"
 PLATFORM=$(uname -m)
 VERSION=$(cat version)
 
@@ -55,12 +54,20 @@ mkdir -p "${PACKAGE_DIRECTORY_LIBRARY}"
 # copying DEBIAN base structure
 cp -r Env/DEBIAN "${PACKAGE_DIRECTORY}"
 
-echo "Package: ${PACKAGE}" #> Env/DEBIAN/control
-echo "Version: ${VERSION}" #>> Env/DEBIAN/control
-echo "Maintainer: ${MAINTAINER}" #>> Env/DEBIAN/control
-echo "Architecture: ${PLATFORM}" #>> Env/DEBIAN/control
-echo "Description: ${DESCRIPTION}" #>> Env/DEBIAN/control
-echo "Depends: ${DEPENDS}" #>> Env/DEBIAN/control
+touch Env/DEBIAN/control
+echo "Source: ${PACKAGE}" > Env/DEBIAN/control
+echo "Section: unknown" >> Env/DEBIAN/control
+echo "Priority: optional" >> Env/DEBIAN/control
+echo "Maintainer: ${MAINTAINER}" >> Env/DEBIAN/control
+echo "Build-Depends: debhelper (>=10)" >> Env/DEBIAN/control
+echo "Standards-Version: 4.0.0" >> Env/DEBIAN/control
+echo "Homepage: https://objectivescript.ticketsharing.net/" >>  Env/DEBIAN/control
+
+echo "Package: ${PACKAGE}" >> Env/DEBIAN/control
+echo "Version: ${VERSION}" >> Env/DEBIAN/control
+echo "Architecture: any" >> Env/DEBIAN/control
+#echo "Depends: ${shlibs:Depends}, ${misc:depends}" >> Env/DEBIAN/control
+echo "Description: ${DESCRIPTION}" >> Env/DEBIAN/control
 
 # add new binaries
 echo "Deploying new binaries..."
@@ -71,7 +78,6 @@ cp "${SOURCE_DIRECTORY}/bin/oscript/oscript" "${PACKAGE_DIRECTORY_BIN}"
 # add new libraries
 echo "Deploying new libraries..."
 cp -r Projects/Library/.odepend "${PACKAGE_DIRECTORY_LIBRARY}"
-cp -r Projects/Library/deploy.sh "${PACKAGE_DIRECTORY_LIBRARY}"
 cp -r Projects/Library/ObjectiveScript "${PACKAGE_DIRECTORY_LIBRARY}"
 cp -r Projects/Library/System "${PACKAGE_DIRECTORY_LIBRARY}"
 
