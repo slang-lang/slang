@@ -1,6 +1,6 @@
 
 // Library imports
-import System.Collections.Iterator;
+import System.Collections.IIterable;
 import System.Collections.List;
 
 // Project imports
