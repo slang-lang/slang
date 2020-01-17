@@ -2,6 +2,10 @@
 
 # set up essential stuff
 CONFIG_FILE="make-package.cfg"
+DEPENDS=""
+DESCRIPTION="ObjectiveScript interpreter, debugger & package manager"
+MAINTAINER="Michael Adelmann"
+PACKAGE="ObjectiveScript"
 PLATFORM=$(uname -m)
 VERSION=$(cat version)
 
@@ -50,6 +54,13 @@ mkdir -p "${PACKAGE_DIRECTORY_LIBRARY}"
 
 # copying DEBIAN base structure
 cp -r Env/DEBIAN "${PACKAGE_DIRECTORY}"
+
+echo "Package: ${PACKAGE}" #> Env/DEBIAN/control
+echo "Version: ${VERSION}" #>> Env/DEBIAN/control
+echo "Maintainer: ${MAINTAINER}" #>> Env/DEBIAN/control
+echo "Architecture: ${PLATFORM}" #>> Env/DEBIAN/control
+echo "Description: ${DESCRIPTION}" #>> Env/DEBIAN/control
+echo "Depends: ${DEPENDS}" #>> Env/DEBIAN/control
 
 # add new binaries
 echo "Deploying new binaries..."
