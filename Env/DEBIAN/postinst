@@ -4,9 +4,9 @@ echo "Post installation..."
 
 echo "Setting environment variable..."
 
-ex -sc 'g/^export OBJECTIVESCRIPT_LIBRARY=\/usr\/share\/oscript\/Library/d
+ex -sc 'g/^export OBJECTIVESCRIPT_LIBRARY=\/usr\/local\/share\/oscript\/Library/d
 $a
-export OBJECTIVESCRIPT_LIBRARY=/usr/share/oscript/Library
+export OBJECTIVESCRIPT_LIBRARY=/usr/local/share/oscript/Library
 .
 x' ~/.profile
 
