@@ -1,5 +1,11 @@
-Package: ObjectiveScript
-Version: 0.6.8
-Maintainer: Michael Adelmann
-Architecture: armhf
-Description: ObjectiveScript interpreter, debugger & package manager
+Source: objectivescript
+Section: unknown
+Priority: optional
+Maintainer: Michael Adelmann <michael.adelmann@gmail.com>
+Build-Depends: debhelper (>=10)
+Standards-Version: 4.0.0
+Homepage: https://objectivescript.ticketsharing.net/
+Package: objectivescript
+Version: 0.6.9
+Architecture: any
+Description: Is an interpreter, debugger & package manager for the ObjectiveScript programming language
