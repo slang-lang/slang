@@ -31,6 +31,10 @@ public object OrderID {
         ID = id;
     }
 
+    public OrderID Copy() const {
+        return new OrderID( ID );
+    }
+
     public string =operator(string) const {
         return "OrderID{" + ID + "}";
     }
@@ -54,6 +58,14 @@ public object Order {
         Constructor();
 
         load(dbResult);
+    }
+
+    public notimplemented Order Copy() const {
+        Order result = new Order();
+
+        // TODO: implement copy constructor
+
+        return result;
     }
 
     public bool canProceed() const {

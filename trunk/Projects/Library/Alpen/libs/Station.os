@@ -12,3 +12,4 @@ public object Station {
     public int stationTypeID;
     public int state;
 }
+
