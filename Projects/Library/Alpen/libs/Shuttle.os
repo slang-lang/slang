@@ -44,6 +44,10 @@ public object ShuttleID {
         ID = id;
     }
 
+    public ShuttleID Copy() const {
+        return new ShuttleID( ID );
+    }
+
     public string =operator(string) const {
         return "ShuttleID{" + ID + "}";
     }
@@ -72,6 +76,14 @@ public object Shuttle {
         Constructor();
 
         load(dbResult);
+    }
+
+    public notimplemented Shuttle Copy() const {
+        Shuttle result = new Shuttle();
+
+        // TODO: implement copy constructor
+
+        return result;
     }
 
     public bool canAcceptOrder(Order order const) const {

@@ -38,6 +38,26 @@ public object Job {
         position = new Position();
     }
 
+    public Job Copy() const {
+        Job result = new Job();
+
+        result.jobID = jobID;
+        result.typeID = typeID;
+        result.levelID = levelID;
+        result.orderID = orderID;
+        result.position = copy position;
+        result.sequence = sequence;
+        result.shuttleID = shuttleID;
+        result.stateID = stateID;
+
+        // For testing only - begin
+        result.endTime = endTime;
+        result.startTime = startTime;
+        // For testing only - end
+
+        return result;
+    }
+
     public string =operator(string) const {
         return "Job { jobID: " + jobID +
                 ", typeID: " + cast<string>( typeID ) +
