@@ -48,6 +48,8 @@ public object Vector<T> implements ICollection {
 			mFirst = mFirst.mNext;
 		}
 
+		delete mFirst;
+		delete mLast;
 		mSize = 0;
 	}
 
