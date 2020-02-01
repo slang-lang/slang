@@ -98,7 +98,7 @@ Runtime::AtomicValue BluePrintObject::getValue() const
 bool BluePrintObject::hasConstructor() const
 {
 	// return any (private, protected, public) constructor with or without parameters or only default parameters
-	Symbol* constructor = resolve(CONSTRUCTOR, true, Visibility::Private);
+	Symbol* constructor = resolve(RESERVED_WORD_CONSTRUCTOR, true, Visibility::Private);
 	if ( constructor && dynamic_cast<class MethodSymbol*>(constructor) ) {
 		return true;
 	}
@@ -109,7 +109,7 @@ bool BluePrintObject::hasConstructor() const
 bool BluePrintObject::hasDefaultConstructor() const
 {
 	// return any (private, protected, public) constructor that has no parameters or only default parameters
-	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Private) != NULL;
+	return resolveMethod(RESERVED_WORD_CONSTRUCTOR, ParameterList(), true, Visibility::Private) != NULL;
 }
 
 bool BluePrintObject::isEnumeration() const

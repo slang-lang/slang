@@ -35,7 +35,7 @@ const std::string& DoubleObject::getTypeName() const
 
 void DoubleObject::initialize()
 {
-	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, Common::TypeDeclaration(_void));
+	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
 		params.push_back(
@@ -45,7 +45,7 @@ void DoubleObject::initialize()
 		constructor->setVisibility(Visibility::Public);
 	}
 
-	defineMethod(CONSTRUCTOR, constructor);
+	defineMethod(RESERVED_WORD_CONSTRUCTOR, constructor);
 }
 
 

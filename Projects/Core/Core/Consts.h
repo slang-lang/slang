@@ -95,8 +95,6 @@ static const char* RESERVED_WORD_SCOPE_OPERATOR = ".";
 
 // System
 static const char* ANONYMOUS_OBJECT = "<anonymous>";
-static const char* CONSTRUCTOR = "Constructor";
-static const char* DESTRUCTOR = "Destructor";
 static const char* NULL_TYPE = "<anonymous>";
 static const char* OBJECTIVESCRIPT_LIBRARY = "OBJECTIVESCRIPT_LIBRARY";
 static const char* SYSTEM_LIBRARY = "SYSTEM.OS";

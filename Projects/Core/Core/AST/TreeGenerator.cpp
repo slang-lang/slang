@@ -652,7 +652,7 @@ Node* TreeGenerator::processPostfixObjectOperator(const std::string& objectType,
 	}
 
 	SymbolExpression* stringExp = NULL;
-	stringExp = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
+	stringExp = new DesigntimeSymbolExpression(RESERVED_WORD_CONSTRUCTOR, _void, PrototypeConstraints(), false);
 	stringExp->mSurroundingScope = scope;
 
 	ExpressionList params;
@@ -692,7 +692,7 @@ Node* TreeGenerator::processPostfixRangeOperator(TokenIterator& start, Node* bas
 		throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on right side", start->position());
 	}
 
-	rangeExp = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
+	rangeExp = new DesigntimeSymbolExpression(RESERVED_WORD_CONSTRUCTOR, _void, PrototypeConstraints(), false);
 	rangeExp->mSurroundingScope = mRepository->findBluePrintObject(std::string("Range"));
 
 	if ( !rangeExp->mSurroundingScope ) {
@@ -1561,7 +1561,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 				typeDeclaration.mConstraints
 			);
 
-			inner->mSymbolExpression = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
+			inner->mSymbolExpression = new DesigntimeSymbolExpression(RESERVED_WORD_CONSTRUCTOR, _void, PrototypeConstraints(), false);
 			inner->mSymbolExpression->mSurroundingScope = mRepository->findBluePrintObject(type);
 
 			if ( !inner->mSymbolExpression->mSurroundingScope ) {

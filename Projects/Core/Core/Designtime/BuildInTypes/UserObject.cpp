@@ -33,12 +33,12 @@ const std::string& UserObject::getTypeName() const
 
 void UserObject::initialize()
 {
-	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, Common::TypeDeclaration(_void));
+	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		constructor->setVisibility(Visibility::Public);
 	}
 
-	defineMethod(CONSTRUCTOR, constructor);
+	defineMethod(RESERVED_WORD_CONSTRUCTOR, constructor);
 }
 
 

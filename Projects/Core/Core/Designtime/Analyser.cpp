@@ -205,7 +205,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	if ( isImplemented && implementationType == ImplementationType::Concrete && !blueprint->hasConstructor() ) {
 		ParameterList params;
 
-		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, Common::TypeDeclaration(_void));
+		Common::Method* defaultConstructor = new Common::Method(blueprint, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 		defaultConstructor->setExceptions(CheckedExceptions::Nothrow);
 		defaultConstructor->setLanguageFeatureState(LanguageFeatureState::Stable);
 		defaultConstructor->setMemoryLayout(MemoryLayout::Instance);
@@ -216,7 +216,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		defaultConstructor->setVirtuality(Virtuality::Virtual);
 		defaultConstructor->setVisibility(Visibility::Public);
 
-		blueprint->defineMethod(CONSTRUCTOR, defaultConstructor);
+		blueprint->defineMethod(RESERVED_WORD_CONSTRUCTOR, defaultConstructor);
 	}
 
 	mRepository->addBluePrint(blueprint);
