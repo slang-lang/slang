@@ -68,10 +68,10 @@ static const char* MODIFIER_HEURISTIC = "heuristic";	// no reserved word, antony
 static const char* MODIFIER_INSTANCE = "instance";		// no reserved word, antonym to "static"
 static const char* MODIFIER_MODIFY = "modify";
 static const char* MODIFIER_NOTHROW = "nothrow";		// no reserved word, antonym to "throws"
-static const char* MODIFIER_RECURSIVE = "recursive";	// no reserved word
+static const char* MODIFIER_RECURSIVE = "recursive";	// antonym to "heuristic"
 static const char* MODIFIER_SEALED = "sealed";
-static const char* MODIFIER_STATIC = "static";
-static const char* MODIFIER_THROWS = "throws";
+static const char* MODIFIER_STATIC = "static";			// antonym to "instance"
+static const char* MODIFIER_THROWS = "throws";			// antonym to "nothrow"
 static const char* MODIFIER_VIRTUAL = "virtual";
 
 // Operators
