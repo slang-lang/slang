@@ -67,6 +67,7 @@ public:
 	bool isAbstract() const;
 	bool isConstMethod() const;
 	bool isFinal() const;
+	bool isNotImplemented() const;
 	bool throws() const;
 
 	Algorithm::E getAlgorithm() const;

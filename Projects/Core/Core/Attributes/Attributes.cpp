@@ -129,6 +129,11 @@ bool MethodAttributes::isFinal() const
 	return mVirtuality == Virtuality::Final;
 }
 
+bool MethodAttributes::isNotImplemented() const
+{
+	return mLanguageFeatureState == LanguageFeatureState::NotImplemented;
+}
+
 void MethodAttributes::setAlgorithm(Algorithm::E value)
 {
 	checkSealState();

@@ -104,8 +104,8 @@ void Generator::processMethod(Common::Method* method)
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method symbol provided");
 	}
-	if ( method->isAbstract() || method->isExtensionMethod() ) {
-		// abstract or extension methods have no implementation, so there's nothing to parse; adieu..
+	if ( method->isAbstract() || method->isExtensionMethod() || method->isNotImplemented() ) {
+		// abstract, extension or not implemented methods have no implementation, so there's nothing to parse...
 		return;
 	}
 
