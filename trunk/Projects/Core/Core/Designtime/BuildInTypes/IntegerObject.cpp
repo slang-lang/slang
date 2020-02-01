@@ -34,7 +34,7 @@ const std::string& IntegerObject::getTypeName() const
 
 void IntegerObject::initialize()
 {
-	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, Common::TypeDeclaration(_void));
+	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
 		params.push_back(
@@ -44,7 +44,7 @@ void IntegerObject::initialize()
 		constructor->setVisibility(Visibility::Public);
 	}
 
-	defineMethod(CONSTRUCTOR, constructor);
+	defineMethod(RESERVED_WORD_CONSTRUCTOR, constructor);
 }
 
 
