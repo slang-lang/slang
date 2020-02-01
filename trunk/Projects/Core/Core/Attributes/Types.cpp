@@ -131,7 +131,7 @@ std::string LanguageFeatureState::convert(LanguageFeatureState::E e)
 		case LanguageFeatureState::Deprecated: return LANGUAGE_FEATURE_DEPRECATED;
 		case LanguageFeatureState::NotImplemented: return LANGUAGE_FEATURE_NOTIMPLEMENTED;
 		case LanguageFeatureState::Stable: return LANGUAGE_FEATURE_STABLE;
-		case LanguageFeatureState::Unspecified: return UNKNOWN;
+		case LanguageFeatureState::Unspecified: return LANGUAGE_FEATURE_UNSPECIFIED;
 		case LanguageFeatureState::Unstable: return LANGUAGE_FEATURE_UNSTABLE;
 	}
 

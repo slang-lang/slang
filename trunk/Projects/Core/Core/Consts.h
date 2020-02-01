@@ -56,6 +56,7 @@ static const char* LANGUAGE_FEATURE_DEPRECATED = "deprecated";
 static const char* LANGUAGE_FEATURE_NONE = "";
 static const char* LANGUAGE_FEATURE_NOTIMPLEMENTED = "notimplemented";
 static const char* LANGUAGE_FEATURE_STABLE = "stable";
+static const char* LANGUAGE_FEATURE_UNSPECIFIED = "";
 static const char* LANGUAGE_FEATURE_UNSTABLE = "unstable";
 
 // Modifiers
