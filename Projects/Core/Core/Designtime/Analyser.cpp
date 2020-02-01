@@ -127,9 +127,9 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for an optional modifier token
 	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::Concrete);
-	// look for the object token, BluePrintType::Object is required
-	BluePrintType::E blueprintType = Parser::parseBluePrintType(token);
-	if ( blueprintType != BluePrintType::Object ) {
+	// look for the object token, BlueprintType::Object is required
+	BlueprintType::E blueprintType = Parser::parseBluePrintType(token);
+	if (blueprintType != BlueprintType::Object ) {
 		throw Designtime::Exceptions::SyntaxError("object expected", token->position());
 	}
 	// look for the type declaration
@@ -236,9 +236,9 @@ bool Analyser::createEnum(TokenIterator& token)
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for an optional modifier token
 	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::Concrete);
-	// look for the object token, BluePrintType::Enum is required
-	BluePrintType::E bluePrintType = Parser::parseBluePrintType(token);
-	if ( bluePrintType != BluePrintType::Enum ) {
+	// look for the object token, BlueprintType::Enum is required
+	BlueprintType::E bluePrintType = Parser::parseBluePrintType(token);
+	if (bluePrintType != BlueprintType::Enum ) {
 		throw Designtime::Exceptions::SyntaxError("enum type expected", token->position());
 	}
 	// look for the type declaration
@@ -285,9 +285,9 @@ bool Analyser::createInterface(TokenIterator& token)
 	if ( implementationType != ImplementationType::Abstract ) {
 		throw Designtime::Exceptions::SyntaxError("interfaces cannot be concrete", token->position());
 	}
-	// look for the object token, BluePrintType::Interface is required
-	BluePrintType::E blueprintType = Parser::parseBluePrintType(token);
-	if ( blueprintType != BluePrintType::Interface ) {
+	// look for the object token, BlueprintType::Interface is required
+	BlueprintType::E blueprintType = Parser::parseBluePrintType(token);
+	if (blueprintType != BlueprintType::Interface ) {
 		throw Designtime::Exceptions::SyntaxError("interface type expected", token->position());
 	}
 	// look for the type declaration

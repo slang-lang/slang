@@ -27,7 +27,7 @@ std::string EnumerationObject::TYPENAME = _enum;
 EnumerationObject::EnumerationObject(const std::string& name, const std::string& type, const AtomicValue& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
-	mBluePrintType = BluePrintType::Enum;
+	mBluePrintType = BlueprintType::Enum;
 	mIsAtomicType = true;
 	mQualifiedOuterface = type;
 	mQualifiedTypename = type;

@@ -110,8 +110,8 @@ public:
 	ObjectAttributes();
 
 public:
-	BluePrintType::E getBluePrintType() const;
-	void setBluePrintType(BluePrintType::E value);
+	BlueprintType::E getBluePrintType() const;
+	void setBluePrintType(BlueprintType::E value);
 
 	ImplementationType::E getImplementationType() const;
 	void setImplementationType(ImplementationType::E value);
@@ -123,7 +123,7 @@ public:
 	void setSealed(bool state);
 
 protected:
-	BluePrintType::E mBluePrintType;
+	BlueprintType::E mBluePrintType;
 	ImplementationType::E mImplementationType;
 	bool mIsMember;
 };

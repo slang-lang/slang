@@ -52,22 +52,22 @@ std::string Algorithm::convert(Algorithm::E e)
 }
 
 
-BluePrintType::E BluePrintType::convert(const std::string& v)
+BlueprintType::E BlueprintType::convert(const std::string& v)
 {
-	if ( v == RESERVED_WORD_ENUM ) { return BluePrintType::Enum; }
-	else if ( v == RESERVED_WORD_INTERFACE ) { return BluePrintType::Interface; }
-	else if ( v == RESERVED_WORD_OBJECT ) { return BluePrintType::Object; }
+	if ( v == RESERVED_WORD_ENUM ) { return BlueprintType::Enum; }
+	else if ( v == RESERVED_WORD_INTERFACE ) { return BlueprintType::Interface; }
+	else if ( v == RESERVED_WORD_OBJECT ) { return BlueprintType::Object; }
 
-	return BluePrintType::Unknown;
+	return BlueprintType::Unknown;
 }
 
-std::string BluePrintType::convert(BluePrintType::E e)
+std::string BlueprintType::convert(BlueprintType::E e)
 {
 	switch ( e ) {
-		case BluePrintType::Enum: return RESERVED_WORD_ENUM;
-		case BluePrintType::Interface: return RESERVED_WORD_INTERFACE;
-		case BluePrintType::Object: return RESERVED_WORD_OBJECT;
-		case BluePrintType::Unknown: return UNKNOWN;
+		case BlueprintType::Enum: return RESERVED_WORD_ENUM;
+		case BlueprintType::Interface: return RESERVED_WORD_INTERFACE;
+		case BlueprintType::Object: return RESERVED_WORD_OBJECT;
+		case BlueprintType::Unknown: return UNKNOWN;
 	}
 
 	return UNKNOWN;
