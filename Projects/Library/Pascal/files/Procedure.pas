@@ -1,8 +1,6 @@
 PROGRAM Procedure_Test;
 
 	PROCEDURE YELL;
-	VAR
-		count: Integer := 0;
 	BEGIN
 		WRITELN( 'Hello World!' );
 	END;
