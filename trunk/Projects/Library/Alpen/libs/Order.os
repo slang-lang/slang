@@ -60,10 +60,16 @@ public object Order {
         load(dbResult);
     }
 
-    public notimplemented Order Copy() const {
+    public Order Copy() const {
         Order result = new Order();
 
-        // TODO: implement copy constructor
+        result.jobs = jobs;                 // assigns a reference to the original orders job collection
+        result.orderID = orderID;
+        result.orderTypeID = orderTypeID;
+        result.priority = priority;
+        result.sequence = sequence;
+        result.shuttleID = shuttleID;
+        result.stateID = stateID;
 
         return result;
     }

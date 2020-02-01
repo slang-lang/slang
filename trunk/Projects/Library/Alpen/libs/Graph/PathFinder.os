@@ -16,9 +16,9 @@ public object PathFinder {
 /*
         mStorage = storage;
 
-	if ( !mStorage.dataIsLoaded() ) {
-		mStorage.load();
-	}
+        if ( !mStorage.dataIsLoaded() ) {
+            mStorage.load();
+        }
 */
     }
 

@@ -78,10 +78,20 @@ public object Shuttle {
         load(dbResult);
     }
 
-    public notimplemented Shuttle Copy() const {
+    public Shuttle Copy() const {
         Shuttle result = new Shuttle();
 
-        // TODO: implement copy constructor
+        result.batteryLevelID = batteryLevelID;
+        result.containerLimit = containerLimit;
+        result.countAssignedOrders = countAssignedOrders;
+        result.levelID = levelID;
+        result.modeID = modeID;
+        result.orders = orders;
+        result.path = path;
+        result.position = copy position;
+        result.shuttleID = shuttleID;
+        result.stateID = stateID;
+        result.typeID = typeID;
 
         return result;
     }
