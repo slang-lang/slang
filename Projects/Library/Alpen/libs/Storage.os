@@ -23,7 +23,7 @@ public object Storage {
         mLogger = new Logger(logger, "Storage");
     }
 
-    public notimplemented Storage Copy() const abstract;
+    public notimplemented Storage Copy() const;
 
     public void Insert(Job job) modify {
         string query = "INSERT INTO jobs (order_id, job_type_id, job_state_id, shuttle_id, level_id, position_id) VALUES (" + job.orderID + ", " + cast<string>( job.typeID ) + ", " + cast<string>( job.stateID ) + ", " + job.shuttleID + ", " + job.position.levelID + ", " + job.position.positionID + ")"
