@@ -1,6 +1,7 @@
 
 // library imports
 import System.Collections.List;
+import System.Collections.Set;
 import libLog.Logger;
 
 // project imports
@@ -16,6 +17,30 @@ import DispatchSteps.SortOrdersByPriority;
 import DispatchSteps.SortShuttlesByBatteryLevel;
 import DispatchSteps.SortShuttlesByDistance;
 
+
+private object Plan const {
+    public int costs const;
+    public List<Order> orders const;
+    public List<Shuttle> shuttles const;
+
+    public void Constructor(List<Order> orders, List<Shuttle> shuttles, int costs) {
+        this.costs = costs;
+        this.orders = orders;
+        this.shuttles = shuttles;
+    }
+
+    public bool operator<(Plan other const) const {
+/*
+        if ( shuttles.size() == other.shuttles.size() ) {
+            return orders.size() > other.orders.size();
+        }
+
+        return shuttles.size() > other.shuttles.size();
+*/
+
+        return costs < other.costs;
+    }
+}
 
 public object OrderDispatcher {
     public void Constructor(ILogger logger, IPCService ipcService) {
@@ -176,6 +201,14 @@ public object OrderDispatcher {
         foreach ( Order order : data.orders ) {
             mLogger.debug( cast<string>( order ) );
         }
+    }
+
+    private void plan() modify {
+        // creates a set of plans that are compared to each other and executes the best plan
+
+        var plans = new Set<Plan>();
+
+
     }
 
     private void printShuttles(DispatchData data) modify {
