@@ -193,6 +193,14 @@ public object OrderDispatcher {
         mIPCService.send(SHUTTLEMANAGER_QUEUE, message);
     }
 
+    private void plan() modify {
+        // creates a set of plans that are compared to each other and executes the best plan
+
+        var plans = new Set<Plan>();
+
+
+    }
+
     private void printOrders(DispatchData data) modify {
         assert( data.orders );
 
@@ -201,14 +209,6 @@ public object OrderDispatcher {
         foreach ( Order order : data.orders ) {
             mLogger.debug( cast<string>( order ) );
         }
-    }
-
-    private void plan() modify {
-        // creates a set of plans that are compared to each other and executes the best plan
-
-        var plans = new Set<Plan>();
-
-
     }
 
     private void printShuttles(DispatchData data) modify {
