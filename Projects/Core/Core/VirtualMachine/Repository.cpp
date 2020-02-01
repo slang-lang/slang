@@ -161,17 +161,15 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 		if ( object->isAbstract() ) {
 			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + constraintType + "'");
 		}
-
-		// TODO: verify me
-		//Controller::Instance().memory()->newObject(object);
 	}
 
 	if ( Controller::Instance().phase() == Controller::Phase::Preparation ) {
 		switch ( object->getLanguageFeatureState() ) {
 			case LanguageFeatureState::Deprecated: OSwarn("Used type '" + object->QualifiedTypename() + "' is marked as deprecated"); break;
 			case LanguageFeatureState::NotImplemented: OSerror("Used type '" + object->QualifiedTypename() + "' is marked as not implemented"); break;
+			case LanguageFeatureState::Stable: /* this is fine */ break;
+			case LanguageFeatureState::Unspecified: OSerror("Unknown language feature state set for type '" + object->QualifiedTypename() + "'"); break;
 			case LanguageFeatureState::Unstable: OSwarn("Used type '" + object->QualifiedTypename() + "' is marked as unstable"); break;
-			default: break;
 		}
 	}
 

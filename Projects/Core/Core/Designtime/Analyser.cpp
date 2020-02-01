@@ -500,13 +500,13 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 
 		tokens = Parser::collectScopeTokens(token);
 	}
-	else if ( virtuality != Virtuality::Abstract ) {
-		throw Designtime::Exceptions::SyntaxError("method '" + name + "' is not declared as abstract but has no implementation", token->position());
+	else if ( languageFeature != LanguageFeatureState::NotImplemented && virtuality != Virtuality::Abstract ) {
+		throw Designtime::Exceptions::SyntaxError("method '" + name + "' is not declared as abstract or not annotated with '" + LANGUAGE_FEATURE_NOTIMPLEMENTED + "' but has no implementation", token->position());
 	}
 
 	// if this method is a runtime method then prototype constraints are not allowed (because they will never get resolved)
 	if ( !blueprint && !type.mConstraints.hasRuntimeTypes() ) {
-		throw Designtime::Exceptions::SyntaxError("only resolved prototype constraints are allowed in non-object methods", token->position());
+		throw Designtime::Exceptions::SyntaxError("only resolved prototype constraints are allowed in static methods", token->position());
 	}
 
 	// create a new method with the corresponding return type

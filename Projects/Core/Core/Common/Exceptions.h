@@ -129,11 +129,11 @@ public:
 };
 
 
-class NotImplemented : public Exception
+class MethodNotImplemented : public Exception
 {
 public:
-	explicit NotImplemented(const std::string& text, const Position& position = Position())
-	: Exception("Not implemented: " + text, position)
+	explicit MethodNotImplemented(const std::string& text, const Position& position = Position())
+	: Exception("Method not implemented: " + text, position)
 	{ }
 };
 
