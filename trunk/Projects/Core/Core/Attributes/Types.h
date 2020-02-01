@@ -45,7 +45,7 @@ public:
 };
 
 
-class BluePrintType
+class BlueprintType
 {
 public:
 	enum E {

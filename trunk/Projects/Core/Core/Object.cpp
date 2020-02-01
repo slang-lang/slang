@@ -305,7 +305,7 @@ bool Object::isAbstract() const
 		}
 	}
 
-	return mImplementationType == ImplementationType::Abstract || mBluePrintType == BluePrintType::Interface;
+	return mImplementationType == ImplementationType::Abstract || mBluePrintType == BlueprintType::Interface;
 }
 
 bool Object::isAtomicType() const
@@ -315,7 +315,7 @@ bool Object::isAtomicType() const
 
 bool Object::isEnumerationValue() const
 {
-	return mBluePrintType == BluePrintType::Enum;
+	return mBluePrintType == BlueprintType::Enum;
 }
 
 bool Object::isInstanceOf(const std::string& type) const

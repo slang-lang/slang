@@ -114,7 +114,7 @@ bool BluePrintObject::hasDefaultConstructor() const
 
 bool BluePrintObject::isEnumeration() const
 {
-	return mBluePrintType == BluePrintType::Enum;
+	return mBluePrintType == BlueprintType::Enum;
 }
 
 bool BluePrintObject::isIterable() const
@@ -238,7 +238,7 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 		Designtime::BluePrintObject* blue = dynamic_cast<Designtime::BluePrintObject*>(symIt->second);
 
 		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(blue->QualifiedTypename(), blue->Filename(), blue->getName());
-		member->setBluePrintType(BluePrintType::Enum);
+		member->setBluePrintType(BlueprintType::Enum);
 		member->setLanguageFeatureState(blue->getLanguageFeatureState());
 		member->setMember(blue->isMember());
 		member->setMemoryLayout(blue->getMemoryLayout());

@@ -516,9 +516,9 @@ AccessMode::E Parser::parseAccessMode(TokenIterator& token, AccessMode::E defaul
 	return result;
 }
 
-BluePrintType::E Parser::parseBluePrintType(TokenIterator &token)
+BlueprintType::E Parser::parseBluePrintType(TokenIterator &token)
 {
-	return BluePrintType::convert((*token++).content());
+	return BlueprintType::convert((*token++).content());
 }
 
 CheckedExceptions::E Parser::parseExceptions(TokenIterator& token, CheckedExceptions::E defaultValue)
