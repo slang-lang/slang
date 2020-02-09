@@ -156,8 +156,35 @@ bool BluePrintObject::isReference() const
 
 void BluePrintObject::prepareParents(Repository* repository)
 {
-	Ancestors ancestors = getAncestors();
-	for ( Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
+/*
+	// collect all parents
+	// {
+	bool foundNewParents = false;
+	std::set<std::string> tmpAncestors;
+
+	do {
+		foundNewParents = false;
+
+		for ( Ancestors::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+			BluePrintObject* parent = repository->findBluePrintObject(it->typeDeclaration());
+
+			Ancestors tmpInheritance = parent->getInheritance();
+			for ( Ancestors::iterator tmpIt = tmpInheritance.begin(); tmpIt != tmpInheritance.end(); ++tmpIt ) {
+				std::pair<std::set<std::string>::iterator, bool> insert = tmpAncestors.insert( tmpIt->name() );
+
+				if ( insert.second ) {
+					// a new ancestor has been inserted
+					foundNewParents = true;
+
+					mInheritance.insert( *tmpIt );
+				}
+			}
+		}
+	} while ( foundNewParents );
+	// }
+*/
+
+	for ( Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 		BluePrintObject* parent = repository->findBluePrintObject(it->typeDeclaration());
 
 		if ( !parent ) {
