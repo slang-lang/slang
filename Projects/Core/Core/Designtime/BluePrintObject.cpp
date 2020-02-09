@@ -11,6 +11,7 @@
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
+#include "Exceptions.h"
 
 // Namespace declarations
 
@@ -161,6 +162,11 @@ void BluePrintObject::prepareParents(Repository* repository)
 
 		if ( !parent ) {
 			throw Common::Exceptions::UnknownIdentifier("Unknown parent identifier '" + it->typeDeclaration().mName + "'");
+		}
+
+		// detect circular inheritance
+		if ( parent->inheritsFrom(QualifiedTypename()) ) {
+			throw Exceptions::DesigntimeException("Circular inheritance detected for type '" + QualifiedTypename() + "'!");
 		}
 
 		if ( !parent->isPrepared() ) {
