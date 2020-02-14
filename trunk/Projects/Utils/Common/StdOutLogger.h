@@ -35,9 +35,9 @@ public:
 	void LogDeprecate(const std::string& message, char *file, unsigned int line);
 	void LogError(const std::string& message, char* file, unsigned int line);
 	void LogFatal(const std::string& message, char* file, unsigned int line);
-	void LogInfo (const std::string& message, char* file, unsigned int line);
+	void LogInfo(const std::string& message, char* file, unsigned int line);
 	void LogMethod(const std::string& message, char* file, unsigned int line);
-	void LogWarn (const std::string& message, char* file, unsigned int line);
+	void LogWarn(const std::string& message, char* file, unsigned int line);
 
 	void setKey(const std::string& key);
 	void setLoudness(int loudness);
