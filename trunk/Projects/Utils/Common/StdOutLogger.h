@@ -22,7 +22,7 @@ class StdOutLogger : public ILogger
 {
 public:
 	StdOutLogger();
-	StdOutLogger(const ILogger *parent, const std::string& className, const std::string& key = "");
+	StdOutLogger(const ILogger* parent, const std::string& className, const std::string& key = "");
 	~StdOutLogger();
 
 public:
@@ -35,8 +35,8 @@ public:
 	void LogDeprecate(const std::string& message, char *file, unsigned int line);
 	void LogError(const std::string& message, char* file, unsigned int line);
 	void LogFatal(const std::string& message, char* file, unsigned int line);
-	void LogInfo (const std::string& message, char *file, unsigned int line);
-	void LogMethod(const std::string& message, char *file, unsigned int line);
+	void LogInfo (const std::string& message, char* file, unsigned int line);
+	void LogMethod(const std::string& message, char* file, unsigned int line);
 	void LogWarn (const std::string& message, char* file, unsigned int line);
 
 	void setKey(const std::string& key);
@@ -46,8 +46,7 @@ protected:
 	IContext* mContext;
 
 private:
-	std::string getDateTime();
-	void Log(const std::string& loglevel, const std::string& message, char *file, unsigned int line);
+	void Log(const std::string& logLevel, const std::string& message, char* file, unsigned int line);
 
 private:
 	std::string mClassName;
