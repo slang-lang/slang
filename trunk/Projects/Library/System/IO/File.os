@@ -14,6 +14,18 @@ public namespace System.IO {
 	}
 
 	public object File {
+		public bool FileExists(string filename) static {
+			var handle = fopen( filename, "r" );
+
+			if ( handle ) {
+				fclose( handle );
+				return true;
+			}
+
+			return false;
+		}
+
+
 		public void Constructor() {
 			cleanup();
 		}
