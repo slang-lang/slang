@@ -18,11 +18,9 @@
 #include <string.h>
 
 #define UnstreamLogMessage(msgstr, ostream_expr) \
-    do {\
-        std::ostringstream _ostr_; \
-        _ostr_ << ostream_expr; \
-        msgstr = _ostr_.str(); \
-    } while (false)
+	std::ostringstream _ostr_; \
+	_ostr_ << ostream_expr; \
+	msgstr = _ostr_.str();
 
 
 // Project includes
@@ -35,67 +33,53 @@
 
 
 #define debug(ostream_expr) \
-		do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogDebug(_msg_, __FILE__, __LINE__); \
-            } \
-        } while( false )
+	if ( this->getLogger() ) { \
+		std::string _msg_; \
+		UnstreamLogMessage(_msg_, ostream_expr); \
+		this->LogDebug(_msg_, __FILE__, __LINE__); \
+	}
 
 #define deprecate(ostream_expr) \
-		do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogDeprecate(_msg_, __FILE__, __LINE__); \
-            } \
-        } while( false )
+	if ( this->getLogger() ) { \
+		std::string _msg_; \
+		UnstreamLogMessage(_msg_, ostream_expr); \
+		this->LogDeprecate(_msg_, __FILE__, __LINE__); \
+	}
 
 #define error(ostream_expr) \
-		do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogError(_msg_, __FILE__, __LINE__); \
-            } \
-        } while( false )
+	if ( this->getLogger() ) { \
+		std::string _msg_; \
+		UnstreamLogMessage(_msg_, ostream_expr); \
+		this->LogError(_msg_, __FILE__, __LINE__); \
+	}
 
 #define fatal(ostream_expr) \
-		do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogFatal(_msg_, __FILE__, __LINE__); \
-            } \
-        } while( false )
+	if ( this->getLogger() ) { \
+		std::string _msg_; \
+		UnstreamLogMessage(_msg_, ostream_expr); \
+		this->LogFatal(_msg_, __FILE__, __LINE__); \
+	}
 
 #define info(ostream_expr) \
-		do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogInfo(_msg_, __FILE__, __LINE__); \
-            } \
-        } while( false )
+	if ( this->getLogger() ) { \
+		std::string _msg_; \
+		UnstreamLogMessage(_msg_, ostream_expr); \
+		this->LogInfo(_msg_, __FILE__, __LINE__); \
+	}
 
 #define method(ostream_expr) \
-		do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogMethod(_msg_, __FILE__, __LINE__); \
-            } \
-        } while( false )
+	if ( this->getLogger() ) { \
+		std::string _msg_; \
+		UnstreamLogMessage(_msg_, ostream_expr); \
+		this->LogMethod(_msg_, __FILE__, __LINE__); \
+	}
 
 #define warn(ostream_expr) \
-		do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogWarn(_msg_, __FILE__, __LINE__); \
-            } \
-        } while( false )
+	if ( this->getLogger() ) { \
+		std::string _msg_; \
+		UnstreamLogMessage(_msg_, ostream_expr); \
+		this->LogWarn(_msg_, __FILE__, __LINE__); \
+	}
 
 
 namespace Utils {
