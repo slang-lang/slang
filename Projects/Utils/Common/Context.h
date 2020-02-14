@@ -28,11 +28,11 @@ public:
 };
 
 
-class Context : public IContext
+class FileContext : public IContext
 {
 public:
-	explicit Context(const char* file);
-	~Context();
+	explicit FileContext(const char* file);
+	~FileContext();
 
 public:
 	void write(const char* msg);
