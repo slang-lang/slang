@@ -16,7 +16,7 @@ namespace AST {
 
 Fixture::Fixture(const Utils::Common::ILogger *p)
 : TestFixture("AST"),
-  Utils::Common::Logger(p, "ASTFixture")
+  Utils::Common::FileLogger(p, "ASTFixture")
 {
 }
 

@@ -19,10 +19,10 @@ namespace Operator {
 
 
 class OperatorTest : public GenericTest,
-					 private Utils::Common::Logger
+					 private Utils::Common::FileLogger
 {
 public:
-	OperatorTest(const Utils::Common::Logger *p);
+	OperatorTest(const Utils::Common::FileLogger *p);
 	virtual ~OperatorTest() { }
 
 public:

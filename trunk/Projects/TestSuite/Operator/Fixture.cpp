@@ -16,7 +16,7 @@ namespace Operator {
 
 Fixture::Fixture(const Utils::Common::ILogger *p)
 : TestFixture("Operator"),
-  Utils::Common::Logger(p, "Operator")
+  Utils::Common::FileLogger(p, "Operator")
 {
 }
 

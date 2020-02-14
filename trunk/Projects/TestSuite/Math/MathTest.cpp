@@ -24,7 +24,7 @@ namespace Math {
 
 MathTest::MathTest(const ::Utils::Common::ILogger *p)
 : GenericTest("MathTest"),
-  ::Utils::Common::Logger(p, "MathTest")
+  ::Utils::Common::FileLogger(p, "MathTest")
 {
 }
 

@@ -19,7 +19,7 @@ namespace Inheritance {
 
 
 class InheritanceTest : public GenericTest,
-						private Utils::Common::Logger
+						private Utils::Common::FileLogger
 {
 public:
     InheritanceTest(const Utils::Common::ILogger *p);

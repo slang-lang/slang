@@ -19,7 +19,7 @@ namespace Prototype {
 
 
 class PrototypeTest : public GenericTest,
-					  private Utils::Common::Logger
+					  private Utils::Common::FileLogger
 {
 public:
 	PrototypeTest(const Utils::Common::ILogger *p);

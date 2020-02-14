@@ -16,7 +16,7 @@ namespace Framework {
 
 Fixture::Fixture(const Utils::Common::ILogger *p)
 : TestFixture("Testing"),
-  Utils::Common::Logger(p, "TestFramework")
+  Utils::Common::FileLogger(p, "TestFramework")
 {
 }
 
