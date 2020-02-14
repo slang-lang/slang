@@ -50,16 +50,16 @@ public:
 			std::string param_filename = (*it++).value().toStdString();
 			std::string param_accessmode = (*it++).value().toStdString();
 
+			int result_handle = 0;
+
 			FILE* fileHandle = fopen(param_filename.c_str(), param_accessmode.c_str());
-			if ( !fileHandle ) {
-				throw Runtime::Exceptions::RuntimeException("error while opening file");
+			if ( fileHandle ) {
+				result_handle = mFileHandles.size() + 1;
+
+				mFileHandles.insert(std::make_pair(result_handle, fileHandle));
 			}
 
-			int handle = mFileHandles.size() + 1;
-
-			mFileHandles.insert(std::make_pair(handle, fileHandle));
-
-			*result = Runtime::IntegerObject(handle);
+			*result = Runtime::IntegerObject(result_handle);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

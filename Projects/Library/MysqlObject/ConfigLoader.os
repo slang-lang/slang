@@ -29,6 +29,10 @@ public object ConfigLoader {
 	}
 
 	public bool load() modify {
+		if ( !System.IO.File.FileExists( mFilename ) ) {
+			return false;
+		}
+
 		var file = new System.IO.File( mFilename, System.IO.FileAccessMode.ReadOnly );
 		if ( !file.isOpen() ) {
 			return false;
@@ -41,7 +45,7 @@ public object ConfigLoader {
 
 		var reader = new JsonReader();
 		var config = JsonObject reader.parse( text );
-		print( "Reader: " + config.toString() );
+		//print( "Reader: " + config.toString() );
 
 		// Database config
 		// {
@@ -83,7 +87,7 @@ public object ConfigLoader {
 		config.addMember( "ViewPostfix", new JsonValue( mConfig.ViewPostfix ) );
 		// }
 
-		print( "Writer: " + config.toString() );
+		//print( "Writer: " + config.toString() );
 
 		var file = new System.IO.File( mFilename, System.IO.FileAccessMode.WriteOnly );
 		//file.write( new JsonStyledWriter().toString( config ) );		// writers currently don't work ;-(
