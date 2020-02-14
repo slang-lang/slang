@@ -19,7 +19,7 @@ namespace Interfaces {
 
 
 class InterfacesTest : public GenericTest,
-					   private Utils::Common::Logger
+					   private Utils::Common::FileLogger
 {
 public:
     InterfacesTest(const Utils::Common::ILogger *p);

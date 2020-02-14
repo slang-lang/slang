@@ -30,7 +30,7 @@ namespace Prototype {
 
 PrototypeTest::PrototypeTest(const ::Utils::Common::ILogger *p)
 : GenericTest("PrototypeTest"),
-  ::Utils::Common::Logger(p, "PrototypeTest")
+  ::Utils::Common::FileLogger(p, "PrototypeTest")
 {
 }
 

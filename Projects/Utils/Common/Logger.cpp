@@ -18,23 +18,23 @@ namespace Utils {
 namespace Common {
 
 
-Logger::Logger(char* logfile)
+FileLogger::FileLogger(char* logfile)
 : mContext(NULL),
   mHasParent(false),
   mLogFile(logfile),
-  mLoudness(Logger::LoudnessMethod)
+  mLoudness(FileLogger::LoudnessMethod)
 {
 	if ( !mContext ) {
 		mContext = new FileContext(mLogFile.c_str());
 	}
 }
 
-Logger::Logger(const ILogger* parent, const std::string& className, const std::string& key)
+FileLogger::FileLogger(const ILogger* parent, const std::string& className, const std::string& key)
 : mContext(NULL),
   mHasParent(false),
   mKey(key),
   mLogFile("logger.log"),
-  mLoudness(Logger::LoudnessMethod)
+  mLoudness(FileLogger::LoudnessMethod)
 {
 	if ( parent ) {
 		mContext = parent->getContext();
@@ -52,29 +52,29 @@ Logger::Logger(const ILogger* parent, const std::string& className, const std::s
 	}
 }
 
-Logger::~Logger()
+FileLogger::~FileLogger()
 {
 	if ( !mHasParent ) {
 		delete mContext;
 	}
 }
 
-const std::string& Logger::getClassName() const
+const std::string& FileLogger::getClassName() const
 {
 	return mClassName;
 }
 
-IContext* Logger::getContext() const
+IContext* FileLogger::getContext() const
 {
 	return mContext;
 }
 
-ILogger* Logger::getLogger()
+ILogger* FileLogger::getLogger()
 {
 	return this;
 }
 
-void Logger::Log(const std::string& logLevel, const std::string& message, char* file, unsigned int line)
+void FileLogger::Log(const std::string& logLevel, const std::string& message, char* file, unsigned int line)
 {
 	std::string msg = "[" + logLevel + "] ";
 	if ( !mClassName.empty() ) {
@@ -90,7 +90,7 @@ void Logger::Log(const std::string& logLevel, const std::string& message, char* 
 	mContext->write(msg.c_str());
 }
 
-void Logger::LogDebug(const std::string& message, char* file, unsigned int line)
+void FileLogger::LogDebug(const std::string& message, char* file, unsigned int line)
 {
 	if ( mLoudness < LoudnessDebug ) {
 		return;
@@ -99,7 +99,7 @@ void Logger::LogDebug(const std::string& message, char* file, unsigned int line)
 	Log("DEBUG", message, file, line);
 }
 
-void Logger::LogDeprecate(const std::string& message, char* file, unsigned int line)
+void FileLogger::LogDeprecate(const std::string& message, char* file, unsigned int line)
 {
 	if ( mLoudness < LoudnessDeprecated ) {
 		return;
@@ -108,7 +108,7 @@ void Logger::LogDeprecate(const std::string& message, char* file, unsigned int l
 	Log("DEPRECATED", message, file, line);
 }
 
-void Logger::LogError(const std::string& message, char* file, unsigned int line)
+void FileLogger::LogError(const std::string& message, char* file, unsigned int line)
 {
 	if ( mLoudness < LoudnessError ) {
 		return;
@@ -117,7 +117,7 @@ void Logger::LogError(const std::string& message, char* file, unsigned int line)
 	Log("ERROR", message, file, line);
 }
 
-void Logger::LogFatal(const std::string& message, char* file, unsigned int line)
+void FileLogger::LogFatal(const std::string& message, char* file, unsigned int line)
 {
 	Log("FATAL", message, file, line);
 
@@ -125,7 +125,7 @@ void Logger::LogFatal(const std::string& message, char* file, unsigned int line)
 	exit(1);
 }
 
-void Logger::LogInfo(const std::string& message, char* file, unsigned int line)
+void FileLogger::LogInfo(const std::string& message, char* file, unsigned int line)
 {
 	if ( mLoudness < LoudnessInfo ) {
 		return;
@@ -134,7 +134,7 @@ void Logger::LogInfo(const std::string& message, char* file, unsigned int line)
 	Log("INFO", message, file, line);
 }
 
-void Logger::LogMethod(const std::string& message, char* file, unsigned int line)
+void FileLogger::LogMethod(const std::string& message, char* file, unsigned int line)
 {
 	if ( mLoudness < LoudnessMethod ) {
 		return;
@@ -143,7 +143,7 @@ void Logger::LogMethod(const std::string& message, char* file, unsigned int line
 	Log("METHOD", message, file, line);
 }
 
-void Logger::LogWarn(const std::string& message, char* file, unsigned int line)
+void FileLogger::LogWarn(const std::string& message, char* file, unsigned int line)
 {
 	if ( mLoudness < LoudnessWarning ) {
 		return;
@@ -152,12 +152,12 @@ void Logger::LogWarn(const std::string& message, char* file, unsigned int line)
 	Log("WARN ", message, file, line);
 }
 
-void Logger::setKey(const std::string& key)
+void FileLogger::setKey(const std::string& key)
 {
 	mKey = key;
 }
 
-void Logger::setLoudness(int loudness)
+void FileLogger::setLoudness(int loudness)
 {
 	mLoudness = loudness;
 }

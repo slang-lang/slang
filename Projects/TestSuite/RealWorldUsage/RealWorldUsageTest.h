@@ -19,7 +19,7 @@ namespace RealWorldUsage {
 
 
 class RealWorldUsageTest : public GenericTest,
-				 private Utils::Common::Logger
+				 private Utils::Common::FileLogger
 {
 public:
 	RealWorldUsageTest(const Utils::Common::ILogger *p);

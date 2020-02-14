@@ -19,7 +19,7 @@ namespace Math {
 
 
 class MathTest : public GenericTest,
-				 private Utils::Common::Logger
+				 private Utils::Common::FileLogger
 {
 public:
 	MathTest(const Utils::Common::ILogger *p);

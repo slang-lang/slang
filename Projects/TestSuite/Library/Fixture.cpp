@@ -16,7 +16,7 @@ namespace Library {
 
 Fixture::Fixture(const Utils::Common::ILogger *p)
 : TestFixture("Library"),
-  Utils::Common::Logger(p, "Library")
+  Utils::Common::FileLogger(p, "Library")
 {
 }
 

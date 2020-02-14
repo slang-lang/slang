@@ -19,7 +19,7 @@ namespace Framework {
 
 
 class TestFrameworkTest : public GenericTest,
-						  private Utils::Common::Logger
+						  private Utils::Common::FileLogger
 {
 public:
 	TestFrameworkTest(const Utils::Common::ILogger *p);

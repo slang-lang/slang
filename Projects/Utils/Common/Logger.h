@@ -102,12 +102,12 @@ namespace Utils {
 namespace Common {
 
 
-class Logger : public ILogger
+class FileLogger : public ILogger
 {
 public:
-	Logger(char* logfile);
-	Logger(const ILogger* parent, const std::string& className, const std::string& key = "");
-	virtual ~Logger();
+	FileLogger(char* logfile);
+	FileLogger(const ILogger* parent, const std::string& className, const std::string& key = "");
+	virtual ~FileLogger();
 
 public:
 	const std::string& getClassName() const;

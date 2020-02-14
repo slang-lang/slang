@@ -31,7 +31,7 @@ namespace AST {
 
 ASTTest::ASTTest(const ::Utils::Common::ILogger *p)
 : GenericTest("ASTTest"),
-  ::Utils::Common::Logger(p, "ASTTest")
+  ::Utils::Common::FileLogger(p, "ASTTest")
 {
 }
 

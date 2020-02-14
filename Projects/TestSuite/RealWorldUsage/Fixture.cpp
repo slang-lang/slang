@@ -16,7 +16,7 @@ namespace RealWorldUsage {
 
 Fixture::Fixture(const Utils::Common::ILogger *p)
 : TestFixture("RealWorldUsage"),
-  Utils::Common::Logger(p, "RealWorldUsage")
+  Utils::Common::FileLogger(p, "RealWorldUsage")
 {
 }
 

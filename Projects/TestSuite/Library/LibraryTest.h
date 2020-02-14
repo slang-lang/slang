@@ -19,7 +19,7 @@ namespace Library {
 
 
 class LibraryTest : public GenericTest,
-				 	private Utils::Common::Logger
+				 	private Utils::Common::FileLogger
 {
 public:
 	LibraryTest(const Utils::Common::ILogger *p);

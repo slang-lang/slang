@@ -19,7 +19,7 @@ namespace Language {
 
 
 class LanguageTest : public GenericTest,
-					 private Utils::Common::Logger
+					 private Utils::Common::FileLogger
 {
 public:
 	LanguageTest(const Utils::Common::ILogger *p);
