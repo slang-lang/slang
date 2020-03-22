@@ -728,7 +728,7 @@ void Tokenizer::replaceConstDataTypes()
 				while ( numCombines > 0 ) {
 					numCombines--;	// decrement combinations
 
-					opToken->resetContentTo((*opToken).content() + token->content());	// combine token contents
+					opToken->resetContentTo(opToken->content() + token->content());	// combine token contents
 					opToken->resetTypeTo(token->type());    // and reset our opToken's type
 
 					mTokens.erase(token++);	// remove the following token
@@ -771,7 +771,7 @@ void Tokenizer::replaceOperators()
 
 			// ... and retype current token
 			token->resetTypeTo(Token::Type::IDENTIFIER);
-			token->resetContentTo(RESERVED_WORD_OPERATOR + (*token).content());
+			token->resetContentTo(RESERVED_WORD_OPERATOR + token->content());
 		}
 
 		last = token++;
