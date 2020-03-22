@@ -70,7 +70,7 @@ PrototypeConstraints mergeConstraints(const PrototypeConstraints& designtime, co
 }
 
 
-std::string Parser::buildDesigntimeConstraintTypename(const std::string &name, const PrototypeConstraints &constraints)
+std::string Parser::buildDesigntimeConstraintTypename(const std::string& name, const PrototypeConstraints& constraints)
 {
 	if ( constraints.empty() ) {
 		return name;
@@ -90,7 +90,7 @@ std::string Parser::buildDesigntimeConstraintTypename(const std::string &name, c
 	return type;
 }
 
-std::string Parser::buildRuntimeConstraintTypename(const std::string &name, const PrototypeConstraints &constraints)
+std::string Parser::buildRuntimeConstraintTypename(const std::string& name, const PrototypeConstraints& constraints)
 {
 	if ( constraints.empty() ) {
 		return name;
@@ -181,7 +181,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 	return ancestors;
 }
 
-PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator &token)
+PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator& token)
 {
 	PrototypeConstraints constraints;
 	
@@ -596,7 +596,7 @@ Mutability::E Parser::parseMutability(TokenIterator& token, Mutability::E defaul
 	return defaultValue;
 }
 
-ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
+ParameterList Parser::parseParameters(TokenIterator& token, IScope* scope)
 {
 	ParameterList params;
 

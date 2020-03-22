@@ -32,8 +32,8 @@ PrototypeConstraints mergeConstraints(const PrototypeConstraints& designtime, co
 class Parser
 {
 public:
-	static std::string buildDesigntimeConstraintTypename(const std::string &name, const PrototypeConstraints& constraints);
-	static std::string buildRuntimeConstraintTypename(const std::string &name, const PrototypeConstraints& constraints);
+	static std::string buildDesigntimeConstraintTypename(const std::string& name, const PrototypeConstraints& constraints);
+	static std::string buildRuntimeConstraintTypename(const std::string& name, const PrototypeConstraints& constraints);
 
 	static TokenList collectScopeTokens(TokenIterator& token);
 	static Ancestors collectInheritance(TokenIterator& token);
