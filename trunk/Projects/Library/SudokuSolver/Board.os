@@ -221,6 +221,11 @@ public object Board {
 				}
 			}
 
+			if ( !cell.Value ) {
+				// obviously we couldn't solve it
+				return false;
+			}
+
 			index++;
 		}
 
