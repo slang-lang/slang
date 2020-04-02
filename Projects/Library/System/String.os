@@ -57,7 +57,7 @@ public object String implements IIterable {
 	/*
 	 * Copy operator
 	 */
-	public String Copy() {
+	public String Copy() const {
 		return new String(mValue);
 	}
 
