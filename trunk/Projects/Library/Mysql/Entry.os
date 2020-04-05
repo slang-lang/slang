@@ -12,14 +12,14 @@ public object MysqlEntry {
 		Constructor( -1, "", "" );
 	}
 
-	public void Constructor( string name, string value ) {
-		Constructor( -1, name, value );
+	public void Constructor( string name_, string value_ ) {
+		Constructor( -1, name_, value_ );
 	}
 
-	public void Constructor( int index, string name, string value ) {
-		mIndex = index;
-		mName = name;
-		mValue = value;
+	public void Constructor( int index_, string name_, string value_ ) {
+		mIndex = index_;
+		mName = name_;
+		mValue = value_;
 	}
 
 	public int index() const {
@@ -34,12 +34,12 @@ public object MysqlEntry {
 		return mValue;
 	}
 
-	public bool operator==( int index ) const {
-		return mIndex == index;
+	public bool operator==( int index_ ) const {
+		return mIndex == index_;
 	}
 
-	public bool operator==( string name ) const {
-		return mName == name;
+	public bool operator==( string name_ ) const {
+		return mName == name_;
 	}
 
 // Private
