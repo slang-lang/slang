@@ -23,14 +23,19 @@ Symbol::~Symbol()
 {
 }
 
+bool Symbol::operator==(const std::string& name) const
+{
+	return mName == name;
+}
+
 bool Symbol::operator< (const Symbol& other) const
 {
-	return getName() < other.getName();
+	return mName < other.mName;
 }
 
 bool Symbol::operator< (const Symbol* other) const
 {
-	return getName() < other->getName();
+	return mName < other->mName;
 }
 
 const std::string& Symbol::getName() const

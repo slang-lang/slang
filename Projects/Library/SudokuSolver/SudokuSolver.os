@@ -11,7 +11,7 @@ public int Main(int argc, string args) {
 	print( "Sudoku Solver v0.0.1" );
 
 	try {
-
+/*
 		var board = new Board(2, 2, 2);
 
 		board.set(1, 1, 1, true);
@@ -20,8 +20,8 @@ public int Main(int argc, string args) {
 		board.set(3, 1, 3, true);
 		board.set(3, 3, 4, true);
 		//board.set(4, 4, 1, true);
+*/
 
-/*
 		var board = new Board( 3, 3, 2 );
 		board.set(1, 1, 6);
 		board.set(6, 1, 4);
@@ -30,7 +30,7 @@ public int Main(int argc, string args) {
 		board.set(5, 4, 2)
 		board.set(1, 6, 2);
 		board.set(6, 6, 2);
-*/
+
 /*
 		var board = new Board( 3, 3, 3 );
 		board.set(1, 1, 9);

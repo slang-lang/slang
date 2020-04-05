@@ -30,22 +30,22 @@ Method::Method(IScope* parent, const std::string& name, const TypeDeclaration& t
 }
 
 Method::Method(const Method& other, bool shallowCopy)
-: NamedScope(other.getName(), other.getEnclosingScope()),
-  MethodSymbol(other.getName())
+: NamedScope(other.mName, other.mParent),
+  MethodSymbol(other.mName),
+  mIsExtensionMethod(other.mIsExtensionMethod),
+  mAllowDelete(!shallowCopy),
+  mIsInitialized(other.mIsInitialized),
+  mReturnType(other.mReturnType),
+  mRootNode(other.mRootNode)
 {
 	mAlgorithm = other.mAlgorithm;
-	mAllowDelete = !shallowCopy;
 	mCheckedExceptions = other.mCheckedExceptions;
-	mIsExtensionMethod = other.mIsExtensionMethod;
-	mIsInitialized = other.mIsInitialized;
 	mIsSealed = other.mIsSealed;
 	mLanguageFeatureState = other.mLanguageFeatureState;
 	mMemoryLayout = other.mMemoryLayout;
 	mMethodMutability = other.mMethodMutability;
 	mMethodType = other.mMethodType;
 	mMutability = other.mMutability;
-	mReturnType = other.mReturnType;
-	mRootNode = other.mRootNode;
 	mScopeName = other.mScopeName;
 	mScopeType = other.mScopeType;
 	mSignature = other.mSignature;

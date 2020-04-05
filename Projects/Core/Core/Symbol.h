@@ -46,6 +46,7 @@ public:
 	virtual ~Symbol();
 
 public:
+	bool operator==(const std::string& name) const;
 	bool operator< (const Symbol& other) const;
 	bool operator< (const Symbol* other) const;
 
