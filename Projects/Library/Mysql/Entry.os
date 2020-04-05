@@ -6,22 +6,20 @@
 public namespace Mysql { }
 
 public object MysqlEntry {
-	private int mIndex;
-	private string mName;
-	private string mValue;
+// Public
 
 	public void Constructor() {
-		Constructor(-1, "null", "null");
+		Constructor( -1, "", "" );
 	}
 
-	public void Constructor(string _name, string _value) {
-		Constructor(-1, _name, _value);
+	public void Constructor( string name, string value ) {
+		Constructor( -1, name, value );
 	}
 
-	public void Constructor(int _index, string _name, string _value) {
-		mIndex = _index;
-		mName = _name;
-		mValue = _value;
+	public void Constructor( int index, string name, string value ) {
+		mIndex = index;
+		mName = name;
+		mValue = value;
 	}
 
 	public int index() const {
@@ -36,12 +34,18 @@ public object MysqlEntry {
 		return mValue;
 	}
 
-	public bool operator==(int _index) const {
-		return mIndex == _index;
+	public bool operator==( int index ) const {
+		return mIndex == index;
 	}
 
-	public bool operator==(string _name) const {
-		return mName == _name;
+	public bool operator==( string name ) const {
+		return mName == name;
 	}
+
+// Private
+
+	private int mIndex;
+	private string mName;
+	private string mValue;
 }
 

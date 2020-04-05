@@ -11,31 +11,34 @@ import Settings;
 public namespace Mysql { }
 
 public object MysqlQuery {
-// Public interface
+// Public
 
-	public void Constructor(MysqlConnection connection ref, string queryStr = "") {
+	// Standard constructor with MysqlConnection
+	public void Constructor( MysqlConnection connection, string queryStr = "" ) {
 		mConnection = connection;
 		mExecutedQuery = new String();
-		mHandle = 0;
 		mPreparedQuery = new String();
 
-		prepare(queryStr);
+		prepare( queryStr );
+	}
+
+	// Old-school constructor with MySQL handle
+	public void Constructor( int handle, string queryStr = "" ) {
+		Constructor( new MysqlConnection( handle ), queryStr );
 	}
 
 	public void Destructor() {
-		if ( mHandle ) {
-			mysql_free_result(mHandle);
-		}
+		// nothing to do here
 	}
 
-	public bool bind(string field, bool value) modify {
+	public bool bind( string field, bool value ) modify {
 		// replace all occurances of field with value
-		return mExecutedQuery.ReplaceAll(field, string value);
+		return mExecutedQuery.ReplaceAll( field, string value );
 	}
 
-	public bool bind(string field, double value) modify {
+	public bool bind( string field, double value ) modify {
 		// replace field with value
-		return mExecutedQuery.ReplaceAll(field, string value);
+		return mExecutedQuery.ReplaceAll( field, string value );
 	}
 
 	public bool bind(string field, float value) modify {
@@ -43,34 +46,32 @@ public object MysqlQuery {
 		return mExecutedQuery.ReplaceAll(field, string value);
 	}
 
-	public bool bind(string field, int value) modify {
+	public bool bind( string field, int value ) modify {
 		// replace field with value
-		return mExecutedQuery.ReplaceAll(field, string value);
+		return mExecutedQuery.ReplaceAll( field, string value );
 	}
 
-	public bool bind(string field, string value) modify {
+	public bool bind( string field, string value ) modify {
 		// replace field with value
-		return mExecutedQuery.ReplaceAll(field, value);
+		return mExecutedQuery.ReplaceAll( field, value );
 	}
 
-	public MysqlResult execute(string queryStr = "") modify throws {
+	public MysqlResult execute( string queryStr = "" ) modify throws {
 		if ( !queryStr ) {
-			prepare(queryStr);
+			prepare( queryStr );
 		}
 
-		queryStr = string mExecutedQuery;
+		queryStr = cast<string>( mExecutedQuery );
 
 		//print("Query: " + queryStr);
 
-		int error = mysql_query(mConnection.mHandle, queryStr);
+		int error = mysql_query( mConnection.mHandle, queryStr );
 		if ( error ) { 
 			// error while query execution
-			throw new MysqlException(mysql_error(mConnection.mHandle));
+			throw new MysqlException( mysql_error( mConnection.mHandle ) );
 		}
 
-		return new MysqlResult(
-			mysql_store_result(mConnection.mHandle)
-		);
+		return new MysqlResult( mysql_store_result( mConnection.mHandle ) );
 	}
 
 	public void prepare(string query) modify {
@@ -82,7 +83,6 @@ public object MysqlQuery {
 
 	private MysqlConnection mConnection;
 	private String mExecutedQuery;
-	private int mHandle;
 	private String mPreparedQuery;
 }
 
