@@ -6,7 +6,7 @@
 public namespace Mysql { }
 
 public object MysqlSettings {
-// Public interface
+// Public
 
 	public void Constructor() {
 		mAutoEscaping = false;
@@ -16,12 +16,11 @@ public object MysqlSettings {
 		return mAutoEscaping;
 	}
 
-	public void setAutoEscaping(bool state) modify {
+	public void setAutoEscaping( bool state ) modify {
 		mAutoEscaping = state;
 	}
 
 // Private
-
 	private bool mAutoEscaping;
 }
 

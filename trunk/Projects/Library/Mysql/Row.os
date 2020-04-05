@@ -11,40 +11,40 @@ public namespace Mysql { }
 public object MysqlRow implements ICollection, IIterable {
 // Public
 
-	public void Constructor(int handle) {
+	public void Constructor( int handle ) {
 		mEntries = new List<MysqlEntry>();
 		mHandle = handle;
-		mNumFields = mysql_num_fields(handle);
+		mNumFields = mysql_num_fields( handle );
 
 		initialize();
 	}
 
-	public MysqlEntry at(int index) const throws {
+	public MysqlEntry at( int index ) const throws {
 		foreach ( MysqlEntry entry : mEntries ) {
 			if ( entry == index ) {
 				return entry;
 			}
 		}
 
-		throw new MysqlException("no field with index('" + index + "')!");
+		throw new MysqlException( "no field with index('" + index + "')!" );
 	}
 
 	public bool empty() const {
 		return mNumFields == 0;
 	}
 
-	public MysqlEntry getEntry(string name) const throws {
+	public MysqlEntry getEntry( string name ) const throws {
 		foreach ( MysqlEntry entry : mEntries ) {
 			if ( entry == name ) {
 				return entry;
 			}
 		}
 
-		throw new MysqlException("no field with name('" + name + "')!");
+		throw new MysqlException( "no field with name('" + name + "')!" );
 	}
 
 	public Iterator<MysqlEntry> getIterator() const {
-		return new Iterator<MysqlEntry>(ICollection this);
+		return new Iterator<MysqlEntry>( cast<ICollection>( this ) );
 	}
 
 	public int numFields() const {
@@ -70,11 +70,7 @@ public object MysqlRow implements ICollection, IIterable {
 	private void initialize() modify {
 		for ( int fieldIdx = 0; fieldIdx < mNumFields; fieldIdx++ ) {
 			mEntries.push_back(
-				new MysqlEntry(
-					fieldIdx,
-					mysql_get_field_name(mHandle, fieldIdx),
-					mysql_get_field_value(mHandle, fieldIdx)
-				)
+				new MysqlEntry( fieldIdx, mysql_get_field_name( mHandle, fieldIdx ), mysql_get_field_value( mHandle, fieldIdx ) )
 			);
 		}
 	}
