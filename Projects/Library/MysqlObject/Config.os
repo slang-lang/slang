@@ -1,10 +1,10 @@
 
 // Connection settings
-public string Database = "moviebase";
-public string Host = "192.168.0.33";
-public string Password = "moviebase";
+public string Database = "";
+public string Host = "127.0.0.1";
+public string Password = "admin*";
 public int Port = 3306;
-public string User = "moviebase";
+public string User = "root";
 
 // Output settings
 public string TABLE_PREFIX const = "T_";
