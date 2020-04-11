@@ -11,24 +11,28 @@ import Generator;
 import Lookup;
 
 
-public void Main(int argc, string args) modify throws {
-	var params = new ParameterHandler(argc, args);
-	if ( !params.empty()) {
-		if ( params.contains("database") ) {
-			Database = params.getParameter("database").Value;
-		}
-		if ( params.contains("host") ) {
-			Host = params.getParameter("host").Value;
-		}
-		if ( params.contains("password") ) {
-			Password = params.getParameter("password").Value;
-		}
-		if ( params.contains("port") ) {
-			Port = cast<int>( params.getParameter("port").Value );
-		}
-		if ( params.contains("user") ) {
-			User = params.getParameter("user").Value;
-		}
+public void Main( int argc, string args ) modify throws {
+	var params = new ParameterHandler( argc, args );
+
+	if ( !params.contains( "database" ) ) {
+		print( "database missing!" );
+		exit( -1 );
+	}
+
+	if ( params.contains( "database" ) ) {
+		Database = params.getParameter( "database" ).Value;
+	}
+	if ( params.contains( "host" ) ) {
+		Host = params.getParameter( "host" ).Value;
+	}
+	if ( params.contains( "password" ) ) {
+		Password = params.getParameter( "password" ).Value;
+	}
+	if ( params.contains( "port" ) ) {
+		Port = cast<int>( params.getParameter( "port" ).Value );
+	}
+	if ( params.contains( "user" ) ) {
+		User = params.getParameter( "user" ).Value;
 	}
 
 	try {
@@ -38,48 +42,48 @@ public void Main(int argc, string args) modify throws {
 
 		int DBHandle = connect();
 
-		var lookup = new Lookup(DBHandle);
+		var lookup = new Lookup( DBHandle );
 
 		prepareFolders();
 
 		// generate tables
 		{
-			var tables = lookup.getTables(Database);
+			var tables = lookup.getTables( Database );
 
 			int count;
 			foreach ( string tableName : tables ) {
-				generateTable(DBHandle, tableName);
+				generateTable( DBHandle, tableName );
 
 				count++;
 			}
 
-			print("" + count + " table objects generated.");
+			print( "" + count + " table objects generated." );
 		}
 
 		// generate views
 		{
-			var views = lookup.getViews(Database);
+			var views = lookup.getViews( Database );
 
 			int count;
 			foreach ( string tableName : views ) {
-				generateView(DBHandle, tableName);
+				generateView( DBHandle, tableName );
 
 				count++;
 			}
 
-			print("" + count + " view objects generated.");
+			print( "" + count + " view objects generated." );
 		}
 
-		disconnect(DBHandle);
+		disconnect( DBHandle );
 	}
 	catch ( string e ) {
-		print("Exception: " + e);
+		print( "Exception: " + e );
 	}
 	catch ( IException e ) {
-		print("Exception: " + e.what());
+		print( "Exception: " + e.what() );
 	}
 	catch {
-		print("Exception: caught unknown exception");
+		print( "Exception: caught unknown exception" );
 	}
 }
 
