@@ -63,8 +63,6 @@ public object MysqlQuery {
 
 		queryStr = cast<string>( mExecutedQuery );
 
-		//print("Query: " + queryStr);
-
 		int error = mysql_query( mConnection.mHandle, queryStr );
 		if ( error ) { 
 			// error while query execution
@@ -74,7 +72,11 @@ public object MysqlQuery {
 		return new MysqlResult( mysql_store_result( mConnection.mHandle ) );
 	}
 
-	public void prepare(string query) modify {
+	public string getQuery() const {
+		return cast<string>( mPreparedQuery );
+	}
+
+	public void prepare( string query ) modify {
 		mExecutedQuery = query;
 		mPreparedQuery = query;
 	}
