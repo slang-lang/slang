@@ -3,9 +3,9 @@
 
 // Project imports
 import Exceptions;
-import Query;
 import Result;
 import Settings;
+import Statement;
 
 public namespace Mysql { }
 
@@ -55,8 +55,8 @@ public object MysqlConnection {
 		}
 	}
 
-	public MysqlQuery createQuery( string queryStr = "" ) const {
-		return new MysqlQuery( this, queryStr );
+	public MysqlStatement createStatement( string queryStr = "" ) const {
+		return new MysqlStatement( this, queryStr );
 	}
 
 	public string error() const throws {
