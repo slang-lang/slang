@@ -73,7 +73,7 @@ public object MysqlStatement {
 	}
 
 	public string getQuery() const {
-		return cast<string>( mPreparedQuery );
+		return cast<string>( mExecutedQuery );
 	}
 
 	public void prepare( string query ) modify {
