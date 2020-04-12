@@ -40,7 +40,7 @@ public object MysqlStatement {
 
 	public MysqlStatement bind( string field, double value ) modify {
 		// replace field with value
-		mExecutedQuery.ReplaceAll( field, cast<string( value ) );
+		mExecutedQuery.ReplaceAll( field, cast<string>( value ) );
 
 		return this;
 	}
@@ -54,7 +54,7 @@ public object MysqlStatement {
 
 	public MysqlStatement bind( string field, int value ) modify {
 		// replace field with value
-		mExecutedQuery.ReplaceAll( field, <string>( value ) );
+		mExecutedQuery.ReplaceAll( field, cast<string>( value ) );
 
 		return this;
 	}
