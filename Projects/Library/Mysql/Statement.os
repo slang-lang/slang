@@ -10,7 +10,7 @@ import Settings;
 
 public namespace Mysql { }
 
-public object MysqlQuery {
+public object MysqlStatement {
 // Public
 
 	// Standard constructor with MysqlConnection

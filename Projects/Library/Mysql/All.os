@@ -3,8 +3,8 @@
 import Connection;
 import Entry;
 import Exceptions;
-import Query;
 import Result;
 import Row;
 import Settings;
+import Statement;
 
