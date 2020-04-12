@@ -31,29 +31,39 @@ public object MysqlStatement {
 		// nothing to do here
 	}
 
-	public bool bind( string field, bool value ) modify {
+	public MysqlStatement bind( string field, bool value ) modify {
 		// replace all occurances of field with value
-		return mExecutedQuery.ReplaceAll( field, string value );
+		mExecutedQuery.ReplaceAll( field, cast<string>( value ) );
+
+		return this;
 	}
 
-	public bool bind( string field, double value ) modify {
+	public MysqlStatement bind( string field, double value ) modify {
 		// replace field with value
-		return mExecutedQuery.ReplaceAll( field, string value );
+		mExecutedQuery.ReplaceAll( field, cast<string( value ) );
+
+		return this;
 	}
 
-	public bool bind(string field, float value) modify {
+	public MysqlStatement bind(string field, float value) modify {
 		// replace field with value
-		return mExecutedQuery.ReplaceAll(field, string value);
+		mExecutedQuery.ReplaceAll(field, cast<string>( value) );
+
+		return this;
 	}
 
-	public bool bind( string field, int value ) modify {
+	public MysqlStatement bind( string field, int value ) modify {
 		// replace field with value
-		return mExecutedQuery.ReplaceAll( field, string value );
+		mExecutedQuery.ReplaceAll( field, <string>( value ) );
+
+		return this;
 	}
 
-	public bool bind( string field, string value ) modify {
+	public MysqlStatement bind( string field, string value ) modify {
 		// replace field with value
-		return mExecutedQuery.ReplaceAll( field, value );
+		mExecutedQuery.ReplaceAll( field, value );
+
+		return this;
 	}
 
 	public MysqlResult execute( string queryStr = "" ) modify throws {
