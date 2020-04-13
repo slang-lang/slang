@@ -21,6 +21,7 @@ public object MysqlSettings {
 	}
 
 // Private
+
 	private bool mAutoEscaping;
 }
 
