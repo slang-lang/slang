@@ -1,7 +1,7 @@
 {
   "name": "System Library",
   "name_short": "System",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "type": "library",
   "description": "ObjectiveScript core system library",
   "dependencies": [

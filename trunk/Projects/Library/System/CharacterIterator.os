@@ -5,19 +5,19 @@ import String;
 // declare 'System' namespace to prevent a user defined private 'System' namespace
 public namespace System { }
 
-public object CharacterIterator extends Iterator<string> {
+public object CharacterIterator /*extends Iterator<string>*/ {
 	/*
 	 * Standard string constructor
 	 */
 	public void Constructor(string value = "") {
-		reset(value);
+		reset( value );
 	}
 
 	/*
 	 * Standard String constructor
 	 */
 	public void Constructor(String value const) {
-		reset(string value);
+		reset( cast<string>( value ) );
 	}
 
 	/*
@@ -51,18 +51,6 @@ public object CharacterIterator extends Iterator<string> {
 	}
 
 	/*
-	 * returns the next character of the held string value, without changing the current iteration index
-	 * throws OutOfBoundsException
-	 */
-	public string lookAHead(int offset = 1) const throws {
-		if ( mCurrentIndex + offset < 0 || mCurrentIndex + offset > mLength ) {
-			throw new OutOfBoundsException("index(" + mCurrentIndex + offset + ") out of bounds");
-		}
-
-		return substr(mValue, mCurrentIndex + offset, 1);
-	}
-
-	/*
 	 * returns the next character of the held string value
 	 * throws OutOfBoundsException
 	 */
@@ -72,6 +60,7 @@ public object CharacterIterator extends Iterator<string> {
 		}
 
 		mCurrentIndex++;
+
 		return substr(mValue, mCurrentIndex, 1);
 	}
 
@@ -79,12 +68,12 @@ public object CharacterIterator extends Iterator<string> {
 	 * returns the next character of the held string value without changing the current iteration index
 	 * throws OutOfBoundsException
 	 */
-	public string peek(int pos = 1) modify throws {
-		if ( mCurrentIndex + pos < 0 || mCurrentIndex + pos > mLength ) {
-			throw new OutOfBoundsException("index(" + mCurrentIndex + pos + ") out of bounds");
+	public string peek(int offset = 1) const throws {
+		if ( mCurrentIndex + offset < 0 || mCurrentIndex + offset > mLength ) {
+			throw new OutOfBoundsException("index(" + mCurrentIndex + offset + ") out of bounds");
 		}
 
-		return substr(mValue, mCurrentIndex, pos);
+		return substr(mValue, mCurrentIndex + offset, 1);
 	}
 
 	/*

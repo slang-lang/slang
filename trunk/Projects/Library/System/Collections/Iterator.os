@@ -28,7 +28,7 @@ public object Iterator<T> {
 			throw new Exception("hasNext(): invalid iterator access");
 		}
 
-		return mCurrentIndex < mCollection.size() - 1;
+		return (mCurrentIndex + 1) < mCollection.size();
 	}
 
 	public T next() modify throws {
@@ -41,8 +41,8 @@ public object Iterator<T> {
 		return T mCollection.at(mCurrentIndex);
 	}
 
-	public T peek(int position = 1) const throws {
-		return T mCollection.at(mCurrentIndex + position);
+	public T peek(int offset = 1) const throws {
+		return T mCollection.at(mCurrentIndex + offset);
 	}
 
 	public void reset() modify {
@@ -61,7 +61,7 @@ public object Iterator<T> {
 		return next();	
 	}
 
-	private ICollection mCollection;
+	private ICollection mCollection const;
 	private int mCurrentIndex;
 }
 
@@ -101,8 +101,8 @@ public object ReverseIterator<T> {
 		return T mCollection.at(mCurrentIndex);
 	}
 
-	public T peek(int position = 1) const throws {
-		return T mCollection.at(mCurrentIndex + position);
+	public T peek(int offset = 1) const throws {
+		return T mCollection.at(mCurrentIndex + offset);
 	}
 
 	public void reset() modify {
@@ -121,7 +121,7 @@ public object ReverseIterator<T> {
 		return next();		
 	}
 
-	private ICollection mCollection;
+	private ICollection mCollection const;
 	private int mCurrentIndex;
 }
 
