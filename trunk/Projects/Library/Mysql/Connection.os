@@ -92,7 +92,7 @@ public object MysqlConnection {
 		mPort = port;
 		mUsername = user;
 
-		return (mHandle != 0);
+		return isOpen();
 	}
 
 	public bool ping() const {
@@ -102,7 +102,7 @@ public object MysqlConnection {
 	public MysqlResult query( string queryStr ) modify throws {
 		if ( mSettings.getAutoEscaping() ) {
 			// auto escaping for strings is active
-			queryStr = mysql_real_escape_string(mHandle, queryStr);
+			queryStr = mysql_real_escape_string( mHandle, queryStr );
 		}
 
 		int error = mysql_query( mHandle, queryStr );
@@ -111,7 +111,7 @@ public object MysqlConnection {
 			throw new MysqlException( mysql_error( mHandle ) );
 		}
 
-		return new MysqlResult(mysql_store_result(mHandle));
+		return new MysqlResult( mysql_store_result( mHandle ) );
 	}
 
 	public bool selectDB( string database ) modify {
@@ -129,7 +129,7 @@ public object MysqlConnection {
 	}
 
 	public string stat() const {
-		return mysql_stat(mHandle);
+		return mysql_stat( mHandle );
 	}
 
 // Private
