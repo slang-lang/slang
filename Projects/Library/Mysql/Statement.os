@@ -67,7 +67,7 @@ public object MysqlStatement {
 	}
 
 	public MysqlResult execute( string queryStr = "" ) modify throws {
-		if ( !queryStr ) {
+		if ( queryStr ) {
 			prepare( queryStr );
 		}
 
