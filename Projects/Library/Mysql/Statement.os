@@ -14,17 +14,12 @@ public object MysqlStatement {
 // Public
 
 	// Standard constructor with MysqlConnection
-	public void Constructor( MysqlConnection connection, string queryStr = "" ) {
+	public void Constructor( int connection, string queryStr = "" ) {
 		mConnection = connection;
 		mExecutedQuery = new String();
 		mPreparedQuery = new String();
 
 		prepare( queryStr );
-	}
-
-	// Old-school constructor with MySQL handle
-	public void Constructor( int handle, string queryStr = "" ) {
-		Constructor( new MysqlConnection( handle ), queryStr );
 	}
 
 	public void Destructor() {
@@ -73,13 +68,13 @@ public object MysqlStatement {
 
 		queryStr = cast<string>( mExecutedQuery );
 
-		int error = mysql_query( mConnection.mHandle, queryStr );
+		int error = mysql_query( mConnection, queryStr );
 		if ( error ) { 
 			// error while query execution
-			throw new MysqlException( mysql_error( mConnection.mHandle ) );
+			throw new MysqlException( mysql_error( mConnection ) );
 		}
 
-		return new MysqlResult( mysql_store_result( mConnection.mHandle ) );
+		return new MysqlResult( mysql_store_result( mConnection ) );
 	}
 
 	public string getQuery() const {
@@ -93,7 +88,7 @@ public object MysqlStatement {
 
 // Private
 
-	private MysqlConnection mConnection;
+	private int mConnection;
 	private String mExecutedQuery;
 	private String mPreparedQuery;
 }

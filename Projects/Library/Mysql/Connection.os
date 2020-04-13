@@ -29,9 +29,7 @@ public object MysqlConnection {
 	}
 
 	public void Destructor() {
-		if ( mHandle != 0 ) {
-			close();
-		}
+		close();
 	}
 
 	public int affectedRows() const throws {
@@ -56,7 +54,7 @@ public object MysqlConnection {
 	}
 
 	public MysqlStatement createStatement( string queryStr = "" ) const {
-		return new MysqlStatement( this, queryStr );
+		return new MysqlStatement( mHandle, queryStr );
 	}
 
 	public string error() const throws {
