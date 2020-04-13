@@ -179,7 +179,7 @@ public object Tokenizer {
 	}
 
 	private string peek(int pos = 1) const throws {
-		try { return mCharIterator.lookAHead(pos); }
+		try { return mCharIterator.peek(pos); }
 
 		return "";
 	}

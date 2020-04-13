@@ -327,7 +327,7 @@ public object Parser {
 		}
 
 		string text;
-		if ( ci.lookAHead() == "\"" ) {
+		if ( ci.peek() == "\"" ) {
 			text = parseWord(ci);
 		}
 
