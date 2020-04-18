@@ -24,6 +24,8 @@ source ${CONFIG_FILE}
 
 if [ "x${1}" != "x" ]; then
 	PLATFORM=${1}
+else
+	PLATFORM="any"
 fi
 
 # set up environment
@@ -65,7 +67,7 @@ echo "Homepage: https://objectivescript.ticketsharing.net/" >>  Env/DEBIAN/contr
 
 echo "Package: ${PACKAGE}" >> Env/DEBIAN/control
 echo "Version: ${VERSION}" >> Env/DEBIAN/control
-echo "Architecture: any" >> Env/DEBIAN/control
+echo "Architecture: ${PLATFORM}" >> Env/DEBIAN/control
 #echo "Depends: ${shlibs:Depends}, ${misc:depends}" >> Env/DEBIAN/control
 echo "Description: ${DESCRIPTION}" >> Env/DEBIAN/control
 
@@ -74,6 +76,10 @@ echo "Deploying new binaries..."
 cp "${SOURCE_DIRECTORY}/bin/odebugger/odebugger" "${PACKAGE_DIRECTORY_BIN}"
 cp "${SOURCE_DIRECTORY}/bin/odepend/odepend" "${PACKAGE_DIRECTORY_BIN}"
 cp "${SOURCE_DIRECTORY}/bin/oscript/oscript" "${PACKAGE_DIRECTORY_BIN}"
+
+# add new scripts
+echo "Deploying new scripts..."
+cp "${SCRIPTS_DIRECTORY}/webscript" "${PACKAGE_DIRECTORY_BIN}"
 
 # add new libraries
 echo "Deploying new libraries..."

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+COMMAND="oscript"
+LIBRARY="/usr/local/share/oscript/Library"
+USER=`whoami`
+
+if [ ${USER} == "www-data" ]; then
+#	echo -e "Content: text/html\n"
+fi
+
+${COMMAND} --library ${LIBRARY} $*
+
