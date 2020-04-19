@@ -4,7 +4,7 @@ if [ x$1 == "x" ]; then
 	echo "module name required"
 	exit -1
 else
-	sland-pkg create $1
+	slang-pkg create $1
 fi
 
 REPO="stable"
