@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public void Main(int argc = 0, string argv = "") {
 	float mNumber = 1.731389f;

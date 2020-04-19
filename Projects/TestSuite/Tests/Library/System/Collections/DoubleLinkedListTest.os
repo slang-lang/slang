@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 import System.Collections.DoubleLinkedList;
 import System.Collections.Iterator;

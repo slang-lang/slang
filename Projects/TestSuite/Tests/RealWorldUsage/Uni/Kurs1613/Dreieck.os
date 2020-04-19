@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public void Main(int argc, string args) {
 	writeln("Geben Sie eine natürlich Zahl ein: ");

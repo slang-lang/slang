@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public abstract object AbstractBase {
 	protected int mSize = 1389;

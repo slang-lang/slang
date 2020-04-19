@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public object BaseObject {
 	protected int mPublicNumber;	// public members are not allowed, remember the "Law of Demeter"

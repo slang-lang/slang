@@ -546,7 +546,7 @@ void LocalClient::loadConfig()
 
 	Json::Value config = Json::Parser::parse(data);
 
-	// (1) odebugger config
+	// (1) slang-dbg config
 	if ( config.isMember("autolist") ) {
 		mSettings->autoList(config["autolist"].asBool());
 	}
@@ -760,7 +760,7 @@ void LocalClient::printHelp()
 	writeln("\tdelete (d)    delete breakpoint");
 	writeln("\thelp          print this help message");
 	writeln("\tload          load configuration");
-	writeln("\tquit (q)      quit odebugger");
+	writeln("\tquit (q)      quit slang-dbg");
 	writeln("\trun (r)       run or resume program");
 	writeln("\tstore         store configuration");
 	writeln("\tunwatch       remove symbol watch");
@@ -954,7 +954,7 @@ void LocalClient::saveConfig()
 
 	Json::Value config;
 
-	// (1) odebugger config
+	// (1) slang-dbg config
 	config.addMember("autolist", Json::Value(mSettings->autoList()));
 	config.addMember("autostart", Json::Value(mSettings->autoStart()));
 	config.addMember("autostop", Json::Value(mSettings->autoStop()));

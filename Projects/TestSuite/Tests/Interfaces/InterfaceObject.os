@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public stable interface IInterface {
 	public bool isAbstract() const;

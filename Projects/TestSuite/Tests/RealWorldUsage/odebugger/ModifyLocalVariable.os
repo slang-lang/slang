@@ -1,10 +1,10 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public void Main(int argc, string args) {
 	string str = "bla";
 
 	if ( str != "bla" ) {
-		print("odebugger changed str from 'bla' to '" + str + "'.");
+		print("slang-dbg changed str from 'bla' to '" + str + "'.");
 	}
 	else {
 		print("nothing happened.");

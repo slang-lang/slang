@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public namespace OutterSpace.InnerSpace.AnotherSpace {
 	public object SpacedObject {

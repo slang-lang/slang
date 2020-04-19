@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public object CompareEqualContent {
 	public int mValue = 173;

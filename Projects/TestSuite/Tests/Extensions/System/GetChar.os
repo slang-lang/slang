@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public int Main(int argc, string args) {
 	print("getchar Test");

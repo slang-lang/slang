@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 private object DerivedObject extends BaseObject {
 	public void Constructor() {

@@ -27,7 +27,7 @@ public:
 	  mAutoWatch(true),
 	  mBreakOnExceptionCatch(false),
 	  mBreakOnExceptionThrow(true),
-	  mPrompt("odebugger> "),
+	  mPrompt("slang-dbg> "),
 	  mRemoteClient(false)
 	{ }
 

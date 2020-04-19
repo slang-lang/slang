@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public void Main(int argc, string args) {
 	for ( int i = 0; i < 5; i += 1 ) {
