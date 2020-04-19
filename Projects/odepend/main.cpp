@@ -913,7 +913,7 @@ void processParameters(int argc, const char* argv[])
 void prepareModuleInstallation(const std::string& repo, const Module& installModule)
 {
 #ifdef SLANG_DEBUG
-	std::cout << "Preparing module \"" << moduleName << "(" << version << ")\" from \"" << repo << "\"..." << std::endl;
+	std::cout << "Preparing module \"" << installModule.mShortName << "(" << installModule.mVersion.toString() << ")\" from \"" << repo << "\"..." << std::endl;
 #endif
 
 	// (1) download module information from repository
