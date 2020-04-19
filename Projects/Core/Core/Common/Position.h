@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Common_Position_h
-#define ObjectiveScript_Core_Common_Position_h
+#ifndef Slang_Core_Core_Common_Position_h
+#define Slang_Core_Core_Common_Position_h
 
 
 // Library includes

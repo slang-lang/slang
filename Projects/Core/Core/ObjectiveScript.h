@@ -1,6 +1,6 @@
 
-#ifndef Slang_Core_Slang_h
-#define Slang_Core_Slang_h
+#ifndef Slang_Core_Core_Slang_h
+#define Slang_Core_Core_Slang_h
 
 
 // Library includes

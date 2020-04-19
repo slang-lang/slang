@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Common_PrototypeConstraint_h
-#define ObjectiveScript_Common_PrototypeConstraint_h
+#ifndef Slang_Core_Core_Common_PrototypeConstraint_h
+#define Slang_Core_Core_Common_PrototypeConstraint_h
 
 
 // Library includes

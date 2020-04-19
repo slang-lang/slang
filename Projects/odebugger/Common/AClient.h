@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_odebugger_Common_AClient_h
-#define ObjectiveScript_odebugger_Common_AClient_h
+#ifndef Slang_odebugger_Common_AClient_h
+#define Slang_odebugger_Common_AClient_h
 
 
 // Library includes

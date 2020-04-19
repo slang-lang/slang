@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Common_TypeDeclaration_h
-#define ObjectiveScript_Common_TypeDeclaration_h
+#ifndef Slang_Core_Core_Common_TypeDeclaration_h
+#define Slang_Core_Core_Common_TypeDeclaration_h
 
 
 // Library includes

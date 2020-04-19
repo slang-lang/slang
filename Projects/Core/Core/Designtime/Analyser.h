@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Designtime_Analyser_h
-#define ObjectiveScript_Core_Designtime_Analyser_h
+#ifndef Slang_Core_Core_Designtime_Analyser_h
+#define Slang_Core_Core_Designtime_Analyser_h
 
 
 // Library includes

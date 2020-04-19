@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Scope_h
-#define ObjectiveScript_Core_Scope_h
+#ifndef Slang_Core_Core_Scope_h
+#define Slang_Core_Core_Scope_h
 
 
 // Defines

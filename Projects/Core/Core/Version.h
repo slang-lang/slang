@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Version_h
-#define ObjectiveScript_Core_Version_h
+#ifndef Slang_Core_Core_Version_h
+#define Slang_Core_Core_Version_h
 
 
 // Library includes
@@ -12,9 +12,9 @@
 // Namespace declarations
 
 
-static const char* COPYRIGHT = "Copyright (c) 2014-2019 Michael Adelmann";
+static const char* COPYRIGHT = "Copyright (c) 2014-2020 Michael Adelmann";
 static const char* PRODUCT_NAME = "Slang";
-static const char* PRODUCT_VERSION = "0.6.9";
+static const char* PRODUCT_VERSION = "0.7.0";
 
 
 #endif

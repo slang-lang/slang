@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_TreeLineBuffer_h
-#define ObjectiveScript_Core_AST_TreeLineBuffer_h
+#ifndef Slang_Core_Core_AST_TreeLineBuffer_h
+#define Slang_Core_Core_AST_TreeLineBuffer_h
 
 #include <Core/Defines.h>
 

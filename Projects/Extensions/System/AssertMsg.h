@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Assert_h
-#define ObjectiveScript_Extensions_System_Assert_h
+#ifndef Slang_Extensions_System_Assert_h
+#define Slang_Extensions_System_Assert_h
 
 
 // Library includes

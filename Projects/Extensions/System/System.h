@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_System_h
-#define ObjectiveScript_Extensions_System_System_h
+#ifndef Slang_Extensions_System_System_h
+#define Slang_Extensions_System_System_h
 
 
 // Library includes

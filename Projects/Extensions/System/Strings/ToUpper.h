@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Strings_ToUpper_h
-#define ObjectiveScript_Extensions_System_Strings_ToUpper_h
+#ifndef Slang_Extensions_System_Strings_ToUpper_h
+#define Slang_Extensions_System_Strings_ToUpper_h
 
 
 // Library includes

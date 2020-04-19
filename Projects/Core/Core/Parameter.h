@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Parameter_h
-#define ObjectiveScript_Core_Parameter_h
+#ifndef Slang_Core_Core_Parameter_h
+#define Slang_Core_Core_Parameter_h
 
 
 // Library includes

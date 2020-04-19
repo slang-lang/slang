@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_Repository_h
-#define ObjectiveScript_Core_VirtualMachine_Repository_h
+#ifndef Slang_Core_Core_VirtualMachine_Repository_h
+#define Slang_Core_Core_VirtualMachine_Repository_h
 
 
 // Library includes

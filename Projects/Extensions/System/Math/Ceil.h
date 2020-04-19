@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Math_Ceil_h
-#define ObjectiveScript_Extensions_System_Math_Ceil_h
+#ifndef Slang_Extensions_System_Math_Ceil_h
+#define Slang_Extensions_System_Math_Ceil_h
 
 
 // Library includes

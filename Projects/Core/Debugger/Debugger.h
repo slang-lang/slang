@@ -1,6 +1,6 @@
 
-#ifndef Debugger_Debugger_h
-#define Debugger_Debugger_h
+#ifndef Core_Debugger_Debugger_h
+#define Core_Debugger_Debugger_h
 
 
 // Library includes

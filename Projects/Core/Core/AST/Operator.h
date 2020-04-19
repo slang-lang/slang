@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_Operator_h
-#define ObjectiveScript_Core_AST_Operator_h
+#ifndef Slang_Core_Core_AST_Operator_h
+#define Slang_Core_Core_AST_Operator_h
 
 
 // Library includes

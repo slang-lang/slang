@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Core_Extensions_ExtensionManager_h
-#define ObjectiveScript_Core_Core_Extensions_ExtensionManager_h
+#ifndef Slang_Core_Core_Extensions_ExtensionManager_h
+#define Slang_Core_Core_Extensions_ExtensionManager_h
 
 
 // Library includes

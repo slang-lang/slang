@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Token_h
-#define ObjectiveScript_Core_Token_h
+#ifndef Slang_Core_Core_Designtime_Parser_Token_h
+#define Slang_Core_Core_Designtime_Parser_Token_h
 
 
 // Library includes

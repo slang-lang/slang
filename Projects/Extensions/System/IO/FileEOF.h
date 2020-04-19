@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_IO_FileEOF_h
-#define ObjectiveScript_Extensions_System_IO_FileEOF_h
+#ifndef Slang_Extensions_System_IO_FileEOF_h
+#define Slang_Extensions_System_IO_FileEOF_h
 
 
 // Library includes

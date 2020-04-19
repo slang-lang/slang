@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Runtime_Script_h
-#define ObjectiveScript_Core_Runtime_Script_h
+#ifndef Slang_Core_Core_Runtime_Script_h
+#define Slang_Core_Core_Runtime_Script_h
 
 
 // Library includes

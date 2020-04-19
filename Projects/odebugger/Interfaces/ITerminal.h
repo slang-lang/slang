@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_odebugger_Interfaces_ITerminal_h
-#define ObjectiveScript_odebugger_Interfaces_ITerminal_h
+#ifndef Slang_odebugger_Interfaces_ITerminal_h
+#define Slang_odebugger_Interfaces_ITerminal_h
 
 
 // Library includes

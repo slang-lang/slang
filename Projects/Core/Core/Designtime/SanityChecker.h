@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Designtime_SanityChecker_h
-#define ObjectiveScript_Designtime_SanityChecker_h
+#ifndef Slang_Core_Core_Designtime_SanityChecker_h
+#define Slang_Core_Core_Designtime_SanityChecker_h
 
 
 // Library includes

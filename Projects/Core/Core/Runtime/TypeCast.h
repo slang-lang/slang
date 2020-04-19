@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Runtime_TypeCast_h
-#define ObjectiveScript_Core_Runtime_TypeCast_h
+#ifndef Slang_Core_Core_Runtime_TypeCast_h
+#define Slang_Core_Core_Runtime_TypeCast_h
 
 
 // Library includes

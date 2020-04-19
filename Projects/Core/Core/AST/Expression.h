@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_Expression_h
-#define ObjectiveScript_Core_AST_Expression_h
+#ifndef Slang_Core_Core_AST_Expression_h
+#define Slang_Core_Core_AST_Expression_h
 
 
 // Library includes

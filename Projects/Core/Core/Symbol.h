@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Symbol_h
-#define ObjectiveScript_Core_Symbol_h
+#ifndef Slang_Core_Core_Symbol_h
+#define Slang_Core_Core_Symbol_h
 
 
 // Defines

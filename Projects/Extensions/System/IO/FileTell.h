@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_IO_FileTell_h
-#define ObjectiveScript_Extensions_System_IO_FileTell_h
+#ifndef Slang_Extensions_System_IO_FileTell_h
+#define Slang_Extensions_System_IO_FileTell_h
 
 
 // Library includes

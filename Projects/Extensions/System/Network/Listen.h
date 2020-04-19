@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Network_Listen_h
-#define ObjectiveScript_Extensions_System_Network_Listen_h
+#ifndef Slang_Extensions_System_Network_Listen_h
+#define Slang_Extensions_System_Network_Listen_h
 
 
 // Library includes

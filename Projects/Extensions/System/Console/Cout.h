@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Console_Cout_h
-#define ObjectiveScript_Extensions_System_Console_Cout_h
+#ifndef Slang_Extensions_System_Console_Cout_h
+#define Slang_Extensions_System_Console_Cout_h
 
 
 // Library includes

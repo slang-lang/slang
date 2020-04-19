@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Strings_StrRTrim_h
-#define ObjectiveScript_Extensions_System_Strings_StrRTrim_h
+#ifndef Slang_Extensions_System_Strings_StrRTrim_h
+#define Slang_Extensions_System_Strings_StrRTrim_h
 
 
 // Library includes

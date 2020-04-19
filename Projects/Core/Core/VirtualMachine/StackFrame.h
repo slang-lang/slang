@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_StackFrame_h
-#define ObjectiveScript_Core_VirtualMachine_StackFrame_h
+#ifndef Slang_Core_Core_VirtualMachine_StackFrame_h
+#define Slang_Core_Core_VirtualMachine_StackFrame_h
 
 
 // Library includes

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Attributes_Types_h
-#define ObjectiveScript_Attributes_Types_h
+#ifndef Slang_Core_Core_Attributes_Types_h
+#define Slang_Core_Core_Attributes_Types_h
 
 
 // Library includes

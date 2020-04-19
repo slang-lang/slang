@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Debugger_Condition_h
-#define ObjectiveScript_Debugger_Condition_h
+#ifndef Core_Debugger_Condition_h
+#define Core_Debugger_Condition_h
 
 
 // Library includes

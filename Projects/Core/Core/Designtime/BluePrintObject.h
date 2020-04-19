@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Designtime_BluePrintObject_h
-#define ObjectiveScript_Designtime_BluePrintObject_h
+#ifndef Slang_Core_Core_Designtime_BluePrintObject_h
+#define Slang_Core_Core_Designtime_BluePrintObject_h
 
 
 // Library includes

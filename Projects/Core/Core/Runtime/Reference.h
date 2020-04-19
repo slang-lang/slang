@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Reference_h
-#define ObjectiveScript_Core_Reference_h
+#ifndef Slang_Core_Core_Runtime_Reference_h
+#define Slang_Core_Core_Runtime_Reference_h
 
 
 // Library includes

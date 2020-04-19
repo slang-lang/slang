@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Core_Common_Method_h
-#define ObjectiveScript_Core_Core_Common_Method_h
+#ifndef Slang_Core_Core_Common_Method_h
+#define Slang_Core_Core_Common_Method_h
 
 
 // Library includes

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_Controller_h
-#define ObjectiveScript_Core_VirtualMachine_Controller_h
+#ifndef Slang_Core_Core_VirtualMachine_Controller_h
+#define Slang_Core_Core_VirtualMachine_Controller_h
 
 
 // Library includes

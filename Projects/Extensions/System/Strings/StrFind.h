@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Strings_StrFind_h
-#define ObjectiveScript_Extensions_System_Strings_StrFind_h
+#ifndef Slang_Extensions_System_Strings_StrFind_h
+#define Slang_Extensions_System_Strings_StrFind_h
 
 
 // Library includes

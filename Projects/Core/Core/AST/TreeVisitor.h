@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_TreeVisitor_h
-#define ObjectiveScript_Core_AST_TreeVisitor_h
+#ifndef Slang_Core_Core_AST_TreeVisitor_h
+#define Slang_Core_Core_AST_TreeVisitor_h
 
 
 // Library includes

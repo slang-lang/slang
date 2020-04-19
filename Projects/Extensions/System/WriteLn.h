@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_WriteLn_h
-#define ObjectiveScript_Extensions_System_WriteLn_h
+#ifndef Slang_Extensions_System_WriteLn_h
+#define Slang_Extensions_System_WriteLn_h
 
 
 // Library includes

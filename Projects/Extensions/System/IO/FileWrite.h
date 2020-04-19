@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_IO_FileWrite_h
-#define ObjectiveScript_Extensions_System_IO_FileWrite_h
+#ifndef Slang_Extensions_System_IO_FileWrite_h
+#define Slang_Extensions_System_IO_FileWrite_h
 
 
 // Library includes

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_odebugger_LocalClient_LocalClient_h
-#define ObjectiveScript_odebugger_LocalClient_LocalClient_h
+#ifndef Slang_odebugger_LocalClient_LocalClient_h
+#define Slang_odebugger_LocalClient_LocalClient_h
 
 
 // Library includes

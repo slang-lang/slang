@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Designtime_Parser_Parser_h
-#define ObjectiveScript_Designtime_Parser_Parser_h
+#ifndef Slang_Designtime_Parser_Parser_h
+#define Slang_Designtime_Parser_Parser_h
 
 
 // Library includes

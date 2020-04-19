@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_TreeInterpreter_h
-#define ObjectiveScript_Core_AST_TreeInterpreter_h
+#ifndef Slang_Core_Core_AST_TreeInterpreter_h
+#define Slang_Core_Core_AST_TreeInterpreter_h
 
 
 // Library includes

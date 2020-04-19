@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_GetChar_h
-#define ObjectiveScript_Extensions_System_GetChar_h
+#ifndef Slang_Extensions_System_GetChar_h
+#define Slang_Extensions_System_GetChar_h
 
 
 // Library includes

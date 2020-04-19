@@ -1,6 +1,6 @@
 
-#ifndef Debugger_IReceiver_h
-#define Debugger_IReceiver_h
+#ifndef Core_Debugger_IReceiver_h
+#define Core_Debugger_IReceiver_h
 
 
 // Library includes

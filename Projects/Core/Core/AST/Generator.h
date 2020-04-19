@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_Generator_h
-#define ObjectiveScript_Core_AST_Generator_h
+#ifndef Slang_Core_Core_AST_Generator_h
+#define Slang_Core_Core_AST_Generator_h
 
 
 // Library includes

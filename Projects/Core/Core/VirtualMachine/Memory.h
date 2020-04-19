@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_Memory_h
-#define ObjectiveScript_Core_VirtualMachine_Memory_h
+#ifndef Slang_Core_Core_VirtualMachine_Memory_h
+#define Slang_Core_Core_VirtualMachine_Memory_h
 
 
 // Library includes

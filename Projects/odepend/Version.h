@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_odepend_Version_h
-#define ObjectiveScript_odepend_Version_h
+#ifndef Slang_odepend_Version_h
+#define Slang_odepend_Version_h
 
 
 // Library includes

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_Threads_h
-#define ObjectiveScript_Core_VirtualMachine_Threads_h
+#ifndef Slang_Core_Core_VirtualMachine_Threads_h
+#define Slang_Core_Core_VirtualMachine_Threads_h
 
 
 // Library includes

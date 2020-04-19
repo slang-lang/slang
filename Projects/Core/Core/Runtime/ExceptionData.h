@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Runtime_ExceptionData_h
-#define ObjectiveScript_Runtime_ExceptionData_h
+#ifndef Slang_Core_Core_Runtime_ExceptionData_h
+#define Slang_Core_Core_Runtime_ExceptionData_h
 
 
 // Library includes

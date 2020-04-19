@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_TreeOptimizer_h
-#define ObjectiveScript_Core_AST_TreeOptimizer_h
+#ifndef Slang_Core_Core_AST_TreeOptimizer_h
+#define Slang_Core_Core_AST_TreeOptimizer_h
 
 
 // Library includes

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Tools_h
-#define ObjectiveScript_Core_Tools_h
+#ifndef Slang_Core_Core_Tools_h
+#define Slang_Core_Core_Tools_h
 
 
 // Library includes

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_odebugger_Application_Application_h
-#define ObjectiveScript_odebugger_Application_Application_h
+#ifndef Slang_odebugger_Application_Application_h
+#define Slang_odebugger_Application_Application_h
 
 
 // Library includes

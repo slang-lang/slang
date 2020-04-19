@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_odepend_Module_h
-#define ObjectiveScript_odepend_Module_h
+#ifndef Slang_odepend_Module_h
+#define Slang_odepend_Module_h
 
 
 // Library includes
