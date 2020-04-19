@@ -1,0 +1,12 @@
+{
+  "name": "Slang interpreter, debugger and package manager",
+  "name_short": "Slang",
+  "version": "0.7.0",
+  "type": "library",
+  "description": "Virtual module to prevent installation of modules that are not compatible with your version of the Slang interpreter",
+  "dependencies": [],
+  "target": {
+    "directory": "Slang",
+    "type": "internal"
+  }
+}
