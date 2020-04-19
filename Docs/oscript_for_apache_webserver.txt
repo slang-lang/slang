@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COMMAND="/path/to/Slang/trunk/release/bin/oscript/oscript"
+COMMAND="/path/to/Slang/trunk/release/bin/slang/slang"
 LIBRARY="/path/to/Slang/Library"
 USER=`whoami`
 

@@ -49,7 +49,7 @@ bool mSyntaxCheck = false;
 
 void printUsage()
 {
-	std::cout << "Usage: oscript [options] [-f] <file> [args...]" << std::endl;
+	std::cout << "Usage: slang [options] [-f] <file> [args...]" << std::endl;
 	std::cout << std::endl;
 	std::cout << "-f | --file <file>         Parse and execute <file>" << std::endl;
 	std::cout << "-h | --help                This help" << std::endl;

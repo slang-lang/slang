@@ -224,7 +224,7 @@ void cleanCache()
 {
 	// delete all downloaded files from cache
 
-#ifdef ODEPEND_DEBUG
+#ifdef SLANG_DEBUG
 	std::cout << "Cleaning cache..." << std::endl;
 #endif
 
@@ -270,7 +270,7 @@ void collectLocalModuleData()
 
 Module collectModuleData(const std::string& path, const std::string& filename)
 {
-#ifdef ODEPEND_DEBUG
+#ifdef SLANG_DEBUG
 	std::cout << "Collecting module data from \"" << path << "\"" << std::endl;
 #endif
 
@@ -352,7 +352,7 @@ void createBasicFolderStructure()
 
 void createLocalLibrary()
 {
-	std::cout << "Preparing current directory for odepend..." << std::endl;
+	std::cout << "Preparing current directory for slang-pkg..." << std::endl;
 
 	if ( !Utils::Tools::Files::exists(mCurrentFolder + CONFIG_FOLDER) ) {
 		// create folder for library config
@@ -379,7 +379,7 @@ void deinit()
 
 bool download(const std::string& url, const std::string& target, bool allowCleanup)
 {
-#ifdef ODEPEND_DEBUG
+#ifdef SLANG_DEBUG
 	std::cout << "Downloading \"" << url << "\" => \"" << target << "\"" << std::endl;
 #endif
 
@@ -826,7 +826,7 @@ void loadRestrictions()
 
 void printUsage()
 {
-	std::cout << "Usage: odepend [args...]" << std::endl;
+	std::cout << "Usage: slang-pkg [args...]" << std::endl;
 	std::cout << std::endl;
 	std::cout << "create                     Create a new module from a given directory" << std::endl;
 	std::cout << "help                       This help" << std::endl;
@@ -912,7 +912,7 @@ void processParameters(int argc, const char* argv[])
 
 void prepareModuleInstallation(const std::string& repo, const Module& installModule)
 {
-#ifdef ODEPEND_DEBUG
+#ifdef SLANG_DEBUG
 	std::cout << "Preparing module \"" << moduleName << "(" << version << ")\" from \"" << repo << "\"..." << std::endl;
 #endif
 

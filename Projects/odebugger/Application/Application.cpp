@@ -92,7 +92,7 @@ int Application::exec()
 
 void Application::printUsage()
 {
-	std::cout << "Usage: odebugger [options] [-f] <file> [args...]" << std::endl;
+	std::cout << "Usage: slang-dbg [options] [-f] <file> [args...]" << std::endl;
 	std::cout << std::endl;
 	std::cout << "-f | --file <file>         Parse and execute <file>" << std::endl;
 	std::cout << "-h | --help                This help" << std::endl;

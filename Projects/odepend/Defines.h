@@ -3,7 +3,7 @@
 #define Slang_odepend_Defines_h
 
 
-//#define ODEPEND_DEBUG
+//#define SLANG_DEBUG
 
 
 #endif
