@@ -2,9 +2,9 @@
 
 # set up essential stuff
 CONFIG_FILE="make-package.cfg"
-DESCRIPTION="Is an interpreter, debugger & package manager for the ObjectiveScript programming language"
+DESCRIPTION="Is an interpreter, debugger & package manager for the Slang programming language"
 MAINTAINER="Michael Adelmann <michael.adelmann@gmail.com>"
-PACKAGE="objectivescript"
+PACKAGE="slang"
 PLATFORM=$(uname -m)
 VERSION=$(cat version)
 
@@ -29,14 +29,14 @@ if [ "x${1}" != "x" ]; then
 fi
 
 # set up environment
-PACKAGE_DIRECTORY="${TARGET_DIRECTORY}/oscript-${VERSION}-${PLATFORM}"
+PACKAGE_DIRECTORY="${TARGET_DIRECTORY}/slang-${VERSION}-${PLATFORM}"
 PACKAGE_DIRECTORY_BIN="${PACKAGE_DIRECTORY}/usr/local/bin"
-PACKAGE_DIRECTORY_SHARE="${PACKAGE_DIRECTORY}/usr/local/share/oscript"
+PACKAGE_DIRECTORY_SHARE="${PACKAGE_DIRECTORY}/usr/local/share/slang"
 PACKAGE_DIRECTORY_SHARED_LIBRARIES="${PACKAGE_DIRECTORY_SHARE}/libs"
 PACKAGE_DIRECTORY_LIBRARY="${PACKAGE_DIRECTORY_SHARE}/Library"
 
 
-echo "Building ObjectiveScript debian package version ${VERSION} for platform '${PLATFORM}'..."
+echo "Building Slang debian package version ${VERSION} for platform '${PLATFORM}'..."
 echo ""
 
 #echo "Removing old package directory."
@@ -63,20 +63,19 @@ echo "Priority: optional" >> Env/DEBIAN/control
 echo "Maintainer: ${MAINTAINER}" >> Env/DEBIAN/control
 echo "Build-Depends: debhelper (>=10)" >> Env/DEBIAN/control
 echo "Standards-Version: 4.0.0" >> Env/DEBIAN/control
-echo "Homepage: https://objectivescript.ticketsharing.net/" >>  Env/DEBIAN/control
+echo "Homepage: https://slang.ticketsharing.net/" >>  Env/DEBIAN/control
 
 echo "Package: ${PACKAGE}" >> Env/DEBIAN/control
 echo "Version: ${VERSION}" >> Env/DEBIAN/control
-#echo "Architecture: ${PLATFORM}" >> Env/DEBIAN/control
-echo "Architecture: any" >> Env/DEBIAN/control
-#echo "Depends: ${shlibs:Depends}, ${misc:depends}" >> Env/DEBIAN/control
+echo "Architecture: ${PLATFORM}" >> Env/DEBIAN/control
+echo "Depends: ${shlibs:Depends}, ${misc:depends}" >> Env/DEBIAN/control
 echo "Description: ${DESCRIPTION}" >> Env/DEBIAN/control
 
 # add new binaries
 echo "Deploying new binaries..."
-cp "${SOURCE_DIRECTORY}/bin/odebugger/odebugger" "${PACKAGE_DIRECTORY_BIN}"
-cp "${SOURCE_DIRECTORY}/bin/odepend/odepend" "${PACKAGE_DIRECTORY_BIN}"
-cp "${SOURCE_DIRECTORY}/bin/oscript/oscript" "${PACKAGE_DIRECTORY_BIN}"
+cp "${SOURCE_DIRECTORY}/bin/slang/slang" "${PACKAGE_DIRECTORY_BIN}"
+cp "${SOURCE_DIRECTORY}/bin/slang-dbg/slang-dbg" "${PACKAGE_DIRECTORY_BIN}"
+cp "${SOURCE_DIRECTORY}/bin/slang-pkg/slang-pkg" "${PACKAGE_DIRECTORY_BIN}"
 
 # add new scripts
 echo "Deploying new scripts..."
@@ -85,7 +84,7 @@ cp "${SCRIPTS_DIRECTORY}/webscript" "${PACKAGE_DIRECTORY_BIN}"
 # add new libraries
 echo "Deploying new libraries..."
 cp -r Projects/Library/.odepend "${PACKAGE_DIRECTORY_LIBRARY}"
-cp -r Projects/Library/ObjectiveScript "${PACKAGE_DIRECTORY_LIBRARY}"
+cp -r Projects/Library/Slang "${PACKAGE_DIRECTORY_LIBRARY}"
 cp -r Projects/Library/System "${PACKAGE_DIRECTORY_LIBRARY}"
 
 # add new shared libraries
