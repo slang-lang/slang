@@ -362,7 +362,7 @@ void createLocalLibrary()
 	if ( !Utils::Tools::Files::exists(mCurrentFolder + CONFIG_FILE) ) {
 		Json::Value repository;
 		repository.addMember("name", "main");
-		repository.addMember("url", "https://objectivescript.ticketsharing.net/repo/stable");
+		repository.addMember("url", "https://slang.ticketsharing.net/repo/stable");
 
 		Json::Value config;
 		config.addMember("repository", repository);
