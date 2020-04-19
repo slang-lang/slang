@@ -1,10 +1,10 @@
 {
-  "name": "ObjectiveScript logging library",
+  "name": "Slang logging library",
   "name_short": "libLog",
-  "version": "0.3.0",
-  "description": "The ObjectiveScript logging library provides standard out and file logging capabilities.",
+  "version": "0.3.1",
+  "description": "The Slang logging library provides standard out and file logging capabilities.",
   "dependencies": [
-    { "module": "ObjectiveScript", "version_min": "0.6.5" },
+    { "module": "Slang", "version_min": "0.6.5" },
     { "module": "System", "version_min": "0.2.0" }
   ],
   "target": {

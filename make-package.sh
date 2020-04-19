@@ -73,9 +73,9 @@ echo "Description: ${DESCRIPTION}" >> Env/DEBIAN/control
 
 # add new binaries
 echo "Deploying new binaries..."
-cp "${SOURCE_DIRECTORY}/bin/slang/slang" "${PACKAGE_DIRECTORY_BIN}"
-cp "${SOURCE_DIRECTORY}/bin/slang-dbg/slang-dbg" "${PACKAGE_DIRECTORY_BIN}"
-cp "${SOURCE_DIRECTORY}/bin/slang-pkg/slang-pkg" "${PACKAGE_DIRECTORY_BIN}"
+cp "${SOURCE_DIRECTORY}/slang/slang" "${PACKAGE_DIRECTORY_BIN}"
+cp "${SOURCE_DIRECTORY}/slang-dbg/slang-dbg" "${PACKAGE_DIRECTORY_BIN}"
+cp "${SOURCE_DIRECTORY}/slang-pkg/slang-pkg" "${PACKAGE_DIRECTORY_BIN}"
 
 # add new scripts
 echo "Deploying new scripts..."
@@ -89,7 +89,12 @@ cp -r Projects/Library/System "${PACKAGE_DIRECTORY_LIBRARY}"
 
 # add new shared libraries
 echo "Deploying new shared libraries..."
-cp "${EXTENSIONS_DIRECTORY}"/lib/* "${PACKAGE_DIRECTORY_SHARED_LIBRARIES}"
+cp "${EXTENSIONS_DIRECTORY}"/lib* "${PACKAGE_DIRECTORY_SHARED_LIBRARIES}"
+
+# add symlink from slang to oscript for legacy scripts
+ln -s "${PACKAGE_DIRECTORY_BIN}/slang" "${PACKAGE_DIRECTORY_BIN}/oscript"
+ln -s "${PACKAGE_DIRECTORY_BIN}/slang-dbg" "${PACKAGE_DIRECTORY_BIN}/odebugger"
+ln -s "${PACKAGE_DIRECTORY_BIN}/slang-pkg" "${PACKAGE_DIRECTORY_BIN}/odepend"
 
 echo ""
 echo "Building package..."

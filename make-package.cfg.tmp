@@ -1,6 +1,6 @@
 
 EXTENSIONS_DIRECTORY="path/to/shared/libraries"
-SCRIPTS_DIRECTOR="path/to/src/Scripts"
+SCRIPTS_DIRECTORY="path/to/src/Scripts"
 SOURCE_DIRECTORY="path/to/binaries"
 TARGET_DIRECTORY="path/to/package"
 

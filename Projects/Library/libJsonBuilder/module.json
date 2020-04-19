@@ -1,10 +1,10 @@
 {
-  "name": "ObjectiveScript JSON builder library",
+  "name": "Slang JSON builder library",
   "name_short": "libJsonBuilder",
-  "version": "0.1.1",
-  "description": "The ObjectiveScript JSON library provides a way to generate JSON objects.",
+  "version": "0.1.2",
+  "description": "The Slang JSON library provides a way to generate JSON objects.",
   "dependencies": [
-    { "module": "ObjectiveScript", "version_min": "0.6.3" }
+    { "module": "Slang", "version_min": "0.6.3" }
   ],
   "target": {
     "directory": "libJsonBuilder",

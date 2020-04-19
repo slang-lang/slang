@@ -1,10 +1,10 @@
 {
   "name": "Telnet client",
   "name_short": "Telnet",
-  "version": "0.0.1",
-  "description": "An ObjectiveScript version of a simple telnet client",
+  "version": "0.0.2",
+  "description": "An Slang version of a simple telnet client",
   "dependencies": [
-    { "module": "ObjectiveScript", "version_min": "0.6.5" },
+    { "module": "Slang", "version_min": "0.6.5" },
     { "module": "System", "version_min": "0.2.0"},
     { "module": "libParam", "version_min": "0.2.0" }
   ],
