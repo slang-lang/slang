@@ -33,7 +33,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 /*
@@ -57,7 +57,7 @@ LocalClient::LocalClient()
   mScope(0),
   mVirtualMachine(0)
 {
-	mDebugger = &ObjectiveScript::Core::Debugger::Instance();
+	mDebugger = &Slang::Core::Debugger::Instance();
 }
 
 LocalClient::~LocalClient()
@@ -403,7 +403,7 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 		Utils::Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
-			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+			scope = dynamic_cast<Slang::Runtime::Object*>(scope->resolve(parent, false));
 		}
 		else {
 			return scope->resolveMethod(parent, params, false);
@@ -478,7 +478,7 @@ Symbol* LocalClient::getSymbol(std::string name) const
 		Utils::Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
-			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false, Visibility::Private));
+			scope = dynamic_cast<Slang::Runtime::Object*>(scope->resolve(parent, false, Visibility::Private));
 		}
 		else {
 			return scope->resolve(parent, false, Visibility::Private);
@@ -730,8 +730,8 @@ void LocalClient::prepare(const StringList& tokens)
 	}
 
 	mParameters.clear();
-	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::IntegerObject::TYPENAME, (int)tokens.size()));
-	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
+	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::IntegerObject::TYPENAME, (int)tokens.size()));
+	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringObject::TYPENAME, paramStr));
 }
 
 void LocalClient::printBreakPoints()
@@ -1087,10 +1087,10 @@ void LocalClient::start()
 
 	// add extensions
 #ifdef USE_JSON_EXTENSION
-	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
+	mVirtualMachine->addExtension(new Slang::Extensions::Json::JsonExtension());
 #endif
 #ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+	mVirtualMachine->addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 
 	try {

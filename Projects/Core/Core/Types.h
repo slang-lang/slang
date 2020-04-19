@@ -23,7 +23,7 @@ typedef std::list<std::string> StringList;
 typedef std::set<std::string> StringSet;
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 bool isAtomicType(const std::string& type);
 

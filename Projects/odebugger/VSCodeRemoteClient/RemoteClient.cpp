@@ -23,7 +23,7 @@
 #include <Tools/Strings.h>
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 RemoteClient::RemoteClient()
@@ -190,7 +190,7 @@ Symbol* RemoteClient::getSymbol(std::string name) const
 		Utils::Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
-			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false, Visibility::Private));
+			scope = dynamic_cast<Slang::Runtime::Object*>(scope->resolve(parent, false, Visibility::Private));
 		}
 		else {
 			return scope->resolve(parent, false, Visibility::Private);
@@ -207,8 +207,8 @@ void RemoteClient::Initialize(const VSCodeDebug::Request& request)
 	std::string paramStr = mSettings->filename();
 
 	mParameters.clear();
-	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::IntegerObject::TYPENAME, 1));
-	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
+	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::IntegerObject::TYPENAME, 1));
+	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringObject::TYPENAME, paramStr));
 
 	VSCodeDebug::Response response(request);
 	response.success = true;
@@ -383,10 +383,10 @@ void RemoteClient::start()
 
 	// add extensions
 #ifdef USE_JSON_EXTENSION
-	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
+	mVirtualMachine->addExtension(new Slang::Extensions::Json::JsonExtension());
 #endif
 #ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+	mVirtualMachine->addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 
 	try {

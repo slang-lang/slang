@@ -20,7 +20,7 @@
 #endif
 
 // Namespace declarations
-using namespace ObjectiveScript;
+using namespace Slang;
 
 
 namespace Testing {
@@ -209,7 +209,7 @@ void OperatorTest::testIndexOperator()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/Operator/IndexOperatorTest.os");
 
@@ -295,7 +295,7 @@ void OperatorTest::testUnaryMinus()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Operator/UnaryMinus.os"), ObjectiveScript::Common::Exceptions::UnknownOperation);
+		TTHROWS(vm.runScriptFromFile("Tests/Operator/UnaryMinus.os"), Slang::Common::Exceptions::UnknownOperation);
 
 		// automatic success
 	}
@@ -309,7 +309,7 @@ void OperatorTest::testUnaryPlus()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Operator/UnaryPlus.os"), ObjectiveScript::Common::Exceptions::UnknownOperation);
+		TTHROWS(vm.runScriptFromFile("Tests/Operator/UnaryPlus.os"), Slang::Common::Exceptions::UnknownOperation);
 
 		// automatic success
 	}

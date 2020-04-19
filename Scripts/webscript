@@ -1,7 +1,7 @@
 #!/bin/bash
 
-COMMAND="oscript"
-LIBRARY="/usr/local/share/oscript/Library"
+COMMAND="slang"
+LIBRARY="/usr/local/share/slang/Library"
 USER=`whoami`
 
 #if [ ${USER} == "www-data" ]; then

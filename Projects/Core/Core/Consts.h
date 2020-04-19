@@ -14,7 +14,7 @@
 // Global defines
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 // Boolean values
@@ -96,7 +96,7 @@ static const char* RESERVED_WORD_SCOPE_OPERATOR = ".";
 // System
 static const char* ANONYMOUS_OBJECT = "<anonymous>";
 static const char* NULL_TYPE = "<anonymous>";
-static const char* OBJECTIVESCRIPT_LIBRARY = "OBJECTIVESCRIPT_LIBRARY";
+static const char* SLANG_LIBRARY = "SLANG_LIBRARY";
 static const char* SYSTEM_LIBRARY = "SYSTEM.OS";
 static const char* UNKNOWN = "unknown";
 

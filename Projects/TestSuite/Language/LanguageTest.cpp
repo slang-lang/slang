@@ -24,7 +24,7 @@
 #endif
 
 // Namespace declarations
-using namespace ObjectiveScript;
+using namespace Slang;
 
 
 namespace Testing {
@@ -104,7 +104,7 @@ void LanguageTest::testAbstractObject()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/AbstractObjectTest.os"), ObjectiveScript::Common::Exceptions::AbstractException);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/AbstractObjectTest.os"), Slang::Common::Exceptions::AbstractException);
 
 		// automatic success
 	}
@@ -118,7 +118,7 @@ void LanguageTest::testAssert()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/AssertTest.os"), ObjectiveScript::Runtime::Exceptions::AssertionFailed);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/AssertTest.os"), Slang::Runtime::Exceptions::AssertionFailed);
 
 		// automatic success
 	}
@@ -202,7 +202,7 @@ void LanguageTest::testConstCorrectness1()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness1.os"), ObjectiveScript::Common::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness1.os"), Slang::Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -216,7 +216,7 @@ void LanguageTest::testConstCorrectness2()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness2.os"), ObjectiveScript::Common::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness2.os"), Slang::Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -230,7 +230,7 @@ void LanguageTest::testConstCorrectness3()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness3.os"), ObjectiveScript::Common::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness3.os"), Slang::Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -244,7 +244,7 @@ void LanguageTest::testConstCorrectness4()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness4.os"), ObjectiveScript::Common::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness4.os"), Slang::Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -328,7 +328,7 @@ void LanguageTest::testForeach()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/Language/ForeachTest.os");
 
@@ -488,7 +488,7 @@ void LanguageTest::testSanityChecker()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/SanityCheckerTest.os"), ObjectiveScript::Designtime::Exceptions::SanityCheckError);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/SanityCheckerTest.os"), Slang::Designtime::Exceptions::SanityCheckError);
 
 		// automatic success
 	}

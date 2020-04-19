@@ -13,7 +13,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Console {
@@ -28,7 +28,7 @@ SystemConsoleExtension::~SystemConsoleExtension()
 {
 }
 
-void SystemConsoleExtension::initialize(ObjectiveScript::IScope* /*scope*/)
+void SystemConsoleExtension::initialize(Slang::IScope* /*scope*/)
 {
 	// nothing to do here
 }

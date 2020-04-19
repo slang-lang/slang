@@ -10,7 +10,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 GenericAttributes::GenericAttributes()
@@ -215,7 +215,7 @@ bool ObjectAttributes::isSealed() const
 	return mIsSealed;
 }
 
-void ObjectAttributes::setBluePrintType(ObjectiveScript::BlueprintType::E value)
+void ObjectAttributes::setBluePrintType(Slang::BlueprintType::E value)
 {
 	mBluePrintType = value;
 }

@@ -61,7 +61,7 @@
 		}
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace AST {
 
 
@@ -279,7 +279,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	assert(method);
 
 	if ( method->isExtensionMethod() ) {
-		mControlFlow = dynamic_cast<ObjectiveScript::Extensions::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
+		mControlFlow = dynamic_cast<Slang::Extensions::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
 	}
 	else {
 		mControlFlow = execute(dynamic_cast<Runtime::Object*>(method->getEnclosingScope()), method, params, result);

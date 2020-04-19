@@ -34,7 +34,7 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	ObjectiveScript::Application app;
+	Slang::Application app;
 	app.init(argc, argv);
 
 	return app.exec();

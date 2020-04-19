@@ -9,7 +9,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 Symbol::Symbol(const std::string& name, IType::E type, Visibility::E visibility)

@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>ObjectiveScript</ProjectName>
+    <ProjectName>Slang</ProjectName>
     <ProjectGuid>{C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29}</ProjectGuid>
-    <RootNamespace>ObjectiveScript</RootNamespace>
+    <RootNamespace>Slang</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -369,7 +369,7 @@
     <ClInclude Include="Core\Interfaces\IPrinter.h" />
     <ClInclude Include="Core\Interfaces\IScope.h" />
     <ClInclude Include="Core\Object.h" />
-    <ClInclude Include="Core\ObjectiveScript.h" />
+    <ClInclude Include="Core\Slang.h" />
     <ClInclude Include="Core\Parameter.h" />
     <ClInclude Include="Core\Runtime\AtomicValue.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\BoolObject.h" />

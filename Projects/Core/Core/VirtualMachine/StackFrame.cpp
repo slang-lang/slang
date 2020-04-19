@@ -14,7 +14,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 StackFrame::Scope::Scope(IScope* scope, bool allowDelete, bool allowBreakAndContinue)
@@ -96,7 +96,7 @@ std::string StackFrame::toString() const
 			result += mScope->getFullScopeName();
 			break;
 		case IScope::IType::NamedScope:
-			result += mScope->getFullScopeName() + "(" + ObjectiveScript::toString(mParameters) + ")";
+			result += mScope->getFullScopeName() + "(" + Slang::toString(mParameters) + ")";
 			break;
 		case IScope::IType::SymbolScope:
 			result += mScope->getFullScopeName();

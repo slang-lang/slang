@@ -15,7 +15,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 class IScope;
@@ -31,8 +31,8 @@ public:
 	virtual ~AExtension() { }
 
 public:
-	virtual void initialize(ObjectiveScript::IScope* scope) = 0;
-	virtual void provideMethods(ObjectiveScript::Extensions::ExtensionMethods& methods) = 0;
+	virtual void initialize(Slang::IScope* scope) = 0;
+	virtual void provideMethods(Slang::Extensions::ExtensionMethods& methods) = 0;
 
 public:
 	const std::string& getName() const {
@@ -44,7 +44,7 @@ private:
 };
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 
 

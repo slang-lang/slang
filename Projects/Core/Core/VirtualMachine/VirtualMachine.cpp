@@ -28,7 +28,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 #ifdef _WIN32
@@ -194,7 +194,7 @@ void VirtualMachine::init()
 {
 	OSdebug("initializing virtual machine...");
 
-	const char* homepath = getenv(OBJECTIVESCRIPT_LIBRARY);
+	auto* homepath = getenv(SLANG_LIBRARY);
 	if ( homepath ) {
 		std::string path = std::string(homepath);
 
@@ -334,14 +334,14 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 	}
 }
 
-void VirtualMachine::runScriptFromFile(const std::string &filename, const ObjectiveScript::ParameterList &params, ObjectiveScript::Runtime::Object *result)
+void VirtualMachine::runScriptFromFile(const std::string &filename, const Slang::ParameterList &params, Slang::Runtime::Object *result)
 {
 	Script* script = createScriptFromFile(filename);
 
 	run(script, params, result);
 }
 
-void VirtualMachine::runScriptFromString(const std::string &content, const ObjectiveScript::ParameterList &params, ObjectiveScript::Runtime::Object *result)
+void VirtualMachine::runScriptFromString(const std::string &content, const Slang::ParameterList &params, Slang::Runtime::Object *result)
 {
 	Script* script = createScriptFromString(content);
 

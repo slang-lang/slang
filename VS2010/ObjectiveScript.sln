@@ -5,7 +5,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utils", "..\Projects\Utils\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestSuite", "..\Projects\TestSuite\TestSuite.vcxproj", "{381A8136-0195-4A4F-BBCD-4AD754123425}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ObjectiveScript", "..\Projects\Core\Core.vcxproj", "{C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Slang", "..\Projects\Core\Core.vcxproj", "{C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oscript", "..\Projects\oscript\oscript.vcxproj", "{F60E42A5-1C6A-47E5-A040-977BE67C310D}"
 EndProject

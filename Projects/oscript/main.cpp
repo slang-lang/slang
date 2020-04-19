@@ -42,7 +42,7 @@
 std::string mFilename;
 StringSet mLibraryFolders;
 Utils::Common::StdOutLogger mLogger;
-ObjectiveScript::ParameterList mParameters;
+Slang::ParameterList mParameters;
 bool mSanityCheck = true;
 bool mSyntaxCheck = false;
 
@@ -144,8 +144,8 @@ void processParameters(int argc, const char* argv[])
 		}
 	}
 
-	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::IntegerObject::TYPENAME, (int)params.size()));
-	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
+	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::IntegerObject::TYPENAME, (int)params.size()));
+	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringObject::TYPENAME, paramStr));
 }
 
 int main(int argc, const char* argv[])
@@ -164,7 +164,7 @@ int main(int argc, const char* argv[])
 		return 0;
 	}
 
-	ObjectiveScript::VirtualMachine mVirtualMachine;
+	Slang::VirtualMachine mVirtualMachine;
 	for ( StringSet::const_iterator it = mLibraryFolders.cbegin(); it != mLibraryFolders.cend(); ++it ) {
 		mVirtualMachine.addLibraryFolder((*it));
 	}
@@ -175,16 +175,16 @@ int main(int argc, const char* argv[])
 
 	// add extensions
 #ifdef USE_JSON_EXTENSION
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
+	mVirtualMachine.addExtension(new Slang::Extensions::Json::JsonExtension());
 #endif
 #ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+	mVirtualMachine.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 
 	try {
-		ObjectiveScript::Runtime::Object result;
+		Slang::Runtime::Object result;
 
-		ObjectiveScript::Script* script = mVirtualMachine.createScriptFromFile(mFilename);
+		Slang::Script* script = mVirtualMachine.createScriptFromFile(mFilename);
 		assert(script);
 
 		if ( mSyntaxCheck ) {
@@ -193,15 +193,15 @@ int main(int argc, const char* argv[])
 		else {
 			mVirtualMachine.run(script, mParameters, &result);
 
-			if ( result.getValue().type() == ObjectiveScript::Runtime::AtomicValue::Type::INT ) {
+			if (result.getValue().type() == Slang::Runtime::AtomicValue::Type::INT ) {
 				return result.getValue().toInt();
 			}
 		}
 
 		return 0;
 	}
-	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
-		if ( e == ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
+	catch (Slang::Runtime::ControlFlow::E &e ) {
+		if (e == Slang::Runtime::ControlFlow::ExitProgram ) {
 			return 0;
 		}
 

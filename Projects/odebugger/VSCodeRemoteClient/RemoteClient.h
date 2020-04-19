@@ -23,7 +23,7 @@ namespace VSCodeDebug {
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Core {

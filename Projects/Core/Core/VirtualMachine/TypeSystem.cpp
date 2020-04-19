@@ -16,10 +16,10 @@
 #include <Core/Designtime/Exceptions.h>
 
 // Namespace declarations
-using namespace ObjectiveScript::Designtime;
+using namespace Slang::Designtime;
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 TypeSystem::TypeSystem()

@@ -546,7 +546,7 @@ void init()
 	mBaseFolder = TMP;
 
 	{	// set library home path
-		const char* homepath = getenv(ObjectiveScript::OBJECTIVESCRIPT_LIBRARY);
+		const char* homepath = getenv(Slang::SLANG_LIBRARY);
 		if ( homepath ) {
 			std::string path = std::string(homepath);
 
@@ -565,7 +565,7 @@ void init()
 	{	// set current folder
 		char currentPath[FILENAME_MAX];
 		if ( !GetCurrentDir(currentPath, sizeof(currentPath)) )  {
-			throw ObjectiveScript::Common::Exceptions::Exception("invalid current directory!");
+			throw Slang::Common::Exceptions::Exception("invalid current directory!");
 		}
 
 		currentPath[sizeof(currentPath) - 1] = '\0'; /* not really required */
@@ -799,7 +799,7 @@ void loadConfig()
 
 void loadRestrictions()
 {
-	// add hardcoded max restriction for ObjectiveScript version (this can be overwritten by the real restriction config)
+	// add hardcoded max restriction for Slang version (this can be overwritten by the real restriction config)
 	mLocalRestrictions.insert(
 		Restriction(PRODUCT_NAME, "", PRODUCT_VERSION)
 	);

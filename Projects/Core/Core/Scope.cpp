@@ -18,7 +18,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 SymbolScope::SymbolScope(IScope *parent)

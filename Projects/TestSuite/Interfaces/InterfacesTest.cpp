@@ -16,7 +16,7 @@
 #include <Core/VirtualMachine/VirtualMachine.h>
 
 // Namespace declarations
-using namespace ObjectiveScript;
+using namespace Slang;
 
 
 namespace Testing {

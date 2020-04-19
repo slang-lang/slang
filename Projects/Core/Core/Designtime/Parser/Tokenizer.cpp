@@ -12,7 +12,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 const std::string CONTROLCHARS	= "#.,;:=()[]{}!?<>+-*/%&|~'\" ";

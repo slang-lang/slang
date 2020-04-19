@@ -17,7 +17,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Math {
@@ -32,7 +32,7 @@ SystemMathExtension::~SystemMathExtension()
 {
 }
 
-void SystemMathExtension::initialize(ObjectiveScript::IScope* /*scope*/)
+void SystemMathExtension::initialize(Slang::IScope* /*scope*/)
 {
 	// nothing to do here
 }

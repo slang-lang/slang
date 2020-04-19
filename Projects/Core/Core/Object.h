@@ -26,7 +26,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declaration
 class Repository;
@@ -74,7 +74,7 @@ public:	// Reference
 
 public: // Symbol
 	Symbol* resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const;
-	ObjectiveScript::MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
+	Slang::MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
 
 public:	// Type
 	bool isInstanceOf(const std::string& type) const;

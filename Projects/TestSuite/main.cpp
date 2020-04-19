@@ -200,8 +200,8 @@ int main(int argc, const char* argv[])
 
 		return 0;
 	}
-	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
-		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
+	catch (Slang::Runtime::ControlFlow::E &e ) {
+		if (e != Slang::Runtime::ControlFlow::ExitProgram ) {
 			OSerror("abnormal program termination!");
 		}
 	}
@@ -213,7 +213,7 @@ int main(int argc, const char* argv[])
 	}
 
 	// if we get here something bad has happened
-	ObjectiveScript::Controller::Instance().threads()->print();
+	Slang::Controller::Instance().threads()->print();
 
 	return -1;
 }

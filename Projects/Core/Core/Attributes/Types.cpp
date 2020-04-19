@@ -10,7 +10,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 AccessMode::E AccessMode::convert(const std::string& v)

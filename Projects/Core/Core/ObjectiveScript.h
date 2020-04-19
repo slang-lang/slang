@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_ObjectiveScript_h
-#define ObjectiveScript_Core_ObjectiveScript_h
+#ifndef Slang_Core_Slang_h
+#define Slang_Core_Slang_h
 
 
 // Library includes
@@ -14,7 +14,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 

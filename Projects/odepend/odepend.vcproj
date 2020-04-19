@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Extensions.lib Json_debug.lib libmysql.lib ObjectiveScript.lib Utils.lib"
+				AdditionalDependencies="Extensions.lib Json_debug.lib libmysql.lib Slang.lib Utils.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\Libs;&quot;$(JSON)&quot;\Libs;&quot;$(MYSQL)&quot;\lib"

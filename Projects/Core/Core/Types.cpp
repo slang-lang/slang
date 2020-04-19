@@ -15,7 +15,7 @@
 
 // Namespace declaration
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 bool isAtomicType(const std::string& type)

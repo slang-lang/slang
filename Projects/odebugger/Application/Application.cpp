@@ -18,7 +18,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 Application::Application()
@@ -75,8 +75,8 @@ int Application::exec()
 	try {
 		result = mClient->exec();
 	}
-	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
-		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
+	catch (Slang::Runtime::ControlFlow::E &e ) {
+		if (e != Slang::Runtime::ControlFlow::ExitProgram ) {
 			OSerror("abnormal program termination!");
 		}
 	}

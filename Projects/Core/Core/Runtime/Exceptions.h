@@ -13,21 +13,21 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Runtime {
 namespace Exceptions {
 
 
-class RuntimeException : public ::ObjectiveScript::Common::Exceptions::Exception
+class RuntimeException : public ::Slang::Common::Exceptions::Exception
 {
 public:
 #ifdef _WIN32
-	explicit RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
-	: ::ObjectiveScript::Common::Exceptions::Exception(text, position)
+	explicit RuntimeException(const std::string& text, const Slang::Common::Position& position = Slang::Common::Position())
+	: ::Slang::Common::Exceptions::Exception(text, position)
 	{ }
 #else
-	explicit RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position()) noexcept
-	: ::ObjectiveScript::Common::Exceptions::Exception(text, position)
+	explicit RuntimeException(const std::string& text, const Slang::Common::Position& position = Slang::Common::Position()) noexcept
+	: ::Slang::Common::Exceptions::Exception(text, position)
 	{ }
 #endif
 };

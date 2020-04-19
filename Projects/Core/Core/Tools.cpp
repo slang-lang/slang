@@ -12,7 +12,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 void expect(Token::Type::E expected, const TokenIterator& found)

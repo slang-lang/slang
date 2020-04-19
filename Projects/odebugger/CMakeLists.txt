@@ -33,6 +33,6 @@ add_include(Projects/Core)
 add_include(Projects/odebugger)
 add_include(Projects/Utils)
 
-SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/odebugger)
-build_app(odebugger "${MODULES}")
+SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/slang-dbg)
+build_app(slang-dbg "${MODULES}")
 

@@ -13,23 +13,23 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Designtime {
 namespace Exceptions {
 
 
-class DesigntimeException : public ObjectiveScript::Common::Exceptions::Exception
+class DesigntimeException : public Slang::Common::Exceptions::Exception
 {
 public:
 #ifdef _WIN32
 	explicit DesigntimeException(const std::string& text, const Common::Position& position = Common::Position())
-	: ObjectiveScript::Common::Exceptions::Exception("DesigntimeException: " + text, position)
+	: Slang::Common::Exceptions::Exception("DesigntimeException: " + text, position)
 	{ }
 
 	virtual ~DesigntimeException() { }
 #else
 	explicit DesigntimeException(const std::string& text, const Common::Position& position = Common::Position()) noexcept
-	: ObjectiveScript::Common::Exceptions::Exception(text, position)
+	: Slang::Common::Exceptions::Exception(text, position)
 	{ }
 #endif
 };

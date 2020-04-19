@@ -17,7 +17,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace IO {
@@ -32,7 +32,7 @@ SystemIOExtension::~SystemIOExtension()
 {
 }
 
-void SystemIOExtension::initialize(ObjectiveScript::IScope* /*scope*/)
+void SystemIOExtension::initialize(Slang::IScope* /*scope*/)
 {
 	// nothing to do here
 }

@@ -20,7 +20,7 @@
 #endif
 
 // Namespace declarations
-using namespace ObjectiveScript;
+using namespace Slang;
 
 
 namespace Testing {
@@ -104,7 +104,7 @@ void InheritanceTest::testExceptionDuringDestructorTest()
     try {
         VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
         vm.runScriptFromFile("Tests/Inheritance/ExceptionDuringDestructor.os");
 

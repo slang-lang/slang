@@ -21,7 +21,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Runtime {
 
 
@@ -358,7 +358,7 @@ void Object::operator_assign(const Object *other)
 	ParameterList params;
 	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
+	::Slang::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	if ( value_operator ) {
 		Controller::Instance().thread(0)->execute(other->getThis(), dynamic_cast<Common::Method*>(value_operator), params, this);
 		return;
@@ -497,20 +497,20 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope, Visibili
 	return result;
 }
 
-ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
+Slang::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	if ( mThis != this ) {
 		return mThis->resolveMethod(name, params, onlyCurrentScope, visibility);
 	}
 
 	// (1) look in current scope
-	ObjectiveScript::MethodSymbol *result = MethodScope::resolveMethod(name, params, true, visibility);
+	Slang::MethodSymbol *result = MethodScope::resolveMethod(name, params, true, visibility);
 
 	// (2) check inheritance
 	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
 	Symbol* base = MethodScope::resolve("base", true, Visibility::Designtime);
 	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-		ObjectiveScript::MethodSymbol *tmp = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
+		Slang::MethodSymbol *tmp = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
 		if ( !result || (tmp && tmp->isFinal()) ) {
 			result = tmp;
 		}
@@ -519,7 +519,7 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	// (3) if we still haven't found something also look in other scopes
 	if ( !result || !result->isFinal() ) {
 		if ( !onlyCurrentScope ) {
-			ObjectiveScript::MethodSymbol *tmp = MethodScope::resolveMethod(name, params, false, visibility);
+			Slang::MethodSymbol *tmp = MethodScope::resolveMethod(name, params, false, visibility);
 
 			if ( tmp ) {
 				result = tmp;

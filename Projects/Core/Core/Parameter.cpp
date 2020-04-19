@@ -10,7 +10,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 Parameter Parameter::CreateDesigntime(const std::string& name,
