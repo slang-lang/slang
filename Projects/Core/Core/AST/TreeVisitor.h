@@ -27,7 +27,7 @@ class TreeVisitor
 {
 public:
 	TreeVisitor();
-	virtual ~TreeVisitor();
+	virtual ~TreeVisitor() = default;
 
 protected:
 	virtual void visit(Node* node);

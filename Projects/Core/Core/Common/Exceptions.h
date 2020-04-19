@@ -6,6 +6,7 @@
 // Library includes
 #include <exception>
 #include <string>
+#include <utility>
 
 // Project includes
 #include "Position.h"
@@ -34,16 +35,15 @@ public:
 	}
 	virtual ~Exception() { }
 #else
-	explicit Exception(const std::string& text, const Position& position = Position()) noexcept
-	: mMessage(text),
-	  mPosition(position)
+	explicit Exception(std::string text, Position position = Position()) noexcept
+	: mMessage(std::move(text)),
+	  mPosition(std::move(position))
 	{
 		if ( !mPosition.toString().empty() ) {
 			mMessage += " in " + mPosition.toString();
 		}
 	}
 
-	virtual ~Exception() noexcept { }
 #endif
 
 public:

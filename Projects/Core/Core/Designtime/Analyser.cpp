@@ -35,13 +35,9 @@ Analyser::Analyser(bool doSanityCheck)
 	mScope = Controller::Instance().globalScope();
 }
 
-Analyser::~Analyser()
-{
-}
-
 bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& tokens)
 {
-	TokenIterator token = tokens.begin();
+	auto token = tokens.begin();
 
 	Runtime::AtomicValue previous_value = Runtime::AtomicValue(-1);
 	Runtime::AtomicValue value = Runtime::AtomicValue(-1);
@@ -106,8 +102,8 @@ Ancestors Analyser::collectInheritance(TokenIterator& token)
 	Ancestors ancestors = Parser::collectInheritance(token);
 	Ancestors result;
 
-	for ( Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-		Ancestor ancestor(resolveType(it->typeDeclaration(), token), it->ancestorType(), it->visibility());
+	for ( const auto& it : ancestors ) {
+		Ancestor ancestor(resolveType(it.typeDeclaration(), token), it.ancestorType(), it.visibility());
 
 		result.insert(ancestor);
 	}
@@ -151,17 +147,17 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		tokens = Parser::collectScopeTokens(token);
 	}
 
-	BluePrintObject* blueprint = new BluePrintObject(type.mName, mFilename);
+	auto* blueprint = new BluePrintObject(type.mName, mFilename);
 	bool extends = false;
 
 	// set up inheritance (if present)
 	if ( !inheritance.empty() ) {
-		for ( Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
-			if ( it->ancestorType() == Ancestor::Type::Extends ) {
+		for ( const auto& it : inheritance ) {
+			if ( it.ancestorType() == Ancestor::Type::Extends ) {
 				extends = true;
 			}
 
-			blueprint->addInheritance((*it));
+			blueprint->addInheritance(it);
 		}
 	}
 
@@ -205,7 +201,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	if ( isImplemented && implementationType == ImplementationType::Concrete && !blueprint->hasConstructor() ) {
 		ParameterList params;
 
-		Common::Method* defaultConstructor = new Common::Method(blueprint, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
+		auto* defaultConstructor = new Common::Method(blueprint, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 		defaultConstructor->setExceptions(CheckedExceptions::Nothrow);
 		defaultConstructor->setLanguageFeatureState(LanguageFeatureState::Stable);
 		defaultConstructor->setMemoryLayout(MemoryLayout::Instance);
@@ -221,7 +217,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	mRepository->addBluePrint(blueprint);
 
-	return blueprint != NULL;
+	return blueprint != nullptr;
 }
 
 bool Analyser::createEnum(TokenIterator& token)
@@ -250,7 +246,7 @@ bool Analyser::createEnum(TokenIterator& token)
 	// collect all tokens of this method
 	TokenList tokens = Parser::collectScopeTokens(token);
 
-	BluePrintObject* symbol = new BluePrintObject(type.mName, mFilename);
+	auto* symbol = new BluePrintObject(type.mName, mFilename);
 	symbol->setBluePrintType(bluePrintType);
 	symbol->setImplementationType(implementationType);
 	symbol->setLanguageFeatureState(languageFeatureState);
@@ -300,16 +296,16 @@ bool Analyser::createInterface(TokenIterator& token)
 
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
-	BluePrintObject* blueprint = new BluePrintObject(type.mName, mFilename);
+	auto* blueprint = new BluePrintObject(type.mName, mFilename);
 
 	// set up inheritance (if present)
 	if ( !inheritance.empty() ) {
-		for ( Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
-			if ( it->ancestorType() != Ancestor::Type::Implements ) {
+		for ( const auto& it : inheritance ) {
+			if ( it.ancestorType() != Ancestor::Type::Implements ) {
 				throw Common::Exceptions::NotSupported("Interfaces can only implement other interfaces", token->position());
 			}
 
-			blueprint->addInheritance((*it));
+			blueprint->addInheritance(it);
 		}
 	}
 
@@ -340,7 +336,7 @@ bool Analyser::createInterface(TokenIterator& token)
 
 	mRepository->addBluePrint(blueprint);
 
-	return blueprint != NULL;
+	return blueprint != nullptr;
 }
 
 bool Analyser::createLibraryReference(TokenIterator& token)
@@ -400,7 +396,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	AccessMode::E access = Parser::parseAccessMode(token, AccessMode::ByValue);
 
 	// check parent's constness
-	BluePrintObject* parent = dynamic_cast<BluePrintObject*>(mScope);
+	auto* parent = dynamic_cast<BluePrintObject*>(mScope);
 	if ( parent && parent->isConst() && mutability != Mutability::Const ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("cannot add modifiable member '" + name + "' to const object '" + parent->getFullScopeName() + "'", token->position());
 	}
@@ -417,13 +413,13 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	expect(Token::Type::SEMICOLON, token);
 
 	if ( dynamic_cast<BluePrintObject*>(mScope) && memoryLayout != MemoryLayout::Static ) {
-		BluePrintObject* member = new BluePrintObject(type.mName, mFilename, name);
+		auto* member = new BluePrintObject(type.mName, mFilename, name);
 		member->setIsReference(access == AccessMode::ByReference);
 		member->setLanguageFeatureState(languageFeature);
 		member->setMember(true);
 		member->setMemoryLayout(memoryLayout);
 		member->setMutability(mutability);
-		member->setParent(NULL);
+		member->setParent(nullptr);
 		member->setPrototypeConstraints(type.mConstraints);
 		member->setQualifiedTypename(type.mName);
 		member->setValue(value);
@@ -458,7 +454,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default (except constructors and destructors)
 	Virtuality::E virtuality = mProcessingInterface ? Virtuality::Abstract : Virtuality::Virtual;
 
-	BluePrintObject* blueprint = dynamic_cast<BluePrintObject*>(mScope);
+	auto* blueprint = dynamic_cast<BluePrintObject*>(mScope);
 	if ( blueprint && name == RESERVED_WORD_CONSTRUCTOR ) {
 		// constructors can never ever be const
 		methodType = MethodAttributes::MethodType::Constructor;
@@ -485,7 +481,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 
 	// check parent's constness
 	if ( methodType != MethodAttributes::MethodType::Constructor && methodType != MethodAttributes::MethodType::Destructor ) {
-		BluePrintObject* parent = dynamic_cast<BluePrintObject*>(mScope);
+		auto* parent = dynamic_cast<BluePrintObject*>(mScope);
 		if ( parent && parent->isConst() && mutability != Mutability::Const ) {
 			throw Common::Exceptions::ConstCorrectnessViolated("cannot add modifiable method '" + name + "' to const object '" + parent->getFullScopeName() + "'", token->position());
 		}
@@ -510,7 +506,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	}
 
 	// create a new method with the corresponding return type
-	Common::Method* method = new Common::Method(mScope, name, type);
+	auto* method = new Common::Method(mScope, name, type);
 	method->setExceptions(exceptions);
 	method->setLanguageFeatureState(languageFeature);
 	method->setMemoryLayout(memoryLayout);
@@ -552,7 +548,7 @@ bool Analyser::createNamespace(TokenIterator& token)
 			++token;
 		}
 
-		Common::Namespace* space = NULL;
+		Common::Namespace* space = nullptr;
 
 		// check for an existing namespace with this name
 		Symbol* symbol = mScope->resolve(name, true, Visibility::Designtime);
@@ -568,7 +564,7 @@ bool Analyser::createNamespace(TokenIterator& token)
 		else {
 			switch ( symbol->getSymbolType() ) {
 				case Symbol::IType::NamespaceSymbol:
-					space = static_cast<Common::Namespace*>(symbol);
+					space = dynamic_cast<Common::Namespace*>(symbol);
 					break;
 				case Symbol::IType::BluePrintObjectSymbol:
 				case Symbol::IType::MethodSymbol:
@@ -596,8 +592,8 @@ bool Analyser::createNamespace(TokenIterator& token)
  */
 void Analyser::generate(const TokenList& tokens)
 {
-	TokenList::const_iterator token = tokens.cbegin();
-	TokenList::const_iterator localEnd = tokens.cend();
+	auto token = tokens.cbegin();
+	auto localEnd = tokens.cend();
 
 	while ( token != localEnd && token->type() != Token::Type::ENDOFFILE ) {
 		if ( Parser::isObjectDeclaration(token) ) {
@@ -655,8 +651,8 @@ ParameterList Analyser::parseParameters(TokenIterator& token, IScope* scope)
 {
 	ParameterList params = Parser::parseParameters(token, scope);
 
-	for ( ParameterList::iterator it = params.begin(); it != params.end(); ++it ) {
-		it->mType = resolveType(it->typeDeclaration(), token);
+	for ( auto& param : params ) {
+		param.mType = resolveType(param.typeDeclaration(), token);
 	}
 
 	return params;
@@ -717,7 +713,7 @@ std::string Analyser::resolveType(const std::string& type, const TokenIterator& 
 	IScope* scope = mScope;
 
 	while ( scope ) {
-		Symbol* symbol = scope->resolve(type, false);
+		Symbol* symbol = scope->resolve(type, false, Visibility::Private);
 		if ( symbol ) {
 			switch ( symbol->getSymbolType() ) {
 				case Symbol::IType::BluePrintObjectSymbol: return dynamic_cast<BluePrintObject*>(symbol)->QualifiedTypename();
@@ -745,11 +741,11 @@ Common::TypeDeclaration Analyser::resolveType(const Common::TypeDeclaration& typ
 	result.mCombinedName = result.mName;
 
 	// resolve prototype constraints
-	for ( PrototypeConstraints::const_iterator it = type.mConstraints.begin(); it != type.mConstraints.end(); ++it ) {
-		PrototypeConstraint constraint = (*it);
+	for ( const auto& mConstraint : type.mConstraints ) {
+		PrototypeConstraint constraint = mConstraint;
 
-		constraint.mConstraint = resolveType(it->mConstraint, token);
-		constraint.mRunType = resolveType(it->mRunType, token);
+		constraint.mConstraint = resolveType(mConstraint.mConstraint, token);
+		constraint.mRunType = resolveType(mConstraint.mRunType, token);
 
 		result.mConstraints.push_back(constraint);
 	}

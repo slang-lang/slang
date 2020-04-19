@@ -20,7 +20,7 @@ class GenericAttributes
 {
 public:
 	GenericAttributes();
-	virtual ~GenericAttributes();
+	virtual ~GenericAttributes() = default;
 
 public:
 	bool isConst() const;
@@ -36,7 +36,7 @@ public:
 	void setMutability(Mutability::E value);
 
 protected:
-	void checkSealState();
+	void checkSealState() const;
 
 protected:
 	bool mIsSealed;

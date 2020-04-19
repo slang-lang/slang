@@ -11,13 +11,6 @@
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
-#include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Tools.h>
@@ -69,7 +62,28 @@ void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 }
 
-void TreeGenerator::deinitialize()
+Node* TreeGenerator::expression(TokenIterator& start)
+{
+	Node* expression = parseCondition(start);
+
+	for ( ; ; ) {
+		Token::Type::E op = start->type();
+		if ( op != Token::Type::AND &&
+			 op != Token::Type::NAND &&
+			 op != Token::Type::NOR &&
+			 op != Token::Type::OR ) {
+			return expression;
+		}
+
+		Token operation = (*start);
+		Node* right = parseCondition(++start);
+		/*std::string type = resolveType(expression, operation, right);*/
+
+		expression = new BooleanBinaryExpression(expression, operation, right);
+	}
+}
+
+void TreeGenerator::finalize()
 {
 	if ( !mThrownExceptions.empty() && !mMethod->throws() ) {
 		// this method is not marked as 'throwing', but it throws uncaught exceptions
@@ -79,8 +93,8 @@ void TreeGenerator::deinitialize()
 				exceptions += "', '";
 			}
 			exceptions += (*it);
- 		}
- 		exceptions += "'";
+		}
+		exceptions += "'";
 
 		throw Common::Exceptions::ControlFlowException("'" + mMethod->getFullScopeName() + "' throws " + exceptions + " exception(s) although it is not marked with 'throws'");
 	}
@@ -109,27 +123,6 @@ void TreeGenerator::deinitialize()
 	mMethod = NULL;
 	mControlFlow = Runtime::ControlFlow::Normal;
 	mAllowConstModify = false;
-}
-
-Node* TreeGenerator::expression(TokenIterator& start)
-{
-	Node* expression = parseCondition(start);
-
-	for ( ; ; ) {
-		Token::Type::E op = start->type();
-		if ( op != Token::Type::AND &&
-			 op != Token::Type::NAND &&
-			 op != Token::Type::NOR &&
-			 op != Token::Type::OR ) {
-			return expression;
-		}
-
-		Token operation = (*start);
-		Node* right = parseCondition(++start);
-		/*std::string type = resolveType(expression, operation, right);*/
-
-		expression = new BooleanBinaryExpression(expression, operation, right);
-	}
 }
 
 /*
@@ -172,7 +165,7 @@ Statements* TreeGenerator::generateAST(Common::Method* method)
 	// generate AST
 	Statements* statements = generate(method->getTokens());
 
-	deinitialize();
+	finalize();
 
 	return statements;
 }
@@ -210,7 +203,7 @@ const TokenList& TreeGenerator::getTokens() const
 
 void TreeGenerator::initialize(Common::Method* method)
 {
-	// initialize reuseable members
+	// initialize reusable members
 	mAllowConstModify = method->getMethodType() == Common::Method::MethodType::Constructor || method->getMethodType() == Common::Method::MethodType::Destructor;
 	mControlFlow = Runtime::ControlFlow::Normal;
 	mMethod = method;
@@ -1724,12 +1717,12 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	++token;
 
 	CaseStatements caseStatements;
-	Statements* defaultStatement = NULL;
+	Statements* defaultStatement = nullptr;
 
 	// collect all case-blocks
 	while ( token->type() != Token::Type::BRACKET_CURLY_CLOSE ) {
 		if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_CASE ) {
-			Token start = (*token);
+			Token startToken = (*token);
 
 			// skip case-label
 			++token;
@@ -1741,7 +1734,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 
 			// process case-block tokens
 			caseStatements.push_back(
-				new CaseStatement(start, caseExpression, process_scope(token, true, true))
+				new CaseStatement(startToken, caseExpression, process_scope(token, true, true))
 			);
 		}
 		else if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_DEFAULT ) {
@@ -1805,7 +1798,7 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
 	Token start = (*token);
 	mControlFlow = Runtime::ControlFlow::Throw;
 
-	Node* exp = NULL;
+	Node* exp = nullptr;
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		exp = expression(token);
@@ -1843,19 +1836,19 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	TokenIterator localEnd = getTokens().end();
 
 	CatchStatements catchStatements;
-	Statements* finallyBlock = NULL;
+	Statements* finallyBlock = nullptr;
 
 	// collect all catch- and finally-blocks
 	for ( ; ; ) {
 		if ( tmp != localEnd && tmp->content() == KEYWORD_CATCH ) {
-			Token start = (*tmp);
+			Token startToken = (*tmp);
 
 			// skip catch-label
 			++tmp;
 
 			pushScope();	// push a new scope to allow reuse of the same exception instance name
 
-			TypeDeclaration* typeDeclaration = NULL;
+			TypeDeclaration* typeDeclaration = nullptr;
 
 			// parse exception type (if present)
 			if ( tmp->type() == Token::Type::PARENTHESIS_OPEN ) {
@@ -1880,7 +1873,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			// TODO: prevent duplicate catch-blocks
 
 			catchStatements.push_back(
-				new CatchStatement(start, typeDeclaration, process_scope(tmp))
+				new CatchStatement(startToken, typeDeclaration, process_scope(tmp))
 			);
 
 			popScope();		// pop exception instance scope
@@ -1942,7 +1935,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 	// delete resolved symbol expression as it is not needed any more
 	delete lhs;
-	lhs = NULL;
+	lhs = nullptr;
 
 	expect(Token::Type::IDENTIFIER, token);
 
@@ -1962,7 +1955,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	// non-atomic types are references by default
 	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, object->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference);
 
-	Expression* assignmentExp = NULL;
+	Expression* assignmentExp = nullptr;
 
 	if ( token->type() == Token::Type::ASSIGN ) {
 		if ( initialization != Initialization::Allowed ) {
@@ -2089,14 +2082,14 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	}
 
 	std::string name = token->content();
-	IScope* scope = NULL;
-	SymbolExpression* symbol = NULL;
+	IScope* scope = nullptr;
+	SymbolExpression* symbol = nullptr;
 	std::string type;
 
 	// retrieve symbol for token from base scope
 	Symbol* result = base->resolve(name, onlyCurrentScope, !onlyCurrentScope ? Visibility::Private : visibility);
 	if ( !result ) {
-		return NULL;
+		return nullptr;
 	}
 
 	++token;
@@ -2143,7 +2136,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 */
 
 			// set scope according to result type
-			scope = object->isAtomicType() ? NULL : object->getBluePrint();
+			scope = object->isAtomicType() ? nullptr : object->getBluePrint();
 			type = object->QualifiedTypename();
 
 			symbol = new RuntimeSymbolExpression(name, type, object->isConst(), object->isMember(), object->isAtomicType());
@@ -2174,7 +2167,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			// exceptions are not allowed here so we have to return NULL (without leaving memleaks)
 			delete symbol;
 
-			return NULL;
+			return nullptr;
 		}
 	}
 	symbol->mSurroundingScope = base;

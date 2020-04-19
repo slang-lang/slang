@@ -21,11 +21,7 @@ GenericAttributes::GenericAttributes()
 {
 }
 
-GenericAttributes::~GenericAttributes()
-{
-}
-
-void GenericAttributes::checkSealState()
+void GenericAttributes::checkSealState() const
 {
 	if ( mIsSealed ) {
 		throw Common::Exceptions::Exception("can not update sealed attribute");

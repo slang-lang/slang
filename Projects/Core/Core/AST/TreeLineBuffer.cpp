@@ -17,10 +17,6 @@ TreeLineBuffer::TreeLineBuffer()
 {
 }
 
-TreeLineBuffer::~TreeLineBuffer()
-{
-}
-
 void TreeLineBuffer::append(const std::string& content)
 {
 	insert(mLastInsertPosition, content);
@@ -42,7 +38,7 @@ void TreeLineBuffer::insert(const Common::Position& position, const std::string&
 	mLastInsertPosition = position;
 
 	// find out if there is still some content at this given position
-	Lines::iterator it = mTreeLines.find(position);
+	auto it = mTreeLines.find(position);
 	if ( it != mTreeLines.end() ) {
 		// append content at an existing position
 		it->second += content;
@@ -55,8 +51,8 @@ void TreeLineBuffer::insert(const Common::Position& position, const std::string&
 
 void TreeLineBuffer::insert(const Lines& lines)
 {
-	for ( Lines::const_iterator it = lines.begin(); it != lines.end(); ++it ) {
-		insert(it->first, it->second);
+	for ( const auto& line : lines ) {
+		insert(line.first, line.second);
 	}
 }
 

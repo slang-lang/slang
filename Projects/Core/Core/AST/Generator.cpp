@@ -24,13 +24,9 @@ namespace AST {
 Generator::Generator(bool collectErrors)
 : mCollectErrors(collectErrors),
   mErrorCount(0),
-  mRepository(0)
+  mRepository(nullptr)
 {
 	mRepository = Controller::Instance().repository();
-}
-
-Generator::~Generator()
-{
 }
 
 /*
@@ -50,15 +46,15 @@ void Generator::process(MethodScope* base)
 		throw Common::Exceptions::Exception("invalid scope symbol provided");
 	}
 
-	for ( SymbolScope::Symbols::const_iterator it = base->beginSymbols(); it != base->endSymbols(); ++it ) {
+	for ( auto it = base->beginSymbols(); it != base->endSymbols(); ++it ) {
 		switch ( it->second->getSymbolType() ) {
 			case Symbol::IType::MethodSymbol:
 				throw Common::Exceptions::Exception("invalid symbol found: " + it->second->getName());
 			case Symbol::IType::BluePrintObjectSymbol:
-				processBluePrint(static_cast<Designtime::BluePrintObject*>(it->second));
+				processBluePrint(dynamic_cast<Designtime::BluePrintObject*>(it->second));
 				break;
 			case Symbol::IType::NamespaceSymbol:
-				processNamespace(static_cast<Common::Namespace*>(it->second));
+				processNamespace(dynamic_cast<Common::Namespace*>(it->second));
 				break;
 			case Symbol::IType::ObjectSymbol:
 				break;	// ignore runtime symbols
@@ -66,7 +62,7 @@ void Generator::process(MethodScope* base)
 	}
 
 	if ( base->beginMethods() != base->endMethods() ) {
-		for ( MethodScope::MethodCollection::const_iterator it = base->beginMethods(); it != base->endMethods(); ++it ) {
+		for ( auto it = base->beginMethods(); it != base->endMethods(); ++it ) {
 			processMethod(static_cast<Common::Method*>((*it)));
 		}
 	}

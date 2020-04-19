@@ -36,7 +36,7 @@ class Generator
 {
 public:
 	explicit Generator(bool collectErrors = false);
-	~Generator();
+	~Generator() = default;
 
 public:
 	size_t hasErrors() const;

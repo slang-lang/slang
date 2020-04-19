@@ -30,7 +30,7 @@ class Analyser
 {
 public:
 	explicit Analyser(bool doSanityCheck = true);
-	~Analyser();
+	~Analyser() = default;
 
 public:
 	const StringList& getLibraryReferences() const;

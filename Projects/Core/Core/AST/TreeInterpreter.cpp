@@ -17,14 +17,11 @@
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/UserObject.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Core/VirtualMachine/Threads.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
@@ -70,26 +67,13 @@ namespace AST {
 
 TreeInterpreter::TreeInterpreter(Common::ThreadId id)
 : mControlFlow(Runtime::ControlFlow::Normal),
-  mFrame(NULL)
+  mFrame(nullptr)
 {
 	// initialize virtual machine stuff
-	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : NULL;
+	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
 	mThread = Controller::Instance().thread(id);
-}
-
-TreeInterpreter::~TreeInterpreter()
-{
-}
-
-void TreeInterpreter::deinitialize()
-{
-	// unwind stack
-	mThread->popFrame();
-
-    // reset current frame
-    mFrame = mThread->currentFrame();
 }
 
 void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
@@ -101,7 +85,7 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 		throw Common::Exceptions::Exception("not a valid expression type set");
 	}
 
-	switch ( static_cast<Expression*>(exp)->getExpressionType() ) {
+	switch ( dynamic_cast<Expression*>(exp)->getExpressionType() ) {
 		case Expression::ExpressionType::AssignmentExpression: evaluateAssignmentExpression(dynamic_cast<AssignmentExpression*>(exp), result); break;
 		case Expression::ExpressionType::BinaryExpression:     evaluateBinaryExpression(dynamic_cast<BinaryExpression*>(exp), result); break;
 		case Expression::ExpressionType::CopyExpression:       evaluateCopyExpression(dynamic_cast<CopyExpression*>(exp), result); break;
@@ -130,7 +114,7 @@ void TreeInterpreter::evaluateAssignmentExpression(AssignmentExpression* exp, Ru
 void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result)
 {
 	if ( exp->getBinaryExpressionType() == BinaryExpression::BinaryExpressionType::BooleanBinaryExpression ) {
-		return evaluateBooleanBinaryExpression(static_cast<BooleanBinaryExpression*>(exp), result);
+		return evaluateBooleanBinaryExpression(dynamic_cast<BooleanBinaryExpression*>(exp), result);
 	}
 
 	Runtime::Object left;
@@ -291,7 +275,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		throw Runtime::ControlFlow::Throw;				// promote control flow
 	}
 
-	Common::Method* method = dynamic_cast<Common::Method*>(methodSymbol);
+	auto* method = dynamic_cast<Common::Method*>(methodSymbol);
 	assert(method);
 
 	if ( method->isExtensionMethod() ) {
@@ -310,7 +294,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object* result)
 {
-	MethodExpression* method = dynamic_cast<MethodExpression*>(exp->mExpression);
+	auto* method = dynamic_cast<MethodExpression*>(exp->mExpression);
 	if ( !method ) {
 		throw Runtime::Exceptions::RuntimeException("invalid method expression found");
 	}
@@ -374,13 +358,13 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 	if ( exp->mSymbolExpression ) {
 		switch ( lvalue->getSymbolType() ) {
 			case Symbol::IType::BluePrintObjectSymbol:
-				scope = static_cast<Designtime::BluePrintObject*>(lvalue);
+				scope = dynamic_cast<Designtime::BluePrintObject*>(lvalue);
 				break;
 			case Symbol::IType::NamespaceSymbol:
-				scope = static_cast<Common::Namespace*>(lvalue);
+				scope = dynamic_cast<Common::Namespace*>(lvalue);
 				break;
 			case Symbol::IType::ObjectSymbol:
-				scope = static_cast<Runtime::Object*>(lvalue);
+				scope = dynamic_cast<Runtime::Object*>(lvalue);
 				break;
 			case Symbol::IType::MethodSymbol:
 				throw Common::Exceptions::NotSupported("cannot directly access locales of method");
@@ -528,10 +512,19 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Object* self, Common::
 		*result = mFrame->returnValue();
 	}
 
-	// deinitalize & pop scope
-	deinitialize();
+	// finalize & pop scope
+	finalize();
 
 	return mControlFlow;
+}
+
+void TreeInterpreter::finalize()
+{
+	// unwind stack
+	mThread->popFrame();
+
+	// reset current frame
+	mFrame = mThread->currentFrame();
 }
 
 MethodScope* TreeInterpreter::getEnclosingMethodScope(IScope *scope) const
@@ -550,7 +543,7 @@ MethodScope* TreeInterpreter::getEnclosingMethodScope(IScope *scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 NamedScope* TreeInterpreter::getEnclosingNamedScope(IScope *scope) const
@@ -569,7 +562,7 @@ NamedScope* TreeInterpreter::getEnclosingNamedScope(IScope *scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 Common::Namespace* TreeInterpreter::getEnclosingNamespace(IScope* scope) const
@@ -582,7 +575,7 @@ Common::Namespace* TreeInterpreter::getEnclosingNamespace(IScope* scope) const
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Common::Namespace* result = dynamic_cast<Common::Namespace*>(parent);
+			auto* result = dynamic_cast<Common::Namespace*>(parent);
 			if ( result ) {
 				return result;
 			}
@@ -591,7 +584,7 @@ Common::Namespace* TreeInterpreter::getEnclosingNamespace(IScope* scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
@@ -604,7 +597,7 @@ Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Runtime::Object* result = dynamic_cast<Runtime::Object*>(parent);
+			auto* result = dynamic_cast<Runtime::Object*>(parent);
 			if ( result ) {
 				return result;
 			}
@@ -613,7 +606,7 @@ Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 inline IScope* TreeInterpreter::getScope() const
@@ -624,26 +617,26 @@ inline IScope* TreeInterpreter::getScope() const
 void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 {
 	// add parameters as locale variables
-	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
-		if ( it->name().empty() ) {
+	for ( const auto& param : params ) {
+		if ( param.name().empty() ) {
 			// skip unnamed parameters
 			continue;
 		}
 
-		Runtime::Object* object = mRepository->createInstance(it->type(), it->name());
+		Runtime::Object* object = mRepository->createInstance(param.type(), param.name());
 
-		object->setMutability(it->mutability());
+		object->setMutability(param.mutability());
 
-		if ( it->reference().isValid() ) {
+		if ( param.reference().isValid() ) {
 			object->setIsReference(true);
-			object->assign(*mMemory->get(it->reference()));
+			object->assign(*mMemory->get(param.reference()));
 		}
 		else {
 			object->setIsReference(false);
-			object->setValue(it->value());
+			object->setValue(param.value());
 		}
 
-		scope->define(it->name(), object);
+		scope->define(param.name(), object);
 	}
 
 	// record stack
@@ -665,19 +658,19 @@ std::string TreeInterpreter::printExpression(Node* node) const
 
 	assert(node->getNodeType() == Node::NodeType::Expression);
 
-	Expression* expression = dynamic_cast<Expression*>(node);
+	auto* expression = dynamic_cast<Expression*>(node);
 	std::string result;
 
 	switch ( expression->getExpressionType() ) {
 		case Expression::ExpressionType::AssignmentExpression: {
-			AssignmentExpression* ass = dynamic_cast<AssignmentExpression*>(expression);
+			auto* ass = dynamic_cast<AssignmentExpression*>(expression);
 
 			result += printExpression(ass->mLHS);
 			result += " = ";
 			result += printExpression(ass->mRHS);
 		} break;
 		case Expression::ExpressionType::BinaryExpression: {
-			BinaryExpression* bin = dynamic_cast<BinaryExpression*>(node);
+			auto* bin = dynamic_cast<BinaryExpression*>(node);
 
 			result += "(" + printExpression(bin->mLHS);
 			result += " " + bin->mOperation.content() + " ";
@@ -687,7 +680,7 @@ std::string TreeInterpreter::printExpression(Node* node) const
 			result += "copy " + printExpression(dynamic_cast<CopyExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::IsExpression: {
-			IsExpression* is = dynamic_cast<IsExpression*>(expression);
+			auto* is = dynamic_cast<IsExpression*>(expression);
 
 			result += printExpression(is->mExpression) + " is " + is->mMatchType;
 		} break;
@@ -706,7 +699,7 @@ std::string TreeInterpreter::printExpression(Node* node) const
 			}
 		} break;
 		case Expression::ExpressionType::MethodExpression: {
-			MethodExpression* method = dynamic_cast<MethodExpression*>(expression);
+			auto* method = dynamic_cast<MethodExpression*>(expression);
 
 			std::string params;
 			for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
@@ -717,26 +710,26 @@ std::string TreeInterpreter::printExpression(Node* node) const
 			result += "(" + params + ")";
 		} break;
 		case Expression::ExpressionType::ScopeExpression: {
-			ScopeExpression* scope = dynamic_cast<ScopeExpression*>(expression);
+			auto* scope = dynamic_cast<ScopeExpression*>(expression);
 
 			result += printExpression(scope->mLHS);
 			result += ".";
 			result += printExpression(scope->mRHS);
 		} break;
 		case Expression::ExpressionType::SymbolExpression: {
-			SymbolExpression* sym = dynamic_cast<SymbolExpression*>(expression);
+			auto* sym = dynamic_cast<SymbolExpression*>(expression);
 
 			result += sym->mSymbolExpression ? printExpression(sym->mSymbolExpression) : sym->mName;
 		} break;
 		case Expression::ExpressionType::TernaryExpression: {
-			TernaryExpression* ter = dynamic_cast<TernaryExpression*>(expression);
+			auto* ter = dynamic_cast<TernaryExpression*>(expression);
 
 			result += printExpression(ter->mCondition) + " ? ";
 			result += printExpression(ter->mFirst) + " : ";
 			result += printExpression(ter->mSecond);
 		} break;
 		case Expression::ExpressionType::TypecastExpression: {
-			TypecastExpression* type = dynamic_cast<TypecastExpression*>(expression);
+			auto* type = dynamic_cast<TypecastExpression*>(expression);
 
 			result += type->mDestinationType + " " + printExpression(type->mExpression);
 		} break;
@@ -744,7 +737,7 @@ std::string TreeInterpreter::printExpression(Node* node) const
 			result += "typeid(" + printExpression(dynamic_cast<TypeidExpression*>(expression)->mExpression) + ")";
 		} break;
 		case Expression::ExpressionType::UnaryExpression: {
-			UnaryExpression* un = dynamic_cast<UnaryExpression*>(expression);
+			auto* un = dynamic_cast<UnaryExpression*>(expression);
 
 			result += un->mOperation.content() + printExpression(un->mExpression);
 		} break;
@@ -780,7 +773,7 @@ void TreeInterpreter::pushScope(IScope* scope)
 
 Runtime::Object& TreeInterpreter::resolveLValue(IScope *scope, SymbolExpression *symbol, bool onlyCurrentScope, Visibility::E visibility) const
 {
-	Runtime::Object* result = dynamic_cast<Runtime::Object*>(resolveRValue(scope, symbol, onlyCurrentScope, visibility));
+	auto* result = dynamic_cast<Runtime::Object*>(resolveRValue(scope, symbol, onlyCurrentScope, visibility));
 	if ( !result ) {
 		throw Runtime::Exceptions::AccessViolation(symbol->toString());
 	}
@@ -801,18 +794,18 @@ Symbol* TreeInterpreter::resolveRValue(IScope *scope, SymbolExpression *symbol, 
 		Symbol* child = scope->resolve(symbol->mName, onlyCurrentScope, visibility);
 
 		if ( !child ) {
-			return 0;
+			return nullptr;
 		}
 
 		switch ( child->getSymbolType() ) {
 			case Symbol::IType::BluePrintObjectSymbol:
-				scope = static_cast<Designtime::BluePrintObject*>(child);
+				scope = dynamic_cast<Designtime::BluePrintObject*>(child);
 				break;
 			case Symbol::IType::NamespaceSymbol:
-				scope = static_cast<Common::Namespace*>(child);
+				scope = dynamic_cast<Common::Namespace*>(child);
 				break;
 			case Symbol::IType::ObjectSymbol:
-				scope = static_cast<Runtime::Object*>(child);
+				scope = dynamic_cast<Runtime::Object*>(child);
 				break;
 			case Symbol::IType::MethodSymbol:
 				throw Runtime::Exceptions::InvalidSymbol("invalid symbol type found");
@@ -840,18 +833,18 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 		onlyCurrentScope = true;
 
 		if ( !child ) {
-			return 0;
+			return nullptr;
 		}
 
 		switch ( child->getSymbolType() ) {
 			case Symbol::IType::BluePrintObjectSymbol:
-				scope = static_cast<Designtime::BluePrintObject*>(child);
+				scope = dynamic_cast<Designtime::BluePrintObject*>(child);
 				break;
 			case Symbol::IType::NamespaceSymbol:
-				scope = static_cast<Common::Namespace*>(child);
+				scope = dynamic_cast<Common::Namespace*>(child);
 				break;
 			case Symbol::IType::ObjectSymbol:
-				scope = static_cast<Runtime::Object*>(child);
+				scope = dynamic_cast<Runtime::Object*>(child);
 				break;
 			case Symbol::IType::MethodSymbol:
 				throw Runtime::Exceptions::InvalidSymbol("invalid symbol type found: " + symbol->toString());
@@ -860,9 +853,9 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 		symbol = symbol->mSymbolExpression;
 	}
 
-	MethodScope* methodScope = dynamic_cast<MethodScope*>(scope);
+	auto* methodScope = dynamic_cast<MethodScope*>(scope);
 	if ( !methodScope ) {
-		return 0;
+		return nullptr;
 	}
 
 	return methodScope->resolveMethod(symbol->mName, params, false, visibility);
@@ -1177,14 +1170,14 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 		}
 
 		// loop over all case statements
-		for ( CaseStatements::const_iterator it = node->mCaseStatements.cbegin(); it != node->mCaseStatements.cend(); ++it ) {
+		for ( auto mCaseStatement : node->mCaseStatements ) {
 			Runtime::Object caseValue;
-			tryControl(evaluate((*it)->mCaseExpression, &caseValue));
+			tryControl(evaluate(mCaseStatement->mCaseExpression, &caseValue));
 
 			if ( Runtime::operator_binary_equal(&value, &caseValue) ) {
 				caseMatched = true;
 
-				visitStatements((*it)->mCaseBlock);
+				visitStatements(mCaseStatement->mCaseBlock);
 				break;
 			}
 		}

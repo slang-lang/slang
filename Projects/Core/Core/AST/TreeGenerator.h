@@ -152,7 +152,7 @@ private: // Execution
 	// }
 
 private:	// Initialization
-	void deinitialize();
+	void finalize();
 	void initialize(Common::Method* method);
 
 private:

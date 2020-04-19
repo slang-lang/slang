@@ -19,10 +19,6 @@ Symbol::Symbol(const std::string& name, IType::E type, Visibility::E visibility)
 {
 }
 
-Symbol::~Symbol()
-{
-}
-
 bool Symbol::operator==(const std::string& name) const
 {
 	return mName == name;

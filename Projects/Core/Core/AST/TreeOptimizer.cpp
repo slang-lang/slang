@@ -23,10 +23,6 @@ TreeOptimizer::TreeOptimizer()
 {
 }
 
-TreeOptimizer::~TreeOptimizer()
-{
-}
-
 /*
 * walk through global namespace and process all methods of all symbols
 */

@@ -19,10 +19,6 @@ TreeVisitor::TreeVisitor()
 {
 }
 
-TreeVisitor::~TreeVisitor()
-{
-}
-
 void TreeVisitor::visit(Node* node)
 {
 	if ( node ) {

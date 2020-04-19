@@ -48,8 +48,8 @@ class Statements;
 class TreeInterpreter
 {
 public:
-	TreeInterpreter(Common::ThreadId id);
-	~TreeInterpreter();
+	explicit TreeInterpreter(Common::ThreadId id);
+	~TreeInterpreter() = default;
 
 public: // Execution
 	Runtime::ControlFlow::E execute(Runtime::Object* self, Common::Method* method, const ParameterList& params, Runtime::Object* result);
@@ -82,16 +82,16 @@ private:
 	void visitWhile(WhileStatement* node);
 
 private:
-	MethodScope* getEnclosingMethodScope(IScope *scope = 0) const;
-	NamedScope* getEnclosingNamedScope(IScope *scope = 0) const;
-	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
-	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
+	MethodScope* getEnclosingMethodScope(IScope *scope = nullptr) const;
+	NamedScope* getEnclosingNamedScope(IScope *scope = nullptr) const;
+	Common::Namespace* getEnclosingNamespace(IScope* scope = nullptr) const;
+	Runtime::Object* getEnclosingObject(IScope* scope = nullptr) const;
 
 	// Scope stack
 	// {
 	inline IScope* getScope() const;
 	inline void popScope();
-	inline void pushScope(IScope* scope = 0);
+	inline void pushScope(IScope* scope = nullptr);
 	// }
 
 	void evaluate(Node* exp, Runtime::Object* result);
@@ -118,7 +118,7 @@ private:
 	MethodSymbol* resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const;
 
 private:	// Initialization
-	void deinitialize();
+	void finalize();
 	void initialize(IScope* scope, const ParameterList& params);
 
 private:	// Interpreter stuff
