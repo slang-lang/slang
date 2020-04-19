@@ -6,7 +6,6 @@
 
 // Project includes
 #include <Tools/Strings.h>
-#include <Utils.h>
 #include "Method.h"
 
 // Namespace declarations

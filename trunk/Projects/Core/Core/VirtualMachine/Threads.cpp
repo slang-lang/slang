@@ -179,7 +179,7 @@ void Threads::deinit()
 	// TODO: stop all currently running threads
 
 	for ( InternalThreads::iterator it = mThreads.begin(); it != mThreads.end(); ++it ) {
-		// deinitialize thread
+		// finalize thread
 		it->second->deinit();
 
 		delete it->second;

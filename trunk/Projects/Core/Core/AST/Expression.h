@@ -5,6 +5,7 @@
 
 // Library includes
 #include <list>
+#include <utility>
 
 // Project includes
 #include <Core/Consts.h>
@@ -76,7 +77,6 @@ public:
 	  mIsConst(false),
 	  mIsMember(false)
 	{ }
-	virtual ~Expression() { }
 
 	ExpressionType::E getExpressionType() const {
 		return mExpressionType;
@@ -124,16 +124,16 @@ public:
 	};
 
 public:
-	explicit BinaryExpression(Node* lhs, const Token& operation, Node* rhs, const std::string& resultType)
+	explicit BinaryExpression(Node* lhs, Token  operation, Node* rhs, const std::string& resultType)
 	: Expression(ExpressionType::BinaryExpression),
 	  mLHS(lhs),
-	  mOperation(operation),
+	  mOperation(std::move(operation)),
 	  mRHS(rhs),
 	  mBinaryExpressionType(BinaryExpressionType::GenericBinaryExpression)
 	{
 		mResultType = resultType;
 	}
-	virtual ~BinaryExpression() {
+	~BinaryExpression() override {
 		delete mLHS;
 		delete mRHS;
 	}
@@ -172,13 +172,12 @@ public:
 class LiteralExpression : public Expression
 {
 public:
-	explicit LiteralExpression(Runtime::AtomicValue value)
+	explicit LiteralExpression(const Runtime::AtomicValue& value)
 	: Expression(ExpressionType::LiteralExpression),
 	  mValue(value)
 	{
 		mIsAtomicType = true;
 	}
-	virtual ~LiteralExpression() { }
 
 public:
 	Runtime::AtomicValue mValue;
@@ -188,7 +187,7 @@ public:
 class BooleanLiteralExpression : public LiteralExpression
 {
 public:
-	explicit BooleanLiteralExpression(Runtime::AtomicValue value)
+	explicit BooleanLiteralExpression(const Runtime::AtomicValue& value)
 	: LiteralExpression(value)
 	{
 		mResultType = _bool;
@@ -199,7 +198,7 @@ public:
 class DoubleLiteralExpression : public LiteralExpression
 {
 public:
-	explicit DoubleLiteralExpression(Runtime::AtomicValue value)
+	explicit DoubleLiteralExpression(const Runtime::AtomicValue& value)
 	: LiteralExpression(value)
 	{
 		mResultType = _double;
@@ -210,7 +209,7 @@ public:
 class FloatLiteralExpression : public LiteralExpression
 {
 public:
-	explicit FloatLiteralExpression(Runtime::AtomicValue value)
+	explicit FloatLiteralExpression(const Runtime::AtomicValue& value)
 	: LiteralExpression(value)
 	{
 		mResultType = _float;
@@ -221,7 +220,7 @@ public:
 class IntegerLiteralExpression : public LiteralExpression
 {
 public:
-	explicit IntegerLiteralExpression(Runtime::AtomicValue value)
+	explicit IntegerLiteralExpression(const Runtime::AtomicValue& value)
 	: LiteralExpression(value)
 	{
 		mResultType = _int;
@@ -232,7 +231,7 @@ public:
 class StringLiteralExpression : public LiteralExpression
 {
 public:
-	explicit StringLiteralExpression(Runtime::AtomicValue value)
+	explicit StringLiteralExpression(const Runtime::AtomicValue& value)
 	: LiteralExpression(value)
 	{
 		mResultType = _string;
@@ -255,7 +254,7 @@ public:
 	{
 		mResultType = type;
 	}
-	~CopyExpression() {
+	~CopyExpression() override {
 		delete mExpression;
 	}
 
@@ -273,7 +272,7 @@ public:
 	{
 		mResultType = type;
 	}
-	~NewExpression() {
+	~NewExpression() override {
 		delete mExpression;
 	}
 
@@ -291,14 +290,14 @@ public:
 class IsExpression : public Expression
 {
 public:
-	explicit IsExpression(Node* expression, const std::string& matchType)
+	explicit IsExpression(Node* expression, std::string matchType)
 	: Expression(ExpressionType::IsExpression),
 	  mExpression(expression),
-	  mMatchType(matchType)
+	  mMatchType(std::move(matchType))
 	{
 		mResultType = _bool;
 	}
-	~IsExpression() {
+	~IsExpression() override {
 		delete mExpression;
 	}
 
@@ -318,7 +317,7 @@ public:
 	{
 		mResultType = resultType;
 	}
-	~ScopeExpression() {
+	~ScopeExpression() override {
 		delete mLHS;
 		delete mRHS;
 	}
@@ -341,7 +340,7 @@ public:
 	};
 
 public:
-	virtual ~SymbolExpression() {
+	~SymbolExpression() override {
 		delete mSymbolExpression;
 	}
 
@@ -354,22 +353,22 @@ public:
 		return mSymbolExpression ? mSymbolExpression->innerName() : mName;
 	}
 
-	bool isAtomicType() const {
+	bool isAtomicType() const override {
 		// it's only important to know if the target type is atomic not if any one of the types is
 		return mSymbolExpression ? mSymbolExpression->isAtomicType() : mIsAtomicType;
 	}
 
-	bool isConst() const {
+	bool isConst() const override {
 		// determines if at least one type in the chain is const
 		return mIsConst || (mSymbolExpression ? mSymbolExpression->isConst() : false);
 	}
 
-	bool isInnerConst() const {
+	bool isInnerConst() const override {
 		// determines if the inner type in the chain is const
 		return mSymbolExpression ? mSymbolExpression->isInnerConst() : mIsConst;
 	}
 
-	bool isMember() const {
+	bool isMember() const override {
 		// determines if at least one type in the chain is a member
 		return mIsMember || (mSymbolExpression ? mSymbolExpression->isMember() : false);
 	}
@@ -390,11 +389,11 @@ public:
 	SymbolExpression* mSymbolExpression;
 
 protected:
-	explicit SymbolExpression(const std::string& name, const std::string& resultType, bool isAtomicType)
+	explicit SymbolExpression(std::string name, const std::string& resultType, bool isAtomicType)
 	: Expression(ExpressionType::SymbolExpression),
-	  mName(name),
-	  mSurroundingScope(0),
-	  mSymbolExpression(0),
+	  mName(std::move(name)),
+	  mSurroundingScope(nullptr),
+	  mSymbolExpression(nullptr),
 	  mSymbolExpressionType(SymbolExpressionType::DesigntimeSymbolExpression)
 	{
 		mIsAtomicType = isAtomicType;
@@ -409,17 +408,17 @@ protected:
 class DesigntimeSymbolExpression : public SymbolExpression
 {
 public:
-	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, const PrototypeConstraints& constraints, bool isAtomicType)
+	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, PrototypeConstraints constraints, bool isAtomicType)
 	: SymbolExpression(name, resultType, isAtomicType),
-	  mConstraints(constraints)
+	  mConstraints(std::move(constraints))
 	{
 		mIsConst = false;
 		mSymbolExpressionType = SymbolExpressionType::DesigntimeSymbolExpression;
 	}
 
-	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, const PrototypeConstraints& constraints, bool isConst, bool isMember, bool isAtomicType)
+	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, PrototypeConstraints constraints, bool isConst, bool isMember, bool isAtomicType)
 	: SymbolExpression(name, resultType, isAtomicType),
-	  mConstraints(constraints)
+	  mConstraints(std::move(constraints))
 	{
 		mIsConst = isConst;
 		mIsMember = isMember;
@@ -430,7 +429,7 @@ public:
 		return !mConstraints.empty();
 	}
 
-	std::string getResultType() const {
+	std::string getResultType() const override {
 		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
 	}
 
@@ -450,7 +449,7 @@ public:
 		mSymbolExpressionType = SymbolExpressionType::RuntimeSymbolExpression;
 	}
 
-	std::string getResultType() const {
+	std::string getResultType() const override {
 		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
 	}
 };
@@ -460,14 +459,15 @@ class LocalSymbolExpression : public SymbolExpression
 {
 public:
 	explicit LocalSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isAtomicType)
-	: SymbolExpression(name, resultType, isAtomicType)
+	: SymbolExpression(name, resultType, isAtomicType),
+	  mIndex( -1 )
 	{
 		mIsConst = isConst;
 		mIsMember = false;
 		mSymbolExpressionType = SymbolExpressionType::RuntimeSymbolExpression;
 	}
 
-	std::string getResultType() const {
+	std::string getResultType() const override {
 		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
 	}
 
@@ -496,7 +496,7 @@ public:
 		mIsMember = lhs->isMember();
 		mResultType = resultType;
 	}
-	~AssignmentExpression() {
+	~AssignmentExpression() override {
 		delete mLHS;
 		delete mRHS;
 	}
@@ -516,13 +516,13 @@ public:
 	  mFirst(first),
 	  mSecond(second)
 	{
-		mResultType = static_cast<Expression*>(first)->getResultType();
-		mSecondResultType = static_cast<Expression*>(second)->getResultType();
+		mResultType = dynamic_cast<Expression*>(first)->getResultType();
+		mSecondResultType = dynamic_cast<Expression*>(second)->getResultType();
 	}
-	~TernaryExpression() {
+	~TernaryExpression() override {
 		if ( mCondition == mFirst ) {
 			// short ternary operator
-			mCondition = 0;
+			mCondition = nullptr;
 		}
 		else {
 			delete mCondition;
@@ -548,14 +548,14 @@ private:
 class TypecastExpression : public Expression
 {
 public:
-	explicit TypecastExpression(const std::string& destinationType, Node* exp)
+	explicit TypecastExpression(std::string  destinationType, Node* exp)
 	: Expression(ExpressionType::TypecastExpression),
-	  mDestinationType(destinationType),
+	  mDestinationType(std::move(destinationType)),
 	  mExpression(exp)
 	{
 		mResultType = mDestinationType;
 	}
-	~TypecastExpression() {
+	~TypecastExpression() override {
 		delete mExpression;
 	}
 
@@ -574,7 +574,7 @@ public:
 	{
 		mResultType = _string;
 	}
-	~TypeidExpression() {
+	~TypeidExpression() override {
 		delete mExpression;
 	}
 
@@ -589,9 +589,9 @@ public:
 class MethodExpression : public Expression
 {
 public:
-	explicit MethodExpression(SymbolExpression* symbol, const ExpressionList& params, const std::string& resultType, bool isConst, bool isMember)
+	explicit MethodExpression(SymbolExpression* symbol, ExpressionList params, const std::string& resultType, bool isConst, bool isMember)
 	: Expression(ExpressionType::MethodExpression),
-	  mParams(params),
+	  mParams(std::move(params)),
 	  mSymbolExpression(symbol)
 	{
 		mIsConst = isConst || symbol->isInnerConst();
@@ -599,9 +599,9 @@ public:
 		// due to the possibility of method overloading we cannot use the result type of our symbol expression
 		mResultType = resultType;
 	}
-	~MethodExpression() {
-		for ( ExpressionList::iterator it = mParams.begin(); it != mParams.end(); ++it ) {
-			delete (*it);
+	~MethodExpression() override {
+		for ( auto& mParam : mParams ) {
+			delete mParam;
 		}
 		delete mSymbolExpression;
 	}
@@ -646,15 +646,15 @@ public:
 	};
 
 public:
-	explicit UnaryExpression(const Token& operation, Node* exp, ValueType::E valueType)
+	explicit UnaryExpression(Token  operation, Node* exp, ValueType::E valueType)
 	: Expression(ExpressionType::UnaryExpression),
 	  mExpression(exp),
-	  mOperation(operation),
+	  mOperation(std::move(operation)),
 	  mValueType(valueType)
 	{
-		mResultType = static_cast<Expression*>(exp)->getResultType();
+		mResultType = dynamic_cast<Expression*>(exp)->getResultType();
 	}
-	virtual ~UnaryExpression() {
+	~UnaryExpression() override {
 		delete mExpression;
 	}
 

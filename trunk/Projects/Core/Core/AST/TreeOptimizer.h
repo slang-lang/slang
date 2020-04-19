@@ -31,15 +31,15 @@ class TreeOptimizer
 {
 public:
 	TreeOptimizer();
-	~TreeOptimizer();
+	virtual ~TreeOptimizer() = default;
 
 public:
-	void process(MethodScope* base);
+	virtual void process(MethodScope* base);
 
 private:
-	void processBluePrint(Designtime::BluePrintObject* object);
-	void processMethod(Common::Method* method);
-	void processNamespace(Common::Namespace* space);
+	virtual void processBluePrint(Designtime::BluePrintObject* object);
+	virtual void processMethod(Common::Method* method);
+	virtual void processNamespace(Common::Namespace* space);
 };
 
 

@@ -7,6 +7,8 @@
 // Project includes
 #include <Core/Consts.h>
 
+#include <utility>
+
 // Namespace declarations
 
 
@@ -14,21 +16,21 @@ namespace ObjectiveScript {
 
 
 PrototypeConstraint::PrototypeConstraint()
-: mIndex((unsigned int)~0)
+: mIndex(-1)
 {
 }
 
-PrototypeConstraint::PrototypeConstraint(unsigned int index, const std::string& designType, const std::string& runType, const std::string& constraint)
-: mConstraint(constraint),
-  mDesignType(designType),
+PrototypeConstraint::PrototypeConstraint(size_t index, std::string designType, std::string runType, std::string constraint)
+: mConstraint(std::move(constraint)),
+  mDesignType(std::move(designType)),
   mIndex(index),
-  mRunType(runType)
+  mRunType(std::move(runType))
 {
 }
 
 bool PrototypeConstraint::operator==(const PrototypeConstraint& other) const
 {
-	return mIndex == other.mIndex && mDesignType == mDesignType /*&& mRunType == other.mRunType*/;
+	return mIndex == other.mIndex && mDesignType == /*other.*/ mDesignType /*&& mRunType == other.mRunType*/;
 }
 
 bool PrototypeConstraint::hasDesigntimeType() const

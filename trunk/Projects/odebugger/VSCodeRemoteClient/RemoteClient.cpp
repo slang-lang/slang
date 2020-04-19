@@ -190,10 +190,10 @@ Symbol* RemoteClient::getSymbol(std::string name) const
 		Utils::Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
-			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false, Visibility::Private));
 		}
 		else {
-			return scope->resolve(parent, false);
+			return scope->resolve(parent, false, Visibility::Private);
 		}
 
 		name = child;

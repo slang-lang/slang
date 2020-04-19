@@ -36,14 +36,14 @@ public:
 			ObjectSymbol
 		};
 
-		virtual ~IType() { }
+		virtual ~IType() = default;
 
 		virtual const std::string& QualifiedTypename() const = 0;
 	};
 
 public:
 	Symbol(const std::string& name, IType::E type, Visibility::E visibility = Visibility::Public);
-	virtual ~Symbol();
+	virtual ~Symbol() = default;
 
 public:
 	bool operator==(const std::string& name) const;
@@ -78,7 +78,6 @@ public:
 	{
 		mVisibility = Visibility::Private;
 	}
-	virtual ~BlueprintSymbol() { }
 };
 
 class MethodSymbol : public Symbol,
@@ -91,7 +90,6 @@ public:
 	{
 		mVisibility = Visibility::Private;
 	}
-	virtual ~MethodSymbol() { }
 };
 
 class NamespaceSymbol : public Symbol,
@@ -104,7 +102,6 @@ public:
 	{
 		mVisibility = Visibility::Private;
 	}
-	virtual ~NamespaceSymbol() { }
 };
 
 class ObjectSymbol : public Symbol,
@@ -117,7 +114,6 @@ public:
 	{
 		mVisibility = Visibility::Private;
 	}
-	virtual ~ObjectSymbol() { }
 };
 
 

@@ -14,6 +14,8 @@
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
+
+#include <utility>
 #include "Tools.h"
 
 // Namespace declarations
@@ -24,9 +26,9 @@ namespace Runtime {
 
 
 Object::Object()
-: MethodScope(ANONYMOUS_OBJECT, 0),
+: MethodScope(ANONYMOUS_OBJECT, nullptr),
   ObjectSymbol(ANONYMOUS_OBJECT),
-  mBluePrint(0),
+  mBluePrint(nullptr),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
   mIsReference(false),
@@ -37,11 +39,11 @@ Object::Object()
 	mThis = this;
 }
 
-Object::Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
-: MethodScope(name, 0),
+Object::Object(const std::string& name, std::string filename, const std::string& type, const AtomicValue& value)
+: MethodScope(name, nullptr),
   ObjectSymbol(name),
-  mBluePrint(0),
-  mFilename(filename),
+  mBluePrint(nullptr),
+  mFilename(std::move(filename)),
   mIsAtomicType(false),
   mIsReference(false),
   mQualifiedOuterface(type),
@@ -204,7 +206,7 @@ void Object::defineMember(const std::string& name, Symbol* symbol)
 void Object::defineMethod(const std::string& name, Common::Method* method)
 {
 	// try to override abstract methods a.k.a. implement an interface method
-	Common::Method* old = dynamic_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
+	auto* old = dynamic_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
 	if ( old && old->isAbstract() ) {
 		Runtime::Object* base = dynamic_cast<Runtime::Object*>(resolve(IDENTIFIER_BASE, true, Visibility::Designtime));
 		base->undefineMethod(old);
@@ -245,7 +247,7 @@ ControlFlow::E Object::Destructor()
 
 ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params)
 {
-	Common::Method *method = dynamic_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
+	auto *method = dynamic_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifier("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
@@ -255,22 +257,22 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 
 void Object::garbageCollector()
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		undefine((*it)->getName());
+	for ( auto mMethod : mMethods ) {
+		undefine(mMethod->getName());
 
-		delete (*it);
+		delete mMethod;
 	}
 
 	Symbols tmp = mSymbols;
 
-	for ( Symbols::iterator symIt = tmp.begin(); symIt != tmp.end(); ++symIt) {
-		if ( symIt->first != IDENTIFIER_BASE &&
-			 symIt->first != IDENTIFIER_THIS &&
-			 symIt->second && symIt->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			delete symIt->second;
+	for ( auto& symIt : tmp ) {
+		if ( symIt.first != IDENTIFIER_BASE &&
+			 symIt.first != IDENTIFIER_THIS &&
+			 symIt.second && symIt.second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+			delete symIt.second;
 		}
 
-		mSymbols.erase(symIt->first);
+		mSymbols.erase(symIt.first);
 	}
 }
 
@@ -299,8 +301,8 @@ bool Object::isAbstract() const
 		return mThis->isAbstract();
 	}
 
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->isAbstract() ) {
+	for ( auto mMethod : mMethods ) {
+		if ( mMethod->isAbstract() ) {
 			return true;
 		}
 	}
@@ -328,8 +330,8 @@ bool Object::isInstanceOf(const std::string& type) const
 		return true;
 	}
 
-	for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->second->isInstanceOf(type) ) {
+	for ( const auto& it : mInheritance ) {
+		if ( it.second->isInstanceOf(type) ) {
 			return true;
 		}
 	}
@@ -549,7 +551,7 @@ void Object::setReference(const Reference& reference)
 	mReference = reference;
 }
 
-void Object::setValue(AtomicValue value)
+void Object::setValue(const AtomicValue& value)
 {
 	if ( mThis != this ) {
 		return mThis->setValue(value);
@@ -586,18 +588,18 @@ std::string Object::ToString(unsigned int indent) const
 		}
 */
 
-		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-			if ( it->first == IDENTIFIER_THIS || !it->second ) {
+		for ( const auto& mSymbol : mSymbols ) {
+			if ( mSymbol.first == IDENTIFIER_THIS || !mSymbol.second ) {
 				continue;
 			}
 
-			switch ( it->second->getSymbolType() ) {
+			switch ( mSymbol.second->getSymbolType() ) {
 				case Symbol::IType::BluePrintObjectSymbol:
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::NamespaceSymbol:
 					continue;
 				case Symbol::IType::ObjectSymbol:
-					result += it->second->ToString(indent + 1) + "\n";
+					result += mSymbol.second->ToString(indent + 1) + "\n";
 					break;
 			}
 		}

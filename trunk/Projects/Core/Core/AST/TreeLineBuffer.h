@@ -27,7 +27,7 @@ public:
 
 public:
 	TreeLineBuffer();
-	~TreeLineBuffer();
+	~TreeLineBuffer() = default;
 
 public:
 	void getLines(Lines& lines);

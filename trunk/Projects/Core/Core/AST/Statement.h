@@ -5,6 +5,7 @@
 
 // Library includes
 #include <list>
+#include <utility>
 
 // Project includes
 #include <Core/Common/PrototypeConstraint.h>
@@ -50,12 +51,11 @@ public:
 	};
 
 public:
-	explicit Statement(StatementType::E statementType, const Token& token)
+	explicit Statement(StatementType::E statementType, Token token)
 	: Node(NodeType::Statement),
 	  mStatementType(statementType),
-	  mToken(token)
+	  mToken(std::move(token))
 	{ }
-	virtual ~Statement() { }
 
 	StatementType::E getStatementType() const {
 		return mStatementType;
@@ -89,9 +89,9 @@ public:
 	explicit Statements(const Token& token)
 	: Statement(StatementType::Statements, token)
 	{ }
-	~Statements() {
-		for ( Nodes::iterator it = mNodes.begin(); it != mNodes.end(); ++it ) {
-			delete (*it);
+	~Statements() override {
+		for ( auto & mNode : mNodes ) {
+			delete mNode;
 		}
 	}
 
@@ -103,16 +103,16 @@ public:
 class TypeDeclaration : public Statement
 {
 public:
-	TypeDeclaration(const Token& token, const std::string& type, const PrototypeConstraints& constraints, const std::string& name, bool isConst, bool isReference, Node* assignment)
+	TypeDeclaration(const Token& token, std::string type, PrototypeConstraints constraints, std::string name, bool isConst, bool isReference, Node* assignment)
 	: Statement(StatementType::TypeDeclaration, token),
 	  mAssignment(assignment),
-	  mConstraints(constraints),
+	  mConstraints(std::move(constraints)),
 	  mIsConst(isConst),
 	  mIsReference(isReference),
-	  mName(name),
-	  mType(type)
+	  mName(std::move(name)),
+	  mType(std::move(type))
 	{ }
-	virtual ~TypeDeclaration() {
+	~TypeDeclaration() override {
 		delete mAssignment;
 	}
 
@@ -138,7 +138,7 @@ public:
 	  mExpression(exp),
 	  mPosition(token.position())
 	{ }
-	~AssertStatement() {
+	~AssertStatement() override {
 		delete mExpression;
 	}
 
@@ -165,7 +165,7 @@ public:
 	  mCaseBlock(caseBlock),
 	  mCaseExpression(caseExpression)
 	{ }
-	~CaseStatement() {
+	~CaseStatement() override {
 		delete mCaseBlock;
 		delete mCaseExpression;
 	}
@@ -186,7 +186,7 @@ public:
 	  mStatements(statements),
 	  mTypeDeclaration(typeDeclaration)
 	{ }
-	~CatchStatement() {
+	~CatchStatement() override {
 		delete mStatements;
 		delete mTypeDeclaration;
 	}
@@ -215,7 +215,7 @@ public:
 	: Statement(StatementType::DeleteStatement, token),
 	  mExpression(exp)
 	{ }
-	~DeleteStatement() {
+	~DeleteStatement() override {
 		delete mExpression;
 	}
 
@@ -231,7 +231,7 @@ public:
 	: ControlFlowStatement(StatementType::ExitStatement, token),
 	  mExpression(exp)
 	{ }
-	~ExitStatement() {
+	~ExitStatement() override {
 		delete mExpression;
 	}
 
@@ -253,7 +253,7 @@ public:
 	  mStatement(loopStatement),
 	  mTypeDeclaration(typeDeclaration)
 	{ }
-	~ForeachStatement() {
+	~ForeachStatement() override {
 		delete mCollectionExpression;
 		delete mGetIteratorExpression;
 		delete mHasNextExpression;
@@ -282,7 +282,7 @@ public:
 	  mIteration(iterationStatement),
 	  mStatement(loopStatement)
 	{ }
-	~ForStatement() {
+	~ForStatement() override {
 		delete mCondition;
 		delete mInitialization;
 		delete mIteration;
@@ -306,7 +306,7 @@ public:
 	  mElseBlock(elseBlock),
 	  mIfBlock(ifBlock)
 	{ }
-	~IfStatement() {
+	~IfStatement() override {
 		delete mCondition;
 		delete mElseBlock;
 		delete mIfBlock;
@@ -327,7 +327,7 @@ public:
 	  mExpression(exp),
 	  mPosition(token.position())
 	{ }
-	~PrintStatement() {
+	~PrintStatement() override {
 		delete mExpression;
 	}
 
@@ -344,7 +344,7 @@ public:
 	: ControlFlowStatement(StatementType::ReturnStatement, token),
 	  mExpression(exp)
 	{ }
-	~ReturnStatement() {
+	~ReturnStatement() override {
 		delete mExpression;
 	}
 
@@ -356,15 +356,15 @@ public:
 class SwitchStatement : public Statement
 {
 public:
-	SwitchStatement(const Token& token, Node* exp, const CaseStatements& caseStatements, Statements* defaultStatement)
+	SwitchStatement(const Token& token, Node* exp, CaseStatements caseStatements, Statements* defaultStatement)
 	: Statement(StatementType::SwitchStatement, token),
-	  mCaseStatements(caseStatements),
+	  mCaseStatements(std::move(caseStatements)),
 	  mDefaultStatement(defaultStatement),
 	  mExpression(exp)
 	{ }
-	~SwitchStatement() {
-		for ( CaseStatements::iterator it = mCaseStatements.begin(); it != mCaseStatements.end(); ++it ) {
-			delete (*it);
+	~SwitchStatement() override {
+		for ( auto& mCaseStatement : mCaseStatements ) {
+			delete mCaseStatement;
 		}
 		delete mDefaultStatement;
 		delete mExpression;
@@ -384,7 +384,7 @@ public:
 	: ControlFlowStatement(StatementType::ThrowStatement, token),
 	  mExpression(exp)
 	{ }
-	~ThrowStatement() {
+	~ThrowStatement() override {
 		delete mExpression;
 	}
 
@@ -396,15 +396,15 @@ public:
 class TryStatement : public Statement
 {
 public:
-	TryStatement(const Token& token, Statements* tryBlock, const CatchStatements& catchStatements, Statements* finallyBlock)
+	TryStatement(const Token& token, Statements* tryBlock, CatchStatements catchStatements, Statements* finallyBlock)
 	: Statement(StatementType::TryStatement, token),
-	  mCatchStatements(catchStatements),
+	  mCatchStatements(std::move(catchStatements)),
 	  mFinallyBlock(finallyBlock),
 	  mTryBlock(tryBlock)
 	{ }
-	~TryStatement() {
-		for ( CatchStatements::iterator it = mCatchStatements.begin(); it != mCatchStatements.end(); ++it ) {
-			delete (*it);
+	~TryStatement() override {
+		for ( auto& mCatchStatement : mCatchStatements ) {
+			delete mCatchStatement;
 		}
 		delete mFinallyBlock;
 		delete mTryBlock;
@@ -436,7 +436,7 @@ public:
 	  mCondition(condition),
 	  mStatement(statement)
 	{ }
-	~WhileStatement() {
+	~WhileStatement() override {
 		delete mCondition;
 		delete mStatement;
 	}
