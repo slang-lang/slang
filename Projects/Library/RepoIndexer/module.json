@@ -4,7 +4,7 @@
   "version": "1.0.1",
   "description": "Creates an index of an Slang repository",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.6.5" },
+    { "module": "Slang", "version_min": "0.7.0" },
     { "module": "System", "version_min": "0.2.3" },
     { "module": "libParam", "version_min": "0.2.3" }
   ],

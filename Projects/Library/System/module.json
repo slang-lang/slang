@@ -5,7 +5,7 @@
   "type": "library",
   "description": "Slang core system library",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.6.7" }
+    { "module": "Slang", "version_min": "0.7.0" }
   ],
   "target": {
     "directory": "System",
