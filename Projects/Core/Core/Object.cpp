@@ -3,20 +3,16 @@
 #include "Object.h"
 
 // Library includes
+#include <utility>
 
 // Project includes
 #include <Core/AST/TreeInterpreter.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
-#include <Core/Defines.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
-#include <Utils.h>
-
-#include <utility>
-#include "Tools.h"
 
 // Namespace declarations
 
@@ -568,8 +564,12 @@ std::string Object::ToString(unsigned int indent) const
 
 	std::string result;
 	result += ::Utils::Tools::indent(indent);
-	result += Visibility::convert(mVisibility);
-	//result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	if ( mMemoryLayout != MemoryLayout::Instance ) {
+		result += " " + MemoryLayout::convert(mMemoryLayout);
+	}
+	if ( mLanguageFeatureState != LanguageFeatureState::Stable ) {
+		result += Visibility::convert(mVisibility);
+	}
 	result += " " + QualifiedTypename() + " " + getName();
 	result += " " + Mutability::convert(mMutability);
 

@@ -3,7 +3,7 @@
 #include "Analyser.h"
 
 // Library includes
-#include <cstdlib>
+//#include <cstdlib>
 #include <fstream>
 #include <iostream>
 
@@ -368,6 +368,8 @@ bool Analyser::createMemberOrMethod(TokenIterator& token)
 {
 	// look for an optional visibility token
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
+	// look up memory layout
+	MemoryLayout::E memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Instance);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the type token and resolve full typename
@@ -377,21 +379,19 @@ bool Analyser::createMemberOrMethod(TokenIterator& token)
 
 	if ( token->type() == Token::Type::PARENTHESIS_OPEN ) {
 		// create a new method
-		return createMethodStub(token, visibility, languageFeatureState, type, name);
+		return createMethodStub(token, visibility, memoryLayout, languageFeatureState, type, name);
 	}
 
 	// create a new member
-	return createMemberStub(token, visibility, languageFeatureState, type, name);
+	return createMemberStub(token, visibility, memoryLayout, languageFeatureState, type, name);
 }
 
-bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name)
+bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, MemoryLayout::E memoryLayout, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name)
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
 	// look for an optional mutability token
 	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
-	// look up memory layout
-	MemoryLayout::E memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Instance);
 	// look up access mode
 	AccessMode::E access = Parser::parseAccessMode(token, AccessMode::ByValue);
 
@@ -444,12 +444,11 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	return true;
 }
 
-bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name)
+bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, MemoryLayout::E memoryLayout, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name)
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
 	CheckedExceptions::E exceptions = CheckedExceptions::Nothrow;
-	MemoryLayout::E memoryLayout = MemoryLayout::Instance;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
 	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default (except constructors and destructors)
 	Virtuality::E virtuality = mProcessingInterface ? Virtuality::Abstract : Virtuality::Virtual;
@@ -471,7 +470,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	++token;
 
 	mutability = Parser::parseMutability(token, mutability);
-	memoryLayout = Parser::parseMemoryLayout(token, memoryLayout);
 	exceptions = Parser::parseExceptions(token, exceptions);
 	virtuality = Parser::parseVirtuality(token, virtuality);
 

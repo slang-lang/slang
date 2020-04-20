@@ -9,7 +9,7 @@ private object SemVer const {
 	 * Static factory, parses a string and returns a valid SemVer object
 	 * throws string exception
 	 */
-	public SemVer FromString(string version) static throws {
+	public static SemVer FromString(string version) throws {
 		int dot1 = strfind(version, ".");
 		if ( !dot1 ) {
 			throw "invalid semantic version number '" + version + "'";

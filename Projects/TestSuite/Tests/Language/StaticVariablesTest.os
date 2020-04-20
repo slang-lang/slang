@@ -22,10 +22,10 @@ private bool TestCase1() {
 }
 
 private int incStaticVar() {
-	int var static = 0;
+	static int val = 0;
 
-	var = var + 1;
+	val = val + 1;
 
-	return var;
+	return val;
 }
 

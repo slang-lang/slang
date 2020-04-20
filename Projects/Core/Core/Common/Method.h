@@ -39,7 +39,7 @@ class Method : public NamedScope,
 			   public MethodSymbol
 {
 public:
-	Method(IScope* parent, const std::string& name, const TypeDeclaration& type);
+	Method(IScope* parent, const std::string& name, TypeDeclaration type);
 	Method(const Method& other, bool shallowCopy = false);
 	virtual ~Method();
 
@@ -74,7 +74,6 @@ public: // Setup
 	void setTokens(const TokenList& tokens);
 
 public:
-	bool isEmpty() const;
 	bool isExtensionMethod() const;
 	bool isPrototype() const;
 

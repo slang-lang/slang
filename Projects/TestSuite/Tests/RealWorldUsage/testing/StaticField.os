@@ -1,12 +1,12 @@
 #!/usr/local/bin/slang
 
 public object StaticField {
-	public int Value static;
+	public static int Value;
 }
 
 public object OuterNestedObject {
 	public object InnerNestedObject {
-		public int StaticValue static;
+		public static int StaticValue;
 	}
 }
 

@@ -16,7 +16,7 @@ private object TestObject {
 }
 
 private object OtherObject {
-	public TestObject createTestObject(int value) const static {
+	public static TestObject createTestObject(int value) const {
 		TestObject obj = new TestObject(666);
 		obj.setValue(value);
 

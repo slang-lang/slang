@@ -30,12 +30,6 @@ public:
 	  mMutability(Mutability::Modify),
 	  mName(type)
 	{ }
-	TypeDeclaration(const TypeDeclaration& other)
-	: mCombinedName(other.mCombinedName),
-	  mConstraints(other.mConstraints),
-	  mMutability(other.mMutability),
-	  mName(other.mName)
-	{ }
 	TypeDeclaration(const std::string& type, const PrototypeConstraints& constraints, Mutability::E mutability = Mutability::Modify)
 	: mCombinedName(type),
 	  mConstraints(constraints),

@@ -11,6 +11,8 @@
 #include <Tools/Strings.h>
 #include <Utils.h>
 
+#include <utility>
+
 // Namespace declarations
 
 
@@ -18,14 +20,14 @@ namespace Slang {
 namespace Common {
 
 
-Method::Method(IScope* parent, const std::string& name, const TypeDeclaration& type)
+Method::Method(IScope* parent, const std::string& name, TypeDeclaration type)
 : NamedScope(name, parent),
   MethodSymbol(name),
   mIsExtensionMethod(false),
   mAllowDelete(true),
   mIsInitialized(false),
-  mReturnType(type),
-  mRootNode(0)
+  mReturnType(std::move(type)),
+  mRootNode(nullptr)
 {
 }
 
@@ -36,7 +38,8 @@ Method::Method(const Method& other, bool shallowCopy)
   mAllowDelete(!shallowCopy),
   mIsInitialized(other.mIsInitialized),
   mReturnType(other.mReturnType),
-  mRootNode(other.mRootNode)
+  mRootNode(other.mRootNode),
+  mSignature(other.mSignature)
 {
 	mAlgorithm = other.mAlgorithm;
 	mCheckedExceptions = other.mCheckedExceptions;
@@ -48,7 +51,6 @@ Method::Method(const Method& other, bool shallowCopy)
 	mMutability = other.mMutability;
 	mScopeName = other.mScopeName;
 	mScopeType = other.mScopeType;
-	mSignature = other.mSignature;
 	mVirtuality = other.mVirtuality;
 	mVisibility = other.mVisibility;
 
@@ -183,27 +185,27 @@ void Method::initialize(const PrototypeConstraints& constraints)
 	// {
 	StringSet atomicTypes = provideAtomicTypes();
 
-	for ( ParameterList::iterator paramIt = mSignature.begin(); paramIt != mSignature.end(); ++paramIt ) {
+	for ( auto& paramIt : mSignature ) {
 		// look up parameter type in object-wide prototype constraints
-		type = constraints.lookupType(paramIt->type());
+		type = constraints.lookupType(paramIt.type());
 
 		// combine parameter type with
-		if ( paramIt->typeConstraints().size() ) {
-			type += constraints.extractTypes(paramIt->typeConstraints());
+		if ( !paramIt.typeConstraints().empty() ) {
+			type += constraints.extractTypes(paramIt.typeConstraints());
 		}
 
-		if ( paramIt->type() != type ) {
+		if ( paramIt.type() != type ) {
 			AccessMode::E access = AccessMode::ByValue;
 
 			if ( atomicTypes.find(type) == atomicTypes.end() ) {
 				access = AccessMode::ByReference;
 			}
 
-			(*paramIt) = Parameter::CreateDesigntime(paramIt->name(),
-													 TypeDeclaration(type, PrototypeConstraints(), paramIt->mutability()),
-													 paramIt->value(),
-													 paramIt->hasDefaultValue(),
-													 paramIt->mutability(),
+			paramIt = Parameter::CreateDesigntime(paramIt.name(),
+													 TypeDeclaration(type, PrototypeConstraints(), paramIt.mutability()),
+													 paramIt.value(),
+													 paramIt.hasDefaultValue(),
+													 paramIt.mutability(),
 													 access);
 		}
 	}
@@ -211,23 +213,18 @@ void Method::initialize(const PrototypeConstraints& constraints)
 
 	// Update method tokens
 	// {
-	for ( TokenList::iterator tokIt = mTokens.begin(); tokIt != mTokens.end(); ++tokIt ) {
-		if ( tokIt->type() == Token::Type::IDENTIFIER ) {
-			type = constraints.lookupType(tokIt->content());
+	for ( auto& mToken : mTokens ) {
+		if ( mToken.type() == Token::Type::IDENTIFIER ) {
+			type = constraints.lookupType(mToken.content());
 
-			if ( type != tokIt->content() ) {
-				tokIt->resetContentTo(type);
+			if ( type != mToken.content() ) {
+				mToken.resetContentTo(type);
 			}
 		}
 	}
 	// }
 
 	mIsInitialized = true;
-}
-
-bool Method::isEmpty() const
-{
-	return !mIsExtensionMethod && !mRootNode;
 }
 
 bool Method::isExtensionMethod() const
@@ -251,8 +248,8 @@ bool Method::isSignatureValid(const ParameterList& params) const
 	}
 
 	// 2) by comparing each parameter one by one
-	ParameterList::const_iterator paramIt = params.begin();
-	ParameterList::const_iterator sigIt = mSignature.begin();
+	auto paramIt = params.begin();
+	auto sigIt = mSignature.begin();
 
 	while ( sigIt != mSignature.end() ) {
 		if ( paramIt != params.end() ) {
@@ -300,8 +297,8 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 
 	ParameterList result;
 
-	ParameterList::const_iterator paramIt = params.begin();
-	ParameterList::const_iterator sigIt = mSignature.begin();
+	auto paramIt = params.begin();
+	auto sigIt = mSignature.begin();
 
 	Runtime::Reference ref;
 	Runtime::AtomicValue value;
@@ -379,12 +376,20 @@ std::string Method::ToString(unsigned int indent) const
 
 	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
-	//result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	if ( mMemoryLayout != MemoryLayout::Instance ) {
+		result += " " + MemoryLayout::convert(mMemoryLayout);
+	}
+	if ( mLanguageFeatureState != LanguageFeatureState::Stable ) {
+		result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	}
 	result += " " + QualifiedTypename() + " " + getName() + "(" + toString(mSignature) + ")";
 	result += " " + Mutability::convert(mMutability);
-	result += " " + CheckedExceptions::convert(mCheckedExceptions);
-	result += " " + MemoryLayout::convert(mMemoryLayout);
-	result += " " + Virtuality::convert(mVirtuality);
+	if ( mCheckedExceptions != CheckedExceptions::Unspecified ) {
+		result += " " + CheckedExceptions::convert(mCheckedExceptions);
+	}
+	if ( mVirtuality != Virtuality::Virtual ) {
+		result += " " + Virtuality::convert(mVirtuality);
+	}
 
 	return result;
 }

@@ -1,13 +1,13 @@
 #!/usr/local/bin/slang
 
 public object StaticMethod {
-	public int Value static;
+	public static int Value;
 
-	public int getValue() const static {
+	public static int getValue() const {
 		return StaticMethod.Value;
 	}
 
-	public void setValue(int value) modify static {
+	public static stable void setValue(int value) modify {
 		StaticMethod.Value = value;
 	}
 }

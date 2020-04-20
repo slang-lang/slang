@@ -382,6 +382,11 @@ bool Parser::isMemberDeclaration(TokenIterator token)
 	}
 
 	if ( token->isOptional() ) {
+		// memory layout is okay
+		++token;
+	}
+
+	if ( token->isOptional() ) {
 		// language feature is okay
 		++token;
 	}
@@ -423,6 +428,11 @@ bool Parser::isMethodDeclaration(TokenIterator token)
 {
 	if ( token->type() == Token::Type::VISIBILITY ) {
 		// visibility token is okay
+		++token;
+	}
+
+	if ( token->isOptional() ) {
+		// memory layout is okay
 		++token;
 	}
 

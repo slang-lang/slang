@@ -11,7 +11,7 @@ public object TestObject {
 		print("nonstaticPrint: " + mValue);
 	}
 
-	public void staticPrint(bool callNonStatic) static {
+	public static void staticPrint(bool callNonStatic) {
 		if ( callNonStatic ) {
 			nonstaticPrint();
 			return;
