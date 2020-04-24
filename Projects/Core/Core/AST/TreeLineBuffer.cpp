@@ -13,10 +13,6 @@ namespace Slang {
 namespace AST {
 
 
-TreeLineBuffer::TreeLineBuffer()
-{
-}
-
 void TreeLineBuffer::append(const std::string& content)
 {
 	insert(mLastInsertPosition, content);

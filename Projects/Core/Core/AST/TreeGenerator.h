@@ -49,7 +49,7 @@ class TreeGenerator
 {
 public:
 	TreeGenerator();
-	~TreeGenerator();
+	~TreeGenerator() = default;
 
 public:
 	Statements* generateAST(Common::Method* method);
@@ -141,7 +141,7 @@ private: // Execution
 
 	inline IScope* getScope() const;
 	inline void popScope();
-	inline void pushScope(IScope* scope = 0, bool allowBreakAndContinue = false);
+	inline void pushScope(IScope* scope = nullptr, bool allowBreakAndContinue = false);
 	// }
 
 	// Token stack

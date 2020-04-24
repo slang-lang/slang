@@ -30,7 +30,7 @@ namespace AST {
 class TreeOptimizer
 {
 public:
-	TreeOptimizer();
+	TreeOptimizer() = default;
 	virtual ~TreeOptimizer() = default;
 
 public:

@@ -29,7 +29,7 @@ void Printer::activatePrinter(bool state)
 	ActivatePrinter = state;
 }
 
-void Printer::print(const std::string& text, const std::string& file, int line) const
+void Printer::print(const std::string& text, const std::string& file, unsigned int line) const
 {
 	if ( !ActivatePrinter ) {
 		return;
@@ -45,7 +45,7 @@ void Printer::print(const std::string& text, const std::string& file, int line) 
 	}
 }
 
-void Printer::println(const std::string& text, const std::string& file, int line)
+void Printer::println(const std::string& text, const std::string& file, unsigned int line)
 {
 	if ( !ActivatePrinter ) {
 		return;

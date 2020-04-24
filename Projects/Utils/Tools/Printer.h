@@ -30,8 +30,8 @@ public:
 	void activatePrinter(bool state);
 
 public:
-	void print(const std::string& text, const std::string& file = "", int line = 0) const;
-	void println(const std::string& text, const std::string& file = "", int line = 0);
+	void print(const std::string& text, const std::string& file = "", unsigned int line = 0) const;
+	void println(const std::string& text, const std::string& file = "", unsigned int line = 0);
 
 public:
 	bool ActivatePrinter;

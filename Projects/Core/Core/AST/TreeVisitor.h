@@ -26,7 +26,7 @@ class Statements;
 class TreeVisitor
 {
 public:
-	TreeVisitor();
+	TreeVisitor() = default;
 	virtual ~TreeVisitor() = default;
 
 protected:

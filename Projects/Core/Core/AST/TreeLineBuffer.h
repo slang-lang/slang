@@ -26,7 +26,7 @@ public:
 	typedef std::map<Common::Position, std::string> Lines;
 
 public:
-	TreeLineBuffer();
+	TreeLineBuffer() = default;
 	~TreeLineBuffer() = default;
 
 public:
