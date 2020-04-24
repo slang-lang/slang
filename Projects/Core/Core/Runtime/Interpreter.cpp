@@ -32,7 +32,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Runtime {
 
 
@@ -40,6 +40,33 @@ namespace Runtime {
 	if ( mDebugger ) { \
 		mDebugger->exp; \
 	}
+
+#define tryControl( exp ) \
+		try { \
+			exp; \
+		} \
+		catch ( Runtime::ControlFlow::E &e ) { \
+			mControlFlow = e; \
+			return; \
+		}
+
+#define tryControlReturnNull( exp ) \
+		try { \
+			exp; \
+		} \
+		catch ( Runtime::ControlFlow::E &e ) { \
+			mControlFlow = e; \
+			return NULL; \
+		}
+
+#define tryEvaluteReturnNull(left, right) \
+		try { \
+			evaluate(left, right); \
+		} \
+		catch ( Runtime::ControlFlow::E &e ) { \
+			mControlFlow = e; \
+			return NULL; \
+		}
 
 
 Interpreter::Interpreter(Common::ThreadId threadId)
@@ -75,13 +102,7 @@ void Interpreter::collectParameterList(TokenIterator& token, ParameterList& para
 		objectList.push_back(Object());
 
 		Object* obj = &objectList.back();
-		try {
-			expression(obj, tmp);
-		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		tryControl( expression(obj, tmp) );
 
 /*
 		// hack to prevent anonymous references to run out of scope, this will most likely produce memory leaks!!!
@@ -146,7 +167,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 
 	switch ( method->getLanguageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + method->getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::NotImplemented(method->getFullScopeName()); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + method->getFullScopeName() + "' is marked as not implemented"); throw Slang::Common::Exceptions::MethodNotImplemented(method->getFullScopeName()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
 		case LanguageFeatureState::Unspecified: OSerror("unknown language feature state set for method '" + method->getFullScopeName() + "'"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
@@ -1500,7 +1521,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	}
 
 	if ( method->isExtensionMethod() ) {
-		mControlFlow = dynamic_cast<ObjectiveScript::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
+		mControlFlow = dynamic_cast<Slang::Extensions::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
 	}
 	else {
 		mControlFlow = execute(method, params, result);
@@ -1561,7 +1582,7 @@ void Interpreter::process_print(TokenIterator& token)
 		return;
 	}
 
-	::Utils::PrinterDriver::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
+	::Utils::Printer::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
@@ -1975,10 +1996,10 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 	Mutability::E mutability = parseMutability(token);
 
 	// not-atomic types are references by default
-	AccessMode::E accessMode = parseAccessMode(token, static_cast<Designtime::BluePrintObject*>(symbol)->isAtomicType());
+	AccessMode::E accessMode = parseAccessMode(token, dynamic_cast<Designtime::BluePrintObject*>(symbol)->isAtomicType());
 
-	Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, constraints);
-	object->setConst(mutability == Mutability::Const);
+	Object* object = mRepository->createInstance(dynamic_cast<Designtime::BluePrintObject*>(symbol), name, constraints);
+	object->setMutability(mutability);
 
 	getScope()->define(name, object);
 
@@ -2085,7 +2106,7 @@ void Interpreter::process_var(TokenIterator& token, Object* /*result*/)
 	}
 
 	Object* object = mRepository->createInstance(var.QualifiedTypename(), name, PrototypeConstraints(), Repository::InitilizationType::Final);
-	object->setConst(mutability == Mutability::Const);
+	object->setMutability(mutability);
 
 	getScope()->define(name, object);
 
