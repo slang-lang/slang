@@ -20,9 +20,9 @@ namespace Slang {
 class Watch
 {
 public:
-	Watch();
-	Watch(const std::string& symbol);
-	~Watch();
+	Watch() = default;
+	explicit Watch(std::string symbol);
+	~Watch() = default;
 
 public:
 	const std::string& symbol() const;

@@ -57,8 +57,8 @@ Request* MessageConverter::convertToRequest(const Json::Value& message) const
 	if ( message.isMember("arguments") ) {
 		Json::Value array = message["arguments"];
 
-		for ( Json::Value::Members::const_iterator it = array.members().begin(); it != array.members().end(); ++it ) {
-			arguments.push_back(it->asString());
+		for ( const auto& it : array.members() ) {
+			arguments.push_back(it.asString());
 		}
 	}
 
@@ -69,7 +69,7 @@ Response* MessageConverter::convertToResponse(const Json::Value& message) const
 {
 	Request* request = convertToRequest(message["request"]);
 
-	Response* response = new Response(*request);
+	auto* response = new Response(*request);
 	response->success = message["success"].asBool();
 
 	return response;

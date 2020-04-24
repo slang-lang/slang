@@ -2,6 +2,8 @@
 // Header
 #include "Watch.h"
 
+#include <utility>
+
 // Library includes
 
 // Project includes
@@ -12,16 +14,8 @@
 namespace Slang {
 
 
-Watch::Watch()
-{
-}
-
-Watch::Watch(const std::string& symbol)
-: mSymbol(symbol)
-{
-}
-
-Watch::~Watch()
+Watch::Watch(std::string symbol)
+: mSymbol(std::move(symbol))
 {
 }
 

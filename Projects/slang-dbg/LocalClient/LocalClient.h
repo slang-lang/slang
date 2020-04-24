@@ -23,11 +23,13 @@
 namespace Slang {
 
 // Forward declarations
+namespace Common {
+	class Namespace;
+}
 namespace Core {
 	class Debugger;
 }
 namespace Runtime {
-	class Namespace;
 	class Object;
 }
 class VirtualMachine;
@@ -76,7 +78,7 @@ private:	// Configuration
 
 private:	// Scopes
 	MethodScope* getEnclosingMethodScope(IScope* scope) const;
-	Runtime::Namespace* getEnclosingNamespace(IScope* scope) const;
+	Common::Namespace* getEnclosingNamespace(IScope* scope) const;
 	Runtime::Object* getEnclosingObject(IScope* scope) const;
 	Common::Method* getMethodFromScope(IScope *scope) const;
 

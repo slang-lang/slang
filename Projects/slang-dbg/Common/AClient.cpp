@@ -13,11 +13,7 @@ namespace Slang {
 
 
 AClient::AClient()
-: mSettings(0)
-{
-}
-
-AClient::~AClient()
+: mSettings(nullptr)
 {
 }
 

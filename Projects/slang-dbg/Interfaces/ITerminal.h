@@ -18,7 +18,7 @@ namespace Slang {
 class ITerminal
 {
 public:
-	virtual ~ITerminal() { }
+	virtual ~ITerminal() = default;
 
 	virtual std::string read() = 0;
 	virtual void write(const std::string& text) = 0;

@@ -24,7 +24,7 @@ class AClient
 {
 public:
 	AClient();
-	virtual ~AClient();
+	virtual ~AClient() = default;
 
 public:
 	virtual int exec() = 0;

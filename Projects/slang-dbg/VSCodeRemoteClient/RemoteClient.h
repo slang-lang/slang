@@ -38,7 +38,7 @@ class RemoteClient : public AClient,
 {
 public:
 	RemoteClient();
-	~RemoteClient();
+	~RemoteClient() = default;
 
 public:		// AClient implementation
 	int exec();

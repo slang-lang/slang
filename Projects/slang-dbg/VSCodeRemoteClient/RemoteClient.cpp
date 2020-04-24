@@ -10,7 +10,6 @@
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Script.h>
-#include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
@@ -29,14 +28,10 @@ namespace Slang {
 RemoteClient::RemoteClient()
 : mContinue(false),
   mRunning(true),
-  mScope(0),
+  mScope(nullptr),
   mVirtualMachine(0)
 {
 	mDebugger = &Core::Debugger::Instance();
-}
-
-RemoteClient::~RemoteClient()
-{
 }
 
 void RemoteClient::Attach(const VSCodeDebug::Request& request)
@@ -86,7 +81,7 @@ void RemoteClient::DispatchRequest(VSCodeDebug::ProtocolMessage* request)
 
 	//std::string result;
 
-	VSCodeDebug::Request* r = dynamic_cast<VSCodeDebug::Request*>(request);
+	auto* r = dynamic_cast<VSCodeDebug::Request*>(request);
 	if ( r ) {
 		if ( r->command == "attach" ) {
 			Attach(*r);
@@ -170,7 +165,7 @@ int RemoteClient::exec()
 
 	// start program execution
 	while ( mRunning ) {
-		notify(0, Core::Debugger::immediateBreakPoint);
+		notify(nullptr, Core::Debugger::immediateBreakPoint);
 	}
 
 	return 0;
@@ -184,7 +179,7 @@ Symbol* RemoteClient::getSymbol(std::string name) const
 
 	do {
 		if ( !scope ) {
-			return 0;
+			return nullptr;
 		}
 
 		Utils::Tools::split(name, parent, child);
@@ -199,7 +194,7 @@ Symbol* RemoteClient::getSymbol(std::string name) const
 		name = child;
 	} while ( !name.empty() );
 
-	return 0;
+	return nullptr;
 }
 
 void RemoteClient::Initialize(const VSCodeDebug::Request& request)
@@ -275,7 +270,7 @@ int RemoteClient::notify(IScope* scope, const Core::BreakPoint& /*breakpoint*/)
 		read();	// read command from remote terminal
 	}
 
-	mScope = 0;
+	mScope = nullptr;
 
 	return 0;
 }
@@ -377,8 +372,8 @@ void RemoteClient::start()
 	mDebugger->init();
 
 	mVirtualMachine = new VirtualMachine();
-	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {
-		mVirtualMachine->addLibraryFolder((*it));
+	for ( const auto& it : mSettings->libraryFolders() ) {
+		mVirtualMachine->addLibraryFolder(it);
 	}
 
 	// add extensions
@@ -410,7 +405,7 @@ void RemoteClient::stop()
 {
 	if ( mVirtualMachine ) {
 		delete mVirtualMachine;
-		mVirtualMachine = 0;
+		mVirtualMachine = nullptr;
 	}
 }
 

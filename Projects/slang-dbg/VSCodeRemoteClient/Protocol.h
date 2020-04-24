@@ -5,6 +5,7 @@
 
 // Library includes
 #include <string>
+#include <utility>
 #include <Json/Value.h>
 
 // Project includes
@@ -22,18 +23,17 @@ namespace VSCodeDebug {
 class ProtocolMessage
 {
 public:
-	ProtocolMessage(const std::string& type_)
+	ProtocolMessage(std::string type_)
 	: seq(-1),
-	  type(type_)
+	  type(std::move(type_))
 	{ }
 
-	ProtocolMessage(const std::string& type_, int seq_)
+	ProtocolMessage(std::string type_, int seq_)
 	: seq(seq_),
-	  type(type_)
+	  type(std::move(type_))
 	{ }
 
-	virtual ~ProtocolMessage()
-	{ }
+	virtual ~ProtocolMessage() = default;
 
 public:
 	virtual Json::Value serialize() const = 0;
@@ -47,9 +47,9 @@ public:
 class Event : public ProtocolMessage
 {
 public:
-	Event(const std::string& eventtype_)
+	explicit Event(std::string eventtype_)
 	: ProtocolMessage("event"),
-	  eventtype(eventtype_)
+	  eventtype(std::move(eventtype_))
 	{ }
 
 public:
@@ -72,10 +72,10 @@ public:
 class Request : public ProtocolMessage
 {
 public:
-	Request(int id, const std::string& cmd, const StringList& args)
+	Request(int id, std::string  cmd, StringList  args)
 	: ProtocolMessage("request", id),
-	  arguments(args),
-	  command(cmd)
+	  arguments(std::move(args)),
+	  command(std::move(cmd))
 	{ }
 
 public:
@@ -89,8 +89,8 @@ public:
 
 		if ( !arguments.empty() ) {
 			Json::Value args;
-			for ( StringList::const_iterator it = arguments.begin(); it != arguments.end(); ++it ) {
-				args.addElement(Json::Value(*it));
+			for ( const auto& argument : arguments ) {
+				args.addElement(Json::Value(argument));
 			}
 			result.addMember("arguments", args);
 		}
@@ -107,7 +107,7 @@ public:
 class Response : public ProtocolMessage
 {
 public:
-	Response(const Request& req)
+	explicit Response(const Request& req)
 	: ProtocolMessage("response", req.seq),
 	  request(req),
 	  success(false)

@@ -22,7 +22,7 @@ namespace Slang {
 
 
 Application::Application()
-: mClient(0)
+: mClient(nullptr)
 {
 }
 
@@ -30,7 +30,7 @@ Application::~Application()
 {
 	if ( mClient ) {
 		delete mClient;
-		mClient = 0;
+		mClient = nullptr;
 	}
 }
 
@@ -39,14 +39,14 @@ void Application::init(int argc, const char* argv[])
 	processParameters(argc, argv);
 
 	if ( mSettings.remoteClient() ) {
-		RemoteClient* client = new RemoteClient();
+		auto* client = new RemoteClient();
 
 		Core::Debugger::Instance().registerReceiver(client);
 
 		mClient = client;
 	}
 	else {
-		LocalClient* client = new LocalClient();
+		auto* client = new LocalClient();
 
 		Core::Debugger::Instance().registerReceiver(client);
 

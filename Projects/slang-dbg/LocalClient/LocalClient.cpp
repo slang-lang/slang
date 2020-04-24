@@ -3,8 +3,8 @@
 #include "LocalClient.h"
 
 // Library includes
+#include <csignal>
 #include <fstream>
-#include <signal.h>
 #include <Json/Json.h>
 
 // Project includes
@@ -52,10 +52,10 @@ LocalClient::LocalClient()
 : mContinue(false),
   mCurrentFrameId(0),
   mCurrentThreadId(0),
-  mDebugger(0),
+  mDebugger(nullptr),
   mRunning(true),
-  mScope(0),
-  mVirtualMachine(0)
+  mScope(nullptr),
+  mVirtualMachine(nullptr)
 {
 	mDebugger = &Slang::Core::Debugger::Instance();
 }
@@ -64,7 +64,7 @@ LocalClient::~LocalClient()
 {
 	shutdown();
 
-	mDebugger = 0;
+	mDebugger = nullptr;
 }
 
 bool LocalClient::addBreakPoint(const StringList& tokens)
@@ -74,7 +74,7 @@ bool LocalClient::addBreakPoint(const StringList& tokens)
 		return false;
 	}
 
-	StringList::const_iterator it = tokens.begin();
+	auto it = tokens.begin();
 	++it;	// skip first token
 
 	std::string file = Utils::Tools::Files::GetFullname((*it++));
@@ -97,7 +97,7 @@ bool LocalClient::addBreakPoint(const StringList& tokens)
 
 bool LocalClient::addLiteralSymbol(const std::string& name, const std::string& value)
 {
-	Symbols::iterator it = mSymbolCollection.find(name);
+	auto it = mSymbolCollection.find(name);
 	if ( it != mSymbolCollection.end() ) {
 		// symbol already cached
 		return true;
@@ -106,7 +106,7 @@ bool LocalClient::addLiteralSymbol(const std::string& name, const std::string& v
 	Tokenizer t("", value);
 	t.process();
 
-	Symbol* symbol = 0;
+	Symbol* symbol = nullptr;
 
 	TokenList list = t.tokens();
 	if ( list.size() > 1 ) {
@@ -149,7 +149,7 @@ bool LocalClient::addWatch(const StringList& tokens)
 		return false;
 	}
 
-	StringList::const_iterator it = tokens.begin();
+	auto it = tokens.begin();
 	++it;	// skip first token
 
 	mWatches.insert(Watch((*it)));
@@ -159,8 +159,8 @@ bool LocalClient::addWatch(const StringList& tokens)
 
 void LocalClient::clearSymbolCache()
 {
-	for ( Symbols::iterator it = mSymbolCollection.begin(); it != mSymbolCollection.end(); ++it ) {
-		delete it->second;
+	for ( auto& it : mSymbolCollection ) {
+		delete it.second;
 	}
 	mSymbolCollection.clear();
 }
@@ -197,15 +197,15 @@ int LocalClient::exec()
 	}
 
 	// unregister SIGINT handler
-	signal(SIGINT, 0);
+	signal(SIGINT, nullptr);
 
-	// program exection is done
+	// program execution is done
 	return 0;
 }
 
 std::string LocalClient::executeCommand(const StringList &tokens)
 {
-	StringList::const_iterator it = tokens.begin();
+	auto it = tokens.begin();
 
 	if ( it != tokens.end() ) {
 		std::string cmd = (*it++);
@@ -327,7 +327,7 @@ void LocalClient::executeMethod(const StringList &tokens)
 
 	std::string name;
 
-	StringList::const_iterator it = tokens.begin();
+	auto it = tokens.begin();
 	++it;	// skip first token
 	if ( it != tokens.end() ) {
 		name = (*it++);
@@ -339,7 +339,7 @@ void LocalClient::executeMethod(const StringList &tokens)
 		std::string sym = (*it);
 
 		if ( addLiteralSymbol(sym, sym) ) {
-			Runtime::Object* object = dynamic_cast<Runtime::Object*>(getCachedSymbol(sym));
+			auto* object = dynamic_cast<Runtime::Object*>(getCachedSymbol(sym));
 
 			if ( object ) {
 				params.push_back(Parameter::CreateRuntime(object->QualifiedTypename(), object->getValue()));
@@ -358,11 +358,11 @@ void LocalClient::executeMethod(const StringList &tokens)
 		return;
 	}
 
-	Common::Method* method = static_cast<Common::Method*>(symbol);
+	auto* method = dynamic_cast<Common::Method*>(symbol);
 	try {
 		Runtime::Object result;
 
-		Controller::Instance().thread(mCurrentThreadId)->execute(NULL, method, params, &result);
+		Controller::Instance().thread(mCurrentThreadId)->execute(nullptr, method, params, &result);
 
 		writeln("returned " + result.ToString());
 	}
@@ -376,19 +376,19 @@ void LocalClient::executeMethod(const StringList &tokens)
 
 Symbol* LocalClient::getCachedSymbol(const std::string& name) const
 {
-	for ( Symbols::const_iterator it = mSymbolCollection.begin(); it != mSymbolCollection.end(); ++it ) {
-		if ( it->first == name ) {
-			return it->second;
+	for ( const auto& it : mSymbolCollection ) {
+		if ( it.first == name ) {
+			return it.second;
 		}
 	}
 
-	return 0;
+	return nullptr;
 }
 
 MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& params) const
 {
 	if ( !mScope ) {
-		return 0;
+		return nullptr;
 	}
 
 	std::string child;
@@ -397,7 +397,7 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 
 	do {
 		if ( !scope ) {
-			return 0;
+			return nullptr;
 		}
 
 		Utils::Tools::split(name, parent, child);
@@ -412,14 +412,14 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 		name = child;
 	} while ( !name.empty() );
 
-	return 0;
+	return nullptr;
 }
 
 Common::Method* LocalClient::getMethodFromScope(IScope *scope) const
 {
 	while ( scope ) {
 		if ( scope->getScopeType() == IScope::IType::NamedScope ) {
-			Common::Method* result = dynamic_cast<Common::Method*>(scope);
+			auto* result = dynamic_cast<Common::Method*>(scope);
 			if ( result ) {
 				return result;
 			}
@@ -428,7 +428,7 @@ Common::Method* LocalClient::getMethodFromScope(IScope *scope) const
 		scope = scope->getEnclosingScope();
 	}
 
-	return 0;
+	return nullptr;
 }
 
 MethodScope* LocalClient::getEnclosingMethodScope(IScope* scope) const
@@ -443,16 +443,16 @@ MethodScope* LocalClient::getEnclosingMethodScope(IScope* scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
 }
 
-Runtime::Object* LocalClient::getEnclosingObject(IScope* scope) const
+Common::Namespace* LocalClient::getEnclosingNamespace(IScope* scope) const
 {
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Runtime::Object* result = dynamic_cast<Runtime::Object*>(parent);
+			auto* result = dynamic_cast<Common::Namespace*>(parent);
 			if ( result ) {
 				return result;
 			}
@@ -461,7 +461,25 @@ Runtime::Object* LocalClient::getEnclosingObject(IScope* scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
+}
+
+Runtime::Object* LocalClient::getEnclosingObject(IScope* scope) const
+{
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
+			auto* result = dynamic_cast<Runtime::Object*>(parent);
+			if ( result ) {
+				return result;
+			}
+		}
+
+		scope = parent;
+	}
+
+	return nullptr;
 }
 
 Symbol* LocalClient::getSymbol(std::string name) const
@@ -487,7 +505,7 @@ Symbol* LocalClient::getSymbol(std::string name) const
 		name = child;
 	} while ( !name.empty() );
 
-	return 0;
+	return nullptr;
 }
 
 int LocalClient::handleBreakpoint(IScope* scope, const Core::BreakPoint& breakpoint)
@@ -519,7 +537,7 @@ int LocalClient::handleBreakpoint(IScope* scope, const Core::BreakPoint& breakpo
         );
     }
 
-    mScope = 0;
+    mScope = nullptr;
 
     return 0;
 }
@@ -602,7 +620,7 @@ bool LocalClient::modifySymbol(const StringList& tokens)
 
 	std::string name;
 
-	StringList::const_iterator it = tokens.begin();
+	auto it = tokens.begin();
 	++it;	// skip first token
 	if ( it != tokens.end() ) {
 		name = (*it++);
@@ -614,7 +632,7 @@ bool LocalClient::modifySymbol(const StringList& tokens)
 		return false;
 	}
 
-	Runtime::Object* object = dynamic_cast<Runtime::Object*>(symbol);
+	auto* object = dynamic_cast<Runtime::Object*>(symbol);
 	if ( !object ) {
 		writeln("'" + name + "' is not a variable");
 		return false;
@@ -634,7 +652,7 @@ int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
     writeln("[Breakpoint " + breakpoint.toString() + " reached]");
 
     // Condition check
-    Core::Condition condition = breakpoint.getCondition();
+    const auto& condition = breakpoint.getCondition();
     Symbol* lhs = getSymbol(condition.lhs());
     Symbol* rhs = getSymbol(condition.rhs());
 
@@ -723,7 +741,7 @@ void LocalClient::prepare(const StringList& tokens)
 {
 	std::string paramStr = mSettings->filename();
 
-	StringList::const_iterator it = tokens.begin();
+	auto it = tokens.begin();
 	++it;	// skip first token
 	while ( it != tokens.end() ) {
 		paramStr += "\n" + (*it++);
@@ -741,8 +759,8 @@ void LocalClient::printBreakPoints()
 	writeln("BreakPoints:");
 
 	int idx = 1;
-	for ( Core::BreakPointCollection::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		writeln(Utils::Tools::toString(idx) + ": " + it->toString());
+	for ( const auto& it : list ) {
+		writeln(Utils::Tools::toString(idx) + ": " + it.toString());
 
 		idx++;
 	}
@@ -842,7 +860,7 @@ void LocalClient::printSymbol(const StringList& tokens)
 {
 	std::string name;
 
-	StringList::const_iterator it = tokens.begin();
+	auto it = tokens.begin();
 	++it;	// skip first token
 	if ( it != tokens.end() ) {
 		name = (*it);
@@ -883,15 +901,15 @@ std::string LocalClient::read()
 
 void LocalClient::refreshWatches()
 {
-	for ( WatchCollection::iterator it = mWatches.begin(); it != mWatches.end(); ++it ) {
+	for ( const auto& watch : mWatches ) {
 		std::string value = "<not accessible>";
 
-		Symbol* symbol = getSymbol(it->symbol());
+		Symbol* symbol = getSymbol(watch.symbol());
 		if ( symbol ) {
 			value = symbol->ToString();
 		}
 
-		writeln("[Watch] " + it->symbol() + ": " + value);
+		writeln("[Watch] " + watch.symbol() + ": " + value);
 	}
 }
 
@@ -902,7 +920,7 @@ bool LocalClient::removeBreakPoint(const StringList& tokens)
 		return false;
 	}
 
-	StringList::const_iterator it = tokens.begin();
+	auto it = tokens.begin();
 	++it;	// skip first token
 
 	int idx = ::Utils::Tools::stringToInt((*it));
@@ -910,7 +928,7 @@ bool LocalClient::removeBreakPoint(const StringList& tokens)
 	Core::BreakPointCollection points = mDebugger->getBreakPoints();
 
 	int count = 1;
-	for ( Core::BreakPointCollection::const_iterator breakIt = points.begin(); breakIt != points.end(); ++breakIt, ++count ) {
+	for ( auto breakIt = points.begin(); breakIt != points.end(); ++breakIt, ++count ) {
 		if ( count == idx ) {
 			mDebugger->removeBreakPoint((*breakIt));
 			return true;
@@ -927,10 +945,10 @@ bool LocalClient::removeWatch(const StringList& tokens)
 		return false;
 	}
 
-	StringList::const_iterator it = tokens.begin();
+	auto it = tokens.begin();
 	++it;	// skip first token
 
-	WatchCollection::const_iterator watchIt = mWatches.find(Watch((*it)));
+	auto watchIt = mWatches.find(Watch((*it)));
 	if ( watchIt != mWatches.end() ) {
 		mWatches.erase(watchIt);
 		return true;
@@ -965,15 +983,15 @@ void LocalClient::saveConfig()
 	// (2) write breakpoints to config
 	Json::Value breakpoints;
 	Core::BreakPointCollection breakpointList = mDebugger->getBreakPoints();
-	for ( Core::BreakPointCollection::const_iterator it = breakpointList.begin(); it != breakpointList.end(); ++it ) {
-		breakpoints.addElement(it->toConfigString());
+	for ( const auto& it : breakpointList) {
+		breakpoints.addElement(it.toConfigString());
 	}
 	config.addMember("breakpoints", breakpoints);
 
 	// (3) write watches to config
 	Json::Value watches;
-	for ( WatchCollection::const_iterator it = mWatches.begin(); it != mWatches.end(); ++it ) {
-		watches.addElement(it->symbol());
+	for ( const auto& watch : mWatches ) {
+		watches.addElement(watch.symbol());
 	}
 	config.addMember("watches", watches);
 
@@ -1021,7 +1039,7 @@ void LocalClient::setCurrentFrame(const StringList& tokens)
 		return;
 	}
 
-	StringList::const_iterator it = tokens.begin();
+	auto it = tokens.begin();
 	++it;	// skip first token
 
 	setCurrentFrame((Common::FrameId)::Utils::Tools::stringToInt((*it++)));
@@ -1051,7 +1069,7 @@ void LocalClient::setCurrentThread(const StringList& tokens)
 		return;
 	}
 
-	StringList::const_iterator it = tokens.begin();
+	auto it = tokens.begin();
 	++it;	// skip first token
 
 	setCurrentThread((Common::FrameId)::Utils::Tools::stringToInt((*it++)));
@@ -1065,7 +1083,7 @@ void LocalClient::shutdown()
 	mDebugger->clearBreakPoints();
 	mDebugger->unregisterReceiver(this);
 	mRunning = false;
-	mScope = 0;
+	mScope = nullptr;
 	mWatches.clear();
 
 	clearSymbolCache();
@@ -1081,8 +1099,8 @@ void LocalClient::start()
     mDebugger->stepInto();      // automatically stop before executing the first line
 
 	mVirtualMachine = new VirtualMachine();
-	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {
-		mVirtualMachine->addLibraryFolder((*it));
+	for ( const auto& it : mSettings->libraryFolders() ) {
+		mVirtualMachine->addLibraryFolder(it);
 	}
 
 	// add extensions
