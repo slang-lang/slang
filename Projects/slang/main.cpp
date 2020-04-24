@@ -3,7 +3,6 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
-#include <Core/Common/Exceptions.h>
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Script.h>
@@ -165,8 +164,8 @@ int main(int argc, const char* argv[])
 	}
 
 	Slang::VirtualMachine mVirtualMachine;
-	for ( StringSet::const_iterator it = mLibraryFolders.cbegin(); it != mLibraryFolders.cend(); ++it ) {
-		mVirtualMachine.addLibraryFolder((*it));
+	for ( const auto& library : mLibraryFolders ) {
+		mVirtualMachine.addLibraryFolder(library);
 	}
 
 	mVirtualMachine.settings().DoCollectErrors = true;
