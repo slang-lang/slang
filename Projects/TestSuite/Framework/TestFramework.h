@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <cstring>
 
 // Project includes
 
