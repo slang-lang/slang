@@ -29,10 +29,6 @@ SystemNetworkExtension::SystemNetworkExtension()
 {
 }
 
-SystemNetworkExtension::~SystemNetworkExtension()
-{
-}
-
 void SystemNetworkExtension::initialize(IScope* scope)
 {
 	// domain constants

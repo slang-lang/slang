@@ -23,7 +23,7 @@ class SystemNetworkExtension : public AExtension
 {
 public:
 	SystemNetworkExtension();
-	~SystemNetworkExtension();
+	~SystemNetworkExtension() = default;
 
 public:
 	void initialize(IScope* scope);

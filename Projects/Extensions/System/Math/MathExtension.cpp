@@ -28,10 +28,6 @@ SystemMathExtension::SystemMathExtension()
 {
 }
 
-SystemMathExtension::~SystemMathExtension()
-{
-}
-
 void SystemMathExtension::initialize(Slang::IScope* /*scope*/)
 {
 	// nothing to do here

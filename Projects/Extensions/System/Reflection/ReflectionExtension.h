@@ -23,7 +23,7 @@ class SystemReflectionExtension : public AExtension
 {
 public:
 	SystemReflectionExtension();
-	~SystemReflectionExtension();
+	~SystemReflectionExtension() = default;
 
 public:
 	void initialize(IScope* scope);

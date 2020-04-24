@@ -22,10 +22,6 @@ SystemReflectionExtension::SystemReflectionExtension()
 {
 }
 
-SystemReflectionExtension::~SystemReflectionExtension()
-{
-}
-
 void SystemReflectionExtension::initialize(IScope* /*scope*/)
 {
 #ifdef _WIN32

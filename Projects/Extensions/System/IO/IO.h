@@ -23,7 +23,7 @@ class SystemIOExtension : public AExtension
 {
 public:
 	SystemIOExtension();
-	~SystemIOExtension();
+	~SystemIOExtension() = default;
 
 public:
 	void initialize(IScope* scope);

@@ -31,10 +31,6 @@ SystemStringsExtension::SystemStringsExtension()
 {
 }
 
-SystemStringsExtension::~SystemStringsExtension()
-{
-}
-
 void SystemStringsExtension::initialize(IScope* scope)
 {
 #ifdef _WIN32

@@ -23,7 +23,7 @@ class SystemConsoleExtension : public AExtension
 {
 public:
 	SystemConsoleExtension();
-	~SystemConsoleExtension();
+	~SystemConsoleExtension() = default;
 
 public:
 	void initialize(IScope* scope);

@@ -23,7 +23,7 @@ class SystemStringsExtension : public AExtension
 {
 public:
 	SystemStringsExtension();
-	~SystemStringsExtension();
+	~SystemStringsExtension() = default;
 
 public:
 	void initialize(IScope* scope);

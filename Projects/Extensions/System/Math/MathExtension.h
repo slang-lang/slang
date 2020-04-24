@@ -23,7 +23,7 @@ class SystemMathExtension : public AExtension
 {
 public:
 	SystemMathExtension();
-	~SystemMathExtension();
+	~SystemMathExtension() = default;
 
 public:
 	void initialize(IScope* scope);

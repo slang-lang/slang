@@ -28,10 +28,6 @@ SystemIOExtension::SystemIOExtension()
 {
 }
 
-SystemIOExtension::~SystemIOExtension()
-{
-}
-
 void SystemIOExtension::initialize(Slang::IScope* /*scope*/)
 {
 	// nothing to do here

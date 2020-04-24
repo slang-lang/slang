@@ -24,10 +24,6 @@ SystemConsoleExtension::SystemConsoleExtension()
 {
 }
 
-SystemConsoleExtension::~SystemConsoleExtension()
-{
-}
-
 void SystemConsoleExtension::initialize(Slang::IScope* /*scope*/)
 {
 	// nothing to do here
