@@ -6,7 +6,7 @@ Build-Depends: debhelper (>=10)
 Standards-Version: 4.0.0
 Homepage: https://slang.ticketsharing.net/
 Package: slang
-Version: 0.7.0
+Version: 0.7.1
 Architecture: x86_64
 Depends: , 
 Description: Is an interpreter, debugger & package manager for the Slang programming language

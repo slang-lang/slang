@@ -92,9 +92,9 @@ echo "Deploying new shared libraries..."
 cp "${EXTENSIONS_DIRECTORY}"/lib* "${PACKAGE_DIRECTORY_SHARED_LIBRARIES}"
 
 # add symlink from slang to oscript for legacy scripts
-ln -s "${PACKAGE_DIRECTORY_BIN}/slang" "${PACKAGE_DIRECTORY_BIN}/oscript"
-ln -s "${PACKAGE_DIRECTORY_BIN}/slang-dbg" "${PACKAGE_DIRECTORY_BIN}/odebugger"
-ln -s "${PACKAGE_DIRECTORY_BIN}/slang-pkg" "${PACKAGE_DIRECTORY_BIN}/odepend"
+ln -s "slang" "${PACKAGE_DIRECTORY_BIN}/oscript"
+ln -s "slang-dbg" "${PACKAGE_DIRECTORY_BIN}/odebugger"
+ln -s "slang-pkg" "${PACKAGE_DIRECTORY_BIN}/odepend"
 
 echo ""
 echo "Building package..."
