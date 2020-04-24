@@ -20,7 +20,7 @@ namespace Common {
 class Position
 {
 public:
-	Position(const std::string& file = "", unsigned int line = 0, unsigned int column = 0);
+	explicit Position(std::string file = "", unsigned int line = 0, unsigned int column = 0);
 
 public:
 	bool operator==(const Position& other) const;

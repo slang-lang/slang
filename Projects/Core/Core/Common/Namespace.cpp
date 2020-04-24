@@ -27,26 +27,26 @@ Namespace::~Namespace()
 	MethodCollection tmpMethods = mMethods;
 	Symbols tmpSymbols = mSymbols;
 
-	for ( MethodCollection::iterator methIt = tmpMethods.begin(); methIt != tmpMethods.end(); ++methIt ) {
-		for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
-			if ( symIt->second == (*methIt) ) {
-				mSymbols.erase(symIt->first);
+	for ( auto& tmpMethod : tmpMethods ) {
+		for ( auto& tmpSymbol : tmpSymbols ) {
+			if ( tmpSymbol.second == tmpMethod ) {
+				mSymbols.erase(tmpSymbol.first);
 			}
 		}
 
-		mMethods.erase((*methIt));
-		delete (*methIt);
+		mMethods.erase(tmpMethod);
+		delete tmpMethod;
 	}
 
 	tmpSymbols = mSymbols;
-	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt) {
-		if ( symIt->second ) {
-			switch ( symIt->second->getSymbolType() ) {
+	for ( auto& tmpSymbol : tmpSymbols ) {
+		if ( tmpSymbol.second ) {
+			switch ( tmpSymbol.second->getSymbolType() ) {
 				case Symbol::IType::NamespaceSymbol:
-					delete symIt->second;
-					symIt->second = 0;
+					delete tmpSymbol.second;
+					tmpSymbol.second = 0;
 
-					mSymbols.erase(symIt->first);
+					mSymbols.erase(tmpSymbol.first);
 					break;
 				default:
 					break;
@@ -73,14 +73,14 @@ std::string Namespace::ToString(unsigned int indent) const
 	result += " " + Mutability::convert(mMutability);
 	result += " {\n";
 
-	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-		switch ( it->second->getSymbolType() ) {
+	for ( const auto& symbol : mSymbols ) {
+		switch ( symbol.second->getSymbolType() ) {
 			case Symbol::IType::BluePrintObjectSymbol:
 				continue;
 			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::ObjectSymbol:
-				result += it->second->ToString(indent + 1) + "\n";
+				result += symbol.second->ToString(indent + 1) + "\n";
 				break;
 		}
 	}

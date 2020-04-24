@@ -5,6 +5,7 @@
 
 // Library includes
 #include <string>
+#include <utility>
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
@@ -30,9 +31,9 @@ public:
 	  mMutability(Mutability::Modify),
 	  mName(type)
 	{ }
-	TypeDeclaration(const std::string& type, const PrototypeConstraints& constraints, Mutability::E mutability = Mutability::Modify)
+	TypeDeclaration(const std::string& type, PrototypeConstraints constraints, Mutability::E mutability = Mutability::Modify)
 	: mCombinedName(type),
-	  mConstraints(constraints),
+	  mConstraints(std::move(constraints)),
 	  mMutability(mutability),
 	  mName(type)
 	{ }

@@ -4,6 +4,7 @@
 
 // Library includes
 #include <sstream>
+#include <utility>
 
 // Project includes
 
@@ -14,8 +15,8 @@ namespace Slang {
 namespace Common {
 
 
-Position::Position(const std::string& file, unsigned int line, unsigned int column)
-: mFile(file), mLine(line), mColumn(column)
+Position::Position(std::string file, unsigned int line, unsigned int column)
+: mFile(std::move(file)), mLine(line), mColumn(column)
 {
 }
 
