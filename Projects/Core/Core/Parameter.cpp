@@ -7,6 +7,8 @@
 // Project includes
 #include <Core/Consts.h>
 
+#include <utility>
+
 // Namespace declarations
 
 
@@ -65,14 +67,14 @@ Parameter::Parameter()
 {
 }
 
-Parameter::Parameter(const std::string& name, const Common::TypeDeclaration& type, const Runtime::AtomicValue& value,
+Parameter::Parameter(std::string name, Common::TypeDeclaration type, const Runtime::AtomicValue& value,
 					 bool hasDefaultValue, Mutability::E mutability, AccessMode::E access, Runtime::Reference reference)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
   mMutability(mutability),
-  mName(name),
+  mName(std::move(name)),
   mReference(reference),
-  mType(type),
+  mType(std::move(type)),
   mValue(value)
 {
 }

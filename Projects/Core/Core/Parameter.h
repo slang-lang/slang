@@ -40,8 +40,8 @@ public:
 
 public:
 	Parameter();
-	Parameter(const std::string& name,
-			  const Common::TypeDeclaration& type,
+	Parameter(std::string name,
+			  Common::TypeDeclaration type,
 			  const Runtime::AtomicValue& value,
 			  bool hasDefaultValue,
 			  Mutability::E mutability,

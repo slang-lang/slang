@@ -42,7 +42,7 @@ public:
 	};
 
 public:
-	Symbol(const std::string& name, IType::E type, Visibility::E visibility = Visibility::Public);
+	Symbol(std::string name, IType::E type, Visibility::E visibility = Visibility::Public);
 	virtual ~Symbol() = default;
 
 public:

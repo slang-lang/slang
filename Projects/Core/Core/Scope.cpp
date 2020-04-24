@@ -75,7 +75,7 @@ void SymbolScope::deinit()
 		delete tmpSymbol.second;
 	}
 
-	mParent = 0;
+	mParent = nullptr;
 }
 
 IScope* SymbolScope::getEnclosingScope() const
@@ -129,7 +129,7 @@ Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 		return mParent->resolve(name, onlyCurrentScope, visibility);
 	}
 
-	return 0;
+	return nullptr;
 }
 
 void SymbolScope::undefine(const std::string& name)
@@ -228,14 +228,14 @@ void MethodScope::deinit()
 {
 	MethodCollection tmpMethods = mMethods;
 
-	for (auto tmpMethod : tmpMethods) {
+	for ( auto tmpMethod : tmpMethods ) {
 		mMethods.erase(tmpMethod);
 		delete tmpMethod;
 	}
 
 	Symbols tmpSymbols = mSymbols;
 
-	for (auto & tmpSymbol : tmpSymbols) {
+	for ( auto& tmpSymbol : tmpSymbols ) {
 		mSymbols.erase(tmpSymbol.first);
 
 		if ( tmpSymbol.first == "base" || tmpSymbol.first == "this" ) {
@@ -245,7 +245,7 @@ void MethodScope::deinit()
 		delete tmpSymbol.second;
 	}
 
-	mParent = 0;
+	mParent = nullptr;
 }
 
 MethodScope::MethodCollection::const_iterator MethodScope::endMethods() const
@@ -326,7 +326,7 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 		Symbol* base = resolve(IDENTIFIER_BASE, true, Visibility::Designtime);
 		if ( base ) {
 			Visibility::E parentVisibility = visibility == Visibility::Private ? Visibility::Protected : visibility;
-			Symbol* result = 0;
+			Symbol* result = nullptr;
 
 			switch ( base->getSymbolType() ) {
 				case Symbol::IType::BluePrintObjectSymbol: result = dynamic_cast<Designtime::BluePrintObject*>(base)->resolve(name, true, parentVisibility); break;
@@ -361,7 +361,7 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 	if ( visibility != Visibility::Designtime ) {
 		Symbol* base = resolve(IDENTIFIER_BASE, true, Visibility::Designtime);
 		if ( base ) {
-			MethodSymbol* result = 0;
+			MethodSymbol* result = nullptr;
 
 			switch ( base->getSymbolType() ) {
 				case Symbol::IType::BluePrintObjectSymbol: result = dynamic_cast<Designtime::BluePrintObject*>(base)->resolveMethod(name, params, true, visibility); break;
@@ -380,7 +380,7 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 		return dynamic_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope, visibility);
 	}
 
-	return 0;
+	return nullptr;
 }
 
 void MethodScope::undefine(const std::string& name)

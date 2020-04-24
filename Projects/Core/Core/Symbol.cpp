@@ -2,6 +2,8 @@
 // Header
 #include "Symbol.h"
 
+#include <utility>
+
 // Library includes
 
 // Project includes
@@ -12,8 +14,8 @@
 namespace Slang {
 
 
-Symbol::Symbol(const std::string& name, IType::E type, Visibility::E visibility)
-: mName(name),
+Symbol::Symbol(std::string name, IType::E type, Visibility::E visibility)
+: mName(std::move(name)),
   mType(type),
   mVisibility(visibility)
 {

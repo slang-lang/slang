@@ -22,7 +22,7 @@ bool isAtomicType(const std::string& type)
 {
 	static const StringSet atomicTypes = provideAtomicTypes();
 
-	StringSet::const_iterator it = atomicTypes.find(type);
+	auto it = atomicTypes.find(type);
 
 	return it != atomicTypes.end();
 }
@@ -153,10 +153,10 @@ std::string toString(const ParameterList& list)
 {
 	std::string result;
 
-	for ( ParameterList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+	for ( auto it = list.begin(); it != list.end(); ++it ) {
 		result += toString((*it));
 
-		ParameterList::const_iterator copy = it;
+		auto copy = it;
 		if ( ++copy != list.end() ) {
 			result += ", ";
 		}
@@ -169,10 +169,10 @@ std::string toString(const Runtime::ReferencesList& list)
 {
 	std::string result;
 
-	for ( Runtime::ReferencesList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+	for ( auto it = list.begin(); it != list.end(); ++it ) {
 		//result += it->getAddress();
 
-		Runtime::ReferencesList::const_iterator copy = it;
+		auto copy = it;
 		if ( ++copy != list.end() ) {
 			result += ", ";
 		}
@@ -185,10 +185,10 @@ std::string toString(const StringList& list)
 {
 	std::string result;
 
-	for ( StringList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+	for ( auto it = list.begin(); it != list.end(); ++it ) {
 		result += (*it);
 
-		StringList::const_iterator copy = it;
+		auto copy = it;
 		if ( ++copy != list.end() ) {
 			result += ", ";
 		}

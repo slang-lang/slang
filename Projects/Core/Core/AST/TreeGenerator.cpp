@@ -432,7 +432,7 @@ Node* TreeGenerator::parseInfix(TokenIterator &start)
 
 			Expression* exp = dynamic_cast<Expression*>( parseTerm(++start) );
 
-			resolveType(exp->getResultType(), operation, std::string(__unary__));
+			resolveType(exp->getResultType(), operation, std::string(_unary_));
 
 			infix = new UnaryExpression(operation, exp, UnaryExpression::ValueType::RValue);
 		} break;

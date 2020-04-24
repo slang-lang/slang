@@ -212,8 +212,8 @@ void TypeSystem::initDouble()
 	define(DoubleObject::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME, StringObject::TYPENAME);
 
 	// unary operations
-	define(DoubleObject::TYPENAME, Token::Type::MATH_ADDITION, __unary__, DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, __unary__, DoubleObject::TYPENAME);
+	define(DoubleObject::TYPENAME, Token::Type::MATH_ADDITION, _unary_, DoubleObject::TYPENAME);
+	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, _unary_, DoubleObject::TYPENAME);
 }
 
 void TypeSystem::initFloat()
@@ -289,8 +289,8 @@ void TypeSystem::initFloat()
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME, StringObject::TYPENAME);
 
 	// unary operations
-	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, __unary__, FloatObject::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, __unary__, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, _unary_, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, _unary_, FloatObject::TYPENAME);
 }
 
 void TypeSystem::initInt()
@@ -372,8 +372,8 @@ void TypeSystem::initInt()
 	define(IntegerObject::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME, StringObject::TYPENAME);
 
 	// unary operations
-	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, __unary__, IntegerObject::TYPENAME);
-	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, __unary__, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, _unary_, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, _unary_, IntegerObject::TYPENAME);
 }
 
 void TypeSystem::initObject()

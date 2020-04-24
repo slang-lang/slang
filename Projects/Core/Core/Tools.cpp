@@ -24,7 +24,7 @@ void expect(Token::Type::E expected, const TokenIterator& found)
 
 TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E terminator)
 {
-	TokenIterator tmp = start;
+	auto tmp = start;
 
 	while ( tmp->type() != type ) {
 		if ( tmp->type() == terminator ) {
@@ -41,7 +41,7 @@ TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E 
 TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfter, Token::Type::E terminator)
 {
 	int count = 0;
-	TokenIterator tmp = start;
+	auto tmp = start;
 	int openBrackets = 0;
 
 	while ( start->type() != Token::Type::BRACKET_CLOSE || openBrackets ) {
@@ -98,7 +98,7 @@ TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator en
 TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateErrorAfter, Token::Type::E terminator)
 {
 	int count = 0;
-	TokenIterator tmp = start;
+	auto tmp = start;
 	int openParenthesis = 0;
 
 	while ( start->type() != Token::Type::PARENTHESIS_CLOSE || openParenthesis ) {
