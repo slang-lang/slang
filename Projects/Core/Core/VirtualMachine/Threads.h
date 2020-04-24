@@ -50,7 +50,7 @@ public:
 
 public:
 	Thread();
-	Thread(Common::ThreadId id);
+	explicit Thread(Common::ThreadId id);
 	~Thread();
 
 public:	// Initialization
@@ -90,8 +90,8 @@ private:
 class Threads
 {
 public:
-	Threads();
-	~Threads();
+	Threads() = default;
+	~Threads() = default;
 
 public:
 	void deinit();

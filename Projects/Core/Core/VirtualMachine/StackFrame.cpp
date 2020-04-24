@@ -11,6 +11,8 @@
 #include <Core/Types.h>
 #include <Tools/Strings.h>
 
+#include <utility>
+
 // Namespace declarations
 
 
@@ -25,16 +27,16 @@ StackFrame::Scope::Scope(IScope* scope, bool allowDelete, bool allowBreakAndCont
 }
 
 
-StackFrame::StackFrame(unsigned long level, IScope* scope, const ParameterList& params)
+StackFrame::StackFrame(unsigned long level, IScope* scope, ParameterList params)
 : mLevel(level),
-  mParameters(params),
+  mParameters(std::move(params)),
   mScope(scope)
 {
 }
 
 StackFrame::~StackFrame()
 {
-	mScope = 0;
+	mScope = nullptr;
 }
 
 bool StackFrame::allowBreakAndContinue() const

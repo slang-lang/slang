@@ -19,7 +19,6 @@
 #include <Core/Defines.h>
 #include <Core/Designtime/Analyser.h>
 #include <Core/Runtime/Script.h>
-#include <Core/Tools.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
@@ -39,7 +38,7 @@ void read_directory(const std::string& dirname, std::vector<std::string>& files)
     DIR* dirp = opendir(dirname.c_str());
     struct dirent * dp;
 
-    while ( (dp = readdir(dirp)) != NULL ) {
+    while ( (dp = readdir(dirp)) != nullptr ) {
         std::string file(dp->d_name);
 
         if ( file != "." && file != ".." ) {
@@ -60,15 +59,15 @@ VirtualMachine::VirtualMachine()
 
 VirtualMachine::~VirtualMachine()
 {
-	for ( ScriptCollection::iterator it = mScripts.begin(); it != mScripts.end(); ++it ) {
-		delete (*it);
+	for ( auto& script : mScripts ) {
+		delete script;
 	}
 	mScripts.clear();
 
 	Controller::Instance().deinit();
 
-	for ( Extensions::ExtensionList::iterator it = mExtensions.begin(); it != mExtensions.end(); ++it ) {
-		delete (*it);
+	for ( auto& extension : mExtensions ) {
+		delete extension;
 	}
 }
 
@@ -105,7 +104,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 	}
 
 
-	Script *script = new Script();
+	auto *script = new Script();
 	mScripts.insert(script);
 
 	Designtime::Analyser analyser(mSettings.DoSanityCheck);
@@ -116,8 +115,8 @@ Script* VirtualMachine::createScript(const std::string& content)
 	for ( StringList::const_iterator libIt = libraries.begin(); libIt != libraries.end(); ++libIt ) {
 		bool imported = false;
 
-		for ( StringSet::const_iterator folderIt = mLibraryFolders.begin(); folderIt != mLibraryFolders.end(); ++folderIt ) {
-			std::string filename = Utils::Tools::Files::BuildLibraryPath((*folderIt), (*libIt));
+		for ( const auto& libraryFolder : mLibraryFolders ) {
+			std::string filename = Utils::Tools::Files::BuildLibraryPath(libraryFolder, (*libIt));
 
 			if ( loadLibrary(filename) ) {
 				imported = true;
@@ -217,7 +216,7 @@ void VirtualMachine::init()
 		read_directory(SHARED_LIBRARY_DIRECTORY, sharedLibraries);
 
 		// load installed shared libraries
-		for ( std::string library : sharedLibraries ) {
+		for ( const std::string& library : sharedLibraries ) {
 			OSdebug("Loading extensions " + library);
 
 			addExtension( mExtensionManager.load(library), library );
@@ -284,11 +283,11 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 	mImportedLibraries.insert(library);
 
 	const std::list<std::string>& libraries = analyser.getLibraryReferences();
-	for ( std::list<std::string>::const_iterator libIt = libraries.begin(); libIt != libraries.end(); ++libIt ) {
+	for ( const auto& lib : libraries ) {
 		bool imported = false;
 
-		for ( StringSet::const_iterator folderIt = mLibraryFolders.begin(); folderIt != mLibraryFolders.end(); ++folderIt ) {
-			std::string filename = Utils::Tools::Files::BuildLibraryPath((*folderIt), (*libIt));
+		for ( const auto& libraryFolder : mLibraryFolders ) {
+			std::string filename = Utils::Tools::Files::BuildLibraryPath(libraryFolder, lib);
 
 			if ( loadLibrary(filename) ) {
 				imported = true;
@@ -297,7 +296,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		}
 
 		if ( !imported ) {
-			throw Common::Exceptions::Exception("could not resolve import '" + (*libIt) + "'");
+			throw Common::Exceptions::Exception("could not resolve import '" + lib + "'");
 		}
 	}
 
@@ -306,8 +305,8 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 void VirtualMachine::printLibraryFolders()
 {
-	for ( StringSet::const_iterator it = mLibraryFolders.begin(); it != mLibraryFolders.end(); ++it ) {
-		OSdebug("Library: " + (*it));
+	for ( const auto& libraryFolder : mLibraryFolders ) {
+		OSdebug("Library: " + libraryFolder);
 	}
 }
 
@@ -328,7 +327,7 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 
 	Thread* thread = Controller::Instance().threads()->createThread();
 
-	Runtime::ControlFlow::E controlflow = thread->execute(NULL, main, params, result);
+	Runtime::ControlFlow::E controlflow = thread->execute(nullptr, main, params, result);
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		throw Runtime::ControlFlow::Throw;
 	}

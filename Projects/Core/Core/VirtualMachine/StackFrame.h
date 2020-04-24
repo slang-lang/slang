@@ -37,7 +37,7 @@ public:
 	typedef std::list<Scope> Scopes;
 
 public:
-	StackFrame(unsigned long level, IScope* scope, const ParameterList& params);
+	StackFrame(unsigned long level, IScope* scope, ParameterList params);
 	~StackFrame();
 
 public:

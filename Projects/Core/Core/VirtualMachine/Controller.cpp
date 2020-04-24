@@ -14,16 +14,12 @@ namespace Slang {
 
 
 Controller::Controller()
-: mGlobalScope(0),
-  mMemory(0),
+: mGlobalScope(nullptr),
+  mMemory(nullptr),
   mPhase(Phase::Startup),
-  mRepository(0),
-  mThreads(0),
+  mRepository(nullptr),
+  mThreads(nullptr),
   mTypeSystem(0)
-{
-}
-
-Controller::~Controller()
 {
 }
 
@@ -39,7 +35,7 @@ void Controller::deinit()
 	assert(mPhase > Phase::Startup);
 
 	delete mGlobalScope;
-	mGlobalScope = 0;
+	mGlobalScope = nullptr;
 
 	mMemory->deinit();
 	mThreads->deinit();
@@ -47,13 +43,13 @@ void Controller::deinit()
 	mTypeSystem->deinit();
 
 	delete mThreads;
-	mThreads = 0;
+	mThreads = nullptr;
 	delete mMemory;
-	mMemory = 0;
+	mMemory = nullptr;
 	delete mRepository;
-	mRepository = 0;
+	mRepository = nullptr;
 	delete mTypeSystem;
-	mTypeSystem = 0;
+	mTypeSystem = nullptr;
 
 	mPhase = Phase::Shutdown;
 }
@@ -68,7 +64,7 @@ void Controller::init()
 	assert(mPhase == Phase::Startup || mPhase == Phase::Shutdown);
 
 	assert(!mGlobalScope);
-	mGlobalScope = new Common::Namespace(VALUE_NONE, 0);
+	mGlobalScope = new Common::Namespace(VALUE_NONE, nullptr);
 
 	mMemory = new Memory();
 	mRepository = new Repository();

@@ -46,7 +46,7 @@ public:
 	};
 
 public:
-	~Controller();
+	~Controller() = default;
 
 public:
 	void deinit();

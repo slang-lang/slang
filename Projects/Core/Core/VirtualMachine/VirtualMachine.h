@@ -64,9 +64,9 @@ public:
 	Script* createScriptFromFile(const std::string& filename);
 	Script* createScriptFromString(const std::string& content);
 
-	void run(Script* script, const ParameterList& params = ParameterList(), Runtime::Object* result = NULL);
-	void runScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList(), Runtime::Object* result = NULL);
-	void runScriptFromString(const std::string& content, const ParameterList& params = ParameterList(), Runtime::Object* result = NULL);
+	void run(Script* script, const ParameterList& params = ParameterList(), Runtime::Object* result = nullptr);
+	void runScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList(), Runtime::Object* result = nullptr);
+	void runScriptFromString(const std::string& content, const ParameterList& params = ParameterList(), Runtime::Object* result = nullptr);
 
 private:
 	typedef std::set<Script*> ScriptCollection;

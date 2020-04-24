@@ -13,7 +13,6 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/UserObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
-#include <Core/Designtime/Exceptions.h>
 
 // Namespace declarations
 using namespace Slang::Designtime;
@@ -21,14 +20,6 @@ using namespace Slang::Designtime;
 
 namespace Slang {
 
-
-TypeSystem::TypeSystem()
-{
-}
-
-TypeSystem::~TypeSystem()
-{
-}
 
 void TypeSystem::define(const std::string& left, Token::Type::E operation, const std::string& right, const std::string& result)
 {
@@ -61,7 +52,7 @@ bool TypeSystem::exists(const std::string& left, Token::Type::E operation, const
 		return false;
 	}
 
-	return mTypeMap[left][operation][right] != "";
+	return !mTypeMap[left][operation][right].empty();
 }
 
 void TypeSystem::deinit()

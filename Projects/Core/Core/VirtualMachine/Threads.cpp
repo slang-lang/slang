@@ -5,6 +5,7 @@
 // Library includes
 #include <iostream>
 #include <sstream>
+#include <utility>
 
 // Project includes
 #include <Core/AST/TreeInterpreter.h>
@@ -39,7 +40,7 @@ Thread::~Thread()
 StackFrame* Thread::currentFrame() const
 {
 	if ( mStackFrames.empty() ) {
-		return 0;
+		return nullptr;
 	}
 
 	return mStackFrames.back();
@@ -73,7 +74,7 @@ Runtime::ExceptionData& Thread::exception()
 
 void Thread::exception(Runtime::ExceptionData data)
 {
-	mExceptionData = data;
+	mExceptionData = std::move(data);
 }
 
 void Thread::exception(Runtime::Object* data, const Common::Position& position)
@@ -84,13 +85,13 @@ void Thread::exception(Runtime::Object* data, const Common::Position& position)
 StackFrame* Thread::frame(Common::FrameId frameId) const
 {
 	size_t idx = 0;
-	for ( StackFrames::const_iterator it = mStackFrames.cbegin(); it != mStackFrames.cend(); ++it, ++idx ) {
+	for ( auto it = mStackFrames.cbegin(); it != mStackFrames.cend(); ++it, ++idx ) {
 		if ( idx == frameId ) {
 			return (*it);
 		}
 	}
 
-	return 0;
+	return nullptr;
 }
 
 Common::ThreadId Thread::getId() const
@@ -134,7 +135,7 @@ void Thread::print()
 void Thread::pushFrame(IScope* scope, const TokenList& tokens, const ParameterList& params)
 {
 	// create new stack frame
-	StackFrame* frame = new StackFrame(mStackFrames.size(), scope, params);
+	auto* frame = new StackFrame(mStackFrames.size(), scope, params);
 	// push scope
 	frame->pushScope(scope, false, false);
 	// push tokens (although maybe none are present)
@@ -147,25 +148,17 @@ std::string Thread::stackTrace() const
 {
 	std::stringstream ss;
 
-	for ( StackFrames::const_iterator it = mStackFrames.begin(); it != mStackFrames.end(); ++it ) {
-		ss << "Thread " << mId << ": " << (*it)->toString() << std::endl;
+	for ( const auto& frame : mStackFrames ) {
+		ss << "Thread " << mId << ": " << frame->toString() << std::endl;
 	}
 
 	return ss.str();
 }
 
 
-Threads::Threads()
-{
-}
-
-Threads::~Threads()
-{
-}
-
 Thread* Threads::createThread()
 {
-	Thread* t = new Thread(mThreads.size());
+	auto* t = new Thread(mThreads.size());
 	// initialize thread
 	t->init();
 
@@ -178,12 +171,12 @@ void Threads::deinit()
 {
 	// TODO: stop all currently running threads
 
-	for ( InternalThreads::iterator it = mThreads.begin(); it != mThreads.end(); ++it ) {
+	for ( auto& thread : mThreads) {
 		// finalize thread
-		it->second->deinit();
+		thread.second->deinit();
 
-		delete it->second;
-		it->second = 0;
+		delete thread.second;
+		thread.second = 0;
 	}
 	mThreads.clear();
 }
@@ -202,7 +195,7 @@ unsigned int Threads::getNumThreads() const
 
 Thread* Threads::getThread(Common::ThreadId id) const
 {
-	InternalThreads::const_iterator it = mThreads.find(id);
+	auto it = mThreads.find(id);
 	if ( it == mThreads.end() ) {
 		// queried thread does not exist!
 		throw Runtime::Exceptions::RuntimeException("invalid thread id");
@@ -218,8 +211,8 @@ void Threads::init()
 
 void Threads::print()
 {
-	for ( InternalThreads::iterator it = mThreads.begin(); it != mThreads.end(); ++it ) {
-		it->second->print();
+	for ( auto& thread : mThreads ) {
+		thread.second->print();
 	}
 }
 

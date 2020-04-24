@@ -33,7 +33,7 @@ private:
 		}
 
 		std::string& operator[](const std::string& index) {
-			std::map<std::string, std::string>::iterator it = mRight.find(index);
+			auto it = mRight.find(index);
 
 			return it->second;
 		}
@@ -53,7 +53,7 @@ private:
 		}
 
 		Right& operator[](Token::Type::E index) {
-			std::map<Token::Type::E, Right>::iterator it = mOperation.find(index);
+			auto it = mOperation.find(index);
 
 			return it->second;
 		}
@@ -73,7 +73,7 @@ private:
 		}
 
 		Operation& operator[](const std::string& index) {
-			std::map<std::string, Operation>::iterator it = mTypes.find(index);
+			auto it = mTypes.find(index);
 
 			return it->second;
 		}
@@ -82,8 +82,8 @@ private:
 	};
 
 public:
-	TypeSystem();
-	~TypeSystem();
+	TypeSystem() = default;
+	~TypeSystem() = default;
 
 public:
 	void deinit();

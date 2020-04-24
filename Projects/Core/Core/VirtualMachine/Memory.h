@@ -27,7 +27,7 @@ class Memory
 {
 public:
 	Memory();
-	~Memory();
+	~Memory() = default;
 
 public:
 	void deinit();
@@ -44,7 +44,7 @@ private:
 	class RefCount
 	{
 	public:
-		explicit RefCount(Runtime::Object* object = 0)
+		explicit RefCount(Runtime::Object* object = nullptr)
 		: mCount(0),
 		  mObject(object)
 		{ }

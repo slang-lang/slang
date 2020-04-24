@@ -5,7 +5,7 @@
 // Library includes
 #ifdef _WIN32
 #else
-#	include <stdint.h>
+#	include <cstdint>
 #endif
 
 // Project includes
@@ -25,10 +25,6 @@ Memory::Memory()
 {
 }
 
-Memory::~Memory()
-{
-}
-
 void Memory::add(const Runtime::Reference& ref)
 {
 	if ( !ref.isValid() ) {
@@ -36,7 +32,7 @@ void Memory::add(const Runtime::Reference& ref)
 		return;
 	}
 
-	MemoryMap::iterator it = mMemory.find(ref);
+	auto it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
 		throw Common::Exceptions::Exception("invalid access for address " + Utils::Tools::toString(ref.getAddress()));
 	}
@@ -46,15 +42,15 @@ void Memory::add(const Runtime::Reference& ref)
 
 void Memory::deinit()
 {
-	for ( MemoryMap::iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
+	for ( auto& it : mMemory ) {
 		// force delete
-		delete it->second.mObject;
+		delete it.second.mObject;
 	}
 }
 
 void Memory::deleteObject(const Runtime::Reference& ref)
 {
-	MemoryMap::iterator it = mMemory.find(ref);
+	auto it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
 		throw Common::Exceptions::Exception("invalid delete for address " + Utils::Tools::toString(ref.getAddress()));
 	}
@@ -63,7 +59,7 @@ void Memory::deleteObject(const Runtime::Reference& ref)
 
 	// reset reference counter
 	it->second.mCount = 0;
-	it->second.mObject = NULL;
+	it->second.mObject = nullptr;
 
 	// ... and remove address from memory
 	mMemory.erase(it);
@@ -80,12 +76,12 @@ void Memory::deleteObject(const Runtime::Reference& ref)
 
 Runtime::Object* Memory::get(const Runtime::Reference& ref) const
 {
-	MemoryMap::const_iterator it = mMemory.find(ref);
+	auto it = mMemory.find(ref);
 	if ( it != mMemory.end() ) {
 		return it->second.mObject;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void Memory::init()
@@ -111,7 +107,7 @@ void Memory::remove(const Runtime::Reference& ref)
 		return;
 	}
 
-	MemoryMap::iterator it = mMemory.find(ref);
+	auto it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
 		throw Common::Exceptions::Exception("invalid access for address " + Utils::Tools::toString(ref.getAddress()));
 	}
