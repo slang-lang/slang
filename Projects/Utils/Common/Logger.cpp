@@ -3,9 +3,7 @@
 #include "Logger.h"
 
 // Library includes
-#include <stdarg.h>
-#include <stdlib.h>
-#include <time.h>
+#include <cstdlib>
 
 // Project include
 #include <Tools/Strings.h>
@@ -19,7 +17,7 @@ namespace Common {
 
 
 FileLogger::FileLogger(char* logfile)
-: mContext(NULL),
+: mContext(nullptr),
   mHasParent(false),
   mLogFile(logfile),
   mLoudness(FileLogger::LoudnessMethod)
@@ -29,10 +27,10 @@ FileLogger::FileLogger(char* logfile)
 	}
 }
 
-FileLogger::FileLogger(const ILogger* parent, const std::string& className, const std::string& key)
-: mContext(NULL),
+FileLogger::FileLogger(const ILogger* parent, const std::string& className, std::string key)
+: mContext(nullptr),
   mHasParent(false),
-  mKey(key),
+  mKey(std::move(key)),
   mLogFile("logger.log"),
   mLoudness(FileLogger::LoudnessMethod)
 {

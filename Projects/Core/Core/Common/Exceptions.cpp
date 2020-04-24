@@ -1,5 +1,7 @@
 
 // Header
+#include <Common/Exceptions.h>
+
 #include "Exceptions.h"
 
 // Library includes

@@ -4,9 +4,8 @@
 
 // Library includes
 #include <cassert>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <time.h>
+#include <cstdlib>
+#include <utility>
 
 // Project includes
 #include <Tools/Strings.h>
@@ -20,17 +19,17 @@ namespace Common {
 
 
 StdOutLogger::StdOutLogger()
-: mContext(NULL),
+: mContext(nullptr),
   mHasParent(false),
   mLoudness(ILogger::LoudnessDebug)
 {
 	mContext = new StdOutContext();
 }
 
-StdOutLogger::StdOutLogger(const ILogger *parent, const std::string& className, const std::string& key)
-: mContext(NULL),
+StdOutLogger::StdOutLogger(const ILogger *parent, const std::string& className, std::string key)
+: mContext(nullptr),
   mHasParent(false),
-  mKey(key),
+  mKey(std::move(key)),
   mLoudness(ILogger::LoudnessDebug)
 {
 	if ( parent ) {

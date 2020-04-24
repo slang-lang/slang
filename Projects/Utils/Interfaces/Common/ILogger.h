@@ -23,7 +23,7 @@ class IContext;
 class ILogger
 {
 public:
-	virtual ~ILogger() { }
+	virtual ~ILogger() = default;
 
 public:
 	static const int LoudnessMute = -1;

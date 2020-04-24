@@ -6,6 +6,7 @@
 // Library includes
 #include <exception>
 #include <string>
+#include <utility>
 
 // Project includes
 
@@ -22,10 +23,9 @@ namespace Exceptions {
 class Exception : public std::exception
 {
 public:
-	explicit Exception(const std::string& text)
-	: mText(text)
+	explicit Exception(std::string text)
+	: mText(std::move(text))
 	{ }
-	virtual ~Exception() throw() { }
 
 public:
 #ifdef __WIN32
@@ -50,7 +50,7 @@ public:
     // Unsupported platform
 #endif
 #elif defined __linux
-	virtual const char* what() const throw () {
+	const char* what() const _NOEXCEPT () {
 		return mText.c_str();
 	}
 #endif

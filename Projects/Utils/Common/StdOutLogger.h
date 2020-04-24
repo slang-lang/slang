@@ -22,7 +22,7 @@ class StdOutLogger : public ILogger
 {
 public:
 	StdOutLogger();
-	StdOutLogger(const ILogger* parent, const std::string& className, const std::string& key = "");
+	StdOutLogger(const ILogger* parent, const std::string& className, std::string key = "");
 	~StdOutLogger();
 
 public:

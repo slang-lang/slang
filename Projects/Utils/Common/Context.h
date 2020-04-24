@@ -21,7 +21,7 @@ namespace Common {
 class IContext
 {
 public:
-	virtual ~IContext() { }
+	virtual ~IContext() = default;
 
 public:
 	virtual void write(const char* msg) = 0;

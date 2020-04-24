@@ -10,12 +10,11 @@
 
 
 // Library includes
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <string.h>
 
 #define UnstreamLogMessage(msgstr, ostream_expr) \
 	std::ostringstream _ostr_; \
@@ -89,9 +88,9 @@ namespace Common {
 class FileLogger : public ILogger
 {
 public:
-	FileLogger(char* logfile);
-	FileLogger(const ILogger* parent, const std::string& className, const std::string& key = "");
-	virtual ~FileLogger();
+	explicit FileLogger(char* logfile);
+	FileLogger(const ILogger* parent, const std::string& className, std::string key = "");
+	~FileLogger();
 
 public:
 	const std::string& getClassName() const;
