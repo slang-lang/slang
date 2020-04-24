@@ -171,7 +171,7 @@ endfunction()
 
 function(_could_not_find_json)
   MESSAGE(STATUS "Could not find (the correct version of) Json.")
-  MESSAGE(STATUS "ObjectiveScript currently requires ${JSON_PACKAGE_NAME}\n")
+  MESSAGE(STATUS "Slang currently requires ${JSON_PACKAGE_NAME}\n")
   MESSAGE(FATAL_ERROR "You can download from ${JSON_DOWNLOAD_URL}")
 endfunction()
 
