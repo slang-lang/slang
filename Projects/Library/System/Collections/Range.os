@@ -11,7 +11,7 @@ public object Range implements ICollection, IIterable {
 	/*
 	 * Range factory method
 	 */
-	public static Range Create(int _start, int _end, int _step = 1) {
+	public Range Create(int _start, int _end, int _step = 1) static {
 		return new Range(_start, _end, _step);
 	}
 

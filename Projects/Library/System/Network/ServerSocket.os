@@ -9,7 +9,7 @@ public object ServerSocket {
 	/*
 	 * Public constants
 	 */
-	public static int DEFAULT_QUEUE_LENGTH const = 50;
+	public int DEFAULT_QUEUE_LENGTH const static = 50;
 
 	/*
 	 * Default constructor

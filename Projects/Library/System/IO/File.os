@@ -14,7 +14,7 @@ public namespace System.IO {
 	}
 
 	public object File {
-		public static bool FileExists(string filename) {
+		public bool FileExists(string filename) static {
 			var handle = fopen( filename, "r" );
 
 			if ( handle ) {
