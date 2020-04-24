@@ -1,6 +1,6 @@
 
-#ifndef Slang_odepend_Defines_h
-#define Slang_odepend_Defines_h
+#ifndef Slang_slang_pkg_Defines_h
+#define Slang_slang_pkg_Defines_h
 
 
 //#define SLANG_DEBUG

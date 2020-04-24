@@ -1,6 +1,6 @@
 
-#ifndef Slang_odepend_Repository_h
-#define Slang_odepend_Repository_h
+#ifndef Slang_slang_pkg_Repository_h
+#define Slang_slang_pkg_Repository_h
 
 
 // Library includes

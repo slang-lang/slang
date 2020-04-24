@@ -1,6 +1,6 @@
 
-#ifndef Slang_odepend_Dependency_h
-#define Slang_odepend_Dependency_h
+#ifndef Slang_slang_pkg_Dependency_h
+#define Slang_slang_pkg_Dependency_h
 
 
 // Library includes

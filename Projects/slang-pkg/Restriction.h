@@ -1,6 +1,6 @@
 
-#ifndef Slang_odepend_Restriction_h
-#define Slang_odepend_Restriction_h
+#ifndef Slang_slang_pkg_Restriction_h
+#define Slang_slang_pkg_Restriction_h
 
 
 // Library includes
