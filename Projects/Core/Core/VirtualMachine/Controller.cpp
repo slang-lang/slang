@@ -19,7 +19,7 @@ Controller::Controller()
   mPhase(Phase::Startup),
   mRepository(nullptr),
   mThreads(nullptr),
-  mTypeSystem(0)
+  mTypeSystem(nullptr)
 {
 }
 
