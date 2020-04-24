@@ -5,8 +5,9 @@
 // Library includes
 
 // Project includes
-#include <Core/Tools.h>
 #include <Tools/Strings.h>
+
+#include <utility>
 
 // Namespace declarations
 
@@ -80,8 +81,8 @@ AtomicValue::AtomicValue(MemoryId val)
 	mValue.reference_ = val;
 }
 
-AtomicValue::AtomicValue(const std::string& val)
-: mStringValue(val),
+AtomicValue::AtomicValue(std::string val)
+: mStringValue(std::move(val)),
   mType(Type::STRING)
 {
 	mValue.bool_ = false;
@@ -91,56 +92,64 @@ AtomicValue::AtomicValue(const std::string& val)
 	mValue.reference_ = 0;
 }
 
-AtomicValue::~AtomicValue()
-{
-}
-
-void AtomicValue::operator=(bool val)
+AtomicValue& AtomicValue::operator=(bool val)
 {
 	mStringValue = "";
 
 	mType = Type::BOOL;
 	mValue.bool_ = val;
+
+	return *this;
 }
 
-void AtomicValue::operator=(double val)
+AtomicValue& AtomicValue::operator=(double val)
 {
 	mStringValue = "";
 
 	mType = Type::DOUBLE;
 	mValue.double_ = val;
+
+	return *this;
 }
 
-void AtomicValue::operator=(float val)
+AtomicValue& AtomicValue::operator=(float val)
 {
 	mStringValue = "";
 
 	mType = Type::FLOAT;
 	mValue.float_ = val;
+
+	return *this;
 }
 
-void AtomicValue::operator=(int val)
+AtomicValue& AtomicValue::operator=(int val)
 {
 	mStringValue = "";
 
 	mType = Type::INT;
 	mValue.int_ = val;
+
+	return *this;
 }
 
-void AtomicValue::operator=(MemoryId val)
+AtomicValue& AtomicValue::operator=(MemoryId val)
 {
 	mStringValue = "";
 
 	mType = Type::REFERENCE;
 	mValue.reference_ = val;
+
+	return *this;
 }
 
-void AtomicValue::operator=(const std::string& val)
+AtomicValue& AtomicValue::operator=(const std::string& val)
 {
 	mValue.double_ = 0.0;
 
 	mType = Type::STRING;
 	mStringValue = val;
+
+	return *this;
 }
 
 bool AtomicValue::toBool() const

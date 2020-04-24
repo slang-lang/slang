@@ -42,17 +42,17 @@ public:	// Construction
 	AtomicValue(float val);
 	AtomicValue(int val);
 	explicit AtomicValue(MemoryId val);
-	AtomicValue(const std::string& val);
+	AtomicValue(std::string val);
 
-	~AtomicValue();
+	~AtomicValue() = default;
 
 public:	// Assignment
-	void operator=(bool val);
-	void operator=(double val);
-	void operator=(float val);
-	void operator=(int val);
-	void operator=(MemoryId val);
-	void operator=(const std::string& val);
+	AtomicValue& operator=(bool val);
+	AtomicValue& operator=(double val);
+	AtomicValue& operator=(float val);
+	AtomicValue& operator=(int val);
+	AtomicValue& operator=(MemoryId val);
+	AtomicValue& operator=(const std::string& val);
 
 public:	// Conversion
 	bool toBool() const;
@@ -76,7 +76,7 @@ private:
 private:
 	std::string mStringValue;
 	Type::E mType;
-	ValueHolder mValue;
+	ValueHolder mValue{};
 };
 
 

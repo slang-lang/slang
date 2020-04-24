@@ -214,7 +214,7 @@ void FloatObject::operator_unary_minus()
 
 void FloatObject::operator_unary_not()
 {
-	mValue = (float)!mValue.toFloat();
+	mValue = static_cast<float>( !mValue.toFloat() );
 }
 
 
