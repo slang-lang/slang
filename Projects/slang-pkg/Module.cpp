@@ -5,6 +5,8 @@
 // Library includes
 #include <Json/Value.h>
 
+#include <utility>
+
 // Project includes
 
 // Namespace declarations
@@ -15,15 +17,11 @@ Module::Module()
 {
 }
 
-Module::Module(const std::string& name_short, const std::string& version, const std::string& source)
+Module::Module(std::string name_short, const std::string& version, std::string source)
 : mActionNeeded(Action::None),
-  mShortName(name_short),
-  mSource(source),
+  mShortName(std::move(name_short)),
+  mSource(std::move(source)),
   mVersion(version)
-{
-}
-
-Module::~Module()
 {
 }
 
@@ -57,8 +55,8 @@ bool Module::loadFromJson(const Json::Value& value)
 	if ( value.isMember("dependencies") ) {
 		Json::Value dependencies = value["dependencies"];
 
-		for ( Json::Value::Members::const_iterator depIt = dependencies.members().begin(); depIt != dependencies.members().end(); ++depIt ) {
-			Json::Value dependency = (*depIt);
+		for ( const auto& depIt : dependencies.members() ) {
+			Json::Value dependency = depIt;
 
 			std::string moduleName = dependency["module"].asString();
 			std::string source = dependency.isMember("source") ? dependency["source"].asString() : "";

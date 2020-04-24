@@ -1,10 +1,10 @@
 
 // Library includes
 #include <algorithm>
+#include <cstdlib>
 #include <dirent.h>
 #include <set>
 #include <string>
-#include <stdlib.h>
 #ifdef _WIN32
 #	include <direct.h>
 #	define GetCurrentDir _getcwd
@@ -115,7 +115,7 @@ void search(const StringList& params);
 void storeConfig();
 void writeJsonFile(const std::string& filename, Json::Value& result);
 void update();
-void upgrade(StringList params);
+void upgrade(const StringList& params);
 
 
 e_Action mAction = None;
@@ -153,7 +153,7 @@ void addRestriction(const StringList& params)
 
 	Json::Value& restrictions = mConfig["restrictions"];
 
-	StringList::const_iterator paramIt = params.begin();
+	auto paramIt = params.begin();
 
 	std::string module = (*paramIt);
 
@@ -193,10 +193,10 @@ void checkOutdatedModules(Modules& outdatedModules)
 	Modules local = mLocalRepository.getModules();
 	Modules remote = mRemoteRepository.getModules();
 
-	for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
-		for ( Modules::const_iterator remoteIt = remote.begin(); remoteIt != remote.end(); ++remoteIt ) {
-			if ( localIt->mShortName == remoteIt->mShortName && localIt->mVersion < remoteIt->mVersion ) {
-				outdatedModules.insert(*remoteIt);
+	for ( const auto& localIt : local ) {
+		for ( const auto& remoteIt : remote ) {
+			if ( localIt.mShortName == remoteIt.mShortName && localIt.mVersion < remoteIt.mVersion ) {
+				outdatedModules.insert(remoteIt);
 			}
 		}
 	}
@@ -204,14 +204,14 @@ void checkOutdatedModules(Modules& outdatedModules)
 
 bool checkRestrictions(const Module& module)
 {
-	for ( Restrictions::const_iterator resIt = mLocalRestrictions.begin(); resIt != mLocalRestrictions.end(); ++resIt ) {
-		if ( resIt->mModule == module.mShortName ) {
+	for ( const auto& mLocalRestriction : mLocalRestrictions ) {
+		if ( mLocalRestriction.mModule == module.mShortName ) {
 			// check minimal version
-			if ( resIt->mMinVersion.isValid() && module.mVersion < resIt->mMinVersion ) {
+			if ( mLocalRestriction.mMinVersion.isValid() && module.mVersion < mLocalRestriction.mMinVersion ) {
 				return false;
 			}
 			// check maximum version
-			if ( resIt->mMaxVersion.isValid() && resIt->mMaxVersion < module.mVersion ) {
+			if ( mLocalRestriction.mMaxVersion.isValid() && mLocalRestriction.mMaxVersion < module.mVersion ) {
 				return false;
 			}
 		}
@@ -290,8 +290,8 @@ Module collectModuleData(const std::string& path, const std::string& filename)
 
 bool contains(const StringList& list, const std::string& value)
 {
-	for ( StringList::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		if ( (*it) == value ) {
+	for ( const auto& it : list ) {
+		if ( it == value ) {
 			return true;
 		}
 	}
@@ -459,7 +459,7 @@ void info(const StringList& params)
 		return;
 	}
 
-	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
+	for ( auto it = params.begin(); it != params.end(); ++it ) {
 		if ( it != params.begin() ) {
 			std::cout << std::endl;
 		}
@@ -488,11 +488,11 @@ void info(const StringList& params)
 
 	{	// look up module in local repository
 		Modules local = mLocalRepository.getModules();
-		for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
-			if ( localIt->mShortName == moduleName && localIt->mVersion == moduleVersion ) {
+		for ( const auto& localIt : local ) {
+			if ( localIt.mShortName == moduleName && localIt.mVersion == moduleVersion ) {
 				found = true;
 
-				infoModule = (*localIt);
+				infoModule = localIt;
 			}
 		}
 	}
@@ -524,11 +524,11 @@ void info(const StringList& params)
 			std::cout << "<none>" << std::endl;
 		}
 		else {
-			for ( Dependencies::const_iterator depIt = infoModule.mDependencies.begin(); depIt != infoModule.mDependencies.end(); ++depIt ) {
-				std::cout << depIt->mModule << "\t\t";
-				std::cout << "min: " << (depIt->mMinVersion.empty() ? "<not set>" : depIt->mMinVersion);
-				std::cout << "\t\tmax: " << (depIt->mMaxVersion.empty() ? "<not set>" : depIt->mMaxVersion);
-				std::cout << "\t\tsource: " << (depIt->mSource.empty() ? "<not set>" : depIt->mSource);
+			for ( const auto& mDependencie : infoModule.mDependencies ) {
+				std::cout << mDependencie.mModule << "\t\t";
+				std::cout << "min: " << (mDependencie.mMinVersion.empty() ? "<not set>" : mDependencie.mMinVersion);
+				std::cout << "\t\tmax: " << (mDependencie.mMaxVersion.empty() ? "<not set>" : mDependencie.mMaxVersion);
+				std::cout << "\t\tsource: " << (mDependencie.mSource.empty() ? "<not set>" : mDependencie.mSource);
 				std::cout << std::endl;
 			}
 		}
@@ -604,12 +604,12 @@ void install(const StringList& params)
 
 	bool forceVersion = false;
 
-	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
+	for ( const auto& param : params ) {
 		std::string moduleName;
 		std::string source;
 		std::string version;
 
-		Utils::Tools::splitBy((*it), VERSION_DEPERATOR, moduleName, version);
+		Utils::Tools::splitBy(param, VERSION_DEPERATOR, moduleName, version);
 
 		if ( version.empty() ) {
 			Module tmpModule;
@@ -629,12 +629,12 @@ void install(const StringList& params)
 	bool allowInstall = true;
 
 	// add all other requested modules to missing modules to prevent multiple installations of the same modules
-	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
+	for ( const auto& param : params ) {
 		std::string moduleName;
 		std::string source;
 		std::string version;
 
-		Utils::Tools::splitBy((*it), VERSION_DEPERATOR, moduleName, version);
+		Utils::Tools::splitBy(param, VERSION_DEPERATOR, moduleName, version);
 
 		if ( version.empty() ) {
 			Module tmpModule;
@@ -660,17 +660,17 @@ void install(const StringList& params)
 
 	if ( allowInstall ) {
 		Modules missing = mMissingDependencies.getModules();
-		for ( Modules::const_iterator moduleIt = missing.begin(); moduleIt != missing.end(); ++moduleIt ) {
+		for ( const auto& moduleIt : missing ) {
 			Module tmp;
 
-			if ( mLocalRepository.getModule(moduleIt->mShortName, tmp) ) {
-				if ( !forceVersion && !(tmp.mVersion < moduleIt->mVersion) ) {
-					std::cout << "Same or newer version (" << tmp.mVersion.toString() << " vs " << moduleIt->mVersion.toString() << ") of module \"" << moduleIt->mShortName << "\" already installed" << std::endl;
+			if ( mLocalRepository.getModule(moduleIt.mShortName, tmp) ) {
+				if ( !forceVersion && !(tmp.mVersion < moduleIt.mVersion) ) {
+					std::cout << "Same or newer version (" << tmp.mVersion.toString() << " vs " << moduleIt.mVersion.toString() << ") of module \"" << moduleIt.mShortName << "\" already installed" << std::endl;
 					continue;
 				}
 			}
 
-			installModule(mRemoteRepository.getURL(), moduleIt->mShortName);
+			installModule(mRemoteRepository.getURL(), moduleIt.mShortName);
 		}
 	}
 }
@@ -745,8 +745,8 @@ void list()
 
 	std::cout << local.size() << " module(s) installed." << std::endl;
 
-	for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
-		std::cout << localIt->mShortName << "(" << localIt->mVersion.toString() << "): " << localIt->mLongName << std::endl;
+	for ( const auto& localIt : local ) {
+		std::cout << localIt.mShortName << "(" << localIt.mVersion.toString() << "): " << localIt.mLongName << std::endl;
 	}
 }
 
@@ -806,16 +806,16 @@ void loadRestrictions()
 
 	// load restrictions from config
 	Json::Value restrictions = mConfig["restrictions"];
-	for ( Json::Value::Members::const_iterator it = restrictions.members().begin(); it != restrictions.members().end(); ++it ) {
-		std::string moduleName = (*it).key();
+	for ( const auto& it : restrictions.members() ) {
+		std::string moduleName = it.key();
 
 		std::string versionMin;
-		if ( (*it).isMember("version_min") ) {
-			versionMin = (*it)["version_min"].asString();
+		if ( it.isMember("version_min") ) {
+			versionMin = it["version_min"].asString();
 		}
 		std::string versionMax;
-		if ( (*it).isMember("version_max") ) {
-			versionMax = (*it)["version_max"].asString();
+		if ( it.isMember("version_max") ) {
+			versionMax = it["version_max"].asString();
 		}
 
 		mLocalRestrictions.insert(
@@ -939,12 +939,12 @@ void prepareModuleInstallation(const std::string& repo, const Module& installMod
 	Module module = collectModuleData(path, filename);
 
 	Modules local = mLocalRepository.getModules();
-	for ( Dependencies::const_iterator depIt = module.mDependencies.begin(); depIt != module.mDependencies.end(); ++depIt ) {
+	for ( const auto& mDependencie : module.mDependencies ) {
 		bool found = false;
 
 		// look up dependency in already installed modules
-		for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
-			if ( localIt->mShortName == depIt->mModule ) {
+		for ( const auto& localIt : local ) {
+			if ( localIt.mShortName == mDependencie.mModule ) {
 				found = true;
 				break;
 			}
@@ -952,9 +952,9 @@ void prepareModuleInstallation(const std::string& repo, const Module& installMod
 
 		if ( !found ) {
 			// dependent module is not yet installed
-			std::cout << "Need to install dependent module \"" << depIt->mModule << "\"" << std::endl;
+			std::cout << "Need to install dependent module \"" << mDependencie.mModule << "\"" << std::endl;
 
-			Module dependent(depIt->mModule, depIt->mMinVersion, depIt->mSource);
+			Module dependent(mDependencie.mModule, mDependencie.mMinVersion, mDependencie.mSource);
 
 			mMissingDependencies.addModule(dependent);
 
@@ -1030,21 +1030,21 @@ void remove(const StringList& params)
 
 	Modules local = mLocalRepository.getModules();
 
-	for ( StringList::const_iterator moduleIt = params.begin(); moduleIt != params.end(); ++ moduleIt ) {
+	for ( const auto& param : params ) {
 		bool found = false;
 
-		for ( Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
-			if ( localIt->mShortName == (*moduleIt) ) {
+		for ( const auto& localIt : local ) {
+			if ( localIt.mShortName == param ) {
 				found = true;
 
-				std::cout << "Removing module \"" << localIt->mShortName << "\" from \"" << localIt->mInstalledDirectory << "\"..." << std::endl;
+				std::cout << "Removing module \"" << localIt.mShortName << "\" from \"" << localIt.mInstalledDirectory << "\"..." << std::endl;
 
-				execute("rm -r " + localIt->mInstalledDirectory);
+				execute("rm -r " + localIt.mInstalledDirectory);
 			}
 		}
 
 		if ( !found ) {
-			std::cout << "!!! Module \"" << (*moduleIt) << "\" cannot be removed because it is not installed" << std::endl;
+			std::cout << "!!! Module \"" << param << "\" cannot be removed because it is not installed" << std::endl;
 		}
 	}
 }
@@ -1065,8 +1065,8 @@ void removeRestriction(const StringList& params)
 		return;
 	}
 
-	for ( StringList::const_iterator moduleIt = params.begin(); moduleIt != params.end(); ++ moduleIt ) {
-		removeRestriction((*moduleIt));
+	for ( const auto& param : params ) {
+		removeRestriction(param);
 	}
 }
 
@@ -1168,7 +1168,7 @@ void update()
 	}
 }
 
-void upgrade(StringList params)
+void upgrade(const StringList& params)
 {
 	// (1) retrieve outdated modules
 	// (2) list all found modules
@@ -1192,13 +1192,13 @@ void upgrade(StringList params)
 		mParameters.clear();
 
 		std::cout << "New module(s): ";
-		for ( Modules::const_iterator it = outdatedModules.begin(); it != outdatedModules.end(); ++it ) {
-			std::cout << it->mShortName << "(" << it->mVersion.toString() << ")" << " ";
+		for ( const auto& outdatedModule : outdatedModules ) {
+			std::cout << outdatedModule.mShortName << "(" << outdatedModule.mVersion.toString() << ")" << " ";
 
 			// if params contains values upgrade only the modules that are set in mParameters
-			if ( params.empty() || contains(params, it->mShortName)) {
+			if ( params.empty() || contains(params, outdatedModule.mShortName)) {
 				// add outdated module name to global parameters
-				mParameters.push_back(it->toVersionString());
+				mParameters.push_back(outdatedModule.toVersionString());
 			}
 		}
 		std::cout << std::endl;

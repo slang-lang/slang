@@ -33,8 +33,8 @@ public:
 
 public:
 	Module();
-	Module(const std::string& name_short, const std::string& version, const std::string& source);
-	~Module();
+	Module(std::string name_short, const std::string& version, std::string source);
+	~Module() = default;
 
 public:
 	bool operator<(const Module& other) const;

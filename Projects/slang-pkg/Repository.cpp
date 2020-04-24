@@ -5,6 +5,7 @@
 // Library includes
 #include <fstream>
 #include <iostream>
+#include <utility>
 #include <Json/Json.h>
 
 // Project includes
@@ -13,12 +14,8 @@
 // Namespace declarations
 
 
-Repository::Repository(const std::string& name)
-: mName(name)
-{
-}
-
-Repository::~Repository()
+Repository::Repository(std::string name)
+: mName(std::move(name))
 {
 }
 
@@ -34,8 +31,8 @@ void Repository::addModule(const Module& module)
 
 bool Repository::contains(const Module& module) const
 {
-	for ( Modules::const_iterator it = mModules.cbegin(); it != mModules.cend(); ++it ) {
-		if ( it->mShortName == module.mShortName ) {
+	for ( const auto& mModule : mModules ) {
+		if ( mModule.mShortName == module.mShortName ) {
 			return true;
 		}
 	}
@@ -45,9 +42,9 @@ bool Repository::contains(const Module& module) const
 
 bool Repository::getModule(const std::string& shortName, Module& module) const
 {
-	for ( Modules::const_iterator it = mModules.cbegin(); it != mModules.cend(); ++it ) {
-		if ( it->mShortName == shortName ) {
-			module = (*it);
+	for ( const auto& mModule : mModules ) {
+		if ( mModule.mShortName == shortName ) {
+			module = mModule;
 			return true;
 		}
 	}
@@ -78,10 +75,10 @@ bool Repository::processIndex(const Json::Value& value)
 
 	Json::Value modules = value["modules"];
 
-	for ( Json::Value::Members::const_iterator it = modules.members().cbegin(); it != modules.members().cend(); ++it ) {
-		std::string name_short = (*it)["name"].asString();
-		std::string source = it->isMember("source") ? (*it)["source"].asString() : mURL;
-		std::string version = (*it)["version"].asString();
+	for ( const auto& it : modules.members() ) {
+		std::string name_short = it["name"].asString();
+		std::string source = it.isMember("source") ? it["source"].asString() : mURL;
+		std::string version = it["version"].asString();
 
 		Module module(name_short, version, source);
 

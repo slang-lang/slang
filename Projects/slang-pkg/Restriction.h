@@ -6,6 +6,7 @@
 // Library includes
 #include <set>
 #include <string>
+#include <utility>
 
 // Project includes
 #include "Version.h"
@@ -18,16 +19,16 @@
 class Restriction
 {
 public:
-	Restriction(const std::string& module, const SemanticVersionNumber& version_min, const SemanticVersionNumber& version_max)
-	: mMaxVersion(version_max),
-	  mMinVersion(version_min),
-	  mModule(module)
+	Restriction(std::string module, SemanticVersionNumber version_min, SemanticVersionNumber version_max)
+	: mMaxVersion(std::move(version_max)),
+	  mMinVersion(std::move(version_min)),
+	  mModule(std::move(module))
 	{ }
 
-	Restriction(const std::string& module, const std::string& version_min, const std::string& version_max)
+	Restriction(std::string module, const std::string& version_min, const std::string& version_max)
 	: mMaxVersion(SemanticVersionNumber(version_max)),
 	  mMinVersion(SemanticVersionNumber(version_min)),
-	  mModule(module)
+	  mModule(std::move(module))
 	{ }
 
 public:

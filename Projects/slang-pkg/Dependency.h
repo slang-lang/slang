@@ -6,6 +6,7 @@
 // Library includes
 #include <set>
 #include <string>
+#include <utility>
 
 // Project includes
 
@@ -17,11 +18,11 @@
 class Dependency
 {
 public:
-	Dependency(const std::string& module, const std::string& version_min, const std::string& version_max, const std::string& source)
-	: mMaxVersion(version_max),
-	  mMinVersion(version_min),
-	  mModule(module),
-	  mSource(source)
+	Dependency(std::string module, std::string version_min, std::string version_max, std::string source)
+	: mMaxVersion(std::move(version_max)),
+	  mMinVersion(std::move(version_min)),
+	  mModule(std::move(module)),
+	  mSource(std::move(source))
 	{ }
 
 public:

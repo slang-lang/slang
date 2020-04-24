@@ -18,8 +18,8 @@
 class Repository
 {
 public:
-	explicit Repository(const std::string& name = "");
-	~Repository();
+	explicit Repository(std::string  name = "");
+	~Repository() = default;
 
 public:
 	void addModule(const Module& module);
