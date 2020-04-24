@@ -1068,7 +1068,7 @@ void TreeInterpreter::visitPrint(PrintStatement* node)
 	Runtime::Object text;
 	tryControl(evaluate(node->mExpression, &text));
 
-	::Utils::PrinterDriver::Instance()->print(text.getValue().toStdString(), node->mPosition.mFile, node->mPosition.mLine);
+	::Utils::Printer::Instance()->print(text.getValue().toStdString(), node->mPosition.mFile, node->mPosition.mLine);
 }
 
 void TreeInterpreter::visitReturn(ReturnStatement* node)

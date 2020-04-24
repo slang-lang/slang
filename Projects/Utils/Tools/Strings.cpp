@@ -78,7 +78,7 @@ void splitBy(const std::string& str, char splitter, std::string& p, std::string&
 	}
 }
 
-bool StringCompare(std::string s1, std::string s2)
+bool StringCompare(const std::string& s1, const std::string& s2)
 {
 	return s1.size() == s2.size() && !(s1 != s2);
 }
@@ -153,8 +153,7 @@ int stringToInt(const std::string& str)
 
 std::string stringTrim(const std::string& source, const std::string& t)
 {
-	std::string str = source;
-	return stringTrimLeft( stringTrimRight(str, t), t );
+	return stringTrimLeft( stringTrimRight(source, t), t );
 }
 
 std::string stringTrimLeft( const std::string& source, const std::string& t)

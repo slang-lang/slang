@@ -21,14 +21,12 @@ namespace Files {
 
 bool exists(const std::string& filename);
 
-std::string BuildLibraryPath(const std::string& baseFolder, const std::string& library);
+std::string BuildLibraryPath(const std::string& baseFolder, const std::string& library, const std::string& extension = ".os");
 std::string BuildPath(const std::string& baseFolder, const std::string& filename);
-std::string _ExtractFileExt(const std::string& filename);
 std::string ExtractFileExt(const std::string& filename);
 std::string ExtractFilename(const std::string& filename);
 std::string ExtractPathname(const std::string& pathname);
 std::string GetFullname(const std::string& filename);
-std::string _RemoveFileExt(const std::string& filename);
 std::string RemoveFileExt(const std::string& filename);
 
 class FileBrowser

@@ -6,6 +6,8 @@
 
 // Project includes
 #include <Tools/Strings.h>
+
+#include <utility>
 #include "Tokenizer.h"
 
 // Namespace declarations
@@ -23,28 +25,28 @@ Value::Value()
 {
 }
 
-Value::Value(const std::string& v)
+Value::Value(std::string v)
 : mName(""),
   mType(""),
-  mValue(v),
+  mValue(std::move(v)),
   mIsArray(false),
   mSize(0)
 {
 }
 
-Value::Value(const std::string& t, const std::string& v)
+Value::Value(std::string t, std::string v)
 : mName(""),
-  mType(t),
-  mValue(v),
+  mType(std::move(t)),
+  mValue(std::move(v)),
   mIsArray(false),
   mSize(0)
 {
 }
 
-Value::Value(const std::string& n, const std::string& t, const std::string& v)
-: mName(n),
-  mType(t),
-  mValue(v),
+Value::Value(std::string n, std::string t, std::string v)
+: mName(std::move(n)),
+  mType(std::move(t)),
+  mValue(std::move(v)),
   mIsArray(false),
   mSize(0)
 {
@@ -66,11 +68,6 @@ const std::string& Value::getValue() const
 }
 
 bool Value::is(const std::string& name) const
-{
-	return Tools::StringCompareI(mName, name);
-}
-
-bool Value::is_(const std::string& name) const
 {
 	return Tools::StringCompare(mName, name);
 }
@@ -97,20 +94,10 @@ bool Value::isValid() const
 
 bool Value::ofType(const std::string& type) const
 {
-	return Tools::StringCompareI(mType, type);
-}
-
-bool Value::ofType_(const std::string& type) const
-{
 	return Tools::StringCompare(mType, type);
 }
 
 bool Value::ofValue(const std::string& value) const
-{
-	return Tools::StringCompareI(mValue, value);
-}
-
-bool Value::ofValue_(const std::string& value) const
 {
 	return Tools::StringCompare(mValue, value);
 }
@@ -143,69 +130,6 @@ int Value::toInt() const
 const std::string& Value::toString() const
 {
 	return mValue;
-}
-
-vector2f Value::toVector2f()
-{
-	vector2f result;
-	Tokenizer t(mValue);
-
-	if ( t.hasNext() ) {
-		result.x = Tools::stringToFloat(t.getToken());
-		if ( t.hasNext() ) {
-			result.y = Tools::stringToFloat(t.getToken());
-			return result;
-		}
-	}
-
-	//error("Invalid input provided for '" + mName + "' as '" + mType + "' with '" + mValue + "'");
-	return vector2f();
-}
-
-vector3f Value::toVector3f()
-{
-	vector3f result;
-	Tokenizer t(mValue);
-
-	if ( t.hasNext() ) {
-		result.x = Tools::stringToFloat(t.getToken());
-		if ( t.hasNext() ) {
-			result.y = Tools::stringToFloat(t.getToken());
-
-			if ( t.hasNext() ) {
-				result.z = Tools::stringToFloat(t.getToken());
-				return result;
-			}
-		}
-	}
-
-	//error("Invalid input provided for '" + mName + "' as '" + mType + "' with '" + mValue + "'");
-	return vector3f();
-}
-
-vector4f Value::toVector4f()
-{
-	vector4f result;
-	Tokenizer t(mValue);
-
-	if ( t.hasNext() ) {
-		result.x = Tools::stringToFloat(t.getToken());
-		if ( t.hasNext() ) {
-			result.y = Tools::stringToFloat(t.getToken());
-
-			if ( t.hasNext() ) {
-				result.z = Tools::stringToFloat(t.getToken());
-
-				if ( t.hasNext() ) {
-					result.w = Tools::stringToFloat(t.getToken());
-					return result;
-				}
-			}
-		}
-	}
-
-	//error("Invalid input provided for '" + mName + "' as '" + mType + "' with '" + mValue + "'");
-	return vector4f();
 }
 
 

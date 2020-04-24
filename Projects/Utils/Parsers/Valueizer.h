@@ -19,11 +19,11 @@ namespace Utils {
 class Valueizer : public Tokenizer 
 {
 public:
-    Valueizer(const std::string& str);
+    explicit Valueizer(const std::string& str);
     Valueizer(const std::string& str, const std::string& delimiters);
 
 public:
-	const Value getTokenAsValue() const;
+	Value getTokenAsValue() const;
 
 protected:
 

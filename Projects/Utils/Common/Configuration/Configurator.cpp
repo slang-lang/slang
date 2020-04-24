@@ -3,7 +3,7 @@
 #include "Configurator.h"
 
 // Library includes
-#include <stdlib.h>
+#include <cstdlib>
 
 // Project includes
 #include <Parsers/LineParser.h>
@@ -23,11 +23,11 @@ Configurator::Configurator(const Utils::Common::FileLogger *p, const std::string
   mConfigFile(file),
   mSuccess(false)
 {
-	char* homepath = getenv("OBJECTIVESCRIPT_HOME");
+	char* homepath = getenv("SLANG_HOME");
 	if ( homepath ) {
 		mHomePath = homepath;
 		if ( !mHomePath.empty() ) {
-			assert(!mHomePath.empty() && "OBJECTIVESCRIPT_HOME environment variable is not set!");
+			assert(!mHomePath.empty() && "SLANG_HOME environment variable is not set!");
 
 			mHomePath += "/";
 		}

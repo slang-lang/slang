@@ -19,37 +19,27 @@ namespace Utils {
 class Printer
 {
 public:
-	Printer();
-
-public:
-	void activateFileAndLinePrinting(bool state);
-	void activatePrinter(bool state);
-
-public:
-	void print(const std::string& text, const std::string& file = "", int line = 0);
-	void println(const std::string& text, const std::string& file = "", int line = 0);
-
-public:
-	bool ActivatePrinter;
-	bool AutomaticLineBreak;
-	bool PrintFileAndLine;
-};
-
-
-class PrinterDriver
-{
-public:
 	static Printer* Instance() {
 		static Printer mPrinter;
 
 		return &mPrinter;
 	}
 
+public:
+	void activateFileAndLinePrinting(bool state);
+	void activatePrinter(bool state);
+
+public:
+	void print(const std::string& text, const std::string& file = "", int line = 0) const;
+	void println(const std::string& text, const std::string& file = "", int line = 0);
+
+public:
+	bool ActivatePrinter;
+	bool AutomaticLineBreak;
+	bool PrintFileAndLine;
+
 private:
-	PrinterDriver();
-	PrinterDriver(const PrinterDriver& );
-	PrinterDriver operator=(const PrinterDriver& );
-	~PrinterDriver();
+	Printer();
 };
 
 

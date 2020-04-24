@@ -58,7 +58,7 @@ void cleanup() {
 
 void initialize() {
 	mLogger = new Utils::Common::StdOutLogger();
-	mPrinter = Utils::PrinterDriver::Instance();
+	mPrinter = Utils::Printer::Instance();
 }
 
 void printUsage()

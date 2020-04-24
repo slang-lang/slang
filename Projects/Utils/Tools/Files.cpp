@@ -4,8 +4,8 @@
 
 // Library includes
 #include <cassert>
+#include <climits>
 #include <fstream>
-#include <limits.h>
 #ifdef _MSC_VER
 #	include <windows.h>
 #	include <tchar.h>
@@ -29,71 +29,9 @@ bool exists(const std::string& filename)
 	return file.good();
 }
 
-
-// Deprecated - begin
-std::string _ExtractFileExt(const std::string& filename)
+std::string BuildLibraryPath(const std::string& baseFolder, const std::string& library, const std::string& extension)
 {
-	if ( filename.empty() ) {
-		return std::string();
-	}
-
-	unsigned long d = filename.length();
-	while ( filename[d] != '.' && d > 0 ) {
-		d--;
-	}
-
-	if ( d == 0 ) {
-		return std::string();
-	}
-
-	d++;
-
-	char buffer[255] = "";
-#ifdef _MSC_VER
-	sprintf_s(buffer, filename.length(), "%s", filename.c_str());
-#else
-	snprintf(buffer, filename.length(), "%s", filename.c_str());
-#endif
-
-	std::string result;
-
-	for(unsigned long i = d, j = 0; i < filename.length(); i += 1, j += 1) {
-		result += buffer[i];
-	}
-
-	result[filename.length() - d] = '\0';
-
-	return std::string(result);
-}
-
-std::string _RemoveFileExt(const std::string& filename)
-{
-	if ( filename.empty() ) {
-		return std::string();
-	}
-
-    unsigned long d = filename.length();
-    while ( filename[d] != '.' && d > 0 ) {
-	    d--;
-    }
-
-	if ( d == 0 ) {
-	    return filename;
-	}
-
-    std::string buffer = filename;
-
-    buffer[d] = '\0';
-
-    return buffer;
-}
-// Deprecated - end
-
-
-
-std::string BuildLibraryPath(const std::string& baseFolder, const std::string& library)
-{
-	return BuildPath(baseFolder, library) + ".os";
+	return BuildPath(baseFolder, library) + extension;
 }
 
 std::string BuildPath(const std::string& baseFolder, const std::string& filename)
@@ -102,7 +40,7 @@ std::string BuildPath(const std::string& baseFolder, const std::string& filename
 	unsigned long npos;
 
 	do {
-		npos = result.find_first_of(".");
+		npos = result.find_first_of('.');
 		if ( npos != std::string::npos ) {
 			result[npos] = '/';
 		}
@@ -113,7 +51,7 @@ std::string BuildPath(const std::string& baseFolder, const std::string& filename
 
 std::string ExtractFileExt(const std::string& filename)
 {
-	std::string tmp = filename.substr(filename.find_last_of(".") + 1);
+	std::string tmp = filename.substr(filename.find_last_of('.') + 1);
 
 	if ( tmp == filename ) {
 		return "";
@@ -220,13 +158,11 @@ std::string RemoveFileExt(const std::string& filename)
 	std::vector<std::string> globVector(const std::string& pattern)
 	{
 		glob_t glob_result;
-        glob(pattern.c_str(), GLOB_TILDE, NULL, &glob_result);
+        glob(pattern.c_str(), GLOB_TILDE, nullptr, &glob_result);
 
 		std::vector<std::string> files;
 		for ( unsigned int i = 0; i < glob_result.gl_pathc; ++i ) {
-			files.push_back(
-                std::string(glob_result.gl_pathv[i])
-            );
+			files.emplace_back(glob_result.gl_pathv[i]);
 		}
         
 		globfree(&glob_result);

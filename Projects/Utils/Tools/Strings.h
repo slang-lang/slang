@@ -19,7 +19,7 @@ namespace Tools {
 
 
 // Compare
-bool StringCompare(std::string s1, std::string s2);
+bool StringCompare(const std::string& s1, const std::string& s2);
 bool StringCompareI(const std::string &s1, const std::string &s2);
 
 // Convertion

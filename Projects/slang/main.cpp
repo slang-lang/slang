@@ -109,7 +109,7 @@ void processParameters(int argc, const char* argv[])
 			else if ( Utils::Tools::StringCompare(argv[i], "-q") || Utils::Tools::StringCompare(argv[i], "--quiet") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessMute);
 
-				Utils::PrinterDriver::Instance()->ActivatePrinter = false;
+				Utils::Printer::Instance()->ActivatePrinter = false;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--skip-sanitycheck") ) {
 				mSanityCheck = false;
@@ -120,8 +120,8 @@ void processParameters(int argc, const char* argv[])
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") || Utils::Tools::StringCompare(argv[i], "--verbose") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
 
-				Utils::PrinterDriver::Instance()->ActivatePrinter = true;
-				Utils::PrinterDriver::Instance()->PrintFileAndLine = true;
+				Utils::Printer::Instance()->ActivatePrinter = true;
+				Utils::Printer::Instance()->PrintFileAndLine = true;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--version") ) {
 				printVersion();
