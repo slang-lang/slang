@@ -20,7 +20,7 @@ void ExtensionManager::close_lib(dynamic_lib_handle handle)
 	dlclose(handle);
 }
 
-AExtension* ExtensionManager::instantiate(const dynamic_lib_handle handle)
+AExtension* ExtensionManager::instantiate(dynamic_lib_handle handle)
 {
 	if ( handle == nullptr ) {
 		return nullptr;

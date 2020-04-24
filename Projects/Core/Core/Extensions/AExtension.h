@@ -6,6 +6,7 @@
 // Library includes
 #include <list>
 #include <string>
+#include <utility>
 
 // Project includes
 #include "ExtensionMethod.h"
@@ -25,10 +26,10 @@ class IScope;
 class AExtension
 {
 public:
-	AExtension(const std::string& name)
-	: mName(name)
+	AExtension(std::string name)
+	: mName(std::move(name))
 	{ }
-	virtual ~AExtension() { }
+	virtual ~AExtension() = default;
 
 public:
 	virtual void initialize(Slang::IScope* scope) = 0;

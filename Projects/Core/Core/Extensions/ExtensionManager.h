@@ -6,6 +6,8 @@
 // Library includes
 
 // Project includes
+#include <utility>
+
 #include "AExtension.h"
 
 // Forward declarations
@@ -33,9 +35,9 @@ private:
 		std::string	path;
 
 	public:
-		explicit dynamic_lib(const std::string& p)
+		explicit dynamic_lib(std::string p)
 		: handle(nullptr),
-		  path(p)
+		  path(std::move(p))
 		{ }
 
 		~dynamic_lib() {
@@ -53,7 +55,7 @@ private:
 private:
 	static void close_lib(dynamic_lib_handle handle);
 	static dynamic_lib_handle load_lib(const std::string& path);
-	static AExtension* instantiate(const dynamic_lib_handle handle);
+	static AExtension* instantiate(dynamic_lib_handle handle);
 
 private:
 	Libraries mLibraries;
