@@ -25,7 +25,7 @@ class BreakPoint
 public:
 	BreakPoint();
 	explicit BreakPoint(const Common::Position& position);
-	~BreakPoint();
+	~BreakPoint() = default;
 
 public:
 	const Condition& getCondition() const;

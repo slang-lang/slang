@@ -9,6 +9,8 @@
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Tools/Strings.h>
 
+#include <utility>
+
 // Namespace declarations
 
 
@@ -21,22 +23,18 @@ Condition::Condition()
 {
 }
 
-Condition::Condition(const std::string& lhs, Type::E type, const std::string& rhs)
-: mLeft(lhs),
-  mRight(rhs),
+Condition::Condition(std::string lhs, Type::E type, std::string rhs)
+: mLeft(std::move(lhs)),
+  mRight(std::move(rhs)),
   mType(type)
 {
 }
 
-Condition::Condition(const std::string& lhs, const std::string& type, const std::string& rhs)
-: mLeft(lhs),
-  mRight(rhs)
+Condition::Condition(std::string lhs, const std::string& type, std::string rhs)
+: mLeft(std::move(lhs)),
+  mRight(std::move(rhs))
 {
 	mType = ConditionFromString(type);
-}
-
-Condition::~Condition()
-{
 }
 
 Condition::Type::E Condition::ConditionFromString(const std::string& type) const
@@ -57,8 +55,8 @@ bool Condition::evaluate(Symbol* lhs, Symbol* rhs) const
 		return true;
 	}
 
-	Runtime::Object* left = dynamic_cast<Runtime::Object*>(lhs);
-	Runtime::Object* right = dynamic_cast<Runtime::Object*>(rhs);
+	auto* left = dynamic_cast<Runtime::Object*>(lhs);
+	auto* right = dynamic_cast<Runtime::Object*>(rhs);
 
 	switch ( mType ) {
 		case Type::Equals:

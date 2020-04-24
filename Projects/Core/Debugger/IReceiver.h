@@ -25,7 +25,7 @@ class BreakPoint;
 class IReceiver
 {
 public:
-	virtual ~IReceiver() { }
+	virtual ~IReceiver() = default;
 
 	virtual int notify(IScope* scope, const BreakPoint& breakpoint) = 0;
 	virtual int notifyEnter(IScope* scope, const BreakPoint& breakpoint) = 0;

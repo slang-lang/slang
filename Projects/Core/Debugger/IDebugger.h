@@ -39,7 +39,7 @@ public:
 	};
 
 public:
-	virtual ~IDebugger() { }
+	virtual ~IDebugger() = default;
 
 	virtual bool addBreakPoint(const BreakPoint& breakpoint) = 0;
 	virtual void clearBreakPoints() = 0;

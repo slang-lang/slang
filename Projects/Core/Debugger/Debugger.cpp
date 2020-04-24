@@ -3,10 +3,8 @@
 #include "Debugger.h"
 
 // Library includes
-#include <iostream>
 
 // Project includes
-#include <Core/VirtualMachine/Threads.h>
 #include "IReceiver.h"
 
 // Namespace declarations
@@ -24,18 +22,14 @@ Debugger::Debugger()
 : mBreakOnExceptionCatch(false),
   mBreakOnExceptionThrow(false),
   mNextAction(NextAction::WaitForBreakPoint),
-  mReceiver(0),
+  mReceiver(nullptr),
   mUseDebugger(false)
-{
-}
-
-Debugger::~Debugger()
 {
 }
 
 bool Debugger::addBreakPoint(const BreakPoint& breakpoint)
 {
-	BreakPointCollection::iterator it = mBreakPoints.find(breakpoint);
+	auto it = mBreakPoints.find(breakpoint);
 
 	if ( it != mBreakPoints.end() ) {
 		mBreakPoints.erase(it);
@@ -106,8 +100,8 @@ void Debugger::notify(IScope* scope, const Token& token)
 		return;
 	}
 
-	BreakPoint breakpoint = BreakPoint(token.position());
-    BreakPointCollection::iterator breakIt = mBreakPoints.find(breakpoint);
+	BreakPoint breakpoint(token.position());
+    auto breakIt = mBreakPoints.find(breakpoint);
 
 	bool stop = false;
 
@@ -209,7 +203,7 @@ bool Debugger::unregisterReceiver(Core::IReceiver* receiver)
 	// only the original receiver is allowed to unregister itself
 
 	if ( mReceiver == receiver ) {
-		mReceiver = 0;
+		mReceiver = nullptr;
 		return true;
 	}
 

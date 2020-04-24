@@ -40,9 +40,9 @@ public:
 
 public:
 	Condition();
-	Condition(const std::string& lhs, Type::E type, const std::string& rhs);
-	Condition(const std::string& lhs, const std::string& type, const std::string& rhs);
-	~Condition();
+	Condition(std::string lhs, Type::E type, std::string rhs);
+	Condition(std::string lhs, const std::string& type, std::string rhs);
+	~Condition() = default;
 
 public:
 	bool evaluate(Symbol* lhs, Symbol* rhs) const;

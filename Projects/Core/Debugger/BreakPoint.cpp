@@ -25,10 +25,6 @@ BreakPoint::BreakPoint(const Common::Position &position)
 {
 }
 
-BreakPoint::~BreakPoint()
-{
-}
-
 const Condition& BreakPoint::getCondition() const
 {
 	return mCondition;
