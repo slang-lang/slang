@@ -7,6 +7,8 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 
+#include <utility>
+
 // Namespace declarations
 
 
@@ -23,16 +25,12 @@ BluePrintGeneric::BluePrintGeneric()
 {
 }
 
-BluePrintGeneric::BluePrintGeneric(const std::string& unqualifiedTypename, const std::string& filename)
+BluePrintGeneric::BluePrintGeneric(const std::string& unqualifiedTypename, std::string filename)
 : BlueprintSymbol(unqualifiedTypename),
-  mFilename(filename),
+  mFilename(std::move(filename)),
   mIsAtomicType(false),
   mQualifiedTypename(unqualifiedTypename),
   mUnqualifiedTypename(unqualifiedTypename)
-{
-}
-
-BluePrintGeneric::~BluePrintGeneric()
 {
 }
 
@@ -59,9 +57,9 @@ Ancestors BluePrintGeneric::getAncestors() const
 {
 	Ancestors ancestors;
 
-	for ( Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->ancestorType() == Ancestor::Type::Extends ) {
-			ancestors.insert((*it));
+	for ( const auto& it : mInheritance ) {
+		if ( it.ancestorType() == Ancestor::Type::Extends ) {
+			ancestors.insert(it);
 		}
 	}
 
@@ -77,9 +75,9 @@ Ancestors BluePrintGeneric::getImplementations() const
 {
 	Ancestors implementations;
 
-	for ( Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->ancestorType() == Ancestor::Type::Implements ) {
-			implementations.insert((*it));
+	for ( const auto& it : mInheritance ) {
+		if ( it.ancestorType() == Ancestor::Type::Implements ) {
+			implementations.insert(it);
 		}
 	}
 
@@ -98,8 +96,8 @@ const TokenList& BluePrintGeneric::getTokens() const
 
 bool BluePrintGeneric::inheritsFrom(const std::string& type) const
 {
-	for ( Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->name() == type ) {
+	for ( const auto& it : mInheritance ) {
+		if ( it.name() == type ) {
 			return true;
 		}
 	}

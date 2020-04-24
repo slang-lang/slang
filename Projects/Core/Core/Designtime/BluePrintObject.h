@@ -32,7 +32,7 @@ class BluePrintObject : public BluePrintGeneric,
 public:
 	BluePrintObject();
 	BluePrintObject(const std::string& type, const std::string& filename, const std::string& name = ANONYMOUS_OBJECT);
-	virtual ~BluePrintObject();
+	~BluePrintObject() = default;
 
 public:
 	void setParent(IScope* parent);
@@ -51,7 +51,7 @@ public:
 	void setIsReference(bool state);
 
 	Runtime::AtomicValue getValue() const;
-	void setValue(Runtime::AtomicValue value);
+	void setValue(const Runtime::AtomicValue& value);
 
 	std::string ToString(unsigned int indent) const;
 

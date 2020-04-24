@@ -33,8 +33,8 @@ class BluePrintGeneric : public BlueprintSymbol
 {
 public:
 	BluePrintGeneric();
-	BluePrintGeneric(const std::string& unqualifiedTypename, const std::string& filename);
-	virtual ~BluePrintGeneric();
+	BluePrintGeneric(const std::string& unqualifiedTypename, std::string  filename);
+	~BluePrintGeneric() = default;
 
 public:
 	const std::string& Filename() const;

@@ -25,7 +25,7 @@ bool checkSyntax(TokenIterator foundIt, const TokenList& expected)
 		return false;
 	}
 
-	for ( TokenIterator expectedIt = expected.begin(); expectedIt != expected.end(); ++expectedIt, ++foundIt ) {
+	for ( auto expectedIt = expected.begin(); expectedIt != expected.end(); ++expectedIt, ++foundIt ) {
 		if ( expectedIt->isOptional() ) {
 			// optional tokens have to be skipped during syntax check
 			++expectedIt;
@@ -54,8 +54,8 @@ PrototypeConstraints mergeConstraints(const PrototypeConstraints& designtime, co
 		throw Designtime::Exceptions::SyntaxError("prototype constraint size mismatch");
 	}
 
-	PrototypeConstraints::const_iterator designIt = designtime.begin();
-	PrototypeConstraints::const_iterator runIt = runtime.begin();
+	auto designIt = designtime.begin();
+	auto runIt = runtime.begin();
 
 	while ( designIt != designtime.end() ) {
 		result.push_back(
@@ -78,7 +78,7 @@ std::string Parser::buildDesigntimeConstraintTypename(const std::string& name, c
 
 	std::string type = name;
 	type += "<";
-	for ( PrototypeConstraints::const_iterator it = constraints.cbegin(); it != constraints.cend(); ++it ) {
+	for ( auto it = constraints.cbegin(); it != constraints.cend(); ++it ) {
 		type += it->mDesignType;
 
 		if ( std::distance(it, constraints.end()) > 1 ) {
@@ -98,7 +98,7 @@ std::string Parser::buildRuntimeConstraintTypename(const std::string& name, cons
 
 	std::string type = name;
 	type += "<";
-	for ( PrototypeConstraints::const_iterator it = constraints.cbegin(); it != constraints.cend(); ++it ) {
+	for ( auto it = constraints.cbegin(); it != constraints.cend(); ++it ) {
 		type += it->mRunType.empty() ? _object : it->mRunType;
 
 		if ( std::distance(it, constraints.end()) > 1 ) {

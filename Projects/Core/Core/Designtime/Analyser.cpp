@@ -125,7 +125,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::Concrete);
 	// look for the object token, BlueprintType::Object is required
 	BlueprintType::E blueprintType = Parser::parseBluePrintType(token);
-	if (blueprintType != BlueprintType::Object ) {
+	if ( blueprintType != BlueprintType::Object ) {
 		throw Designtime::Exceptions::SyntaxError("object expected", token->position());
 	}
 	// look for the type declaration

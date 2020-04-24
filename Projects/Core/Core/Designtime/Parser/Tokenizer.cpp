@@ -9,6 +9,8 @@
 #include <Core/Tools.h>
 #include <Utils.h>
 
+#include <utility>
+
 // Namespace declarations
 
 
@@ -20,9 +22,9 @@ const std::string WHITESPACES	= "\t\n\r ";
 const std::string DELIMITERS	= CONTROLCHARS + WHITESPACES;
 
 
-Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
-: mContent(content),
-  mFilename(filename),
+Tokenizer::Tokenizer(std::string filename, std::string content)
+: mContent(std::move(content)),
+  mFilename(std::move(filename)),
   mLanguageFeatures(provideLanguageFeatures()),
   mKeywords(provideKeyWords()),
   mModifiers(provideModifiers()),
@@ -171,12 +173,12 @@ bool Tokenizer::isFloat(const std::string& token) const
 
 bool Tokenizer::isInteger(const std::string& token) const
 {
-	if ( token.size() == 0 ) {
+	if ( token.empty() ) {
 		return false;
 	}
 
-	for ( unsigned int c = 0; c < token.size(); c++ ) {
-		switch ( token[c] ) {
+	for ( char c : token ) {
+		switch ( c ) {
 			case '1':
 			case '2':
 			case '3':
@@ -198,12 +200,12 @@ bool Tokenizer::isInteger(const std::string& token) const
 
 bool Tokenizer::isIntegerWithType(const std::string& token) const
 {
-	if ( token.size() <= 1 ) {
+	if ( token.empty() ) {
 		return false;
 	}
 
-	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
-		switch ( token[c] ) {
+	for ( char c : token ) {
+		switch ( c ) {
 			case '1':
 			case '2':
 			case '3':
@@ -614,7 +616,7 @@ void Tokenizer::mergeAssignments()
  */
 void Tokenizer::replaceConstDataTypes()
 {
-	TokenList::iterator token = mTokens.begin();
+	auto token = mTokens.begin();
 	TokenList::iterator tmp;
 
 	// try to combine all operator tokens
@@ -747,8 +749,8 @@ void Tokenizer::replaceConstDataTypes()
  */
 void Tokenizer::replaceOperators()
 {
-	TokenIteratorMutable token = mTokens.begin();
-	TokenIteratorMutable last = mTokens.end();
+	auto token = mTokens.begin();
+	auto last = mTokens.end();
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {

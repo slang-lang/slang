@@ -20,8 +20,8 @@ namespace Designtime {
 class SanityChecker
 {
 public:
-	SanityChecker();
-	~SanityChecker();
+	SanityChecker() = default;
+	~SanityChecker() = default;
 
 public:
 	bool process(const TokenList &tokens);

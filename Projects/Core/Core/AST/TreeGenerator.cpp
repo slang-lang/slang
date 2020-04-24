@@ -316,7 +316,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 
 		// != operator is not defined but rather used as 'not =='
 		if ( op == Token::Type::COMPARE_UNEQUAL || op == Token::Type::COMPARE_UNEQUAL_CONTENT ) {
-			condition = new BooleanUnaryExpression(Token::Type::OPERATOR_NOT, condition, UnaryExpression::ValueType::RValue);
+			condition = new BooleanUnaryExpression(Token(Token::Type::OPERATOR_NOT), condition, UnaryExpression::ValueType::RValue);
 		}
 	}
 }
@@ -634,7 +634,7 @@ Node* TreeGenerator::processPostfixNotOperator(TokenIterator& start, Node* baseE
 
 	++start;
 
-	return new UnaryExpression(Token::Type::OPERATOR_VALIDATE, baseExp, UnaryExpression::ValueType::RValue);
+	return new UnaryExpression(Token(Token::Type::OPERATOR_VALIDATE), baseExp, UnaryExpression::ValueType::RValue);
 }
 
 Node* TreeGenerator::processPostfixObjectOperator(const std::string& objectType, TokenIterator& start, Expression* baseExp)

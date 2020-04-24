@@ -24,7 +24,7 @@ namespace Common {
 class Tokenizer
 {
 public:
-	Tokenizer(const std::string& filename, const std::string& content);
+	Tokenizer(std::string filename, std::string content);
 
 public:
 	void process();

@@ -15,14 +15,6 @@ namespace Slang {
 namespace Designtime {
 
 
-SanityChecker::SanityChecker()
-{
-}
-
-SanityChecker::~SanityChecker()
-{
-}
-
 bool SanityChecker::checkBalancedBrackets() const
 {
 	int openBrackets = 0;
