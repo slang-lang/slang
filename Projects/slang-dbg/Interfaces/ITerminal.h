@@ -1,6 +1,6 @@
 
-#ifndef Slang_odebugger_Interfaces_ITerminal_h
-#define Slang_odebugger_Interfaces_ITerminal_h
+#ifndef Slang_slang_dbg_Interfaces_ITerminal_h
+#define Slang_slang_dbg_Interfaces_ITerminal_h
 
 
 // Library includes

@@ -1,6 +1,6 @@
 
-#ifndef Slang_odebugger_Common_Settings_h
-#define Slang_odebugger_Common_Settings_h
+#ifndef Slang_slang_dbg_Common_Settings_h
+#define Slang_slang_dbg_Common_Settings_h
 
 
 // Library includes

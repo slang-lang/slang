@@ -1,6 +1,6 @@
 
-#ifndef Slang_odebugger_Backend_Watch_h
-#define Slang_odebugger_Backend_Watch_h
+#ifndef Slang_slang_dbg_Backend_Watch_h
+#define Slang_slang_dbg_Backend_Watch_h
 
 
 // Library includes

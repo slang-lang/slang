@@ -11,7 +11,7 @@ SET(DEPENDENCIES
 )
 
 add_include(Projects/Core)
-add_include(Projects/odebugger)
+add_include(Projects/slang-dbg)
 add_include(Projects/Utils)
 
 build_static_lib(DebuggerInterfaces "")

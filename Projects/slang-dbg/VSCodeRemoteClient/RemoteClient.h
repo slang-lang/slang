@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_odebugger_RemoteClient_RemoteClient_h
-#define ObjectiveScript_odebugger_RemoteClient_RemoteClient_h
+#ifndef Slang_slang_dbg_RemoteClient_RemoteClient_h
+#define Slang_slang_dbg_RemoteClient_RemoteClient_h
 
 
 // Library includes

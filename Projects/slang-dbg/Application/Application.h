@@ -1,6 +1,6 @@
 
-#ifndef Slang_odebugger_Application_Application_h
-#define Slang_odebugger_Application_Application_h
+#ifndef Slang_slang_dbg_Application_Application_h
+#define Slang_slang_dbg_Application_Application_h
 
 
 // Library includes

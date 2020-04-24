@@ -1,6 +1,6 @@
 
-#ifndef Slang_odebugger_LocalClient_LocalClient_h
-#define Slang_odebugger_LocalClient_LocalClient_h
+#ifndef Slang_slang_dbg_LocalClient_LocalClient_h
+#define Slang_slang_dbg_LocalClient_LocalClient_h
 
 
 // Library includes

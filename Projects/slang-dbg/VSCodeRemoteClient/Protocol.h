@@ -1,6 +1,6 @@
 
-#ifndef Slang_odebugger_RemoteClient_Protocol_h
-#define Slang_odebugger_RemoteClient_Protocol_h
+#ifndef Slang_slang_dbg_RemoteClient_Protocol_h
+#define Slang_slang_dbg_RemoteClient_Protocol_h
 
 
 // Library includes
