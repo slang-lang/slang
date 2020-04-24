@@ -30,7 +30,7 @@ SET(MODULES
 )
 
 add_include(Projects/Core)
-add_include(Projects/odebugger)
+add_include(Projects/slang-dbg)
 add_include(Projects/Utils)
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/slang-dbg)

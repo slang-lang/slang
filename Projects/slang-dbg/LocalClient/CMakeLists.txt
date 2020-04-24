@@ -12,15 +12,13 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	ExtensionsSystem
-#	ExtensionsMysql
 	ExtensionsJson
-#	ExtensionsApache
 	DebuggerCommon
 )
 
 add_include(Projects/Core)
 add_include(Projects/Extensions)
-add_include(Projects/odebugger)
+add_include(Projects/slang-dbg)
 add_include(Projects/Utils)
 
 build_static_lib(DebuggerLocalClient "json")
