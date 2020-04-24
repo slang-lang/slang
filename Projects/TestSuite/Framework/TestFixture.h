@@ -6,6 +6,7 @@
 // Library includes
 #include <list>
 #include <typeinfo>
+#include <utility>
 
 // Project includes
 #include <Common/Logger.h>
@@ -25,8 +26,8 @@ public:
 	typedef std::list<GenericTest*> TestList;
 
 public:
-	TestFixture(const std::string& name)
-	: mName(name)
+	explicit TestFixture(std::string name)
+	: mName(std::move(name))
 	{ }
 	virtual ~TestFixture() {
 		cleanup();
@@ -48,7 +49,7 @@ public:
 	void print() {
 		std::cout << "TestSuite: " << getName() << std::endl;
 
-		for ( TestList::const_iterator it = mTests.begin(); it!= mTests.end(); it++ ) {
+		for ( TestList::const_iterator it = mTests.begin(); it!= mTests.end(); ++it ) {
 			(*it)->print();
 		}
 	}
@@ -60,7 +61,7 @@ public:
 
 		setup();
 
-		for ( TestList::const_iterator it = mTests.begin(); it!= mTests.end(); it++ ) {
+		for ( TestList::const_iterator it = mTests.begin(); it!= mTests.end(); ++it ) {
 			result = result + (*it)->run();
 		}
 
@@ -76,9 +77,9 @@ protected:
 
 private:
 	void cleanup() {
-		for ( TestList::iterator it = mTests.begin(); it != mTests.end(); ++it ) {
-			delete (*it);
-			(*it) = 0;
+		for ( auto & mTest : mTests ) {
+			delete mTest;
+			mTest = 0;
 		}
 		mTests.clear();
 	}

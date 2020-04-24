@@ -86,7 +86,7 @@ int main(int argc, const char* argv[])
 
 	bool executed = false;
 	bool show = false;
-	std::string toRun = "";
+	std::string toRun;
 
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {
@@ -167,19 +167,19 @@ int main(int argc, const char* argv[])
 
 		TestResult result;
 
-		for ( FixtureList::iterator it = mFixtures.begin(); it != mFixtures.end(); ++it ) {
+		for ( auto & mFixture : mFixtures ) {
 			if ( show ) {
 				if ( toRun.empty() ) {
-					std::cout << (*it)->getName() << std::endl;
+					std::cout << mFixture->getName() << std::endl;
 					continue;
 				}
-				else if ( toRun == (*it)->getName() ) {
-					(*it)->print();
+				else if ( toRun == mFixture->getName() ) {
+					mFixture->print();
 				}
 			}
-			else if ( toRun.empty() || toRun == (*it)->getName() ) {
+			else if ( toRun.empty() || toRun == mFixture->getName() ) {
 				executed = true;
-				result = result + (*it)->run();
+				result = result + mFixture->run();
 			}
 		}
 

@@ -5,6 +5,7 @@
 
 // Library includes
 #include <typeinfo>
+#include <utility>
 
 // Project includes
 #include "TestFramework.h"
@@ -26,14 +27,9 @@ public:
 	  Run(0),
 	  Skipped(0)
 	{ }
+	TestResult(const TestResult& other)	= default;
 
-	void operator=(const TestResult& other) {
-		Failed = other.Failed;
-		Run = other.Run;
-		Skipped = other.Skipped;
-	}
-
-	const TestResult operator+(const TestResult& other) {
+	TestResult operator+(const TestResult& other) {
 		Failed += other.Failed;
 		Run += other.Run;
 		Skipped += other.Skipped;
@@ -57,11 +53,11 @@ public:
 	};
 
 public:
-	GenericTest(const std::string& name)
+	explicit GenericTest(std::string name)
 	: mLastResult(Failed),
-	  mName(name)
+	  mName(std::move(name))
 	{ }
-	virtual ~GenericTest() { }
+	virtual ~GenericTest() = default;
 
 	virtual void process() = 0;
 	virtual void setup() = 0;
@@ -72,7 +68,7 @@ public:
 		return mName;
 	}
 
-	void print() {
+	void print() const {
 		std::cout << getName() << std::endl;
 	}
 
@@ -93,7 +89,7 @@ protected:
 	TestResult mResult;
 
 private:
-	void printResults() {
+	void printResults() const {
 		std::cout << "Statistics: " << getName() << " " << (mResult.Run - mResult.Failed - mResult.Skipped) << " passed, " << mResult.Skipped << " skipped, " << mResult.Failed << " failed" << std::endl;
 	}
 };
