@@ -192,15 +192,15 @@ int main(int argc, const char* argv[])
 		else {
 			mVirtualMachine.run(script, mParameters, &result);
 
-			if (result.getValue().type() == Slang::Runtime::AtomicValue::Type::INT ) {
+			if ( result.getValue().type() == Slang::Runtime::AtomicValue::Type::INT ) {
 				return result.getValue().toInt();
 			}
 		}
 
 		return 0;
 	}
-	catch (Slang::Runtime::ControlFlow::E &e ) {
-		if (e == Slang::Runtime::ControlFlow::ExitProgram ) {
+	catch ( Slang::Runtime::ControlFlow::E &e ) {
+		if ( e == Slang::Runtime::ControlFlow::ExitProgram ) {
 			return 0;
 		}
 

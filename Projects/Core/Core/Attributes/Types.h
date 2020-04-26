@@ -107,6 +107,16 @@ public:
 };
 
 
+class MethodType
+{
+public:
+	enum E {
+		Constructor,
+		Destructor,
+		Method
+	};
+};
+
 class Mutability
 {
 public:

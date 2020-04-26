@@ -49,18 +49,6 @@ protected:
 class MethodAttributes : public GenericAttributes
 {
 public:
-	class MethodType
-	{
-	public:
-		enum E {
-			Constructor,
-			Destructor,
-			Function,
-			Method
-		};
-	};
-
-public:
 	MethodAttributes();
 
 public:

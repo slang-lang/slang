@@ -76,8 +76,6 @@ private:
 	void initBluePrintObject(Designtime::BluePrintObject* blueprint);
 	void initTypeSystem(Designtime::BluePrintObject* blueprint);
 
-	void initializeObject(Designtime::BluePrintObject* srcObj, Runtime::Object* destObj);
-
 private:
 	BluePrintObjectMap mBluePrintObjects;
 

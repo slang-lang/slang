@@ -75,8 +75,8 @@ int Application::exec()
 	try {
 		result = mClient->exec();
 	}
-	catch (Slang::Runtime::ControlFlow::E &e ) {
-		if (e != Slang::Runtime::ControlFlow::ExitProgram ) {
+	catch ( Slang::Runtime::ControlFlow::E &e ) {
+		if ( e != Slang::Runtime::ControlFlow::ExitProgram ) {
 			OSerror("abnormal program termination!");
 		}
 	}

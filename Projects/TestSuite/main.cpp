@@ -200,8 +200,8 @@ int main(int argc, const char* argv[])
 
 		return 0;
 	}
-	catch (Slang::Runtime::ControlFlow::E &e ) {
-		if (e != Slang::Runtime::ControlFlow::ExitProgram ) {
+	catch ( Slang::Runtime::ControlFlow::E &e ) {
+		if ( e != Slang::Runtime::ControlFlow::ExitProgram ) {
 			OSerror("abnormal program termination!");
 		}
 	}

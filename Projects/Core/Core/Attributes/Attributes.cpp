@@ -99,7 +99,7 @@ Mutability::E MethodAttributes::getMethodMutability() const
 	return mMethodMutability;
 }
 
-MethodAttributes::MethodType::E MethodAttributes::getMethodType() const
+MethodType::E MethodAttributes::getMethodType() const
 {
 	return mMethodType;
 }

@@ -105,7 +105,7 @@ void Object::assign(const Object& other)
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
-		mIsReference = other.mIsReference;	// TODO: this prevents a correct handling
+		mIsReference = other.mIsReference;
 		if ( mIsReference && other.mIsReference ) {
 			assignReference(other.mReference);
 		}

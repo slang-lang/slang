@@ -12,8 +12,6 @@
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Utils.h>
-#include "Tools.h"
 
 // Namespace declarations
 
@@ -238,7 +236,7 @@ void MethodScope::deinit()
 	for ( auto& tmpSymbol : tmpSymbols ) {
 		mSymbols.erase(tmpSymbol.first);
 
-		if ( tmpSymbol.first == "base" || tmpSymbol.first == "this" ) {
+		if ( tmpSymbol.first == IDENTIFIER_BASE || tmpSymbol.first == IDENTIFIER_THIS ) {
 			continue;
 		}
 
@@ -325,13 +323,12 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 	if ( visibility != Visibility::Designtime ) {
 		Symbol* base = resolve(IDENTIFIER_BASE, true, Visibility::Designtime);
 		if ( base ) {
-			Visibility::E parentVisibility = visibility == Visibility::Private ? Visibility::Protected : visibility;
 			Symbol* result = nullptr;
 
 			switch ( base->getSymbolType() ) {
-				case Symbol::IType::BluePrintObjectSymbol: result = dynamic_cast<Designtime::BluePrintObject*>(base)->resolve(name, true, parentVisibility); break;
-				case Symbol::IType::NamespaceSymbol: result = dynamic_cast<Common::Namespace*>(base)->resolve(name, true, parentVisibility); break;
-				case Symbol::IType::ObjectSymbol: result = dynamic_cast<Runtime::Object*>(base)->resolve(name, true, parentVisibility); break;
+				case Symbol::IType::BluePrintObjectSymbol: result = dynamic_cast<Designtime::BluePrintObject*>(base)->resolve(name, true, visibility); break;
+				case Symbol::IType::NamespaceSymbol: result = dynamic_cast<Common::Namespace*>(base)->resolve(name, true, visibility); break;
+				case Symbol::IType::ObjectSymbol: result = dynamic_cast<Runtime::Object*>(base)->resolve(name, true, visibility); break;
 				default: throw Common::Exceptions::Exception("invalid scope type");
 			}
 
@@ -350,8 +347,16 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
 {
-	for ( auto method : mMethods ) {
+	for ( auto& method : mMethods ) {
 			if ( method->getVisibility() >= visibility ) {
+			if ( method->getName() == name && method->isSignatureValid(params) ) {
+				return method;
+			}
+		}
+	}
+
+	for ( auto& method : mExternalMethods ) {
+		if ( method->getVisibility() >= visibility ) {
 			if ( method->getName() == name && method->isSignatureValid(params) ) {
 				return method;
 			}

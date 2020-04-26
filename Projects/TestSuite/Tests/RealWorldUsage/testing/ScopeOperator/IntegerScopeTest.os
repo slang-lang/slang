@@ -13,6 +13,8 @@ private bool TestCase1() {
 	print( cast<string>( (12345).operator==(12345) ) );
 	//print( 12345.mValue );
 
+	print( cast<string>( (12345).operator+(12345) ) );
+
 	return true;
 }
 

@@ -37,8 +37,12 @@ class BluePrintObject : public BlueprintSymbol,
 						public MethodScope
 {
 public:
+	static BluePrintObject* FromParent(BluePrintObject* parent, const std::string& unqualifiedTypename, const std::string& filename);
+
+public:
 	BluePrintObject();
 	BluePrintObject(const std::string& unqualifiedTypename, const std::string& filename, const std::string& name = ANONYMOUS_OBJECT);
+	BluePrintObject(const BluePrintObject& other) = default;
 	~BluePrintObject() = default;
 
 public:
@@ -46,6 +50,9 @@ public:
 	const std::string& QualifiedTypename() const;
 
 	void setQualifiedTypename(const std::string& name);
+
+public:	// MethodScope
+	void defineMethod(const std::string& name, Common::Method* method);
 
 public:
 	// Inheritance

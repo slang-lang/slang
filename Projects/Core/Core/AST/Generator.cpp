@@ -63,7 +63,7 @@ void Generator::process(MethodScope* base)
 
 	if ( base->beginMethods() != base->endMethods() ) {
 		for ( auto it = base->beginMethods(); it != base->endMethods(); ++it ) {
-			processMethod(static_cast<Common::Method*>((*it)));
+			processMethod(dynamic_cast<Common::Method*>((*it)));
 		}
 	}
 }

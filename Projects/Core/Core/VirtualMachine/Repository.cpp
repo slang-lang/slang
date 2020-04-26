@@ -310,8 +310,54 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 			}
 		}
 
-		// initialize the base object
-		initializeObject(blueprint, object);
+		// create and define all symbols based on given blueprint
+		const Symbols& symbols = blueprint->provideSymbols();
+		for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
+			if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+				continue;
+			}
+			if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ) {
+				// skip "base" && "this" symbols
+				continue;
+			}
+
+			auto* blue = dynamic_cast<Designtime::BluePrintObject*>(it->second);
+			if ( blue->isStatic() ) {
+				continue;
+			}
+			if ( blue->getName() == ANONYMOUS_OBJECT ) {
+				// this is a type declaration
+				continue;
+			}
+
+			Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
+			symbol->setBluePrint(blue);
+			symbol->setIsReference(blue->isEnumeration() ? false : blue->isReference());
+			symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
+			symbol->setMember(blue->isMember());
+			symbol->setMutability(blue->getMutability());
+			symbol->setParent(object);
+			symbol->setValue(blue->getValue());
+			symbol->setVisibility(blue->getVisibility());
+
+			object->defineMember(symbol->getName(), symbol);
+		}
+
+		// create and define all methods based on given blueprint
+		MethodScope::MethodCollection methods = blueprint->provideMethods();
+		for ( auto& method : methods ) {
+			if ( method->isStatic() ) {
+				continue;
+			}
+
+			// create new method and ...
+			auto* newMethod = new Common::Method(object, method->getName(), Common::TypeDeclaration(method->QualifiedTypename()));
+
+			// ... copy its data from our template method
+			*newMethod = *method;
+
+			object->defineMethod(method->getName(), newMethod);
+		}
 	}
 
 	return object;
@@ -412,8 +458,8 @@ void Repository::init()
 void Repository::initializeBlueprints()
 {
 	// prepare inheritance
-	for ( auto& blueprintObject : mBluePrintObjects) {
-		Designtime::BluePrintObject* blueprint = blueprintObject.second;
+	for ( auto& blueprintIt : mBluePrintObjects) {
+		Designtime::BluePrintObject* blueprint = blueprintIt.second;
 
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
 		for ( const auto& ancestor : ancestors) {
@@ -431,8 +477,8 @@ void Repository::initializeBlueprints()
 					// nothing to do here
 					break;
 				case Designtime::Ancestor::Type::Replicates: {
-					blueprintObject.second = base->replicate(
-						blueprint->QualifiedTypename(), blueprint->Filename(), blueprintObject.second
+					blueprintIt.second = base->replicate(
+						blueprint->QualifiedTypename(), blueprint->Filename(), blueprintIt.second
 					);
 				} break;
 				case Designtime::Ancestor::Type::Unknown:
@@ -444,61 +490,6 @@ void Repository::initializeBlueprints()
 	// initialize blueprint objects
 	for ( auto& blueprint : mBluePrintObjects) {
 		initBluePrintObject(blueprint.second);
-	}
-}
-
-/*
- * creates and defines all members and methods of an object
- */
-void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::Object* destObj)
-{
-	// create and define all symbols based on given blueprint
-	Symbols symbols = srcObj->provideSymbols();
-	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
-		if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-			continue;
-		}
-		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ) {
-			// skip "base" && "this" symbols
-			continue;
-		}
-
-		auto* blue = dynamic_cast<Designtime::BluePrintObject*>(it->second);
-		if ( blue->isStatic() ) {
-			continue;
-		}
-		if ( blue->getName() == ANONYMOUS_OBJECT ) {
-			// this is a type declaration
-			continue;
-		}
-
-		Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
-		symbol->setBluePrint(blue);
-		symbol->setIsReference(blue->isEnumeration() ? false : blue->isReference());
-		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
-		symbol->setMember(blue->isMember());
-		symbol->setMutability(blue->getMutability());
-		symbol->setParent(destObj);
-		symbol->setValue(blue->getValue());
-		symbol->setVisibility(blue->getVisibility());
-
-		destObj->defineMember(symbol->getName(), symbol);
-	}
-
-	// create and define all methods based on given blueprint
-	MethodScope::MethodCollection methods = srcObj->provideMethods();
-	for ( auto it : methods ) {
-		if ( it->isStatic() ) {
-			continue;
-		}
-
-		// create new method and ...
-		auto* method = new Common::Method(destObj, it->getName(), Common::TypeDeclaration(it->QualifiedTypename()));
-
-		// ... copy its data from our template method
-		*method = *it;
-
-		destObj->defineMethod(method->getName(), method);
 	}
 }
 

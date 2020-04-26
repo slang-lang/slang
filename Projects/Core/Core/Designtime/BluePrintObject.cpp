@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
+#include <Core/Consts.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
@@ -17,6 +18,36 @@
 
 namespace Slang {
 namespace Designtime {
+
+
+BluePrintObject* BluePrintObject::FromParent(BluePrintObject* parent, const std::string& unqualifiedTypename, const std::string& filename)
+{
+	auto* newBluePrint = new BluePrintObject( unqualifiedTypename, filename );
+
+	for ( auto& method : parent->mMethods ) {
+		auto* newMethod = new Common::Method( parent, method->getName(), Common::TypeDeclaration(method->QualifiedTypename()) );
+		*newMethod = *method;
+
+		newBluePrint->defineMethod( method->getName(), newMethod );
+	}
+
+	for ( auto& symbolIt : parent->mSymbols ) {
+		Symbol* symbol = nullptr;
+
+		switch ( symbolIt.second->getSymbolType() ) {
+			case Symbol::IType::BluePrintObjectSymbol:
+			case Symbol::IType::ObjectSymbol:
+				*symbol = *symbolIt.second;
+				break;
+			default:
+				continue;
+		}
+
+		newBluePrint->define( symbolIt.first, symbol );
+	}
+
+	return newBluePrint;
+}
 
 
 BluePrintObject::BluePrintObject()
@@ -54,6 +85,46 @@ void BluePrintObject::addInheritance(const Designtime::Ancestor& inheritance)
 	}
 
 	mInheritance.insert(inheritance);
+}
+
+void BluePrintObject::defineMethod(const std::string& name, Common::Method* method)
+{
+	// try to override abstract methods a.k.a. implement an interface method
+	auto* oldMethod = dynamic_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
+	if ( oldMethod ) {
+		if ( oldMethod->getMemoryLayout() != MemoryLayout::Abstract && oldMethod->getMemoryLayout() != MemoryLayout::Virtual ) {
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is not abstract or marked with " + std::string(Slang::MEMORY_LAYOUT_VIRTUAL ) );
+		}
+		if ( method->getMethodType() == MethodType::Method && method->getMemoryLayout() != MemoryLayout::Abstract && method->getMemoryLayout() != MemoryLayout::Override ) {
+			throw Exceptions::SyntaxError( "Overriding method '" + method->getFullScopeName() + "' is not marked with " + std::string( Slang::MEMORY_LAYOUT_OVERRIDE ) );
+		}
+
+		// compare methods
+		if ( oldMethod->isConst() != method->isConst() ) {
+			throw Exceptions::SyntaxError("Overriding method '" + method->getFullScopeName() + "' has different return value then base method'" );
+		}
+		if ( oldMethod->isConstMethod() != method->isConstMethod() ) {
+			throw Exceptions::SyntaxError("Overriding method '" + method->getFullScopeName() + "' has different mutability then base method" );
+		}
+		if ( oldMethod->isFinalMethod() ) {
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(Slang::MEMORY_LAYOUT_FINAL ) + " and cannot be overwritten" );
+		}
+		if ( oldMethod->isStatic() ) {
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(Slang::MEMORY_LAYOUT_STATIC ) + " and cannot be overwritten" );
+		}
+		if ( oldMethod->QualifiedTypename() != method->QualifiedTypename() ) {
+			throw Exceptions::SyntaxError("Overriding method '" + method->getFullScopeName() + "' has different return value then base method" );
+		}
+
+		// removed old method
+		// {
+		undefineMethod(oldMethod);
+
+		delete oldMethod;
+		// }
+	}
+
+	MethodScope::defineMethod(name, method);
 }
 
 const std::string& BluePrintObject::Filename() const

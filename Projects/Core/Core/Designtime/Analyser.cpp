@@ -150,12 +150,12 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	// set up inheritance (if present)
 	if ( !inheritance.empty() ) {
-		for ( const auto& it : inheritance ) {
-			if ( it.ancestorType() == Ancestor::Type::Extends ) {
+		for ( const auto& ancestor : inheritance ) {
+			if ( ancestor.ancestorType() == Ancestor::Type::Extends ) {
 				extends = true;
 			}
 
-			blueprint->addInheritance(it);
+			blueprint->addInheritance(ancestor);
 		}
 	}
 
@@ -202,7 +202,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		defaultConstructor->setExceptions(CheckedExceptions::Nothrow);
 		defaultConstructor->setLanguageFeatureState(LanguageFeatureState::Stable);
 		defaultConstructor->setMemoryLayout(MemoryLayout::Virtual);
-		defaultConstructor->setMethodType(MethodAttributes::MethodType::Constructor);
+		defaultConstructor->setMethodType(MethodType::Constructor);
 		defaultConstructor->setMutability(Mutability::Modify);
 		defaultConstructor->setParent(blueprint);
 		defaultConstructor->setSignature(params);
@@ -288,12 +288,12 @@ bool Analyser::createInterface(TokenIterator& token)
 
 	// set up inheritance (if present)
 	if ( !inheritance.empty() ) {
-		for ( const auto& it : inheritance ) {
-			if ( it.ancestorType() != Ancestor::Type::Implements ) {
+		for ( const auto& ancestor : inheritance ) {
+			if ( ancestor.ancestorType() != Ancestor::Type::Implements ) {
 				throw Common::Exceptions::NotSupported("Interfaces can only implement other interfaces", token->position());
 			}
 
-			blueprint->addInheritance(it);
+			blueprint->addInheritance(ancestor);
 		}
 	}
 
@@ -356,13 +356,16 @@ bool Analyser::createMemberOrMethod(TokenIterator& token)
 	// look for an optional visibility token
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look up memory layout
-	MemoryLayout::E memoryLayout = MemoryLayout::Abstract;
- 	if ( !isInterface() ) {
+	MemoryLayout::E memoryLayout;
+ 	if ( isInterface() ) {
+		memoryLayout = MemoryLayout::Abstract;
+	}
+	else if ( isNamespace() ) {
+		memoryLayout = MemoryLayout::Static;
+	}
+	else {
 		memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Virtual);
 	}
-	//else if ( isNamespace() ) {
-	//	memoryLayout = MemoryLayout::Static;	// this is not yet possible because the static check for method execution is still not correct
-	//}
 
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
@@ -449,18 +452,18 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	}
 
 	CheckedExceptions::E exceptions = CheckedExceptions::Nothrow;
-	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
+	MethodType::E methodType = MethodType::Method;
 	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default (except constructors and destructors)
 
 	auto* blueprint = dynamic_cast<BluePrintObject*>(mScope);
 	if ( blueprint && name == RESERVED_WORD_CONSTRUCTOR ) {
 		// constructors can never ever be const
-		methodType = MethodAttributes::MethodType::Constructor;
+		methodType = MethodType::Constructor;
 		mutability = Mutability::Modify;
 	}
 	else if ( blueprint && name == RESERVED_WORD_DESTRUCTOR ) {
 		// destructors can never ever be const
-		methodType = MethodAttributes::MethodType::Destructor;
+		methodType = MethodType::Destructor;
 		mutability = Mutability::Modify;
 	}
 
@@ -471,12 +474,12 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	mutability = Parser::parseMutability(token, mutability);
 	exceptions = Parser::parseExceptions(token, exceptions);
 
-	if ( methodType == MethodAttributes::MethodType::Destructor && exceptions == CheckedExceptions::Throw ) {
+	if ( methodType == MethodType::Destructor && exceptions == CheckedExceptions::Throw ) {
 		OSwarn("exceptions thrown in destructor cannot be caught in " + token->position().toString());
 	}
 
 	// check parent's constness
-	if ( methodType != MethodAttributes::MethodType::Constructor && methodType != MethodAttributes::MethodType::Destructor ) {
+	if ( methodType != MethodType::Constructor && methodType != MethodType::Destructor ) {
 		auto* parent = dynamic_cast<BluePrintObject*>(mScope);
 		if ( parent && parent->isConst() && mutability != Mutability::Const ) {
 			throw Common::Exceptions::ConstCorrectnessViolated("cannot add modifiable method '" + name + "' to const object '" + parent->getFullScopeName() + "'", token->position());

@@ -200,7 +200,7 @@ const TokenList& TreeGenerator::getTokens() const
 void TreeGenerator::initialize(Common::Method* method)
 {
 	// initialize reusable members
-	mAllowConstModify = method->getMethodType() == Common::Method::MethodType::Constructor || method->getMethodType() == Common::Method::MethodType::Destructor;
+	mAllowConstModify = method->getMethodType() == MethodType::Constructor || method->getMethodType() == MethodType::Destructor;
 	mControlFlow = Runtime::ControlFlow::Normal;
 	mMethod = method;
 	mThis = dynamic_cast<Designtime::BluePrintObject*>(method->getEnclosingScope());
@@ -1497,7 +1497,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	}
 
 	// prevent calls to modifiable methods from const methods
-	if ( mMethod->isConstMethod() && mMethod->getEnclosingScope() == method->getEnclosingScope() && !method->isConstMethod() && method->getMethodType() == Common::Method::MethodType::Function ) {
+	if ( mMethod->isConstMethod() && mMethod->getEnclosingScope() == method->getEnclosingScope() && !method->isConstMethod() && method->getMethodType() == MethodType::Method ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", token.position());
 	}
 
@@ -1507,7 +1507,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	}
 
 	// prevent calls to non-static methods from static methods
-	if ( mMethod->isStatic() && !method->isStatic() && method->getMethodType() == Common::Method::MethodType::Function ) {
+	if ( mMethod->getEnclosingScope() == method->getEnclosingScope() && mMethod->isStatic() && !method->isStatic() && method->getMethodType() == MethodType::Method ) {
 		throw Common::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + mMethod->getFullScopeName() + "\"", token.position());
 	}
 
