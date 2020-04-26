@@ -74,7 +74,7 @@ void TreeOptimizer::processMethod(Common::Method* method)
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method symbol provided");
 	}
-	if ( method->isAbstract() || method->isExtensionMethod() ) {
+	if (method->isAbstractMethod() || method->isExtensionMethod() ) {
 		// abstract or extension methods have no implementation, so there's nothing to optimize; adieu..
 		return;
 	}

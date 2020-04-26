@@ -324,7 +324,7 @@ bool Analyser::createInterface(TokenIterator& token)
 
 	mScope->define(type.mName, blueprint);
 
-	MethodScope* tmpScope = mScope;
+	auto* tmpScope = mScope;
 
 	mProcessingInterface = true;
 	mScope = blueprint;

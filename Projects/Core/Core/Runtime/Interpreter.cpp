@@ -161,7 +161,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method pointer provided!");
 	}
-	if ( method->isAbstract() ) {
+	if (method->isAbstractMethod() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
 	}
 

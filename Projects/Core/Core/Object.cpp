@@ -203,7 +203,7 @@ void Object::defineMethod(const std::string& name, Common::Method* method)
 {
 	// try to override abstract methods a.k.a. implement an interface method
 	auto* old = dynamic_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
-	if ( old && old->isAbstract() ) {
+	if ( old && old->isAbstractMethod() ) {
 		Runtime::Object* base = dynamic_cast<Runtime::Object*>(resolve(IDENTIFIER_BASE, true, Visibility::Designtime));
 		base->undefineMethod(old);
 
@@ -298,7 +298,7 @@ bool Object::isAbstract() const
 	}
 
 	for ( auto mMethod : mMethods ) {
-		if ( mMethod->isAbstract() ) {
+		if (mMethod->isAbstractMethod() ) {
 			return true;
 		}
 	}
@@ -507,13 +507,13 @@ Slang::MethodSymbol* Object::resolveMethod(const std::string& name, const Parame
 	Symbol* base = MethodScope::resolve("base", true, Visibility::Designtime);
 	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 		Slang::MethodSymbol *tmp = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
-		if ( !result || (tmp && tmp->isFinal()) ) {
+		if ( !result || (tmp && tmp->isFinalMethod()) ) {
 			result = tmp;
 		}
 	}
 
 	// (3) if we still haven't found something also look in other scopes
-	if ( !result || !result->isFinal() ) {
+	if ( !result || !result->isFinalMethod() ) {
 		if ( !onlyCurrentScope ) {
 			Slang::MethodSymbol *tmp = MethodScope::resolveMethod(name, params, false, visibility);
 

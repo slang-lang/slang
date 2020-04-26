@@ -110,7 +110,7 @@ Virtuality::E MethodAttributes::getVirtuality() const
 	return mVirtuality;
 }
 
-bool MethodAttributes::isAbstract() const
+bool MethodAttributes::isAbstractMethod() const
 {
 	return mVirtuality == Virtuality::Abstract;
 }
@@ -120,7 +120,7 @@ bool MethodAttributes::isConstMethod() const
 	return mMethodMutability == Mutability::Const;
 }
 
-bool MethodAttributes::isFinal() const
+bool MethodAttributes::isFinalMethod() const
 {
 	return mVirtuality == Virtuality::Final;
 }

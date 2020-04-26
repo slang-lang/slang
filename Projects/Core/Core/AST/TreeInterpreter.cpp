@@ -484,7 +484,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Object* self, Common::
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method pointer provided!");
 	}
-	if ( method->isAbstract() ) {
+	if (method->isAbstractMethod() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
 	}
 

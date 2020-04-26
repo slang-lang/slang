@@ -64,9 +64,9 @@ public:
 	MethodAttributes();
 
 public:
-	bool isAbstract() const;
+	bool isAbstractMethod() const;
 	bool isConstMethod() const;
-	bool isFinal() const;
+	bool isFinalMethod() const;
 	bool isNotImplemented() const;
 	bool throws() const;
 
