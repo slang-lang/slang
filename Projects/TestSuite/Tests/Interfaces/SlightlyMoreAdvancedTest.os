@@ -9,7 +9,7 @@ public stable interface IGetBoxType {
 }
 
 public object Boxhouse implements IGetBox {
-	public int GetBox() const final {
+	public final int GetBox() const {
 		return GetNumber();
 	}
 

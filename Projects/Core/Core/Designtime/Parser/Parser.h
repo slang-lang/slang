@@ -52,12 +52,11 @@ public:
 	static BlueprintType::E parseBluePrintType(TokenIterator &token);
 	static CheckedExceptions::E parseExceptions(TokenIterator& token, CheckedExceptions::E defaultValue = CheckedExceptions::Nothrow);
 	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
-	static MemoryLayout::E parseMemoryLayout(TokenIterator& token, MemoryLayout::E defaultValue = MemoryLayout::Instance);
+	static MemoryLayout::E parseMemoryLayout(TokenIterator& token, MemoryLayout::E defaultValue = MemoryLayout::Virtual);
 	static Mutability::E parseMutability(TokenIterator& token, Mutability::E defaultValue = Mutability::Modify);
 	static ParameterList parseParameters(TokenIterator &token, IScope* scope = 0);
 	static Common::TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope = 0);
 	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token, const std::string& type);
-	static Virtuality::E parseVirtuality(TokenIterator& token, Virtuality::E defaultValue = Virtuality::Virtual);
 	static Visibility::E parseVisibility(TokenIterator& token, Visibility::E defaultValue = Visibility::Private);
 };
 

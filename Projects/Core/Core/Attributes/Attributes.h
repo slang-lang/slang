@@ -82,15 +82,11 @@ public:
 	Mutability::E getMethodMutability() const;
 	void setMethodMutability(Mutability::E value);
 
-	Virtuality::E getVirtuality() const;
-	void setVirtuality(Virtuality::E value);
-
 protected:
 	Algorithm::E mAlgorithm;
 	CheckedExceptions::E mCheckedExceptions;
 	Mutability::E mMethodMutability;
 	MethodType::E mMethodType;
-	Virtuality::E mVirtuality;
 };
 
 

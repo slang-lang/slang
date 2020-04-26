@@ -22,7 +22,7 @@ public enum ExpressionType {
 }
 
 
-public abstract object Expression extends Node {
+public object Expression extends Node {
 	public ExpressionType mExpressionType const;
 	public Position mPosition const;
 	public string mResultType const;

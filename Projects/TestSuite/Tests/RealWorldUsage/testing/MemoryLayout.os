@@ -3,23 +3,23 @@
 public object TestObject {
 	// ABSTRACT
 	// {
-	//public abstract void MethodAbstract();
+	public abstract void MethodAbstract();
 
-	public void MethodAbstract() abstract;
+	//public void MethodAbstract() abstract;
 	// }
 
 	// FINAL
 	// {
-	//public final void MethodFinal() { }
+	public final void MethodFinal() { }
 
-	public void MethodFinal() final { }
+	//public void MethodFinal() final { }
 	// }
 
 	// OVERRIDE
 	// {
-	//public override void MethodOverride() { }
+	public override void MethodOverride() { }
 
-	public void MethodOverride() override { }
+	//public void MethodOverride() override { }
 	// }
 
 	// STATIC
@@ -29,9 +29,15 @@ public object TestObject {
 
 	// VIRTUAL
 	// {
-	//public virtual void MethodVirtual() { }
+	public virtual void MethodVirtual() { }
 
-	public void MethodVirtual() virtual { }
+	//public void MethodVirtual() virtual { }
 	// }
+
+	public abstract int mAbstract;
+	public final int mFinal;
+	public override int mOverride;
+	public static int mStatic;
+	public virtual int mVirtual;
 }
 

@@ -201,12 +201,11 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		auto* defaultConstructor = new Common::Method(blueprint, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 		defaultConstructor->setExceptions(CheckedExceptions::Nothrow);
 		defaultConstructor->setLanguageFeatureState(LanguageFeatureState::Stable);
-		defaultConstructor->setMemoryLayout(MemoryLayout::Instance);
+		defaultConstructor->setMemoryLayout(MemoryLayout::Virtual);
 		defaultConstructor->setMethodType(MethodAttributes::MethodType::Constructor);
 		defaultConstructor->setMutability(Mutability::Modify);
 		defaultConstructor->setParent(blueprint);
 		defaultConstructor->setSignature(params);
-		defaultConstructor->setVirtuality(Virtuality::Virtual);
 		defaultConstructor->setVisibility(Visibility::Public);
 
 		blueprint->defineMethod(RESERVED_WORD_CONSTRUCTOR, defaultConstructor);
@@ -357,16 +356,14 @@ bool Analyser::createMemberOrMethod(TokenIterator& token)
 	// look for an optional visibility token
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look up memory layout
-	MemoryLayout::E memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Instance);
-/*
-	MemoryLayout::E memoryLayout = MemoryLayout::Instance;
-	if ( isNamespace() ) {
-		memoryLayout = MemoryLayout::Static;
+	MemoryLayout::E memoryLayout = MemoryLayout::Abstract;
+ 	if ( !isInterface() ) {
+		memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Virtual);
 	}
-	else {
-		memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Instance);
-	}
-*/
+	//else if ( isNamespace() ) {
+	//	memoryLayout = MemoryLayout::Static;	// this is not yet possible because the static check for method execution is still not correct
+	//}
+
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the type token and resolve full typename
@@ -446,10 +443,14 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
+	// make sure that interface methods are declared as abstract
+	if ( isInterface() && memoryLayout != MemoryLayout::Abstract ) {
+		throw Exceptions::SyntaxError( "Interface methods have to be (implicitly) declared as abstract", token->position() );
+	}
+
 	CheckedExceptions::E exceptions = CheckedExceptions::Nothrow;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
 	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default (except constructors and destructors)
-	Virtuality::E virtuality = isInterface() ? Virtuality::Abstract : Virtuality::Virtual;
 
 	auto* blueprint = dynamic_cast<BluePrintObject*>(mScope);
 	if ( blueprint && name == RESERVED_WORD_CONSTRUCTOR ) {
@@ -469,7 +470,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 
 	mutability = Parser::parseMutability(token, mutability);
 	exceptions = Parser::parseExceptions(token, exceptions);
-	virtuality = Parser::parseVirtuality(token, virtuality);
 
 	if ( methodType == MethodAttributes::MethodType::Destructor && exceptions == CheckedExceptions::Throw ) {
 		OSwarn("exceptions thrown in destructor cannot be caught in " + token->position().toString());
@@ -486,13 +486,13 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	// collect all tokens of this method
 	TokenList tokens;
 	if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
-		if ( virtuality == Virtuality::Abstract ) {
+		if ( memoryLayout == MemoryLayout::Abstract ) {
 			throw Designtime::Exceptions::SyntaxError("abstract methods are not allowed to be implemented", token->position());
 		}
 
 		tokens = Parser::collectScopeTokens(token);
 	}
-	else if ( languageFeature != LanguageFeatureState::NotImplemented && virtuality != Virtuality::Abstract ) {
+	else if ( memoryLayout != MemoryLayout::Abstract && languageFeature != LanguageFeatureState::NotImplemented ) {
 		throw Designtime::Exceptions::SyntaxError("method '" + name + "' is not declared as abstract or not annotated with '" + LANGUAGE_FEATURE_NOTIMPLEMENTED + "' but has no implementation", token->position());
 	}
 
@@ -512,7 +512,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	method->setParent(mScope);
 	method->setSignature(params);
 	method->setTokens(tokens);
-	method->setVirtuality(virtuality);
 	method->setVisibility(visibility);
 
 	mScope->defineMethod(name, method);

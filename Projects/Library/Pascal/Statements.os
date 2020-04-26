@@ -41,7 +41,7 @@ public object Statement extends Node {
 		mStatementType = statementType;
 	}
 
-	public string toString() const abstract;
+	public abstract string toString() const;
 }
 
 
@@ -384,7 +384,7 @@ public object ScopeStatement extends Statement {
 		mParameters = new List<DeclarationStatement>();
 	}
 
-	public string toString() const abstract;
+	public abstract string toString() const;
 }
 
 public object UnitStatement extends Statement {

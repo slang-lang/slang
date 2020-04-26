@@ -1,7 +1,7 @@
 #!/usr/local/bin/slang
 
 private object BaseObject {
-	public string ToString() const final {
+	public final string ToString() const {
 		return "BaseObject";
 	}
 }

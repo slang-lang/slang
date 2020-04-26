@@ -342,12 +342,12 @@ bool Parser::isEnumDeclaration(TokenIterator token)
 // [<visibility>] [language feature] interface <identifier> [modifier] { ... }
 bool Parser::isInterfaceDeclaration(TokenIterator token)
 {
-	if ( token->isOptional() && token->type() == Token::Type::VISIBILITY ) {
+	if ( token->type() == Token::Type::VISIBILITY ) {
 		// visibility token is okay
 		++token;
 	}
 
-	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
+	if ( token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
 		// language feature is okay
 		++token;
 	}
@@ -371,12 +371,12 @@ bool Parser::isLibraryReference(TokenIterator token)
 // [<visibility>] [language feature] namespace <identifier> { ... }
 bool Parser::isNamespaceDeclaration(TokenIterator token)
 {
-	if ( token->isOptional() && token->type() == Token::Type::VISIBILITY ) {
+	if ( token->type() == Token::Type::VISIBILITY ) {
 		// visibility token is okay
 		++token;
 	}
 
-	if ( token->isOptional() && token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
+	if ( token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
 		// language feature is okay
 		++token;
 	}
@@ -388,12 +388,12 @@ bool Parser::isNamespaceDeclaration(TokenIterator token)
 // [<visibility>] [language feature] object <identifier> [modifier] [extends <identifier>] [implements <identifier>, ...] { ... }
 bool Parser::isObjectDeclaration(TokenIterator token)
 {
-	if ( token->isOptional() && token->type() == Token::Type::VISIBILITY ) {
+	if ( token->type() == Token::Type::VISIBILITY ) {
 		// visibility token is okay
 		++token;
 	}
 
-	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
+	if ( token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
 		// language feature is okay
 		++token;
 	}
@@ -445,17 +445,13 @@ LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, 
 
 MemoryLayout::E Parser::parseMemoryLayout(TokenIterator& token, MemoryLayout::E defaultValue)
 {
-	MemoryLayout::E result = MemoryLayout::convert(token->content());
+	MemoryLayout::E result = defaultValue;
 
-	if ( result != MemoryLayout::Unspecified ) {
-		// a memory layout modifier has been detected => increment the token iterator and return the found modifier
-		++token;
-
-		return result;
+	if ( token->type() == Token::Type::MEMORY_LAYOUT ) {
+		result = MemoryLayout::convert((*token++).content());
 	}
 
-	// no memory layout token found => return the default value without incrementing the token iterator
-	return defaultValue;
+	return result;
 }
 
 Mutability::E Parser::parseMutability(TokenIterator& token, Mutability::E defaultValue)
@@ -630,21 +626,6 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 	}
 
 	return value;
-}
-
-Virtuality::E Parser::parseVirtuality(TokenIterator& token, Virtuality::E defaultValue)
-{
-	Virtuality::E result = Virtuality::convert(token->content());
-
-	if ( result != Virtuality::Unknown ) {
-		// a virtuality modifier has been detected => increment the token iterator and return the found modifier
-		++token;
-
-		return result;
-	}
-
-	// no virtuality token found => return the default value without incrementing the token iterator
-	return defaultValue;
 }
 
 Visibility::E Parser::parseVisibility(TokenIterator& token, Visibility::E defaultValue)

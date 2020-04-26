@@ -16,7 +16,7 @@ namespace Slang {
 GenericAttributes::GenericAttributes()
 : mIsSealed(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
-  mMemoryLayout(MemoryLayout::Instance),
+  mMemoryLayout(MemoryLayout::Virtual),
   mMutability(Mutability::Modify)
 {
 }
@@ -79,8 +79,7 @@ MethodAttributes::MethodAttributes()
 : mAlgorithm(Algorithm::Heuristic),
   mCheckedExceptions(CheckedExceptions::Nothrow),
   mMethodMutability(Mutability::Const),
-  mMethodType(MethodType::Method),
-  mVirtuality(Virtuality::Virtual)
+  mMethodType(MethodType::Method)
 {
 	setMutability(Mutability::Const);
 }
@@ -105,14 +104,9 @@ MethodAttributes::MethodType::E MethodAttributes::getMethodType() const
 	return mMethodType;
 }
 
-Virtuality::E MethodAttributes::getVirtuality() const
-{
-	return mVirtuality;
-}
-
 bool MethodAttributes::isAbstractMethod() const
 {
-	return mVirtuality == Virtuality::Abstract;
+	return mMemoryLayout == MemoryLayout::Abstract;
 }
 
 bool MethodAttributes::isConstMethod() const
@@ -122,7 +116,7 @@ bool MethodAttributes::isConstMethod() const
 
 bool MethodAttributes::isFinalMethod() const
 {
-	return mVirtuality == Virtuality::Final;
+	return mMemoryLayout == MemoryLayout::Final;
 }
 
 bool MethodAttributes::isNotImplemented() const
@@ -154,13 +148,6 @@ void MethodAttributes::setMethodType(MethodType::E value)
 	checkSealState();
 
 	mMethodType = value;
-}
-
-void MethodAttributes::setVirtuality(Virtuality::E value)
-{
-	checkSealState();
-
-	mVirtuality = value;
 }
 
 bool MethodAttributes::throws() const

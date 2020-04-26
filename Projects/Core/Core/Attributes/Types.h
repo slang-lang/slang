@@ -95,8 +95,11 @@ class MemoryLayout
 public:
 	enum E {
 		Unspecified = 0,
-		Instance,
-		Static
+		Abstract,
+		Final,
+		Override,
+		Static,
+		Virtual
 	};
 
 	static E convert(const std::string& v);
@@ -111,22 +114,6 @@ public:
 		Unknown = 0,
 		Const,
 		Modify
-	};
-
-	static E convert(const std::string& v);
-	static std::string convert(E e);
-};
-
-
-class Virtuality
-{
-public:
-	enum E {
-		Unknown = 0,
-		Abstract,
-		Final,
-		Override,
-		Virtual
 	};
 
 	static E convert(const std::string& v);

@@ -51,7 +51,6 @@ Method::Method(const Method& other, bool shallowCopy)
 	mMutability = other.mMutability;
 	mScopeName = other.mScopeName;
 	mScopeType = other.mScopeType;
-	mVirtuality = other.mVirtuality;
 	mVisibility = other.mVisibility;
 
 	if ( !shallowCopy ) {
@@ -141,7 +140,6 @@ Method& Method::operator= (const Method& other)
 		mScopeType = other.mScopeType;
 		mSignature = other.mSignature;
 		mTokens = other.mTokens;
-		mVirtuality = other.mVirtuality;
 		mVisibility = other.mVisibility;
 	}
 
@@ -376,9 +374,7 @@ std::string Method::ToString(unsigned int indent) const
 
 	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
-	if ( mMemoryLayout != MemoryLayout::Instance ) {
-		result += " " + MemoryLayout::convert(mMemoryLayout);
-	}
+	result += " " + MemoryLayout::convert(mMemoryLayout);
 	if ( mLanguageFeatureState != LanguageFeatureState::Stable ) {
 		result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	}
@@ -386,9 +382,6 @@ std::string Method::ToString(unsigned int indent) const
 	result += " " + Mutability::convert(mMutability);
 	if ( mCheckedExceptions != CheckedExceptions::Unspecified ) {
 		result += " " + CheckedExceptions::convert(mCheckedExceptions);
-	}
-	if ( mVirtuality != Virtuality::Virtual ) {
-		result += " " + Virtuality::convert(mVirtuality);
 	}
 
 	return result;

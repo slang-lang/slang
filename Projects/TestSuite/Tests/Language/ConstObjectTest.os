@@ -1,6 +1,6 @@
 #!/usr/local/bin/slang
 
-private stable abstract object ValueObject const /*extends Object*/ {
+private stable object ValueObject const /*extends Object*/ {
 	protected int mValue const;
 
 	public void Constructor(int value) {

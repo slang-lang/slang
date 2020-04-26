@@ -1,13 +1,13 @@
 #!/usr/local/bin/slang
 
 public object VirtualModifierObject {
-	public void PrintAbstract() abstract;
+	public abstract void PrintAbstract();
 
-	public void PrintFinal() final {
+	public final void PrintFinal() {
 		print("VirtualModifierObject.PrintFinal");
 	}
 
-	public void PrintVirtual() virtual {
+	public virtual void PrintVirtual() {
 		print("VirtualModifierObject.PrintVirtual");
 	}
 }

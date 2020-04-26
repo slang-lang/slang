@@ -1,6 +1,6 @@
 #!/usr/local/bin/slang
 
-public abstract object AbstractBase {
+public object AbstractBase {
 	protected int mSize = 1389;
 
 	public int size() const {

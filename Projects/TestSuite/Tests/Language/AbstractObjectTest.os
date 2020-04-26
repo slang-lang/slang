@@ -1,7 +1,7 @@
 #!/usr/local/bin/slang
 
 public object AbstractObject {
-	public bool isAbstract() const abstract;
+	public abstract bool isAbstract() const;
 }
 
 public object ImplementedObject extends AbstractObject {

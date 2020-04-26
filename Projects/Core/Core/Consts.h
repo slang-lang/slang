@@ -58,9 +58,8 @@ static const char* LANGUAGE_FEATURE_UNSTABLE = "unstable";
 // Memory layout
 static const char* MEMORY_LAYOUT_ABSTRACT = "abstract";
 static const char* MEMORY_LAYOUT_FINAL = "final";
-static const char* MEMORY_LAYOUT_INSTANCE = "instance";		// no reserved word, antonym to "static"
 static const char* MEMORY_LAYOUT_OVERRIDE = "override";
-static const char* MEMORY_LAYOUT_STATIC = "static";			// antonym to "instance"
+static const char* MEMORY_LAYOUT_STATIC = "static";
 static const char* MEMORY_LAYOUT_VIRTUAL = "virtual";
 
 // Modifiers

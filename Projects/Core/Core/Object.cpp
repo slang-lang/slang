@@ -562,9 +562,7 @@ std::string Object::ToString(unsigned int indent) const
 
 	std::string result;
 	result += ::Utils::Tools::indent(indent);
-	if ( mMemoryLayout != MemoryLayout::Instance ) {
-		result += " " + MemoryLayout::convert(mMemoryLayout);
-	}
+	result += " " + MemoryLayout::convert(mMemoryLayout);
 	if ( mLanguageFeatureState != LanguageFeatureState::Stable ) {
 		result += Visibility::convert(mVisibility);
 	}

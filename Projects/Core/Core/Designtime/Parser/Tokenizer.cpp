@@ -26,13 +26,13 @@ Tokenizer::Tokenizer(std::string filename, std::string content)
 : mAccessMode( provideAccessMode() ),
   mContent( std::move(content ) ),
   mFilename( std::move(filename ) ),
-  mLanguageFeatures( provideLanguageFeatures() ),
-  mKeywords( provideKeyWords() ),
+  mLanguageFeatureState( provideLanguageFeatures() ),
+  mKeyword( provideKeyWords() ),
   mMemoryLayout( provideMemoryLayout() ),
-  mModifiers( provideModifier() ),
-  mMutabilities( provideMutability() ),
-  mReservedWords( provideReservedWords() ),
-  mTypes( provideAtomicTypes() )
+  mModifier( provideModifier() ),
+  mMutability( provideMutability() ),
+  mReservedWord( provideReservedWords() ),
+  mType( provideAtomicTypes() )
 {
 }
 
@@ -239,12 +239,12 @@ bool Tokenizer::isIntegerWithType(const std::string& token) const
 
 bool Tokenizer::isKeyword(const std::string& token) const
 {
-	return mKeywords.find(token) != mKeywords.end();
+	return mKeyword.find(token) != mKeyword.end();
 }
 
 bool Tokenizer::isLanguageFeature(const std::string& token) const
 {
-	return mLanguageFeatures.find(token) != mLanguageFeatures.end();
+	return mLanguageFeatureState.find(token) != mLanguageFeatureState.end();
 }
 
 bool Tokenizer::isLiteral(const std::string& token) const
@@ -266,22 +266,22 @@ bool Tokenizer::isMemoryLayout(const std::string& token) const
 
 bool Tokenizer::isModifier(const std::string& token) const
 {
-	return mModifiers.find(token) != mModifiers.end();
+	return mModifier.find(token) != mModifier.end();
 }
 
 bool Tokenizer::isMutability(const std::string& token) const
 {
-	return mMutabilities.find(token) != mMutabilities.end();
+	return mMutability.find(token) != mMutability.end();
 }
 
 bool Tokenizer::isReservedWord(const std::string& token) const
 {
-	return mReservedWords.find(token) != mReservedWords.end();
+	return mReservedWord.find(token) != mReservedWord.end();
 }
 
 bool Tokenizer::isType(const std::string& token) const
 {
-	return mTypes.find(token) != mTypes.end();
+	return mType.find(token) != mType.end();
 }
 
 bool Tokenizer::isVisibility(const std::string& token) const

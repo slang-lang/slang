@@ -61,14 +61,14 @@ private:
 	StringSet mAccessMode;
 	std::string	mContent;
 	std::string mFilename;
-	StringSet mLanguageFeatures;
-	StringSet mKeywords;
+	StringSet mLanguageFeatureState;
+	StringSet mKeyword;
 	StringSet mMemoryLayout;
-	StringSet mModifiers;
-	StringSet mMutabilities;
-	StringSet mReservedWords;
+	StringSet mModifier;
+	StringSet mMutability;
+	StringSet mReservedWord;
 	TokenList mTokens;
-	StringSet mTypes;
+	StringSet mType;
 };
 
 

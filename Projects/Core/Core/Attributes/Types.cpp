@@ -121,8 +121,11 @@ std::string LanguageFeatureState::convert(LanguageFeatureState::E e)
 
 MemoryLayout::E MemoryLayout::convert(const std::string& v)
 {
-	if (v == MEMORY_LAYOUT_INSTANCE ) { return MemoryLayout::Instance; }
+	if (v == MEMORY_LAYOUT_ABSTRACT ) { return MemoryLayout::Abstract; }
+	else if (v == MEMORY_LAYOUT_FINAL ) { return MemoryLayout::Final; }
+	else if (v == MEMORY_LAYOUT_OVERRIDE ) { return MemoryLayout::Override; }
 	else if (v == MEMORY_LAYOUT_STATIC ) { return MemoryLayout::Static; }
+	else if (v == MEMORY_LAYOUT_VIRTUAL ) { return MemoryLayout::Virtual; }
 
 	return MemoryLayout::Unspecified;
 }
@@ -130,8 +133,11 @@ MemoryLayout::E MemoryLayout::convert(const std::string& v)
 std::string MemoryLayout::convert(MemoryLayout::E e)
 {
 	switch ( e ) {
-		case MemoryLayout::Instance: return MEMORY_LAYOUT_INSTANCE;
+		case MemoryLayout::Abstract: return MEMORY_LAYOUT_ABSTRACT;
+		case MemoryLayout::Final: return MEMORY_LAYOUT_FINAL;
+		case MemoryLayout::Override: return MEMORY_LAYOUT_OVERRIDE;
 		case MemoryLayout::Static: return MEMORY_LAYOUT_STATIC;
+		case MemoryLayout::Virtual: return MEMORY_LAYOUT_VIRTUAL;
 		case MemoryLayout::Unspecified: return UNKNOWN;
 	}
 
@@ -153,30 +159,6 @@ std::string Mutability::convert(Mutability::E e)
 		case Mutability::Const: return MUTABILITY_CONST;
 		case Mutability::Modify: return MUTABILITY_MODIFY;
 		case Mutability::Unknown: return UNKNOWN;
-	}
-
-	return UNKNOWN;
-}
-
-
-Virtuality::E Virtuality::convert(const std::string& v)
-{
-	if (v == MEMORY_LAYOUT_ABSTRACT ) { return Virtuality::Abstract; }
-	else if (v == MEMORY_LAYOUT_FINAL ) { return Virtuality::Final; }
-	else if (v == MEMORY_LAYOUT_OVERRIDE ) { return Virtuality::Override; }
-	else if (v == MEMORY_LAYOUT_VIRTUAL ) { return Virtuality::Virtual; }
-
-	return Virtuality::Unknown;
-}
-
-std::string Virtuality::convert(Virtuality::E e)
-{
-	switch ( e ) {
-		case Virtuality::Abstract: return MEMORY_LAYOUT_ABSTRACT;
-		case Virtuality::Final: return MEMORY_LAYOUT_FINAL;
-		case Virtuality::Override: return MEMORY_LAYOUT_OVERRIDE;
-		case Virtuality::Virtual: return MEMORY_LAYOUT_VIRTUAL;
-		case Virtuality::Unknown: return UNKNOWN;
 	}
 
 	return UNKNOWN;

@@ -33,9 +33,9 @@ public object Statement extends Node {
 		mStatementType = statementType;
 	}
 
-	public string toPrettyString() const abstract;
+	public abstract string toPrettyString() const;
 
-	public string toString() const abstract;
+	public abstract string toString() const;
 
 	protected string following() const {
 		return mFollowingStatement ? (" : " + mFollowingStatement.toString()) : "";
