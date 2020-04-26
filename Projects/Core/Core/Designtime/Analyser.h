@@ -56,6 +56,9 @@ private:
 
 	bool buildEnum(Designtime::BluePrintObject* symbol, const TokenList& tokens);
 
+	bool isNamespace() const;
+	bool isInterface() const;
+
 private: // type resolution
 	std::string getQualifiedTypename(const std::string& name) const;
 	std::string resolveType(const std::string& type, const TokenIterator& token) const;

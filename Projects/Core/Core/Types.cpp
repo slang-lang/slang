@@ -20,7 +20,7 @@ namespace Slang {
 
 bool isAtomicType(const std::string& type)
 {
-	static const StringSet atomicTypes = provideAtomicTypes();
+	static const StringSet& atomicTypes = provideAtomicTypes();
 
 	auto it = atomicTypes.find(type);
 
@@ -29,7 +29,7 @@ bool isAtomicType(const std::string& type)
 
 StringSet provideAtomicTypes()
 {
-	StringSet types;
+	static StringSet types;
 
 	types.insert(Runtime::BoolObject::TYPENAME);
 	types.insert(Runtime::DoubleObject::TYPENAME);
@@ -43,7 +43,7 @@ StringSet provideAtomicTypes()
 
 StringSet provideLanguageFeatures()
 {
-	StringSet languageFeatures;
+	static StringSet languageFeatures;
 
 	languageFeatures.insert(LANGUAGE_FEATURE_DEPRECATED);
 	languageFeatures.insert(LANGUAGE_FEATURE_NOTIMPLEMENTED);
@@ -55,7 +55,7 @@ StringSet provideLanguageFeatures()
 
 StringSet provideKeyWords()
 {
-	StringSet keywords;
+	static StringSet keywords;
 
 	keywords.insert(KEYWORD_ASSERT);
 	keywords.insert(KEYWORD_BREAK);
@@ -85,26 +85,37 @@ StringSet provideKeyWords()
 	return keywords;
 }
 
-StringSet provideModifiers()
+StringSet provideModifier()
 {
-	StringSet modifiers;
+	static StringSet modifier;
 
-	modifiers.insert(MODIFIER_ABSTRACT);
-	modifiers.insert(MODIFIER_CONST);
-	modifiers.insert(MODIFIER_FINAL);
-	modifiers.insert(MODIFIER_MODIFY);
-	modifiers.insert(MODIFIER_RECURSIVE);
-	modifiers.insert(MODIFIER_SEALED);
-	modifiers.insert(MODIFIER_STATIC);
-	modifiers.insert(MODIFIER_THROWS);
-	modifiers.insert(MODIFIER_VIRTUAL);
+	modifier.insert(MODIFIER_ABSTRACT);
+	//modifier.insert(MUTABILITY_CONST);
+	modifier.insert(MODIFIER_FINAL);
+	//modifier.insert(MUTABILITY_MODIFY);
+	modifier.insert(MODIFIER_OVERRIDE);
+	modifier.insert(MODIFIER_RECURSIVE);
+	modifier.insert(MODIFIER_SEALED);
+	modifier.insert(MODIFIER_STATIC);
+	modifier.insert(MODIFIER_THROWS);
+	modifier.insert(MODIFIER_VIRTUAL);
 
-	return modifiers;
+	return modifier;
+}
+
+StringSet provideMutability()
+{
+	static StringSet mutability;
+
+	mutability.insert(MUTABILITY_CONST);
+	mutability.insert(MUTABILITY_MODIFY);
+
+	return mutability;
 }
 
 StringSet provideReservedWords()
 {
-	StringSet reservedWords;
+	static StringSet reservedWords;
 
 	reservedWords.insert(RESERVED_WORD_BY_REFERENCE);
 	reservedWords.insert(RESERVED_WORD_ENUM);

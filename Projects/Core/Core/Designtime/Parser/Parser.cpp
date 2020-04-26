@@ -533,7 +533,7 @@ BlueprintType::E Parser::parseBluePrintType(TokenIterator &token)
 
 CheckedExceptions::E Parser::parseExceptions(TokenIterator& token, CheckedExceptions::E defaultValue)
 {
-	CheckedExceptions::E result = CheckedExceptions::convert((*token).content());
+	CheckedExceptions::E result = CheckedExceptions::convert(token->content());
 
 	if ( result != CheckedExceptions::Unspecified ) {
 		// an exception modifier has been detected => increment the token iterator and return the found modifier
@@ -578,7 +578,7 @@ LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, 
 
 MemoryLayout::E Parser::parseMemoryLayout(TokenIterator& token, MemoryLayout::E defaultValue)
 {
-	MemoryLayout::E result = MemoryLayout::convert((*token).content());
+	MemoryLayout::E result = MemoryLayout::convert(token->content());
 
 	if ( result != MemoryLayout::Unspecified ) {
 		// a memory layout modifier has been detected => increment the token iterator and return the found modifier
@@ -593,17 +593,13 @@ MemoryLayout::E Parser::parseMemoryLayout(TokenIterator& token, MemoryLayout::E 
 
 Mutability::E Parser::parseMutability(TokenIterator& token, Mutability::E defaultValue)
 {
-	Mutability::E result = Mutability::convert((*token).content());
+	Mutability::E result = defaultValue;
 
-	if ( result != Mutability::Unknown ) {
-		// a mutability modifier has been detected => increment the token iterator and return the found modifier
-		++token;
-
-		return result;
+	if ( token->type() == Token::Type::MUTABILITY ) {
+		result = Mutability::convert((*token++).content());
 	}
 
-	// no mutability token found => return the default value without incrementing the token iterator
-	return defaultValue;
+	return result;
 }
 
 ParameterList Parser::parseParameters(TokenIterator& token, IScope* scope)
@@ -625,20 +621,7 @@ ParameterList Parser::parseParameters(TokenIterator& token, IScope* scope)
 		}
 		// }
 
-		Mutability::E mutability = Mutability::Modify;
-		if ( token->category() == Token::Category::Modifier ) {
-			if ( token->content() == MODIFIER_CONST ) {
-				mutability = Mutability::Const;
-				++token;
-			}
-			else if ( token->content() == MODIFIER_MODIFY ) {
-				mutability = Mutability::Modify;
-				++token;
-			}
-			else {
-				throw Designtime::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
-			}
-		}
+		Mutability::E mutability = parseMutability(token, Mutability::Modify);
 
 		AccessMode::E accessMode = AccessMode::Unspecified;
 		if ( token->category() == Token::Category::ReservedWord ) {
@@ -794,7 +777,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 
 Virtuality::E Parser::parseVirtuality(TokenIterator& token, Virtuality::E defaultValue)
 {
-	Virtuality::E result = Virtuality::convert((*token).content());
+	Virtuality::E result = Virtuality::convert(token->content());
 
 	if ( result != Virtuality::Unknown ) {
 		// a virtuality modifier has been detected => increment the token iterator and return the found modifier

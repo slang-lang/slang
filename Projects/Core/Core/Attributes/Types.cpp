@@ -161,8 +161,8 @@ std::string MemoryLayout::convert(MemoryLayout::E e)
 
 Mutability::E Mutability::convert(const std::string& v)
 {
-	if ( v == MODIFIER_CONST ) { return Mutability::Const; }
-	else if ( v == MODIFIER_MODIFY ) { return Mutability::Modify; }
+	if (v == MUTABILITY_CONST ) { return Mutability::Const; }
+	else if (v == MUTABILITY_MODIFY ) { return Mutability::Modify; }
 
 	return Mutability::Unknown;
 }
@@ -170,8 +170,8 @@ Mutability::E Mutability::convert(const std::string& v)
 std::string Mutability::convert(Mutability::E e)
 {
 	switch ( e ) {
-		case Mutability::Const: return MODIFIER_CONST;
-		case Mutability::Modify: return MODIFIER_MODIFY;
+		case Mutability::Const: return MUTABILITY_CONST;
+		case Mutability::Modify: return MUTABILITY_MODIFY;
 		case Mutability::Unknown: return UNKNOWN;
 	}
 

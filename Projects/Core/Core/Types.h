@@ -35,7 +35,8 @@ std::string toString(const StringList& list);
 StringSet provideAtomicTypes();
 StringSet provideLanguageFeatures();
 StringSet provideKeyWords();
-StringSet provideModifiers();
+StringSet provideModifier();
+StringSet provideMutability();
 StringSet provideReservedWords();
 
 

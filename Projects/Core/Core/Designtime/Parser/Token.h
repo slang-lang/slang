@@ -90,6 +90,7 @@ public:
 			MATH_MULTIPLY,
 			MATH_SUBTRACT,
 			MODIFIER,
+			MUTABILITY,
 			NAND,
 			NIL,
 			NOR,

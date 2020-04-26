@@ -370,6 +370,15 @@ bool Analyser::createMemberOrMethod(TokenIterator& token)
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look up memory layout
 	MemoryLayout::E memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Instance);
+/*
+	MemoryLayout::E memoryLayout = MemoryLayout::Instance;
+	if ( isNamespace() ) {
+		memoryLayout = MemoryLayout::Static;
+	}
+	else {
+		memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Instance);
+	}
+*/
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the type token and resolve full typename
@@ -412,6 +421,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 
 	expect(Token::Type::SEMICOLON, token);
 
+	// determine if this is a designtime or runtime symbol
 	if ( dynamic_cast<BluePrintObject*>(mScope) && memoryLayout != MemoryLayout::Static ) {
 		auto* member = new BluePrintObject(type.mName, mFilename, name);
 		member->setIsReference(access == AccessMode::ByReference);
@@ -451,7 +461,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	CheckedExceptions::E exceptions = CheckedExceptions::Nothrow;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
 	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default (except constructors and destructors)
-	Virtuality::E virtuality = mProcessingInterface ? Virtuality::Abstract : Virtuality::Virtual;
+	Virtuality::E virtuality = isInterface() ? Virtuality::Abstract : Virtuality::Virtual;
 
 	auto* blueprint = dynamic_cast<BluePrintObject*>(mScope);
 	if ( blueprint && name == RESERVED_WORD_CONSTRUCTOR ) {
@@ -643,6 +653,16 @@ std::string Analyser::getQualifiedTypename(const std::string& type) const
 	result += type;
 
 	return result;
+}
+
+bool Analyser::isNamespace() const
+{
+	return mScope && dynamic_cast<Common::Namespace*>(mScope);
+}
+
+bool Analyser::isInterface() const
+{
+	return mProcessingInterface;
 }
 
 ParameterList Analyser::parseParameters(TokenIterator& token, IScope* scope)

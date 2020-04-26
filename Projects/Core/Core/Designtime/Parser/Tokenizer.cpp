@@ -27,7 +27,8 @@ Tokenizer::Tokenizer(std::string filename, std::string content)
   mFilename(std::move(filename)),
   mLanguageFeatures(provideLanguageFeatures()),
   mKeywords(provideKeyWords()),
-  mModifiers(provideModifiers()),
+  mModifiers(provideModifier()),
+  mMutabilities(provideMutability() ),
   mReservedWords(provideReservedWords()),
   mTypes(provideAtomicTypes())
 {
@@ -89,6 +90,7 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 		content = con.substr(1, con.length() - 2);
 	}
 	else if ( isModifier(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MODIFIER; }
+	else if ( isMutability(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MUTABILITY; }
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { category = Token::Category::ReservedWord; isOptional = true; type = Token::Type::VISIBILITY; }
@@ -251,6 +253,11 @@ bool Tokenizer::isLiteral(const std::string& token) const
 bool Tokenizer::isModifier(const std::string& token) const
 {
 	return mModifiers.find(token) != mModifiers.end();
+}
+
+bool Tokenizer::isMutability(const std::string& token) const
+{
+	return mMutabilities.find(token) != mMutabilities.end();
 }
 
 bool Tokenizer::isReservedWord(const std::string& token) const
