@@ -22,7 +22,6 @@ namespace Slang {
 
 // Forward declarations
 namespace Designtime {
-	class BluePrintGeneric;
 	class BluePrintObject;
 }
 namespace Runtime {

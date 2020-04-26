@@ -20,22 +20,45 @@ namespace Designtime {
 
 
 BluePrintObject::BluePrintObject()
-: MethodScope(ANONYMOUS_OBJECT, nullptr),
+: BlueprintSymbol(ANONYMOUS_OBJECT),
+  MethodScope(ANONYMOUS_OBJECT, nullptr),
+  mIsAtomicType(false),
+  mFilename(ANONYMOUS_OBJECT),
   mIsPrepared(false),
-  mIsReference(false)
+  mIsReference(false),
+  mQualifiedTypename(ANONYMOUS_OBJECT),
+  mUnqualifiedTypename(ANONYMOUS_OBJECT)
 {
 	mName = ANONYMOUS_OBJECT;
 	mType = Symbol::IType::BluePrintObjectSymbol;
 }
 
-BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
-: BluePrintGeneric(type, filename),
-  MethodScope(type, nullptr),
+BluePrintObject::BluePrintObject(const std::string& unqualifiedTypename, const std::string& filename, const std::string& name)
+: BlueprintSymbol(unqualifiedTypename),
+  MethodScope(unqualifiedTypename, nullptr),
+  mIsAtomicType(false),
+  mFilename(std::move(filename)),
   mIsPrepared(false),
-  mIsReference(false)
+  mIsReference(false),
+  mQualifiedTypename(unqualifiedTypename),
+  mUnqualifiedTypename(unqualifiedTypename)
 {
 	mName = name;
 	mType = Symbol::IType::BluePrintObjectSymbol;
+}
+
+void BluePrintObject::addInheritance(const Designtime::Ancestor& inheritance)
+{
+	if ( inheritance.name().empty() ) {
+		throw Common::Exceptions::Exception("invalid inheritance added");
+	}
+
+	mInheritance.insert(inheritance);
+}
+
+const std::string& BluePrintObject::Filename() const
+{
+	return mFilename;
 }
 
 BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& constraints) const
@@ -84,6 +107,47 @@ BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& cons
 	return prototype;
 }
 
+Ancestors BluePrintObject::getAncestors() const
+{
+	Ancestors ancestors;
+
+	for ( const auto& it : mInheritance ) {
+		if ( it.ancestorType() == Ancestor::Type::Extends ) {
+			ancestors.insert(it);
+		}
+	}
+
+	return ancestors;
+}
+
+Ancestors BluePrintObject::getInheritance() const
+{
+	return mInheritance;
+}
+
+Ancestors BluePrintObject::getImplementations() const
+{
+	Ancestors implementations;
+
+	for ( const auto& it : mInheritance ) {
+		if ( it.ancestorType() == Ancestor::Type::Implements ) {
+			implementations.insert(it);
+		}
+	}
+
+	return implementations;
+}
+
+const PrototypeConstraints& BluePrintObject::getPrototypeConstraints() const
+{
+	return mPrototypeConstraints;
+}
+
+const TokenList& BluePrintObject::getTokens() const
+{
+	return mTokens;
+}
+
 Runtime::AtomicValue BluePrintObject::getValue() const
 {
 	return mValue;
@@ -106,9 +170,35 @@ bool BluePrintObject::hasDefaultConstructor() const
 	return resolveMethod(RESERVED_WORD_CONSTRUCTOR, ParameterList(), true, Visibility::Private) != nullptr;
 }
 
+bool BluePrintObject::inheritsFrom(const std::string& type) const
+{
+	for ( const auto& it : mInheritance ) {
+		if ( it.name() == type ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool BluePrintObject::isAtomicType() const
+{
+	return mIsAtomicType;
+}
+
+bool BluePrintObject::isAbstract() const
+{
+	return mBluePrintType == BlueprintType::Interface;
+}
+
 bool BluePrintObject::isEnumeration() const
 {
 	return mBluePrintType == BlueprintType::Enum;
+}
+
+bool BluePrintObject::isInterface() const
+{
+	return mBluePrintType == BlueprintType::Interface;
 }
 
 bool BluePrintObject::isIterable() const
@@ -140,6 +230,11 @@ bool BluePrintObject::isOfType(const std::string& type) const
 bool BluePrintObject::isPrepared() const
 {
 	return mIsPrepared;
+}
+
+bool BluePrintObject::isPrototype() const
+{
+	return !mPrototypeConstraints.empty();
 }
 
 bool BluePrintObject::isReference() const
@@ -224,6 +319,11 @@ Symbols BluePrintObject::provideSymbols() const
 	return mSymbols;
 }
 
+const std::string& BluePrintObject::QualifiedTypename() const
+{
+	return mQualifiedTypename;
+}
+
 BluePrintObject* BluePrintObject::replicate(const std::string& newType, const std::string& filename, BluePrintObject* target) const
 {
 	BluePrintObject* replica = target ? target : new BluePrintObject(newType, filename);
@@ -298,6 +398,21 @@ void BluePrintObject::setIsReference(bool state)
 void BluePrintObject::setParent(IScope* parent)
 {
 	mParent = parent;
+}
+
+void BluePrintObject::setPrototypeConstraints(const PrototypeConstraints& constraints)
+{
+	mPrototypeConstraints = constraints;
+}
+
+void BluePrintObject::setQualifiedTypename(const std::string& name)
+{
+	mQualifiedTypename = name;
+}
+
+void BluePrintObject::setTokens(const TokenList& tokens)
+{
+	mTokens = tokens;
 }
 
 void BluePrintObject::setValue(const Runtime::AtomicValue& value)
