@@ -512,15 +512,8 @@ AccessMode::E Parser::parseAccessMode(TokenIterator& token, AccessMode::E defaul
 {
 	AccessMode::E result = defaultValue;
 
-	if ( token->type() == Token::Type::RESERVED_WORD ) {
-		result = AccessMode::convert(token->content());
-
-		if ( result == AccessMode::Unspecified ) {
-			// invalid type
-			throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
-		}
-
-		++token;
+	if ( token->type() == Token::Type::ACCESS_MODE ) {
+		result = AccessMode::convert((*token++).content());
 	}
 
 	return result;

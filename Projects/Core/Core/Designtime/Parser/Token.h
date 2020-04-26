@@ -42,6 +42,7 @@ public:
 	{
 	public:
 		enum E {
+			ACCESS_MODE,
 			AND,
 			ARRAY_SUBSCRIPT,
 			ASSIGN,

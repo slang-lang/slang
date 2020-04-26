@@ -32,6 +32,7 @@ std::string toString(const ParameterList& list);
 std::string toString(const Runtime::ReferencesList& list);
 std::string toString(const StringList& list);
 
+StringSet provideAccessMode();
 StringSet provideAtomicTypes();
 StringSet provideLanguageFeatures();
 StringSet provideKeyWords();

@@ -40,6 +40,7 @@ private:	// Tokenizer
 	void replaceConstDataTypes();
 	void replaceOperators();
 
+	inline bool isAccessMode(const std::string& token) const;
 	inline bool isBoolean(const std::string& token) const;
 	inline bool isDouble(const std::string& token) const;
 	inline bool isFloat(const std::string& token) const;
@@ -56,6 +57,7 @@ private:	// Tokenizer
 	inline bool isWhiteSpace(const std::string& token) const;
 
 private:
+	StringSet mAccessMode;
 	std::string	mContent;
 	std::string mFilename;
 	StringSet mLanguageFeatures;

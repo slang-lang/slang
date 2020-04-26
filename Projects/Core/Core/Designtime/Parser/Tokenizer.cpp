@@ -23,7 +23,8 @@ const std::string DELIMITERS	= CONTROLCHARS + WHITESPACES;
 
 
 Tokenizer::Tokenizer(std::string filename, std::string content)
-: mContent(std::move(content)),
+: mAccessMode( provideAccessMode() ),
+  mContent(std::move(content)),
   mFilename(std::move(filename)),
   mLanguageFeatures(provideLanguageFeatures()),
   mKeywords(provideKeyWords()),
@@ -67,6 +68,7 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_NOT; }
 	else if ( content == "~" ) { category = Token::Category::Operator; type = Token::Type::TILDE; }
 	else if ( content == OPERATOR_IS ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_IS; }
+	else if ( isAccessMode(content) ) { category = Token::Category::Modifier; type = Token::Type::ACCESS_MODE; }
 	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
 	else if ( isDouble(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_DOUBLE;
 		// remove trailing 'd' character
@@ -110,6 +112,11 @@ void Tokenizer::addToken(const Token& token)
 
 	// only add valid tokens to our token list
 	mTokens.push_back(token);
+}
+
+bool Tokenizer::isAccessMode(const std::string& token) const
+{
+	return mAccessMode.find(token) != mAccessMode.end();
 }
 
 bool Tokenizer::isBoolean(const std::string& token) const

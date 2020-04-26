@@ -27,6 +27,16 @@ bool isAtomicType(const std::string& type)
 	return it != atomicTypes.end();
 }
 
+StringSet provideAccessMode()
+{
+	static StringSet accessMode;
+
+	accessMode.insert(RESERVED_WORD_BY_REFERENCE);
+	accessMode.insert(RESERVED_WORD_BY_VALUE);
+
+	return accessMode;
+}
+
 StringSet provideAtomicTypes()
 {
 	static StringSet types;
@@ -90,9 +100,7 @@ StringSet provideModifier()
 	static StringSet modifier;
 
 	modifier.insert(MODIFIER_ABSTRACT);
-	//modifier.insert(MUTABILITY_CONST);
 	modifier.insert(MODIFIER_FINAL);
-	//modifier.insert(MUTABILITY_MODIFY);
 	modifier.insert(MODIFIER_OVERRIDE);
 	modifier.insert(MODIFIER_RECURSIVE);
 	modifier.insert(MODIFIER_SEALED);
