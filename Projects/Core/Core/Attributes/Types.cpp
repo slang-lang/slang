@@ -161,8 +161,9 @@ std::string Mutability::convert(Mutability::E e)
 
 Virtuality::E Virtuality::convert(const std::string& v)
 {
-	if ( v == MODIFIER_ABSTRACT ) { return Virtuality::Abstract; }
+	if (v == MEMORY_LAYOUT_ABSTRACT ) { return Virtuality::Abstract; }
 	else if (v == MEMORY_LAYOUT_FINAL ) { return Virtuality::Final; }
+	else if (v == MEMORY_LAYOUT_OVERRIDE ) { return Virtuality::Override; }
 	else if (v == MEMORY_LAYOUT_VIRTUAL ) { return Virtuality::Virtual; }
 
 	return Virtuality::Unknown;
@@ -171,8 +172,9 @@ Virtuality::E Virtuality::convert(const std::string& v)
 std::string Virtuality::convert(Virtuality::E e)
 {
 	switch ( e ) {
-		case Virtuality::Abstract: return MODIFIER_ABSTRACT;
+		case Virtuality::Abstract: return MEMORY_LAYOUT_ABSTRACT;
 		case Virtuality::Final: return MEMORY_LAYOUT_FINAL;
+		case Virtuality::Override: return MEMORY_LAYOUT_OVERRIDE;
 		case Virtuality::Virtual: return MEMORY_LAYOUT_VIRTUAL;
 		case Virtuality::Unknown: return UNKNOWN;
 	}

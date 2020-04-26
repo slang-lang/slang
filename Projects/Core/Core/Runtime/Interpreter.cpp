@@ -761,7 +761,7 @@ Mutability::E Interpreter::parseMutability(TokenIterator& token)
 {
 	Mutability::E result = Mutability::Modify;
 
-	if ( token->type() == Token::Type::MODIFIER ) {
+	if ( token->type() == Token::Type::MUTABILITY ) {
 		result = Mutability::convert(token->content());
 
 		if ( result != Mutability::Const && result != Mutability::Modify ) {
@@ -1993,7 +1993,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 
 	std::string name = (token++)->content();
 
-	Mutability::E mutability = parseMutability(token);
+	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
 
 	// not-atomic types are references by default
 	AccessMode::E accessMode = parseAccessMode(token, dynamic_cast<Designtime::BluePrintObject*>(symbol)->isAtomicType());
@@ -2088,7 +2088,7 @@ void Interpreter::process_var(TokenIterator& token, Object* /*result*/)
 
 	std::string name = (token++)->content();
 
-	Mutability::E mutability = parseMutability(token);
+	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
 
 	expect(Token::Type::ASSIGN, token);
 	++token;

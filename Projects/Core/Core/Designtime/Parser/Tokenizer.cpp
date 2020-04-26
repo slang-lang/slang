@@ -24,14 +24,15 @@ const std::string DELIMITERS	= CONTROLCHARS + WHITESPACES;
 
 Tokenizer::Tokenizer(std::string filename, std::string content)
 : mAccessMode( provideAccessMode() ),
-  mContent(std::move(content)),
-  mFilename(std::move(filename)),
-  mLanguageFeatures(provideLanguageFeatures()),
-  mKeywords(provideKeyWords()),
-  mModifiers(provideModifier()),
-  mMutabilities(provideMutability() ),
-  mReservedWords(provideReservedWords()),
-  mTypes(provideAtomicTypes())
+  mContent( std::move(content ) ),
+  mFilename( std::move(filename ) ),
+  mLanguageFeatures( provideLanguageFeatures() ),
+  mKeywords( provideKeyWords() ),
+  mMemoryLayout( provideMemoryLayout() ),
+  mModifiers( provideModifier() ),
+  mMutabilities( provideMutability() ),
+  mReservedWords( provideReservedWords() ),
+  mTypes( provideAtomicTypes() )
 {
 }
 
@@ -86,11 +87,12 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	}
 */
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
-	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::LANGUAGEFEATURE; }
+	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::LANGUAGE_FEATURE_STATE; }
 	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
 		// remove leading and trailing quotation marks (")
 		content = con.substr(1, con.length() - 2);
 	}
+	else if ( isMemoryLayout(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MEMORY_LAYOUT; }
 	else if ( isModifier(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MODIFIER; }
 	else if ( isMutability(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MUTABILITY; }
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
@@ -255,6 +257,11 @@ bool Tokenizer::isLiteral(const std::string& token) const
 	}
 
 	return false;
+}
+
+bool Tokenizer::isMemoryLayout(const std::string& token) const
+{
+	return mMemoryLayout.find(token) != mMemoryLayout.end();
 }
 
 bool Tokenizer::isModifier(const std::string& token) const

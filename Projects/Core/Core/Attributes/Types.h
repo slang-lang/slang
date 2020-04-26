@@ -125,6 +125,7 @@ public:
 		Unknown = 0,
 		Abstract,
 		Final,
+		Override,
 		Virtual
 	};
 

@@ -347,7 +347,7 @@ bool Parser::isInterfaceDeclaration(TokenIterator token)
 		++token;
 	}
 
-	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::LANGUAGEFEATURE ) {
+	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
 		// language feature is okay
 		++token;
 	}
@@ -367,103 +367,6 @@ bool Parser::isLibraryReference(TokenIterator token)
 	return checkSyntax(token, tokens);
 }
 
-// member declaration:
-// [<visibility>] [language feature] <identifier> <identifier> [modifier] = || ;
-bool Parser::isMemberDeclaration(TokenIterator token)
-{
-	if ( token->type() == Token::Type::VISIBILITY ) {
-		// visibility token is okay
-		++token;
-	}
-
-	if ( token->isOptional() ) {
-		// memory layout is okay
-		++token;
-	}
-
-	if ( token->isOptional() ) {
-		// language feature is okay
-		++token;
-	}
-
-	while ( token->type() == Token::Type::IDENTIFIER ) {
-		// identifier token is okay
-		++token;
-
-		if ( token->type() == Token::Type::OPERATOR_SCOPE ) {
-			// scope token is okay
-			++token;
-			continue;
-		}
-	}
-
-	if ( token->type() == Token::Type::TYPE ) {
-		// type is okay
-		++token;
-	}
-
-	if ( token->type() == Token::Type::IDENTIFIER ) {
-		// name is okay
-		++token;
-	}
-
-	if ( token->isOptional() ) {
-		// modifier is okay
-		++token;
-	}
-
-	// check for an assignment or semicolon
-	return token->type() == Token::Type::ASSIGN || token->type() == Token::Type::SEMICOLON;
-}
-
-// syntax:
-// [<visibility>] <type> <identifier> (
-// [<visibility>] <identifier> <identifier> (
-bool Parser::isMethodDeclaration(TokenIterator token)
-{
-	if ( token->type() == Token::Type::VISIBILITY ) {
-		// visibility token is okay
-		++token;
-	}
-
-	if ( token->isOptional() ) {
-		// memory layout is okay
-		++token;
-	}
-
-	if ( token->isOptional() ) {
-		// language feature is okay
-		++token;
-	}
-
-	while ( token->type() == Token::Type::IDENTIFIER ) {
-		++token;
-
-		if ( token->type() == Token::Type::OPERATOR_SCOPE ) {
-			++token;
-			continue;
-		}
-	}
-
-	if ( token->type() == Token::Type::TYPE ) {
-		// type is okay
-		++token;
-	}
-
-	if ( token->category() == Token::Category::Modifier ) {
-		// modifier is okay
-		++token;
-	}
-
-	if ( token->type() == Token::Type::IDENTIFIER ) {
-		// name is okay
-		++token;
-	}
-
-	// check for open parenthesis
-	return token->type() == Token::Type::PARENTHESIS_OPEN;
-}
-
 // namespace declaration:
 // [<visibility>] [language feature] namespace <identifier> { ... }
 bool Parser::isNamespaceDeclaration(TokenIterator token)
@@ -473,7 +376,7 @@ bool Parser::isNamespaceDeclaration(TokenIterator token)
 		++token;
 	}
 
-	if ( token->isOptional() && token->type() == Token::Type::LANGUAGEFEATURE ) {
+	if ( token->isOptional() && token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
 		// language feature is okay
 		++token;
 	}
@@ -490,7 +393,7 @@ bool Parser::isObjectDeclaration(TokenIterator token)
 		++token;
 	}
 
-	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::LANGUAGEFEATURE ) {
+	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
 		// language feature is okay
 		++token;
 	}
@@ -533,7 +436,7 @@ LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, 
 {
 	LanguageFeatureState::E result = defaultValue;
 
-	if ( token->type() == Token::Type::LANGUAGEFEATURE ) {
+	if ( token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
 		result = LanguageFeatureState::convert((*token++).content());
 	}
 

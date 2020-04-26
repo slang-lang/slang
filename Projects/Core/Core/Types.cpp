@@ -95,18 +95,26 @@ StringSet provideKeyWords()
 	return keywords;
 }
 
+StringSet provideMemoryLayout()
+{
+	static StringSet memoryLayout;
+
+	memoryLayout.insert(MEMORY_LAYOUT_ABSTRACT);
+	memoryLayout.insert(MEMORY_LAYOUT_FINAL);
+	memoryLayout.insert(MEMORY_LAYOUT_OVERRIDE);
+	memoryLayout.insert(MEMORY_LAYOUT_STATIC);
+	memoryLayout.insert(MEMORY_LAYOUT_VIRTUAL);
+
+	return memoryLayout;
+}
+
 StringSet provideModifier()
 {
 	static StringSet modifier;
 
-	modifier.insert(MODIFIER_ABSTRACT);
-	modifier.insert(MEMORY_LAYOUT_FINAL);
-	modifier.insert(MEMORY_LAYOUT_OVERRIDE);
 	modifier.insert(MODIFIER_RECURSIVE);
 	modifier.insert(MODIFIER_SEALED);
-	modifier.insert(MEMORY_LAYOUT_STATIC);
 	modifier.insert(MODIFIER_THROWS);
-	modifier.insert(MEMORY_LAYOUT_VIRTUAL);
 
 	return modifier;
 }
@@ -125,7 +133,6 @@ StringSet provideReservedWords()
 {
 	static StringSet reservedWords;
 
-	reservedWords.insert(RESERVED_WORD_BY_REFERENCE);
 	reservedWords.insert(RESERVED_WORD_ENUM);
 	reservedWords.insert(RESERVED_WORD_EXTENDS);
 	reservedWords.insert(RESERVED_WORD_IMPLEMENTS);

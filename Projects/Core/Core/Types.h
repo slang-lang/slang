@@ -36,6 +36,7 @@ StringSet provideAccessMode();
 StringSet provideAtomicTypes();
 StringSet provideLanguageFeatures();
 StringSet provideKeyWords();
+StringSet provideMemoryLayout();
 StringSet provideModifier();
 StringSet provideMutability();
 StringSet provideReservedWords();

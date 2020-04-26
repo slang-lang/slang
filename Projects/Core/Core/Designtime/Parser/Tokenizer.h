@@ -49,6 +49,7 @@ private:	// Tokenizer
 	inline bool isKeyword(const std::string& token) const;
 	inline bool isLanguageFeature(const std::string& token) const;
 	inline bool isLiteral(const std::string& token) const;
+	inline bool isMemoryLayout(const std::string& token) const;
 	inline bool isModifier(const std::string& token) const;
 	inline bool isMutability(const std::string& token) const;
 	inline bool isReservedWord(const std::string& token) const;
@@ -62,6 +63,7 @@ private:
 	std::string mFilename;
 	StringSet mLanguageFeatures;
 	StringSet mKeywords;
+	StringSet mMemoryLayout;
 	StringSet mModifiers;
 	StringSet mMutabilities;
 	StringSet mReservedWords;
