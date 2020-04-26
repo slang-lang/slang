@@ -93,7 +93,7 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( isMutability(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MUTABILITY; }
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
-	else if ( isVisibility(content) ) { category = Token::Category::ReservedWord; isOptional = true; type = Token::Type::VISIBILITY; }
+	else if ( isVisibility(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::VISIBILITY; }
 	else if ( isWhiteSpace(content) ) { return; }
 
 	mTokens.push_back(

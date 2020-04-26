@@ -565,12 +565,8 @@ LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, 
 {
 	LanguageFeatureState::E result = defaultValue;
 
-	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::LANGUAGEFEATURE ) {
-		LanguageFeatureState::E value = LanguageFeatureState::convert((*token++).content());
-
-		if ( value != LanguageFeatureState::Unspecified ) {
-			result = value;
-		}
+	if ( token->type() == Token::Type::LANGUAGEFEATURE ) {
+		result = LanguageFeatureState::convert((*token++).content());
 	}
 
 	return result;
@@ -622,17 +618,7 @@ ParameterList Parser::parseParameters(TokenIterator& token, IScope* scope)
 		// }
 
 		Mutability::E mutability = parseMutability(token, Mutability::Modify);
-
-		AccessMode::E accessMode = AccessMode::Unspecified;
-		if ( token->category() == Token::Category::ReservedWord ) {
-			if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
-				accessMode = AccessMode::ByReference;
-				++token;
-			}
-			else {
-				throw Designtime::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
-			}
-		}
+		AccessMode::E accessMode = parseAccessMode( token, AccessMode::Unspecified );
 
 		bool hasDefaultValue = false;
 		Runtime::AtomicValue value;
