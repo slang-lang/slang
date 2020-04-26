@@ -114,7 +114,7 @@ void Tokenizer::addToken(const Token& token)
 
 bool Tokenizer::isBoolean(const std::string& token) const
 {
-	return ( token == BOOL_FALSE || token == BOOL_TRUE );
+	return (token == VALUE_FALSE || token == VALUE_TRUE );
 }
 
 bool Tokenizer::isDouble(const std::string& token) const

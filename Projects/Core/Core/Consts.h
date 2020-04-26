@@ -17,10 +17,6 @@
 namespace Slang {
 
 
-// Boolean values
-static const char* BOOL_FALSE = "false";
-static const char* BOOL_TRUE = "true";
-
 // Predefined identifiers
 static const char* IDENTIFIER_BASE = "base";
 static const char* IDENTIFIER_THIS = "this";
@@ -59,19 +55,21 @@ static const char* LANGUAGE_FEATURE_STABLE = "stable";
 static const char* LANGUAGE_FEATURE_UNSPECIFIED = "";
 static const char* LANGUAGE_FEATURE_UNSTABLE = "unstable";
 
-// Modifiers
+// Memory layout
 static const char* MODIFIER_ABSTRACT = "abstract";
 static const char* MODIFIER_CONCRETE = "concrete";		// no reserved word, antonym to "abstract"
 static const char* MODIFIER_FINAL = "final";
-static const char* MODIFIER_HEURISTIC = "heuristic";	// no reserved word, antonym to "recursive"
 static const char* MODIFIER_INSTANCE = "instance";		// no reserved word, antonym to "static"
-static const char* MODIFIER_NOTHROW = "nothrow";		// no reserved word, antonym to "throws"
 static const char* MODIFIER_OVERRIDE = "override";
+static const char* MODIFIER_STATIC = "static";			// antonym to "instance"
+static const char* MODIFIER_VIRTUAL = "virtual";
+
+// Modifiers
+static const char* MODIFIER_HEURISTIC = "heuristic";	// no reserved word, antonym to "recursive"
+static const char* MODIFIER_NOTHROW = "nothrow";		// no reserved word, antonym to "throws"
 static const char* MODIFIER_RECURSIVE = "recursive";	// antonym to "heuristic"
 static const char* MODIFIER_SEALED = "sealed";
-static const char* MODIFIER_STATIC = "static";			// antonym to "instance"
 static const char* MODIFIER_THROWS = "throws";			// antonym to "nothrow"
-static const char* MODIFIER_VIRTUAL = "virtual";
 
 // Mutability
 static const char* MUTABILITY_CONST = "const";
@@ -122,8 +120,10 @@ static const char* _void = "void";
 static const char* _unary_ = "__unary__";			// special type to handle unary type operation checks
 
 // Values
+static const char* VALUE_FALSE = "false";
 static const char* VALUE_NONE = "";
 static const char* VALUE_NULL = "null";
+static const char* VALUE_TRUE = "true";
 
 // Visibility
 static const char* PRIVATE = "private";
