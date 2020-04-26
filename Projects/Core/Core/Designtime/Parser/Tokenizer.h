@@ -53,7 +53,6 @@ private:	// Tokenizer
 	inline bool isModifier(const std::string& token) const;
 	inline bool isMutability(const std::string& token) const;
 	inline bool isReservedWord(const std::string& token) const;
-	inline bool isType(const std::string& token) const;
 	inline bool isVisibility(const std::string& token) const;
 	inline bool isWhiteSpace(const std::string& token) const;
 

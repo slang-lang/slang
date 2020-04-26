@@ -96,7 +96,6 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( isModifier(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MODIFIER; }
 	else if ( isMutability(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MUTABILITY; }
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
-	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::VISIBILITY; }
 	else if ( isWhiteSpace(content) ) { return; }
 
@@ -277,11 +276,6 @@ bool Tokenizer::isMutability(const std::string& token) const
 bool Tokenizer::isReservedWord(const std::string& token) const
 {
 	return mReservedWord.find(token) != mReservedWord.end();
-}
-
-bool Tokenizer::isType(const std::string& token) const
-{
-	return mType.find(token) != mType.end();
 }
 
 bool Tokenizer::isVisibility(const std::string& token) const

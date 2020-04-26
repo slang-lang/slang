@@ -208,9 +208,6 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 			if ( token->type() == Token::Type::IDENTIFIER ) {
 				constraint = token->content();
 			}
-			else if ( token->type() == Token::Type::TYPE ) {
-				constraint = token->content();
-			}
 			else {
 				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
 			}

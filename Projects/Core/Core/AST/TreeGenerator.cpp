@@ -520,8 +520,7 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 			term = new StringLiteralExpression(Runtime::AtomicValue(start->content()));
 			++start;
 		} break;
-		case Token::Type::IDENTIFIER:
-		case Token::Type::TYPE: {
+		case Token::Type::IDENTIFIER: {
 			term = process_identifier(start, true);
 		} break;
 		case Token::Type::KEYWORD: {
@@ -1670,7 +1669,6 @@ Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndC
 			++token;
 			break;
 		case Token::Type::IDENTIFIER:
-		case Token::Type::TYPE:
 			node = process_identifier(token);
 			break;
 		case Token::Type::KEYWORD:

@@ -110,7 +110,6 @@ public:
 			RESERVED_WORD,
 			SEMICOLON,
 			TILDE,
-			TYPE,
 			TYPECAST,
 			UNKNOWN,
 			VISIBILITY,

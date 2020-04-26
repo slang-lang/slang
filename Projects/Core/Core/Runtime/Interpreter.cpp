@@ -352,7 +352,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
 
-	while ( token->type() == Token::Type::IDENTIFIER || token->type() == Token::Type::TYPE ) {
+	while ( token->type() == Token::Type::IDENTIFIER ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
@@ -394,7 +394,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 
 		TokenIterator tmp = token;
 		++tmp;
-		if ( tmp->type() != Token::Type::IDENTIFIER && tmp->type() != Token::Type::TYPE ) {
+		if ( tmp->type() != Token::Type::IDENTIFIER ) {
 			break;
 		}
 
@@ -410,7 +410,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
 
-	while ( token->type() == Token::Type::IDENTIFIER || token->type() == Token::Type::TYPE ) {
+	while ( token->type() == Token::Type::IDENTIFIER ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
@@ -450,7 +450,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 
 		TokenIterator tmp = token;
 		++tmp;
-		if ( tmp->type() != Token::Type::IDENTIFIER && tmp->type() != Token::Type::TYPE ) {
+		if ( tmp->type() != Token::Type::IDENTIFIER ) {
 			break;
 		}
 
@@ -803,8 +803,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
-		case Token::Type::IDENTIFIER:
-		case Token::Type::TYPE: {
+		case Token::Type::IDENTIFIER: {
 			// find out if we have to execute a method or simply get a stored variable
 
 			TokenIterator tmpToken = start;
@@ -894,7 +893,6 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 
 		switch ( token->type() ) {
 			case Token::Type::IDENTIFIER:
-			case Token::Type::TYPE:
 				process_identifier(token, result);
 				break;
 			case Token::Type::KEYWORD:
@@ -1629,7 +1627,6 @@ void Interpreter::process_statement(TokenIterator& token, Object* result)
 
 	switch ( token->type() ) {
 		case Token::Type::IDENTIFIER:
-		case Token::Type::TYPE:
 			process_identifier(token, result);
 			break;
 		case Token::Type::KEYWORD:
