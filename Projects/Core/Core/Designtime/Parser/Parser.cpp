@@ -347,7 +347,7 @@ bool Parser::isInterfaceDeclaration(TokenIterator token)
 		++token;
 	}
 
-	if ( token->isOptional() && token->category() == Token::Category::Attribute && token->type() == Token::Type::LANGUAGEFEATURE ) {
+	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::LANGUAGEFEATURE ) {
 		// language feature is okay
 		++token;
 	}
@@ -495,7 +495,7 @@ bool Parser::isObjectDeclaration(TokenIterator token)
 		++token;
 	}
 
-	if ( token->isOptional() && token->category() == Token::Category::Attribute && token->type() == Token::Type::LANGUAGEFEATURE ) {
+	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::LANGUAGEFEATURE ) {
 		// language feature is okay
 		++token;
 	}
@@ -565,7 +565,7 @@ LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, 
 {
 	LanguageFeatureState::E result = defaultValue;
 
-	if ( token->isOptional() && token->category() == Token::Category::Attribute && token->type() == Token::Type::LANGUAGEFEATURE ) {
+	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::LANGUAGEFEATURE ) {
 		LanguageFeatureState::E value = LanguageFeatureState::convert((*token++).content());
 
 		if ( value != LanguageFeatureState::Unspecified ) {

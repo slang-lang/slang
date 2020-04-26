@@ -27,7 +27,6 @@ public:
 		enum E {
 			None,
 			Assignment,
-			Attribute,
 			Comparator,
 			Constant,
 			Ignorable,
