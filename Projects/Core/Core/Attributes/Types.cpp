@@ -94,26 +94,6 @@ std::string CheckedExceptions::convert(CheckedExceptions::E e)
 }
 
 
-ImplementationType::E ImplementationType::convert(const std::string& v)
-{
-	if ( v == MODIFIER_ABSTRACT ) { return ImplementationType::Abstract; }
-	else if ( v == MODIFIER_CONCRETE ) { return ImplementationType::Concrete; }
-
-	return ImplementationType::Unspecified;
-}
-
-std::string ImplementationType::convert(ImplementationType::E e)
-{
-	switch ( e ) {
-		case ImplementationType::Abstract: return MODIFIER_ABSTRACT;
-		case ImplementationType::Concrete: return MODIFIER_CONCRETE;
-		case ImplementationType::Unspecified: return UNKNOWN;
-	}
-
-	return UNKNOWN;
-}
-
-
 LanguageFeatureState::E LanguageFeatureState::convert(const std::string& v)
 {
 	if ( v == LANGUAGE_FEATURE_DEPRECATED ) { return LanguageFeatureState::Deprecated; }
@@ -141,8 +121,8 @@ std::string LanguageFeatureState::convert(LanguageFeatureState::E e)
 
 MemoryLayout::E MemoryLayout::convert(const std::string& v)
 {
-	if ( v == MODIFIER_INSTANCE ) { return MemoryLayout::Instance; }
-	else if ( v == MODIFIER_STATIC ) { return MemoryLayout::Static; }
+	if (v == MEMORY_LAYOUT_INSTANCE ) { return MemoryLayout::Instance; }
+	else if (v == MEMORY_LAYOUT_STATIC ) { return MemoryLayout::Static; }
 
 	return MemoryLayout::Unspecified;
 }
@@ -150,8 +130,8 @@ MemoryLayout::E MemoryLayout::convert(const std::string& v)
 std::string MemoryLayout::convert(MemoryLayout::E e)
 {
 	switch ( e ) {
-		case MemoryLayout::Instance: return MODIFIER_INSTANCE;
-		case MemoryLayout::Static: return MODIFIER_STATIC;
+		case MemoryLayout::Instance: return MEMORY_LAYOUT_INSTANCE;
+		case MemoryLayout::Static: return MEMORY_LAYOUT_STATIC;
 		case MemoryLayout::Unspecified: return UNKNOWN;
 	}
 
@@ -182,8 +162,8 @@ std::string Mutability::convert(Mutability::E e)
 Virtuality::E Virtuality::convert(const std::string& v)
 {
 	if ( v == MODIFIER_ABSTRACT ) { return Virtuality::Abstract; }
-	else if ( v == MODIFIER_FINAL ) { return Virtuality::Final; }
-	else if ( v == MODIFIER_VIRTUAL ) { return Virtuality::Virtual; }
+	else if (v == MEMORY_LAYOUT_FINAL ) { return Virtuality::Final; }
+	else if (v == MEMORY_LAYOUT_VIRTUAL ) { return Virtuality::Virtual; }
 
 	return Virtuality::Unknown;
 }
@@ -192,8 +172,8 @@ std::string Virtuality::convert(Virtuality::E e)
 {
 	switch ( e ) {
 		case Virtuality::Abstract: return MODIFIER_ABSTRACT;
-		case Virtuality::Final: return MODIFIER_FINAL;
-		case Virtuality::Virtual: return MODIFIER_VIRTUAL;
+		case Virtuality::Final: return MEMORY_LAYOUT_FINAL;
+		case Virtuality::Virtual: return MEMORY_LAYOUT_VIRTUAL;
 		case Virtuality::Unknown: return UNKNOWN;
 	}
 

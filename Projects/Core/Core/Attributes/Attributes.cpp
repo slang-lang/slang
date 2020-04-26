@@ -189,7 +189,6 @@ void NamespaceAttributes::setSealed(bool state)
 
 ObjectAttributes::ObjectAttributes()
 : mBluePrintType(BlueprintType::Unknown),
-  mImplementationType(ImplementationType::Unspecified),
   mIsMember(false)
 {
 	setMutability(Mutability::Modify);
@@ -198,11 +197,6 @@ ObjectAttributes::ObjectAttributes()
 BlueprintType::E ObjectAttributes::getBluePrintType() const
 {
 	return mBluePrintType;
-}
-
-ImplementationType::E ObjectAttributes::getImplementationType() const
-{
-	return mImplementationType;
 }
 
 bool ObjectAttributes::isMember() const
@@ -218,13 +212,6 @@ bool ObjectAttributes::isSealed() const
 void ObjectAttributes::setBluePrintType(Slang::BlueprintType::E value)
 {
 	mBluePrintType = value;
-}
-
-void ObjectAttributes::setImplementationType(ImplementationType::E value)
-{
-	checkSealState();
-
-	mImplementationType = value;
 }
 
 void ObjectAttributes::setMember(bool state)

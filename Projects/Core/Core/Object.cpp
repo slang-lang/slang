@@ -63,7 +63,6 @@ Object& Object::operator= (const Object& other)
 		mBluePrint = other.mBluePrint;
 		mBluePrintType = other.mBluePrintType;
 		mFilename = other.mFilename;
-		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsReference = other.mIsReference;
@@ -93,7 +92,6 @@ void Object::assign(const Object& other)
 		mBluePrint = other.mBluePrint;
 		mBluePrintType = other.mBluePrintType;
 		mFilename = other.mFilename;
-		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mMemoryLayout = other.mMemoryLayout;
@@ -297,13 +295,13 @@ bool Object::isAbstract() const
 		return mThis->isAbstract();
 	}
 
-	for ( auto mMethod : mMethods ) {
-		if (mMethod->isAbstractMethod() ) {
+	for ( auto& mMethod : mMethods ) {
+		if ( mMethod->isAbstractMethod() ) {
 			return true;
 		}
 	}
 
-	return mImplementationType == ImplementationType::Abstract || mBluePrintType == BlueprintType::Interface;
+	return mBluePrintType == BlueprintType::Interface;
 }
 
 bool Object::isAtomicType() const

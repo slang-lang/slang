@@ -352,11 +352,6 @@ bool Parser::isInterfaceDeclaration(TokenIterator token)
 		++token;
 	}
 
-	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
-		// abstract is okay
-		++token;
-	}
-
 	return !(token->type() != Token::Type::RESERVED_WORD || token->content() != std::string(RESERVED_WORD_INTERFACE));
 }
 
@@ -500,11 +495,6 @@ bool Parser::isObjectDeclaration(TokenIterator token)
 		++token;
 	}
 
-	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
-		// abstract is okay
-		++token;
-	}
-
 	return !(token->type() != Token::Type::RESERVED_WORD || token->content() != std::string(RESERVED_WORD_OBJECT));
 }
 
@@ -537,21 +527,6 @@ CheckedExceptions::E Parser::parseExceptions(TokenIterator& token, CheckedExcept
 
 	// no exception token found => return the default value without incrementing the token iterator
 	return defaultValue;
-}
-
-ImplementationType::E Parser::parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue)
-{
-	ImplementationType::E result = defaultValue;
-
-	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
-		ImplementationType::E value = ImplementationType::convert((*token++).content());
-
-		if ( value != ImplementationType::Unspecified ) {
-			result = value;
-		}
-	}
-
-	return result;
 }
 
 LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue)

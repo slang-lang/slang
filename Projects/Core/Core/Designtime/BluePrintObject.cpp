@@ -233,7 +233,6 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 
 	// replicate basic blueprint data
 	replica->setBluePrintType(getBluePrintType());
-	replica->setImplementationType(getImplementationType());
 	replica->setLanguageFeatureState(getLanguageFeatureState());
 	replica->setMember(isMember());
 	replica->setMemoryLayout(getMemoryLayout());

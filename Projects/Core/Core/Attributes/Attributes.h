@@ -114,9 +114,6 @@ public:
 	BlueprintType::E getBluePrintType() const;
 	void setBluePrintType(BlueprintType::E value);
 
-	ImplementationType::E getImplementationType() const;
-	void setImplementationType(ImplementationType::E value);
-
 	bool isMember() const;
 	void setMember(bool state);
 
@@ -125,7 +122,6 @@ public:
 
 protected:
 	BlueprintType::E mBluePrintType;
-	ImplementationType::E mImplementationType;
 	bool mIsMember;
 };
 

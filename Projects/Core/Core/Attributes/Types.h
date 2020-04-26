@@ -74,20 +74,6 @@ public:
 };
 
 
-class ImplementationType
-{
-public:
-	enum E {
-		Unspecified = 0,
-		Abstract,
-		Concrete
-	};
-
-	static E convert(const std::string& v);
-	static std::string convert(E e);
-};
-
-
 class LanguageFeatureState
 {
 public:

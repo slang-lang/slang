@@ -121,8 +121,6 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
-	// look for an optional modifier token
-	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::Concrete);
 	// look for the object token, BlueprintType::Object is required
 	BlueprintType::E blueprintType = Parser::parseBluePrintType(token);
 	if ( blueprintType != BlueprintType::Object ) {
@@ -176,7 +174,6 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	}
 
 	blueprint->setBluePrintType(blueprintType);
-	blueprint->setImplementationType(implementationType);
 	blueprint->setIsReference(true);
 	blueprint->setLanguageFeatureState(languageFeatureState);
 	blueprint->setMutability(type.mMutability);
@@ -198,7 +195,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	mScope = tmpScope;
 
 	// create default constructor if blueprint has no constructor at all, except it is a replication
-	if ( isImplemented && implementationType == ImplementationType::Concrete && !blueprint->hasConstructor() ) {
+	if ( isImplemented && !blueprint->hasConstructor() ) {
 		ParameterList params;
 
 		auto* defaultConstructor = new Common::Method(blueprint, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
@@ -230,8 +227,6 @@ bool Analyser::createEnum(TokenIterator& token)
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
-	// look for an optional modifier token
-	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::Concrete);
 	// look for the object token, BlueprintType::Enum is required
 	BlueprintType::E bluePrintType = Parser::parseBluePrintType(token);
 	if (bluePrintType != BlueprintType::Enum ) {
@@ -248,7 +243,6 @@ bool Analyser::createEnum(TokenIterator& token)
 
 	auto* symbol = new BluePrintObject(type.mName, mFilename);
 	symbol->setBluePrintType(bluePrintType);
-	symbol->setImplementationType(implementationType);
 	symbol->setLanguageFeatureState(languageFeatureState);
 	symbol->setMutability(Mutability::Modify);
 	symbol->setParent(mScope);
@@ -276,11 +270,6 @@ bool Analyser::createInterface(TokenIterator& token)
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token, default is unstable
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Unstable);
-	// look for an optional modifier token
-	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::Abstract);
-	if ( implementationType != ImplementationType::Abstract ) {
-		throw Designtime::Exceptions::SyntaxError("interfaces cannot be concrete", token->position());
-	}
 	// look for the object token, BlueprintType::Interface is required
 	BlueprintType::E blueprintType = Parser::parseBluePrintType(token);
 	if (blueprintType != BlueprintType::Interface ) {
@@ -312,7 +301,6 @@ bool Analyser::createInterface(TokenIterator& token)
 	TokenList tokens = Parser::collectScopeTokens(token);
 
 	blueprint->setBluePrintType(blueprintType);
-	blueprint->setImplementationType(implementationType);
 	blueprint->setIsReference(true);
 	blueprint->setLanguageFeatureState(languageFeatureState);
 	blueprint->setMutability(type.mMutability);

@@ -100,13 +100,13 @@ StringSet provideModifier()
 	static StringSet modifier;
 
 	modifier.insert(MODIFIER_ABSTRACT);
-	modifier.insert(MODIFIER_FINAL);
-	modifier.insert(MODIFIER_OVERRIDE);
+	modifier.insert(MEMORY_LAYOUT_FINAL);
+	modifier.insert(MEMORY_LAYOUT_OVERRIDE);
 	modifier.insert(MODIFIER_RECURSIVE);
 	modifier.insert(MODIFIER_SEALED);
-	modifier.insert(MODIFIER_STATIC);
+	modifier.insert(MEMORY_LAYOUT_STATIC);
 	modifier.insert(MODIFIER_THROWS);
-	modifier.insert(MODIFIER_VIRTUAL);
+	modifier.insert(MEMORY_LAYOUT_VIRTUAL);
 
 	return modifier;
 }

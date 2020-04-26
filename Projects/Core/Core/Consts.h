@@ -58,11 +58,11 @@ static const char* LANGUAGE_FEATURE_UNSTABLE = "unstable";
 // Memory layout
 static const char* MODIFIER_ABSTRACT = "abstract";
 static const char* MODIFIER_CONCRETE = "concrete";		// no reserved word, antonym to "abstract"
-static const char* MODIFIER_FINAL = "final";
-static const char* MODIFIER_INSTANCE = "instance";		// no reserved word, antonym to "static"
-static const char* MODIFIER_OVERRIDE = "override";
-static const char* MODIFIER_STATIC = "static";			// antonym to "instance"
-static const char* MODIFIER_VIRTUAL = "virtual";
+static const char* MEMORY_LAYOUT_FINAL = "final";
+static const char* MEMORY_LAYOUT_INSTANCE = "instance";		// no reserved word, antonym to "static"
+static const char* MEMORY_LAYOUT_OVERRIDE = "override";
+static const char* MEMORY_LAYOUT_STATIC = "static";			// antonym to "instance"
+static const char* MEMORY_LAYOUT_VIRTUAL = "virtual";
 
 // Modifiers
 static const char* MODIFIER_HEURISTIC = "heuristic";	// no reserved word, antonym to "recursive"
