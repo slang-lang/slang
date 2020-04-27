@@ -271,7 +271,7 @@ bool Analyser::createInterface(TokenIterator& token)
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Unstable);
 	// look for the object token, BlueprintType::Interface is required
 	BlueprintType::E blueprintType = Parser::parseBluePrintType(token);
-	if (blueprintType != BlueprintType::Interface ) {
+	if ( blueprintType != BlueprintType::Interface ) {
 		throw Designtime::Exceptions::SyntaxError("interface type expected", token->position());
 	}
 	// look for the type declaration
