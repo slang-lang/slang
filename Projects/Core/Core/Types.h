@@ -20,9 +20,9 @@
 // Namespace declarations
 
 
+typedef std::set<std::string> OrderedStringSet;
 typedef std::list<std::string> StringList;
 typedef std::unordered_set<std::string> StringSet;
-//typedef std::set<std::string> StringSet;
 
 
 namespace Slang {

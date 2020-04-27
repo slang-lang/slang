@@ -86,7 +86,7 @@ private:
 	Extensions::ExtensionList mExtensions;
 	StringSet mImportedLibraries;
 	bool mIsInitialized;
-	StringSet mLibraryFolders;
+	OrderedStringSet mLibraryFolders;
 	std::string mScriptFile;
 	ScriptCollection mScripts;
 	Settings mSettings;
