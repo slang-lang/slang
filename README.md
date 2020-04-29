@@ -2,7 +2,7 @@
 
 == A scripting language that you already know ==
 
-The Slang programming language is syntactically similar to Java, but has more advanced features like operator overloading (known from C++) and relies heavily on const-correctness. With the statically typed interpreter design time errors will be catched at.. design time, in contrast to run time like it is in dynamically typed languages.
+The Slang programming language is syntactically similar to Java, but has more advanced features like operator overloading (known from C++) and relies heavily on const-correctness. With the statically typed interpreter design time errors will be catched at.. design time, in contrast to dynamically typed languages where many errors will only occur at run time.
 
 
 
