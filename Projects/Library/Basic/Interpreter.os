@@ -17,22 +17,20 @@ public enum ControlFlow {
 
 
 public object RuntimeException const implements IException {
-    public void Constructor(string msg) {
-        mMessage = msg;
-    }
+	public void Constructor(string msg) {
+		mMessage = msg;
+	}
 
-    public string what() const {
-        return mMessage;
-    }
+	public string what() const {
+		return mMessage;
+	}
 
-    private string mMessage const;
+	private string mMessage const;
 }
 
 
 public object Interpreter {
 	public void Constructor(Map<int, Line> lines) {
-		assert(lines is Map<int, Line>);
-
 		mCurrentLine = FIRST_LINE;
 		mForStack = new Map<string, int>();
 		mLines = Map<int, Line> lines;
