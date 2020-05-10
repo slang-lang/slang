@@ -960,7 +960,7 @@ public object Parser {
 			}
 			case TokenType.INTEGER: {
 				require(TokenType.INTEGER);
-				return Expression new LiteralIntegerExpression(token, int token.mValue);
+				return Expression new LiteralIntegerExpression(token, cast<int>( token.mValue ) );
 			}
 			case TokenType.LPAREN: {
 				require(TokenType.LPAREN);
@@ -979,7 +979,7 @@ public object Parser {
 			}
 			case TokenType.REAL: {
 				require(TokenType.REAL);
-				return Expression new LiteralRealExpression(token, float token.mValue);
+				return Expression new LiteralRealExpression(token, cast<float>( token.mValue ) );
 			}
 			case TokenType.STRING: {
 				require(TokenType.STRING);

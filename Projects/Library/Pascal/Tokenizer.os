@@ -95,10 +95,10 @@ public object Tokenizer {
 
 		while ( length > 0 ) {
 			length--;
-			mCharIterator.next();
+
+			c = mCharIterator.next();
 			mColumn++;
 
-			c = mCharIterator.current();
 			result += c;
 
 			if ( c == LINEBREAK ) {
@@ -174,9 +174,6 @@ public object Tokenizer {
 						break;
 					}
 					case c == "'": {
-						int column = mColumn;
-						int line = mLine;
-
 						consume();			// consume '
 
 						string value;
@@ -186,7 +183,7 @@ public object Tokenizer {
 
 						consume();			// consume '
 
-						return new Token(TokenType.STRING, value, new Position(line, column));
+						return new Token(TokenType.STRING, value, new Position(mLine, mColumn));
 					}
 					case c == ":" && peek(2) == "=": {
 						return new Token(TokenType.ASSIGN, consume(2), new Position(mLine, mColumn));
