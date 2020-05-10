@@ -46,3 +46,4 @@ bool isTrue(const Runtime::Object* object);
 
 
 #endif
+

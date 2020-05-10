@@ -17,7 +17,6 @@ private namespace DB {
 		}
 
 		mHandle = mysql_real_connect(mHandle, Host, Port, User, Password, Database);
-
 		if ( !mHandle ) {
 			print("failed to initialize MySQL connection!");
 			return false;
