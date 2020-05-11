@@ -38,32 +38,44 @@ void SystemStringsExtension::initialize(IScope* scope)
 
 	{	// LINEBREAK (system specific)
 		std::ostringstream character;
-		character << (char)10 << (char)13;
+		character << '\r' << '\n';
 
-		scope->define("LINEBREAK", new Runtime::StringObject(character.str()));
+		scope->define( "LINEBREAK", new Runtime::StringObject( character.str() ) );
 	}
 #else
 	// Unix/Linux only
 
 	{	// LINEBREAK (system specific)
 		std::ostringstream character;
-		character << (char)10;
+		character << '\n';
 
-		scope->define("LINEBREAK", new Runtime::StringObject(character.str()));
+		scope->define( "LINEBREAK", new Runtime::StringObject( character.str() ) );
 	}
 #endif
 
+	{	// NUL
+		std::ostringstream character;
+		character << '\0';
+
+		scope->define( "NUL", new Runtime::StringObject( character.str() ) );
+	}
 	{	// LINEBREAK_DOS (system specific)
 		std::ostringstream character;
-		character << (char)10 << (char)13;
+		character << '\r' << '\n';
 
-		scope->define("LINEBREAK_DOS", new Runtime::StringObject(character.str()));
+		scope->define( "LINEBREAK_DOS", new Runtime::StringObject( character.str() ) );
 	}
 	{	// LINEBREAK_UNIX (system specific)
 		std::ostringstream character;
-		character << (char)10;
+		character << '\n';
 
-		scope->define("LINEBREAK_UNIX", new Runtime::StringObject(character.str()));
+		scope->define( "LINEBREAK_UNIX", new Runtime::StringObject( character.str() ) );
+	}
+	{	// TABULATOR
+		std::ostringstream character;
+		character << '\t';
+
+		scope->define( "TABULATOR", new Runtime::StringObject( character.str() ) );
 	}
 }
 
