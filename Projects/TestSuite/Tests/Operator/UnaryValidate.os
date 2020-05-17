@@ -14,7 +14,6 @@ private object TestObject {
 public void Main(int argc = 0, string argv = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
-	//assert( TestCase3() );
 }
 
 private bool TestCase1() const {
@@ -31,31 +30,12 @@ private bool TestCase2() const {
 
 	try {
 		TestObject obj;
-		return bool obj!.getValue();
+		return cast<bool>( obj!.getValue() );
 
 		assert(!"obj validation failed!");
 	}
 	catch {
-		print("caught validation exception");
-		return true;
-	}
-
-	return false;
-}
-
-private bool TestCase3() const {
-	print("TestCase 3: int(0)");
-
-	try {
-		int value;
-		print("value = " + value);
-
-		//value!;
-
-		assert(!"int validation failed!");
-	}
-	catch {
-		print("caught validation exception");
+		print("SUCCESS: caught validation exception");
 		return true;
 	}
 
