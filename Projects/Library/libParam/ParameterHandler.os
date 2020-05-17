@@ -108,6 +108,21 @@ public object ParameterHandler implements IIterable {
 		return false;
 	}
 
+	public bool remove(Parameter param) modify throws {
+		int idx;
+
+		foreach ( Parameter p : mParameters ) {
+			if ( p == param ) {
+				mParameters.erase( idx );
+				return true;
+			}
+
+			idx++;
+		}
+
+		return false;
+	}
+
 	public int size() const {
 		return mParameters.size();
 	}
