@@ -8,6 +8,7 @@ import Statements;
 
 public object Symbol {
 	public string mName const;
+	public int mStackIndex const;
 	public string mType const;
 
 	public void Constructor(string name, string type) {
@@ -24,7 +25,7 @@ public object Symbol {
 	}
 
 	public string =operator(string) const {
-		return mName + ":" + mType;
+		return mName + "(" + mStackIndex + "):" + mType;
 	}
 }
 
@@ -32,25 +33,27 @@ public object LocalSymbol extends Symbol {
 	public bool mIsConst const;
 	public String mValue;
 
-	public void Constructor(string name, string type, bool isConst = false, String value = null) {
+	public void Constructor(string name, int stackIndex, string type, bool isConst = false, String value = null) {
 		base.Constructor(name, type);
 
 		mIsConst = isConst;
+		mStackIndex = stackIndex;
 		mValue = value;
 	}
 
 	public string =operator(string) const {
-		return (mIsConst ? "CONST " : "") + mName + ": " + mType;
+		return (mIsConst ? "CONST " : "") + mName + "(" + mStackIndex + "): " + mType;
 	}
 }
 
 public object MethodSymbol extends Symbol {
 	public ScopeStatement mMethod const;
 
-	public void Constructor(string name, string type, ScopeStatement method) {
+	public void Constructor(string name, int stackIndex, string type, ScopeStatement method) {
 		base.Constructor(name, type);
 
 		mMethod = method;
+		mStackIndex = stackIndex;
 	}
 }
 

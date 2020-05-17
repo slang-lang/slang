@@ -67,22 +67,24 @@ public object BooleanBinaryExpression extends BinaryExpression {
 	}
 
 	public string toString() const {
-		return "BooleanBinaryExpression(" + mLeft.toString() + ", '" + mOperator + "', " + mRight.toString() + ", Type: " + mResultType + ")";
+		return "BooleanBinaryExpression(" + mLeft.toString() + ", '" + mOperator + "', " + mRight.toString() + ")";
 	}
 }
 
 public object ConstantExpression extends Expression {
 	public string mConstant const;
+	public int mStackIndex const;
 
-	public void Constructor(Token token, string constant, string type = "INTEGER") {
+	public void Constructor(Token token, int stackIndex, string constant, string type = "INTEGER") {
 		base.Constructor(ExpressionType.ConstantExpression, token);
 
 		mConstant = constant;
 		mResultType = type;
+		mStackIndex = stackIndex;
 	}
 
 	public string toString() const {
-		return "ConstantExpression(\"" + mConstant + "\", Type: " + mResultType + ")";
+		return "ConstantExpression(" + mStackIndex + ", \"" + mConstant + "\", Type: " + mResultType + ")";
 	}
 }
 
@@ -151,12 +153,14 @@ public object LiteralStringExpression extends LiteralExpression {
 public object MethodExpression extends Expression {
 	public ScopeStatement mMethod const;
 	public List<Expression> mParameters;
+	public int mStackIndex;
 
-	public void Constructor(Token token, ScopeStatement method, string type = "INTEGER") {
+	public void Constructor(Token token, int stackIndex, ScopeStatement method, string type = "INTEGER") {
 		base.Constructor(ExpressionType.MethodExpression, token);
 
 		mMethod = method;
 		mResultType = type;
+		mStackIndex = stackIndex;
 	}
 
 	public string toString() const {
@@ -167,7 +171,7 @@ public object MethodExpression extends Expression {
 			}
 			params += param.toString();
 		}
-		return "MethodExpression(\"" + mMethod.mName + "\", Type: " + mResultType + ", Parameter: " + params + ")";
+		return "MethodExpression(" + mStackIndex + ", \"" + mMethod.mName + "\", Type: " + mResultType + ", Parameter: " + params + ")";
 	}
 }
 
@@ -189,17 +193,19 @@ public object UnaryExpression extends Expression {
 }
 
 public object VariableExpression extends Expression {
+	public int mStackIndex const;
 	public string mVariable const;
 
-	public void Constructor(Token token, string variable, string type = "INTEGER") {
+	public void Constructor(Token token, int stackIndex, string variable, string type = "INTEGER") {
 		base.Constructor(ExpressionType.VariableExpression, token);
 
 		mResultType = type;
+		mStackIndex = stackIndex;
 		mVariable = variable;
 	}
 
 	public string toString() const {
-		return "VariableExpression(\"" + mVariable + "\", Type: " + mResultType + ")";
+		return "VariableExpression(" + mStackIndex + ", \"" + mVariable + "\", Type: " + mResultType + ")";
 	}
 }
 

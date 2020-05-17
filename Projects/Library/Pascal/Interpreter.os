@@ -110,6 +110,7 @@ public object Interpreter {
         string name = exp.mConstant;
 
         var sym = mCurrentScope.lookup(name);
+        //var sym = mCurrentScope.at( exp.mStackIndex );
         if ( !sym ) {
             throw new RuntimeException("Symbol '" + name + "' is unknown");
         }
@@ -126,7 +127,7 @@ public object Interpreter {
                 return cast<string>( processBooleanBinaryExpression(BooleanBinaryExpression exp) );
             }
             case ExpressionType.ConstantExpression: {
-		return cast<string>( processConstantExpression(ConstantExpression exp) );
+                return cast<string>( processConstantExpression(ConstantExpression exp) );
             }
             case ExpressionType.LiteralBooleanExpression: {
                 return cast<string>( processLiteralBooleanExpression(LiteralBooleanExpression exp) );
@@ -187,11 +188,11 @@ public object Interpreter {
                 string symType = sigIt.current().mType;
                 String symValue = new String( processExpression(paramIt.current()) );
 
-                mCurrentScope.declare(cast<Symbol>( new LocalSymbol(symName, symType, false, symValue) ));
+                mCurrentScope.declare(cast<Symbol>( new LocalSymbol(symName, mCurrentScope.size(), symType, false, symValue) ));
             }
         }
 
-        var result = new LocalSymbol("RESULT", exp.mResultType, false, new String());
+        var result = new LocalSymbol("RESULT", mCurrentScope.size(), exp.mResultType, false, new String());
         mCurrentScope.declare(Symbol result);
 
         // reset control flow to normal to allow method execution
@@ -225,6 +226,7 @@ public object Interpreter {
         string name = exp.mVariable;
 
         var sym = mCurrentScope.lookup(name);
+        //var sym = mCurrentScope.at( exp.mStackIndex );
         if ( !sym ) {
             throw new RuntimeException("Symbol '" + name + "' is unknown");
         }
@@ -256,6 +258,7 @@ public object Interpreter {
         string name = (VariableExpression assign.mLeft).mVariable;
 
         var sym = mCurrentScope.lookup(name);
+        //var sym = mCurrentScope.at((VariableExpression assign.mLeft).mStackIndex);
         if ( !sym ) {
             throw new RuntimeException("Symbol '" + name + "' is unknown");
         }
@@ -295,9 +298,12 @@ public object Interpreter {
 
     protected void visitCompoundStatement(CompoundStatement compound) modify throws {
         var oldScope = mCurrentScope;
-        mCurrentScope = new SymbolTable("", oldScope);
 
         try {
+            if ( compound.mConstantDeclarations || compound.mVariableDeclarations ) {
+                mCurrentScope = new SymbolTable("", oldScope);
+            }
+
             if ( compound.mConstantDeclarations ) {
                 visitConstantDeclarationStatement(compound.mConstantDeclarations);
             }
@@ -328,7 +334,7 @@ public object Interpreter {
             }
 
             var obj = new String("0");
-            mCurrentScope.declare(Symbol new LocalSymbol(name, declStmt.mType, true, obj));
+            mCurrentScope.declare(Symbol new LocalSymbol(name, mCurrentScope.size(), declStmt.mType, true, obj));
 
             if ( declStmt.mValue ) {
                 obj = processExpression(declStmt.mValue);
@@ -409,7 +415,7 @@ public object Interpreter {
                 string symType = sigIt.current().mType;
                 String symValue = new String( processExpression(paramIt.current()) );
 
-                mCurrentScope.declare(Symbol new LocalSymbol(symName, symType, false, symValue));
+                mCurrentScope.declare(Symbol new LocalSymbol(symName, mCurrentScope.size(), symType, false, symValue));
             }
         }
 
@@ -543,7 +549,7 @@ public object Interpreter {
             }
 
             var obj = new String("0");
-            mCurrentScope.declare(Symbol new LocalSymbol(name, declStmt.mType, false, obj));
+            mCurrentScope.declare(Symbol new LocalSymbol(name, mCurrentScope.size(), declStmt.mType, false, obj));
 
             if ( declStmt.mValue ) {
                 obj = processExpression(declStmt.mValue);

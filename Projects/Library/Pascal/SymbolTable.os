@@ -22,6 +22,10 @@ public object SymbolTable {
 		// this is empty by intend
 	}
 
+	public Symbol at( int stackIndex ) const {
+		return mSymbols.at( stackIndex );
+	}
+
 	public void declare(Symbol symbol) modify throws {
 		if ( mSymbols.contains(symbol) ) {
 			throw new Exception("duplicate symbol '" + symbol.mName + "' declared");
@@ -42,6 +46,10 @@ public object SymbolTable {
 		}
 
 		return Symbol null;
+	}
+
+	public int size() const {
+		return mSymbols.size();
 	}
 
 	private List<Symbol> mSymbols;

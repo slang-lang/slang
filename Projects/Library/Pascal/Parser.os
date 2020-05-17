@@ -74,7 +74,7 @@ public object Parser {
 			throw new ParseException("Assignment to const Symbol '" + identifier.mValue + "' is not allowed", identifier.mPosition);
 		}
 
-		var identifierExp = Expression new VariableExpression(identifier, toUpper(identifier.mValue), (LocalSymbol sym).mType);
+		var identifierExp = Expression new VariableExpression(identifier, (LocalSymbol sym).mStackIndex, toUpper(identifier.mValue), (LocalSymbol sym).mType);
 
 		require(TokenType.ASSIGN);
 
@@ -233,7 +233,7 @@ public object Parser {
 					throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
 				}
 
-				mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, true));
+				mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, mCurrentScope.size(), declStmt.mType, true));
 			}
 		}
 
@@ -305,7 +305,7 @@ public object Parser {
 					throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
 				}
 
-				mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, false));
+				mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, mCurrentScope.size(), declStmt.mType, false));
 
 				if ( peek().mType == TokenType.SEMICOLON ) {
 					consume();	// consume ';' token
@@ -416,15 +416,15 @@ public object Parser {
 		func.mParameters = params;
 
 		// add local symbol "result" to store function return value
-		mCurrentScope.declare(Symbol new LocalSymbol("RESULT", type.mValue));
+		mCurrentScope.declare(Symbol new LocalSymbol("RESULT", mCurrentScope.size(), type.mValue));
 		// add function to current scope to allow recursive calls to it
-		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, type.mValue, ScopeStatement func));
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, mCurrentScope.size(), type.mValue, ScopeStatement func));
 
 		func.mBody = parseCompoundStatementWithDeclarations();
 
 		// restore previous scope
 		mCurrentScope = oldScope;
-		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, type.mValue, ScopeStatement func));
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, mCurrentScope.size(), type.mValue, ScopeStatement func));
 
 		require(TokenType.SEMICOLON);
 
@@ -537,13 +537,13 @@ public object Parser {
 		proc.mParameters = params;
 
 		// add method symbol also to current scope to allow recursive method calls
-		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, "void", ScopeStatement proc));
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, mCurrentScope.size(), "void", ScopeStatement proc));
 
 		proc.mBody = parseCompoundStatementWithDeclarations();
 
 		// restore previous scope
 		mCurrentScope = oldScope;
-		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, "void", ScopeStatement proc));
+		mCurrentScope.declare(Symbol new MethodSymbol(name.mValue, mCurrentScope.size(), "void", ScopeStatement proc));
 
 		require(TokenType.SEMICOLON);
 
@@ -789,7 +789,7 @@ public object Parser {
 					throw new ParseException("symbol '" + declStmt.mName + "' already exists", start.mPosition);
 				}
 
-				mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, declStmt.mType, false));
+				mCurrentScope.declare(Symbol new LocalSymbol(declStmt.mName, mCurrentScope.size(), declStmt.mType, false));
 			}
 		}
 
@@ -931,13 +931,13 @@ public object Parser {
 
 		if ( sym is LocalSymbol ) {
 			if ( (LocalSymbol sym).mIsConst ) {
-				return Expression new ConstantExpression(token, toUpper(token.mValue), sym.mType);
+				return Expression new ConstantExpression(token, (LocalSymbol sym).mStackIndex, toUpper(token.mValue), sym.mType);
 			}
 
-			return Expression new VariableExpression(token, toUpper(token.mValue), sym.mType);
+			return Expression new VariableExpression(token, (LocalSymbol sym).mStackIndex, toUpper(token.mValue), sym.mType);
 		}
 		else if ( sym is MethodSymbol ) {
-			var method = new MethodExpression(token, (MethodSymbol sym).mMethod, sym.mType);
+			var method = new MethodExpression(token, (MethodSymbol sym).mStackIndex, (MethodSymbol sym).mMethod, sym.mType);
 			method.mParameters = parseMethodParameters(token, MethodSymbol sym);
 
 			return Expression method;
