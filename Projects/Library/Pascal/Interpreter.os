@@ -300,7 +300,7 @@ public object Interpreter {
         var oldScope = mCurrentScope;
 
         try {
-            if ( compound.mConstantDeclarations || compound.mVariableDeclarations ) {
+            if ( compound.mConstantDeclarations || compound.mVariableDeclarations ) {
                 mCurrentScope = new SymbolTable("", oldScope);
             }
 
