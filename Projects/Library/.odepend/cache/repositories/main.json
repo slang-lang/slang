@@ -1,3 +1,89 @@
 {
-    "modules": []
+    "modules": [
+        {
+            "name": "Alpen", 
+            "version": "0.0.7", 
+            "description": ""
+        }, 
+        {
+            "name": "Basic", 
+            "version": "0.1.8", 
+            "description": ""
+        }, 
+        {
+            "name": "Basic-Token", 
+            "version": "0.1.8", 
+            "description": ""
+        }, 
+        {
+            "name": "FileReader", 
+            "version": "0.2.1", 
+            "description": ""
+        }, 
+        {
+            "name": "Mysql", 
+            "version": "0.4.1", 
+            "description": ""
+        }, 
+        {
+            "name": "MysqlObject", 
+            "version": "0.1.6", 
+            "description": ""
+        }, 
+        {
+            "name": "ObjectiveScript", 
+            "version": "0.6.9", 
+            "description": ""
+        }, 
+        {
+            "name": "Pascal", 
+            "version": "0.1.8", 
+            "description": ""
+        }, 
+        {
+            "name": "RepoIndexer", 
+            "version": "1.0.1", 
+            "description": ""
+        }, 
+        {
+            "name": "Slang", 
+            "version": "0.7.0", 
+            "description": ""
+        }, 
+        {
+            "name": "System", 
+            "version": "0.3.4", 
+            "description": ""
+        }, 
+        {
+            "name": "Telnet", 
+            "version": "0.0.2", 
+            "description": ""
+        }, 
+        {
+            "name": "libJson", 
+            "version": "0.0.5", 
+            "description": ""
+        }, 
+        {
+            "name": "libJsonBuilder", 
+            "version": "0.1.2", 
+            "description": ""
+        }, 
+        {
+            "name": "libLog", 
+            "version": "0.3.1", 
+            "description": ""
+        }, 
+        {
+            "name": "libParam", 
+            "version": "0.2.7", 
+            "description": ""
+        }, 
+        {
+            "name": "libSemVer", 
+            "version": "0.1.1", 
+            "description": ""
+        }
+    ]
 }
