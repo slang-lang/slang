@@ -20,7 +20,7 @@
 
 std::vector<void*> myAlloc;
 
-void* newImpl(std::size_t sz,char const* file, int line) {
+void* newImpl(std::size_t sz, char const* file, int line) {
 	static int counter{};
 
 	void* ptr = std::malloc(sz);
@@ -30,11 +30,11 @@ void* newImpl(std::size_t sz,char const* file, int line) {
 	return ptr;
 }
 
-void* operator new(std::size_t sz,char const* file, int line) {
+void* operator new(std::size_t sz, char const* file, int line) {
 	return newImpl(sz,file,line);
 }
 
-void* operator new [](std::size_t sz,char const* file, int line) {
+void* operator new [](std::size_t sz, char const* file, int line) {
 	return newImpl(sz,file,line);
 }
 

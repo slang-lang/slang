@@ -115,7 +115,7 @@ class DuplicateIdentifier : public Exception
 {
 public:
 	explicit DuplicateIdentifier(const std::string& text, const Position& position = Position())
-	: Exception("Duplicate identifier: " + text, position)
+	: Exception("Duplicate identifier defined: " + text, position)
 	{ }
 };
 

@@ -886,18 +886,16 @@ void TreeInterpreter::visitAssert(AssertStatement* node)
 	tryControl(evaluate(node->mExpression, &condition));
 
 	if ( !isTrue(condition) ) {
-		//std::cout << "assert( " << printExpression(node->mExpression) << " );" << std::endl;
-
 		throw Runtime::Exceptions::AssertionFailed(printExpression(node->mExpression), node->mPosition);
 	}
 }
 
-void TreeInterpreter::visitBreak(BreakStatement* /*node*/)
+void TreeInterpreter::visitBreak(BreakStatement*)
 {
 	mControlFlow = Runtime::ControlFlow::Break;
 }
 
-void TreeInterpreter::visitContinue(ContinueStatement* /*node*/)
+void TreeInterpreter::visitContinue(ContinueStatement*)
 {
 	mControlFlow = Runtime::ControlFlow::Continue;
 }
@@ -1043,8 +1041,9 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 
 void TreeInterpreter::visitIf(IfStatement* node)
 {
-	// evaluate if-condition
 	Runtime::Object condition;
+
+	// evaluate if-condition
 	tryControl(evaluate(node->mCondition, &condition));
 
 	// validate if-condition
@@ -1058,7 +1057,7 @@ void TreeInterpreter::visitIf(IfStatement* node)
 	}
 }
 
-void TreeInterpreter::visitOperator(Operator* /*op*/)
+void TreeInterpreter::visitOperator(Operator*)
 {
 	throw Runtime::Exceptions::InvalidOperation("cannot process standalone operator");
 }
@@ -1165,19 +1164,22 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 		// reset this for every loop
 		bool caseMatched = false;
 
+		// evaluate the switch expression, this needs to be done each time because the value could have changed in the meantime
 		if ( !node->mCaseStatements.empty() ) {
 			tryControl(evaluate(node->mExpression, &value));
 		}
 
 		// loop over all case statements
-		for ( auto mCaseStatement : node->mCaseStatements ) {
+		for ( auto& stmt : node->mCaseStatements ) {
 			Runtime::Object caseValue;
-			tryControl(evaluate(mCaseStatement->mCaseExpression, &caseValue));
+			tryControl(evaluate(stmt->mCaseExpression, &caseValue));
 
+			// check if our switch-expression and our case-expression match
 			if ( Runtime::operator_binary_equal(&value, &caseValue) ) {
 				caseMatched = true;
 
-				visitStatements(mCaseStatement->mCaseBlock);
+				// both expressions matched so we need to execute this case-block
+				visitStatements(stmt->mCaseBlock);
 				break;
 			}
 		}
@@ -1189,22 +1191,24 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 
 		// inspect control flow after the complete iteration
 		switch ( mControlFlow ) {
-			case Runtime::ControlFlow::Break: mControlFlow = Runtime::ControlFlow::Normal; return;	// no further processing, reset current control flow state
+			case Runtime::ControlFlow::Break: mControlFlow = Runtime::ControlFlow::Normal; return;		// no further processing, reset current control flow state
 			case Runtime::ControlFlow::Continue: mControlFlow = Runtime::ControlFlow::Normal; break;	// continue loop, reset current control flow state
-			case Runtime::ControlFlow::Normal: mControlFlow = Runtime::ControlFlow::Normal; return;	// no further processing, reset current control flow state
+			case Runtime::ControlFlow::Normal: mControlFlow = Runtime::ControlFlow::Normal; return;		// no further processing, reset current control flow state
 			case Runtime::ControlFlow::ExitProgram:
 			case Runtime::ControlFlow::Return:
-			case Runtime::ControlFlow::Throw: return;	// no further processing, keep current control flow state
+			case Runtime::ControlFlow::Throw: return;													// no further processing, keep current control flow state
 		}
 	} while ( mControlFlow == Runtime::ControlFlow::Normal );
 }
 
 void TreeInterpreter::visitThrow(ThrowStatement* node)
 {
-	if ( node->mExpression ) {	// throw new expression
+	// check if we are throwing new exception or if we're just rethrowing our previous one
+	if ( node->mExpression ) {
 		Runtime::Object* data = mRepository->createInstance(ANONYMOUS_OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
 		tryControl(evaluate(node->mExpression, data));
 
+		// "throw" a new expression
 		mThread->exception(data, node->token().position());
 	}
 
@@ -1230,8 +1234,9 @@ void TreeInterpreter::visitTry(TryStatement* node)
 		Runtime::Object* exception = mThread->exception().getData();
 
 		// determine correct catch-block (if a correct one exists)
-		for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
-			if ( (*it)->mTypeDeclaration && !(exception && exception->isInstanceOf((*it)->mTypeDeclaration->mType)) ) {
+		for ( auto& stmt : node->mCatchStatements ) {
+			// check if we have a catch-block with a given type that matches the thrown exception type
+			if ( stmt->mTypeDeclaration && !(exception && exception->isInstanceOf(stmt->mTypeDeclaration->mType)) ) {
 				// exception type does not match
 				continue;
 			}
@@ -1240,24 +1245,24 @@ void TreeInterpreter::visitTry(TryStatement* node)
 			pushScope();
 
 			// process exception type declaration (if present)
-			if ( (*it)->mTypeDeclaration ) {
+			if ( stmt->mTypeDeclaration ) {
 				// retrieve exception instance variable
-				Runtime::Object* symbol = visitTypeDeclaration((*it)->mTypeDeclaration);
+				Runtime::Object* symbol = visitTypeDeclaration(stmt->mTypeDeclaration);
 
 				// assign exception to instance variable
 				Runtime::operator_binary_assign(symbol, exception);
 			}
 
 			// notify our debugger that an exception has been caught
-			DEBUGGER( notifyExceptionCatch(getScope(), (*it)->token()) );
+			DEBUGGER( notifyExceptionCatch(getScope(), stmt->token()) );
 
 			// reset current control flow to allow execution of catch block
 			mControlFlow = Runtime::ControlFlow::Normal;
 
-			// execute catch statements
-			visitStatements((*it)->mStatements);
+			// execute statements of catch-block
+			visitStatements(stmt->mStatements);
 
-			// pop scope to clean up the exception variable
+			// pop scope to get rid of the exception variable
 			popScope();
 
 			// only process one catch-block
@@ -1268,11 +1273,11 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	// store current control flow and re-set it after finally block has been executed
 	Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
 
-	// reset current control flow to allow execution of finally-block
-	mControlFlow = Runtime::ControlFlow::Normal;
-
 	// execute finally-block if present
 	if ( node->mFinallyBlock ) {
+		// reset current control flow to allow execution of finally-block
+		mControlFlow = Runtime::ControlFlow::Normal;
+
 		visitStatements(node->mFinallyBlock);
 	}
 

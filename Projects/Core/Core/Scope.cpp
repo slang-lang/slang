@@ -38,7 +38,7 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 
 	if ( resolve(name, true, Visibility::Designtime) ) {
 		// duplicate symbol defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
+		throw Common::Exceptions::DuplicateIdentifier(symbol->getName());
 	}
 
 	mSymbols.insert(std::make_pair(name, symbol));
@@ -53,7 +53,7 @@ void SymbolScope::defineExternal(const std::string &name, Symbol *symbol)
 	auto symIt = mExternalSymbols.find(name);
 	if ( symIt != mExternalSymbols.end() ) {
 		// duplicate symbol defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
+		throw Common::Exceptions::DuplicateIdentifier(symbol->getName());
 	}
 
 	mExternalSymbols.insert(std::make_pair(name, symbol));
@@ -178,7 +178,7 @@ void MethodScope::define(const std::string& name, Symbol* symbol)
 
 	if ( mSymbols.find(name) != mSymbols.end() ) {
 		// duplicate symbol defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + name);
+		throw Common::Exceptions::DuplicateIdentifier(name);
 	}
 
 	mSymbols.insert(std::make_pair(name, symbol));
@@ -193,7 +193,7 @@ void MethodScope::defineExternal(const std::string &name, Symbol *symbol)
 	Symbols::const_iterator symIt = mExternalSymbols.find(name);
 	if ( symIt != mExternalSymbols.end() ) {
 		// duplicate symbol defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
+		throw Common::Exceptions::DuplicateIdentifier(symbol->getName());
 	}
 
 	mExternalSymbols.insert(std::make_pair(name, symbol));
