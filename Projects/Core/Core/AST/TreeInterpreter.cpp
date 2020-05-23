@@ -263,16 +263,15 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		methodSymbol = resolveMethod(getEnclosingMethodScope(scope), exp->mSymbolExpression, params, Visibility::Private);
 	}
 	if ( !methodSymbol ) {
-		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-		*data = Runtime::StringObject(std::string("NullPointerException"));
-		//*data = Runtime::UserObject(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, std::string("NullPointerException"));
+		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		data->setValue( std::string("NullPointerException: ") + exp->mSymbolExpression->toString() );
 
 		mThread->exception() = Runtime::ExceptionData(data);
 
 		// notify our debugger that an exception has been thrown
 		DEBUGGER( notifyExceptionThrow(getScope(), Token()) );
 
-		throw Runtime::ControlFlow::Throw;				// promote control flow
+		throw Runtime::ControlFlow::Throw;	// promote control flow
 	}
 
 	auto* method = dynamic_cast<Common::Method*>(methodSymbol);
@@ -343,8 +342,8 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 	// resolve current symbol name
 	Symbol* lvalue = scope->resolve(exp->mName, false, Visibility::Designtime);
 	if ( !lvalue ) {
-		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-		*data = Runtime::StringObject(std::string("NullPointerException"));
+		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		data->setValue( std::string("NullPointerException: ") + exp->toString() );
 
 		mThread->exception() = Runtime::ExceptionData(data);
 
