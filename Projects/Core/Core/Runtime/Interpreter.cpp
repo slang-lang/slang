@@ -59,7 +59,7 @@ namespace Runtime {
 			return NULL; \
 		}
 
-#define tryEvaluteReturnNull(left, right) \
+#define tryEvaluateReturnNull(left, right) \
 		try { \
 			evaluate(left, right); \
 		} \

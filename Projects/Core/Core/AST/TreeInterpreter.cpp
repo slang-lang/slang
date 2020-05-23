@@ -3,13 +3,11 @@
 #include "TreeInterpreter.h"
 
 // Library includes
-#include <iostream>
 
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
-#include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/BoolObject.h>
@@ -51,7 +49,7 @@
 			return NULL; \
 		}
 
-#define tryEvaluteReturnNull(left, right) \
+#define tryEvaluateReturnNull(left, right) \
 		try { \
 			evaluate(left, right); \
 		} \
@@ -556,28 +554,6 @@ NamedScope* TreeInterpreter::getEnclosingNamedScope(IScope *scope) const
 
 		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
 			return dynamic_cast<NamedScope*>(parent);
-		}
-
-		scope = parent;
-	}
-
-	return nullptr;
-}
-
-Common::Namespace* TreeInterpreter::getEnclosingNamespace(IScope* scope) const
-{
-	if ( !scope ) {
-		scope = getScope();
-	}
-
-	while ( scope ) {
-		IScope* parent = scope->getEnclosingScope();
-
-		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			auto* result = dynamic_cast<Common::Namespace*>(parent);
-			if ( result ) {
-				return result;
-			}
 		}
 
 		scope = parent;
@@ -1295,7 +1271,7 @@ Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 	getScope()->define(node->mName, lvalue);
 
 	if ( node->mAssignment ) {
-		tryEvaluteReturnNull(node->mAssignment, lvalue);
+		tryEvaluateReturnNull(node->mAssignment, lvalue);
 	}
 
 	return lvalue;

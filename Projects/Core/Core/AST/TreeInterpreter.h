@@ -7,10 +7,8 @@
 
 // Project includes
 #include <Core/Common/Types.h>
-#include <Core/Designtime/Parser/Token.h>
-#include <Core/Runtime/ControlFlow.h>
-#include <Core/Runtime/ExceptionData.h>
 #include <Core/Parameter.h>
+#include <Core/Runtime/ControlFlow.h>
 #include "Expression.h"
 #include "Operator.h"
 #include "Statement.h"
@@ -84,7 +82,6 @@ private:
 private:
 	MethodScope* getEnclosingMethodScope(IScope *scope = nullptr) const;
 	NamedScope* getEnclosingNamedScope(IScope *scope = nullptr) const;
-	Common::Namespace* getEnclosingNamespace(IScope* scope = nullptr) const;
 	Runtime::Object* getEnclosingObject(IScope* scope = nullptr) const;
 
 	// Scope stack

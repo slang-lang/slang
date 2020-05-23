@@ -21,7 +21,7 @@ namespace AST {
 class Statement;
 class Statements;
 
-class PrintVisitor : public TreeVisitor
+class PrintVisitor : private TreeVisitor
 {
 public:
 	PrintVisitor();
@@ -30,11 +30,8 @@ public:
 	void generate(Statements* root, TreeLineBuffer& output);
 
 private:
-	void visit(Node* node) override;
-
 	void visitExpression(Expression* expression) override;
 	void visitOperator(Operator* op) override;
-	void visitStatement(Statement* node) override;
 
 	void visitAssert(AssertStatement* node) override;
 	void visitBreak(BreakStatement* node) override;

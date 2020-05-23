@@ -150,23 +150,6 @@ std::string PrintVisitor::printIndentation(int indentation) const
 	return result;
 }
 
-void PrintVisitor::visit(Node* node)
-{
-	if ( node ) {
-		switch ( node->getNodeType() ) {
-			case Node::NodeType::Expression:
-				visitExpression(dynamic_cast<Expression*>(node));
-				break;
-			case Node::NodeType::Operator:
-				visitOperator(dynamic_cast<Operator*>(node));
-				break;
-			case Node::NodeType::Statement:
-				visitStatement(dynamic_cast<Statement*>(node));
-				break;
-		}
-	}
-}
-
 void PrintVisitor::visitAssert(AssertStatement* node)
 {
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "assert(" + printExpression(node->mExpression) + ");");
@@ -263,71 +246,6 @@ void PrintVisitor::visitPrint(PrintStatement* node)
 void PrintVisitor::visitReturn(ReturnStatement* node)
 {
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "return " + printExpression(node->mExpression) + ";");
-}
-
-void PrintVisitor::visitStatement(Statement *node)
-{
-	if ( !node ) {
-		return;
-	}
-
-	switch ( node->getStatementType() ) {
-		case Statement::StatementType::AssertStatement:
-			visitAssert(dynamic_cast<AssertStatement*>(node));
-			break;
-		case Statement::StatementType::BreakStatement:
-			visitBreak(dynamic_cast<BreakStatement*>(node));
-			break;
-		case Statement::StatementType::CaseStatement:
-			throw Common::Exceptions::Exception("case statements are handled separately!");
-		case Statement::StatementType::CatchStatement:
-			throw Common::Exceptions::Exception("catch statements are handled separately!");
-		case Statement::StatementType::ContinueStatement:
-			visitContinue(dynamic_cast<ContinueStatement*>(node));
-			break;
-		case Statement::StatementType::DeleteStatement:
-			visitDelete(dynamic_cast<DeleteStatement*>(node));
-			break;
-		case Statement::StatementType::ExitStatement:
-			visitExit(dynamic_cast<ExitStatement*>(node));
-			break;
-		case Statement::StatementType::ForeachStatement:
-			visitForeach(dynamic_cast<ForeachStatement *>(node));
-			break;
-		case Statement::StatementType::ForStatement:
-			visitFor(dynamic_cast<ForStatement*>(node));
-			break;
-		case Statement::StatementType::IfStatement:
-			visitIf(dynamic_cast<IfStatement*>(node));
-			break;
-		case Statement::StatementType::PrintStatement:
-			visitPrint(dynamic_cast<PrintStatement*>(node));
-			break;
-		case Statement::StatementType::ReturnStatement:
-			visitReturn(dynamic_cast<ReturnStatement*>(node));
-			break;
-		case Statement::StatementType::Statements:
-			visitStatements(dynamic_cast<Statements*>(node));
-			break;
-		case Statement::StatementType::SwitchStatement:
-			visitSwitch(dynamic_cast<SwitchStatement*>(node));
-			break;
-		case Statement::StatementType::ThrowStatement:
-			visitThrow(dynamic_cast<ThrowStatement*>(node));
-			break;
-		case Statement::StatementType::TryStatement:
-			visitTry(dynamic_cast<TryStatement*>(node));
-			break;
-		case Statement::StatementType::TypeDeclaration:
-			visitTypeDeclaration(dynamic_cast<TypeDeclaration*>(node));
-			break;
-		case Statement::StatementType::TypeInference:
-			visitTypeInference(dynamic_cast<TypeInference*>(node));
-			break;
-		case Statement::StatementType::WhileStatement:
-			visitWhile(dynamic_cast<WhileStatement*>(node));
-			break;
-	}
 }
 
 void PrintVisitor::visitStatements(Statements* node)
