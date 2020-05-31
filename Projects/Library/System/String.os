@@ -278,6 +278,7 @@ public object String implements IIterable {
 	public string Trim() modify {
 		mValue = strltrim(mValue);
 		mValue = strrtrim(mValue);
+		mSize = strlen(mValue);
 
 		return mValue;
 	}
