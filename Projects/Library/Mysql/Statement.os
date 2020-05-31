@@ -61,6 +61,10 @@ public object MysqlStatement {
 		return this;
 	}
 
+	public string error() const {
+		return mysql_error( mConnection );
+	}
+
 	public MysqlResult execute( string queryStr = "" ) modify throws {
 		if ( queryStr ) {
 			prepare( queryStr );
@@ -84,6 +88,10 @@ public object MysqlStatement {
 	public void prepare( string query ) modify {
 		mExecutedQuery = query;
 		mPreparedQuery = query;
+	}
+
+	public string =operator(string) const {
+		return cast<string>( mExecutedQuery );
 	}
 
 // Private
