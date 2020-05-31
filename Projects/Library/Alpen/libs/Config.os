@@ -1,8 +1,8 @@
 
 // Connection settings
 public string Database = "alpen";
-public string Host = "raspberrypi3.local";
-public string Password = "moviebase";
+public string Host = "127.0.0.1";
+public string Password = "alpen*";
 public int Port = 3306;
-public string User = "moviebase";
+public string User = "alpen";
 
