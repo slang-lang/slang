@@ -69,10 +69,16 @@ public object MysqlResult implements Iterator<MysqlRow> {
 		return at( mCurrentIndex );
 	}
 
+	/*
+	 * returns the number of fields in this result
+	 */
 	public int numFields() const {
 		return mNumFields;
 	}
 
+	/*
+	 * returns the number of rows in this result
+	 */
 	public int numRows() const {
 		return mNumRows;
 	}
@@ -105,7 +111,7 @@ public object MysqlResult implements Iterator<MysqlRow> {
 	}
 
 	/*
-	 * returns the next sub string of the held String value
+	 * returns the next row
 	 * equivalent to calling next()
 	 * throws OutOfBoundsException
 	 */

@@ -61,9 +61,11 @@ public object MysqlStatement {
 		return this;
 	}
 
+/*
 	public string error() const {
 		return mysql_error( mConnection );
 	}
+*/
 
 	public MysqlResult execute( string queryStr = "" ) modify throws {
 		if ( queryStr ) {
