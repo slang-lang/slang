@@ -1,7 +1,7 @@
 {
   "name": "Slang MySQL library",
   "name_short": "Mysql",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Library for convenience access to a MySQL database",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.0" },

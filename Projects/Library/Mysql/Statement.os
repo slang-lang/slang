@@ -67,7 +67,32 @@ public object MysqlStatement {
 	}
 */
 
-	public MysqlResult execute( string queryStr = "" ) modify throws {
+	public bool execute( string queryStr = "" ) modify throws {
+		if ( queryStr ) {
+			prepare( queryStr );
+		}
+
+		queryStr = cast<string>( mExecutedQuery );
+
+		int error = mysql_query( mConnection, queryStr );
+		if ( error ) { 
+			// error while query execution
+			throw new MysqlException( mysql_error( mConnection ) );
+		}
+
+		return true;
+	}
+
+	public string getQuery() const {
+		return cast<string>( mExecutedQuery );
+	}
+
+	public void prepare( string query ) modify {
+		mExecutedQuery = query;
+		mPreparedQuery = query;
+	}
+
+	public MysqlResult query( string queryStr = "" ) modify throws {
 		if ( queryStr ) {
 			prepare( queryStr );
 		}
@@ -81,15 +106,6 @@ public object MysqlStatement {
 		}
 
 		return new MysqlResult( mysql_store_result( mConnection ) );
-	}
-
-	public string getQuery() const {
-		return cast<string>( mExecutedQuery );
-	}
-
-	public void prepare( string query ) modify {
-		mExecutedQuery = query;
-		mPreparedQuery = query;
 	}
 
 	public string =operator(string) const {
