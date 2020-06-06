@@ -87,9 +87,9 @@ public object MysqlStatement {
 		return cast<string>( mExecutedQuery );
 	}
 
-	public void prepare( string query ) modify {
-		mExecutedQuery = query;
-		mPreparedQuery = query;
+	public void prepare( string query_ ) modify {
+		mExecutedQuery = query_;
+		mPreparedQuery = query_;
 	}
 
 	public MysqlResult query( string queryStr = "" ) modify throws {
