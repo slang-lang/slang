@@ -159,8 +159,8 @@ std::string toString(const Parameter& param)
 		result += ANONYMOUS_OBJECT;
 	}
 
-	result += " "; result += Mutability::convert(param.mutability());
-	result += " "; result += AccessMode::convert(param.access());
+	result += " " + Mutability::convert(param.mutability());
+	result += " " + AccessMode::convert(param.access());
 
 	if ( param.hasDefaultValue() ) {
 		result += " = ";

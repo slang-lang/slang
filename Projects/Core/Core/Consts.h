@@ -129,6 +129,7 @@ static const char* PROTECTED = "protected";
 static const char* PUBLIC = "public";
 
 // Unsorted
+static const char* DEFAULT = "default";
 static const char* EMPTY = "";
 
 

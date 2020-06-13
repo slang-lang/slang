@@ -16,6 +16,7 @@ namespace Slang {
 AccessMode::E AccessMode::convert(const std::string& v)
 {
 	if ( v == RESERVED_WORD_BY_REFERENCE ) { return AccessMode::ByReference; }
+	else if ( v == DEFAULT ) { return AccessMode::Unspecified; }
 
 	return AccessMode::Unspecified;
 }
@@ -24,8 +25,8 @@ std::string AccessMode::convert(AccessMode::E e)
 {
 	switch ( e ) {
 		case AccessMode::ByReference: return RESERVED_WORD_BY_REFERENCE;
-		case AccessMode::ByValue: return EMPTY;
-		case AccessMode::Unspecified: return UNKNOWN;
+		case AccessMode::ByValue: return DEFAULT;
+		case AccessMode::Unspecified: return DEFAULT;
 	}
 
 	return UNKNOWN;

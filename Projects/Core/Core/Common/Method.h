@@ -7,7 +7,6 @@
 #include <map>
 
 // Project includes
-#include <Core/Attributes/Attributes.h>
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Object.h>
 #include <Core/Parameter.h>

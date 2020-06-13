@@ -151,6 +151,11 @@ private: // Execution
 	inline void pushTokens(const TokenList& tokens);
 	// }
 
+	// Helpers
+	// {
+	std::list<MethodSymbol*> provideSimilarMethods(SymbolExpression* symbol) const;
+	// }
+
 private:	// Initialization
 	void finalize();
 	void initialize(Common::Method* method);

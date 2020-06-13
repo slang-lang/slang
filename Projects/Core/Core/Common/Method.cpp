@@ -378,7 +378,7 @@ std::string Method::ToString(unsigned int indent) const
 	if ( mLanguageFeatureState != LanguageFeatureState::Stable ) {
 		result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	}
-	result += " " + QualifiedTypename() + " " + getName() + "(" + toString(mSignature) + ")";
+	result += " " + QualifiedTypename() + " " + getName() + "( " + toString(mSignature) + " )";
 	result += " " + Mutability::convert(mMutability);
 	if ( mCheckedExceptions != CheckedExceptions::Unspecified ) {
 		result += " " + CheckedExceptions::convert(mCheckedExceptions);

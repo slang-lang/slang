@@ -395,14 +395,14 @@ bool Parser::isObjectDeclaration(TokenIterator token)
 		++token;
 	}
 
-	return !(token->type() != Token::Type::RESERVED_WORD || token->content() != std::string(RESERVED_WORD_OBJECT));
+	return !(token->type() != Token::Type::RESERVED_WORD || token->content() != RESERVED_WORD_OBJECT);
 }
 
 AccessMode::E Parser::parseAccessMode(TokenIterator& token, AccessMode::E defaultValue)
 {
 	AccessMode::E result = defaultValue;
 
-	if ( token->type() == Token::Type::ACCESS_MODE ) {
+	if ( token->type() == Token::Type::ACCESS_MODE || token->content() == DEFAULT ) {
 		result = AccessMode::convert((*token++).content());
 	}
 
@@ -481,7 +481,7 @@ ParameterList Parser::parseParameters(TokenIterator& token, IScope* scope)
 		}
 		// }
 
-		Mutability::E mutability = parseMutability(token, Mutability::Modify);
+		Mutability::E mutability = parseMutability( token, Mutability::Modify );
 		AccessMode::E accessMode = parseAccessMode( token, AccessMode::Unspecified );
 
 		bool hasDefaultValue = false;
@@ -501,7 +501,7 @@ ParameterList Parser::parseParameters(TokenIterator& token, IScope* scope)
 
 		if ( hasDefaultValue && accessMode == AccessMode::ByReference ) {
 			// parameters with default values cannot be accessed by reference
-			throw Designtime::Exceptions::SyntaxError("default parameters are not allowed to be accessed by reference");
+			throw Designtime::Exceptions::SyntaxError("parameters with default values are not allowed to be accessed by reference");
 		}
 
 		params.push_back(

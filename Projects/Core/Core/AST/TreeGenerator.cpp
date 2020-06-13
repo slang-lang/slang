@@ -1466,7 +1466,13 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 
 	auto* method = dynamic_cast<Common::Method*>(resolveMethod(symbol, params, Visibility::Private));
 	if ( !method ) {
-		throw Common::Exceptions::UnknownIdentifier("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token.position());
+		// provide a list of similar methods, so the user can check if just one of the parameter types is used incorrectly
+		auto methods = provideSimilarMethods( symbol );
+		for ( auto& method : methods ) {
+			OSinfo( "Found similar method: " + method->ToString() );
+		}
+
+		throw Common::Exceptions::UnknownIdentifier("method '" + symbol->toString() + "( " + toString(params) + " )' not found", token.position());
 	}
 
 	// validate parameters
@@ -2062,6 +2068,38 @@ void TreeGenerator::pushScope(IScope* scope, bool allowBreakAndContinue)
 	}
 
 	mStackFrame->pushScope(scope, allowDelete, allowBreakAndContinue || mStackFrame->allowBreakAndContinue());
+}
+
+std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* symbol) const
+{
+	if ( !symbol ) {
+		throw Common::Exceptions::InvalidSymbol("invalid symbol provided");
+	}
+
+	std::list<MethodSymbol*> result;
+
+	SymbolExpression* inner = symbol;
+	for ( ; ; ) {
+		if ( inner->mSymbolExpression && inner->mSymbolExpression->mSurroundingScope ) {
+			inner = inner->mSymbolExpression;
+			continue;
+		}
+
+		break;
+	}
+
+	MethodScope* scope = getMethodScope(inner->mSurroundingScope);
+	if ( !scope ) {
+		throw Designtime::Exceptions::DesigntimeException("invalid scope");
+	}
+
+	for ( auto methodIt = scope->beginMethods(); methodIt != scope->endMethods(); ++methodIt ) {
+		if ( (*methodIt)->getName() == symbol->innerName() ) {
+			result.push_back( *methodIt );
+		}
+	}
+
+	return result;
 }
 
 void TreeGenerator::pushTokens(const TokenList& tokens)
