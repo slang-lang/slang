@@ -13,7 +13,7 @@ changing the names of all binaries and updating all existing script files with t
 new shebang).
 
 - changed the position of the 'static' keyword, which is now the 2nd possible keyword
-after visibility and before language feature state (i.e. public static stable Method(...))
+after visibility and before language feature state (i.e. public static stable void Method(...))
 
 - merged the memory layout tokens (static, instance) and modifier tokens (final, override, virtual) into the new memory layout types (final, override, static, virtual)
 
