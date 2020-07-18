@@ -5,7 +5,7 @@
   "description": "The Slang logging library provides standard out and file logging capabilities.",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.0" },
-    { "module": "System", "version_min": "0.2.0" }
+    { "module": "System", "version_min": "0.3.4" }
   ],
   "target": {
     "directory": "libLog",
