@@ -84,6 +84,11 @@
             "name": "libSemVer", 
             "version": "0.1.1", 
             "description": ""
+        }, 
+        {
+            "name": "libSqlite3", 
+            "version": "0.1.0", 
+            "description": ""
         }
     ]
 }
