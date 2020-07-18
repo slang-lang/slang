@@ -60,11 +60,11 @@ public object Map<K, V> implements ICollection {
 	}
 
 	public Iterator<Object> getIterator() const {
-		return new Iterator<Object>(cast<ICollection>( mItems ) );
+		return new Iterator<Object>( cast<ICollection>( mItems ) );
 	}
 
 	public ReverseIterator<Object> getReverseIterator() const {
-		return new ReverseIterator<Object>(cast<ICollection>( mItems ) );
+		return new ReverseIterator<Object>( cast<ICollection>( mItems ) );
 	}
 
 	public int indexOf(K key) const throws {
