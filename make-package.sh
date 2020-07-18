@@ -9,7 +9,7 @@ PLATFORM=$(uname -m)
 VERSION=$(cat version)
 
 # preparing config file if necessary
-if [ -f ${CONFIG_FILE} ]; then
+if [[ -f ${CONFIG_FILE} ]]; then
 	test -f ${CONFIG_FILE} 
 else
 	echo "Preparing config file '${CONFIG_FILE}', please edit manually before proceeding."
@@ -22,7 +22,7 @@ fi
 # read config file
 source ${CONFIG_FILE}
 
-if [ "x${1}" != "x" ]; then
+if [[ "x${1}" != "x" ]]; then
 	PLATFORM=${1}
 #else
 #	PLATFORM="any"

@@ -639,8 +639,7 @@ Node* TreeGenerator::processPostfixObjectOperator(const std::string& objectType,
 		throw Designtime::Exceptions::SyntaxError("to use operators on literals System." + objectType + " has to be imported", start->position());
 	}
 
-	SymbolExpression* stringExp = nullptr;
-	stringExp = new DesigntimeSymbolExpression(RESERVED_WORD_CONSTRUCTOR, _void, PrototypeConstraints(), false);
+	SymbolExpression* stringExp = new DesigntimeSymbolExpression(RESERVED_WORD_CONSTRUCTOR, _void, PrototypeConstraints(), false);
 	stringExp->mSurroundingScope = scope;
 
 	ExpressionList params;
@@ -666,7 +665,6 @@ Node* TreeGenerator::processPostfixRangeOperator(TokenIterator& start, Node* bas
 {
 	++start;
 
-	SymbolExpression* rangeExp = nullptr;
 	auto* lhs = dynamic_cast<Expression*>(baseExp);
 	auto* rhs = dynamic_cast<Expression*>(expression(start));
 
@@ -680,7 +678,7 @@ Node* TreeGenerator::processPostfixRangeOperator(TokenIterator& start, Node* bas
 		throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on right side", start->position());
 	}
 
-	rangeExp = new DesigntimeSymbolExpression(RESERVED_WORD_CONSTRUCTOR, _void, PrototypeConstraints(), false);
+	SymbolExpression* rangeExp = new DesigntimeSymbolExpression(RESERVED_WORD_CONSTRUCTOR, _void, PrototypeConstraints(), false);
 	rangeExp->mSurroundingScope = mRepository->findBluePrintObject(std::string("Range"));
 
 	if ( !rangeExp->mSurroundingScope ) {
@@ -1468,8 +1466,8 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	if ( !method ) {
 		// provide a list of similar methods, so the user can check if just one of the parameter types is used incorrectly
 		auto methods = provideSimilarMethods( symbol );
-		for ( auto& method : methods ) {
-			OSinfo( "Found similar method: " + method->ToString() );
+		for ( auto& similarMethod : methods ) {
+			OSinfo( "Found similar method: " + similarMethod->ToString() );
 		}
 
 		throw Common::Exceptions::UnknownIdentifier("method '" + symbol->toString() + "( " + toString(params) + " )' not found", token.position());
