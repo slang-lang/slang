@@ -22,7 +22,7 @@
         }, 
         {
             "name": "Mysql", 
-            "version": "0.4.1", 
+            "version": "0.4.2", 
             "description": ""
         }, 
         {
@@ -67,7 +67,7 @@
         }, 
         {
             "name": "libJsonBuilder", 
-            "version": "0.1.2", 
+            "version": "0.1.3", 
             "description": ""
         }, 
         {
