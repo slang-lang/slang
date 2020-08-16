@@ -847,6 +847,9 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 		}
 	}
 
+	if ( lhs->isMember() && mMethod->isConstMethod() ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member symbol '" + lhs->innerName() + "' in const method", op->position());
+	}
 
 	if ( lhs->isConst() && !(mAllowConstModify && lhs->isMember()) ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + lhs->innerName() + "'", op->position());

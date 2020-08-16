@@ -3,19 +3,15 @@
 object TestObject {
 	public void Constructor(Object value const) {
 		mValue = value;
-
-		assert( !"this is wrong!" );
 	}
 
-/*
 	public void setValue(Object value const) {
 		mValue = value;
 
 		assert( !"this is wrong!" );
 	}
-*/
 
-	private Object mValue;
+	private Object mValue const;
 }
 
 public void Main(int argc, string args) {

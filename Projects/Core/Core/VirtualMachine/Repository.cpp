@@ -332,7 +332,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 
 			Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
 			symbol->setBluePrint(blue);
-			symbol->setIsReference(blue->isEnumeration() ? false : blue->isReference());
+			symbol->setIsReference(!blue->isEnumeration() && blue->isReference());
 			symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 			symbol->setMember(blue->isMember());
 			symbol->setMutability(blue->getMutability());

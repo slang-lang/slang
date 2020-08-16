@@ -111,7 +111,7 @@ public object CharacterIterator /*extends Iterator<string>*/ {
 	}
 
 	private int mCurrentIndex;
-	private int mLength const;
-	private string mValue const;
+	private int mLength;
+	private string mValue;
 }
 
