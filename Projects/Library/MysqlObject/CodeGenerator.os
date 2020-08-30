@@ -83,10 +83,12 @@ public object CodeGenerator {
         template.ReplaceAll( TEMPLATE_ENTITY_POSTFIX,           TABLE_POSTFIX );                    // postfix
         template.ReplaceAll( TEMPLATE_ENTITY_PREFIX,            TABLE_PREFIX );                     // prefix
         template.ReplaceAll( TEMPLATE_IMPORT,                   generateImports( name, entity ) );  // imports
-        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMembers( name, entity ) );  // members
-        template.ReplaceAll( TEMPLATE_MEMBER_INSERT,            generateInserts( name, entity ) );  // inserts
-        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,              generateLoaders( name, entity ) );  // loaders
-        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, entity ) );  // updates
+        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, entity ) );  // members
+        template.ReplaceAll( TEMPLATE_MEMBER_INSERT,            generateInserts( name, entity ) );     // inserts
+        template.ReplaceAll( TEMPLATE_MEMBER_LIST,              generateMemberList( name, entity ) );  // member list
+        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,              generateLoaders( name, entity ) );     // loaders
+        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, entity ) );     // updates
+        template.ReplaceAll( TEMPLATE_MEMBER_VALUES,            generateMemberValues( name, entity ) );  // values
 
         var outFile = new System.IO.File( Database + "/" + entityType + "s/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly );
         outFile.write( cast<string>( template ) );
@@ -102,26 +104,25 @@ public object CodeGenerator {
     }
 
     private unstable string generateInserts( string entityName, Map<string, string> entity ) const {
-        return MEMBER_LOAD_PREFIX + "// INSERT: not yet implemented";
-
-        string inserts = MEMBER_LOAD_PREFIX + "INSERT INTO " + entityName + " ( ";
-
-        var it = entity.getIterator();
-        while ( it.hasNext() ) {
-            var field = Pair<string, string> it.next();
-
-/*
-            inserts += MEMBER_LOAD_PREFIX + field.first + " = cast<" + field.second + ">( mysql_get_field_value( result, \"" + field.first + "\" ) );";
-            if ( it.hasNext() ) {
-                inserts += LINEBREAK;
+        string fields;
+        foreach ( Pair<string, string> field : entity ) {
+            if ( fields ) {
+                fields += ", ";
             }
-*/
+
+            fields += field.first;
         }
 
-        inserts += " ) VALUES ( ";
-        inserts += " )";
+        string values;
+        foreach ( Pair<string, string> field : entity ) {
+            if ( values ) {
+                values += ",";
+            }
 
-        return inserts;
+            values += "\" + " + field.first + " + \"";
+        }
+
+        return MEMBER_LOAD_PREFIX + "INSERT INTO " + entityName + " ( " + fields + " ) VALUES ( " + values + " )";
     }
 
     private string generateLoaders( string entityName, Map<string, string> entity ) const {
@@ -140,7 +141,7 @@ public object CodeGenerator {
         return loaders;
     }
 
-    private string generateMembers( string entityName, Map<string, string> entity ) const {
+    private string generateMemberDecl( string entityName, Map<string, string> entity ) const {
         string members;
 
         var it = entity.getIterator();
@@ -154,6 +155,42 @@ public object CodeGenerator {
         }
 
         return members;
+    }
+
+    private string generateMemberList( string entityName, Map<string, string> entity ) const {
+        string fields;
+
+        foreach ( Pair<string, string> field : entity ) {
+            if ( field.first == "id" ) {
+               continue;
+            }
+
+            if ( fields ) {
+                fields += ", ";
+            }
+
+            fields += field.first;
+        }
+
+        return fields;
+    }
+
+    private string generateMemberValues( string entityName, Map<string, string> entity ) const {
+        string fields;
+
+        foreach ( Pair<string, string> field : entity ) {
+            if ( field.first == "id" ) {
+               continue;
+            }
+
+            if ( fields ) {
+                fields += ", ";
+            }
+
+            fields += "'\" + " + field.first + " + \"'";
+        }
+
+        return fields;
     }
 
     private unstable string generateUpdates( string entityName, Map<string, string> entity ) const {
