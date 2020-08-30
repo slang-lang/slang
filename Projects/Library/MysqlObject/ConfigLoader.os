@@ -55,23 +55,23 @@ public object ConfigLoader {
 
 		// Database config
 		// {
-		if ( config.isMember( "Database" ) )	mConfig.Database = config[ "Database" ].asString();
-		if ( config.isMember( "Host" ) )	mConfig.Host = config[ "Host" ].asString();
-		if ( config.isMember( "Output" ) )	mConfig.Output = config[ "Output" ].asString();
-		if ( config.isMember( "Password" ) )	mConfig.Password = config[ "Password" ].asString();
-		if ( config.isMember( "Port" ) )	mConfig.Port = config[ "Port" ].asInt();
-		if ( config.isMember( "User" ) )	mConfig.User = config[ "User" ].asString();
+		mConfig.Database	= config.isMember( "Database" )	? config[ "Database" ].asString()	: Database;
+		mConfig.Host		= config.isMember( "Host" )		? config[ "Host" ].asString()		: Host;
+		mConfig.Output		= config.isMember( "Output" )	? config[ "Output" ].asString()		: Output;
+		mConfig.Password	= config.isMember( "Password" )	? config[ "Password" ].asString()	: Password;
+		mConfig.Port		= config.isMember( "Port" )		? config[ "Port" ].asInt()			: Port;
+		mConfig.User		= config.isMember( "User" )		? config[ "User" ].asString()		: User;
 		// }
 
 		// Item config
 		// {
-		if ( config.isMember( "TablePrefix" ) )		mConfig.TablePrefix = config[ "TablePrefix" ].asString();
-		if ( config.isMember( "TablePostfix" ) )	mConfig.TablePostfix = config[ "TablePostfix" ].asString();
-		if ( config.isMember( "ViewPrefix" ) )		mConfig.ViewPrefix = config[ "ViewPrefix" ].asString();
-		if ( config.isMember( "ViewPostfix" ) )		mConfig.ViewPostfix = config[ "ViewPostfix" ].asString();
+		mConfig.TablePostfix	= config.isMember( "TablePostfix" )	? config[ "TablePostfix" ].asString()	: TABLE_POSTFIX;
+		mConfig.TablePrefix		= config.isMember( "TablePrefix" )	? config[ "TablePrefix" ].asString()	: TABLE_PREFIX;
+		mConfig.ViewPostfix		= config.isMember( "ViewPostfix" )	? config[ "ViewPostfix" ].asString()	: VIEW_POSTFIX;
+		mConfig.ViewPrefix		= config.isMember( "ViewPrefix" )	? config[ "ViewPrefix" ].asString()		: VIEW_PREFIX;
 		// }
 
-		//print( mConfig.toString() );
+		print( mConfig.toString() );
 
 		return true;
 	}
@@ -97,13 +97,9 @@ public object ConfigLoader {
 		config.addMember( "ViewPostfix",	new JsonValue( mConfig.ViewPostfix ) );
 		// }
 
-		//print( "Writer: " + config.toString() );
-
-		assert( config );
+		print( "Writer: " + config.toString() );
 
 		var file = new System.IO.File( mFilename, System.IO.FileAccessMode.WriteOnly );
-		//var writer = new JsonStyledWriter();
-		//file.write( writer.toString( config ) );		// writers currently don't work ;-(
 		file.write( config.toString() );
 		file.close();
 	}

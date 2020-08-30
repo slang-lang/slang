@@ -5,10 +5,7 @@ import libParam.ParameterHandler;
 import System.IO.File;
 
 // Project imports
-import ConfigLoader;
-import DatatypeMapper;
-import Generator;
-import Lookup;
+import CodeGenerator;
 
 
 public void Main( int argc, string args ) modify throws {
@@ -48,47 +45,8 @@ public void Main( int argc, string args ) modify throws {
 	}
 
 	try {
-/*
-		var configLoader = new ConfigLoader( Database + "/config.json" );
-		configLoader.load();
-		//configLoader.store();
-*/
-
-		prepareFolders();
-
-		int DBHandle = connect();
-
-		var lookup = new Lookup( DBHandle );
-
-		// generate tables
-		{
-			var tables = lookup.getTables( Database );
-
-			int count;
-			foreach ( string tableName : tables ) {
-				generateTable( DBHandle, tableName );
-
-				count++;
-			}
-
-			print( "" + count + " table objects generated." );
-		}
-
-		// generate views
-		{
-			var views = lookup.getViews( Database );
-
-			int count;
-			foreach ( string tableName : views ) {
-				generateView( DBHandle, tableName );
-
-				count++;
-			}
-
-			print( "" + count + " view objects generated." );
-		}
-
-		disconnect( DBHandle );
+		var generator = new CodeGenerator();
+		generator.process();
 	}
 	catch ( string e ) {
 		print( "Exception: " + e );
@@ -102,54 +60,6 @@ public void Main( int argc, string args ) modify throws {
 }
 
 
-
-int connect() modify throws {
-	int handle = mysql_init();
-	handle = mysql_real_connect(handle, Host, Port, User, Password, Database);
-
-	if ( !handle ) {
-		throw "failed to connect to database " + Database;
-	}
-
-	return handle;
-}
-
-void disconnect(int handle) modify {
-	mysql_close(handle);
-}
-
-void generateTable(int dbHandle, string name) modify {
-	var generator = new Generator(dbHandle);
-	var table = generator.generate(name);
-
-	string tableData = LINEBREAK;
-	tableData += "public object " + TABLE_PREFIX + toUpper(name) + TABLE_POSTFIX + " {" + LINEBREAK;
-	foreach ( Pair<string, string> field : table ) {
-		tableData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
-	}
-	tableData += "}" + LINEBREAK + LINEBREAK;
-
-	var outFile = new System.IO.File(Database + "/Tables/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
-	outFile.write(tableData);
-	outFile.close();
-}
-
-void generateView(int dbHandle, string name) modify {
-	var generator = new Generator(dbHandle);
-	var view = generator.generate(name);
-
-	string viewData = LINEBREAK;
-	viewData += "public object " + VIEW_PREFIX + toUpper(name) + VIEW_POSTFIX + " {" + LINEBREAK;
-	foreach ( Pair<string, string> field : view ) {
-		viewData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
-	}
-	viewData += "}" + LINEBREAK + LINEBREAK;
-
-	var outFile = new System.IO.File(Database + "/Views/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
-	outFile.write(viewData);
-	outFile.close();
-}
-
 void printUsage() {
 	print( "Usage: program [options]" );
 	print( "" );
@@ -161,21 +71,4 @@ void printUsage() {
 	print( "	--user		User" );
 	print( "" );
 }
-
-void prepareFolders() modify {
-	system("mkdir -p " + Output + /*"/" + Database +*/ "/Tables");
-	system("mkdir -p " + Output + /*"/" + Database +*/ "/Views");
-}
-
-string readFile(string filename) const {
-	var file = new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly);
-
-	string text;
-	while ( !file.isEOF() ) {
-		text += file.readChar();
-	}
-
-	return text;
-}
-
 
