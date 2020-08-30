@@ -11,6 +11,7 @@ import System.IO.File;
 public object Config {
 	public string Database;
 	public string Host = "localhost";
+	public string Output = "";
 	public string Password;
 	public int Port = 3306;
 	public string User;
@@ -49,19 +50,20 @@ public object ConfigLoader {
 
 		// Database config
 		// {
-		if ( config.isMember( "Database" ) ) mConfig.Database = config[ "Database" ].asString();
-		if ( config.isMember( "Host" ) ) mConfig.Host = config[ "Host" ].asString();
-		if ( config.isMember( "Password" ) ) mConfig.Password = config[ "Password" ].asString();
-		if ( config.isMember( "Port" ) ) mConfig.Port = config[ "Port" ].asInt();
-		if ( config.isMember( "User" ) ) mConfig.User = config[ "User" ].asString();
+		if ( config.isMember( "Database" ) )	mConfig.Database = config[ "Database" ].asString();
+		if ( config.isMember( "Host" ) )	mConfig.Host = config[ "Host" ].asString();
+		if ( config.isMember( "Output" ) )	mConfig.Output = config[ "Output" ].asString();
+		if ( config.isMember( "Password" ) )	mConfig.Password = config[ "Password" ].asString();
+		if ( config.isMember( "Port" ) )	mConfig.Port = config[ "Port" ].asInt();
+		if ( config.isMember( "User" ) )	mConfig.User = config[ "User" ].asString();
 		// }
 
 		// Item config
 		// {
-		if ( config.isMember( "TablePrefix" ) ) mConfig.TablePrefix = config[ "TablePrefix" ].asString();
-		if ( config.isMember( "TablePostfix" ) ) mConfig.TablePostfix = config[ "TablePostfix" ].asString();
-		if ( config.isMember( "ViewPrefix" ) ) mConfig.ViewPrefix = config[ "ViewPrefix" ].asString();
-		if ( config.isMember( "ViewPostfix" ) ) mConfig.ViewPostfix = config[ "ViewPostfix" ].asString();
+		if ( config.isMember( "TablePrefix" ) )		mConfig.TablePrefix = config[ "TablePrefix" ].asString();
+		if ( config.isMember( "TablePostfix" ) )	mConfig.TablePostfix = config[ "TablePostfix" ].asString();
+		if ( config.isMember( "ViewPrefix" ) )		mConfig.ViewPrefix = config[ "ViewPrefix" ].asString();
+		if ( config.isMember( "ViewPostfix" ) )		mConfig.ViewPostfix = config[ "ViewPostfix" ].asString();
 		// }
 
 		return true;
@@ -72,19 +74,20 @@ public object ConfigLoader {
 
 		// Database config
 		// {
-		config.addMember( "Database", new JsonValue( mConfig.Database ) );
-		config.addMember( "Host", new JsonValue( mConfig.Host ) );
-		config.addMember( "Password", new JsonValue( mConfig.Password ) );
-		config.addMember( "Port", new JsonValue( mConfig.Port ) );
-		config.addMember( "User", new JsonValue( mConfig.User ) );
+		config.addMember( "Database",	new JsonValue( mConfig.Database ) );
+		config.addMember( "Host",	new JsonValue( mConfig.Host ) );
+		config.addMember( "Output",	new JsonValue( mConfig.Output ) );
+		config.addMember( "Password",	new JsonValue( mConfig.Password ) );
+		config.addMember( "Port",	new JsonValue( mConfig.Port ) );
+		config.addMember( "User",	new JsonValue( mConfig.User ) );
 		// }
 
 		// Item config
 		// {
-		config.addMember( "TablePrefix", new JsonValue( mConfig.TablePrefix ) );
-		config.addMember( "TablePostfix", new JsonValue( mConfig.TablePostfix ) );
-		config.addMember( "ViewPrefix", new JsonValue( mConfig.ViewPrefix ) );
-		config.addMember( "ViewPostfix", new JsonValue( mConfig.ViewPostfix ) );
+		config.addMember( "TablePrefix",	new JsonValue( mConfig.TablePrefix ) );
+		config.addMember( "TablePostfix",	new JsonValue( mConfig.TablePostfix ) );
+		config.addMember( "ViewPrefix",		new JsonValue( mConfig.ViewPrefix ) );
+		config.addMember( "ViewPostfix",	new JsonValue( mConfig.ViewPostfix ) );
 		// }
 
 		//print( "Writer: " + config.toString() );

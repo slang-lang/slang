@@ -14,6 +14,11 @@ import Lookup;
 public void Main( int argc, string args ) modify throws {
 	var params = new ParameterHandler( argc, args );
 
+	if ( params.empty() ) {
+		printUsage();
+		exit( 0 );
+	}
+
 	if ( !params.contains( "database" ) ) {
 		print( "database missing!" );
 		exit( -1 );
@@ -25,6 +30,9 @@ public void Main( int argc, string args ) modify throws {
 	if ( params.contains( "host" ) ) {
 		Host = params.getParameter( "host" ).Value;
 	}
+	if ( params.contains( "output" ) ) {
+		Output = params.getParameter( "output" ).Value;
+	}
 	if ( params.contains( "password" ) ) {
 		Password = params.getParameter( "password" ).Value;
 	}
@@ -33,6 +41,10 @@ public void Main( int argc, string args ) modify throws {
 	}
 	if ( params.contains( "user" ) ) {
 		User = params.getParameter( "user" ).Value;
+	}
+
+	if ( !Output ) {
+		Output = Database;
 	}
 
 	try {
@@ -136,8 +148,20 @@ void generateView(int dbHandle, string name) modify {
 	outFile.close();
 }
 
+void printUsage() {
+	print( "Usage: program [options]" );
+	print( "" );
+	print( "	--database	Database" );
+	print( "	--host		Host" );
+	print( "	--output	Output folder" );
+	print( "	--password	Password" );
+	print( "	--port		Port" );
+	print( "	--user		User" );
+	print( "" );
+}
+
 void prepareFolders() modify {
-	system("mkdir -p " + Database + "/Tables");
-	system("mkdir -p " + Database + "/Views");
+	system("mkdir -p " + Output + /*"/" + Database +*/ "/Tables");
+	system("mkdir -p " + Output + /*"/" + Database +*/ "/Views");
 }
 
