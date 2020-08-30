@@ -6,7 +6,7 @@ import Result;
 
 public namespace Sqlite3 { }
 
-public object Sqlite3DB {
+public object Sqlite3Database {
     public void Constructor( string filename ) {
         mConnection = new Sqlite3Connection( filename );
     }

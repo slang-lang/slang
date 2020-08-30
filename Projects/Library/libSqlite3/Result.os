@@ -42,6 +42,20 @@ public object Sqlite3Row implements IIterable {
     public Sqlite3Entry operator[]( int index ) const {
         return Entries[index];
     }
+
+    public string =operator(string) const {
+        string result;
+
+        foreach ( Sqlite3Entry entry : Entries ) {
+            if ( result ) {
+                result += ",";
+            }
+
+            result += cast<string>( entry );
+        }
+
+        return result;
+    }
 }
 
 public object Sqlite3Result implements IIterable {
@@ -63,6 +77,20 @@ public object Sqlite3Result implements IIterable {
 
     public Sqlite3Row operator[]( int index ) const {
         return Rows[index];
+    }
+
+    public string =operator(string) const {
+        string result;
+
+        foreach ( Sqlite3Row row : Rows ) {
+            if ( result ) {
+                result += ",";
+            }
+
+            result += "[" + cast<string>( row ) + "]";
+        }
+
+        return result;
     }
 }
 

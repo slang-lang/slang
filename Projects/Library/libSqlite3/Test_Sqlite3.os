@@ -10,13 +10,13 @@ import All;
 public void Main( int argc, string args ) {
 	//var params = new ParameterHandler( argc, args );
 
-	var db = new Sqlite3DB( "test.db" );
+	var db = new Sqlite3Database( "test.db" );
 	var result = db.exec( "SELECT name, type FROM sqlite_master" );
 
 	try {
 		print( "ErrorCode: " + db.errCode() );
 		print( "ErrroMessage: " + db.errMsg() );
-		print( "Results: " + result.Rows.size() );
+		print( "Results(" + result.Rows.size() + ") = " + cast<string>( result ) );
 
 		int maxColLength;
 

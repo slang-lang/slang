@@ -1,7 +1,7 @@
 {
   "name": "Slang Sqlite3 library",
   "name_short": "libSqlite3",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Library for convenience access to Sqlite3 databases",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.0" },
