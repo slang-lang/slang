@@ -4,8 +4,12 @@
 public object #ENTITY_PREFIX##ENTITY_NAME_UPPERCASE##ENTITY_POSTFIX# {
 #MEMBER_DECLARATION#
 
-	public void Constructor() {
-		// nothing to do here atm
+	public void Constructor( int dbHandle = 0, string ID = "" ) {
+		DB = dbHandle;
+
+		if ( ID ) {
+			loadByID( ID );
+		}
 	}
 
 	public void Destructor() {
