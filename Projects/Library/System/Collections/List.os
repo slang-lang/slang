@@ -9,9 +9,6 @@ public namespace System.Collections { }
 
 public object List<T> implements ICollection {
 	public void Constructor() {
-		// this determines if we are dealing with an object type or a native data type
-		T check;
-		mIsObjectType = check is Object;
 	}
 
 	public void Destructor() {
@@ -19,11 +16,10 @@ public object List<T> implements ICollection {
 	}
 
 	public List<T> Copy() const {
-		List<T> result = new List<T>();
+		var result = new List<T>();
 
 		// deactivated because this is currently not compatible with 'replicates'
 		//result.mFirst = mFirst;
-		//result.mIsObjectType = mIsObjectType;
 		//result.mLast = mLast;
 		//result.mSize = mSize;
 
@@ -195,9 +191,8 @@ public object List<T> implements ICollection {
 	}
 
 	private CollectionItem<T> mFirst;
-	private bool mIsObjectType;
 	private CollectionItem<T> mLast;
-	private int mSize = 0;
+	private int mSize;
 
 	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
 	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type

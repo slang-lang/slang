@@ -9,9 +9,6 @@ public namespace System.Collections { }
 
 public object Stack<T> implements ICollection {
 	public void Constructor() {
-		// this determines if we are dealing with an object type or a native data type
-		T check;
-		mIsObjectType = check is Object;
 	}
 
 	public void Destructor() {
@@ -19,22 +16,21 @@ public object Stack<T> implements ICollection {
 	}
 
 	public Stack<T> Copy() const {
-		Stack<T> result = new Stack<T>();
+		var result = new Stack<T>();
 
 		result.mFirst = mFirst;
-		result.mIsObjectType = mIsObjectType;
 		result.mLast = mLast;
 		result.mSize = mSize;
 
 		return result;
 	}
 
-	public T at(int index) const throws {
+	public T at( int index ) const throws {
 		if ( index < 0 || index >= mSize ) {
-			throw new OutOfBoundsException("index(" + index + ") out of bounds");
+			throw new OutOfBoundsException( "index(" + index + ") out of bounds" );
 		}
 
-		CollectionItem<T> item = mFirst;
+		var item = mFirst;
 		for ( int i = 0; i < index; i++ ) {
 			item = item.mNext;
 		}
@@ -51,24 +47,24 @@ public object Stack<T> implements ICollection {
 		mSize = 0;
 	}
 
-	public bool contains(T value) const {
-		return indexOf(value) != -1;
+	public bool contains( T value ) const {
+		return indexOf( value ) != -1;
 	}
 
 	public bool empty() const {
 		return mSize == 0;
 	}
 
-	public void erase(int index) modify throws {
+	public void erase( int index ) modify throws {
 		if ( index < 0 || index > mSize ) {
-			throw new OutOfBoundsException("index(" + index + ") out of bounds");
+			throw new OutOfBoundsException( "index(" + index + ") out of bounds" );
 		}
 
 		if ( index == 0 ) {						// special handling for 1st element
 			mFirst = mFirst.mNext;
 		}
 		else {									// default handling for erasing
-			CollectionItem<T> prev = mFirst;
+			var prev = mFirst;
 			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.mNext;
 			}
@@ -85,15 +81,15 @@ public object Stack<T> implements ICollection {
 	}
 
 	public Iterator<T> getIterator() const {
-		return new Iterator<T>(ICollection this);
+		return new Iterator<T>( ICollection this );
 	}
 
 	public ReverseIterator<T> getReverseIterator() const {
-		return new ReverseIterator<T>(ICollection this);
+		return new ReverseIterator<T>( ICollection this );
 	}
 
 	public int indexOf(T value) const {
-		CollectionItem<T> item = mFirst;
+		var item = mFirst;
 
 		for ( int i = 0; i < mSize; i++ ) {
 			if ( item.mValue == value ) {
@@ -108,7 +104,7 @@ public object Stack<T> implements ICollection {
 
 	public T peek() const throws {
 		if ( mSize <= 0 ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		return mLast.mValue;
@@ -116,7 +112,7 @@ public object Stack<T> implements ICollection {
 
 	public T pop() modify throws {
 		if ( mSize <= 0 ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		var last = mLast.mValue;
@@ -125,7 +121,7 @@ public object Stack<T> implements ICollection {
 			delete mFirst;
 		}
 		else {
-			CollectionItem<T> item = mFirst;
+			var item = mFirst;
 			for ( int i = 0; i < mSize - 1; i++ ) {
 				item = item.mNext;
 			}
@@ -140,8 +136,8 @@ public object Stack<T> implements ICollection {
 		return last;
 	}
 
-	public void push(T value) modify {
-		CollectionItem<T> item = new CollectionItem<T>(value);
+	public void push( T value ) modify {
+		var item = new CollectionItem<T>( value );
 
 		if ( mSize == 0 ) {			// special handling for 1st item
 			mFirst = item;
@@ -159,12 +155,11 @@ public object Stack<T> implements ICollection {
 		return mSize;
 	}
 
-	public T operator[](int index) const throws {
-		return at(index);
+	public T operator[]( int index ) const throws {
+		return at( index );
 	}
 
 	private CollectionItem<T> mFirst;
-	private bool mIsObjectType;
 	private CollectionItem<T> mLast;
 	private int mSize = 0;
 

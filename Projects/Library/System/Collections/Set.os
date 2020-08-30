@@ -8,12 +8,8 @@ import Iterator;
 public namespace System.Collections { }
 
 public object Set<T> implements ICollection {
-	public void Constructor(bool allowDuplicates = false) {
+	public void Constructor( bool allowDuplicates = false ) {
 		mAllowDuplicates = allowDuplicates;
-
-		// this determines if we are dealing with an object type or a native data type
-		T check;
-		mIsObjectType = check is Object;
 	}
 
 	public void Destructor() {
@@ -21,20 +17,19 @@ public object Set<T> implements ICollection {
 	}
 
 	public Set<T> Copy() const {
-		Set<T> result = new Set<T>();
+		var result = new Set<T>();
 
 		result.mAllowDuplicates = mAllowDuplicates;
 		result.mFirst = mFirst;
-		result.mIsObjectType = mIsObjectType;
 		result.mLast = mLast;
 		result.mSize = mSize;
 
 		return result;
 	}
 
-	public T at(int index) const throws {
+	public T at( int index ) const throws {
 		if ( index < 0 || index >= mSize ) {
-			throw new OutOfBoundsException("index(" + index + ") out of bounds");
+			throw new OutOfBoundsException( "index(" + index + ") out of bounds" );
 		}
 
 		CollectionItem<T> item = mFirst;
@@ -54,7 +49,7 @@ public object Set<T> implements ICollection {
 		mSize = 0;
 	}
 
-	public bool contains(T value) const {
+	public bool contains( T value ) const {
 		return indexOf( value ) != -1;
 	}
 
@@ -62,9 +57,9 @@ public object Set<T> implements ICollection {
 		return mSize == 0;
 	}
 
-	public void erase(int index) modify throws {
+	public void erase( int index ) modify throws {
 		if ( index < 0 || index > mSize ) {
-			throw new OutOfBoundsException("index(" + index + ") out of bounds");
+			throw new OutOfBoundsException( "index(" + index + ") out of bounds" );
 		}
 
 		if ( index == 0 ) {						// special handling for 1st element
@@ -89,21 +84,21 @@ public object Set<T> implements ICollection {
 
 	public T first() const throws {
 		if ( !mSize ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		return mFirst.mValue;
 	}
 
 	public Iterator<T> getIterator() const {
-		return new Iterator<T>(cast<ICollection>( this ) );
+		return new Iterator<T>( cast<ICollection>( this ) );
 	}
 
 	public ReverseIterator<T> getReverseIterator() const {
-		return new ReverseIterator<T>(cast<ICollection>( this ) );
+		return new ReverseIterator<T>( cast<ICollection>( this ) );
 	}
 
-	public int indexOf(T value) const {
+	public int indexOf( T value ) const {
 		CollectionItem<T> item = mFirst;
 
 		for ( int i = 0; i < mSize; i++ ) {
@@ -117,8 +112,8 @@ public object Set<T> implements ICollection {
 		return -1;
 	}
 
-	public void insert(T value) modify throws {
-		CollectionItem<T> item = new CollectionItem<T>(value);
+	public void insert (T value ) modify throws {
+		var item = new CollectionItem<T>( value );
 
 		if ( !mFirst ) {				// special handling for 1st element
 			mFirst = item;
@@ -129,7 +124,7 @@ public object Set<T> implements ICollection {
 			mFirst = item;
 		}
 		else {						// default handling for insertions
-			CollectionItem<T> tmp = mFirst;
+			var tmp = mFirst;
 			CollectionItem<T> previous;
 
 			for ( int i = 0; i < mSize; i++ ) {
@@ -158,7 +153,7 @@ public object Set<T> implements ICollection {
 
 	public T last() const throws {
 		if ( !mSize ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		return mLast.mValue;
@@ -168,15 +163,14 @@ public object Set<T> implements ICollection {
 		return mSize;
 	}
 
-	public T operator[](int index) const throws {
+	public T operator[]( int index ) const throws {
 		return at( index );
 	}
 
 	private bool mAllowDuplicates;
 	private CollectionItem<T> mFirst;
-	private bool mIsObjectType;
 	private CollectionItem<T> mLast;
-	private int mSize = 0;
+	private int mSize;
 
 	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
 	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type

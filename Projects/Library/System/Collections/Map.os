@@ -19,7 +19,7 @@ public object Map<K, V> implements ICollection {
 	}
 
 	public Map<K, V> Copy() const {
-		Map<K, V> result = new Map<K, V>();
+		var result = new Map<K, V>();
 
 		result.mItems = mItems;
 
@@ -30,7 +30,7 @@ public object Map<K, V> implements ICollection {
 		mItems.clear();
 	}
 
-	public bool contains(K key) const {
+	public bool contains( K key ) const {
 		foreach ( Object p : mItems ) {
 			if ( (Pair<K, V> p) == key ) {
 				return true;
@@ -48,15 +48,17 @@ public object Map<K, V> implements ICollection {
 		return V mItems.first();
 	}
 
-	public V get(K key) const throws {
+	public V get( K key ) const throws {
 		foreach ( Object p : mItems ) {
 			if ( (Pair<K, V> p) == key ) {
-				Pair<K, V> pair = Pair<K, V> p;
-				return pair.second;
+				return (Pair<K, V> p).second;
+
+				//var pair = Pair<K, V> p;
+				//return pair.second;
 			}
 		}
 
-		throw new Exception("unknown key!");
+		throw new Exception( "unknown key!" );
 	}
 
 	public Iterator<Object> getIterator() const {
@@ -67,7 +69,7 @@ public object Map<K, V> implements ICollection {
 		return new ReverseIterator<Object>( cast<ICollection>( mItems ) );
 	}
 
-	public int indexOf(K key) const throws {
+	public int indexOf( K key ) const throws {
 		int count = 0;
 
 		foreach ( Object p : mItems ) {
@@ -79,32 +81,32 @@ public object Map<K, V> implements ICollection {
 		return -1;
 	}
 
-	public void insert(K k, V v) modify {
-		mItems.push_back( cast<Object>( new Pair<K, V>(k, v) ) );
+	public void insert( K k, V v ) modify {
+		mItems.push_back( cast<Object>( new Pair<K, V>( k, v ) ) );
 	}
 
 	public V last() const throws {
 		return V mItems.last();
 	}
 
-	public void put(K key, V value) modify throws {
+	public void put( K key, V value ) modify throws {
 		foreach ( Object p : mItems ) {
 			if ( (Pair<K, V> p) == key ) {
-				Pair<K, V> pair = Pair<K, V> p;
+				var pair = Pair<K, V> p;
 				pair.second = value;
 				return;
 			}
 		}
 
-		throw new Exception("unknown key!");
+		throw new Exception( "unknown key!" );
 	}
 
-	public void remove(K key) modify {
+	public void remove( K key ) modify {
 		int index = 0;
 
 		foreach ( Object p : mItems ) {
 			if ( (Pair<K, V> p) == key ) {
-				mItems.erase(index);
+				mItems.erase( index );
 				return;
 			}
 

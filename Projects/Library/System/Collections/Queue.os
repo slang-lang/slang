@@ -10,10 +10,6 @@ public namespace System.Collections { }
 
 public object Queue<T> implements ICollection {
 	public void Constructor() {
-		// this determines if we are dealing with an object type or a native data type
-		T check;
-		mIsObjectType = check is Object;
-
 		mItems = new List<T>();
 	}
 
@@ -22,16 +18,15 @@ public object Queue<T> implements ICollection {
 	}
 
 	public Queue<T> Copy() const {
-		Queue<T> result = new Queue<T>();
+		var result = new Queue<T>();
 
-		result.mIsObjectType = mIsObjectType;
 		result.mItems = mItems;
 
 		return result;
 	}
 
-	public T at(int index) const throws {
-		return mItems.at(index);
+	public T at( int index ) const throws {
+		return mItems.at( index );
 	}
 
 	public void clear() modify {
@@ -40,10 +35,10 @@ public object Queue<T> implements ICollection {
 
 	public T dequeue() modify throws {
 		if ( mItems.size() <= 0 ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
-		T item = mItems.at(0);
+		var item = mItems.at( 0 );
 
 		mItems.pop_front();
 
@@ -54,8 +49,8 @@ public object Queue<T> implements ICollection {
 		return mItems.empty();
 	}
 
-	public void enqueue(T item) modify {
-		mItems.push_back(item);
+	public void enqueue( T item ) modify {
+		mItems.push_back( item );
 	}
 
 	public Iterator<T> getIterator() const {
@@ -70,11 +65,10 @@ public object Queue<T> implements ICollection {
 		return mItems.size();
 	}
 
-	public T operator[](int index) const throws {
-		return mItems.at(index);
+	public T operator[]( int index ) const throws {
+		return mItems.at( index );
 	}
 
-	private bool mIsObjectType;
 	private List<T> mItems;
 
 	private Iterator<T> __iterator;						// this is a hack to automatically initialize a generic type
