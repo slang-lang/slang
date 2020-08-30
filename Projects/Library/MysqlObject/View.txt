@@ -1,0 +1,9 @@
+
+public object #VIEW_PREFIX##VIEW_NAME##VIEW_POSTFIX# {
+#MEMBER_DECLARATION#
+
+	public void load( int result ) modify {
+#MEMBER_LOAD#
+	}
+}
+

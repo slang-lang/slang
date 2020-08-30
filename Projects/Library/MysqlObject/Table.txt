@@ -1,0 +1,9 @@
+
+public object #TABLE_PREFIX##TABLE_NAME##TABLE_POSTFIX# {
+#MEMBER_DECLARATION#
+
+	public void load( int result ) modify {
+#MEMBER_LOAD#
+	}
+}
+

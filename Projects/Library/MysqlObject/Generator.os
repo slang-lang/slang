@@ -17,12 +17,12 @@ public object Generator {
 		mDatatypeMapper = new DatatypeMapper();
 	}
 
-	public Map<string, string> generate(string table) throws {
+	public Map<string, string> generate(string entityName) throws {
 		string query = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE "
 			     + "FROM INFORMATION_SCHEMA.COLUMNS "
 			     + "WHERE 1 = 1 "
 			     + "AND TABLE_SCHEMA = '" + Database + "' "
-			     + "AND TABLE_NAME = '" + table + "' "
+			     + "AND TABLE_NAME = '" + entityName + "' "
 			     + "ORDER BY TABLE_NAME ASC";
 
 		int error = mysql_query(mDatabaseHandle, query);

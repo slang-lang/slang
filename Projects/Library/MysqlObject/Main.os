@@ -48,15 +48,17 @@ public void Main( int argc, string args ) modify throws {
 	}
 
 	try {
-		var configLoader = new ConfigLoader( "config.json" );
+/*
+		var configLoader = new ConfigLoader( Database + "/config.json" );
 		configLoader.load();
-		configLoader.store();
+		//configLoader.store();
+*/
+
+		prepareFolders();
 
 		int DBHandle = connect();
 
 		var lookup = new Lookup( DBHandle );
-
-		prepareFolders();
 
 		// generate tables
 		{
@@ -164,4 +166,16 @@ void prepareFolders() modify {
 	system("mkdir -p " + Output + /*"/" + Database +*/ "/Tables");
 	system("mkdir -p " + Output + /*"/" + Database +*/ "/Views");
 }
+
+string readFile(string filename) const {
+	var file = new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly);
+
+	string text;
+	while ( !file.isEOF() ) {
+		text += file.readChar();
+	}
+
+	return text;
+}
+
 

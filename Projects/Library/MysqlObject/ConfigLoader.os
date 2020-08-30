@@ -11,15 +11,19 @@ import System.IO.File;
 public object Config {
 	public string Database;
 	public string Host = "localhost";
-	public string Output = "";
+	public string Output;
 	public string Password;
 	public int Port = 3306;
 	public string User;
 
 	public string TablePrefix = "T_";
-	public string TablePostfix = "Record";
+	public string TablePostfix = "";
 	public string ViewPrefix = "V_";
-	public string ViewPostfix = "Record";
+	public string ViewPostfix = "";
+
+	public string toString() const {
+		return "Database: '" + Database + "', Host: '" + Host + "', Output: '" + Output + "', User: '" + User + "', TablePrefix: '" + TablePrefix + "', TablePostfix: '" + TablePostfix + "', ViewPrefix: '" + ViewPrefix + "', ViewPostfix: '" + ViewPostfix + "'";
+	}
 }
 
 
@@ -46,7 +50,8 @@ public object ConfigLoader {
 
 		var reader = new JsonReader();
 		var config = JsonObject reader.parse( text );
-		//print( "Reader: " + config.toString() );
+
+		print( config.toString() );
 
 		// Database config
 		// {
@@ -65,6 +70,8 @@ public object ConfigLoader {
 		if ( config.isMember( "ViewPrefix" ) )		mConfig.ViewPrefix = config[ "ViewPrefix" ].asString();
 		if ( config.isMember( "ViewPostfix" ) )		mConfig.ViewPostfix = config[ "ViewPostfix" ].asString();
 		// }
+
+		//print( mConfig.toString() );
 
 		return true;
 	}
@@ -92,8 +99,11 @@ public object ConfigLoader {
 
 		//print( "Writer: " + config.toString() );
 
+		assert( config );
+
 		var file = new System.IO.File( mFilename, System.IO.FileAccessMode.WriteOnly );
-		//file.write( new JsonStyledWriter().toString( config ) );		// writers currently don't work ;-(
+		//var writer = new JsonStyledWriter();
+		//file.write( writer.toString( config ) );		// writers currently don't work ;-(
 		file.write( config.toString() );
 		file.close();
 	}
