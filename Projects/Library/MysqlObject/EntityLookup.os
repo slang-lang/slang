@@ -33,7 +33,7 @@ public object EntityLookup {
 
 		int result = mysql_store_result( mDatabaseHandle );
 		while ( mysql_next_row( result ) ) {
-			entities.push_back( toUpper( mysql_get_field_value( result, 0 ) ) );
+			entities.push_back( mysql_get_field_value( result, 0 ) );
 		}
 
 		return entities;

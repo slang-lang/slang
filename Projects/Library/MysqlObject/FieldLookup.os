@@ -18,8 +18,8 @@ public object FieldLookup {
 		string query = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE "
 					+ "FROM INFORMATION_SCHEMA.COLUMNS "
 					+ "WHERE 1 = 1 "
-					+ "AND UPPER(TABLE_SCHEMA) = '" + Database + "' "
-					+ "AND UPPER(TABLE_NAME) = '" + entityName + "' "
+					+ "AND TABLE_SCHEMA = '" + Database + "' "
+					+ "AND TABLE_NAME = '" + entityName + "' "
 					+ "ORDER BY TABLE_NAME ASC";
 
 		int error = mysql_query( mDatabaseHandle, query );

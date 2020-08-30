@@ -30,11 +30,11 @@ public object CodeGenerator {
 
 		// generate tables
 		{
-            var entities = lookup.getTables( Database );
+			var entities = lookup.getTables( Database );
 
 			int count;
 			foreach ( string entityName : entities ) {
-                generateEntity( entityName, "Table" );
+				generateEntity( entityName, "Table" );
 
 				count++;
 			}
@@ -48,7 +48,7 @@ public object CodeGenerator {
 
 			int count;
 			foreach ( string entityName : entities ) {
-                generateEntity( entityName, "View" );
+				generateEntity( entityName, "View" );
 
 				count++;
 			}
@@ -78,16 +78,17 @@ public object CodeGenerator {
         var entity = fieldLookup.getFields( name );
         var template = new String( readFile( entityType + ".txt") );
 
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME,          name );                             // name
-        template.ReplaceAll( TEMPLATE_ENTITY_POSTFIX,       TABLE_POSTFIX );                    // postfix
-        template.ReplaceAll( TEMPLATE_ENTITY_PREFIX,        TABLE_PREFIX );                     // prefix
-        template.ReplaceAll( TEMPLATE_IMPORT,               generateImports( name, entity ) );  // imports
-        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,   generateMembers( name, entity ) );  // members
-        template.ReplaceAll( TEMPLATE_MEMBER_INSERT,        generateInserts( name, entity ) );  // inserts
-        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,          generateLoaders( name, entity ) );  // loaders
-        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,        generateUpdates( name, entity ) );  // updates
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME,              name );                             // name
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper(name) );                    // name
+        template.ReplaceAll( TEMPLATE_ENTITY_POSTFIX,           TABLE_POSTFIX );                    // postfix
+        template.ReplaceAll( TEMPLATE_ENTITY_PREFIX,            TABLE_PREFIX );                     // prefix
+        template.ReplaceAll( TEMPLATE_IMPORT,                   generateImports( name, entity ) );  // imports
+        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMembers( name, entity ) );  // members
+        template.ReplaceAll( TEMPLATE_MEMBER_INSERT,            generateInserts( name, entity ) );  // inserts
+        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,              generateLoaders( name, entity ) );  // loaders
+        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, entity ) );  // updates
 
-        var outFile = new System.IO.File( Database + "/" + entityType + "s/" + name + ".os", System.IO.FileAccessMode.WriteOnly );
+        var outFile = new System.IO.File( Database + "/" + entityType + "s/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly );
         outFile.write( cast<string>( template ) );
         outFile.close();
     }

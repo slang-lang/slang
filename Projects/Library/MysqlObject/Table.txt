@@ -1,11 +1,13 @@
 
 #IMPORT#
 
-public object #ENTITY_PREFIX##ENTITY_NAME##ENTITY_POSTFIX# {
+import Mysql.All;
+
+public object #ENTITY_PREFIX##ENTITY_NAME_UPPERCASE##ENTITY_POSTFIX# {
 #MEMBER_DECLARATION#
 
-	public void Constructor() {
-		// nothing to do here atm
+	public void Constructor( int dbHandle = 0 ) {
+		DB = dbHandle;
 	}
 
 	public void Destructor() {
@@ -20,8 +22,26 @@ public object #ENTITY_PREFIX##ENTITY_NAME##ENTITY_POSTFIX# {
 #MEMBER_LOAD#
 	}
 
+	public void loadByID( string ID ) modify throws {
+		string sql = "SELECT * FROM #ENTITY_NAME# WHERE id = '" + ID + "'";
+
+		int error = mysql_query( DB, sql );
+		if ( error ) {
+			throw mysql_error( DB );
+		}
+
+		int result = mysql_store_result( DB );
+		if ( !mysql_next_row( result ) ) {
+			throw mysql_error( DB );
+		}
+
+#MEMBER_LOAD#
+	}
+
 	public void update() modify {
 #MEMBER_UPDATE#
 	}
+
+	private int DB;
 }
 
