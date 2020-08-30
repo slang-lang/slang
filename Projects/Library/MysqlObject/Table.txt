@@ -1,9 +1,27 @@
 
-public object #TABLE_PREFIX##TABLE_NAME##TABLE_POSTFIX# {
+#IMPORT#
+
+public object #ENTITY_PREFIX##ENTITY_NAME##ENTITY_POSTFIX# {
 #MEMBER_DECLARATION#
+
+	public void Constructor() {
+		// nothing to do here atm
+	}
+
+	public void Destructor() {
+		// nothing to do here atm
+	}
+
+	public void insert() modify {
+#MEMBER_INSERT#
+	}
 
 	public void load( int result ) modify {
 #MEMBER_LOAD#
+	}
+
+	public void update() modify {
+#MEMBER_UPDATE#
 	}
 }
 

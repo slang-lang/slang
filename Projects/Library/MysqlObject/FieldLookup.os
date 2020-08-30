@@ -14,7 +14,7 @@ public object FieldLookup {
 		mDatatypeMapper = new DatatypeMapper();
 	}
 
-	public Map<string, string> generate( string entityName ) throws {
+	public Map<string, string> getFields( string entityName ) throws {
 		string query = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE "
 					+ "FROM INFORMATION_SCHEMA.COLUMNS "
 					+ "WHERE 1 = 1 "

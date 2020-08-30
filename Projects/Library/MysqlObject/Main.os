@@ -2,7 +2,6 @@
 
 // Library imports
 import libParam.ParameterHandler;
-import System.IO.File;
 
 // Project imports
 import CodeGenerator;
@@ -59,8 +58,7 @@ public void Main( int argc, string args ) modify throws {
 	}
 }
 
-
-void printUsage() {
+private void printUsage() {
 	print( "Usage: program [options]" );
 	print( "" );
 	print( "	--database	Database" );

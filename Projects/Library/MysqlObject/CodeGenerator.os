@@ -1,35 +1,40 @@
 
-// library imports
+// Library imports
+import System.IO.File;
 import System.String;
 
-// project imports
+// Project imports
 import ConfigLoader;
 import DatatypeMapper;
-import Generator;
-import Lookup;
+import EntityLookup;
+import FieldLookup;
 
 
 public object CodeGenerator {
     public void Constructor() {
+        mDBHandle = mysql_init();
+    }
+
+    public void process() modify throws {
 /*
         var configLoader = new ConfigLoader( Database + "/config.json" );
         configLoader.load();
         //configLoader.store();
-*/        
-    }
+*/
 
-    public void process() modify throws {
+        // connect to configured database
         connect();
 
-		var lookup = new Lookup( mDBHandle );
+        // query entities
+		var lookup = new EntityLookup( mDBHandle );
 
 		// generate tables
 		{
-            var tables = lookup.getTables( Database );
+            var entities = lookup.getTables( Database );
 
 			int count;
-			foreach ( string tableName : tables ) {
-				generateTable( mDBHandle, tableName );
+			foreach ( string entityName : entities ) {
+                generateEntity( entityName, "Table" );
 
 				count++;
 			}
@@ -39,11 +44,11 @@ public object CodeGenerator {
 
 		// generate views
 		{
-			var views = lookup.getViews( Database );
+			var entities = lookup.getViews( Database );
 
 			int count;
-			foreach ( string tableName : views ) {
-				generateView( mDBHandle, tableName );
+			foreach ( string entityName : entities ) {
+                generateEntity( entityName, "View" );
 
 				count++;
 			}
@@ -51,15 +56,15 @@ public object CodeGenerator {
 			print( "" + count + " view objects generated." );
         }
 
+        // disconnect from configured database
         disconnect();
     }
 
     private void connect() modify throws {
-        mDBHandle = mysql_init();
         mDBHandle = mysql_real_connect(mDBHandle, Host, Port, User, Password, Database);
     
         if ( !mDBHandle ) {
-            throw "failed to connect to database " + Database;
+            throw "failed to connect to database '" + Database + "'";
         }
     }
 
@@ -67,38 +72,107 @@ public object CodeGenerator {
         mysql_close( mDBHandle );
     }
 
-    private void generateTable(int dbHandle, string name) modify {
-        var generator = new Generator(dbHandle);
-        var table = generator.generate(name);
-        var template = new String( readFile( "Table.txt") );
-    
-        string tableData = LINEBREAK;
-        tableData += "public object " + TABLE_PREFIX + toUpper(name) + TABLE_POSTFIX + " {" + LINEBREAK;
-        foreach ( Pair<string, string> field : table ) {
-            tableData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
-        }
-        tableData += "}" + LINEBREAK + LINEBREAK;
-    
-        var outFile = new System.IO.File(Database + "/Tables/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
-        outFile.write(tableData);
+    private void generateEntity( string name, string entityType ) modify {
+        var fieldLookup = new FieldLookup( mDBHandle );
+
+        var entity = fieldLookup.getFields( name );
+        var template = new String( readFile( entityType + ".txt") );
+
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME,          name );                             // name
+        template.ReplaceAll( TEMPLATE_ENTITY_POSTFIX,       TABLE_POSTFIX );                    // postfix
+        template.ReplaceAll( TEMPLATE_ENTITY_PREFIX,        TABLE_PREFIX );                     // prefix
+        template.ReplaceAll( TEMPLATE_IMPORT,               generateImports( name, entity ) );  // imports
+        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,   generateMembers( name, entity ) );  // members
+        template.ReplaceAll( TEMPLATE_MEMBER_INSERT,        generateInserts( name, entity ) );  // inserts
+        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,          generateLoaders( name, entity ) );  // loaders
+        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,        generateUpdates( name, entity ) );  // updates
+
+        var outFile = new System.IO.File( Database + "/" + entityType + "s/" + name + ".os", System.IO.FileAccessMode.WriteOnly );
+        outFile.write( cast<string>( template ) );
         outFile.close();
     }
 
-    private void generateView(int dbHandle, string name) modify {
-        var generator = new Generator(dbHandle);
-        var template = new String( readFile( "View.txt") );
-        var view = generator.generate(name);
-    
-        string viewData = LINEBREAK;
-        viewData += "public object " + VIEW_PREFIX + toUpper(name) + VIEW_POSTFIX + " {" + LINEBREAK;
-        foreach ( Pair<string, string> field : view ) {
-            viewData += "	public " + field.second + " " + field.first + ";" + LINEBREAK;
+    private unstable string generateImports( string entityName, Map<string, string> entity ) const {
+        string imports = "// IMPORT: not yet implemented";
+
+        // TODO: implement me
+
+        return imports;
+    }
+
+    private unstable string generateInserts( string entityName, Map<string, string> entity ) const {
+        return MEMBER_LOAD_PREFIX + "// INSERT: not yet implemented";
+
+        string inserts = MEMBER_LOAD_PREFIX + "INSERT INTO " + entityName + " ( ";
+
+        var it = entity.getIterator();
+        while ( it.hasNext() ) {
+            var field = Pair<string, string> it.next();
+
+/*
+            inserts += MEMBER_LOAD_PREFIX + field.first + " = cast<" + field.second + ">( mysql_get_field_value( result, \"" + field.first + "\" ) );";
+            if ( it.hasNext() ) {
+                inserts += LINEBREAK;
+            }
+*/
         }
-        viewData += "}" + LINEBREAK + LINEBREAK;
-    
-        var outFile = new System.IO.File(Database + "/Views/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly);
-        outFile.write(viewData);
-        outFile.close();
+
+        inserts += " ) VALUES ( ";
+        inserts += " )";
+
+        return inserts;
+    }
+
+    private string generateLoaders( string entityName, Map<string, string> entity ) const {
+        string loaders;
+
+        var it = entity.getIterator();
+        while ( it.hasNext() ) {
+            var field = Pair<string, string> it.next();
+
+            loaders += MEMBER_LOAD_PREFIX + field.first + " = cast<" + field.second + ">( mysql_get_field_value( result, \"" + field.first + "\" ) );";
+            if ( it.hasNext() ) {
+                loaders += LINEBREAK;
+            }
+        }
+
+        return loaders;
+    }
+
+    private string generateMembers( string entityName, Map<string, string> entity ) const {
+        string members;
+
+        var it = entity.getIterator();
+        while ( it.hasNext() ) {
+            var field = Pair<string, string> it.next();
+
+            members += MEMBER_DECLARATION_PREFIX + field.second + " " + field.first + ";";
+            if ( it.hasNext() ) {
+                members += LINEBREAK;
+            }
+        }
+
+        return members;
+    }
+
+    private unstable string generateUpdates( string entityName, Map<string, string> entity ) const {
+        return MEMBER_LOAD_PREFIX + "// UPDATE: not yet implemented";
+
+        string updates;
+
+        var it = entity.getIterator();
+        while ( it.hasNext() ) {
+            var field = Pair<string, string> it.next();
+
+/*
+            updates += MEMBER_LOAD_PREFIX + field.first + " = cast<" + field.second + ">( mysql_get_field_value( result, \"" + field.first + "\" ) );";
+            if ( it.hasNext() ) {
+                updates += LINEBREAK;
+            }
+*/
+        }
+
+        return updates;
     }
 
     private void prepareFolders() modify {
