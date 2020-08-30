@@ -13,9 +13,6 @@ public namespace System.Collections { }
  */
 public object DoubleLinkedList<T> implements ICollection {
 	public void Constructor() {
-		// this determines if we are dealing with an object type or a native data type
-		T check;
-		mIsObjectType = check is Object;
 	}
 
 	public void Destructor() {
@@ -23,22 +20,21 @@ public object DoubleLinkedList<T> implements ICollection {
 	}
 
 	public DoubleLinkedList<T> Copy() const {
-		DoubleLinkedList<T> result = new DoubleLinkedList<T>();
+		var result = new DoubleLinkedList<T>();
 
 		result.mFirst = mFirst;
-		result.mIsObjectType = mIsObjectType;
 		result.mLast = mLast;
 		result.mSize = mSize;
 
 		return result;
 	}
 
-	public T at(int index) const throws {
+	public T at( int index ) const throws {
 		if ( index < 0 || index >= mSize ) {
-			throw new OutOfBoundsException("index(" + index + ") out of bounds");
+			throw new OutOfBoundsException( "index(" + index + ") out of bounds" );
 		}
 
-		CollectionItem<T> item = mFirst;
+		var item = mFirst;
 		for ( int i = 0; i < index; i++ ) {
 			item = item.mNext;
 		}
@@ -55,24 +51,24 @@ public object DoubleLinkedList<T> implements ICollection {
 		mSize = 0;
 	}
 
-	public bool contains(T value) const {
-		return indexOf(value) != -1;
+	public bool contains( T value ) const {
+		return indexOf( value ) != -1;
 	}
 
 	public bool empty() const {
 		return mSize == 0;
 	}
 
-	public void erase(int index) modify throws {
+	public void erase( int index ) modify throws {
 		if ( index < 0 || index > mSize ) {
-			throw new OutOfBoundsException("index(" + index + ") out of bounds");
+			throw new OutOfBoundsException( "index(" + index + ") out of bounds" );
 		}
 
 		if ( index == 0 ) {						// special handling for 1st element
 			mFirst = mFirst.mNext;
 		}
 		else {									// default handling for erasing
-			CollectionItem<T> prev = mFirst;
+			var prev = mFirst;
 			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.mNext;
 			}
@@ -90,22 +86,22 @@ public object DoubleLinkedList<T> implements ICollection {
 
 	public T first() const throws {
 		if ( !mSize ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		return mFirst.mValue;
 	}
 
 	public Iterator<T> getIterator() const {
-		return new Iterator<T>(ICollection this);
+		return new Iterator<T>( ICollection this );
 	}
 
 	public ReverseIterator<T> getReverseIterator() const {
-		return new ReverseIterator<T>(ICollection this);
+		return new ReverseIterator<T>( ICollection this );
 	}
 
-	public int indexOf(T value) const {
-		CollectionItem<T> item = mFirst;
+	public int indexOf( T value ) const {
+		var item = mFirst;
 
 		for ( int i = 0; i < mSize; i++ ) {
 			if ( item.mValue == value ) {
@@ -120,7 +116,7 @@ public object DoubleLinkedList<T> implements ICollection {
 
 	public T last() const throws {
 		if ( !mSize ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		return mLast.mValue;
@@ -128,14 +124,14 @@ public object DoubleLinkedList<T> implements ICollection {
 
 	public void pop_back() modify throws {
 		if ( mSize <= 0 ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		if ( mSize == 1 ) {
 			delete mFirst;
 		}
 		else {
-			CollectionItem<T> item = mFirst;
+			var item = mFirst;
 			for ( int i = 0; i < mSize - 1; i++ ) {
 				item = item.mNext;
 			}
@@ -148,7 +144,7 @@ public object DoubleLinkedList<T> implements ICollection {
 
 	public void pop_front() modify throws {
 		if ( mSize <= 0 ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		mFirst = mFirst.mNext;
@@ -156,8 +152,8 @@ public object DoubleLinkedList<T> implements ICollection {
 		mSize--;
 	}
 
-	public void push_back(T value) modify {
-		CollectionItem<T> item = new CollectionItem<T>(value);
+	public void push_back( T value ) modify {
+		var item = new CollectionItem<T>( value );
 
 		if ( mSize == 0 ) {
 			mFirst = item;
@@ -172,8 +168,8 @@ public object DoubleLinkedList<T> implements ICollection {
 		mSize++;
 	}
 
-	public void push_front(T value) modify {
-		CollectionItem<T> item = new CollectionItem<T>(value);
+	public void push_front( T value ) modify {
+		var item = new CollectionItem<T>( value );
 		item.mNext = mFirst;
 
 		//mFirst.mPrevious = item;	// this leaves a mem leak... ;-(
@@ -186,12 +182,11 @@ public object DoubleLinkedList<T> implements ICollection {
 		return mSize;
 	}
 
-	public T operator[](int index) const throws {
-		return at(index);
+	public T operator[]( int index ) const throws {
+		return at( index );
 	}
 
 	private CollectionItem<T> mFirst;
-	private bool mIsObjectType;
 	private CollectionItem<T> mLast;
 	private int mSize = 0;
 

@@ -6,7 +6,7 @@ import System.Exception;
 public namespace System.Collections { }
 
 public object Iterator<T> {
-	public void Constructor(ICollection collection const) {
+	public void Constructor( ICollection collection const ) {
 		mCollection = collection;
 
 		reset();
@@ -14,18 +14,18 @@ public object Iterator<T> {
 
 	public T current() const throws {
 		if ( !mCollection ) {
-			throw new Exception("current(): invalid iterator access");
+			throw new Exception( "current(): invalid iterator access" );
 		}
 		if ( mCurrentIndex == -1 ) {
-			throw new Exception("current(): iterator not initialized");
+			throw new Exception( "current(): iterator not initialized" );
 		}
 
-		return T mCollection.at(mCurrentIndex);
+		return T mCollection.at( mCurrentIndex );
 	}
 
 	public bool hasNext() const throws {
 		if ( !mCollection ) {
-			throw new Exception("hasNext(): invalid iterator access");
+			throw new Exception( "hasNext(): invalid iterator access" );
 		}
 
 		return (mCurrentIndex + 1) < mCollection.size();
@@ -33,27 +33,27 @@ public object Iterator<T> {
 
 	public T next() modify throws {
 		if ( !hasNext() ) {
-			throw new OutOfBoundsException("next(): index out of bounds");
+			throw new OutOfBoundsException( "next(): index out of bounds" );
 		}
 
 		mCurrentIndex++;
 
-		return T mCollection.at(mCurrentIndex);
+		return T mCollection.at( mCurrentIndex );
 	}
 
-	public T peek(int offset = 1) const throws {
-		return T mCollection.at(mCurrentIndex + offset);
+	public T peek( int offset = 1 ) const throws {
+		return T mCollection.at( mCurrentIndex + offset );
 	}
 
 	public void reset() modify {
 		mCurrentIndex = -1;
 	}
 
-	public bool operator==(Iterator<T> other const) const {
+	public bool operator==( Iterator<T> other const ) const {
 		return mCurrentIndex == other.mCurrentIndex;
 	}
 
-	public T =operator(T) const throws {
+	public T =operator( T ) const throws {
 		return current();
 	}
 
@@ -66,7 +66,7 @@ public object Iterator<T> {
 }
 
 public object ReverseIterator<T> {
-	public void Constructor(ICollection collection const) {
+	public void Constructor( ICollection collection const ) {
 		mCollection = collection;
 
 		reset();
@@ -74,18 +74,18 @@ public object ReverseIterator<T> {
 
 	public T current() const throws {
 		if ( !mCollection ) {
-			throw new Exception("current(): invalid iterator access");
+			throw new Exception( "current(): invalid iterator access" );
 		}
 		if ( mCurrentIndex == mCollection.size() ) {
-			throw new Exception("current(): iterator not initialized");
+			throw new Exception ("current(): iterator not initialized" );
 		}
 
-		return T mCollection.at(mCurrentIndex);
+		return T mCollection.at( mCurrentIndex );
 	}
 
 	public bool hasNext() const throws {
 		if ( !mCollection ) {
-			throw new Exception("hasNext(): invalid iterator access");
+			throw new Exception( "hasNext(): invalid iterator access" );
 		}
 
 		return mCurrentIndex > 0;
@@ -93,27 +93,27 @@ public object ReverseIterator<T> {
 
 	public T next() modify throws {
 		if ( !hasNext() ) {
-			throw new OutOfBoundsException("next(): index out of bounds");
+			throw new OutOfBoundsException( "next(): index out of bounds" );
 		}
 
 		mCurrentIndex--;
 
-		return T mCollection.at(mCurrentIndex);
+		return T mCollection.at( mCurrentIndex );
 	}
 
-	public T peek(int offset = 1) const throws {
-		return T mCollection.at(mCurrentIndex + offset);
+	public T peek( int offset = 1 ) const throws {
+		return T mCollection.at( mCurrentIndex + offset );
 	}
 
 	public void reset() modify {
 		mCurrentIndex = mCollection.size();
 	}
 
-	public bool operator==(ReverseIterator<T> other const) const {
+	public bool operator==( ReverseIterator<T> other const ) const {
 		return mCurrentIndex == other.mCurrentIndex;
 	}
 
-	public T =operator(T) const throws {
+	public T =operator( T ) const throws {
 		return current();
 	}
 

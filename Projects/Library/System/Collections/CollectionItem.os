@@ -14,7 +14,7 @@ private object CollectionItem<T> {
 		// this is empty by intend
 	}
 
-	public void Constructor(T value) {
+	public void Constructor( T value ) {
 		mValue = value;
 	}
 
@@ -23,7 +23,7 @@ private object CollectionItem<T> {
 	}
 
 	public CollectionItem<T> Copy() const {
-		CollectionItem<T> result = new CollectionItem<T>();
+		var result = new CollectionItem<T>();
 
 		result.mNext = mNext;
 		result.mPrevious = mPrevious;
@@ -40,7 +40,7 @@ private object CollectionItem<T> {
 		return mNext;
 	}
 
-	public void next(CollectionItem<T> n) modify {
+	public void next( CollectionItem<T> n ) modify {
 		mNext = n;
 	}
 
@@ -48,11 +48,11 @@ private object CollectionItem<T> {
 		return mPrevious;
 	}
 
-	public void previous(CollectionItem<T> p) modify {
+	public void previous( CollectionItem<T> p ) modify {
 		mPrevious = p;
 	}
 
-	public void set(T value) modify {
+	public void set( T value ) modify {
 		mValue = value;
 	}
 }
