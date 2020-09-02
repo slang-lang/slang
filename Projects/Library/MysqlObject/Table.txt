@@ -4,11 +4,11 @@
 public object #ENTITY_PREFIX##ENTITY_NAME_UPPERCASE##ENTITY_POSTFIX# {
 #MEMBER_DECLARATION#
 
-	public void Constructor( int dbHandle = 0, int ID = 0 ) {
+	public void Constructor( int dbHandle = 0, int #PRIMARY_KEY# = 0 ) {
 		DB = dbHandle;
 
-		if ( ID ) {
-			loadByPrimaryKey( ID );
+		if ( #PRIMARY_KEY# ) {
+			loadByPrimaryKey( #PRIMARY_KEY# );
 		}
 	}
 

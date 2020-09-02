@@ -1,4 +1,3 @@
-#!/usr/local/bin/slang
 
 // Library imports
 import System.Collections.Map;

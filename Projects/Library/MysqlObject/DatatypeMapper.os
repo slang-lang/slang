@@ -27,7 +27,7 @@ public object DatatypeMapper {
 		throw new Exception( "Type '" + type + "' not found!" );
 	}
 
-	private void insertPair( string line ) modify {
+	private void insertPair( string line ) modify throws {
 		var it = new String( line ).SplitBy( ":" );
 
 		mDataTypes.insert( it.next(), it.next() );

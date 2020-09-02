@@ -26,11 +26,11 @@ public object CodeGenerator {
         prepareFolders();
 
         // query entities
-        var lookup = new EntityLookup( mDBHandle );
+        var lookup = new EntityLookup();
 
         // generate tables
         {
-            var entities = lookup.getTables( Database );
+            var entities = lookup.getTables( mDBHandle, Database );
 
             int count;
             foreach ( string entityName : entities ) {
@@ -44,7 +44,7 @@ public object CodeGenerator {
 
         // generate views
         {
-            var entities = lookup.getViews( Database );
+            var entities = lookup.getViews( mDBHandle, Database );
 
             int count;
             foreach ( string entityName : entities ) {
