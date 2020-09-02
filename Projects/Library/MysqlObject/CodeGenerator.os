@@ -25,35 +25,38 @@ public object CodeGenerator {
         // connect to configured database
         connect();
 
+        // prepare output folders
+        prepareFolders();
+
         // query entities
-		var lookup = new EntityLookup( mDBHandle );
+        var lookup = new EntityLookup( mDBHandle );
 
-		// generate tables
-		{
-			var entities = lookup.getTables( Database );
+        // generate tables
+        {
+            var entities = lookup.getTables( Database );
 
-			int count;
-			foreach ( string entityName : entities ) {
-				generateEntity( entityName, "Table" );
+            int count;
+            foreach ( string entityName : entities ) {
+                generateEntity( entityName, "Table" );
 
-				count++;
-			}
+                count++;
+            }
 
-			print( "" + count + " table objects generated." );
-		}
+            print( "" + count + " table objects generated." );
+        }
 
-		// generate views
-		{
-			var entities = lookup.getViews( Database );
+        // generate views
+        {
+            var entities = lookup.getViews( Database );
 
-			int count;
-			foreach ( string entityName : entities ) {
-				generateEntity( entityName, "View" );
+            int count;
+            foreach ( string entityName : entities ) {
+                generateEntity( entityName, "View" );
 
-				count++;
-			}
+                count++;
+            }
 
-			print( "" + count + " view objects generated." );
+            print( "" + count + " view objects generated." );
         }
 
         // disconnect from configured database
@@ -82,7 +85,7 @@ public object CodeGenerator {
         template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper(name) );                    // name
         template.ReplaceAll( TEMPLATE_ENTITY_POSTFIX,           TABLE_POSTFIX );                    // postfix
         template.ReplaceAll( TEMPLATE_ENTITY_PREFIX,            TABLE_PREFIX );                     // prefix
-        template.ReplaceAll( TEMPLATE_IMPORT,                   generateImports( name, entity ) );  // imports
+        //template.ReplaceAll( TEMPLATE_IMPORT,                   generateImports( name, entity ) );  // imports
         template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, entity ) );  // members
         template.ReplaceAll( TEMPLATE_MEMBER_INSERT,            generateInserts( name, entity ) );     // inserts
         template.ReplaceAll( TEMPLATE_MEMBER_LIST,              generateMemberList( name, entity ) );  // member list
@@ -161,7 +164,7 @@ public object CodeGenerator {
         string fields;
 
         foreach ( Pair<string, string> field : entity ) {
-            if ( field.first == "id" ) {
+            if ( field.first == PrimaryKeyName ) {
                continue;
             }
 
@@ -179,7 +182,7 @@ public object CodeGenerator {
         string fields;
 
         foreach ( Pair<string, string> field : entity ) {
-            if ( field.first == "id" ) {
+            if ( field.first == PrimaryKeyName ) {
                continue;
             }
 
@@ -195,22 +198,6 @@ public object CodeGenerator {
 
     private unstable string generateUpdates( string entityName, Map<string, string> entity ) const {
         return MEMBER_LOAD_PREFIX + "// UPDATE: not yet implemented";
-
-        string updates;
-
-        var it = entity.getIterator();
-        while ( it.hasNext() ) {
-            var field = Pair<string, string> it.next();
-
-/*
-            updates += MEMBER_LOAD_PREFIX + field.first + " = cast<" + field.second + ">( mysql_get_field_value( result, \"" + field.first + "\" ) );";
-            if ( it.hasNext() ) {
-                updates += LINEBREAK;
-            }
-*/
-        }
-
-        return updates;
     }
 
     private void prepareFolders() modify {
