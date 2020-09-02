@@ -93,7 +93,7 @@ public object CodeGenerator {
         template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, entity ) );     // updates
         template.ReplaceAll( TEMPLATE_MEMBER_VALUES,            generateMemberValues( name, entity ) );  // values
 
-        var outFile = new System.IO.File( Database + "/" + entityType + "s/" + toUpper(name) + ".os", System.IO.FileAccessMode.WriteOnly );
+        var outFile = new System.IO.File( Database + "/" + entityType + "s/" + toUpper(name) + ".os", System.IO.File.AccessMode.WriteOnly );
         outFile.write( cast<string>( template ) );
         outFile.close();
     }
@@ -206,7 +206,7 @@ public object CodeGenerator {
     }
 
     private string readFile(string filename) const {
-        var file = new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly);
+        var file = new System.IO.File(filename, System.IO.File.AccessMode.ReadOnly);
     
         string text;
         while ( !file.isEOF() ) {

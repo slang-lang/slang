@@ -38,7 +38,7 @@ public object ConfigLoader {
 			return false;
 		}
 
-		var file = new System.IO.File( mFilename, System.IO.FileAccessMode.ReadOnly );
+		var file = new System.IO.File( mFilename, System.IO.File.AccessMode.ReadOnly );
 		if ( !file.isOpen() ) {
 			return false;
 		}
@@ -99,7 +99,7 @@ public object ConfigLoader {
 
 		print( "Writer: " + config.toString() );
 
-		var file = new System.IO.File( mFilename, System.IO.FileAccessMode.WriteOnly );
+		var file = new System.IO.File( mFilename, System.IO.File.AccessMode.WriteOnly );
 		file.write( config.toString() );
 		file.close();
 	}

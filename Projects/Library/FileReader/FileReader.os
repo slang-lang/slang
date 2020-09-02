@@ -33,7 +33,7 @@ public void Main(int argc, string args) {
 }
 
 private void readFile(string filename) const {
-	var file = new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly);
+	var file = new System.IO.File(filename, System.IO.File.AccessMode.ReadOnly);
 
 	string text;
 	while ( !file.isEOF() ) {

@@ -8,7 +8,7 @@ import IContext;
 
 public object FileContext implements IContext {
 	public void Constructor(string filename, bool append = false) {
-		mFile = new System.IO.File(filename, append ? System.IO.FileAccessMode.WriteUpdate : System.IO.FileAccessMode.WriteOnly);
+		mFile = new System.IO.File(filename, append ? System.IO.File.AccessMode.WriteUpdate : System.IO.File.AccessMode.WriteOnly);
 	}
 
 	public void Destructor() {
