@@ -5,7 +5,7 @@ import libParam.ParameterHandler;
 import System.Network.Socket;
 
 
-public void Main(int argc = 0, string args = "") {
+public void Main(int argc = 0, string args = "") modify {
 	try {
 		var params = new ParameterHandler(argc, args, true);
 		if ( params.empty() ) {
@@ -19,8 +19,8 @@ public void Main(int argc = 0, string args = "") {
 			exit(-1);
 		}
 
-		string address = params.at(numParams - 2).Key;
-		int port = int params.at(numParams - 1).Key;
+		string address = params[numParams - 2].Key;
+		int port = int params[numParams - 1].Key;
 
 
 		int sockfd = socket(AF_INET, SOCK_STREAM, 0);
