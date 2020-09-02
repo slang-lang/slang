@@ -12,17 +12,14 @@ import FieldLookup;
 
 public object CodeGenerator {
     public void Constructor() {
+        mConfig = new ConfigLoader( Database + "/config.json" );
+        mConfig.load();
+
         mDBHandle = mysql_init();
     }
 
     public void process() modify throws {
-/*
-        var configLoader = new ConfigLoader( Database + "/config.json" );
-        configLoader.load();
-        //configLoader.store();
-*/
-
-        // connect to configured database
+        // connect to database
         connect();
 
         // prepare output folders
@@ -59,12 +56,15 @@ public object CodeGenerator {
             print( "" + count + " view objects generated." );
         }
 
-        // disconnect from configured database
+        // disconnect from database
         disconnect();
+
+        // store configuration
+        //mConfig.store();
     }
 
     private void connect() modify throws {
-        mDBHandle = mysql_real_connect(mDBHandle, Host, Port, User, Password, Database);
+        mDBHandle = mysql_real_connect( mDBHandle, Host, Port, User, Password, Database );
     
         if ( !mDBHandle ) {
             throw "failed to connect to database '" + Database + "'";
@@ -76,22 +76,23 @@ public object CodeGenerator {
     }
 
     private void generateEntity( string name, string entityType ) modify {
-        var fieldLookup = new FieldLookup( mDBHandle );
+        var fieldLookup = new FieldLookup();
 
-        var entity = fieldLookup.getFields( name );
+        var entity = fieldLookup.getFields( mDBHandle, name );
         var template = new String( readFile( entityType + ".txt") );
 
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME,              name );                             // name
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper(name) );                    // name
-        template.ReplaceAll( TEMPLATE_ENTITY_POSTFIX,           TABLE_POSTFIX );                    // postfix
-        template.ReplaceAll( TEMPLATE_ENTITY_PREFIX,            TABLE_PREFIX );                     // prefix
-        //template.ReplaceAll( TEMPLATE_IMPORT,                   generateImports( name, entity ) );  // imports
-        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, entity ) );  // members
-        template.ReplaceAll( TEMPLATE_MEMBER_INSERT,            generateInserts( name, entity ) );     // inserts
-        template.ReplaceAll( TEMPLATE_MEMBER_LIST,              generateMemberList( name, entity ) );  // member list
-        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,              generateLoaders( name, entity ) );     // loaders
-        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, entity ) );     // updates
-        template.ReplaceAll( TEMPLATE_MEMBER_VALUES,            generateMemberValues( name, entity ) );  // values
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME,              name );                                 // name
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper(name) );                        // name in upper case
+        template.ReplaceAll( TEMPLATE_ENTITY_POSTFIX,           TABLE_POSTFIX );                        // postfix
+        template.ReplaceAll( TEMPLATE_ENTITY_PREFIX,            TABLE_PREFIX );                         // prefix
+        template.ReplaceAll( TEMPLATE_IMPORT,                   generateImports( name, entity ) );      // imports
+        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, entity ) );   // members
+        template.ReplaceAll( TEMPLATE_MEMBER_INSERT,            generateInserts( name, entity ) );      // inserts
+        template.ReplaceAll( TEMPLATE_MEMBER_LIST,              generateMemberList( name, entity ) );   // member list
+        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,              generateLoaders( name, entity ) );      // loaders
+        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, entity ) );      // updates
+        template.ReplaceAll( TEMPLATE_MEMBER_VALUES,            generateMemberValues( name, entity ) ); // values
+        template.ReplaceAll( TEMPLATE_PRIMARY_KEY,              PrimaryKeyName );                       // values
 
         var outFile = new System.IO.File( Database + "/" + entityType + "s/" + toUpper(name) + ".os", System.IO.File.AccessMode.WriteOnly );
         outFile.write( cast<string>( template ) );
@@ -99,11 +100,7 @@ public object CodeGenerator {
     }
 
     private unstable string generateImports( string entityName, Map<string, string> entity ) const {
-        string imports = "// IMPORT: not yet implemented";
-
-        // TODO: implement me
-
-        return imports;
+        return "// IMPORT: not yet implemented";
     }
 
     private unstable string generateInserts( string entityName, Map<string, string> entity ) const {
@@ -134,6 +131,10 @@ public object CodeGenerator {
         var it = entity.getIterator();
         while ( it.hasNext() ) {
             var field = Pair<string, string> it.next();
+
+            if ( field.first == PrimaryKeyName ) {
+                continue;
+            }
 
             loaders += MEMBER_LOAD_PREFIX + field.first + " = cast<" + field.second + ">( mysql_get_field_value( result, \"" + field.first + "\" ) );";
             if ( it.hasNext() ) {
@@ -201,20 +202,21 @@ public object CodeGenerator {
     }
 
     private void prepareFolders() modify {
-        system("mkdir -p " + Output + /*"/" + Database +*/ "/Tables");
-        system("mkdir -p " + Output + /*"/" + Database +*/ "/Views");
+        system( "mkdir -p " + Output + "/Tables" );
+        system( "mkdir -p " + Output + "/Views" );
     }
 
-    private string readFile(string filename) const {
-        var file = new System.IO.File(filename, System.IO.File.AccessMode.ReadOnly);
-    
+    private string readFile( string filename ) const {
+        var file = new System.IO.File( filename, System.IO.File.AccessMode.ReadOnly );
+
         string text;
         while ( !file.isEOF() ) {
             text += file.readChar();
         }
-    
+
         return text;
     }
 
+    private ConfigLoader mConfig;
     private int mDBHandle;
 }

@@ -1,42 +1,60 @@
 
 // Library imports
 import System.Collections.Map;
+import System.IO.File;
 
 // Project imports
 
 
 public object DatatypeMapper {
-	public Map</*source*/ string, /*target*/ string> DataTypes;
-
 	public void Constructor() {
-		DataTypes = new Map<string, string>();
+		mDataTypes = new Map<string, string>();
 
-		InitDataTypes();
+		load();
 	}
 
-	public void addType(string left, string right) modify {
-		DataTypes.insert(left, right);
+	public void addType( string left, string right ) modify {
+		mDataTypes.insert( left, right );
 	}
 
-	public string lookupType(string type) const throws {
-		foreach ( Pair<string, string> p : DataTypes ) {
+	public string lookupType( string type ) const throws {
+		foreach ( Pair<string, string> p : mDataTypes ) {
 			if ( p.first == type ) {
 				return p.second;
 			}
 		}
 
-		throw new Exception("Type '" + type + "' not found!");
+		throw new Exception( "Type '" + type + "' not found!" );
 	}
 
-	private void InitDataTypes() modify {
-		DataTypes.insert("datetime",	"string");
-		DataTypes.insert("float",	"float");
-		DataTypes.insert("int",		"int");
-		DataTypes.insert("mediumtext",	"string");
-		DataTypes.insert("text",	"string");
-		DataTypes.insert("tinyint",	"bool");
-		DataTypes.insert("timestamp",	"int");
-		DataTypes.insert("varchar",	"string");
+	private void insertPair( string line ) modify {
+		var it = new String( line ).SplitBy( ":" );
+
+		mDataTypes.insert( it.next(), it.next() );
 	}
+
+	private void load() modify {
+		var file = new System.IO.File( "DataTypes.txt" );
+
+		string char;
+		string text;
+        while ( !file.isEOF() ) {
+			char = file.readChar();
+
+			if ( char == " " || char == "	" ) {
+				continue;
+			}
+			else if ( char == LINEBREAK ) {
+				insertPair( text );
+
+				text = "";
+				continue;
+			}
+
+            text += char;
+		}
+	}
+
+	private Map</*source*/ string, /*target*/ string> mDataTypes;
 }
 

@@ -8,7 +8,7 @@ public object #ENTITY_PREFIX##ENTITY_NAME_UPPERCASE##ENTITY_POSTFIX# {
 		DB = dbHandle;
 
 		if ( ID ) {
-			loadByID( ID );
+			loadByPrimaryKey( ID );
 		}
 	}
 
@@ -16,26 +16,6 @@ public object #ENTITY_PREFIX##ENTITY_NAME_UPPERCASE##ENTITY_POSTFIX# {
 		DB = dbHandle;
 
 		loadByQuery( query );
-	}
-
-	public void loadByResult( int result ) modify {
-#MEMBER_LOAD#
-	}
-
-	public void loadByID( int ID ) modify throws {
-		string query = "SELECT * FROM #ENTITY_NAME# WHERE id = '" + ID + "'";
-
-		int error = mysql_query( DB, query );
-		if ( error ) {
-			throw mysql_error( DB );
-		}
-
-		int result = mysql_store_result( DB );
-		if ( !mysql_next_row( result ) ) {
-			throw mysql_error( DB );
-		}
-
-#MEMBER_LOAD#
 	}
 
 	public void loadByQuery( string query ) modify throws {
@@ -49,6 +29,26 @@ public object #ENTITY_PREFIX##ENTITY_NAME_UPPERCASE##ENTITY_POSTFIX# {
 			throw mysql_error( DB );
 		}
 
+#MEMBER_LOAD#
+	}
+
+	public void loadByPrimaryKey( int #PRIMARY_KEY# ) modify throws {
+		string query = "SELECT * FROM #ENTITY_NAME# WHERE id = '" + #PRIMARY_KEY# + "'";
+
+		int error = mysql_query( DB, query );
+		if ( error ) {
+			throw mysql_error( DB );
+		}
+
+		int result = mysql_store_result( DB );
+		if ( !mysql_next_row( result ) ) {
+			throw mysql_error( DB );
+		}
+
+#MEMBER_LOAD#
+	}
+
+	public void loadByResult( int result ) modify {
 #MEMBER_LOAD#
 	}
 

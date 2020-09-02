@@ -29,4 +29,5 @@ public string TEMPLATE_MEMBER_LIST const = "#MEMBER_LIST#";
 public string TEMPLATE_MEMBER_LOAD const = "#MEMBER_LOAD#";
 public string TEMPLATE_MEMBER_UPDATE const = "#MEMBER_UPDATE#";
 public string TEMPLATE_MEMBER_VALUES const = "#MEMBER_VALUES#";
+public string TEMPLATE_PRIMARY_KEY const = "#PRIMARY_KEY#";
 

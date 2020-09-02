@@ -1,0 +1,8 @@
+datetime:	string
+float:		float 
+int:		int
+mediumtext:	string
+text:		string
+tinyint:	bool
+timestamp:	int
+varchar:	string
