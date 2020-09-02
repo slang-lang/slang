@@ -50,10 +50,10 @@ private bool TestCase1() const {
 }
 
 private bool TestCase2() const {
-	print("TestCase 2: using System.IO.FileAccessMode");
+	print("TestCase 2: using System.IO.File.AccessMode");
 
 	try {
-		System.IO.File file = new System.IO.File("file", System.IO.FileAccessMode.ReadOnly);
+		System.IO.File file = new System.IO.File("file", System.IO.File.AccessMode.ReadOnly);
 		assert( file.isOpen() );
 
 		file.write(1731389);
@@ -68,7 +68,7 @@ private bool TestCase2() const {
 	}
 
 	try {
-		System.IO.File file = new System.IO.File("file", System.IO.FileAccessMode.ReadOnly);
+		System.IO.File file = new System.IO.File("file", System.IO.File.AccessMode.ReadOnly);
 		//file.open("file", "r");	// this throws an exception as long as the file is still open
 		assert( file.isOpen() );
 
