@@ -37,8 +37,8 @@ public int Main(int argc, string args) modify {
 	try {
 		Parser parser = new Parser();
 
-		Interpreter interpreter = new Interpreter(parser.parseFile(params.at(0).Key, debug));
-		return interpreter.run(debug);
+		Interpreter interpreter = new Interpreter( parser.parseFile( params[ 0 ].Key, debug ) );
+		return interpreter.run( debug );
 	}
 	catch ( string e ) {
 		print("Exception: " + e);

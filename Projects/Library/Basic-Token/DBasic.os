@@ -35,7 +35,7 @@ public int Main(int argc, string args) modify {
 
 	if ( !params.empty() ) {
 		// set filename if any params are set
-		filename = string params.at(0).Key;
+		filename = cast<string>( params[ 0 ].Key );
 	}
 
 	try {

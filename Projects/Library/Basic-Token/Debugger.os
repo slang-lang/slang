@@ -37,7 +37,7 @@ public object Debugger extends Interpreter {
 		var ci = new CharacterIterator(command);
 
 		try {
-			var stmt = mParser.parseStatement(ci);
+			var stmt = mParser.parseStatement(/*ci*/);
 			if ( stmt ) {
 				int newLine = process(stmt);
 
