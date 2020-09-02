@@ -1520,11 +1520,11 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 
 	// evaluate language feature state of the called method
 	switch ( method->getLanguageFeatureState() ) {
-		case LanguageFeatureState::Deprecated: OSinfo("executed method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
+		case LanguageFeatureState::Deprecated: OSinfo("executed method '" + method->getFullScopeName() + "' is marked as deprecated in " + token.position().toString()); break;
 		case LanguageFeatureState::NotImplemented: throw Common::Exceptions::MethodNotImplemented("executed method '" + method->getFullScopeName() + "' is marked as not implemented", token.position()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
 		case LanguageFeatureState::Unspecified: throw Common::Exceptions::Exception("unknown language feature state set for executed method '" + method->getFullScopeName() + "'", token.position()); break;
-		case LanguageFeatureState::Unstable: OSwarn("executed method '" + method->getFullScopeName() + "' is marked as unstable"); break;
+		case LanguageFeatureState::Unstable: OSwarn("executed method '" + method->getFullScopeName() + "' is marked as unstable in " + token.position().toString()); break;
 	}
 
 	return new MethodExpression(symbol, expressions, method->QualifiedTypename(), method->isConst(), method->getEnclosingScope() == mMethod->getEnclosingScope());
