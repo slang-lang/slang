@@ -28,6 +28,9 @@ public object Range implements ICollection, IIterable {
 		mStep = _step;
 	}
 
+	/*
+	 * Copy constructor
+	 */
 	public Range Copy() const {
 		return new Range( mStart, mEnd, mStep );
 	}
