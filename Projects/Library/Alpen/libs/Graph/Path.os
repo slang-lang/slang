@@ -13,4 +13,8 @@ public object Path {
         start = _start;
         end = _end;
     }
+
+    public string =operator( string ) const {
+        return "Path { start: " + cast<string>( start ) + ", end: " + cast<string>( end ) + " }";
+    }
 }
