@@ -27,7 +27,7 @@
         }, 
         {
             "name": "MysqlObject", 
-            "version": "0.1.6", 
+            "version": "0.4.0", 
             "description": ""
         }, 
         {
@@ -47,12 +47,12 @@
         }, 
         {
             "name": "Slang", 
-            "version": "0.7.0", 
+            "version": "0.7.2", 
             "description": ""
         }, 
         {
             "name": "System", 
-            "version": "0.3.4", 
+            "version": "0.3.6", 
             "description": ""
         }, 
         {
@@ -77,7 +77,7 @@
         }, 
         {
             "name": "libParam", 
-            "version": "0.2.7", 
+            "version": "0.2.8", 
             "description": ""
         }, 
         {
@@ -87,7 +87,7 @@
         }, 
         {
             "name": "libSqlite3", 
-            "version": "0.1.0", 
+            "version": "0.1.2", 
             "description": ""
         }
     ]

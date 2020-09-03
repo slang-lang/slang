@@ -6,7 +6,7 @@ import String;
 // declare 'System' namespace to prevent a user defined private 'System' namespace
 public namespace System { }
 
-public object StringIterator extends Iterator<string> {
+public object StringIterator implements Iterator<string> {
 	/*
 	 * Standard constructor
 	 */
