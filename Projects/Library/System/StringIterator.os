@@ -10,26 +10,26 @@ public object StringIterator implements Iterator<string> {
 	/*
 	 * Standard constructor
 	 */
-	public void Constructor(string value, string separator = " ") {
-		mValue = new String(value);
+	public void Constructor( string value, string separator = " " ) {
+		mValue = new String( value );
 
-		setSeparator(separator, true);
+		setSeparator( separator, true );
 	}
 
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(String value const, string separator = " ") {
+	public void Constructor( String value const, string separator = " " ) {
 		mValue = value;
 
-		setSeparator(separator, true);
+		setSeparator( separator, true );
 	}
 
 	/*
 	 * Copy operator
 	 */
 	public StringIterator Copy() const {
-		return new StringIterator(mValue, mSeparator);
+		return new StringIterator( mValue, mSeparator );
 	}
 
 	/*
@@ -39,13 +39,13 @@ public object StringIterator implements Iterator<string> {
 	 */
 	public string current() const throws {
 		if ( mCurrentPosition < 0 ) {
-			throw new NotInitializedException("iterator not initialized");
+			throw new NotInitializedException( "iterator not initialized" );
 		}
 		if ( mNextPosition > mValue.Length() ) {
-			throw new OutOfBoundsException("index(" + mNextPosition + ") out of bounds");
+			throw new OutOfBoundsException( "index(" + mNextPosition + ") out of bounds" );
 		}
 
-		return mValue.SubString(mCurrentPosition, mNextPosition - mCurrentPosition);
+		return mValue.SubString( mCurrentPosition, mNextPosition - mCurrentPosition );
 	}
 
 	/*
@@ -61,29 +61,29 @@ public object StringIterator implements Iterator<string> {
 	 */
 	public string next() modify throws {
 		if ( mNextPosition >= mValue.Length() ) {
-			throw new OutOfBoundsException("index(" + mNextPosition + ") out of bounds");
+			throw new OutOfBoundsException( "index(" + mNextPosition + ") out of bounds" );
 		}
 
-		mCurrentPosition = mNextPosition + strlen(mSeparator);
-		mNextPosition = mValue.IndexOf(mSeparator, mCurrentPosition);
+		mCurrentPosition = mNextPosition + strlen( mSeparator );
+		mNextPosition = mValue.IndexOf( mSeparator, mCurrentPosition );
 
 		if ( mNextPosition > 0 ) {
-			return mValue.SubString(mCurrentPosition, mNextPosition - mCurrentPosition);
+			return mValue.SubString( mCurrentPosition, mNextPosition - mCurrentPosition );
 		}
 
 		// set iteration to end of string
 		mNextPosition = mValue.Length();
-		return mValue.SubString(mCurrentPosition);
+		return mValue.SubString( mCurrentPosition );
 	}
 
 	/*
 	 * temporarly changes the separator and returns the next sub string of the held String value
 	 * throws OutOfBoundsException
 	 */
-	public string next(string separator) modify throws {
-		mCurrentPosition = mNextPosition + strlen(mSeparator);
+	public string next( string separator ) modify throws {
+		mCurrentPosition = mNextPosition + strlen( mSeparator );
 
-		setSeparator(separator, false);
+		setSeparator( separator, false );
 
 		return next();
 	}
@@ -93,20 +93,20 @@ public object StringIterator implements Iterator<string> {
 	 */
 	public void reset() modify {
 		mCurrentPosition = -1;
-		mNextPosition = strlen(mSeparator) * -1;
+		mNextPosition = strlen( mSeparator ) * -1;
 	}
 
 	/*
 	 * changes the separator token (optionally resets iterator to start)
 	 */
-	public void setSeparator(string separator, bool doReset = false) modify {
+	public void setSeparator( string separator, bool doReset = false ) modify {
 		mSeparator = separator;
 
 		if ( doReset ) {
 			reset();
 		}
 		else {
-			mNextPosition = mValue.IndexOf(mSeparator, mCurrentPosition);
+			mNextPosition = mValue.IndexOf( mSeparator, mCurrentPosition );
 
 			if ( mNextPosition <= 0 ) {
 				mNextPosition = mValue.Length();
@@ -119,14 +119,14 @@ public object StringIterator implements Iterator<string> {
 	 * equivalent to calling current()
 	 * throws NotInitializedException, OutOfBoundsException
 	 */
-	public string =operator(string) const throws {
+	public string =operator( string ) const throws {
 		return current();
 	}
 
 	/*
 	 * Equality operator
 	 */
-	public bool operator==(StringIterator other const) const {
+	public bool operator==( StringIterator other const ) const {
 		return mValue == other.mValue && mCurrentPosition == other.mCurrentPosition;
 	}
 
