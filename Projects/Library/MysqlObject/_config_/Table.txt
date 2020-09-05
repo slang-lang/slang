@@ -4,16 +4,16 @@
 public object #TABLE_PREFIX##ENTITY_NAME_UPPERCASE##TABLE_POSTFIX# {
 #MEMBER_DECLARATION#
 
-	public void Constructor( int dbHandle = 0, int #PRIMARY_KEY# = 0 ) {
-		DB = dbHandle;
+	public void Constructor( int databaseHandle = 0, int #PRIMARY_KEY# = 0 ) {
+		DB = databaseHandle;
 
 		if ( #PRIMARY_KEY# ) {
 			loadByPrimaryKey( #PRIMARY_KEY# );
 		}
 	}
 
-	public void Constructor( int dbHandle = 0, string query ) {
-		DB = dbHandle;
+	public void Constructor( int databaseHandle = 0, string query ) {
+		DB = databaseHandle;
 
 		loadByQuery( query );
 	}
@@ -65,6 +65,6 @@ public object #TABLE_PREFIX##ENTITY_NAME_UPPERCASE##TABLE_POSTFIX# {
 #MEMBER_UPDATE#
 	}
 
-	private int DB;
+	private int DB const;
 }
 

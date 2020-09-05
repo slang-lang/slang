@@ -61,43 +61,21 @@ public object CodeGenerator {
         return "// IMPORT: not yet implemented";
     }
 
-    private unstable string generateInserts( string entityName, Map<string, string> fields const ) const {
-        string fieldNames;
-        foreach ( Pair<string, string> field : fields ) {
-            if ( fieldNames ) {
-                fieldNames += ", ";
-            }
-
-            fieldNames += field.first;
-        }
-
-        string values;
-        foreach ( Pair<string, string> field : fields ) {
-            if ( values ) {
-                values += ",";
-            }
-
-            values += "\" + " + field.first + " + \"";
-        }
-
-        return MEMBER_LOAD_PREFIX + "INSERT INTO " + entityName + " ( " + fieldNames + " ) VALUES ( " + values + " )";
-    }
-
     private string generateLoaders( string entityName, Map<string, string> fields const ) const {
         string result;
 
-        var it = fields.getIterator();
-        while ( it.hasNext() ) {
-            var field = Pair<string, string> it.next();
-
+        foreach ( Pair<string, string> field : fields ) {
+/*
             if ( field.first == PrimaryKeyName ) {
                 continue;
             }
+*/
 
-            result += MEMBER_LOAD_PREFIX + field.first + " = cast<" + field.second + ">( mysql_get_field_value( result, \"" + field.first + "\" ) );";
-            if ( it.hasNext() ) {
+            if ( result ) {
                 result += LINEBREAK;
             }
+
+            result += MEMBER_LOAD_PREFIX + field.first + " = cast<" + field.second + ">( mysql_get_field_value( result, \"" + field.first + "\" ) );";
         }
 
         return result;
@@ -106,14 +84,12 @@ public object CodeGenerator {
     private string generateMemberDecl( string entityName, Map<string, string> fields const ) const {
         string result;
 
-        var it = fields.getIterator();
-        while ( it.hasNext() ) {
-            var field = Pair<string, string> it.next();
-
-            result += MEMBER_DECLARATION_PREFIX + field.second + " " + field.first + ";";
-            if ( it.hasNext() ) {
+        foreach ( Pair<string, string> field : fields ) {
+            if ( result ) {
                 result += LINEBREAK;
             }
+
+            result += MEMBER_DECLARATION_PREFIX + field.second + " " + field.first + ";";
         }
 
         return result;
@@ -123,11 +99,13 @@ public object CodeGenerator {
         string result;
 
         foreach ( Pair<string, string> field : fields ) {
+/*
             if ( field.first == PrimaryKeyName ) {
                continue;
             }
+*/
 
-            if ( fields ) {
+            if ( result ) {
                 result += ", ";
             }
 
@@ -137,34 +115,38 @@ public object CodeGenerator {
         return result;
     }
 
-    private string generateMemberValues( string entityName, Map<string, string> entity const ) const {
-        string fields;
+    private string generateMemberValues( string entityName, Map<string, string> fields const ) const {
+        string result;
 
-        foreach ( Pair<string, string> field : entity ) {
+        foreach ( Pair<string, string> field : fields ) {
+/*
             if ( field.first == PrimaryKeyName ) {
                continue;
             }
+*/
 
-            if ( fields ) {
-                fields += ", ";
+            if ( result ) {
+                result += ", ";
             }
 
-            fields += "'\" + " + field.first + " + \"'";
+            result += "'\" + " + field.first + " + \"'";
         }
 
-        return fields;
+        return result;
     }
 
     private void generateTables() modify {
         var entities = mEntityLookup.getTables( mDatabaseHandle, Database );
-        var template = new String( new Scanner( CONFIG_DIRECTORY + "Table.txt" ).getText() );
+        var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "Table.txt" ).getText() );
 
         int count;
         foreach ( string name : entities ) {
+            var template = copy baseTemplate;
+
             replaceSpecialTemplates( template, name );
             replaceUserTemplates( template );
     
-            var outFile = new System.IO.File( Database + "/Tables/" + toUpper(name) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Database + "/Tables/" + toUpper( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
@@ -181,14 +163,16 @@ public object CodeGenerator {
     private void generateViews() modify {
         var entities = mEntityLookup.getViews( mDatabaseHandle, Database );
         var fieldLookup = new FieldLookup();
-        var template = new String( new Scanner( CONFIG_DIRECTORY + "View.txt" ).getText() );
+        var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "View.txt" ).getText() );
 
         int count;
         foreach ( string name : entities ) {
+            var template = copy baseTemplate;
+
             replaceSpecialTemplates( template, name );
             replaceUserTemplates( template );
     
-            var outFile = new System.IO.File( Database + "/Views/" + toUpper(name) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Database + "/Views/" + toUpper( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
@@ -210,7 +194,6 @@ public object CodeGenerator {
         template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper( name ) );                      // name in upper case
         template.ReplaceAll( TEMPLATE_IMPORT,                   generateImports( name, fields ) );      // imports
         template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, fields ) );   // members
-        template.ReplaceAll( TEMPLATE_MEMBER_INSERT,            generateInserts( name, fields ) );      // inserts
         template.ReplaceAll( TEMPLATE_MEMBER_LIST,              generateMemberList( name, fields ) );   // member list
         template.ReplaceAll( TEMPLATE_MEMBER_LOAD,              generateLoaders( name, fields ) );      // loaders
         template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, fields ) );      // updates
