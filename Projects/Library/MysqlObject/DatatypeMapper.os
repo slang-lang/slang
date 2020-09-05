@@ -4,6 +4,8 @@ import System.Collections.Map;
 import System.IO.File;
 
 // Project imports
+import Consts;
+import Scanner;
 
 
 public object DatatypeMapper {
@@ -34,7 +36,7 @@ public object DatatypeMapper {
 	}
 
 	private void load() modify {
-		var file = new System.IO.File( "DataTypes.txt" );
+		var file = new System.IO.File( CONFIG_DIRECTORY + "DataTypes.txt" );
 
 		string char;
 		string text;

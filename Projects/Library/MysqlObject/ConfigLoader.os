@@ -16,19 +16,14 @@ public object Config {
 	public int Port = 3306;
 	public string User;
 
-	public string TablePrefix = "T_";
-	public string TablePostfix = "";
-	public string ViewPrefix = "V_";
-	public string ViewPostfix = "";
-
 	public string toString() const {
-		return "Database: '" + Database + "', Host: '" + Host + "', Output: '" + Output + "', User: '" + User + "', TablePrefix: '" + TablePrefix + "', TablePostfix: '" + TablePostfix + "', ViewPrefix: '" + ViewPrefix + "', ViewPostfix: '" + ViewPostfix + "'";
+		return "Database: '" + Database + "', Host: '" + Host + "', Output: '" + Output + "', User: '" + User + "'";
 	}
 }
 
 
 public object ConfigLoader {
-	public void Constructor(string filename) {
+	public void Constructor( string filename ) {
 		mConfig = new Config();
 		mFilename = filename;
 	}
@@ -63,14 +58,6 @@ public object ConfigLoader {
 		mConfig.User		= config.isMember( "User" )		? config[ "User" ].asString()		: User;
 		// }
 
-		// Item config
-		// {
-		mConfig.TablePostfix	= config.isMember( "TablePostfix" )	? config[ "TablePostfix" ].asString()	: TABLE_POSTFIX;
-		mConfig.TablePrefix		= config.isMember( "TablePrefix" )	? config[ "TablePrefix" ].asString()	: TABLE_PREFIX;
-		mConfig.ViewPostfix		= config.isMember( "ViewPostfix" )	? config[ "ViewPostfix" ].asString()	: VIEW_POSTFIX;
-		mConfig.ViewPrefix		= config.isMember( "ViewPrefix" )	? config[ "ViewPrefix" ].asString()		: VIEW_PREFIX;
-		// }
-
 		print( mConfig.toString() );
 
 		return true;
@@ -87,14 +74,6 @@ public object ConfigLoader {
 		config.addMember( "Password",	new JsonValue( mConfig.Password ) );
 		config.addMember( "Port",	new JsonValue( mConfig.Port ) );
 		config.addMember( "User",	new JsonValue( mConfig.User ) );
-		// }
-
-		// Item config
-		// {
-		config.addMember( "TablePrefix",	new JsonValue( mConfig.TablePrefix ) );
-		config.addMember( "TablePostfix",	new JsonValue( mConfig.TablePostfix ) );
-		config.addMember( "ViewPrefix",		new JsonValue( mConfig.ViewPrefix ) );
-		config.addMember( "ViewPostfix",	new JsonValue( mConfig.ViewPostfix ) );
 		// }
 
 		print( "Writer: " + config.toString() );

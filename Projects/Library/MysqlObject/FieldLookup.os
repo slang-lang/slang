@@ -12,7 +12,7 @@ public object FieldLookup {
 		mDatatypeMapper = new DatatypeMapper();
 	}
 
-	public Map<string, string> getFields( int databaseHandle, string entityName ) throws {
+	public Map<string, string> getFields( int databaseHandle, string entityName ) const throws {
 		string query = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE \
 						FROM INFORMATION_SCHEMA.COLUMNS \
 						WHERE TABLE_SCHEMA = '" + Database + "' \
@@ -30,8 +30,6 @@ public object FieldLookup {
 		while ( mysql_next_row( result ) ) {
 			string column = mysql_get_field_value( result, "COLUMN_NAME" );
 			string type = mysql_get_field_value( result, "DATA_TYPE" );
-
-			//print( type + " " + column + " => " + mDatatypeMapper.lookupType( type ) + " " + column );
 
 			try {
 				resultTable.insert( column, mDatatypeMapper.lookupType( type ) );

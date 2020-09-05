@@ -4,10 +4,13 @@ import System.IO.File;
 import System.String;
 
 // Project imports
+import _config_.Config;
 import ConfigLoader;
 import DatatypeMapper;
 import EntityLookup;
 import FieldLookup;
+import Scanner;
+import TemplateLookup;
 
 
 public object CodeGenerator {
@@ -15,7 +18,11 @@ public object CodeGenerator {
         mConfig = new ConfigLoader( Database + "/config.json" );
         mConfig.load();
 
-        mDBHandle = mysql_init();
+        mDatabaseHandle = mysql_init();
+
+        mEntityLookup = new EntityLookup();
+        mFieldLookup = new FieldLookup();
+        mTemplateLookup = new TemplateLookup();
     }
 
     public void process() modify throws {
@@ -25,36 +32,11 @@ public object CodeGenerator {
         // prepare output folders
         prepareFolders();
 
-        // query entities
-        var lookup = new EntityLookup();
-
         // generate tables
-        {
-            var entities = lookup.getTables( mDBHandle, Database );
-
-            int count;
-            foreach ( string entityName : entities ) {
-                generateEntity( entityName, "Table" );
-
-                count++;
-            }
-
-            print( "" + count + " table objects generated." );
-        }
+        generateTables();
 
         // generate views
-        {
-            var entities = lookup.getViews( mDBHandle, Database );
-
-            int count;
-            foreach ( string entityName : entities ) {
-                generateEntity( entityName, "View" );
-
-                count++;
-            }
-
-            print( "" + count + " view objects generated." );
-        }
+        generateViews();
 
         // disconnect from database
         disconnect();
@@ -64,57 +46,33 @@ public object CodeGenerator {
     }
 
     private void connect() modify throws {
-        mDBHandle = mysql_real_connect( mDBHandle, Host, Port, User, Password, Database );
+        mDatabaseHandle = mysql_real_connect( mDatabaseHandle, Host, Port, User, Password, Database );
     
-        if ( !mDBHandle ) {
+        if ( !mDatabaseHandle ) {
             throw "failed to connect to database '" + Database + "'";
         }
     }
 
     private void disconnect() modify {
-        mysql_close( mDBHandle );
+        mysql_close( mDatabaseHandle );
     }
 
-    private void generateEntity( string name, string entityType ) modify {
-        var fieldLookup = new FieldLookup();
-
-        var entity = fieldLookup.getFields( mDBHandle, name );
-        var template = new String( readFile( entityType + ".txt") );
-
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME,              name );                                 // name
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper(name) );                        // name in upper case
-        template.ReplaceAll( TEMPLATE_ENTITY_POSTFIX,           TABLE_POSTFIX );                        // postfix
-        template.ReplaceAll( TEMPLATE_ENTITY_PREFIX,            TABLE_PREFIX );                         // prefix
-        template.ReplaceAll( TEMPLATE_IMPORT,                   generateImports( name, entity ) );      // imports
-        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, entity ) );   // members
-        template.ReplaceAll( TEMPLATE_MEMBER_INSERT,            generateInserts( name, entity ) );      // inserts
-        template.ReplaceAll( TEMPLATE_MEMBER_LIST,              generateMemberList( name, entity ) );   // member list
-        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,              generateLoaders( name, entity ) );      // loaders
-        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, entity ) );      // updates
-        template.ReplaceAll( TEMPLATE_MEMBER_VALUES,            generateMemberValues( name, entity ) ); // values
-        template.ReplaceAll( TEMPLATE_PRIMARY_KEY,              PrimaryKeyName );                       // values
-
-        var outFile = new System.IO.File( Database + "/" + entityType + "s/" + toUpper(name) + ".os", System.IO.File.AccessMode.WriteOnly );
-        outFile.write( cast<string>( template ) );
-        outFile.close();
-    }
-
-    private unstable string generateImports( string entityName, Map<string, string> entity ) const {
+    private unstable string generateImports( string entityName, Map<string, string> fields const ) const {
         return "// IMPORT: not yet implemented";
     }
 
-    private unstable string generateInserts( string entityName, Map<string, string> entity ) const {
-        string fields;
-        foreach ( Pair<string, string> field : entity ) {
-            if ( fields ) {
-                fields += ", ";
+    private unstable string generateInserts( string entityName, Map<string, string> fields const ) const {
+        string fieldNames;
+        foreach ( Pair<string, string> field : fields ) {
+            if ( fieldNames ) {
+                fieldNames += ", ";
             }
 
-            fields += field.first;
+            fieldNames += field.first;
         }
 
         string values;
-        foreach ( Pair<string, string> field : entity ) {
+        foreach ( Pair<string, string> field : fields ) {
             if ( values ) {
                 values += ",";
             }
@@ -122,13 +80,13 @@ public object CodeGenerator {
             values += "\" + " + field.first + " + \"";
         }
 
-        return MEMBER_LOAD_PREFIX + "INSERT INTO " + entityName + " ( " + fields + " ) VALUES ( " + values + " )";
+        return MEMBER_LOAD_PREFIX + "INSERT INTO " + entityName + " ( " + fieldNames + " ) VALUES ( " + values + " )";
     }
 
-    private string generateLoaders( string entityName, Map<string, string> entity ) const {
-        string loaders;
+    private string generateLoaders( string entityName, Map<string, string> fields const ) const {
+        string result;
 
-        var it = entity.getIterator();
+        var it = fields.getIterator();
         while ( it.hasNext() ) {
             var field = Pair<string, string> it.next();
 
@@ -136,50 +94,50 @@ public object CodeGenerator {
                 continue;
             }
 
-            loaders += MEMBER_LOAD_PREFIX + field.first + " = cast<" + field.second + ">( mysql_get_field_value( result, \"" + field.first + "\" ) );";
+            result += MEMBER_LOAD_PREFIX + field.first + " = cast<" + field.second + ">( mysql_get_field_value( result, \"" + field.first + "\" ) );";
             if ( it.hasNext() ) {
-                loaders += LINEBREAK;
+                result += LINEBREAK;
             }
         }
 
-        return loaders;
+        return result;
     }
 
-    private string generateMemberDecl( string entityName, Map<string, string> entity ) const {
-        string members;
+    private string generateMemberDecl( string entityName, Map<string, string> fields const ) const {
+        string result;
 
-        var it = entity.getIterator();
+        var it = fields.getIterator();
         while ( it.hasNext() ) {
             var field = Pair<string, string> it.next();
 
-            members += MEMBER_DECLARATION_PREFIX + field.second + " " + field.first + ";";
+            result += MEMBER_DECLARATION_PREFIX + field.second + " " + field.first + ";";
             if ( it.hasNext() ) {
-                members += LINEBREAK;
+                result += LINEBREAK;
             }
         }
 
-        return members;
+        return result;
     }
 
-    private string generateMemberList( string entityName, Map<string, string> entity ) const {
-        string fields;
+    private string generateMemberList( string entityName, Map<string, string> fields const ) const {
+        string result;
 
-        foreach ( Pair<string, string> field : entity ) {
+        foreach ( Pair<string, string> field : fields ) {
             if ( field.first == PrimaryKeyName ) {
                continue;
             }
 
             if ( fields ) {
-                fields += ", ";
+                result += ", ";
             }
 
-            fields += field.first;
+            result += field.first;
         }
 
-        return fields;
+        return result;
     }
 
-    private string generateMemberValues( string entityName, Map<string, string> entity ) const {
+    private string generateMemberValues( string entityName, Map<string, string> entity const ) const {
         string fields;
 
         foreach ( Pair<string, string> field : entity ) {
@@ -197,8 +155,47 @@ public object CodeGenerator {
         return fields;
     }
 
-    private unstable string generateUpdates( string entityName, Map<string, string> entity ) const {
+    private void generateTables() modify {
+        var entities = mEntityLookup.getTables( mDatabaseHandle, Database );
+        var template = new String( new Scanner( CONFIG_DIRECTORY + "Table.txt" ).getText() );
+
+        int count;
+        foreach ( string name : entities ) {
+            replaceSpecialTemplates( template, name );
+            replaceUserTemplates( template );
+    
+            var outFile = new System.IO.File( Database + "/Tables/" + toUpper(name) + ".os", System.IO.File.AccessMode.WriteOnly );
+            outFile.write( cast<string>( template ) );
+            outFile.close();
+
+            count++;
+        }
+
+        print( "" + count + " table objects generated." );
+    }
+
+    private unstable string generateUpdates( string entityName, Map<string, string> fields ) const {
         return MEMBER_LOAD_PREFIX + "// UPDATE: not yet implemented";
+    }
+
+    private void generateViews() modify {
+        var entities = mEntityLookup.getViews( mDatabaseHandle, Database );
+        var fieldLookup = new FieldLookup();
+        var template = new String( new Scanner( CONFIG_DIRECTORY + "View.txt" ).getText() );
+
+        int count;
+        foreach ( string name : entities ) {
+            replaceSpecialTemplates( template, name );
+            replaceUserTemplates( template );
+    
+            var outFile = new System.IO.File( Database + "/Views/" + toUpper(name) + ".os", System.IO.File.AccessMode.WriteOnly );
+            outFile.write( cast<string>( template ) );
+            outFile.close();
+
+            count++;
+        }
+
+        print( "" + count + " view objects generated." );
     }
 
     private void prepareFolders() modify {
@@ -206,17 +203,31 @@ public object CodeGenerator {
         system( "mkdir -p " + Output + "/Views" );
     }
 
-    private string readFile( string filename ) const {
-        var file = new System.IO.File( filename, System.IO.File.AccessMode.ReadOnly );
+    private void replaceSpecialTemplates( String template, string name ) modify {
+        var fields = mFieldLookup.getFields( mDatabaseHandle, name );
 
-        string text;
-        while ( !file.isEOF() ) {
-            text += file.readChar();
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME,              name );                                 // name
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper(name) );                        // name in upper case
+        template.ReplaceAll( TEMPLATE_IMPORT,                   generateImports( name, fields ) );      // imports
+        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, fields ) );   // members
+        template.ReplaceAll( TEMPLATE_MEMBER_INSERT,            generateInserts( name, fields ) );      // inserts
+        template.ReplaceAll( TEMPLATE_MEMBER_LIST,              generateMemberList( name, fields ) );   // member list
+        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,              generateLoaders( name, fields ) );      // loaders
+        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, fields ) );      // updates
+        template.ReplaceAll( TEMPLATE_MEMBER_VALUES,            generateMemberValues( name, fields ) ); // values
+    }
+
+    private void replaceUserTemplates( String template ) modify {
+        foreach ( Pair<string, string> p : mTemplateLookup ) {
+            //print( "Replacing template '" + p.first + "' with '" + p.second + "'" );
+
+            template.ReplaceAll( p.first, p.second );
         }
-
-        return text;
     }
 
     private ConfigLoader mConfig;
-    private int mDBHandle;
+    private int mDatabaseHandle;
+    private EntityLookup mEntityLookup;
+    private FieldLookup mFieldLookup;
+    private TemplateLookup mTemplateLookup;
 }

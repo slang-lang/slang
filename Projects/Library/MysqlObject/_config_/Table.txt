@@ -1,7 +1,7 @@
 
 #IMPORT#
 
-public object #ENTITY_PREFIX##ENTITY_NAME_UPPERCASE##ENTITY_POSTFIX# {
+public object #TABLE_PREFIX##ENTITY_NAME_UPPERCASE##TABLE_POSTFIX# {
 #MEMBER_DECLARATION#
 
 	public void Constructor( int dbHandle = 0, int #PRIMARY_KEY# = 0 ) {
