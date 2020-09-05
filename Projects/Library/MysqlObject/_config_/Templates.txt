@@ -1,0 +1,5 @@
+"#PRIMARY_KEY#"  : "id"
+"#TABLE_POSTFIX#": "_Record"
+"#TABLE_PREFIX#" : "T_"
+"#VIEW_POSTFIX#" : "_Record"
+"#VIEW_PREFIX#"  : "V_"
