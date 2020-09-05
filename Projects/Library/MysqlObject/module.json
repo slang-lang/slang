@@ -6,7 +6,7 @@
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.0" },
     { "module": "System", "version_min": "0.3.4" },
-    { "module": "libJson", "version_min": "0.0.4" }
+    { "module": "libJson", "version_min": "0.0.5" }
   ],
   "target": {
     "directory": "MysqlObject",
