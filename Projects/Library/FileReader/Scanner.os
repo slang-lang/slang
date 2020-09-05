@@ -7,8 +7,8 @@ import System.StringIterator;
 // Project imports
 
 public object Scanner implements IIterable {
-	public void Constructor(string filename) {
-		mFile = new System.IO.File(filename, System.IO.FileAccessMode.ReadOnly);
+	public void Constructor( string filename ) {
+		mFile = new System.IO.File( filename, System.IO.File.AccessMode.ReadOnly );
 		mSeparator = LINEBREAK;
 
 		if ( mFile ) {
@@ -21,7 +21,7 @@ public object Scanner implements IIterable {
 	}
 
 	public StringIterator getIterator() const {
-		return new StringIterator(mText, mSeparator);
+		return new StringIterator( mText, mSeparator );
 	}
 
 	public string getText() const {
