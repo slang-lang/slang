@@ -14,7 +14,7 @@ public namespace System.IO {
 			WriteUpdate = 6;
 		}
 
-		public static bool FileExists( string filename ) {
+		public static bool Exists( string filename ) {
 			var handle = fopen( filename, "r" );
 
 			if ( handle ) {
