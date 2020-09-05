@@ -9,7 +9,7 @@ public void Main(int argc, string args) {
 	assert( TestCase1() );
 }
 
-bool TestCase1() {
+private bool TestCase1() {
     try {
         //var str = "{ \"key1\": \"value\" }";
         //var str = "{ \"key1\": \"value\", \"key2\": \"value\", \"key3\": \"value\" }";
@@ -28,10 +28,10 @@ bool TestCase1() {
         return true;
    }
    catch ( string e ) {
-	print("Exception: " + e);
+	   print("Exception: " + e);
    }
    catch ( IException e ) {
-	print("Exception: " + e.what());
+	   print("Exception: " + e.what());
    }
 
    return false;

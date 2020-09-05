@@ -7,10 +7,10 @@ import Array;
 import Object;
 
 public void Main(int argc, string args) {
-	assert(TestCase1());
+	assert( TestCase1() );
 }
 
-bool TestCase1() {
+private bool TestCase1() {
 	var array = new JsonArray("array");
 	print(array.toString());
 
