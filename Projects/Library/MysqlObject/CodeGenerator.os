@@ -207,7 +207,7 @@ public object CodeGenerator {
         var fields = mFieldLookup.getFields( mDatabaseHandle, name );
 
         template.ReplaceAll( TEMPLATE_ENTITY_NAME,              name );                                 // name
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper(name) );                        // name in upper case
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper( name ) );                      // name in upper case
         template.ReplaceAll( TEMPLATE_IMPORT,                   generateImports( name, fields ) );      // imports
         template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, fields ) );   // members
         template.ReplaceAll( TEMPLATE_MEMBER_INSERT,            generateInserts( name, fields ) );      // inserts

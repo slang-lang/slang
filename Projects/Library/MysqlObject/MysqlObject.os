@@ -26,7 +26,7 @@ public void Main( int argc, string args ) modify throws {
 	}
 }
 
-private void processParameters( ParameterHandler params const ) {
+private void processParameters( ParameterHandler params ) {
 	if ( params.empty() ) {
 		printUsage();
 		exit( 0 );
@@ -80,6 +80,6 @@ private void printUsage() {
 }
 
 private void printVersion() {
-	print( APP_NAME + " v" + APP_VERSION );
+	print( APP_NAME + " " + APP_VERSION );
 	print( "" );
 }

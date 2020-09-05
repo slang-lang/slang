@@ -1,6 +1,6 @@
 
 public string APP_NAME const = "MysqlObject";
-public string APP_VERSION const = "0.3.3";
+public string APP_VERSION const = "v0.5.0";
 
 public string CONFIG_DIRECTORY const = "_config_/";
 
@@ -15,4 +15,3 @@ public string TEMPLATE_MEMBER_LIST const = "#MEMBER_LIST#";
 public string TEMPLATE_MEMBER_LOAD const = "#MEMBER_LOAD#";
 public string TEMPLATE_MEMBER_UPDATE const = "#MEMBER_UPDATE#";
 public string TEMPLATE_MEMBER_VALUES const = "#MEMBER_VALUES#";
-//public string TEMPLATE_PRIMARY_KEY const = "#PRIMARY_KEY#";

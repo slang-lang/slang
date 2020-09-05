@@ -36,9 +36,6 @@ public object TemplateLookup implements IIterable {
             skipChars( charIt );
 
             var key = parseValue( charIt );
-            if ( !key ) {
-                return;
-            }
 
             skipChars( charIt );
 
@@ -52,5 +49,5 @@ public object TemplateLookup implements IIterable {
         while ( it.hasNext() && it.next() != "\"" );
     }
 
-    private Map<string, string> mTemplates;
+    private Map</*key*/ string, /*value*/ string> mTemplates;
 }

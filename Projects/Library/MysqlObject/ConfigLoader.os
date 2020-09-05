@@ -6,6 +6,7 @@ import libJson.Writer;
 import System.IO.File;
 
 // Project imports
+import Scanner;
 
 
 public object Config {
@@ -29,21 +30,13 @@ public object ConfigLoader {
 	}
 
 	public bool load() modify {
-		if ( !System.IO.File.FileExists( mFilename ) ) {
+		if ( !System.IO.File.Exists( mFilename ) ) {
 			return false;
-		}
-
-		var file = new System.IO.File( mFilename, System.IO.File.AccessMode.ReadOnly );
-		if ( !file.isOpen() ) {
-			return false;
-		}
-
-		string text;
-		while ( !file.isEOF() ) {
-			text += file.readChar();
 		}
 
 		var reader = new JsonReader();
+
+		var text = new Scanner( mFilename ).getText();
 		var config = JsonObject reader.parse( text );
 
 		print( config.toString() );

@@ -15,7 +15,7 @@ public object EntityLookup {
 		return getEntitiesByType( databaseHandle, database, "VIEW" );
 	}
 
-	private List<string> getEntitiesByType( int databaseHandle, string database, string entityType ) const throws {
+	public List<string> getEntitiesByType( int databaseHandle, string database, string entityType ) const throws {
 		string query = "SHOW FULL TABLES IN " + database + " WHERE TABLE_TYPE LIKE '" + entityType + "'";
 
 		int error = mysql_query( databaseHandle, query );

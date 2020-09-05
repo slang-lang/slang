@@ -36,24 +36,24 @@ public object DatatypeMapper {
 	}
 
 	private void load() modify {
-		var file = new System.IO.File( CONFIG_DIRECTORY + "DataTypes.txt" );
+		var charIt = new Scanner( CONFIG_DIRECTORY + "DataTypes.txt" ).getIterator();
 
-		string char;
+		string c;
 		string text;
-        while ( !file.isEOF() ) {
-			char = file.readChar();
+		while ( charIt.hasNext() ) {
+			c = charIt.next();
 
-			if ( char == " " || char == "	" ) {
+			if ( c == " " || c == "	" ) {
 				continue;
 			}
-			else if ( char == LINEBREAK ) {
+			else if ( c == LINEBREAK ) {
 				insertPair( text );
 
 				text = "";
 				continue;
 			}
 
-            text += char;
+            text += c;
 		}
 	}
 
