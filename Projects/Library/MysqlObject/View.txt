@@ -33,7 +33,7 @@ public object #ENTITY_PREFIX##ENTITY_NAME_UPPERCASE##ENTITY_POSTFIX# {
 	}
 
 	public void loadByPrimaryKey( int #PRIMARY_KEY# ) modify throws {
-		string query = "SELECT * FROM #ENTITY_NAME# WHERE id = '" + #PRIMARY_KEY# + "'";
+		string query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY# = '" + #PRIMARY_KEY# + "'";
 
 		int error = mysql_query( DB, query );
 		if ( error ) {
