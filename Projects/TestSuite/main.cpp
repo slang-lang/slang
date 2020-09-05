@@ -14,6 +14,7 @@
 
 // Fixtures
 #include <AST/Fixture.h>
+#include <Extensions/Fixture.h>
 #include <Inheritance/Fixture.h>
 #include <Interfaces/Fixture.h>
 #include <Language/Fixture.h>
@@ -143,6 +144,9 @@ int main(int argc, const char* argv[])
 
 		Testing::AST::Fixture ast(mLogger);
 		mFixtures.push_back(&ast);
+
+		Testing::Extensions::Fixture extensions(mLogger);
+		mFixtures.push_back(&extensions);
 
 		Testing::Inheritance::Fixture inheritance(mLogger);
 		mFixtures.push_back(&inheritance);

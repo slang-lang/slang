@@ -1,6 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(AST)
+ADD_SUBDIRECTORY(Extensions)
 ADD_SUBDIRECTORY(Inheritance)
 ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Language)
@@ -29,6 +30,7 @@ SET(DEPENDENCIES
 	Test_Language
 	Test_Interfaces
 	Test_Inheritance
+	Test_Extensions
 	Test_AST
 	CoreVirtualMachine
 	CoreRuntime
@@ -46,3 +48,4 @@ add_include(Projects/Utils)
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/TestSuite)
 build_app(TestSuite "")
+
