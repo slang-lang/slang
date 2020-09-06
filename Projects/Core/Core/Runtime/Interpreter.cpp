@@ -204,7 +204,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 			break;
 		case ControlFlow::ExitProgram:
 		case ControlFlow::Throw:
-			// an ObjectiveScript exception has been thrown or we want to terminate
+			// a Slang exception has been thrown or we want to terminate
 			break;
 	}
 

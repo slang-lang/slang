@@ -12,9 +12,6 @@
 
 // Project includes
 #include <Core/AST/Generator.h>
-#include <Core/AST/TreeGenerator.h>
-#include <Core/AST/TreeInterpreter.h>
-#include <Core/AST/TreeOptimizer.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Defines.h>
 #include <Core/Designtime/Analyser.h>
@@ -55,6 +52,9 @@ VirtualMachine::VirtualMachine()
 : mIsInitialized(false)
 {
 	Controller::Instance().init();
+
+	init();
+	printLibraryFolders();
 }
 
 VirtualMachine::~VirtualMachine()
@@ -71,19 +71,21 @@ VirtualMachine::~VirtualMachine()
 	}
 }
 
-void VirtualMachine::addExtension(AExtension *extension, const std::string& library)
+void VirtualMachine::addExtension(Extensions::AExtension* extension, const std::string& library)
 {
 	if ( !extension ) {
 		// provided an invalid extension - ignore it...
-		OSerror("invalid extension '" + library + "' detected!");
+		OSerror( "invalid extension '" + library + "' detected!" );
 
 		return;
 	}
 
-	mExtensions.push_back(extension);
+	OSdebug( "Loaded extension " + extension->getName() + " version " + extension->getVersion() );
+
+	mExtensions.push_back( extension );
 }
 
-void VirtualMachine::addLibraryFolder(const std::string &library)
+void VirtualMachine::addLibraryFolder(const std::string& library)
 {
 	if ( library.empty() ) {
 		return;
@@ -98,12 +100,6 @@ void VirtualMachine::addLibraryFolder(const std::string &library)
 
 Script* VirtualMachine::createScript(const std::string& content)
 {
-	if ( !mIsInitialized ) {
-		init();
-		printLibraryFolders();
-	}
-
-
 	auto *script = new Script();
 	mScripts.insert(script);
 
@@ -195,7 +191,7 @@ void VirtualMachine::init()
 
 	auto* homepath = getenv(SLANG_LIBRARY);
 	if ( homepath ) {
-		std::string path = std::string(homepath);
+		std::string path(homepath);
 
 		while ( !path.empty() ) {
 			std::string left;
@@ -217,8 +213,6 @@ void VirtualMachine::init()
 
 		// load installed shared libraries
 		for ( const std::string& library : sharedLibraries ) {
-			OSdebug("Loading extensions " + library);
-
 			addExtension( mExtensionManager.load(library), library );
 		}
 #endif
@@ -235,7 +229,7 @@ bool VirtualMachine::loadExtensions()
 
 	MethodScope* globalScope = Controller::Instance().globalScope();
 
-	for ( Extensions::ExtensionList::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt ) {
+	for (Extensions::ExtensionCollection::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt ) {
 		try {
 			OSdebug("adding extension '" + (*extIt)->getName() + "'");
 
@@ -301,6 +295,17 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 	}
 
 	return true;
+}
+
+void VirtualMachine::printExtensions()
+{
+	std::cout << "Extensions:" << std::endl;
+
+	for ( const auto& extension : mExtensions ) {
+		std::cout << extension->getName() << " version " << extension->getVersion() << std::endl;
+	}
+
+	std::cout << std::endl;
 }
 
 void VirtualMachine::printLibraryFolders()

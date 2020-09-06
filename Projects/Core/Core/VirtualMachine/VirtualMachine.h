@@ -55,9 +55,11 @@ public:
 	~VirtualMachine();
 
 public:	// Setup
-	void addExtension(AExtension *extension, const std::string& library = "<internal library>");
-	void addLibraryFolder(const std::string &library);
+	void addExtension(Extensions::AExtension* extension, const std::string& library = "<internal library>");
+	void addLibraryFolder(const std::string& library);
 	void init();
+	void printExtensions();
+	void printLibraryFolders();
 	Settings& settings();
 
 public:
@@ -75,7 +77,6 @@ private:
 	Script* createScript(const std::string& content);
 	bool loadExtensions();
 	bool loadLibrary(const std::string& library);
-	void printLibraryFolders();
 
 private:
 #ifdef _WIN32
@@ -83,7 +84,7 @@ private:
 #else
 	Extensions::ExtensionManager mExtensionManager;
 #endif
-	Extensions::ExtensionList mExtensions;
+	Extensions::ExtensionCollection mExtensions;
 	StringSet mImportedLibraries;
 	bool mIsInitialized;
 	OrderedStringSet mLibraryFolders;

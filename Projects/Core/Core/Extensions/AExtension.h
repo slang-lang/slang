@@ -21,35 +21,36 @@ namespace Slang {
 // Forward declarations
 class IScope;
 
-}
+namespace Extensions {
 
 class AExtension
 {
 public:
-	AExtension(std::string name)
-	: mName(std::move(name))
+	AExtension( std::string name, std::string version )
+	: mName( std::move( name ) )
+	, mVersion( std::move( version ) )
 	{ }
 	virtual ~AExtension() = default;
 
 public:
-	virtual void initialize(Slang::IScope* scope) = 0;
-	virtual void provideMethods(Slang::Extensions::ExtensionMethods& methods) = 0;
+	virtual void initialize( Slang::IScope* scope ) = 0;
+	virtual void provideMethods( Slang::Extensions::ExtensionMethods& methods ) = 0;
 
 public:
 	const std::string& getName() const {
 		return mName;
 	}
 
+	const std::string& getVersion() const {
+		return mVersion;
+	}
+
 private:
 	std::string mName;
+	std::string mVersion;
 };
 
-
-namespace Slang {
-namespace Extensions {
-
-
-typedef std::list<AExtension*> ExtensionList;
+typedef std::list<AExtension*> ExtensionCollection;
 
 
 }
