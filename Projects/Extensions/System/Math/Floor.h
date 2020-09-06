@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Math_Floor_h
-#define ObjectiveScript_Extensions_System_Math_Floor_h
+#ifndef Slang_Extensions_System_Math_Floor_h
+#define Slang_Extensions_System_Math_Floor_h
 
 
 // Library includes

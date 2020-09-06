@@ -27,11 +27,11 @@ namespace Strings {
 
 
 SystemStringsExtension::SystemStringsExtension()
-: AExtension("Strings")
+: AExtension( "Strings", "0.0.1" )
 {
 }
 
-void SystemStringsExtension::initialize(IScope* scope)
+void SystemStringsExtension::initialize( IScope* scope )
 {
 #ifdef _WIN32
 	// Win32 only
@@ -79,19 +79,19 @@ void SystemStringsExtension::initialize(IScope* scope)
 	}
 }
 
-void SystemStringsExtension::provideMethods(ExtensionMethods &methods)
+void SystemStringsExtension::provideMethods( ExtensionMethods& methods )
 {
-	methods.push_back(new StrFind());
-	methods.push_back(new StrLen());
-	methods.push_back(new StrLPad());
-	methods.push_back(new StrLTrim());
-	methods.push_back(new StrPos());
-	methods.push_back(new StrRPad());
-	methods.push_back(new StrRTrim());
-	methods.push_back(new StrTrim());
-	methods.push_back(new SubStr());
-	methods.push_back(new ToLower());
-	methods.push_back(new ToUpper());
+	methods.push_back( new StrFind() );
+	methods.push_back( new StrLen() );
+	methods.push_back( new StrLPad() );
+	methods.push_back( new StrLTrim() );
+	methods.push_back( new StrPos() );
+	methods.push_back( new StrRPad() );
+	methods.push_back( new StrRTrim() );
+	methods.push_back( new StrTrim() );
+	methods.push_back( new SubStr() );
+	methods.push_back( new ToLower() );
+	methods.push_back( new ToUpper() );
 }
 
 

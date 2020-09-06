@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Math_Round_h
-#define ObjectiveScript_Extensions_System_Math_Round_h
+#ifndef Slang_Extensions_System_Math_Round_h
+#define Slang_Extensions_System_Math_Round_h
 
 
 // Library includes

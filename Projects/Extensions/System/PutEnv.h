@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_PutEnv_h
-#define ObjectiveScript_Extensions_System_PutEnv_h
+#ifndef Slang_Extensions_System_PutEnv_h
+#define Slang_Extensions_System_PutEnv_h
 
 
 // Library includes

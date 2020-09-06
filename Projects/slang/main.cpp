@@ -42,6 +42,8 @@ std::string mFilename;
 StringSet mLibraryFolders;
 Utils::Common::StdOutLogger mLogger;
 Slang::ParameterList mParameters;
+bool mPrintUsage = false;
+bool mPrintVersion = false;
 bool mSanityCheck = true;
 bool mSyntaxCheck = false;
 
@@ -65,7 +67,7 @@ void printVersion()
 {
 	std::cout << PRODUCT_NAME << " Interpreter " << PRODUCT_VERSION << " (cli)" << std::endl;
 	std::cout << COPYRIGHT << std::endl;
-	std::cout << "" << std::endl;
+	std::cout << std::endl;
 }
 
 void processParameters(int argc, const char* argv[])
@@ -92,9 +94,7 @@ void processParameters(int argc, const char* argv[])
 				scriptParams = true;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
-				printUsage();
-
-				exit(0);
+				mPrintUsage = true;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-l") || Utils::Tools::StringCompare(argv[i], "--library") ) {
 				if ( argc <= ++i ) {
@@ -123,9 +123,7 @@ void processParameters(int argc, const char* argv[])
 				Utils::Printer::Instance()->PrintFileAndLine = true;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--version") ) {
-				printVersion();
-
-				exit(0);
+				mPrintVersion = true;
 			}
 			else if ( mFilename.empty() ){
 				mFilename = argv[i];
@@ -155,18 +153,12 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	processParameters(argc, argv);
-
-	if ( mFilename.empty() ) {
-		printUsage();
-
-		return 0;
-	}
-
 	Slang::VirtualMachine mVirtualMachine;
 	for ( const auto& library : mLibraryFolders ) {
 		mVirtualMachine.addLibraryFolder(library);
 	}
+
+	processParameters(argc, argv);
 
 	mVirtualMachine.settings().DoCollectErrors = true;
 	mVirtualMachine.settings().DoSanityCheck = mSanityCheck;
@@ -179,6 +171,18 @@ int main(int argc, const char* argv[])
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
+
+	if ( mPrintVersion ) {
+		printVersion();
+		mVirtualMachine.printExtensions();
+
+		return 0;
+	}
+	else if ( mPrintUsage || mFilename.empty() ) {
+		printUsage();
+
+		return 0;
+	}
 
 	try {
 		Slang::Runtime::Object result;

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Console_Cerr_h
-#define ObjectiveScript_Extensions_System_Console_Cerr_h
+#ifndef Slang_Extensions_System_Console_Cerr_h
+#define Slang_Extensions_System_Console_Cerr_h
 
 
 // Library includes

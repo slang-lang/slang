@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_Json_JsonExtension_h
-#define ObjectiveScript_Extensions_Json_JsonExtension_h
+#ifndef Slang_Extensions_Json_JsonExtension_h
+#define Slang_Extensions_Json_JsonExtension_h
 
 
 // Library includes
@@ -24,8 +24,8 @@ public:
 	JsonExtension();
 
 public:
-	void initialize(IScope* scope);
-	void provideMethods(ExtensionMethods &methods);
+	void initialize( IScope* scope );
+	void provideMethods( ExtensionMethods& methods );
 };
 
 

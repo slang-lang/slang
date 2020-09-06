@@ -36,8 +36,8 @@ public:
 	~SystemExtension();
 
 public:
-	void initialize(IScope* scope);
-	void provideMethods(ExtensionMethods &methods);
+	void initialize( IScope* scope );
+	void provideMethods( ExtensionMethods& methods );
 
 private:
 	Console::SystemConsoleExtension mConsoleExtension;

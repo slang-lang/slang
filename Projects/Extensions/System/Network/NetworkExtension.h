@@ -26,8 +26,8 @@ public:
 	~SystemNetworkExtension() = default;
 
 public:
-	void initialize(IScope* scope);
-	void provideMethods(ExtensionMethods &methods);
+	void initialize( IScope* scope );
+	void provideMethods( ExtensionMethods& methods );
 };
 
 

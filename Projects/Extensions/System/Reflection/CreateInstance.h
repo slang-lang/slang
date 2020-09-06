@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_CreateInstance_h
-#define ObjectiveScript_Extensions_System_CreateInstance_h
+#ifndef Slang_Extensions_System_CreateInstance_h
+#define Slang_Extensions_System_CreateInstance_h
 
 
 // Library includes

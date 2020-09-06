@@ -20,21 +20,21 @@ namespace Console {
 
 
 SystemConsoleExtension::SystemConsoleExtension()
-: AExtension("Console")
+: AExtension( "Console", "0.0.1" )
 {
 }
 
-void SystemConsoleExtension::initialize(Slang::IScope* /*scope*/)
+void SystemConsoleExtension::initialize( Slang::IScope* /*scope*/ )
 {
 	// nothing to do here
 }
 
-void SystemConsoleExtension::provideMethods(ExtensionMethods &methods)
+void SystemConsoleExtension::provideMethods( ExtensionMethods& methods )
 {
-	methods.push_back(new Cerr());
-	methods.push_back(new Cin());
-	methods.push_back(new Cout());
-	methods.push_back(new Endl());
+	methods.push_back( new Cerr() );
+	methods.push_back( new Cin() );
+	methods.push_back( new Cout() );
+	methods.push_back( new Endl() );
 }
 
 

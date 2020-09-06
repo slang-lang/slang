@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Strings_StrLen_h
-#define ObjectiveScript_Extensions_System_Strings_StrLen_h
+#ifndef Slang_Extensions_System_Strings_StrLen_h
+#define Slang_Extensions_System_Strings_StrLen_h
 
 
 // Library includes

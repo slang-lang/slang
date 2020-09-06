@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Network_Close_h
-#define ObjectiveScript_Extensions_System_Network_Close_h
+#ifndef Slang_Extensions_System_Network_Close_h
+#define Slang_Extensions_System_Network_Close_h
 
 
 // Library includes

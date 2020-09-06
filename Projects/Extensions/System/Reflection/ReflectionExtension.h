@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Reflection_ReflectionExtension_h
-#define ObjectiveScript_Extensions_System_Reflection_ReflectionExtension_h
+#ifndef Slang_Extensions_System_Reflection_ReflectionExtension_h
+#define Slang_Extensions_System_Reflection_ReflectionExtension_h
 
 
 // Library includes
@@ -26,8 +26,8 @@ public:
 	~SystemReflectionExtension() = default;
 
 public:
-	void initialize(IScope* scope);
-	void provideMethods(ExtensionMethods &methods);
+	void initialize( IScope* scope );
+	void provideMethods( ExtensionMethods& methods );
 };
 
 

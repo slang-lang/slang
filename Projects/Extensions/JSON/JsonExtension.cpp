@@ -18,21 +18,21 @@ namespace Json {
 
 
 JsonExtension::JsonExtension()
-: AExtension("Json")
+: AExtension( "Json", "0.0.1" )
 {
 }
 
-void JsonExtension::initialize(IScope* /*scope*/)
+void JsonExtension::initialize( IScope* /*scope*/ )
 {
 	// nothing to do here
 }
 
-void JsonExtension::provideMethods(ExtensionMethods &methods)
+void JsonExtension::provideMethods( ExtensionMethods& methods )
 {
-	assert(methods.empty());
+	assert( methods.empty() );
 
-	methods.push_back(new FromJson());
-	methods.push_back(new ToJson());
+	methods.push_back( new FromJson() );
+	methods.push_back( new ToJson() );
 }
 
 

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Strings_StrLPad_h
-#define ObjectiveScript_Extensions_System_Strings_StrLPad_h
+#ifndef Slang_Extensions_System_Strings_StrLPad_h
+#define Slang_Extensions_System_Strings_StrLPad_h
 
 
 // Library includes

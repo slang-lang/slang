@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Math_Trunc_h
-#define ObjectiveScript_Extensions_System_Math_Trunc_h
+#ifndef Slang_Extensions_System_Math_Trunc_h
+#define Slang_Extensions_System_Math_Trunc_h
 
 
 // Library includes

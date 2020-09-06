@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Strings_SubStr_h
-#define ObjectiveScript_Extensions_System_Strings_SubStr_h
+#ifndef Slang_Extensions_System_Strings_SubStr_h
+#define Slang_Extensions_System_Strings_SubStr_h
 
 
 // Library includes

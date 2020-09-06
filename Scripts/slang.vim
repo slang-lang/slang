@@ -1,5 +1,5 @@
 " Vim syntax file
-" Language:	ObjectiveScript
+" Language:	Slang
 " Maintainer:	Michael Adelmann <michael.adelmann@gmail.com>
 " Last Change:	2020-06-13
 " Filenames:	*.os

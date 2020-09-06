@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Math_MathExtension_h
-#define ObjectiveScript_Extensions_System_Math_MathExtension_h
+#ifndef Slang_Extensions_System_Math_MathExtension_h
+#define Slang_Extensions_System_Math_MathExtension_h
 
 
 // Library includes
@@ -26,8 +26,8 @@ public:
 	~SystemMathExtension() = default;
 
 public:
-	void initialize(IScope* scope);
-	void provideMethods(ExtensionMethods &methods);
+	void initialize( IScope* scope );
+	void provideMethods( ExtensionMethods& methods );
 };
 
 

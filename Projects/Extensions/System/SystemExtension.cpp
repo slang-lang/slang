@@ -36,7 +36,7 @@ namespace System {
 
 
 SystemExtension::SystemExtension()
-: AExtension("System")
+: AExtension( "System", "0.0.1" )
 {
 #ifdef _WIN32
 	// Win32 only
@@ -61,11 +61,11 @@ SystemExtension::~SystemExtension()
 void SystemExtension::initialize(IScope* scope)
 {
 	// error constants
-	scope->define("EACCES", new Runtime::IntegerObject("EACCES", EACCES));
-	scope->define("EINVAL", new Runtime::IntegerObject("EINVAL", EINVAL));
-	scope->define("EMFILE", new Runtime::IntegerObject("EMFILE", EMFILE));
-	scope->define("ENFILE", new Runtime::IntegerObject("ENFILE", ENFILE));
-	scope->define("ENOMEM", new Runtime::IntegerObject("ENOMEM", ENOMEM));
+	scope->define( "EACCES", new Runtime::IntegerObject( "EACCES", EACCES ) );
+	scope->define( "EINVAL", new Runtime::IntegerObject( "EINVAL", EINVAL ) );
+	scope->define( "EMFILE", new Runtime::IntegerObject( "EMFILE", EMFILE ) );
+	scope->define( "ENFILE", new Runtime::IntegerObject( "ENFILE", ENFILE ) );
+	scope->define( "ENOMEM", new Runtime::IntegerObject( "ENOMEM", ENOMEM ) );
 
 #ifdef _WIN32
 	// Win32 only
@@ -74,73 +74,73 @@ void SystemExtension::initialize(IScope* scope)
 #endif
 
 	// Console
-	mConsoleExtension.initialize(scope);
+	mConsoleExtension.initialize( scope );
 
 	// IO
-	mIOExtension.initialize(scope);
+	mIOExtension.initialize( scope );
 
 	// Math
-	mMathExtension.initialize(scope);
+	mMathExtension.initialize( scope );
 
 	// Network
 #ifdef _WIN32
 	// Win32 only
 #else
 	// Unix/Linux only
-	mNetworkExtension.initialize(scope);
+	mNetworkExtension.initialize( scope );
 #endif
 
 	// Strings
-	mStringsExtension.initialize(scope);
+	mStringsExtension.initialize( scope );
 }
 
-void SystemExtension::provideMethods(ExtensionMethods &methods)
+void SystemExtension::provideMethods( ExtensionMethods& methods )
 {
-	assert(methods.empty());
+	assert( methods.empty() );
 
 	// Generic methods
-	methods.push_back(new Ascii());
-	methods.push_back(new Assert());
-	methods.push_back(new GetChar());
-	methods.push_back(new GetEnv());
-	methods.push_back(new PutEnv());
-	methods.push_back(new SetEnv());
-	methods.push_back(new Sleep());
-	methods.push_back(new StdTime());
-	methods.push_back(new SystemExecute());
-	methods.push_back(new Write());
-	methods.push_back(new WriteLn());
+	methods.push_back( new Ascii() );
+	methods.push_back( new Assert() );
+	methods.push_back( new GetChar() );
+	methods.push_back( new GetEnv() );
+	methods.push_back( new PutEnv() );
+	methods.push_back( new SetEnv() );
+	methods.push_back( new Sleep() );
+	methods.push_back( new StdTime() );
+	methods.push_back( new SystemExecute() );
+	methods.push_back( new Write() );
+	methods.push_back( new WriteLn() );
 
 #ifdef _WIN32
 	// Win32 only methods
 #else
 	// Unix/Linux only methods
-	methods.push_back(new Fork());
-	methods.push_back(new SetKeyboardBlockingMode());
+	methods.push_back( new Fork() );
+	methods.push_back( new SetKeyboardBlockingMode() );
 #endif
 
 	// Console
-	mConsoleExtension.provideMethods(methods);
+	mConsoleExtension.provideMethods( methods );
 
 	// IO
-	mIOExtension.provideMethods(methods);
+	mIOExtension.provideMethods( methods );
 
 	// Math
-	mMathExtension.provideMethods(methods);
+	mMathExtension.provideMethods( methods );
 
 	// Network
 #ifdef _WIN32
 	// Win32 only
 #else
 	// Unix/Linux only
-	mNetworkExtension.provideMethods(methods);
+	mNetworkExtension.provideMethods( methods );
 #endif
 
 	// Reflection
-	mReflectionExtension.provideMethods(methods);
+	mReflectionExtension.provideMethods( methods );
 
 	// Strings
-	mStringsExtension.provideMethods(methods);
+	mStringsExtension.provideMethods( methods );
 }
 
 

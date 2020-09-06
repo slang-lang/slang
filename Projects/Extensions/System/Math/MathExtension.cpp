@@ -25,34 +25,34 @@ namespace Math {
 
 
 SystemMathExtension::SystemMathExtension()
-: AExtension("Math")
+: AExtension( "Math", "0.0.1" )
 {
 }
 
-void SystemMathExtension::initialize(Slang::IScope* /*scope*/)
+void SystemMathExtension::initialize( Slang::IScope* /*scope*/ )
 {
 	// nothing to do here
 }
 
-void SystemMathExtension::provideMethods(ExtensionMethods &methods)
+void SystemMathExtension::provideMethods( ExtensionMethods& methods )
 {
-	methods.push_back(new AbsDouble());
-	methods.push_back(new AbsFloat());
-	methods.push_back(new AbsInt());
-	methods.push_back(new CeilDouble());
-	methods.push_back(new CeilFloat());
-	methods.push_back(new ExpDouble());
-	methods.push_back(new ExpFloat());
-	methods.push_back(new FloorDouble());
-	methods.push_back(new FloorFloat());
-	methods.push_back(new Rand());
-	methods.push_back(new RoundDouble());
-	methods.push_back(new RoundFloat());
-	methods.push_back(new SqrtDouble());
-	methods.push_back(new SqrtFloat());
-	methods.push_back(new Srand());
-	methods.push_back(new TruncDouble());
-	methods.push_back(new TruncFloat());
+	methods.push_back( new AbsDouble() );
+	methods.push_back( new AbsFloat() );
+	methods.push_back( new AbsInt() );
+	methods.push_back( new CeilDouble() );
+	methods.push_back( new CeilFloat() );
+	methods.push_back( new ExpDouble() );
+	methods.push_back( new ExpFloat() );
+	methods.push_back( new FloorDouble() );
+	methods.push_back( new FloorFloat() );
+	methods.push_back( new Rand() );
+	methods.push_back( new RoundDouble() );
+	methods.push_back( new RoundFloat() );
+	methods.push_back( new SqrtDouble() );
+	methods.push_back( new SqrtFloat() );
+	methods.push_back( new Srand() );
+	methods.push_back( new TruncDouble() );
+	methods.push_back( new TruncFloat() );
 
 }
 

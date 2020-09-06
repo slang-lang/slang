@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_ToJson_h
-#define ObjectiveScript_Extensions_System_ToJson_h
+#ifndef Slang_Extensions_System_ToJson_h
+#define Slang_Extensions_System_ToJson_h
 
 
 // Library includes
