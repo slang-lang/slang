@@ -42,6 +42,7 @@ std::string mFilename;
 StringSet mLibraryFolders;
 Utils::Common::StdOutLogger mLogger;
 Slang::ParameterList mParameters;
+bool mPrintDebugInfo = false;
 bool mPrintUsage = false;
 bool mPrintVersion = false;
 bool mSanityCheck = true;
@@ -52,6 +53,7 @@ void printUsage()
 {
 	std::cout << "Usage: slang [options] [-f] <file> [args...]" << std::endl;
 	std::cout << std::endl;
+	std::cout << "--debug                    Show debug information" << std::endl;
 	std::cout << "-f | --file <file>         Parse and execute <file>" << std::endl;
 	std::cout << "-h | --help                This help" << std::endl;
 	std::cout << "-l | --library <library>   Library root path" << std::endl;
@@ -79,7 +81,10 @@ void processParameters(int argc, const char* argv[])
 
 	for ( int i = 1; i < argc; i++ ) {
 		if ( !scriptParams ) {
-			if ( Utils::Tools::StringCompare(argv[i], "-f") || Utils::Tools::StringCompare(argv[i], "--file") ) {
+			if ( Utils::Tools::StringCompare(argv[i], "--debug") ) {
+				mPrintDebugInfo = true;
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-f") || Utils::Tools::StringCompare(argv[i], "--file") ) {
 				if ( argc <= ++i ) {
 					std::cout << "invalid number of parameters provided!" << std::endl;
 
@@ -153,16 +158,9 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	Slang::VirtualMachine mVirtualMachine;
-	for ( const auto& library : mLibraryFolders ) {
-		mVirtualMachine.addLibraryFolder(library);
-	}
-
 	processParameters(argc, argv);
 
-	mVirtualMachine.settings().DoCollectErrors = true;
-	mVirtualMachine.settings().DoSanityCheck = mSanityCheck;
-	mVirtualMachine.settings().DoSyntaxCheck = mSyntaxCheck;
+	Slang::VirtualMachine mVirtualMachine;
 
 	// add extensions
 #ifdef USE_JSON_EXTENSION
@@ -172,7 +170,19 @@ int main(int argc, const char* argv[])
 	mVirtualMachine.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 
-	if ( mPrintVersion ) {
+	mVirtualMachine.settings().DoCollectErrors = true;
+	mVirtualMachine.settings().DoSanityCheck = mSanityCheck;
+	mVirtualMachine.settings().DoSyntaxCheck = mSyntaxCheck;
+
+	mVirtualMachine.init();
+
+	if ( mPrintDebugInfo ) {
+		mVirtualMachine.printLibraryFolders();
+		mVirtualMachine.printExtensions();
+
+		return 0;
+	}
+	else if ( mPrintVersion ) {
 		printVersion();
 		mVirtualMachine.printExtensions();
 
@@ -182,6 +192,10 @@ int main(int argc, const char* argv[])
 		printUsage();
 
 		return 0;
+	}
+
+	for ( const auto& library : mLibraryFolders ) {
+		mVirtualMachine.addLibraryFolder( library );
 	}
 
 	try {

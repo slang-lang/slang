@@ -52,9 +52,6 @@ VirtualMachine::VirtualMachine()
 : mIsInitialized(false)
 {
 	Controller::Instance().init();
-
-	init();
-	printLibraryFolders();
 }
 
 VirtualMachine::~VirtualMachine()
@@ -100,6 +97,10 @@ void VirtualMachine::addLibraryFolder(const std::string& library)
 
 Script* VirtualMachine::createScript(const std::string& content)
 {
+	if ( !mIsInitialized ) {
+		init();
+	}
+
 	auto *script = new Script();
 	mScripts.insert(script);
 
@@ -311,7 +312,7 @@ void VirtualMachine::printExtensions()
 void VirtualMachine::printLibraryFolders()
 {
 	for ( const auto& libraryFolder : mLibraryFolders ) {
-		OSdebug("Library: " + libraryFolder);
+		std::cout << "Library: " + libraryFolder << std::endl;
 	}
 }
 

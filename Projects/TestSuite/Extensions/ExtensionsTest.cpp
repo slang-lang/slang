@@ -14,7 +14,7 @@
 #include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 
-// Namespace declartations
+// Namespace declarations
 using namespace Slang;
 
 

@@ -912,7 +912,7 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 
 	auto* typeExpr = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
 	if ( !typeExpr ) {
-		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
+		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
 	std::string type = typeExpr->getResultType();
@@ -1635,7 +1635,7 @@ Statements* TreeGenerator::process_scope(TokenIterator& token, bool allowBreakAn
 Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpression* symbol)
 {
 	if ( !symbol ) {
-		throw Common::Exceptions::InvalidSymbol("invalid symbol found: " + token->content(), token->position());
+		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
 	std::string type = symbol->getResultType();
@@ -1926,7 +1926,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 	auto* lhs = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
 	if ( !lhs ) {
-		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
+		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
 	std::string type = lhs->getResultType();
@@ -2212,7 +2212,7 @@ SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, ISc
 {
 	SymbolExpression* exp = resolve(token, base, false, Visibility::Public);
 	if ( !exp ) {
-		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "' found", token->position());
+		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
 	return exp;
