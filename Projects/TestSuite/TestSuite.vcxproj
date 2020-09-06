@@ -64,7 +64,7 @@
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Json_debug.lib;Slang.lib;Utils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Json.lib;Slang.lib;Utils.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>..\Libs;$(JSON)\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -108,6 +108,14 @@
     <ClCompile Include="AST\Fixture.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Extensions\ExtensionsTest.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Extensions\Fixture.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="Inheritance\Fixture.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Inheritance\</ObjectFileName>
@@ -180,6 +188,8 @@
   <ItemGroup>
     <ClInclude Include="AST\ASTTest.h" />
     <ClInclude Include="AST\Fixture.h" />
+    <ClInclude Include="Extensions\ExtensionsTest.h" />
+    <ClInclude Include="Extensions\Fixture.h" />
     <ClInclude Include="Framework\GenericTest.h" />
     <ClInclude Include="Framework\TestFixture.h" />
     <ClInclude Include="Framework\TestFramework.h" />

@@ -53,7 +53,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\;..\Core;..\Extensions;..\Externals;..\Utils;$(JSON);$(MYSQL)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\Core;..\Extensions;..\Externals;..\Utils;$(JSON);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <StringPooling>true</StringPooling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -65,7 +65,7 @@
       <OmitDefaultLibName>false</OmitDefaultLibName>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>$(JSON)\Libs\Json_debug.lib;$(MYSQL)\lib\libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(JSON)\Libs\Json.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
       <AdditionalLibraryDirectories>..\Externals; ..\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
@@ -74,7 +74,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>.\;..\Core;..\Extensions;..\Externals;..\Utils;$(JSON);$(MYSQL)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\Core;..\Extensions;..\Externals;..\Utils;$(JSON);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -86,17 +86,11 @@
       <OmitDefaultLibName>true</OmitDefaultLibName>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>$(JSON)\Libs\Json.lib;$(MYSQL)\lib\libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(JSON)\Libs\Json.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Externals; ..\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Apache\ApacheExtension.h" />
-    <ClInclude Include="Apache\Defs.h" />
-    <ClInclude Include="Apache\Get.h" />
-    <ClInclude Include="Apache\IsSet.h" />
-    <ClInclude Include="Apache\Post.h" />
-    <ClInclude Include="Apache\Pre.h" />
     <ClInclude Include="Extensions.h" />
     <ClInclude Include="JSON\FromJson.h" />
     <ClInclude Include="JSON\JsonExtension.h" />
@@ -166,15 +160,7 @@
     <ClInclude Include="System\WriteLn.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Apache\ApacheExtension.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Apache\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Apache\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Apache\Defs.cpp" />
-    <ClCompile Include="JSON\JsonExtension.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Json\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Json\</ObjectFileName>
-    </ClCompile>
+    <ClCompile Include="JSON\JsonExtension.cpp" />
     <ClCompile Include="System\Console\Console.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>

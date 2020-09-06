@@ -107,18 +107,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Common\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Common\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Math\Tools.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Math\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Math\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Math\Vector3.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Math\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Math\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Parsers\Evaluator.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Parsers\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Parsers\</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="Parsers\LineParser.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Parsers\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Parsers\</ObjectFileName>
@@ -154,11 +142,6 @@
     <ClInclude Include="Common\Logger.h" />
     <ClInclude Include="Common\StdOutLogger.h" />
     <ClInclude Include="Interfaces\Common\ILogger.h" />
-    <ClInclude Include="Math\Tools.h" />
-    <ClInclude Include="Math\Vector2.h" />
-    <ClInclude Include="Math\Vector3.h" />
-    <ClInclude Include="Math\Vector4.h" />
-    <ClInclude Include="Parsers\Evaluator.h" />
     <ClInclude Include="Parsers\LineParser.h" />
     <ClInclude Include="Parsers\Tokenizer.h" />
     <ClInclude Include="Parsers\Value.h" />

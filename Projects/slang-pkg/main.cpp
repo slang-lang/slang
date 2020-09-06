@@ -2,13 +2,13 @@
 // Library includes
 #include <algorithm>
 #include <cstdlib>
-#include <dirent.h>
 #include <set>
 #include <string>
 #ifdef _WIN32
 #	include <direct.h>
 #	define GetCurrentDir _getcwd
 #else
+#	include <dirent.h>
 #	include <unistd.h>
 #	define GetCurrentDir getcwd
 #endif
