@@ -14,6 +14,7 @@
     <ProjectGuid>{8B5344A5-0C74-497D-BCC6-618E078B9B64}</ProjectGuid>
     <RootNamespace>odepend</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>slang-pkg</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

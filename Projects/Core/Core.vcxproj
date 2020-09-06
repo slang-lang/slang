@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>Slang</ProjectName>
+    <ProjectName>slang</ProjectName>
     <ProjectGuid>{C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29}</ProjectGuid>
     <RootNamespace>Slang</RootNamespace>
     <Keyword>Win32Proj</Keyword>
