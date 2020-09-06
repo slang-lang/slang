@@ -248,7 +248,7 @@ bool VirtualMachine::loadExtensions()
 			}
 		}
 		catch ( std::exception &e ) {
-			OSerror("error while loading extension: " << e.what());
+			OSerror( "error while loading extension: " + std::string( e.what() ) );
 		}
 	}
 

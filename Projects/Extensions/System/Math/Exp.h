@@ -84,7 +84,7 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			double param_value = (*it++).value().toDouble();
+			float param_value = (*it++).value().toFloat();
 
 			*result = Runtime::DoubleObject(expf(param_value));
 		}

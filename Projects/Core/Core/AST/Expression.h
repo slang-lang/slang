@@ -460,7 +460,7 @@ class LocalSymbolExpression : public SymbolExpression
 public:
 	explicit LocalSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isAtomicType)
 	: SymbolExpression(name, resultType, isAtomicType),
-	  mIndex( -1 )
+	  mIndex( SIZE_MAX )
 	{
 		mIsConst = isConst;
 		mIsMember = false;
@@ -476,7 +476,7 @@ public:
 	}
 
 private:
-	unsigned int mIndex;
+	size_t mIndex;
 };
 
 // Variable expressions
