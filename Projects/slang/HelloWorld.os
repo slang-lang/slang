@@ -5,3 +5,4 @@ public void Main(int argc, string argv) {
 	print("argc = " + argc);
 	print("argv = " + argv);
 }
+
