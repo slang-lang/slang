@@ -57,10 +57,6 @@ public object CodeGenerator {
         mysql_close( mDatabaseHandle );
     }
 
-    private unstable string generateImports( string entityName, Map<string, string> fields const ) const {
-        return "// IMPORT: not yet implemented";
-    }
-
     private string generateLoaders( string entityName, Map<string, string> fields const ) const {
         string result;
 
@@ -192,7 +188,6 @@ public object CodeGenerator {
 
         template.ReplaceAll( TEMPLATE_ENTITY_NAME,              name );                                 // name
         template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper( name ) );                      // name in upper case
-        template.ReplaceAll( TEMPLATE_IMPORT,                   generateImports( name, fields ) );      // imports
         template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, fields ) );   // members
         template.ReplaceAll( TEMPLATE_MEMBER_LIST,              generateMemberList( name, fields ) );   // member list
         template.ReplaceAll( TEMPLATE_MEMBER_LOAD,              generateLoaders( name, fields ) );      // loaders

@@ -1,10 +1,10 @@
 
-#IMPORT#
+import System.Collections.Vector;
 
 public object #VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX# {
 #MEMBER_DECLARATION#
 
-	public void Constructor( int databaseHandle = 0, int #PRIMARY_KEY# = 0 ) {
+	public void Constructor( int databaseHandle, int #PRIMARY_KEY# = 0 ) {
 		DB = databaseHandle;
 
 		if ( #PRIMARY_KEY# ) {
@@ -12,7 +12,7 @@ public object #VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX# {
 		}
 	}
 
-	public void Constructor( int databaseHandle = 0, string query ) {
+	public void Constructor( int databaseHandle, string query ) {
 		DB = databaseHandle;
 
 		loadByQuery( query );
@@ -50,6 +50,36 @@ public object #VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX# {
 
 	public void loadByResult( int result ) modify {
 #MEMBER_LOAD#
+	}
+
+	private int DB const;
+}
+
+
+public object #VIEW_PREFIX##ENTITY_NAME_UPPERCASE#Collection extends Vector<#VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX#> {
+	public void Constructor( int databaseHandle, string query = "" ) {
+		base.Constructor();
+
+		DB = databaseHandle;
+
+		if ( query ) {
+			loadByQuery( query );
+		}
+	}
+
+	public void loadByQuery( string query ) modify throws {
+		int error = mysql_query( DB, query );
+		if ( error ) {
+			throw mysql_error( DB );
+		}
+
+		int result = mysql_store_result( DB );
+		while ( mysql_fetch_row( result ) ) {
+			var record = new #VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX#();
+			record.loadByResult( result );
+
+			push_back( record );
+		}
 	}
 
 	private int DB const;
