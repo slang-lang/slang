@@ -3,9 +3,7 @@
 #include "Analyser.h"
 
 // Library includes
-//#include <cstdlib>
 #include <fstream>
-#include <iostream>
 
 // Project includes
 #include <Core/Common/Exceptions.h>

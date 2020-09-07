@@ -17,7 +17,7 @@
         }, 
         {
             "name": "FileReader", 
-            "version": "0.2.1", 
+            "version": "0.2.2", 
             "description": ""
         }, 
         {
@@ -27,7 +27,7 @@
         }, 
         {
             "name": "MysqlObject", 
-            "version": "0.4.0", 
+            "version": "0.5.2", 
             "description": ""
         }, 
         {
@@ -73,6 +73,11 @@
         {
             "name": "libLog", 
             "version": "0.3.1", 
+            "description": ""
+        }, 
+        {
+            "name": "libMysql", 
+            "version": "0.5.0", 
             "description": ""
         }, 
         {

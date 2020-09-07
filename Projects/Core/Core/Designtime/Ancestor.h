@@ -29,6 +29,7 @@ public:
 		enum E {
 			Unknown = 0,
 			Extends,
+			Hidden,
 			Implements,
 			Replicates
 		};

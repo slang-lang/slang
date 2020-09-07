@@ -294,6 +294,9 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						// add our newly created ancestor to our inheritance
 						object->addInheritance(ancestorIt, ancestor);
 					} break;
+					case Designtime::Ancestor::Type::Hidden: {
+						// ignore hidden ancestors
+					} break;
 					case Designtime::Ancestor::Type::Implements: {
 						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt.constraints(), InitilizationType::None);
 						ancestor->setParent(blueprint->getEnclosingScope());
@@ -459,23 +462,34 @@ void Repository::initializeBlueprints()
 {
 	// prepare inheritance
 	for ( auto& blueprintIt : mBluePrintObjects) {
-		Designtime::BluePrintObject* blueprint = blueprintIt.second;
+		auto* blueprint = blueprintIt.second;
 
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
 		for ( const auto& ancestor : ancestors) {
 			prepareType(Common::TypeDeclaration(ancestor.name(), ancestor.constraints()));
 
-			Designtime::BluePrintObject* base = findBluePrintObject(
+			auto* base = findBluePrintObject(
 				Designtime::Parser::buildRuntimeConstraintTypename(ancestor.name(), ancestor.constraints())
 			);
+
+/*
+			for ( const auto& a : base->getInheritance() ) {
+				Designtime::Ancestor ancestor( a.typeDeclaration(), Designtime::Ancestor::Type::Hidden, a.visibility() );
+
+				blueprint->addInheritance( ancestor );
+			}
+*/
 
 			switch ( ancestor.ancestorType() ) {
 				case Designtime::Ancestor::Type::Extends: {
 					blueprint->define(IDENTIFIER_BASE, base);
 				} break;
-				case Designtime::Ancestor::Type::Implements:
+				case Designtime::Ancestor::Type::Hidden: {
+					// ignore hidden ancestors
+				} break;
+				case Designtime::Ancestor::Type::Implements: {
 					// nothing to do here
-					break;
+				} break;
 				case Designtime::Ancestor::Type::Replicates: {
 					blueprintIt.second = base->replicate(
 						blueprint->QualifiedTypename(), blueprint->Filename(), blueprintIt.second
