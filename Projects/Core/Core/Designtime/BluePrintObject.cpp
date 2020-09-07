@@ -259,7 +259,7 @@ bool BluePrintObject::isAtomicType() const
 
 bool BluePrintObject::isAbstract() const
 {
-	return mBluePrintType == BlueprintType::Interface;
+	return mBluePrintType == BlueprintType::Interface || mMemoryLayout == MemoryLayout::Abstract;
 }
 
 bool BluePrintObject::isEnumeration() const

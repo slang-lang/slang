@@ -121,6 +121,11 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
+	// look for an optional memory layout token
+	MemoryLayout::E memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Virtual);
+	if ( memoryLayout != MemoryLayout::Abstract && memoryLayout != MemoryLayout::Final && memoryLayout != MemoryLayout::Virtual ) {
+		throw Designtime::Exceptions::SyntaxError("invalid memory layout", token->position());
+	}
 	// look for the object token, BlueprintType::Object is required
 	BlueprintType::E blueprintType = Parser::parseBluePrintType(token);
 	if ( blueprintType != BlueprintType::Object ) {
@@ -176,13 +181,14 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	blueprint->setBluePrintType(blueprintType);
 	blueprint->setIsReference(true);
 	blueprint->setLanguageFeatureState(languageFeatureState);
+	blueprint->setMemoryLayout(memoryLayout);
 	blueprint->setMutability(type.mMutability);
 	blueprint->setParent(mScope);
 	blueprint->setPrototypeConstraints(type.mConstraints);
 	blueprint->setQualifiedTypename(getQualifiedTypename(type.mName));
 	blueprint->setTokens(tokens);
 	blueprint->setVisibility(visibility);
-	//blueprint->setSealed(type.mMutability == Mutability::Const);
+	blueprint->setSealed(memoryLayout == MemoryLayout::Final);
 
 	mScope->define(type.mName, blueprint);
 

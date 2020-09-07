@@ -395,6 +395,11 @@ bool Parser::isObjectDeclaration(TokenIterator token)
 		++token;
 	}
 
+	if ( token->type() == Token::Type::MEMORY_LAYOUT ) {
+		// memory layout is okay
+		++token;
+	}
+
 	return !(token->type() != Token::Type::RESERVED_WORD || token->content() != RESERVED_WORD_OBJECT);
 }
 
