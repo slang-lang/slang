@@ -27,7 +27,7 @@ public object FieldLookup {
 		var resultTable = new Map<string, string>();
 
 		int result = mysql_store_result( databaseHandle );
-		while ( mysql_next_row( result ) ) {
+		while ( mysql_fetch_row( result ) ) {
 			string column = mysql_get_field_value( result, "COLUMN_NAME" );
 			string type = mysql_get_field_value( result, "DATA_TYPE" );
 

@@ -25,7 +25,7 @@ public object #VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX# {
 		}
 
 		int result = mysql_store_result( DB );
-		if ( !mysql_next_row( result ) ) {
+		if ( !mysql_fetch_row( result ) ) {
 			throw mysql_error( DB );
 		}
 
@@ -41,7 +41,7 @@ public object #VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX# {
 		}
 
 		int result = mysql_store_result( DB );
-		if ( !mysql_next_row( result ) ) {
+		if ( !mysql_fetch_row( result ) ) {
 			throw mysql_error( DB );
 		}
 

@@ -26,7 +26,7 @@ public object EntityLookup {
 		var entities = new List<string>();
 
 		int result = mysql_store_result( databaseHandle );
-		while ( mysql_next_row( result ) ) {
+		while ( mysql_fetch_row( result ) ) {
 			entities.push_back( mysql_get_field_value( result, 0 ) );
 		}
 
