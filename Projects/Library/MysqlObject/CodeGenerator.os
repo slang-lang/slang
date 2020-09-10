@@ -5,7 +5,7 @@ import System.String;
 
 // Project imports
 import _config_.Config;
-import ConfigLoader;
+//import ConfigLoader;
 import DatatypeMapper;
 import EntityLookup;
 import FieldLookup;
@@ -15,8 +15,8 @@ import TemplateLookup;
 
 public object CodeGenerator {
     public void Constructor() {
-        mConfig = new ConfigLoader( Database + "/config.json" );
-        mConfig.load();
+        //mConfig = new ConfigLoader( Database + "/config.json" );
+        //mConfig.load();
 
         mDatabaseHandle = mysql_init();
 
@@ -158,7 +158,6 @@ public object CodeGenerator {
 
     private void generateViews() modify {
         var entities = mEntityLookup.getViews( mDatabaseHandle, Database );
-        var fieldLookup = new FieldLookup();
         var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "View.txt" ).getText() );
 
         int count;
@@ -186,6 +185,14 @@ public object CodeGenerator {
     private void replaceSpecialTemplates( String template, string name ) modify {
         var fields = mFieldLookup.getFields( mDatabaseHandle, name );
 
+        string primaryKeyType;
+        foreach ( Pair<string, string> p : fields ) {
+            if ( p.first == PrimaryKeyName ) {
+                primaryKeyType = p.second;
+                break;
+            }
+        }
+
         template.ReplaceAll( TEMPLATE_ENTITY_NAME,              name );                                 // name
         template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper( name ) );                      // name in upper case
         template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, fields ) );   // members
@@ -193,6 +200,8 @@ public object CodeGenerator {
         template.ReplaceAll( TEMPLATE_MEMBER_LOAD,              generateLoaders( name, fields ) );      // loaders
         template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, fields ) );      // updates
         template.ReplaceAll( TEMPLATE_MEMBER_VALUES,            generateMemberValues( name, fields ) ); // values
+        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_NAME,         PrimaryKeyName );                       // primary key name
+        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_TYPE,         primaryKeyType );                       // primary key type
     }
 
     private void replaceUserTemplates( String template ) modify {
@@ -203,7 +212,7 @@ public object CodeGenerator {
         }
     }
 
-    private ConfigLoader mConfig;
+    //private ConfigLoader mConfig;
     private int mDatabaseHandle;
     private EntityLookup mEntityLookup;
     private FieldLookup mFieldLookup;

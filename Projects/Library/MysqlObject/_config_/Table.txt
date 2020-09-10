@@ -4,12 +4,8 @@ import System.Collections.Vector;
 public object #TABLE_PREFIX##ENTITY_NAME_UPPERCASE##TABLE_POSTFIX# {
 #MEMBER_DECLARATION#
 
-	public void Constructor( int databaseHandle, int #PRIMARY_KEY# = 0 ) {
+	public void Constructor( int databaseHandle ) {
 		DB = databaseHandle;
-
-		if ( #PRIMARY_KEY# ) {
-			loadByPrimaryKey( #PRIMARY_KEY# );
-		}
 	}
 
 	public void Constructor( int databaseHandle, string query ) {
@@ -35,14 +31,14 @@ public object #TABLE_PREFIX##ENTITY_NAME_UPPERCASE##TABLE_POSTFIX# {
 
 		int result = mysql_store_result( DB );
 		if ( !mysql_fetch_row( result ) ) {
-			throw mysql_error( DB );
+			throw "no result found";
 		}
 
 #MEMBER_LOAD#
 	}
 
-	public void loadByPrimaryKey( int #PRIMARY_KEY# ) modify throws {
-		string query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY# = '" + #PRIMARY_KEY# + "'";
+	public void loadByPrimaryKey( #PRIMARY_KEY_TYPE# #PRIMARY_KEY_NAME# ) modify throws {
+		string query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" + #PRIMARY_KEY_NAME# + "'";
 
 		int error = mysql_query( DB, query );
 		if ( error ) {
@@ -51,7 +47,7 @@ public object #TABLE_PREFIX##ENTITY_NAME_UPPERCASE##TABLE_POSTFIX# {
 
 		int result = mysql_store_result( DB );
 		if ( !mysql_fetch_row( result ) ) {
-			throw mysql_error( DB );
+			throw "no result found";
 		}
 
 #MEMBER_LOAD#
