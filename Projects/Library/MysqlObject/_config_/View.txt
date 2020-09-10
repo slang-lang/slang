@@ -48,19 +48,30 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# {
 #MEMBER_LOAD#
 	}
 
+	public bool operator==( #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# other const ) const {
+		return #PRIMARY_KEY_NAME_PRETTY# == other.#PRIMARY_KEY_NAME_PRETTY#;
+	}
+
+	public string =operator( string ) const {
+		return "#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# { #MEMBER_VALUES# }";
+	}
+
 	private int DB const;
 }
 
 
-public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection extends Vector<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#> {
+public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection {
 	public void Constructor( int databaseHandle, string query = "" ) {
-		base.Constructor();
-
+		Collection = new Vector<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#>();
 		DB = databaseHandle;
 
 		if ( query ) {
 			loadByQuery( query );
 		}
+	}
+
+	public Iterator<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#> getIterator() const {
+		return new Iterator<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#>( ICollection Collection );
 	}
 
 	public void loadByQuery( string query ) modify throws {
@@ -74,10 +85,11 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection extends Vector<#VIEW_P
 			var record = new #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#();
 			record.loadByResult( result );
 
-			push_back( record );
+			Collection.push_back( record );
 		}
 	}
 
+	private Vector<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#> Collection;
 	private int DB const;
 }
 

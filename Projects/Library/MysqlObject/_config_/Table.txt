@@ -37,8 +37,8 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# {
 #MEMBER_LOAD#
 	}
 
-	public void loadByPrimaryKey( #PRIMARY_KEY_TYPE# #PRIMARY_KEY_NAME_PRETTY# ) modify throws {
-		string query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" + #PRIMARY_KEY_NAME_PRETTY# + "'";
+	public void loadByPrimaryKey( #PRIMARY_KEY_TYPE# #PRIMARY_KEY_NAME# ) modify throws {
+		string query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" + #PRIMARY_KEY_NAME# + "'";
 
 		int error = mysql_query( DB, query );
 		if ( error ) {
@@ -61,19 +61,30 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# {
 #MEMBER_UPDATE#
 	}
 
+	public bool operator==( #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# other const ) const {
+		return #PRIMARY_KEY_NAME_PRETTY# == other.#PRIMARY_KEY_NAME_PRETTY#;
+	}
+
+	public string =operator( string ) const {
+		return "#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# { #MEMBER_VALUES# }";
+	}
+
 	private int DB const;
 }
 
 
-public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection extends Vector<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#> {
+public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection {
 	public void Constructor( int databaseHandle, string query = "" ) {
-		base.Constructor();
-
+		Collection = new Vector<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#>();
 		DB = databaseHandle;
 
 		if ( query ) {
 			loadByQuery( query );
 		}
+	}
+
+	public Iterator<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#> getIterator() const {
+		return new Iterator<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#>( ICollection Collection );
 	}
 
 	public void loadByQuery( string query ) modify throws {
@@ -87,10 +98,11 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection extends Vector<#TABLE
 			var record = new #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#();
 			record.loadByResult( result );
 
-			push_back( record );
+			Collection.push_back( record );
 		}
 	}
 
+	private Vector<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#> Collection;
 	private int DB const;
 }
 

@@ -1,6 +1,6 @@
 
 public string APP_NAME const = "MysqlObject";
-public string APP_VERSION const = "v0.5.6";
+public string APP_VERSION const = "v0.5.7";
 
 public string CONFIG_DIRECTORY const = "_config_/";
 

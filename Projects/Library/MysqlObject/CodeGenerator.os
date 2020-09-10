@@ -188,7 +188,7 @@ public object CodeGenerator {
 
         string primaryKeyType;
         foreach ( FieldEntry field : fields ) {
-            if ( field.PrettyName == PrimaryKeyName ) {
+            if ( field.RealName == PrimaryKeyName ) {
                 primaryKeyType = field.DataType;
                 break;
             }
