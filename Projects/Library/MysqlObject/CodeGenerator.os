@@ -11,6 +11,7 @@ import EntityLookup;
 import FieldLookup;
 import Scanner;
 import TemplateLookup;
+import Utils;
 
 
 public object CodeGenerator {
@@ -57,10 +58,10 @@ public object CodeGenerator {
         mysql_close( mDatabaseHandle );
     }
 
-    private string generateLoaders( string entityName, Map<string, string> fields const ) const {
+    private string generateLoaders( string entityName, Vector<FieldEntry> fields const ) const {
         string result;
 
-        foreach ( Pair<string, string> field : fields ) {
+        foreach ( FieldEntry field : fields ) {
 /*
             if ( field.first == PrimaryKeyName ) {
                 continue;
@@ -71,32 +72,32 @@ public object CodeGenerator {
                 result += LINEBREAK;
             }
 
-            result += MEMBER_LOAD_PREFIX + field.first + " = cast<" + field.second + ">( mysql_get_field_value( result, \"" + field.first + "\" ) );";
+            result += MEMBER_LOAD_PREFIX + field.PrettyName + " = cast<" + field.DataType + ">( mysql_get_field_value( result, \"" + field.RealName + "\" ) );";
         }
 
         return result;
     }
 
-    private string generateMemberDecl( string entityName, Map<string, string> fields const ) const {
+    private string generateMemberDecl( string entityName, Vector<FieldEntry> fields const ) const {
         string result;
 
-        foreach ( Pair<string, string> field : fields ) {
+        foreach ( FieldEntry field : fields ) {
             if ( result ) {
                 result += LINEBREAK;
             }
 
-            result += MEMBER_DECLARATION_PREFIX + field.second + " " + field.first + ";";
+            result += MEMBER_DECLARATION_PREFIX + field.DataType + " " + field.PrettyName + ";";
         }
 
         return result;
     }
 
-    private string generateMemberList( string entityName, Map<string, string> fields const ) const {
+    private string generateMemberList( string entityName, Vector<FieldEntry> fields const ) const {
         string result;
 
-        foreach ( Pair<string, string> field : fields ) {
+        foreach ( FieldEntry field : fields ) {
 /*
-            if ( field.first == PrimaryKeyName ) {
+            if ( field.PrettyName == PrimaryKeyName ) {
                continue;
             }
 */
@@ -105,18 +106,18 @@ public object CodeGenerator {
                 result += ", ";
             }
 
-            result += field.first;
+            result += field.RealName;
         }
 
         return result;
     }
 
-    private string generateMemberValues( string entityName, Map<string, string> fields const ) const {
+    private string generateMemberValues( string entityName, Vector<FieldEntry> fields const ) const {
         string result;
 
-        foreach ( Pair<string, string> field : fields ) {
+        foreach ( FieldEntry field : fields ) {
 /*
-            if ( field.first == PrimaryKeyName ) {
+            if ( field.PrettyName == PrimaryKeyName ) {
                continue;
             }
 */
@@ -125,7 +126,7 @@ public object CodeGenerator {
                 result += ", ";
             }
 
-            result += "'\" + " + field.first + " + \"'";
+            result += "'\" + " + field.PrettyName + " + \"'";
         }
 
         return result;
@@ -142,7 +143,7 @@ public object CodeGenerator {
             replaceSpecialTemplates( template, name );
             replaceUserTemplates( template );
     
-            var outFile = new System.IO.File( Database + "/Tables/" + toUpper( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Database + "/Tables/" + Utils.prettify( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
@@ -152,7 +153,7 @@ public object CodeGenerator {
         print( "" + count + " table objects generated." );
     }
 
-    private unstable string generateUpdates( string entityName, Map<string, string> fields ) const {
+    private string generateUpdates( string entityName, Vector<FieldEntry> fields ) const {
         return MEMBER_LOAD_PREFIX + "// UPDATE: not yet implemented";
     }
 
@@ -167,7 +168,7 @@ public object CodeGenerator {
             replaceSpecialTemplates( template, name );
             replaceUserTemplates( template );
     
-            var outFile = new System.IO.File( Database + "/Views/" + toUpper( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Database + "/Views/" + Utils.prettify( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
@@ -186,14 +187,15 @@ public object CodeGenerator {
         var fields = mFieldLookup.getFields( mDatabaseHandle, name );
 
         string primaryKeyType;
-        foreach ( Pair<string, string> p : fields ) {
-            if ( p.first == PrimaryKeyName ) {
-                primaryKeyType = p.second;
+        foreach ( FieldEntry field : fields ) {
+            if ( field.PrettyName == PrimaryKeyName ) {
+                primaryKeyType = field.DataType;
                 break;
             }
         }
 
         template.ReplaceAll( TEMPLATE_ENTITY_NAME,              name );                                 // name
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME_PRETTY,       Utils.prettify( name ) );               // pretty printed name
         template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper( name ) );                      // name in upper case
         template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, fields ) );   // members
         template.ReplaceAll( TEMPLATE_MEMBER_LIST,              generateMemberList( name, fields ) );   // member list
@@ -201,6 +203,7 @@ public object CodeGenerator {
         template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, fields ) );      // updates
         template.ReplaceAll( TEMPLATE_MEMBER_VALUES,            generateMemberValues( name, fields ) ); // values
         template.ReplaceAll( TEMPLATE_PRIMARY_KEY_NAME,         PrimaryKeyName );                       // primary key name
+        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_NAME_PRETTY,  Utils.prettify( PrimaryKeyName ) );     // primary key pretty printed name
         template.ReplaceAll( TEMPLATE_PRIMARY_KEY_TYPE,         primaryKeyType );                       // primary key type
     }
 

@@ -1,4 +1,3 @@
-"#PRIMARY_KEY#"  : "id"
 "#TABLE_POSTFIX#": "Record"
 "#TABLE_PREFIX#" : "T"
 "#VIEW_POSTFIX#" : "Record"

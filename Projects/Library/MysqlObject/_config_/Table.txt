@@ -1,7 +1,7 @@
 
 import System.Collections.Vector;
 
-public object #TABLE_PREFIX##ENTITY_NAME_UPPERCASE##TABLE_POSTFIX# {
+public object #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# {
 #MEMBER_DECLARATION#
 
 	public void Constructor( int databaseHandle ) {
@@ -37,8 +37,8 @@ public object #TABLE_PREFIX##ENTITY_NAME_UPPERCASE##TABLE_POSTFIX# {
 #MEMBER_LOAD#
 	}
 
-	public void loadByPrimaryKey( #PRIMARY_KEY_TYPE# #PRIMARY_KEY_NAME# ) modify throws {
-		string query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" + #PRIMARY_KEY_NAME# + "'";
+	public void loadByPrimaryKey( #PRIMARY_KEY_TYPE# #PRIMARY_KEY_NAME_PRETTY# ) modify throws {
+		string query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" + #PRIMARY_KEY_NAME_PRETTY# + "'";
 
 		int error = mysql_query( DB, query );
 		if ( error ) {
@@ -65,7 +65,7 @@ public object #TABLE_PREFIX##ENTITY_NAME_UPPERCASE##TABLE_POSTFIX# {
 }
 
 
-public object #TABLE_PREFIX##ENTITY_NAME_UPPERCASE#Collection extends Vector<#TABLE_PREFIX##ENTITY_NAME_UPPERCASE##TABLE_POSTFIX#> {
+public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection extends Vector<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#> {
 	public void Constructor( int databaseHandle, string query = "" ) {
 		base.Constructor();
 
@@ -84,7 +84,7 @@ public object #TABLE_PREFIX##ENTITY_NAME_UPPERCASE#Collection extends Vector<#TA
 
 		int result = mysql_store_result( DB );
 		while ( mysql_fetch_row( result ) ) {
-			var record = new #TABLE_PREFIX##ENTITY_NAME_UPPERCASE##TABLE_POSTFIX#();
+			var record = new #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#();
 			record.loadByResult( result );
 
 			push_back( record );

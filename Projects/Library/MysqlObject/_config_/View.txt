@@ -1,7 +1,7 @@
 
 import System.Collections.Vector;
 
-public object #VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX# {
+public object #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# {
 #MEMBER_DECLARATION#
 
 	public void Constructor( int databaseHandle ) {
@@ -28,8 +28,8 @@ public object #VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX# {
 #MEMBER_LOAD#
 	}
 
-	public void loadByPrimaryKey( #PRIMARY_KEY_TYPE# #PRIMARY_KEY_NAME# ) modify throws {
-		string query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" + #PRIMARY_KEY_NAME# + "'";
+	public void loadByPrimaryKey( #PRIMARY_KEY_TYPE# #PRIMARY_KEY_NAME_PRETTY# ) modify throws {
+		string query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" + #PRIMARY_KEY_NAME_PRETTY# + "'";
 
 		int error = mysql_query( DB, query );
 		if ( error ) {
@@ -52,7 +52,7 @@ public object #VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX# {
 }
 
 
-public object #VIEW_PREFIX##ENTITY_NAME_UPPERCASE#Collection extends Vector<#VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX#> {
+public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection extends Vector<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#> {
 	public void Constructor( int databaseHandle, string query = "" ) {
 		base.Constructor();
 
@@ -71,7 +71,7 @@ public object #VIEW_PREFIX##ENTITY_NAME_UPPERCASE#Collection extends Vector<#VIE
 
 		int result = mysql_store_result( DB );
 		while ( mysql_fetch_row( result ) ) {
-			var record = new #VIEW_PREFIX##ENTITY_NAME_UPPERCASE##VIEW_POSTFIX#();
+			var record = new #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#();
 			record.loadByResult( result );
 
 			push_back( record );
