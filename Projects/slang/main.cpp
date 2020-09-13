@@ -184,7 +184,6 @@ int main(int argc, const char* argv[])
 	}
 	else if ( mPrintVersion ) {
 		printVersion();
-		mVirtualMachine.printExtensions();
 
 		return 0;
 	}

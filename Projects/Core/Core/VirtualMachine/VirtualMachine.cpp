@@ -300,6 +300,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 void VirtualMachine::printExtensions()
 {
+	std::cout << std::endl;
 	std::cout << "Extensions:" << std::endl;
 
 	for ( const auto& extension : mExtensions ) {
@@ -311,6 +312,8 @@ void VirtualMachine::printExtensions()
 
 void VirtualMachine::printLibraryFolders()
 {
+	std::cout << std::endl;
+
 	for ( const auto& libraryFolder : mLibraryFolders ) {
 		std::cout << "Library: " + libraryFolder << std::endl;
 	}
