@@ -61,12 +61,6 @@ public object MysqlStatement {
 		return this;
 	}
 
-/*
-	public string error() const {
-		return mysql_error( mConnection );
-	}
-*/
-
 	public bool execute( string queryStr = "" ) modify throws {
 		if ( queryStr ) {
 			prepare( queryStr );
@@ -81,6 +75,10 @@ public object MysqlStatement {
 		}
 
 		return true;
+	}
+
+	public string getError() const {
+		return mysql_error( mConnection );
 	}
 
 	public string getQuery() const {
