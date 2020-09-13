@@ -1,5 +1,5 @@
 
-// import all Mysql libraries
+// import all libMysql libraries
 import Connection;
 import Exceptions;
 import Result;
