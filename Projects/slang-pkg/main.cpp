@@ -375,6 +375,9 @@ void createLocalLibrary()
 void deinit()
 {
 	// put de-initialization stuff here
+
+	// clean up curl library
+	curl_global_cleanup();
 }
 
 bool download(const std::string& url, const std::string& target, bool allowCleanup)
@@ -386,8 +389,6 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 	CURL *curl_handle;
 	FILE *pagefile;
 	bool result = false;
-
-	curl_global_init(CURL_GLOBAL_ALL);
 
 	/* init the curl session */
 	curl_handle = curl_easy_init();
@@ -581,6 +582,9 @@ void init()
 	createBasicFolderStructure();
 
 	loadConfig();
+
+	// initialize curl library
+	curl_global_init(CURL_GLOBAL_ALL);
 }
 
 void install(const StringList& params)

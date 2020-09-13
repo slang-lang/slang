@@ -905,8 +905,6 @@ Statement* TreeGenerator::process_break(TokenIterator& token)
  */
 Expression* TreeGenerator::process_cast(TokenIterator& token)
 {
-	Token start = (*token);
-
 	expect(Token::Type::COMPARE_LESS, token);
 	++token;
 
