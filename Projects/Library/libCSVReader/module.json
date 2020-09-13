@@ -1,7 +1,7 @@
 {
   "name": "Slang CSV file reader library",
   "name_short": "libCSVReader",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Library for convenience access to CVS data",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.0" },
