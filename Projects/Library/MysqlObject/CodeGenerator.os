@@ -136,6 +136,9 @@ public object CodeGenerator {
         var entities = mEntityLookup.getTables( mDatabaseHandle, Database );
         var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "Table.txt" ).getText() );
 
+        var libraryImports = LINEBREAK;
+        libraryImports += "// import all library files" + LINEBREAK;
+
         int count;
         foreach ( string name : entities ) {
             var template = copy baseTemplate;
@@ -147,8 +150,16 @@ public object CodeGenerator {
             outFile.write( cast<string>( template ) );
             outFile.close();
 
+            libraryImports += "import " + Utils.prettify( name ) + ";" + LINEBREAK;
+
             count++;
         }
+
+        libraryImports += LINEBREAK;
+
+        var allFile = new System.IO.File( Database + "/Tables/All.os", System.IO.File.AccessMode.WriteOnly );
+        allFile.write( libraryImports );
+        allFile.close();
 
         print( "" + count + " table objects generated." );
     }
@@ -161,19 +172,30 @@ public object CodeGenerator {
         var entities = mEntityLookup.getViews( mDatabaseHandle, Database );
         var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "View.txt" ).getText() );
 
+        var libraryImports = LINEBREAK;
+        libraryImports += "// import all library files" + LINEBREAK;
+
         int count;
         foreach ( string name : entities ) {
             var template = copy baseTemplate;
 
             replaceSpecialTemplates( template, name );
             replaceUserTemplates( template );
-    
+
             var outFile = new System.IO.File( Database + "/Views/" + Utils.prettify( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
+            libraryImports += "import " + Utils.prettify( name ) + ";" + LINEBREAK;
+
             count++;
         }
+
+        libraryImports += LINEBREAK;
+
+        var allFile = new System.IO.File( Database + "/Views/All.os", System.IO.File.AccessMode.WriteOnly );
+        allFile.write( libraryImports );
+        allFile.close();
 
         print( "" + count + " view objects generated." );
     }
