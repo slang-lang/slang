@@ -1,32 +1,60 @@
 
 // library imports
-import System.Collections.Map;
+import System.Collections.ICollection;
+import System.Collections.IIterable;
 import System.Collections.Vector;
 import System.IO.File;
-import System.StringIterator;
 
 // project imports
+import DataEntry;
+import HeaderEntry;
 
 
-public object CSVReader {
-    public void Constructor( string filename = "" ) {
+public object CSVReader implements ICollection, IIterable {
+    public void Constructor( string filename = "", bool columnTitles = true ) {
+        mColumnTitles = columnTitles;
         mData = new Vector<DataEntry>();
         mHeader = new HeaderEntry();
 
         if ( filename ) {
-            open( filename );
+            open( filename, columnTitles );
         }
     }
+
+    // ICollecion interface implementation
+    // {
 
     public DataEntry operator[]( int index ) const {
         return mData.at( index );
     }
 
+    public DataEntry at( int index ) const {
+        return mData.at( index );
+    }
+
+    public int size() const {
+        return mData.size();
+    }
+
+    // }
+
+    // IIterable interface implementation
+    // {
+
+    public Iterator<DataEntry> getIterator() const {
+        return new Iterator<DataEntry>( ICollection this );
+    }
+
+    // }
+
     public HeaderEntry const header() const {
         return mHeader;
     }
 
-    public bool open( string filename = "" ) modify {
+    public bool open( string filename = "", bool columnTitles = true ) modify {
+        if ( columnTitles ) {
+            mColumnTitles = columnTitles;
+        }
         if ( filename ) {
             mFilename = filename;
         }
@@ -48,6 +76,10 @@ public object CSVReader {
                 }
                 else {
                     mHeader.parse( line );
+
+                    if ( !mColumnTitles ) {
+                        mData.push_back( mHeader.produceEntry( line ) );
+                    }
                 }
 
                 line = "";
@@ -62,96 +94,8 @@ public object CSVReader {
         return true;
     }
 
+    private bool mColumnTitles;
     private Vector<DataEntry> mData;
     private HeaderEntry mHeader;
     private string mFilename;
-}
-
-
-public object HeaderEntry {
-    public void Constructor() {
-        mColumns = new Vector<string>();
-    }
-
-    public void parse( string line ) modify {
-        mColumns.clear();
-
-        var columnIt = new StringIterator( line, "," );
-        while ( columnIt.hasNext() ) {
-            mColumns.push_back( columnIt.next() );
-        }
-    }
-
-    public DataEntry produceEntry() const {
-        var entry = new Map<string, string>();
-
-        foreach ( string column : mColumns ) {
-            entry.insert( column, "" );
-        }
-
-        return new DataEntry( entry );
-    }
-
-    public DataEntry produceEntry( string line ) const {
-        var entry = new Map<string, string>();
-
-        int columnIdx;
-        var columnIt = new StringIterator( line, "," );
-
-        while ( columnIt.hasNext() ) {
-            var column = mColumns.at(columnIdx);
-
-            entry.insert( column, columnIt.next() );
-
-            columnIdx++;
-        }
-
-        return new DataEntry( entry );
-    }
-
-    public string =operator( string ) const {
-        string result;
-
-        foreach ( string column : mColumns ) {
-            if ( result ) {
-                result += " | ";
-            }
-
-            result += column;
-        }
-
-        return result;
-    }
-
-    private Vector<string> mColumns;
-}
-
-public object DataEntry {
-    public void Constructor() {
-        mEntry = new Map<string, string>();
-    }
-
-    public void Constructor( Map<string, string> data ) {
-        mEntry = data;
-    }
-
-    public string operator[]( string column ) throws {
-        return mEntry[column];
-    }
-
-    public string =operator( string ) const {
-        string result;
-
-        foreach ( Object column : mEntry ) {
-            if ( result ) {
-                result += " | ";
-            }
-
-            result += (Pair<string, string> column).second;
-        }
-
-        return result;
-    }
-
-    private Map<string, string> mEntry;
 }
