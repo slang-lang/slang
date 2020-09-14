@@ -1,14 +1,15 @@
 
+import System.Exception;
 import CollectionItem;
 import ICollection;
 import Iterator;
-import System.Exception;
 
 // declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
 
 public object List<T> implements ICollection {
 	public void Constructor() {
+		// nothing to do here
 	}
 
 	public void Destructor() {
@@ -18,15 +19,14 @@ public object List<T> implements ICollection {
 	public List<T> Copy() const {
 		var result = new List<T>();
 
-		// deactivated because this is currently not compatible with 'replicates'
-		//result.mFirst = mFirst;
-		//result.mLast = mLast;
-		//result.mSize = mSize;
+		result.mFirst = mFirst;
+		result.mLast = mLast;
+		result.mSize = mSize;
 
 		return result;
 	}
 
-	public T at(int index) const throws {
+	public T at( int index ) const throws {
 		if ( index < 0 || index >= mSize ) {
 			throw new OutOfBoundsException("index(" + index + ") out of bounds");
 		}
@@ -48,17 +48,17 @@ public object List<T> implements ICollection {
 		mSize = 0;
 	}
 
-	public bool contains(T value) const {
-		return indexOf(value) != -1;
+	public bool contains( T value ) const {
+		return indexOf( value ) != -1;
 	}
 
 	public bool empty() const {
 		return mSize == 0;
 	}
 
-	public void erase(int index) modify throws {
+	public void erase( int index ) modify throws {
 		if ( index < 0 || index > mSize ) {
-			throw new OutOfBoundsException("erase index(" + index + ") out of bounds");
+			throw new OutOfBoundsException( "erase index(" + index + ") out of bounds" );
 		}
 
 		if ( index == 0 ) {			// special handling for 1st element
@@ -83,21 +83,21 @@ public object List<T> implements ICollection {
 
 	public T first() const throws {
 		if ( !mSize ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		return mFirst.mValue;
 	}
 
 	public Iterator<T> getIterator() const {
-		return new Iterator<T>(ICollection this);
+		return new Iterator<T>( ICollection this );
 	}
 
 	public ReverseIterator<T> getReverseIterator() const {
-		return new ReverseIterator<T>(ICollection this);
+		return new ReverseIterator<T>( ICollection this );
 	}
 
-	public int indexOf(T value) const {
+	public int indexOf( T value ) const {
 		CollectionItem<T> item = mFirst;
 
 		for ( int i = 0; i < mSize; i++ ) {
@@ -113,7 +113,7 @@ public object List<T> implements ICollection {
 
 	public T last() const throws {
 		if ( !mSize ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		return mLast.mValue;
@@ -121,7 +121,7 @@ public object List<T> implements ICollection {
 
 	public void pop_back() modify throws {
 		if ( mSize <= 0 ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		if ( mSize == 1 ) {			// special handling for 1st item
@@ -143,7 +143,7 @@ public object List<T> implements ICollection {
 
 	public void pop_front() modify throws {
 		if ( mSize <= 0 ) {
-			throw new OutOfBoundsException("empty collection");
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		mFirst = mFirst.mNext;
@@ -154,8 +154,8 @@ public object List<T> implements ICollection {
 		mSize--;
 	}
 
-	public void push_back(T value) modify {
-		CollectionItem<T> item = new CollectionItem<T>(value);
+	public void push_back( T value ) modify {
+		var item = new CollectionItem<T>( value );
 
 		if ( mSize == 0 ) {			// special handling for 1st item
 			mFirst = item;
@@ -169,8 +169,8 @@ public object List<T> implements ICollection {
 		mSize++;
 	}
 
-	public void push_front(T value) modify {
-		CollectionItem<T> item = new CollectionItem<T>(value);
+	public void push_front( T value ) modify {
+		var item = new CollectionItem<T>( value );
 
 		item.mNext = mFirst;
 		mFirst = item;
@@ -186,8 +186,8 @@ public object List<T> implements ICollection {
 		return mSize;
 	}
 
-	public T operator[](int index) const throws {
-		return at(index);
+	public T operator[]( int index ) const throws {
+		return at( index );
 	}
 
 	private CollectionItem<T> mFirst;

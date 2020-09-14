@@ -9,6 +9,7 @@ public namespace System.Collections { }
 
 public object Vector<T> implements ICollection {
 	public void Constructor() {
+		// nothing to do here
 	}
 
 	public void Destructor() {
@@ -98,7 +99,7 @@ public object Vector<T> implements ICollection {
 		return new ReverseIterator<T>( ICollection this );
 	}
 
-	public int indexOf(T value) const {
+	public int indexOf( T value ) const {
 		var item = mFirst;
 
 		for ( int idx = 0; idx < mSize; idx++ ) {
@@ -154,21 +155,21 @@ public object Vector<T> implements ICollection {
 
 	public void pop_back() modify throws {
 		if ( mSize <= 0 ) {
-				throw new OutOfBoundsException( "empty collection" );
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		if ( mSize == 1 ) {                     // special handling for 1st item
-				delete mFirst;
-				delete mLast;
+			delete mFirst;
+			delete mLast;
 		}
 		else {                                  // generic handling
-				var item = mFirst;
-				for ( int idx = 0; idx < mSize - 1; idx++ ) {
-						item = item.mNext;
-				}
+			var item = mFirst;
+			for ( int idx = 0; idx < mSize - 1; idx++ ) {
+				item = item.mNext;
+			}
 
-				mLast = item;
-				delete item.mNext;
+			mLast = item;
+			delete item.mNext;
 		}
 
 		mSize--;
@@ -176,12 +177,12 @@ public object Vector<T> implements ICollection {
 
 	public void pop_front() modify throws {
 		if ( mSize <= 0 ) {
-				throw new OutOfBoundsException( "empty collection" );
+			throw new OutOfBoundsException( "empty collection" );
 		}
 
 		mFirst = mFirst.mNext;
 		if ( !mFirst ) {
-				delete mLast;
+			delete mLast;
 		}
 
 		mSize--;
@@ -191,10 +192,10 @@ public object Vector<T> implements ICollection {
 		var item = new CollectionItem<T>( value );
 
 		if ( mSize == 0 ) {                     // special handling for 1st item
-				mFirst = item;
+			mFirst = item;
 		}
 		else {                                  // generic handling
-				mLast.mNext = item;
+			mLast.mNext = item;
 		}
 
 		mLast = item;
@@ -209,7 +210,7 @@ public object Vector<T> implements ICollection {
 		mFirst = item;
 
 		if ( mSize == 0 ) {
-				mLast = item;
+			mLast = item;
 		}
 
 		mSize++;

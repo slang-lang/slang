@@ -32,7 +32,7 @@ public object Map<K, V> implements ICollection {
 
 	public bool contains( K key ) const {
 		foreach ( Object p : mItems ) {
-			if ( (Pair<K, V> p) == key ) {
+			if ( ( Pair<K, V> p ) == key ) {
 				return true;
 			}
 		}
@@ -50,11 +50,8 @@ public object Map<K, V> implements ICollection {
 
 	public V get( K key ) const throws {
 		foreach ( Object p : mItems ) {
-			if ( (Pair<K, V> p) == key ) {
-				return (Pair<K, V> p).second;
-
-				//var pair = Pair<K, V> p;
-				//return pair.second;
+			if ( ( Pair<K, V> p ) == key ) {
+				return ( Pair<K, V> p ).second;
 			}
 		}
 
@@ -73,7 +70,7 @@ public object Map<K, V> implements ICollection {
 		int count = 0;
 
 		foreach ( Object p : mItems ) {
-			if ( (Pair<K, V> p) == key ) {
+			if ( ( Pair<K, V> p ) == key ) {
 				return count;
 			}
 		}
@@ -91,9 +88,10 @@ public object Map<K, V> implements ICollection {
 
 	public void put( K key, V value ) modify throws {
 		foreach ( Object p : mItems ) {
-			if ( (Pair<K, V> p) == key ) {
+			if ( ( Pair<K, V> p ) == key ) {
 				var pair = Pair<K, V> p;
 				pair.second = value;
+
 				return;
 			}
 		}
@@ -105,7 +103,7 @@ public object Map<K, V> implements ICollection {
 		int index = 0;
 
 		foreach ( Object p : mItems ) {
-			if ( (Pair<K, V> p) == key ) {
+			if ( ( Pair<K, V> p ) == key ) {
 				mItems.erase( index );
 				return;
 			}
@@ -118,7 +116,7 @@ public object Map<K, V> implements ICollection {
 		return mItems.size();
 	}
 
-	public V operator[](K key) const throws {
+	public V operator[]( K key ) const throws {
 		return get( key );
 	}
 

@@ -9,6 +9,7 @@ public namespace System.Collections { }
 
 public object Stack<T> implements ICollection {
 	public void Constructor() {
+		// nothing to do here
 	}
 
 	public void Destructor() {
