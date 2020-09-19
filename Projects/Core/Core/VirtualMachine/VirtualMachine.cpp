@@ -24,6 +24,10 @@
 // Namespace declarations
 
 
+namespace {
+	std::string buildFilename( std::string folder, std::string filename );
+}
+
 namespace Slang {
 
 
@@ -113,9 +117,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 		bool imported = false;
 
 		for ( const auto& libraryFolder : mLibraryFolders ) {
-			std::string filename = Utils::Tools::Files::BuildLibraryPath(libraryFolder, (*libIt));
-
-			if ( loadLibrary(filename) ) {
+			if ( loadLibrary( buildFilename( libraryFolder, (*libIt) ) ) ) {
 				imported = true;
 				break;
 			}
@@ -282,9 +284,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		bool imported = false;
 
 		for ( const auto& libraryFolder : mLibraryFolders ) {
-			std::string filename = Utils::Tools::Files::BuildLibraryPath(libraryFolder, lib);
-
-			if ( loadLibrary(filename) ) {
+			if ( loadLibrary( buildFilename( libraryFolder, lib ) ) ) {
 				imported = true;
 				break;
 			}
@@ -363,3 +363,15 @@ VirtualMachine::Settings& VirtualMachine::settings()
 
 
 }
+
+namespace {
+	std::string buildFilename( std::string folder, std::string filename ) {
+		std::string all = Utils::Tools::Files::BuildLibraryPath( folder, filename + std::string( "/All" ) );
+		if ( Utils::Tools::Files::exists( all ) ) {
+			return all;
+		}
+
+		return Utils::Tools::Files::BuildLibraryPath( folder, filename );
+	}
+}
+
