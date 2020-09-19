@@ -2,7 +2,7 @@
 import Settings;
 
 
-public object Curl {
+public object CurlRequest {
     public void Constructor( string url = "" ) {
         base.Constructor();
 
