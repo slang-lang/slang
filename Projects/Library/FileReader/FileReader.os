@@ -1,7 +1,8 @@
 #!/usr/local/bin/slang
 
 // Library imports
-import libParam.ParameterHandler;
+//import libParam.ParameterHandler;
+import libParam;
 import System.IO.File;
 
 // Project imports
