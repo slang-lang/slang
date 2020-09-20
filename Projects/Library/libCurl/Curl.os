@@ -37,6 +37,14 @@ public object CurlRequest {
         return mLastError;
     }
 
+    public void setOption( int option, int value ) modify {
+        curl_set_opt_int( mHandle, option, value );
+    }
+
+    public void setOption( int option, string value ) modify {
+        curl_set_opt_str( mHandle, option, value );
+    }
+
     public Settings settings() const {
         return mSettings;
     }
