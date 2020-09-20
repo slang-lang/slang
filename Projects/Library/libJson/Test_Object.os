@@ -11,7 +11,7 @@ public void Main(int argc, string args) {
 
 private bool TestCase1() {
 	try {
-		var value = new JsonObject("key", new JsonValue("value"));
+		var value = new JsonObject( "key", new JsonValue( "value" ) );
 		print( value.toString() );
 		value.set( "key", new JsonValue( "bla" ) );
 		print( value.toString() );
@@ -26,13 +26,16 @@ private bool TestCase1() {
 				)
 			)
 		);
-		print(o1.toString());
+		print( o1.toString() );
 
-		o1.addMember(new JsonObject("another", new JsonValue("object")));
-		print(o1.toString());
+		o1.addMember( "another", new JsonValue( "object" ) );
+		print( o1.toString() );
 
-		assert( o1.isMember( "o2" ) );
-		JsonObject tmpObj = o1[ "o2" ];
+		assert( o1.isMember( "o1" ) );
+		var valo1 const = JsonObject o1[ "o1" ];
+
+		assert( valo1.isMember( "o2" ) );
+		var tmpObj = JsonObject valo1[ "o2" ];
 		print( tmpObj.toString() );
 
 		assert( tmpObj.isMember( "o3" ) );

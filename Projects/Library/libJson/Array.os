@@ -14,31 +14,23 @@ public object JsonArray extends JsonValue implements IIterable {
 		base.Constructor();
 
 		mMembers = new Vector<JsonValue>();
-		mType = JsonType.Object;
-	}
-
-	public void Constructor(string key) {
-		base.Constructor();
-
-		mKey = key;
-		mMembers = new Vector<JsonValue>();
 		mType = JsonType.Array;
 	}
 
-	public void addMember(JsonValue value) modify {
-		mMembers.insert(mMembers.size(), value);
+	public void addMember( JsonArray value ) modify {
+		mMembers.insert( mMembers.size(), cast<JsonValue>( value ) );
 	}
 
-	public void addMember(JsonObject value) modify {
-		mMembers.insert(mMembers.size(), cast<JsonValue>( value ) );
+	public void addMember( JsonValue value ) modify {
+		mMembers.insert( mMembers.size(), value );
 	}
 
-	public Iterator getIterator() const {
-		return new Iterator( cast<ICollection>( mMembers ) );
+	public void addMember( JsonObject value ) modify {
+		mMembers.insert( mMembers.size(), cast<JsonValue>( value ) );
 	}
 
-	public string getKey() const {
-		return mKey;
+	public Iterator<JsonValue> getIterator() const {
+		return new Iterator<JsonValue>( ICollection mMembers );
 	}
 
 	public int size() const {
@@ -47,22 +39,18 @@ public object JsonArray extends JsonValue implements IIterable {
 
 	public string toString() const {
 		string members;
+
 		foreach ( JsonValue value : mMembers ) {
-			members += (members ? ", " : "") + value.toString();
+			members += ( members ? ", " : "" ) + value.toString();
 		}
 
-		if ( mKey ) {
-		    return "\"" + mKey + "\": [" + (members ?: "") + "]";
-		}
-
-		return "[ " + members + "]";
+		return "[ " + members + " ]";
 	}
 
-	public JsonValue operator[](int index) const throws {
-		return mMembers[index];
+	public JsonValue operator[]( int index ) const throws {
+		return mMembers.at( index );
 	}
 
-	private string mKey;
 	private Vector<JsonValue> mMembers;
 }
 

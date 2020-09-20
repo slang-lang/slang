@@ -1,7 +1,7 @@
 
 // Library imports
 import System.Collections.IIterable;
-import System.Collections.List;
+import System.Collections.Map;
 
 // Project imports
 import Array;
@@ -14,61 +14,52 @@ public object JsonObject extends JsonValue implements IIterable {
 	public void Constructor() {
 		base.Constructor();
 
-		mMembers = new List<JsonValue>();
+		mMembers = new Map<string, JsonValue>();
 		mType = JsonType.Object;
 	}
 
-	public void Constructor(string key, JsonArray value) {
+	public void Constructor( string key, JsonArray value ) {
 		Constructor();
 
-		mKey = key;
-		mMembers.push_back( cast<JsonValue>( value ) );
+		mMembers.insert( key, cast<JsonValue>( value ) );
 	}
 
-	public void Constructor(string key, JsonValue value) {
+	public void Constructor( string key, JsonValue value ) {
 		Constructor();
 
-		mKey = key;
-		mMembers.push_back(value);
+		mMembers.insert( key, value );
 	}
 
-	public void Constructor(string key, JsonObject value) {
+	public void Constructor( string key, JsonObject value ) {
 		Constructor();
 
-		mKey = key;
-		mMembers.push_back( cast<JsonValue>( value ) );
+		mMembers.insert( key, cast<JsonValue>( value ) );
 	}
 
-	public void addMember(JsonObject value) modify {
-		mMembers.push_back( cast<JsonValue>( value ) );
+	public void addMember( string key, JsonArray value ) modify {
+		mMembers.insert( key, cast<JsonValue>( value ) );
 	}
 
-	public void addMember(string key, JsonValue value) modify {
-		mMembers.push_back( cast<JsonValue>( new JsonObject(key, value) ) );
+	public void addMember( string key, JsonObject value ) modify {
+		mMembers.insert( key, cast<JsonValue>( value ) );
 	}
 
-	public string getKey() const {
-		return mKey;
+	public void addMember( string key, JsonValue value ) modify {
+		mMembers.insert( key, value );
 	}
 
 	public Iterator getIterator() const {
-		return new Iterator( cast<ICollection>( mMembers ) );
+		return mMembers.getIterator();
 	}
 
-	public bool isMember(string key) const {
-		foreach ( JsonObject value : mMembers ) {
-			if ( value.mKey == key ) {
-				return true;
-			}
-		}
-
-		return false;
+	public bool isMember( string key ) const {
+		return mMembers.contains( key );
 	}
 
-	public void set(string key, JsonValue value) modify {
-		foreach ( JsonObject member : mMembers ) {
-			if ( member is JsonObject && member.mKey == key ) {
-				member = value;
+	public void set( string key, JsonValue value ) modify {
+		foreach ( Pair<string, JsonValue> p : mMembers ) {
+			if ( p.first == key ) {
+				p.second = value;
 				return;
 			}
 		}
@@ -82,28 +73,37 @@ public object JsonObject extends JsonValue implements IIterable {
 
 	public string toString() const {
 		string members;
-		foreach ( JsonValue value : mMembers ) {
-			members += (members ? ", " : "") + value.toString();
-		}
 
-		if ( mKey ) {
-		    return "\"" + mKey + "\": " + (members ?: "null");
+		foreach ( Pair<string, JsonValue> p : mMembers ) {
+			members += ( members ? ", " : "" ) + "\"" + p.first + "\": " + p.second.toString();
 		}
 
 		return "{ " + members + " }";
 	}
 
-	public JsonObject operator[](string key) const throws {
-		foreach ( JsonObject value : mMembers ) {
-			if ( value is JsonObject && value.mKey == key ) {
-				return value;
+	public JsonValue operator[]( int index ) const throws {
+		int count;
+		foreach ( Pair<string, JsonValue> p : mMembers ) {
+			if ( count == index ) {
+				return p.second;
+			}
+
+			count++;
+		}
+
+		throw "invalid index!";
+	}
+
+	public JsonValue operator[]( string key ) const throws {
+		foreach ( Pair<string, JsonValue> p : mMembers ) {
+			if ( p.first == key ) {
+				return p.second;
 			}
 		}
 
 		throw "invalid key!";
 	}
 
-	private string mKey;
-	private List<JsonValue> mMembers;
+	private Map<string, JsonValue> mMembers;
 }
 

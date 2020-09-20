@@ -12,15 +12,15 @@ public namespace Json { }
 
 public object Tokenizer {
 	public void Constructor() {
-		CHARS = new String("ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz_");
-		DIGITS = new String("0123456789");
+		CHARS = new String( "ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz_" );
+		DIGITS = new String( "0123456789" );
 
 		RESERVED_WORDS = new List<Token>();
-		RESERVED_WORDS.push_back(new Token(TokenType.BOOLEAN, "FALSE", Position null));
-		RESERVED_WORDS.push_back(new Token(TokenType.BOOLEAN, "TRUE", Position null));
-		RESERVED_WORDS.push_back(new Token(TokenType.NULL, "NULL", Position null));
+		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "FALSE", Position null ) );
+		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "TRUE", Position null ) );
+		RESERVED_WORDS.push_back( new Token( TokenType.NULL, "NULL", Position null ) );
 
-		WHITESPACES = new String(" 	");
+		WHITESPACES = new String( " 	" );
 		WHITESPACES = WHITESPACES + LINEBREAK_DOS;
 		WHITESPACES = WHITESPACES + LINEBREAK_UNIX;
 	}
@@ -37,21 +37,21 @@ public object Tokenizer {
 		return mCurrentToken.next();
 	}
 
-	public void parseString(string text) modify throws {
-		mCharIterator = new String(text).getIterator();
+	public void parseString( string text ) modify throws {
+		mCharIterator = new String( text ).getIterator();
 		mColumn = 1;
 		mLine = 1;
 		mTokens = new List<Token>();
 
 		Token token;
-		while ( (token = getNextToken()) != null ) {
-			mTokens.push_back(token);
+		while ( ( token = getNextToken() ) != null ) {
+			mTokens.push_back( token );
 		}
 
 		mCurrentToken = mTokens.getIterator();
 	}
 
-	private string consume(int length = 1) modify {
+	private string consume( int length = 1 ) modify {
 		string c;
 		string result;
 
@@ -73,17 +73,17 @@ public object Tokenizer {
 	}
 
 	private Position getCurrentPos() const {
-		return new Position(mLine, mColumn);
+		return new Position( mLine, mColumn );
 	}
 
 	private Token getDigit() modify {
 		string result;
 
-		while ( isDigit(peek()) ) {
+		while ( isDigit( peek() ) ) {
 			result += consume();
 		}
 
-		return new Token(TokenType.NUMBER, result, getCurrentPos());
+		return new Token( TokenType.NUMBER, result, getCurrentPos() );
 	}
 
 	private Token getID() modify throws {
@@ -91,34 +91,34 @@ public object Tokenizer {
 		string result;
 
 		string c;
-		while ( (c = peek()) && (isCharacter(c) || isDigit(c)) ) {
+		while ( ( c = peek() ) && ( isCharacter( c ) || isDigit( c ) ) ) {
 			result += consume();
 		}
 
 		// convert to upper case
-		result = toUpper(result);
+		result = toUpper( result );
 
 		foreach ( Token token : RESERVED_WORDS ) {
 			if ( token == result ) {
-				return new Token(token.mType, token.mValue, new Position(mLine, column));
+				return new Token( token.mType, token.mValue, new Position( mLine, column ) );
 			}
 		}
 
-		return new Token(TokenType.IDENTIFIER, result, new Position(mLine, column));
+		return new Token( TokenType.IDENTIFIER, result, new Position( mLine, column ) );
 	}
 
 	private Token getNextToken() modify throws {
 		string c;
 
-		while ( (c = peek()) != "" ) {
+		while ( ( c = peek() ) != "" ) {
 			switch ( true ) {
-				case isCharacter(c): {
+				case isCharacter( c ): {
 					return getID();
 				}
-				case isDigit(c): {
+				case isDigit( c ): {
 					return getDigit();
 				}
-				case isWhiteSpace(c): {
+				case isWhiteSpace( c ): {
 					consume();
 					break;
 				}
@@ -135,28 +135,28 @@ public object Tokenizer {
 
 					consume();			// consume "
 
-					return new Token(TokenType.STRING, value, new Position(line, column));
+					return new Token( TokenType.STRING, value, new Position( line, column ) );
 				}
 				case c == ":": {
-					return new Token(TokenType.COLON, consume(), new Position(mLine, mColumn));
+					return new Token( TokenType.COLON, consume(), new Position( mLine, mColumn ) );
 				}
 				case c == ",": {
-					return new Token(TokenType.COMMA, consume(), new Position(mLine, mColumn));
+					return new Token( TokenType.COMMA, consume(), new Position( mLine, mColumn ) );
 				}
 				case c == "[": {
-					return new Token(TokenType.BRACKET_OPEN, consume(), new Position(mLine, mColumn));
+					return new Token( TokenType.BRACKET_OPEN, consume(), new Position( mLine, mColumn ) );
 				}
 				case c == "]": {
-					return new Token(TokenType.BRACKET_CLOSE, consume(), new Position(mLine, mColumn));
+					return new Token( TokenType.BRACKET_CLOSE, consume(), new Position( mLine, mColumn ) );
 				}
 				case c == "{": {
-					return new Token(TokenType.CURLY_BRACKET_OPEN, consume(), new Position(mLine, mColumn));
+					return new Token( TokenType.CURLY_BRACKET_OPEN, consume(), new Position( mLine, mColumn ) );
 				}
 				case c == "}": {
-					return new Token(TokenType.CURLY_BRACKET_CLOSE, consume(), new Position(mLine, mColumn));
+					return new Token( TokenType.CURLY_BRACKET_CLOSE, consume(), new Position( mLine, mColumn ) );
 				}
 				default: {
-					throw new Exception("invalid token found at " + new Position(mLine, mColumn).toString());
+					throw new Exception( "invalid token found at " + new Position( mLine, mColumn ).toString());
 				}
 			}
 		}
@@ -166,20 +166,20 @@ public object Tokenizer {
 		return mCharIterator.hasNext();
 	}
 
-	private bool isCharacter(string char) const {
-		return CHARS.Contains(char);
+	private bool isCharacter( string char ) const {
+		return CHARS.Contains( char );
 	}
 
-	private bool isDigit(string char) const {
-		return DIGITS.Contains(char);
+	private bool isDigit( string char ) const {
+		return DIGITS.Contains( char );
 	}
 
-	private bool isWhiteSpace(string char) const {
-		return WHITESPACES.Contains(char);
+	private bool isWhiteSpace( string char ) const {
+		return WHITESPACES.Contains( char );
 	}
 
-	private string peek(int pos = 1) const throws {
-		try { return mCharIterator.peek(pos); }
+	private string peek( int pos = 1 ) const throws {
+		try { return mCharIterator.peek( pos ); }
 
 		return "";
 	}
@@ -187,8 +187,8 @@ public object Tokenizer {
 	private void skipWhiteSpace() modify {
 		string c;
 
-		while ( isWhiteSpace(c = peek()) ) {
-			print("skipping whitespace");
+		while ( isWhiteSpace( c = peek() ) ) {
+			print( "skipping whitespace" );
 			consume();
 		}
 	}

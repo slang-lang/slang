@@ -11,17 +11,24 @@ public void Main(int argc, string args) {
 }
 
 private bool TestCase1() {
-	var array = new JsonArray("array");
-	print(array.toString());
+	var array = new JsonArray();
 
-	array.addMember(new JsonValue(173));
-	array.addMember(new JsonValue("1389"));
-	print(array.toString());
+	print( array.toString() );
 
-	//JsonValue tmpObj = array[1];
-	//assert( tmpObj.asString() == "1389" );
-	//print( tmpObj.toString() );
+	array.addMember( new JsonValue( 173 ) );
+	array.addMember( new JsonValue( "1389" ) );
+	array.addMember( new JsonArray() );
 
-	return bool array;
+	print( array.toString() );
+
+	foreach ( JsonValue value : array ) {
+		//print( value.toString() );
+	}
+
+	var value const = array[1];
+	//print( array[1].asString() );
+	assert( value.asString() == "1389" );
+
+	return true;
 }
 
