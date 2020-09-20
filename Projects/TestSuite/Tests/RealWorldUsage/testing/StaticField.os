@@ -10,7 +10,7 @@ public object OuterNestedObject {
 	}
 }
 
-public void Main(int argc, string args) {
+public void Main(int argc, string args) modify {
 	StaticField.Value = 173;
 	print("StaticField.Value = " + StaticField.Value);
 
@@ -18,6 +18,6 @@ public void Main(int argc, string args) {
 	print("OuterNestedObject.InnerNestedObject.StaticValue = " + OuterNestedObject.InnerNestedObject.StaticValue);
 
 	StaticField fieldObj = new StaticField();
-	print("fieldObj.Value = " + fieldObj.Value);
+	print("fieldObj.Value = " + fieldObj.Value);	// this throws an exception, but it should not be seen as valid by the parser in the firts place
 }
 

@@ -3,12 +3,14 @@
 public object ConstMember {
     public int Value const;
 
-    public void modify( int value ) modify {
+    public void mod( int value ) modify throws {
         Value = value;
+        throw "this should not be possible!";
     }
 }
 
 public void Main( int, string ) {
     var constMember = new ConstMember();
-    constMember.modify( 17 );
+    constMember.mod( 17 );
 }
+

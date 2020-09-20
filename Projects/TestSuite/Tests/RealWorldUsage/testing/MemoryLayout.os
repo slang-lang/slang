@@ -13,7 +13,7 @@ public object TestObject {
 	public final void MethodFinal() { }
 
 	//public void MethodFinal() final { }
-	// }
+	// }
 
 	// OVERRIDE
 	// {
@@ -39,5 +39,8 @@ public object TestObject {
 	public override int mOverride;
 	public static int mStatic;
 	public virtual int mVirtual;
+}
+
+public void Main( int argc, string args ) {
 }
 
