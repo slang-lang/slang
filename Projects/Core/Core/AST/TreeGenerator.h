@@ -131,8 +131,8 @@ private: // Execution
 	SymbolExpression* resolveWithExceptions(TokenIterator& token, IScope* base) const;
 	SymbolExpression* resolveWithThis(TokenIterator& token, IScope* base) const;
 	MethodSymbol* resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const;
-	std::string resolveType(Node* left, const Token& operation, Node* right) const;
-	std::string resolveType(const std::string& left, const Token& operation, const std::string& right) const;
+	std::string resolveType(TokenIterator& token, Node* left, const Token& operation, Node* right) const;
+	std::string resolveType(TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const;
 
 	// Scope stack
 	// {

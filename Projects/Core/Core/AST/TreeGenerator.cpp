@@ -73,7 +73,7 @@ Node* TreeGenerator::expression(TokenIterator& start)
 
 		Token operation = (*start);
 		Node* right = parseCondition(++start);
-		/*std::string type = resolveType(expression, operation, right);*/
+		/*std::string type = resolveType(start, expression, operation, right);*/
 
 		expression = new BooleanBinaryExpression(expression, operation, right);
 	}
@@ -269,7 +269,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
 		}
 
-		resolveType(condition, operation, right);
+		resolveType(start, condition, operation, right);
 
 
 		auto* lhs = dynamic_cast<Expression*>(condition);
@@ -333,7 +333,7 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 
 		Token operation = (*start);
 		Node* right = parseFactor(++start);
-		std::string type = resolveType(expression, operation, right);
+		std::string type = resolveType(start, expression, operation, right);
 
 
 		auto* lhs = dynamic_cast<Expression*>(expression);
@@ -381,7 +381,7 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 
 		Token operation = (*start);
 		Node* right = parseInfix(++start);
-		std::string type = resolveType(factor, operation, right);
+		std::string type = resolveType(start, factor, operation, right);
 
 
 		auto* lhs = dynamic_cast<Expression*>(factor);
@@ -428,7 +428,7 @@ Node* TreeGenerator::parseInfix(TokenIterator &start)
 
 			auto* exp = dynamic_cast<Expression*>( parseTerm(++start) );
 
-			resolveType(exp->getResultType(), operation, std::string(_unary_));
+			resolveType(start, exp->getResultType(), operation, std::string(_unary_));
 
 			infix = new UnaryExpression(operation, exp, UnaryExpression::ValueType::RValue);
 		} break;
@@ -826,7 +826,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 		}
 
 		if ( inner->isAtomicType() ) {
-			rhs = new BinaryExpression(new RuntimeSymbolExpression(inner->mName, inner->getResultType(), inner->isConst(), inner->isMember(), inner->isAtomicType()), operation, rhs, resolveType(lhs, operation, rhs));
+			rhs = new BinaryExpression(new RuntimeSymbolExpression(inner->mName, inner->getResultType(), inner->isConst(), inner->isMember(), inner->isAtomicType()), operation, rhs, resolveType(token, lhs, operation, rhs));
 		}
 		else {
 			// check if we are using a valid type
@@ -837,7 +837,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 
 			SymbolExpression* sym = new DesigntimeSymbolExpression(lhs->mName, lhs->getResultType(), PrototypeConstraints(), false);
 			sym->mSurroundingScope = lhs->mSurroundingScope;
-			sym->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), resolveType(lhs, operation, rhs), PrototypeConstraints(), false);
+			sym->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), resolveType(token, lhs, operation, rhs), PrototypeConstraints(), false);
 			sym->mSymbolExpression->mSurroundingScope = blueprint;
 
 			ExpressionList params;
@@ -862,7 +862,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 */
 
 	if ( lhs->isAtomicType() || inner->getResultType() == rhs->getResultType() ) {
-		return new AssignmentExpression(lhs, rhs, resolveType(lhs, assignment, rhs));
+		return new AssignmentExpression(lhs, rhs, resolveType(token, lhs, assignment, rhs));
 	}
 
 	// check if we are using a valid type
@@ -931,7 +931,7 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	resolveType(typeExpr, Token(Token::Type::ASSIGN, "="), sourceExpr);
+	resolveType(token, typeExpr, Token(Token::Type::ASSIGN, "="), sourceExpr);
 	//resolveType(typeExpr, Token(Token::Type::TYPECAST, "from"), sourceExpr);
 
 	// delete resolved symbol expression as it is not needed any more
@@ -2262,7 +2262,7 @@ MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const Param
 	return scope->resolveMethod(inner->mName, params, onlyCurrentScope, visibility);
 }
 
-std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node* right) const
+std::string TreeGenerator::resolveType(TokenIterator& token, Node* left, const Token& operation, Node* right) const
 {
 	auto* l = dynamic_cast<Expression*>(left);
 	if ( !l ) {
@@ -2284,12 +2284,26 @@ std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node*
 		rightType = Designtime::Parser::buildRuntimeConstraintTypename(rightType, dynamic_cast<DesigntimeSymbolExpression*>(r)->mConstraints);
 	}
 
-	return resolveType(leftType, operation, rightType);
+	return resolveType(token, leftType, operation, rightType);
 }
 
-std::string TreeGenerator::resolveType(const std::string& left, const Token& operation, const std::string& right) const
+std::string TreeGenerator::resolveType(TokenIterator& /*token*/, const std::string& left, const Token& operation, const std::string& right) const
 {
 	return mTypeSystem->getType(left, operation, right);
+
+/*
+	try {
+		return mTypeSystem->getType(left, operation, right);
+	}
+	catch ( Common::Exceptions::UnknownIdentifier &e ) {
+		throw Common::Exceptions::UnknownIdentifier("unknown type '" + left + "' detected during type check", token->position());
+	}
+	catch ( Common::Exceptions::TypeMismatch &e ) {
+		throw Common::Exceptions::TypeMismatch(left + " " + operation.content() + " " + right, token->position());
+	}
+
+	return "";
+*/
 }
 
 
