@@ -1,7 +1,7 @@
 #!/usr/local/bin/slang
 
 // Library import
-import libParam.ParameterHandler;
+import libParam;
 import System.Network.Socket;
 
 

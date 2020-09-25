@@ -1,7 +1,7 @@
 #!/usr/local/bin/slang
 
 // Library imports
-import libParam.ParameterHandler;
+import libParam;
 
 // Project imports
 import CodeGenerator;

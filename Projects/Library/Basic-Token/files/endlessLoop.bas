@@ -4,4 +4,3 @@
 40 PRINT A
 60 GOTO 30
 70 END
-

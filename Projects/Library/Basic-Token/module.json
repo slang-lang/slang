@@ -1,10 +1,10 @@
 {
   "name": "BASIC Interpreter that parses all tokens before interpreting",
   "name_short": "Basic-Token",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "BASIC Interpreter parses and interprets (=runs) .bas scripts.",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.7.0" },
+    { "module": "Slang", "version_min": "0.7.3" },
     { "module": "System", "version_min": "0.3.4" },
     { "module": "libParam", "version_min": "0.2.0" }
   ],

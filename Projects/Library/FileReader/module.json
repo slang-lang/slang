@@ -4,7 +4,7 @@
   "version": "0.2.2",
   "description": "Script which reads in a complete text file and prints its contents to stdout.",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.7.0" },
+    { "module": "Slang", "version_min": "0.7.3" },
     { "module": "System", "version_min": "0.3.4" },
     { "module": "libParam", "version_min": "0.2.0" }
   ],

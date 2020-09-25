@@ -7,4 +7,3 @@
 60 INPUT "A = " A
 70 PRINT A
 100 REM END
-
