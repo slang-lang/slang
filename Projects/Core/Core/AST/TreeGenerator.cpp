@@ -2287,11 +2287,8 @@ std::string TreeGenerator::resolveType(TokenIterator& token, Node* left, const T
 	return resolveType(token, leftType, operation, rightType);
 }
 
-std::string TreeGenerator::resolveType(TokenIterator& /*token*/, const std::string& left, const Token& operation, const std::string& right) const
+std::string TreeGenerator::resolveType(TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const
 {
-	return mTypeSystem->getType(left, operation, right);
-
-/*
 	try {
 		return mTypeSystem->getType(left, operation, right);
 	}
@@ -2303,7 +2300,6 @@ std::string TreeGenerator::resolveType(TokenIterator& /*token*/, const std::stri
 	}
 
 	return "";
-*/
 }
 
 
