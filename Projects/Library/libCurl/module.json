@@ -1,10 +1,10 @@
 {
   "name": "Slang curl library",
   "name_short": "libCurl",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Library for convenience usage of Slang curl extension",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.7.0" },
+    { "module": "Slang", "version_min": "0.7.3" },
     { "module": "System", "version_min": "0.3.4" }
   ],
   "target": {

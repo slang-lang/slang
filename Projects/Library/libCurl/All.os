@@ -1,5 +1,5 @@
 
 // import all libCurl libraries
-import Curl;
+import CurlRequest;
 import Settings;
 
