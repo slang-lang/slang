@@ -5,15 +5,15 @@ import System.Exception;
 // Project imports
 
 
-public object FatalError implements IException {
-    public void Constructor(string message) {
-        _message = message;
+public object FatalError const implements IException {
+    public void Constructor(string msg) {
+        message = msg;
     }
 
     public string what() const {
-        return _message;
+        return message;
     }
 
-    private string _message;
+    private string message const;
 }
 
