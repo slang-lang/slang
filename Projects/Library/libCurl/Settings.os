@@ -13,3 +13,4 @@ public object Settings {
     public bool VerboseOutput;
     // }
 }
+

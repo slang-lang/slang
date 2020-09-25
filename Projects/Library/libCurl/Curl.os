@@ -4,8 +4,6 @@ import Settings;
 
 public object CurlRequest {
     public void Constructor( string url = "" ) {
-        base.Constructor();
-
         mHandle = curl_init();
         mSettings = new Settings();
         mURL = url;
@@ -26,11 +24,11 @@ public object CurlRequest {
         curl_set_verbose( mHandle, mSettings.VerboseOutput );
 
         mLastError = curl_perform( mHandle );
-        if ( !mLastError ) {
-            return curl_read_result( mHandle );
+        if ( mLastError ) {
+            return "";
         }
 
-        return "";
+        return curl_read_result( mHandle );
     }
 
     public int lastError() const {
@@ -49,7 +47,7 @@ public object CurlRequest {
         return mSettings;
     }
 
-    private int mHandle;
+    private int mHandle const;
     private int mLastError;
     private Settings mSettings;
     private string mURL;
