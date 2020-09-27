@@ -58,15 +58,13 @@ public object CodeGenerator {
         mysql_close( mDatabaseHandle );
     }
 
-    private string generateLoaders( string entityName, Vector<FieldEntry> fields const ) const {
+    private string generateLoaders( string entityName, Vector<FieldEntry> fields const, bool usePrimaryKey = true ) const {
         string result;
 
         foreach ( FieldEntry field : fields ) {
-/*
-            if ( field.first == PrimaryKeyName ) {
+            if ( !usePrimaryKey && field.RealName == PrimaryKeyName ) {
                 continue;
             }
-*/
 
             if ( result ) {
                 result += LINEBREAK;
@@ -92,35 +90,49 @@ public object CodeGenerator {
         return result;
     }
 
-    private string generateMemberList( string entityName, Vector<FieldEntry> fields const ) const {
+    private string generateMemberList( string entityName, Vector<FieldEntry> fields const, bool usePrimaryKey = true ) const {
         string result;
 
         foreach ( FieldEntry field : fields ) {
-/*
-            if ( field.PrettyName == PrimaryKeyName ) {
+            if ( !usePrimaryKey && field.RealName == PrimaryKeyName ) {
                continue;
             }
-*/
 
             if ( result ) {
                 result += ", ";
             }
 
-            result += field.RealName;
+            result += "`" + field.RealName + "`";
         }
 
         return result;
     }
 
-    private string generateMemberValues( string entityName, Vector<FieldEntry> fields const ) const {
+    private string generateMemberPairs( string entityName, Vector<FieldEntry> fields const, bool usePrimaryKey = true ) const {
         string result;
 
         foreach ( FieldEntry field : fields ) {
-/*
-            if ( field.PrettyName == PrimaryKeyName ) {
+            if ( !usePrimaryKey && field.RealName == PrimaryKeyName ) {
                continue;
             }
-*/
+
+            if ( result ) {
+                result += ", ";
+            }
+
+            result += "`" + field.RealName + "` = '\" + " + field.PrettyName + " + \"'";;
+        }
+
+        return result;
+    }
+
+    private string generateMemberValues( string entityName, Vector<FieldEntry> fields const, bool usePrimaryKey = true ) const {
+        string result;
+
+        foreach ( FieldEntry field : fields ) {
+            if ( !usePrimaryKey && field.RealName == PrimaryKeyName ) {
+               continue;
+            }
 
             if ( result ) {
                 result += ", ";
@@ -164,7 +176,7 @@ public object CodeGenerator {
         print( "" + count + " table objects generated." );
     }
 
-    private string generateUpdates( string entityName, Vector<FieldEntry> fields ) const {
+    private string generateUpdates( string entityName, Vector<FieldEntry> fields, bool usePrimaryKey = true ) const {
         return MEMBER_LOAD_PREFIX + "// UPDATE: not yet implemented";
     }
 
@@ -216,17 +228,19 @@ public object CodeGenerator {
             }
         }
 
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME,              name );                                 // name
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME_PRETTY,       Utils.prettify( name ) );               // pretty printed name
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,    toUpper( name ) );                      // name in upper case
-        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,       generateMemberDecl( name, fields ) );   // members
-        template.ReplaceAll( TEMPLATE_MEMBER_LIST,              generateMemberList( name, fields ) );   // member list
-        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,              generateLoaders( name, fields ) );      // loaders
-        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,            generateUpdates( name, fields ) );      // updates
-        template.ReplaceAll( TEMPLATE_MEMBER_VALUES,            generateMemberValues( name, fields ) ); // values
-        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_NAME,         PrimaryKeyName );                       // primary key name
-        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_NAME_PRETTY,  Utils.prettify( PrimaryKeyName ) );     // primary key pretty printed name
-        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_TYPE,         primaryKeyType );                       // primary key type
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME,                 name );                                          // name
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME_PRETTY,          Utils.prettify( name ) );                        // pretty printed name
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,       toUpper( name ) );                               // name in upper case
+        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,          generateMemberDecl( name, fields ) );            // members
+        template.ReplaceAll( TEMPLATE_MEMBER_LIST,                 generateMemberList( name, fields, true ) );      // member list
+        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,                 generateLoaders( name, fields, true ) );         // loaders
+        template.ReplaceAll( TEMPLATE_MEMBER_PAIR,                 generateMemberPairs( name, fields, true ) );     // key values pairs
+        template.ReplaceAll( TEMPLATE_MEMBER_PAIR_WITHOUT_PRIMARY, generateMemberPairs( name, fields, false ) );    // key values pairs without primary key
+        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,               generateUpdates( name, fields, false ) );        // updates
+        template.ReplaceAll( TEMPLATE_MEMBER_VALUES,               generateMemberValues( name, fields, true ) );    // values
+        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_NAME,            PrimaryKeyName );                                // primary key name
+        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_NAME_PRETTY,     Utils.prettify( PrimaryKeyName ) );              // primary key pretty printed name
+        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_TYPE,            primaryKeyType );                                // primary key type
     }
 
     private void replaceUserTemplates( String template ) modify {

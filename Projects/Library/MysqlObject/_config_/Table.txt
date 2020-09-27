@@ -23,6 +23,15 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# {
 		}
 	}
 
+	public void insertOrUpdate() modify throws {
+		string query = "INSERT INTO #ENTITY_NAME# ( #MEMBER_LIST# ) VALUES ( #MEMBER_VALUES# ) ON DUPLICATE KEY UPDATE #MEMBER_PAIR_WITHOUT_PRIMARY#";
+
+		int error = mysql_query( DB, query );
+		if ( error ) {
+			throw mysql_error( DB );
+		}
+	}
+
 	public void loadByQuery( string query ) modify throws {
 		int error = mysql_query( DB, query );
 		if ( error ) {
