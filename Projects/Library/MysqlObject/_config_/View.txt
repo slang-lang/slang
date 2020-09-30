@@ -70,6 +70,10 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection {
 		}
 	}
 
+	public #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# at( int index ) const throws {
+		return Collection.at( index );
+	}
+
 	public Iterator<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#> getIterator() const {
 		return new Iterator<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#>( ICollection Collection );
 	}
@@ -79,6 +83,8 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection {
 		if ( error ) {
 			throw mysql_error( DB );
 		}
+
+		Collection.clear();
 
 		int result = mysql_store_result( DB );
 		while ( mysql_fetch_row( result ) ) {

@@ -28,7 +28,7 @@ public object ConfigLoader {
 	}
 
 	public bool load() modify {
-		if ( !System.IO.File.FileExists( mFilename ) ) {
+		if ( !System.IO.File.Exists( mFilename ) ) {
 			return false;
 		}
 
