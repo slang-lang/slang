@@ -53,7 +53,7 @@ public object DatatypeMapper {
 				continue;
 			}
 
-            text += c;
+			text += c;
 		}
 	}
 

@@ -1,8 +1,6 @@
 
 // Library imports
-import libJson.Object;
-import libJson.Reader;
-import libJson.Writer;
+import libJson;
 import System.IO.File;
 
 // Project imports
@@ -30,7 +28,7 @@ public object ConfigLoader {
 	}
 
 	public bool load() modify {
-		if ( !System.IO.File.Exists( mFilename ) ) {
+		if ( !System.IO.File.FileExists( mFilename ) ) {
 			return false;
 		}
 

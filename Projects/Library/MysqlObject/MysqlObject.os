@@ -5,6 +5,7 @@ import libParam;
 
 // Project imports
 import CodeGenerator;
+import ConfigLoader;
 import Consts;
 
 
@@ -12,8 +13,13 @@ public void Main( int argc, string args ) modify throws {
 	try {
 		processParameters( new ParameterHandler( argc, args ) );
 
+		//var config = new ConfigLoader( Database + "/config.json" );
+		//config.load();
+
 		var generator = new CodeGenerator();
 		generator.process();
+
+		//config.store();
 	}
 	catch ( string e ) {
 		print( "Exception: " + e );

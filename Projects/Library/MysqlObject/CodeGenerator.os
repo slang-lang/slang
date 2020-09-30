@@ -5,7 +5,6 @@ import System.String;
 
 // Project imports
 import _config_.Config;
-//import ConfigLoader;
 import DatatypeMapper;
 import EntityLookup;
 import FieldLookup;
@@ -16,9 +15,6 @@ import Utils;
 
 public object CodeGenerator {
     public void Constructor() {
-        //mConfig = new ConfigLoader( Database + "/config.json" );
-        //mConfig.load();
-
         mDatabaseHandle = mysql_init();
 
         mEntityLookup = new EntityLookup();
@@ -41,9 +37,6 @@ public object CodeGenerator {
 
         // disconnect from database
         disconnect();
-
-        // store configuration
-        //mConfig.store();
     }
 
     private void connect() modify throws {
@@ -251,7 +244,6 @@ public object CodeGenerator {
         }
     }
 
-    //private ConfigLoader mConfig;
     private int mDatabaseHandle;
     private EntityLookup mEntityLookup;
     private FieldLookup mFieldLookup;
