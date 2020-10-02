@@ -45,7 +45,7 @@ public:
 		return mVersion;
 	}
 
-private:
+protected:
 	std::string mName;
 	std::string mVersion;
 };
