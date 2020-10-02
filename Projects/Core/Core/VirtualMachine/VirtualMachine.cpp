@@ -371,12 +371,13 @@ VirtualMachine::Settings& VirtualMachine::settings()
 
 namespace {
 	std::string buildFilename( std::string folder, std::string filename ) {
-		std::string all = Utils::Tools::Files::BuildLibraryPath( folder, filename + std::string( "/All" ) );
-		if ( Utils::Tools::Files::exists( all ) ) {
-			return all;
+		std::string file = Utils::Tools::Files::BuildLibraryPath( folder, filename );
+		if ( Utils::Tools::Files::exists( file ) ) {
+			return file;
 		}
 
-		return Utils::Tools::Files::BuildLibraryPath( folder, filename );
+		return Utils::Tools::Files::BuildLibraryPath( folder, filename + std::string( "/All" ) );
+
 	}
 }
 
