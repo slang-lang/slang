@@ -35,6 +35,14 @@ public object CurlRequest {
         return mLastError;
     }
 
+    public void setBearer( string bearer) modify {
+        curl_set_bearer( mHandle, bearer );
+    }
+
+    public void setHeader( string header) modify {
+        curl_set_header( mHandle, header );
+    }
+
     public void setOption( int option, int value ) modify {
         curl_set_opt_int( mHandle, option, value );
     }
@@ -52,3 +60,4 @@ public object CurlRequest {
     private Settings mSettings;
     private string mURL;
 }
+
