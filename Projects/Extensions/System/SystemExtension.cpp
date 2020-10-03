@@ -36,7 +36,7 @@ namespace System {
 
 
 SystemExtension::SystemExtension()
-: AExtension( "System" )
+: AExtension( "Slang System" )
 {
 #ifdef _WIN32
 	// Win32 only

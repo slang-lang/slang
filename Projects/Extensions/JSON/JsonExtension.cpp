@@ -18,7 +18,7 @@ namespace Json {
 
 
 JsonExtension::JsonExtension()
-: AExtension( "Json" )
+: AExtension( "Slang Json" )
 {
 }
 
