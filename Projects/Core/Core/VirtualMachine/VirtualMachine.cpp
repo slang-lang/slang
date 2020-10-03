@@ -309,7 +309,13 @@ void VirtualMachine::printExtensions()
 	std::cout << "Extensions:" << std::endl;
 
 	for ( const auto& extension : mExtensions ) {
-		std::cout << extension->getName() << " version " << extension->getVersion() << std::endl;
+		std::cout << extension->getName();
+
+		if ( !extension->getVersion().empty() ) {
+			std::cout << " version " << extension->getVersion();
+		}
+
+		std::cout << std::endl;
 	}
 
 	std::cout << std::endl;
