@@ -36,7 +36,7 @@ namespace System {
 
 
 SystemExtension::SystemExtension()
-: AExtension( "System", "0.0.1" )
+: AExtension( "System" )
 {
 #ifdef _WIN32
 	// Win32 only
