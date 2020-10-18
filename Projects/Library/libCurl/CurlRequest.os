@@ -39,6 +39,10 @@ public object CurlRequest {
         curl_set_bearer( mHandle, bearer );
     }
 
+    public void setData( string data ) modify {
+        curl_set_data( mHandle, data );
+    }
+
     public void setHeader( string header) modify {
         curl_set_header( mHandle, header );
     }

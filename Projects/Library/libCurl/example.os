@@ -5,6 +5,9 @@ import CurlRequest;
 public void Main( int argc, string args ) modify {
 	var curl = new CurlRequest( "https://api.exchange.bitpanda.com/public/v1/currencies" );
 
+	curl.setData( "" );
+	curl.setHeader( "" );
+
 /*
 	var settings = curl.settings();
 	settings.ShowProgress = false;
