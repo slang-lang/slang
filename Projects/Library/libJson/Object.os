@@ -36,6 +36,26 @@ public object JsonObject extends JsonValue implements IIterable {
 		mMembers.insert( key, cast<JsonValue>( value ) );
 	}
 
+	public void addMember( string key, bool value ) modify {
+		mMembers.insert( key, new JsonValue( value ) );
+	}
+
+	public void addMember( string key, double value ) modify {
+		mMembers.insert( key, new JsonValue( value ) );
+	}
+
+	public void addMember( string key, float value ) modify {
+		mMembers.insert( key, new JsonValue( value ) );
+	}
+
+	public void addMember( string key, int value ) modify {
+		mMembers.insert( key, new JsonValue( value ) );
+	}
+
+	public void addMember( string key, string value ) modify {
+		mMembers.insert( key, new JsonValue( value ) );
+	}
+
 	public void addMember( string key, JsonArray value ) modify {
 		mMembers.insert( key, cast<JsonValue>( value ) );
 	}

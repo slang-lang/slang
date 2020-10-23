@@ -7,7 +7,7 @@ import System.Exception;
 
 
 public object JsonException const implements IException {
-	public void Constructor(string msg) {
+	public void Constructor( string msg ) {
 		_ex = msg;
 	}
 
@@ -19,7 +19,7 @@ public object JsonException const implements IException {
 }
 
 public object InvalidTypeException const implements IException {
-	public void Constructor(string msg) {
+	public void Constructor( string msg ) {
 		_ex = msg;
 	}
 
