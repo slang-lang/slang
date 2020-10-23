@@ -21,7 +21,7 @@ public object CSVReader implements ICollection, IIterable {
         }
     }
 
-    // ICollecion interface implementation
+    // ICollection interface implementation
     // {
 
     public DataEntry operator[]( int index ) const {
@@ -67,28 +67,29 @@ public object CSVReader implements ICollection, IIterable {
 
         bool isFirstLine = true;
 
+	string char;
         string line;
         while ( !file.isEOF() ) {
-            string c = file.readChar();
-            if ( c == LINEBREAK ) {
-                if ( !isFirstLine ) {
-                    mData.push_back( mHeader.produceEntry( line ) );
-                }
-                else {
+            if ( ( char = file.readChar() ) == LINEBREAK ) {
+                if ( isFirstLine ) {
+                    isFirstLine = false;
+
                     mHeader.parse( line );
 
                     if ( !mColumnTitles ) {
                         mData.push_back( mHeader.produceEntry( line ) );
                     }
                 }
+		else {
+                    mData.push_back( mHeader.produceEntry( line ) );
+                }
 
                 line = "";
-                isFirstLine = false;
 
                 continue;
             }
 
-            line += c;
+            line += char;
         }
 
         return true;
@@ -99,3 +100,4 @@ public object CSVReader implements ICollection, IIterable {
     private HeaderEntry mHeader;
     private string mFilename;
 }
+

@@ -21,12 +21,12 @@ public object DataEntry {
     public string =operator( string ) const {
         string result;
 
-        foreach ( Object column : mEntry ) {
+        foreach ( Pair<string, string> column : mEntry ) {
             if ( result ) {
                 result += " | ";
             }
 
-            result += ( Pair<string, string> column ).second;
+            result += column.second;
         }
 
         return result;
@@ -34,3 +34,4 @@ public object DataEntry {
 
     private Map<string, string> mEntry;
 }
+

@@ -4,6 +4,7 @@ import System.Collections.Vector;
 import System.StringIterator;
 
 // project imports
+import Settings;
 
 
 public object HeaderEntry {
@@ -14,7 +15,7 @@ public object HeaderEntry {
     public void parse( string line ) modify {
         mColumns.clear();
 
-        var columnIt = new StringIterator( line, "," );
+        var columnIt = new StringIterator( line, Settings.SEPARATOR );
         while ( columnIt.hasNext() ) {
             mColumns.push_back( columnIt.next() );
         }
@@ -34,7 +35,7 @@ public object HeaderEntry {
         var entry = new Map<string, string>();
 
         int columnIdx;
-        var columnIt = new StringIterator( line, "," );
+        var columnIt = new StringIterator( line, Settings.SEPARATOR );
 
         while ( columnIt.hasNext() ) {
             var column = mColumns.at( columnIdx );
@@ -63,3 +64,4 @@ public object HeaderEntry {
 
     private Vector<string> mColumns;
 }
+
