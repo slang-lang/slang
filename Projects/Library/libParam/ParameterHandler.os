@@ -75,13 +75,6 @@ public object ParameterHandler implements IIterable {
 	}
 
 	/*
-	 * DEPRECATED: retrieves a parameter using its index as lookup
-	 */
-	public deprecated Parameter at( int index ) const throws {
-		return operator[]( index );
-	}
-
-	/*
 	 * returns true if a parameter with the given key exists
 	 */
 	public bool contains( string key ) const {
@@ -106,13 +99,6 @@ public object ParameterHandler implements IIterable {
 	 */
 	public Iterator<Parameter> getIterator() const {
 		return mParameters.getIterator();
-	}
-
-	/*
-	 * DEPRECATED: retrieves a parameter using its key as lookup
-	 */
-	public deprecated Parameter getParameter( string key ) const throws {
-		return operator[]( key );
 	}
 
 	/*
