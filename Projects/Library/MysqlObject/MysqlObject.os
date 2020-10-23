@@ -11,15 +11,20 @@ import Consts;
 
 public void Main( int argc, string args ) modify throws {
 	try {
-		processParameters( new ParameterHandler( argc, args ) );
+		var cfg = processParameters( new ParameterHandler( argc, args ) );
 
-		//var config = new ConfigLoader( Database + "/config.json" );
-		//config.load();
+		var config = new ConfigLoader( cfg + "/config.json" );
+		config.load();
+
+		if ( !Config.Database ) {
+			print( "database missing!" );
+			exit( -1 );
+		}
 
 		var generator = new CodeGenerator();
 		generator.process();
 
-		//config.store();
+		config.store();
 	}
 	catch ( string e ) {
 		print( "Exception: " + e );
@@ -32,7 +37,7 @@ public void Main( int argc, string args ) modify throws {
 	}
 }
 
-private void processParameters( ParameterHandler params ) {
+private string processParameters( ParameterHandler params ) modify {
 	if ( params.empty() ) {
 		printUsage();
 		exit( 0 );
@@ -43,33 +48,36 @@ private void processParameters( ParameterHandler params ) {
 		exit( 0 );
 	}
 
-	if ( !params.contains( "database" ) ) {
-		print( "database missing!" );
-		exit( -1 );
-	}
-
 	if ( params.contains( "database" ) ) {
-		Database = params[ "database" ].Value;
+		Config.Database = params[ "database" ].Value;
+		params.remove( "database" );
 	}
 	if ( params.contains( "host" ) ) {
-		Host = params[ "host" ].Value;
+		Config.Host = params[ "host" ].Value;
+		params.remove( "host" );
 	}
 	if ( params.contains( "output" ) ) {
-		Output = params[ "output" ].Value;
+		Config.Output = params[ "output" ].Value;
+		params.remove( "output" );
 	}
 	if ( params.contains( "password" ) ) {
-		Password = params[ "password" ].Value;
+		Config.Password = params[ "password" ].Value;
+		params.remove( "password" );
 	}
 	if ( params.contains( "port" ) ) {
-		Port = cast<int>( params[ "port" ].Value );
+		Config.Port = cast<int>( params[ "port" ].Value );
+		params.remove( "port" );
 	}
 	if ( params.contains( "user" ) ) {
-		User = params[ "user" ].Value;
+		Config.User = params[ "user" ].Value;
+		params.remove( "user" );
 	}
 
-	if ( !Output ) {
-		Output = Database;
+	if ( !Config.Output ) {
+		Config.Output = Config.Database;
 	}
+
+	return params.empty() ? Config.Output : params[ 0 ].Key;
 }
 
 private void printUsage() {

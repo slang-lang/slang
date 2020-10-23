@@ -40,10 +40,10 @@ public object CodeGenerator {
     }
 
     private void connect() modify throws {
-        mDatabaseHandle = mysql_real_connect( mDatabaseHandle, Host, Port, User, Password, Database );
+        mDatabaseHandle = mysql_real_connect( mDatabaseHandle, Config.Host, Config.Port, Config.User, Config.Password, Config.Database );
     
         if ( !mDatabaseHandle ) {
-            throw "failed to connect to database '" + Database + "'";
+            throw "failed to connect to database '" + Config.Database + "'";
         }
     }
 
@@ -138,7 +138,7 @@ public object CodeGenerator {
     }
 
     private void generateTables() modify {
-        var entities = mEntityLookup.getTables( mDatabaseHandle, Database );
+        var entities = mEntityLookup.getTables( mDatabaseHandle, Config.Database );
         var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "Table.txt" ).getText() );
 
         var libraryImports = LINEBREAK;
@@ -151,7 +151,7 @@ public object CodeGenerator {
             replaceSpecialTemplates( template, name );
             replaceUserTemplates( template );
     
-            var outFile = new System.IO.File( Database + "/Tables/" + Utils.prettify( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Config.Database + "/Tables/" + Utils.prettify( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
@@ -162,7 +162,7 @@ public object CodeGenerator {
 
         libraryImports += LINEBREAK;
 
-        var allFile = new System.IO.File( Database + "/Tables/All.os", System.IO.File.AccessMode.WriteOnly );
+        var allFile = new System.IO.File( Config.Database + "/Tables/All.os", System.IO.File.AccessMode.WriteOnly );
         allFile.write( libraryImports );
         allFile.close();
 
@@ -174,7 +174,7 @@ public object CodeGenerator {
     }
 
     private void generateViews() modify {
-        var entities = mEntityLookup.getViews( mDatabaseHandle, Database );
+        var entities = mEntityLookup.getViews( mDatabaseHandle, Config.Database );
         var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "View.txt" ).getText() );
 
         var libraryImports = LINEBREAK;
@@ -187,7 +187,7 @@ public object CodeGenerator {
             replaceSpecialTemplates( template, name );
             replaceUserTemplates( template );
 
-            var outFile = new System.IO.File( Database + "/Views/" + Utils.prettify( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Config.Database + "/Views/" + Utils.prettify( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
@@ -198,7 +198,7 @@ public object CodeGenerator {
 
         libraryImports += LINEBREAK;
 
-        var allFile = new System.IO.File( Database + "/Views/All.os", System.IO.File.AccessMode.WriteOnly );
+        var allFile = new System.IO.File( Config.Database + "/Views/All.os", System.IO.File.AccessMode.WriteOnly );
         allFile.write( libraryImports );
         allFile.close();
 
@@ -206,8 +206,8 @@ public object CodeGenerator {
     }
 
     private void prepareFolders() modify {
-        system( "mkdir -p " + Output + "/Tables" );
-        system( "mkdir -p " + Output + "/Views" );
+        system( "mkdir -p " + Config.Output + "/Tables" );
+        system( "mkdir -p " + Config.Output + "/Views" );
     }
 
     private void replaceSpecialTemplates( String template, string name ) modify {

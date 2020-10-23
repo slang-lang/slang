@@ -8,22 +8,21 @@ import Scanner;
 
 
 public object Config {
-	public string Database;
-	public string Host = "localhost";
-	public string Output;
-	public string Password;
-	public int Port = 3306;
-	public string User;
+	public static string Database;
+	public static string Host = "127.0.0.1";
+	public static string Output;
+	public static string Password;
+	public static int Port = 3306;
+	public static string User;
 
-	public string toString() const {
-		return "Database: '" + Database + "', Host: '" + Host + "', Output: '" + Output + "', User: '" + User + "'";
+	public static string toString() const {
+		return "Database: '" + Config.Database + "', Host: '" + Config.Host + "', Output: '" + Config.Output + "', User: '" + Config.User + "'";
 	}
 }
 
 
 public object ConfigLoader {
 	public void Constructor( string filename ) {
-		mConfig = new Config();
 		mFilename = filename;
 	}
 
@@ -37,19 +36,19 @@ public object ConfigLoader {
 		var text = new Scanner( mFilename ).getText();
 		var config = JsonObject reader.parse( text );
 
-		print( config.toString() );
+		//print( config.toString() );
 
 		// Database config
 		// {
-		mConfig.Database	= config.isMember( "Database" )	? config[ "Database" ].asString()	: Database;
-		mConfig.Host		= config.isMember( "Host" )		? config[ "Host" ].asString()		: Host;
-		mConfig.Output		= config.isMember( "Output" )	? config[ "Output" ].asString()		: Output;
-		mConfig.Password	= config.isMember( "Password" )	? config[ "Password" ].asString()	: Password;
-		mConfig.Port		= config.isMember( "Port" )		? config[ "Port" ].asInt()			: Port;
-		mConfig.User		= config.isMember( "User" )		? config[ "User" ].asString()		: User;
+		Config.Database	= Config.Database	?: config[ "Database" ].asString();
+		Config.Host	= Config.Host		?: config[ "Host" ].asString();
+		Config.Output	= Config.Output		?: config[ "Output" ].asString();
+		Config.Password	= Config.Password	?: config[ "Password" ].asString();
+		Config.Port	= Config.Port		?: cast<int>( config[ "Port" ].asString() );
+		Config.User	= Config.User		?: config[ "User" ].asString();
 		// }
 
-		print( mConfig.toString() );
+		print( Config.toString() );
 
 		return true;
 	}
@@ -59,22 +58,21 @@ public object ConfigLoader {
 
 		// Database config
 		// {
-		config.addMember( "Database",	new JsonValue( mConfig.Database ) );
-		config.addMember( "Host",	new JsonValue( mConfig.Host ) );
-		config.addMember( "Output",	new JsonValue( mConfig.Output ) );
-		config.addMember( "Password",	new JsonValue( mConfig.Password ) );
-		config.addMember( "Port",	new JsonValue( mConfig.Port ) );
-		config.addMember( "User",	new JsonValue( mConfig.User ) );
+		config.addMember( "Database",	new JsonValue( Config.Database ) );
+		config.addMember( "Host",	new JsonValue( Config.Host ) );
+		config.addMember( "Output",	new JsonValue( Config.Output ) );
+		config.addMember( "Password",	new JsonValue( Config.Password ) );
+		config.addMember( "Port",	new JsonValue( Config.Port ) );
+		config.addMember( "User",	new JsonValue( Config.User ) );
 		// }
 
-		print( "Writer: " + config.toString() );
+		//print( "Writer: " + config.toString() );
 
 		var file = new System.IO.File( mFilename, System.IO.File.AccessMode.WriteOnly );
 		file.write( config.toString() );
 		file.close();
 	}
 
-	private Config mConfig;
 	private string mFilename;
 }
 

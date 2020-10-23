@@ -37,7 +37,7 @@ public object FieldLookup {
 	public Vector<FieldEntry> getFields( int databaseHandle, string entityName ) const throws {
 		string query = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE \
 						FROM INFORMATION_SCHEMA.COLUMNS \
-						WHERE TABLE_SCHEMA = '" + Database + "' \
+						WHERE TABLE_SCHEMA = '" + Config.Database + "' \
 						AND TABLE_NAME = '" + entityName + "' \
 						ORDER BY TABLE_NAME ASC, COLUMN_NAME ASC";
 
