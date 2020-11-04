@@ -13,7 +13,7 @@ public namespace Json { }
 public object Tokenizer {
 	public void Constructor() {
 		CHARS = new String( "ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz_" );
-		DIGITS = new String( "0123456789" );
+		DIGITS = new String( "0123456789.-" );
 
 		RESERVED_WORDS = new List<Token>();
 		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "FALSE", Position null ) );

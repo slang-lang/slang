@@ -71,7 +71,8 @@ public object JsonValue {
 
 	public double asDouble() const throws {
 		if ( mValueType == JsonValueType.Object
-		  || mValueType == JsonValueType.String ) {
+		//  || mValueType == JsonValueType.String
+		) {
 			throw new InvalidTypeException( "double" );
 		}
 
@@ -80,7 +81,8 @@ public object JsonValue {
 
 	public float asFloat() const throws {
 		if ( mValueType == JsonValueType.Object
-		  || mValueType == JsonValueType.String ) {
+		//  || mValueType == JsonValueType.String
+		) {
 			throw new InvalidTypeException( "float" );
 		}
 
@@ -89,7 +91,8 @@ public object JsonValue {
 
 	public int asInt() const throws {
 		if ( mValueType == JsonValueType.Object
-		  || mValueType == JsonValueType.String ) {
+		//  || mValueType == JsonValueType.String
+		) {
 			throw new InvalidTypeException( "int" );
 		}
 

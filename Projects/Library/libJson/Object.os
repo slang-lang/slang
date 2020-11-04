@@ -121,7 +121,7 @@ public object JsonObject extends JsonValue implements IIterable {
 			}
 		}
 
-		throw "invalid key!";
+		throw "invalid key('" + key + "')!";
 	}
 
 	private Map<string, JsonValue> mMembers;
