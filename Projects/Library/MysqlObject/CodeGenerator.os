@@ -10,6 +10,7 @@ import EntityLookup;
 import FieldLookup;
 import Scanner;
 import TemplateLookup;
+import TokenLookup;
 import Utils;
 
 
@@ -20,6 +21,7 @@ public object CodeGenerator {
         mEntityLookup = new EntityLookup();
         mFieldLookup = new FieldLookup();
         mTemplateLookup = new TemplateLookup();
+        mTokenLookup = new TokenLookup();
     }
 
     public void process() modify throws {
@@ -34,6 +36,9 @@ public object CodeGenerator {
 
         // generate views
         generateViews();
+
+        // generate lookups
+        generateLookups();
 
         // disconnect from database
         disconnect();
@@ -67,6 +72,79 @@ public object CodeGenerator {
         }
 
         return result;
+    }
+
+    private void generateLookups() modify throws {
+        var entities = mEntityLookup.getTables( mDatabaseHandle, Config.Database );
+        var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "Lookup.txt" ).getText() );
+
+        var libraryImports = LINEBREAK;
+        libraryImports += "// import all library files" + LINEBREAK;
+
+        int count;
+
+        foreach ( string name : entities ) {
+            var fields = mFieldLookup.getFields( mDatabaseHandle, name );
+
+            bool hasId;
+            bool hasToken;
+
+            foreach ( FieldEntry field : fields ) {
+                if ( field.RealName == PrimaryKeyName ) {
+                    hasId = true;
+                }
+                else if ( field.RealName == "token" ) {
+                    hasToken = true;
+                }
+            }
+
+            if ( !hasId || !hasToken ) {
+                continue;
+            }
+
+            var template = copy baseTemplate;
+
+            template.ReplaceAll( TEMPLATE_ENTITY_NAME_PRETTY, Utils.prettify( name ) );        // entity name
+            template.ReplaceAll( TEMPLATE_ENUM_DECLARATION, generateEnumMembers( name ) );        // enum declaration list
+
+            var outFile = new System.IO.File( Config.Database + "/Lookups/" + Utils.prettify( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
+            outFile.write( cast<string>( template ) );
+            outFile.close();
+
+            libraryImports += "import " + Utils.prettify( name ) + ";" + LINEBREAK;
+
+            count++;
+        }
+
+        libraryImports += LINEBREAK;
+
+        var allFile = new System.IO.File( Config.Database + "/Lookups/All.os", System.IO.File.AccessMode.WriteOnly );
+        allFile.write( libraryImports );
+        allFile.close();
+
+        print( "" + count + " lookup objects generated." );
+    }
+
+    private string generateEnumMembers( string entityName ) {
+        string result;
+
+        int count = -1;
+        var tokens = mTokenLookup.getTokens( mDatabaseHandle, Config.Database, entityName );
+        var tokenIt = tokens.getIterator();
+
+        while ( tokenIt.hasNext() ) {
+            if ( result ) {
+                if ( tokenIt.hasNext() ) {
+                    result += ",";
+                }
+                result += LINEBREAK;
+            }
+
+            var t = tokenIt.next();
+            result += "    " + t.Token + " = " + count++;
+        }
+
+        return result + ";";
     }
 
     private string generateMemberDecl( string entityName, Vector<FieldEntry> fields const ) const {
@@ -206,6 +284,7 @@ public object CodeGenerator {
     }
 
     private void prepareFolders() modify {
+        system( "mkdir -p " + Config.Output + "/Lookups" );
         system( "mkdir -p " + Config.Output + "/Tables" );
         system( "mkdir -p " + Config.Output + "/Views" );
     }
@@ -248,4 +327,5 @@ public object CodeGenerator {
     private EntityLookup mEntityLookup;
     private FieldLookup mFieldLookup;
     private TemplateLookup mTemplateLookup;
+    private TokenLookup mTokenLookup;
 }

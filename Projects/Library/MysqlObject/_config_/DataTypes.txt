@@ -1,6 +1,6 @@
 datetime:	string
 double:		double
-float:		float 
+float:		double 
 int:		int
 mediumtext:	string
 text:		string
