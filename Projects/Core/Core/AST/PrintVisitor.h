@@ -34,6 +34,7 @@ private:
 	void visitOperator(Operator* op) override;
 
 	void visitAssert(AssertStatement* node) override;
+	void visitAssignment(AssignmentStatement* node) override;
 	void visitBreak(BreakStatement* node) override;
 	void visitContinue(ContinueStatement* node) override;
 	void visitDelete(DeleteStatement* node) override;

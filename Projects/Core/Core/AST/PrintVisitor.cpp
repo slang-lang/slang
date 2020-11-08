@@ -155,6 +155,11 @@ void PrintVisitor::visitAssert(AssertStatement* node)
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "assert(" + printExpression(node->mExpression) + ");");
 }
 
+void PrintVisitor::visitAssignment(AssignmentStatement* node)
+{
+	mOutput.insert( node->token().position(), printIndentation(mIndentation) + printExpression(node->mLeftExpression) + " = " + printExpression(node->mRightExpression) );
+}
+
 void PrintVisitor::visitBreak(BreakStatement* node)
 {
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "break;");
@@ -329,8 +334,8 @@ void PrintVisitor::visitTypeDeclaration(TypeDeclaration* node)
 {
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + node->mType + " " + node->mName);
 
-	if ( node->mAssignment ) {
-		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignment));
+	if ( node->mAssignmentExpression ) {
+		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignmentExpression));
 	}
 }
 
@@ -338,8 +343,8 @@ void PrintVisitor::visitTypeInference(TypeInference* node)
 {
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "var " + node->mName);
 
-	if ( node->mAssignment ) {
-		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignment));
+	if ( node->mAssignmentExpression ) {
+		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignmentExpression));
 	}
 }
 
