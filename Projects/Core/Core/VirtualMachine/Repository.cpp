@@ -602,8 +602,10 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	if ( blueprint->isEnumeration() ) {
 		// assignment operator
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-		mTypeSystem->define(_int, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-		mTypeSystem->define(_string, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+		//mTypeSystem->define(_int, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+		//mTypeSystem->define(_string, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+		mTypeSystem->define(_int, Token::Type::ASSIGN, blueprint->QualifiedTypename(), _int);
+		mTypeSystem->define(_string, Token::Type::ASSIGN, blueprint->QualifiedTypename(), _string);
 
 		// comparison operators
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,         blueprint->QualifiedTypename(), _bool);
@@ -620,11 +622,11 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MULTIPLY, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_SUBTRACT, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 
-/*
 		// typecast operator
-		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _int, blueprint->QualifiedTypename());
-		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _string, blueprint->QualifiedTypename());
-*/
+		//mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _int, _int);
+		//mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _string, _string);
+		mTypeSystem->define(_int, Token::Type::TYPECAST, blueprint->QualifiedTypename(), _int);
+		mTypeSystem->define(_string, Token::Type::TYPECAST, blueprint->QualifiedTypename(), _string);
 
 		return;
 	}
@@ -693,11 +695,13 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,   _object,                        _bool);
 	mTypeSystem->define(_object,                        Token::Type::COMPARE_EQUAL,   blueprint->QualifiedTypename(), _bool);
 
-	// add default assignment entry for type system if it doesn't exist yet
+	// add default assignment entry for type system
 	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN,   blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-	//mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 
-	// add equality operator entries for type system if it doesn't exist yet
+	// add default typecast entry for type system
+	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+
+	// add equality operator entries for type system
 	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,   blueprint->QualifiedTypename(), _bool);
 	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL_CONTENT, blueprint->QualifiedTypename(), _bool);
 

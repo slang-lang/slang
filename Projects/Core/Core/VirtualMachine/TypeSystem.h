@@ -97,6 +97,7 @@ public:
 private:
 	void initBool();
 	void initDouble();
+	void initEnumeration();
 	void initFloat();
 	void initInt();
 	void initObject();

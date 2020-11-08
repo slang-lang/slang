@@ -46,7 +46,7 @@
 		} \
 		catch ( Runtime::ControlFlow::E &e ) { \
 			mControlFlow = e; \
-			return NULL; \
+			return nullptr; \
 		}
 
 #define tryEvaluateReturnNull(left, right) \
@@ -55,7 +55,7 @@
 		} \
 		catch ( Runtime::ControlFlow::E &e ) { \
 			mControlFlow = e; \
-			return NULL; \
+			return nullptr; \
 		}
 
 
@@ -104,8 +104,14 @@ void TreeInterpreter::evaluateAssignmentExpression(AssignmentExpression* exp, Ru
 {
 	Runtime::Object& lvalue = resolveLValue(getScope(), exp->mLHS, false, Visibility::Designtime);
 
-	tryControl(evaluate(exp->mRHS, &lvalue));
+	Runtime::Object right;
+	// evaluate right expression
+	tryControl(evaluate(exp->mRHS, &right));
 
+	// execute assignment to lvalue (this may involve a type cast)
+	Runtime::operator_binary_assign(&lvalue, &right);
+
+	// assign result of assignment expression to return value (this may involve a type cast)
 	Runtime::operator_binary_assign(result, &lvalue);
 }
 
@@ -865,6 +871,18 @@ void TreeInterpreter::visitAssert(AssertStatement* node)
 	}
 }
 
+void TreeInterpreter::visitAssignment(AssignmentStatement* node)
+{
+	Runtime::Object& lvalue = resolveLValue( getScope(), dynamic_cast<SymbolExpression*>( node->mLeftExpression ), false, Visibility::Designtime );
+
+	Runtime::Object right;
+	// evaluate right expression
+	tryControl(evaluate(node->mRightExpression, &right));
+
+	// execute assignment to lvalue (this may involve a type cast)
+	Runtime::operator_binary_assign(&lvalue, &right);
+}
+
 void TreeInterpreter::visitBreak(BreakStatement*)
 {
 	mControlFlow = Runtime::ControlFlow::Break;
@@ -1065,6 +1083,9 @@ void TreeInterpreter::visitStatement(Statement *node)
 	switch ( node->getStatementType() ) {
 		case Statement::StatementType::AssertStatement:
 			visitAssert(dynamic_cast<AssertStatement*>(node));
+			break;
+		case Statement::StatementType::AssignmentStatement:
+			visitAssignment(dynamic_cast<AssignmentStatement*>(node));
 			break;
 		case Statement::StatementType::BreakStatement:
 			visitBreak(dynamic_cast<BreakStatement*>(node));
@@ -1270,8 +1291,13 @@ Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 
 	getScope()->define(node->mName, lvalue);
 
-	if ( node->mAssignment ) {
-		tryEvaluateReturnNull(node->mAssignment, lvalue);
+	if ( node->mAssignmentExpression ) {
+		Runtime::Object right;
+		// evaluate right expression
+		tryEvaluateReturnNull( node->mAssignmentExpression, &right );
+
+		// execute assignment to lvalue (this may involve a type cast)
+		Runtime::operator_binary_assign( lvalue, &right );
 	}
 
 	return lvalue;

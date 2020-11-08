@@ -29,6 +29,7 @@ public:
 	public:
 		enum E {
 			AssertStatement,
+			AssignmentStatement,
 			BreakStatement,
 			CaseStatement,
 			CatchStatement,
@@ -103,9 +104,9 @@ public:
 class TypeDeclaration : public Statement
 {
 public:
-	TypeDeclaration(const Token& token, std::string type, PrototypeConstraints constraints, std::string name, bool isConst, bool isReference, Node* assignment)
+	TypeDeclaration(const Token& token, std::string type, PrototypeConstraints constraints, std::string name, bool isConst, bool isReference, Expression* assignmentExp)
 	: Statement(StatementType::TypeDeclaration, token),
-	  mAssignment(assignment),
+	  mAssignmentExpression(assignmentExp),
 	  mConstraints(std::move(constraints)),
 	  mIsConst(isConst),
 	  mIsReference(isReference),
@@ -113,11 +114,11 @@ public:
 	  mType(std::move(type))
 	{ }
 	~TypeDeclaration() override {
-		delete mAssignment;
+		delete mAssignmentExpression;
 	}
 
 public:
-	Node* mAssignment;
+	Expression* mAssignmentExpression;
 	PrototypeConstraints mConstraints;
 	bool mIsConst;
 	bool mIsReference;
@@ -145,6 +146,25 @@ public:
 public:
 	Node* mExpression;
 	Common::Position mPosition;
+};
+
+
+class AssignmentStatement : public Statement
+{
+public:
+	explicit AssignmentStatement( const Token& token, Node* left, Node* right )
+	: Statement(StatementType::AssignmentStatement, token),
+	  mLeftExpression(left),
+	  mRightExpression(right)
+	{ }
+	~AssignmentStatement() override {
+		delete mLeftExpression;
+		delete mRightExpression;
+	}
+
+public:
+	Node* mLeftExpression;
+	Node* mRightExpression;
 };
 
 
@@ -420,8 +440,8 @@ public:
 class TypeInference : public TypeDeclaration
 {
 public:
-	TypeInference(const Token& token, const std::string& type, const PrototypeConstraints& constraints, const std::string& name, bool isConst, bool isReference, Node* assignment)
-	: TypeDeclaration(token, type, constraints, name, isConst, isReference, assignment)
+	TypeInference(const Token& token, const std::string& type, const PrototypeConstraints& constraints, const std::string& name, bool isConst, bool isReference, Expression* assignmentExp)
+	: TypeDeclaration(token, type, constraints, name, isConst, isReference, assignmentExp)
 	{
 		mStatementType = Statement::StatementType::TypeInference;
 	}

@@ -122,7 +122,7 @@ AtomicValue& AtomicValue::operator=(float val)
 	return *this;
 }
 
-AtomicValue& AtomicValue::operator=(int val)
+AtomicValue& AtomicValue::operator=(int32_t val)
 {
 	mStringValue = "";
 

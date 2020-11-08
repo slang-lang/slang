@@ -40,7 +40,7 @@ public:	// Construction
 	AtomicValue(bool val);
 	AtomicValue(double val);
 	AtomicValue(float val);
-	AtomicValue(int val);
+	AtomicValue(int32_t val);
 	explicit AtomicValue(MemoryId val);
 	AtomicValue(std::string val);
 
@@ -50,7 +50,7 @@ public:	// Assignment
 	AtomicValue& operator=(bool val);
 	AtomicValue& operator=(double val);
 	AtomicValue& operator=(float val);
-	AtomicValue& operator=(int val);
+	AtomicValue& operator=(int32_t val);
 	AtomicValue& operator=(MemoryId val);
 	AtomicValue& operator=(const std::string& val);
 
@@ -58,7 +58,7 @@ public:	// Conversion
 	bool toBool() const;
 	double toDouble() const;
 	float toFloat() const;
-	int toInt() const;
+	int32_t toInt() const;
 	MemoryId toReference() const;
 	std::string toStdString() const;
 

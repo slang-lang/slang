@@ -37,6 +37,7 @@ protected:
 	virtual void visitStatement(Statement* node);
 
 	virtual void visitAssert(AssertStatement* node);
+	virtual void visitAssignment(AssignmentStatement* node);
 	virtual void visitBreak(BreakStatement* node);
 	virtual void visitContinue(ContinueStatement* node);
 	virtual void visitDelete(DeleteStatement* node);

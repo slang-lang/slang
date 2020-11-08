@@ -62,6 +62,7 @@ private:
 	inline void visitStatement(Statement* node);
 
 	void visitAssert(AssertStatement* node);
+	void visitAssignment(AssignmentStatement* node);
 	void visitBreak(BreakStatement* node);
 	void visitContinue(ContinueStatement* node);
 	void visitDelete(DeleteStatement* node);

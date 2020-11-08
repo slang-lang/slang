@@ -37,6 +37,13 @@ void TreeVisitor::visitAssert(AssertStatement* node)
 	visit(node->mExpression);
 }
 
+void TreeVisitor::visitAssignment(AssignmentStatement* node)
+{
+	visitExpression( dynamic_cast<Expression*>( node->mLeftExpression ) );
+
+	visitExpression( dynamic_cast<Expression*>( node->mRightExpression ) );
+}
+
 void TreeVisitor::visitBreak(BreakStatement*)
 {
 }
@@ -182,6 +189,9 @@ void TreeVisitor::visitStatement(Statement *node)
 		case Statement::StatementType::AssertStatement:
 			visitAssert(dynamic_cast<AssertStatement*>(node));
 			break;
+		case Statement::StatementType::AssignmentStatement:
+			visitAssignment(dynamic_cast<AssignmentStatement*>(node));
+			break;
 		case Statement::StatementType::BreakStatement:
 			visitBreak(dynamic_cast<BreakStatement*>(node));
 			break;
@@ -289,16 +299,14 @@ void TreeVisitor::visitTry(TryStatement* node)
 
 void TreeVisitor::visitTypeDeclaration(TypeDeclaration* node)
 {
-	if ( node->mAssignment ) {
-		visit(node->mAssignment);
+	if ( node->mAssignmentExpression ) {
+		visit(node->mAssignmentExpression);
 	}
 }
 
 void TreeVisitor::visitTypeInference(TypeInference* node)
 {
-	if ( node->mAssignment ) {
-		visit(node->mAssignment);
-	}
+	visitTypeDeclaration( node );
 }
 
 void TreeVisitor::visitWhile(WhileStatement* node)

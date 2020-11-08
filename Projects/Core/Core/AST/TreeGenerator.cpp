@@ -342,7 +342,7 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 		auto* exp = dynamic_cast<SymbolExpression*>(expression);
 
 		if ( !exp || exp->isAtomicType() ) {
-			expression = new BinaryExpression(expression, operation, right, type);
+			expression = new BinaryExpressionOwner(expression, operation, right, type);
 			continue;
 		}
 
@@ -390,7 +390,7 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 		auto* exp = dynamic_cast<SymbolExpression*>(factor);
 
 		if ( !exp || exp->isAtomicType() ) {
-			factor = new BinaryExpression(factor, operation, right, type);
+			factor = new BinaryExpressionOwner(factor, operation, right, type);
 			continue;
 		}
 
@@ -797,7 +797,7 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
  * syntax:
  * <lvalue> = <rvalue>
  */
-Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
+Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
 {
 	auto op = token;
 
@@ -826,7 +826,94 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 		}
 
 		if ( inner->isAtomicType() ) {
-			rhs = new BinaryExpression(new RuntimeSymbolExpression(inner->mName, inner->getResultType(), inner->isConst(), inner->isMember(), inner->isAtomicType()), operation, rhs, resolveType(token, lhs, operation, rhs));
+			rhs = new BinaryExpressionNoLeftOwner( lhs, operation, rhs, resolveType(token, lhs, operation, rhs) );
+		}
+		else {
+			// check if we are using a valid type
+			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
+			if ( !blueprint ) {
+				throw Designtime::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", operation.position());
+			}
+
+			SymbolExpression* sym = new DesigntimeSymbolExpression(lhs->mName, lhs->getResultType(), PrototypeConstraints(), false);
+			sym->mSurroundingScope = lhs->mSurroundingScope;
+			sym->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), resolveType(token, lhs, operation, rhs), PrototypeConstraints(), false);
+			sym->mSymbolExpression->mSurroundingScope = blueprint;
+
+			ExpressionList params;
+			params.emplace_back(rhs);
+
+			rhs = process_method(sym, (*token), params);
+		}
+	}
+
+	if ( lhs->isMember() && mMethod->isConstMethod() ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member symbol '" + lhs->innerName() + "' in const method", op->position());
+	}
+
+	if ( lhs->isConst() && !(mAllowConstModify && lhs->isMember()) ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + lhs->innerName() + "'", op->position());
+	}
+
+/*
+	if ( !lhs->isConst() && !lhs->isAtomicType() && rhs->isInnerConst() ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to assign const type '" + rhs->getResultType() + "' to non-const symbol '" + lhs->innerName() + "'", op->position());
+	}
+*/
+
+	if ( lhs->isAtomicType() || inner->getResultType() == rhs->getResultType() ) {
+		return new AssignmentStatement( (*token), lhs, rhs );
+	}
+
+	// check if we are using a valid type
+	Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
+	if ( !blueprint ) {
+		throw Designtime::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", token->position());
+	}
+
+	inner->mSymbolExpression = new DesigntimeSymbolExpression("operator=", lhs->getResultType(), PrototypeConstraints(), false);
+	inner->mSymbolExpression->mSurroundingScope = blueprint;
+
+	ExpressionList params;
+	params.emplace_back(rhs);
+
+	return new AssignmentStatement( (*token), lhs, rhs );
+}
+
+/*
+ * syntax:
+ * <lvalue> = <rvalue>
+ */
+Expression* TreeGenerator::process_assignment_expression(TokenIterator& token, SymbolExpression* lhs)
+{
+	auto op = token;
+
+	Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
+
+	auto* rhs = dynamic_cast<Expression*>(expression(++token));
+
+	SymbolExpression* inner = lhs;
+	while ( inner->mSymbolExpression ) {
+		inner = inner->mSymbolExpression;
+	}
+
+	if ( op->type() != Token::Type::ASSIGN ) {
+		Token operation;
+
+		switch ( op->type() ) {
+			case Token::Type::ASSIGN_ADDITION:      operation = Token(Token::Category::Operator, Token::Type::MATH_ADDITION, "+", op->position()); break;
+			case Token::Type::ASSIGN_BITAND:        operation = Token(Token::Category::Operator, Token::Type::BITAND, "&", op->position()); break;
+			case Token::Type::ASSIGN_BITCOMPLEMENT: operation = Token(Token::Category::Operator, Token::Type::BITCOMPLEMENT, "~", op->position()); break;
+			case Token::Type::ASSIGN_BITOR:         operation = Token(Token::Category::Operator, Token::Type::BITOR, "|", op->position()); break;
+			case Token::Type::ASSIGN_DIVIDE:        operation = Token(Token::Category::Operator, Token::Type::MATH_DIVIDE, "/", op->position()); break;
+			case Token::Type::ASSIGN_MODULO:        operation = Token(Token::Category::Operator, Token::Type::MATH_MODULO, "%", op->position()); break;
+			case Token::Type::ASSIGN_MULTIPLY:      operation = Token(Token::Category::Operator, Token::Type::MATH_MULTIPLY, "*", op->position()); break;
+			case Token::Type::ASSIGN_SUBTRACT:      operation = Token(Token::Category::Operator, Token::Type::MATH_SUBTRACT, "-", op->position()); break;
+			default: throw Designtime::Exceptions::SyntaxError("assignment type expected", token->position());
+		}
+
+		if ( inner->isAtomicType() ) {
+			rhs = new BinaryExpressionNoLeftOwner( lhs, operation, rhs, resolveType(token, lhs, operation, rhs) );
 		}
 		else {
 			// check if we are using a valid type
@@ -908,13 +995,13 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 	expect(Token::Type::COMPARE_LESS, token);
 	++token;
 
-	auto* typeExpr = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
-	if ( !typeExpr ) {
+	auto* targetExp = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
+	if ( !targetExp ) {
 		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
-	std::string type = typeExpr->getResultType();
-	PrototypeConstraints constraints = typeExpr->mConstraints;
+	std::string type = targetExp->getResultType();
+	PrototypeConstraints constraints = targetExp->mConstraints;
 
 	Common::TypeDeclaration typeName(type, constraints);
 
@@ -926,18 +1013,18 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	Node* sourceExpr = expression(token);
+	Node* sourceExp = expression(token);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	resolveType(token, typeExpr, Token(Token::Type::ASSIGN, "="), sourceExpr);
-	//resolveType(typeExpr, Token(Token::Type::TYPECAST, "from"), sourceExpr);
+	//resolveType( token, targetExp, Token( Token::Type::ASSIGN, "=" ), sourceExp );
+	resolveType(token, targetExp, Token( Token::Type::TYPECAST, "from" ), sourceExp );
 
 	// delete resolved symbol expression as it is not needed any more
-	delete typeExpr;
+	delete targetExp;
 
-	return new TypecastExpression(typeName.mCombinedName, sourceExpr);
+	return new TypecastExpression(typeName.mCombinedName, sourceExp);
 }
 
 /*
@@ -1079,7 +1166,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	// Declaration parsing
+	// Initialization parsing
 	// {
 	Node* initialization = nullptr;
 	if ( token->type() != Token::Type::SEMICOLON ) {
@@ -1114,9 +1201,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	// }
 
 	// Body parsing
-	// {
 	Node* loopBody = process_statement(token, true);
-	// }
 
 	popScope();
 
@@ -1268,7 +1353,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
-		node = process_assignment(token, symbol);
+		node = process_assignment_expression(token, symbol);
 	}
 	// method call
 	else if ( op->type() == Token::Type::PARENTHESIS_OPEN ) {
@@ -1282,7 +1367,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT || op->type() == Token::Type::OPERATOR_INCREMENT ) {
 		node = process_incdecrement(token, symbol);
 	}
-	// variable usage
+	// symbol usage
 	else {
 		node = symbol;
 	}
@@ -1962,10 +2047,11 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 			throw Common::Exceptions::NotSupported("initialization is not allowed here", token->position());
 		}
 
-		assignmentExp = process_assignment(
-			token,
-			new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), object->isAtomicType())
-		);
+		Token operation(*token);
+
+		assignmentExp = dynamic_cast<Expression*>( expression( ++token ) );
+
+		resolveType( token, object->QualifiedTypename(), operation, assignmentExp->getResultType() );
 	}
 	else if ( initialization == Initialization::Required ) {
 		// initialization is required (probably because type inference is used) but no initialization sequence found
@@ -2294,6 +2380,9 @@ std::string TreeGenerator::resolveType(TokenIterator& token, const std::string& 
 	}
 	catch ( Common::Exceptions::UnknownIdentifier &e ) {
 		throw Common::Exceptions::UnknownIdentifier("unknown type '" + left + "' detected during type check", token->position());
+	}
+	catch ( Common::Exceptions::UnknownOperation &e ) {
+		throw Common::Exceptions::UnknownOperation("unknown operation " + operation.content() + " detected for type '" + left + "' during type check", token->position());
 	}
 	catch ( Common::Exceptions::TypeMismatch &e ) {
 		throw Common::Exceptions::TypeMismatch(left + " " + operation.content() + " " + right, token->position());

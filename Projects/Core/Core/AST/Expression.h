@@ -124,7 +124,7 @@ public:
 	};
 
 public:
-	explicit BinaryExpression(Node* lhs, Token  operation, Node* rhs, const std::string& resultType)
+	explicit BinaryExpression(Node* lhs, Token operation, Node* rhs, const std::string& resultType)
 	: Expression(ExpressionType::BinaryExpression),
 	  mLHS(lhs),
 	  mOperation(std::move(operation)),
@@ -132,10 +132,6 @@ public:
 	  mBinaryExpressionType(BinaryExpressionType::GenericBinaryExpression)
 	{
 		mResultType = resultType;
-	}
-	~BinaryExpression() override {
-		delete mLHS;
-		delete mRHS;
 	}
 
 	BinaryExpressionType::E getBinaryExpressionType() const {
@@ -151,12 +147,36 @@ protected:
 	BinaryExpressionType::E mBinaryExpressionType;
 };
 
+class BinaryExpressionNoLeftOwner : public BinaryExpression
+{
+public:
+	explicit BinaryExpressionNoLeftOwner( Node* lhs, Token operation, Node* rhs, const std::string& resultType )
+	: BinaryExpression( lhs, operation, rhs, resultType )
+	{ }
+	~BinaryExpressionNoLeftOwner() override {
+		// mLHS does not belong to us, so we are not allowed to delete it
+		delete mRHS;
+	}
+};
 
-class BooleanBinaryExpression : public BinaryExpression
+class BinaryExpressionOwner : public BinaryExpression
+{
+public:
+	explicit BinaryExpressionOwner( Node* lhs, Token operation, Node* rhs, const std::string& resultType )
+	: BinaryExpression( lhs, operation, rhs, resultType )
+	{ }
+	~BinaryExpressionOwner() override {
+		delete mLHS;
+		delete mRHS;
+	}
+};
+
+
+class BooleanBinaryExpression : public BinaryExpressionOwner
 {
 public:
 	explicit BooleanBinaryExpression(Node* left, const Token& operation, Node* right)
-	: BinaryExpression(left, operation, right, _bool)
+	: BinaryExpressionOwner(left, operation, right, _bool)
 	{
 		mBinaryExpressionType = BinaryExpressionType::BooleanBinaryExpression;
 	}
