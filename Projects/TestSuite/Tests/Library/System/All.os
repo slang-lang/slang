@@ -1,7 +1,5 @@
 #!/usr/local/bin/slang
 
-import System.All;
-
 public void Main(int argc, string args) {
 	print("BooleanTest.os");
 	system("./BooleanTest.os");
