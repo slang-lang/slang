@@ -88,7 +88,7 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection {
 
 		int result = mysql_store_result( DB );
 		while ( mysql_fetch_row( result ) ) {
-			var record = new #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#();
+			var record = new #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#( DB );
 			record.loadByResult( result );
 
 			Collection.push_back( record );

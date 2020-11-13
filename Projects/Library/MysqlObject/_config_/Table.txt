@@ -110,7 +110,7 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection {
 
 		int result = mysql_store_result( DB );
 		while ( mysql_fetch_row( result ) ) {
-			var record = new #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#();
+			var record = new #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#( DB );
 			record.loadByResult( result );
 
 			Collection.push_back( record );

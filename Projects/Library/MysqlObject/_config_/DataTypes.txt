@@ -5,5 +5,5 @@ int:		int
 mediumtext:	string
 text:		string
 tinyint:	bool
-timestamp:	int
+timestamp:	string
 varchar:	string

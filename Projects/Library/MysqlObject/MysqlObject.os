@@ -94,6 +94,6 @@ private void printUsage() {
 }
 
 private void printVersion() {
-	print( APP_NAME + " " + APP_VERSION );
+	print( APP_NAME + " " + APP_VERSION + " " + APP_COPYRIGHT );
 	print( "" );
 }
