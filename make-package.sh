@@ -2,10 +2,13 @@
 
 # set up essential stuff
 CONFIG_FILE="make-package.cfg"
+CONFLICTS="oscript"
 DESCRIPTION="Is an interpreter, debugger & package manager for the Slang programming language"
 MAINTAINER="Michael Adelmann <michael.adelmann@gmail.com>"
 PACKAGE="slang"
 PLATFORM=$(uname -m)
+PROVIDES="slang"
+REPLACES="oscript"
 VERSION=$(cat version)
 
 # preparing config file if necessary
@@ -61,14 +64,17 @@ echo "Source: ${PACKAGE}" > Env/DEBIAN/control
 echo "Section: unknown" >> Env/DEBIAN/control
 echo "Priority: optional" >> Env/DEBIAN/control
 echo "Maintainer: ${MAINTAINER}" >> Env/DEBIAN/control
-echo "Build-Depends: debhelper (>=10)" >> Env/DEBIAN/control
+echo "Build-Depends: debhelper (>=10), libsqlite3-dev" >> Env/DEBIAN/control
 echo "Standards-Version: 4.0.0" >> Env/DEBIAN/control
 echo "Homepage: https://slang.ticketsharing.net/" >>  Env/DEBIAN/control
 
 echo "Package: ${PACKAGE}" >> Env/DEBIAN/control
 echo "Version: ${VERSION}" >> Env/DEBIAN/control
 echo "Architecture: ${PLATFORM}" >> Env/DEBIAN/control
-echo "Depends: ${shlibs:Depends}, ${misc:depends}" >> Env/DEBIAN/control
+echo "Conficts: ${CONFLICTS}" >> Env/DEBIAN/control
+echo "Provides: ${PROVIDES}" >> Env/DEBIAN/control
+echo "Replaces: ${REPLACES}" >> Env/DEBIAN/control
+echo "Depends: \"${shlibs:Depends}\", \"${misc:depends}\"" >> Env/DEBIAN/control
 echo "Description: ${DESCRIPTION}" >> Env/DEBIAN/control
 
 # add new binaries
