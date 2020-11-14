@@ -729,7 +729,7 @@ void Repository::prepareType(const Common::TypeDeclaration& type)
 
 		if ( !blueprint ) {
 			// pure type not available
-			throw Common::Exceptions::UnknownIdentifier(resolvedType);
+			throw Common::Exceptions::UnknownIdentifier( "pure type '" + resolvedType + "' not available" );
 		}
 
 		// build new prototype from pure type with constraints
