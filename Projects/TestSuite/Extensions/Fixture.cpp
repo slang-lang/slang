@@ -14,13 +14,9 @@ namespace Testing {
 namespace Extensions {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Extensions"),
-  Utils::Common::FileLogger(p, "Extensions")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p )
+: TestFixture( "Extensions" ),
+  Utils::Common::Logger( p, "Extensions" )
 {
 }
 

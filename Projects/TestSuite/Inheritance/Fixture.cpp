@@ -14,13 +14,9 @@ namespace Testing {
 namespace Inheritance {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Inheritance"),
-  Utils::Common::FileLogger(p, "Inheritance")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p )
+: TestFixture( "Inheritance"),
+  Utils::Common::Logger( p, "Inheritance" )
 {
 }
 

@@ -14,13 +14,9 @@ namespace Testing {
 namespace Prototype {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Prototype"),
-  Utils::Common::FileLogger(p, "Prototype")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p )
+: TestFixture( "Prototype" ),
+  Utils::Common::Logger( p, "Prototype" )
 {
 }
 

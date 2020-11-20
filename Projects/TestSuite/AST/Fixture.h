@@ -20,7 +20,7 @@ namespace AST {
 
 
 class Fixture : public TestFixture,
-				private Utils::Common::FileLogger
+				private Utils::Common::Logger
 {
 public:
 	Fixture(const Utils::Common::ILogger *p);

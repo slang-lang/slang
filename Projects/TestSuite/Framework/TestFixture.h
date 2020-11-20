@@ -26,8 +26,8 @@ public:
 	typedef std::list<GenericTest*> TestList;
 
 public:
-	explicit TestFixture(std::string name)
-	: mName(std::move(name))
+	explicit TestFixture( std::string name )
+	: mName( std::move( name ) )
 	{ }
 	virtual ~TestFixture() {
 		cleanup();

@@ -14,13 +14,9 @@ namespace Testing {
 namespace Library {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Library"),
-  Utils::Common::FileLogger(p, "Library")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p )
+: TestFixture( "Library" ),
+  Utils::Common::Logger( p, "Library" )
 {
 }
 

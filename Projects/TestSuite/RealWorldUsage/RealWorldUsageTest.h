@@ -19,11 +19,11 @@ namespace RealWorldUsage {
 
 
 class RealWorldUsageTest : public GenericTest,
-				 private Utils::Common::FileLogger
+				 		   private Utils::Common::Logger
 {
 public:
-	RealWorldUsageTest(const Utils::Common::ILogger *p);
-	virtual ~RealWorldUsageTest() { }
+	explicit RealWorldUsageTest( const Utils::Common::ILogger* p );
+	~RealWorldUsageTest() = default;
 
 public:
 	void process();

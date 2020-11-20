@@ -19,11 +19,11 @@ namespace Math {
 
 
 class MathTest : public GenericTest,
-				 private Utils::Common::FileLogger
+				 private Utils::Common::Logger
 {
 public:
-	MathTest(const Utils::Common::ILogger *p);
-	virtual ~MathTest() { }
+	explicit MathTest( const Utils::Common::ILogger* p );
+	~MathTest() = default;
 
 public:
 	void process();

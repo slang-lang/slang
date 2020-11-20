@@ -19,9 +19,9 @@ namespace Testing {
 namespace Framework {
 
 
-TestFrameworkTest::TestFrameworkTest(const Utils::Common::ILogger *p)
-: GenericTest("TestFrameworkTest"),
-  Utils::Common::FileLogger(p, "TestFrameworkTest")
+TestFrameworkTest::TestFrameworkTest( const Utils::Common::ILogger* p )
+: GenericTest( "TestFrameworkTest" ),
+  Utils::Common::Logger( p, "TestFrameworkTest" )
 {
 }
 

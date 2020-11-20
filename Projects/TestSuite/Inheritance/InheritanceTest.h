@@ -19,11 +19,11 @@ namespace Inheritance {
 
 
 class InheritanceTest : public GenericTest,
-						private Utils::Common::FileLogger
+						private Utils::Common::Logger
 {
 public:
-    InheritanceTest(const Utils::Common::ILogger *p);
-    ~InheritanceTest();
+    explicit InheritanceTest( const Utils::Common::ILogger* p );
+    ~InheritanceTest() = default;
 
 public:
     void process();

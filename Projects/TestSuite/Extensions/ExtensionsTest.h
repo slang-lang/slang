@@ -19,11 +19,11 @@ namespace Extensions {
 
 
 class ExtensionsTest : public GenericTest,
-				 private Utils::Common::FileLogger
+				 	   private Utils::Common::Logger
 {
 public:
-	ExtensionsTest(const Utils::Common::ILogger *p);
-	virtual ~ExtensionsTest() { }
+	explicit ExtensionsTest( const Utils::Common::ILogger* p );
+	~ExtensionsTest() = default;
 
 public:
 	void process();

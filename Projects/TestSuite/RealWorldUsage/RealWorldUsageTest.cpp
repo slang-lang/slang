@@ -22,9 +22,9 @@ namespace Testing {
 namespace RealWorldUsage {
 
 
-RealWorldUsageTest::RealWorldUsageTest(const ::Utils::Common::ILogger *p)
-: GenericTest("RealWorldUsageTest"),
-  ::Utils::Common::FileLogger(p, "RealWorldUsageTest")
+RealWorldUsageTest::RealWorldUsageTest( const Utils::Common::ILogger* p )
+: GenericTest( "RealWorldUsageTest" ),
+  Utils::Common::Logger( p, "RealWorldUsageTest" )
 {
 }
 

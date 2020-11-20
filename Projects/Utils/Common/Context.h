@@ -23,36 +23,28 @@ class IContext
 public:
 	virtual ~IContext() = default;
 
-public:
-	virtual void write(const char* msg) = 0;
+	virtual void write(const std::string& msg) = 0;
 };
 
 
 class FileContext : public IContext
 {
 public:
-	explicit FileContext(const char* file);
+	explicit FileContext( const std::string& file );
 	~FileContext();
 
 public:
-	void write(const char* msg);
-
-protected:
+	void write( const std::string& msg );
 
 private:
-	std::ofstream	mLogFile;
+	std::ofstream mLogFile;
 };
 
 
 class StdOutContext : public IContext
 {
 public:
-	void write(const char* msg);
-
-protected:
-
-private:
-
+	void write( const std::string& msg );
 };
 
 

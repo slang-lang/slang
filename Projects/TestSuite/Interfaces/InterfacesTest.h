@@ -19,11 +19,11 @@ namespace Interfaces {
 
 
 class InterfacesTest : public GenericTest,
-					   private Utils::Common::FileLogger
+					   private Utils::Common::Logger
 {
 public:
-    InterfacesTest(const Utils::Common::ILogger *p);
-    ~InterfacesTest();
+    explicit InterfacesTest( const Utils::Common::ILogger* p );
+    ~InterfacesTest() = default;
 
 public:
     void process();

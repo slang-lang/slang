@@ -22,10 +22,10 @@ namespace Common {
 namespace Configuration {
 
 
-class Configurator : private Common::FileLogger
+class Configurator : private Common::Logger
 {
 public:
-	Configurator(const Common::FileLogger *p, const std::string& file = "");
+	Configurator( const Common::Logger* p, const std::string& file = "" );
 	~Configurator();
 
 public:

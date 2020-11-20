@@ -14,13 +14,9 @@ namespace Testing {
 namespace Interfaces {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Interfaces"),
-  Utils::Common::FileLogger(p, "Interfaces")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p )
+: TestFixture( "Interfaces" ),
+  Utils::Common::Logger( p, "Interfaces" )
 {
 }
 

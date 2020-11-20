@@ -22,9 +22,9 @@ namespace Testing {
 namespace Extensions {
 
 
-ExtensionsTest::ExtensionsTest(const ::Utils::Common::ILogger *p)
-: GenericTest("ExtensionsTest"),
-  ::Utils::Common::FileLogger(p, "ExtensionsTest")
+ExtensionsTest::ExtensionsTest( const ::Utils::Common::ILogger* p )
+: GenericTest( "ExtensionsTest" ),
+  Utils::Common::Logger( p, "ExtensionsTest" )
 {
 }
 

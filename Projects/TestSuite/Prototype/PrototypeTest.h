@@ -19,11 +19,11 @@ namespace Prototype {
 
 
 class PrototypeTest : public GenericTest,
-					  private Utils::Common::FileLogger
+					  private Utils::Common::Logger
 {
 public:
-	PrototypeTest(const Utils::Common::ILogger *p);
-	virtual ~PrototypeTest() { }
+	explicit PrototypeTest( const Utils::Common::ILogger* p );
+	~PrototypeTest() = default;
 
 public:
 	void process();

@@ -28,9 +28,9 @@ namespace Testing {
 namespace Prototype {
 
 
-PrototypeTest::PrototypeTest(const ::Utils::Common::ILogger *p)
+PrototypeTest::PrototypeTest( const Utils::Common::ILogger* p )
 : GenericTest("PrototypeTest"),
-  ::Utils::Common::FileLogger(p, "PrototypeTest")
+  Utils::Common::Logger( p, "PrototypeTest" )
 {
 }
 

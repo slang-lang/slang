@@ -19,11 +19,11 @@ namespace AST {
 
 
 class ASTTest : public GenericTest,
-				private Utils::Common::FileLogger
+				private Utils::Common::Logger
 {
 public:
-	ASTTest(const Utils::Common::ILogger *p);
-	~ASTTest();
+	explicit ASTTest(const Utils::Common::ILogger* p);
+	~ASTTest() = default;
 
 public:
 	void process();

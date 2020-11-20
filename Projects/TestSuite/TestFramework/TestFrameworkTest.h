@@ -19,10 +19,11 @@ namespace Framework {
 
 
 class TestFrameworkTest : public GenericTest,
-						  private Utils::Common::FileLogger
+						  private Utils::Common::Logger
 {
 public:
-	TestFrameworkTest(const Utils::Common::ILogger *p);
+	explicit TestFrameworkTest( const Utils::Common::ILogger* p );
+	~TestFrameworkTest() = default;
 
 public:
 	void process();

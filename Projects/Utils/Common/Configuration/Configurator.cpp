@@ -18,12 +18,12 @@ namespace Common {
 namespace Configuration {
 
 
-Configurator::Configurator(const Utils::Common::FileLogger *p, const std::string& file)
-: Utils::Common::FileLogger(p, "Configurator"),
+Configurator::Configurator( const Utils::Common::Logger* p, const std::string& file )
+: Utils::Common::Logger( p, "Configurator" ),
   mConfigFile(file),
   mSuccess(false)
 {
-	char* homepath = getenv("SLANG_HOME");
+	char* homepath = getenv( "SLANG_HOME" );
 	if ( homepath ) {
 		mHomePath = homepath;
 		if ( !mHomePath.empty() ) {

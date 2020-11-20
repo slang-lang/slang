@@ -85,13 +85,12 @@ int main(int argc, const char* argv[])
 
 	initialize();
 
-	bool executed = false;
 	bool show = false;
 	std::string toRun;
 
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {
-			if ( Utils::Tools::StringCompare(argv[i], "--help") ) {
+			if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
 				printUsage();
 				cleanup();
 
@@ -171,7 +170,9 @@ int main(int argc, const char* argv[])
 
 		TestResult result;
 
-		for ( auto & mFixture : mFixtures ) {
+		bool executed = false;
+
+		for ( auto& mFixture : mFixtures ) {
 			if ( show ) {
 				if ( toRun.empty() ) {
 					std::cout << mFixture->getName() << std::endl;
@@ -209,7 +210,7 @@ int main(int argc, const char* argv[])
 			OSerror("abnormal program termination!");
 		}
 	}
-	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types
+	catch ( std::exception& e ) {
 		OSerror(e.what());
 	}
 	catch ( ... ) {	// catch everything

@@ -14,13 +14,9 @@ namespace Testing {
 namespace Math {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Math"),
-  Utils::Common::FileLogger(p, "Math")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p )
+: TestFixture( "Math" ),
+  Utils::Common::Logger( p, "Math" )
 {
 }
 

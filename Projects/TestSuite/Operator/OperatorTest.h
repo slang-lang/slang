@@ -19,11 +19,11 @@ namespace Operator {
 
 
 class OperatorTest : public GenericTest,
-					 private Utils::Common::FileLogger
+					 private Utils::Common::Logger
 {
 public:
-	OperatorTest(const Utils::Common::FileLogger *p);
-	virtual ~OperatorTest() { }
+	explicit OperatorTest( const Utils::Common::ILogger* p );
+	~OperatorTest() = default;
 
 public:
 	void process();

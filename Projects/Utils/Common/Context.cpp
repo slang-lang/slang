@@ -13,9 +13,9 @@ namespace Utils {
 namespace Common {
 
 
-FileContext::FileContext(const char* file)
+FileContext::FileContext(const std::string& file)
 {
-	mLogFile.open(file, std::ios::app);
+	mLogFile.open( file.c_str(), std::ios::app );
 }
 
 FileContext::~FileContext()
@@ -23,14 +23,14 @@ FileContext::~FileContext()
 	mLogFile.close();
 }
 
-void FileContext::write(const char* msg)
+void FileContext::write(const std::string& msg)
 {
 	mLogFile << msg << std::endl;
 	mLogFile << std::flush;
 }
 
 
-void StdOutContext::write(const char* msg)
+void StdOutContext::write( const std::string& msg )
 {
 	std::cout << msg << std::endl;
 }

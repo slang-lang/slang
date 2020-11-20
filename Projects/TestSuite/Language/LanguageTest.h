@@ -19,11 +19,11 @@ namespace Language {
 
 
 class LanguageTest : public GenericTest,
-					 private Utils::Common::FileLogger
+					 private Utils::Common::Logger
 {
 public:
-	LanguageTest(const Utils::Common::ILogger *p);
-	virtual ~LanguageTest() { }
+	explicit LanguageTest( const Utils::Common::ILogger* p );
+	~LanguageTest() = default;
 
 public:
 	void process();

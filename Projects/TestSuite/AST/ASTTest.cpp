@@ -29,13 +29,9 @@ namespace Testing {
 namespace AST {
 
 
-ASTTest::ASTTest(const ::Utils::Common::ILogger *p)
+ASTTest::ASTTest(const ::Utils::Common::ILogger* p)
 : GenericTest("ASTTest"),
-  ::Utils::Common::FileLogger(p, "ASTTest")
-{
-}
-
-ASTTest::~ASTTest()
+  ::Utils::Common::Logger(p, "ASTTest")
 {
 }
 

@@ -20,11 +20,11 @@ namespace Framework {
 
 
 class Fixture : public TestFixture,
-				private Utils::Common::FileLogger
+				private Utils::Common::Logger
 {
 public:
-	Fixture(const Utils::Common::ILogger *p);
-	~Fixture();
+	explicit Fixture( const Utils::Common::ILogger* p );
+	~Fixture() = default;
 
 public:
 	void setup();

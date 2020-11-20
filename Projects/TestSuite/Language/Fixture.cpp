@@ -14,13 +14,9 @@ namespace Testing {
 namespace Language {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Language"),
-  Utils::Common::FileLogger(p, "Language")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p )
+: TestFixture( "Language" ),
+  Utils::Common::Logger( p, "Language" )
 {
 }
 

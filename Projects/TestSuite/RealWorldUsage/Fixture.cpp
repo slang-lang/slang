@@ -14,13 +14,9 @@ namespace Testing {
 namespace RealWorldUsage {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("RealWorldUsage"),
-  Utils::Common::FileLogger(p, "RealWorldUsage")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p )
+: TestFixture( "RealWorldUsage" ),
+  Utils::Common::Logger( p, "RealWorldUsage" )
 {
 }
 

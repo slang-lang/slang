@@ -27,9 +27,9 @@ public:
 	  Run(0),
 	  Skipped(0)
 	{ }
-	TestResult(const TestResult& other)	= default;
+	TestResult( const TestResult& other )	= default;
 
-	TestResult operator+(const TestResult& other) {
+	TestResult operator+( const TestResult& other ) {
 		Failed += other.Failed;
 		Run += other.Run;
 		Skipped += other.Skipped;
@@ -53,9 +53,9 @@ public:
 	};
 
 public:
-	explicit GenericTest(std::string name)
-	: mLastResult(Failed),
-	  mName(std::move(name))
+	explicit GenericTest( std::string name )
+	: mLastResult( Failed ),
+	  mName( std::move( name ) )
 	{ }
 	virtual ~GenericTest() = default;
 

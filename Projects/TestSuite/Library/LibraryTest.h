@@ -19,10 +19,11 @@ namespace Library {
 
 
 class LibraryTest : public GenericTest,
-				 	private Utils::Common::FileLogger
+				 	private Utils::Common::Logger
 {
 public:
-	LibraryTest(const Utils::Common::ILogger *p);
+	explicit LibraryTest( const Utils::Common::ILogger* p );
+	~LibraryTest() = default;
 
 public:
 	void process();
