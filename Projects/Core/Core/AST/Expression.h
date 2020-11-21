@@ -637,7 +637,7 @@ class LambdaExpression : public MethodExpression
 {
 public:
 	explicit LambdaExpression(const ExpressionList& params, const std::string& resultType, bool isConst, Statements* statements)
-	: MethodExpression(NULL, params, resultType, isConst, false),
+	: MethodExpression(nullptr, params, resultType, isConst, false),
 	  mStatements(statements)
 	{ }
 	virtual ~LambdaExpression();

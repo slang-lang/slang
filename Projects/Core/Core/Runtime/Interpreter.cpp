@@ -56,7 +56,7 @@ namespace Runtime {
 		} \
 		catch ( Runtime::ControlFlow::E &e ) { \
 			mControlFlow = e; \
-			return NULL; \
+			return nullptr; \
 		}
 
 #define tryEvaluateReturnNull(left, right) \
@@ -65,7 +65,7 @@ namespace Runtime {
 		} \
 		catch ( Runtime::ControlFlow::E &e ) { \
 			mControlFlow = e; \
-			return NULL; \
+			return nullptr; \
 		}
 
 
@@ -74,7 +74,7 @@ Interpreter::Interpreter(Common::ThreadId threadId)
   mOwner(0)
 {
 	// initialize virtual machine stuff
-	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : NULL;
+	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
 	mThread = Controller::Instance().thread(threadId);

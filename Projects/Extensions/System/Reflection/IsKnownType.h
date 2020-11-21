@@ -49,7 +49,7 @@ public:
 
 			std::string param_type = (*it++).value().toStdString();
 
-			*result = Runtime::BoolObject( Controller::Instance().repository()->findBluePrintObject(param_type) != NULL );
+			*result = Runtime::BoolObject( Controller::Instance().repository()->findBluePrintObject(param_type) != nullptr );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

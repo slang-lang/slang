@@ -39,7 +39,7 @@ public:
 	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
 	{
 		try {
-			*result = Runtime::IntegerObject((int)time(NULL));
+			*result = Runtime::IntegerObject( static_cast<int>( time( nullptr ) ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

@@ -47,7 +47,7 @@ public:
 
 			int param_sockfd = (*it++).value().toInt();
 
-			int handle = accept(param_sockfd, NULL, NULL);
+			int handle = accept(param_sockfd, nullptr, nullptr);
 
 			*result = Runtime::IntegerObject(handle);
 		}

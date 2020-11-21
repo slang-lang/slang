@@ -70,7 +70,7 @@ public:
 			}
 
 			while ( !feof(pipe.get()) ) {
-				if ( fgets(buffer.data(), 128, pipe.get()) != NULL ) {
+				if ( fgets(buffer.data(), 128, pipe.get()) != nullptr ) {
 					resultStr += buffer.data();
 				}
 			}
@@ -90,7 +90,7 @@ public:
 				char buffer[128];
 
 				while ( !feof(pipe) ) {
-					if ( fgets(buffer, 128, pipe) != NULL ) {
+					if ( fgets(buffer, 128, pipe) != nullptr ) {
 						resultStr += buffer;
 					}
 				}
