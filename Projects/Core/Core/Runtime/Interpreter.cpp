@@ -2024,7 +2024,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 */
 
 			// this separate assignment operation ensures that are type system is not bypassed
-			operator_binary_assign(object, &tmp, token->position());
+			operator_binary_assign(object, &tmp);
 		}
 		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
@@ -2107,7 +2107,7 @@ void Interpreter::process_var(TokenIterator& token, Object* /*result*/)
 
 	getScope()->define(name, object);
 
-	operator_binary_assign(object, &var, token->position());
+	operator_binary_assign(object, &var);
 	// }
 
 	expect(Token::Type::SEMICOLON, token);

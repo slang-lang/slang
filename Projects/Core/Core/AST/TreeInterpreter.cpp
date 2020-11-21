@@ -434,8 +434,8 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 		switch ( exp->mOperation.type() ) {
 			// math expressions
 			// {
-			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(&lvalue, exp->mOperation.position()); break;
-			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(&lvalue, exp->mOperation.position()); break;
+			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement( &lvalue ); break;
+			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment( &lvalue ); break;
 			// }
 
 			// subscript operator
@@ -457,16 +457,16 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 		switch ( exp->mOperation.type() ) {
 			// boolean expressions
 			// {
-			case Token::Type::OPERATOR_NOT:      Runtime::operator_unary_not(result, exp->mOperation.position()); break;
-			case Token::Type::OPERATOR_VALIDATE: Runtime::operator_unary_validate(result, exp->mOperation.position()); break;
+			case Token::Type::OPERATOR_NOT:      Runtime::operator_unary_not( result ); break;
+			case Token::Type::OPERATOR_VALIDATE: Runtime::operator_unary_validate( result ); break;
 			// }
 
 			// math expressions
 			// {
-			case Token::Type::MATH_ADDITION:      Runtime::operator_unary_plus(result, exp->mOperation.position()); break;
-			case Token::Type::MATH_SUBTRACT:      Runtime::operator_unary_minus(result, exp->mOperation.position()); break;
-			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(result, exp->mOperation.position()); break;
-			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(result, exp->mOperation.position()); break;
+			case Token::Type::MATH_ADDITION:      Runtime::operator_unary_plus( result ); break;
+			case Token::Type::MATH_SUBTRACT:      Runtime::operator_unary_minus( result ); break;
+			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement( result ); break;
+			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment( result ); break;
 			// }
 
 			// subscript operator

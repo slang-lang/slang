@@ -8,6 +8,7 @@
 #include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
 #include "DoubleObject.h"
+#include "EnumerationObject.h"
 #include "FloatObject.h"
 #include "IntegerObject.h"
 #include "StringObject.h"
@@ -19,24 +20,24 @@ namespace Slang {
 namespace Runtime {
 
 
-AtomicValue BoolObject::DEFAULTVALUE = AtomicValue(false);
+AtomicValue BoolObject::DEFAULTVALUE = AtomicValue( false );
 std::string BoolObject::TYPENAME = _bool;
 
 
-BoolObject::BoolObject(const AtomicValue& value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toBool()))
+BoolObject::BoolObject( const AtomicValue& value )
+: Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value.toBool() ) )
 {
 	mIsAtomicType = true;
 }
 
-BoolObject::BoolObject(const std::string& name, const AtomicValue& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
+BoolObject::BoolObject( const std::string& name, const AtomicValue& value )
+: Object( name, SYSTEM_LIBRARY, TYPENAME, value )
 {
 	mIsAtomicType = true;
 }
 
-BoolObject::BoolObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE)
+BoolObject::BoolObject( const Object& other )
+: Object( other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE )
 {
 	// generic type cast
 
@@ -46,6 +47,7 @@ BoolObject::BoolObject(const Object& other)
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
+		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
@@ -61,35 +63,37 @@ bool BoolObject::operator_bool() const
 	return mValue.toBool();
 }
 
-void BoolObject::operator_assign(const Object *other)
+void BoolObject::operator_assign( const Object* rvalue )
 {
-	const std::string& target = other->QualifiedTypename();
+	const std::string& source = rvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
-		mValue = other->getValue().toBool();
+	if ( source == BoolObject::TYPENAME ||
+		 source == DoubleObject::TYPENAME ||
+		 source == EnumerationObject::TYPENAME ||
+		 source == FloatObject::TYPENAME ||
+		 source == IntegerObject::TYPENAME ||
+		 source == StringObject::TYPENAME ) {
+		mValue = rvalue->getValue().toBool();
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator=: conversion from " + rvalue->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool BoolObject::operator_equal(const Object *other)
+bool BoolObject::operator_equal( const Object* rvalue )
 {
-	const std::string& target = other->QualifiedTypename();
+	const std::string& source = rvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
-		return mValue.toBool() == other->getValue().toBool();
+	if ( source == BoolObject::TYPENAME ||
+		 source == DoubleObject::TYPENAME ||
+		 source == EnumerationObject::TYPENAME ||
+		 source == FloatObject::TYPENAME ||
+		 source == IntegerObject::TYPENAME ||
+		 source == StringObject::TYPENAME ) {
+		return mValue.toBool() == rvalue->getValue().toBool();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator==: conversion from " + rvalue->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
 void BoolObject::operator_unary_not()

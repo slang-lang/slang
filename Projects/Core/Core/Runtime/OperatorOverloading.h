@@ -24,26 +24,26 @@ namespace Runtime {
 // Forward declarations
 class Object;
 
-void operator_binary_assign(Object* left, Object* right, const Common::Position& position = Common::Position());
-void operator_binary_bitand(Object* left, Object* right, const Common::Position& position = Common::Position());
-void operator_binary_bitcomplement(Object* left, Object* right, const Common::Position& position = Common::Position());
-void operator_binary_bitor(Object* left, Object* right, const Common::Position& position = Common::Position());
-void operator_binary_divide(Object* left, Object* right, const Common::Position& position = Common::Position());
-bool operator_binary_equal(Object* left, Object* right, const Common::Position& position = Common::Position());
-bool operator_binary_greater(Object* left, Object* right, const Common::Position& position = Common::Position());
-bool operator_binary_greater_equal(Object* left, Object* right, const Common::Position& position = Common::Position());
-bool operator_binary_less(Object* left, Object* right, const Common::Position& position = Common::Position());
-bool operator_binary_less_equal(Object* left, Object* right, const Common::Position& position = Common::Position());
-void operator_binary_modulo(Object* left, Object* right, const Common::Position& position = Common::Position());
-void operator_binary_multiply(Object* left, Object* right, const Common::Position& position = Common::Position());
-void operator_binary_plus(Object* left, Object* right, const Common::Position& position = Common::Position());
-void operator_binary_subtract(Object* left, Object* right, const Common::Position& position = Common::Position());
-void operator_unary_decrement(Object* base, const Common::Position& position = Common::Position());
-void operator_unary_increment(Object* base, const Common::Position& position = Common::Position());
-void operator_unary_minus(Object* base, const Common::Position& position = Common::Position());
-void operator_unary_plus(Object* base, const Common::Position& position = Common::Position());
-void operator_unary_not(Object* base, const Common::Position& position = Common::Position());
-void operator_unary_validate(Object* base, const Common::Position& position = Common::Position());
+void operator_binary_assign( Object* lvalue, Object* rvalue );
+void operator_binary_bitand( Object* lvalue, Object* rvalue );
+void operator_binary_bitcomplement( Object* lvalue, Object* rvalue );
+void operator_binary_bitor( Object* lvalue, Object* rvalue );
+void operator_binary_divide( Object* lvalue, Object* rvalue );
+bool operator_binary_equal( Object* lvalue, Object* rvalue );
+bool operator_binary_greater( Object* lvalue, Object* rvalue );
+bool operator_binary_greater_equal( Object* lvalue, Object* rvalue );
+bool operator_binary_less( Object* lvalue, Object* rvalue );
+bool operator_binary_less_equal( Object* lvalue, Object* rvalue );
+void operator_binary_modulo( Object* lvalue, Object* rvalue );
+void operator_binary_multiply( Object* lvalue, Object* rvalue );
+void operator_binary_plus( Object* lvalue, Object* rvalue );
+void operator_binary_subtract( Object* lvalue, Object* rvalue );
+void operator_unary_decrement( Object* lvalue );
+void operator_unary_increment( Object* lvalue );
+void operator_unary_minus( Object* lvalue );
+void operator_unary_plus( Object* lvalue );
+void operator_unary_not( Object* base );
+void operator_unary_validate( Object* base );
 
 
 }
