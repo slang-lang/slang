@@ -296,7 +296,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		}
 
 		if ( !imported ) {
-			throw Common::Exceptions::Exception("could not resolve import '" + lib + "'");
+			throw Common::Exceptions::Exception("could not resolve import '" + lib + "' in file '" + library + "'");
 		}
 	}
 
