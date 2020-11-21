@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <cassert>
 #include <map>
 #include <string>
 
