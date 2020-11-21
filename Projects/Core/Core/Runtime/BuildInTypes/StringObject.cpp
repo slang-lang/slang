@@ -9,6 +9,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include "BoolObject.h"
 #include "DoubleObject.h"
+#include "EnumerationObject.h"
 #include "FloatObject.h"
 #include "IntegerObject.h"
 #include "UserObject.h"
@@ -21,30 +22,30 @@ namespace Slang {
 namespace Runtime {
 
 
-AtomicValue StringObject::DEFAULTVALUE = AtomicValue(std::string(""));
+AtomicValue StringObject::DEFAULTVALUE = AtomicValue( std::string( "" ) );
 std::string StringObject::TYPENAME = _string;
 
 
-StringObject::StringObject(const AtomicValue& value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toStdString()))
+StringObject::StringObject( const AtomicValue& value )
+: Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value.toStdString() ) )
 {
 	mIsAtomicType = true;
 }
 
-StringObject::StringObject(const std::string& value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
+StringObject::StringObject(  const std::string& value)
+: Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value ) )
 {
 	mIsAtomicType = true;
 }
 
-StringObject::StringObject(const std::string& name, const AtomicValue& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
+StringObject::StringObject( const std::string& name, const AtomicValue& value )
+: Object( name, SYSTEM_LIBRARY, TYPENAME, value )
 {
 	mIsAtomicType = true;
 }
 
-StringObject::StringObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE)
+StringObject::StringObject( const Object& other )
+: Object( other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE )
 {
 	// generic type cast
 
@@ -52,33 +53,36 @@ StringObject::StringObject(const Object& other)
 
 	const std::string& target = other.QualifiedTypename();
 
-	if ( target == IntegerObject::TYPENAME ||
-		target == BoolObject::TYPENAME ||
-		target == StringObject::TYPENAME ||
-		target == DoubleObject::TYPENAME ||
-		target == FloatObject::TYPENAME ||
-		other.isEnumerationValue() ) {
+	if ( target == BoolObject::TYPENAME ||
+         target == DoubleObject::TYPENAME ||
+         target == EnumerationObject::TYPENAME ||
+         target == FloatObject::TYPENAME ||
+         target == IntegerObject::TYPENAME ||
+         target == StringObject::TYPENAME ||
+         other.isEnumerationValue() ) {
 		mValue = other.getValue().toStdString();
 	}
 	else {
-		Object::operator_assign(&other);
+		Object::operator_assign( &other );
 	}
 }
 
-void StringObject::operator_assign(const Object *other)
+void StringObject::operator_assign( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == StringObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ) {
+	if ( target == BoolObject::TYPENAME ||
+         target == DoubleObject::TYPENAME ||
+         target == EnumerationObject::TYPENAME ||
+         target == FloatObject::TYPENAME ||
+         target == IntegerObject::TYPENAME ||
+         target == StringObject::TYPENAME ||
+         other->isEnumerationValue() ) {
 		mValue = other->getValue().toStdString();
-		return;
 	}
-
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+    else {
+        Object::operator_assign( other );
+    }
 }
 
 bool StringObject::operator_bool() const
@@ -86,95 +90,107 @@ bool StringObject::operator_bool() const
 	return mValue.toBool();
 }
 
-bool StringObject::operator_equal(const Object *other)
+bool StringObject::operator_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
+         target == DoubleObject::TYPENAME ||
+         target == EnumerationObject::TYPENAME ||
+         target == FloatObject::TYPENAME ||
+         target == IntegerObject::TYPENAME ||
+         target == StringObject::TYPENAME ||
+         other->isEnumerationValue() ) {
 		return mValue.toStdString() == other->getValue().toStdString();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool StringObject::operator_greater(const Object *other)
+bool StringObject::operator_greater( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
+         target == DoubleObject::TYPENAME ||
+         target == EnumerationObject::TYPENAME ||
+         target == FloatObject::TYPENAME ||
+         target == IntegerObject::TYPENAME ||
+         target == StringObject::TYPENAME ||
+         other->isEnumerationValue() ) {
 		return mValue.toStdString() > other->getValue().toStdString();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool StringObject::operator_greater_equal(const Object *other)
+bool StringObject::operator_greater_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
+         target == DoubleObject::TYPENAME ||
+         target == EnumerationObject::TYPENAME ||
+         target == FloatObject::TYPENAME ||
+         target == IntegerObject::TYPENAME ||
+         target == StringObject::TYPENAME ||
+         other->isEnumerationValue() ) {
 		return mValue.toStdString() >= other->getValue().toStdString();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool StringObject::operator_less(const Object *other)
+bool StringObject::operator_less( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
+         target == DoubleObject::TYPENAME ||
+         target == EnumerationObject::TYPENAME ||
+         target == FloatObject::TYPENAME ||
+         target == IntegerObject::TYPENAME ||
+         target == StringObject::TYPENAME ||
+         other->isEnumerationValue() ) {
 		return mValue.toStdString() < other->getValue().toStdString();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool StringObject::operator_less_equal(const Object *other)
+bool StringObject::operator_less_equal( const Object* other )
+{
+	const std::string& target = other->QualifiedTypename();
+
+	if ( target == BoolObject::TYPENAME ||
+         target == DoubleObject::TYPENAME ||
+         target == EnumerationObject::TYPENAME ||
+         target == FloatObject::TYPENAME ||
+         target == IntegerObject::TYPENAME ||
+         target == StringObject::TYPENAME ||
+         other->isEnumerationValue() ) {
+		return mValue.toStdString() <= other->getValue().toStdString();
+	}
+
+	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
+}
+
+void StringObject::operator_plus( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
+         target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
-		return mValue.toStdString() <= other->getValue().toStdString();
-	}
-
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
-}
-
-void StringObject::operator_plus(const Object *other)
-{
-	const std::string& target = other->QualifiedTypename();
-
-	if ( target == StringObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ) {
+		 target == StringObject::TYPENAME ||
+         other->isEnumerationValue() ) {
 		mValue = mValue.toStdString() + other->getValue().toStdString();
 		return;
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
 

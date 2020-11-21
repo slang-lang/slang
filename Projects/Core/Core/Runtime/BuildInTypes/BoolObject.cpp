@@ -24,6 +24,12 @@ AtomicValue BoolObject::DEFAULTVALUE = AtomicValue( false );
 std::string BoolObject::TYPENAME = _bool;
 
 
+BoolObject::BoolObject( bool value )
+: Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value ) )
+{
+	mIsAtomicType = true;
+}
+
 BoolObject::BoolObject( const AtomicValue& value )
 : Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value.toBool() ) )
 {
@@ -50,7 +56,8 @@ BoolObject::BoolObject( const Object& other )
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
+		 target == StringObject::TYPENAME ||
+         other.isEnumerationValue() ) {
 		mValue = other.getValue().toBool();
 	}
 	else {
@@ -72,12 +79,14 @@ void BoolObject::operator_assign( const Object* rvalue )
 		 source == EnumerationObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
-		 source == StringObject::TYPENAME ) {
+		 source == StringObject::TYPENAME ||
+         rvalue->isEnumerationValue() ) {
 		mValue = rvalue->getValue().toBool();
 		return;
 	}
-
-	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator=: conversion from " + rvalue->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
+    else {
+        mValue = rvalue->isValid();
+    }
 }
 
 bool BoolObject::operator_equal( const Object* rvalue )
@@ -89,7 +98,8 @@ bool BoolObject::operator_equal( const Object* rvalue )
 		 source == EnumerationObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
-		 source == StringObject::TYPENAME ) {
+		 source == StringObject::TYPENAME ||
+         rvalue->isEnumerationValue() ) {
 		return mValue.toBool() == rvalue->getValue().toBool();
 	}
 

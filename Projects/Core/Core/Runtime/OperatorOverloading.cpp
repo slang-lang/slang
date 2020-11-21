@@ -40,19 +40,19 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 		lvalue->assign( *rvalue );
 	}
 	else if ( target == BoolObject::TYPENAME ) {
-		lvalue->assign( BoolObject( rvalue ) );
+		lvalue->assign( BoolObject( rvalue->getValue().toBool() ) );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		lvalue->assign( DoubleObject( rvalue ) );
+		lvalue->assign( DoubleObject( rvalue->getValue().toDouble() ) );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		lvalue->assign( FloatObject( rvalue ) );
+		lvalue->assign( FloatObject( rvalue->getValue().toFloat() ) );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		lvalue->assign( IntegerObject( rvalue ) );
+		lvalue->assign( IntegerObject( rvalue->getValue().toInt() ) );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		lvalue->assign( StringObject( rvalue ) );
+		lvalue->assign( StringObject( rvalue->getValue().toStdString() ) );
 	}
 	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
@@ -105,25 +105,25 @@ void operator_binary_bitand( Object* lvalue, Object* rvalue )
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
@@ -155,25 +155,25 @@ void operator_binary_bitcomplement( Object* lvalue, Object* rvalue )
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
@@ -205,25 +205,25 @@ void operator_binary_bitor( Object* lvalue, Object* rvalue )
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
@@ -255,25 +255,25 @@ void operator_binary_divide( Object* lvalue, Object* rvalue )
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
@@ -305,16 +305,16 @@ bool operator_binary_equal( Object* lvalue, Object* rvalue )
 		return BoolObject( lvalue->isValid() ).operator_equal( rvalue );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		return DoubleObject( lvalue->getValue() ).operator_equal( rvalue );
+		return DoubleObject( lvalue->getValue().toDouble() ).operator_equal( rvalue );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		return FloatObject( lvalue->getValue() ).operator_equal( rvalue );
+		return FloatObject( lvalue->getValue().toFloat() ).operator_equal( rvalue );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		return IntegerObject( lvalue->getValue() ).operator_equal( rvalue );
+		return IntegerObject( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		return StringObject( lvalue->getValue() ).operator_equal( rvalue );
+		return StringObject( lvalue->getValue().toStdString() ).operator_equal( rvalue );
 	}
 	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
@@ -350,19 +350,19 @@ bool operator_binary_greater( Object* lvalue, Object* rvalue )
 		return tmp.operator_greater( rvalue );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_greater( rvalue );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater( rvalue );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater( rvalue );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_greater( rvalue );
 	}
 	else if ( target == VoidObject::TYPENAME ) {
@@ -394,19 +394,19 @@ bool operator_binary_greater_equal( Object* lvalue, Object* rvalue )
 		return tmp.operator_greater_equal( rvalue );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_greater_equal( rvalue );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater_equal( rvalue );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater_equal( rvalue );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_greater_equal( rvalue );
 	}
 	else if ( target == VoidObject::TYPENAME ) {
@@ -438,19 +438,19 @@ bool operator_binary_less( Object* lvalue, Object* rvalue )
 		return tmp.operator_less( rvalue );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_less( rvalue );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less( rvalue );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less( rvalue );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_less( rvalue );
 	}
 	else if ( target == VoidObject::TYPENAME ) {
@@ -482,19 +482,19 @@ bool operator_binary_less_equal( Object* lvalue, Object* rvalue )
 		return tmp.operator_less_equal( rvalue );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_less_equal( rvalue );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less_equal( rvalue );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less_equal( rvalue );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_less_equal( rvalue );
 	}
 	else if ( target == VoidObject::TYPENAME ) {
@@ -528,25 +528,25 @@ void operator_binary_modulo( Object* lvalue, Object* rvalue )
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
@@ -578,25 +578,25 @@ void operator_binary_multiply( Object* lvalue, Object* rvalue )
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if (target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
@@ -628,25 +628,25 @@ void operator_binary_plus( Object* lvalue, Object* rvalue )
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
@@ -678,25 +678,25 @@ void operator_binary_subtract( Object* lvalue, Object* rvalue )
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
@@ -728,25 +728,25 @@ void operator_unary_decrement (Object* lvalue )
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
@@ -778,25 +778,25 @@ void operator_unary_increment( Object* lvalue )
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
@@ -822,31 +822,31 @@ void operator_unary_minus( Object* lvalue )
 	std::string target = lvalue->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->getValue() );
+		BoolObject tmp( lvalue->getValue().toBool() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
 	}
 	else if (target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
@@ -872,31 +872,31 @@ void operator_unary_plus( Object* lvalue )
 	std::string target = lvalue->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->getValue() );
+		BoolObject tmp( lvalue->getValue().toBool() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue() );
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue() );
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue() );
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
 	}
 	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue() );
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );

@@ -7,11 +7,6 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
-#include "BoolObject.h"
-#include "DoubleObject.h"
-#include "FloatObject.h"
-#include "IntegerObject.h"
-#include "StringObject.h"
 
 // Namespace declarations
 

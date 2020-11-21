@@ -24,7 +24,8 @@ public:
 	static std::string TYPENAME;
 
 public:
-	explicit BoolObject( const AtomicValue& value = AtomicValue( DEFAULTVALUE ) );
+    explicit BoolObject( bool value = false );
+	explicit BoolObject( const AtomicValue& value );
 	explicit BoolObject( const std::string& name, const AtomicValue& value );
 	explicit BoolObject( const Object& other );
 

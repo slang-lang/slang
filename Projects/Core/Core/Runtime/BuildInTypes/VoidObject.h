@@ -25,8 +25,8 @@ public:
 
 public:
 	VoidObject();
-	explicit VoidObject(const std::string& name);
-	explicit VoidObject(const Object& other);
+	explicit VoidObject( const std::string& name );
+	explicit VoidObject( const Object& other );
 
 public:	// Operators
 	bool operator_bool() const;

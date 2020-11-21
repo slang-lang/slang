@@ -37,12 +37,12 @@ public:
 
 public:	// Construction
 	AtomicValue();
-	AtomicValue(bool val);
-	AtomicValue(double val);
-	AtomicValue(float val);
-	AtomicValue(int32_t val);
-	explicit AtomicValue(MemoryId val);
-	AtomicValue(std::string val);
+	AtomicValue( bool val );
+    AtomicValue( double val );
+    AtomicValue( float val );
+    AtomicValue( int32_t val );
+	explicit AtomicValue( MemoryId val );
+    AtomicValue( std::string val );
 
 	~AtomicValue() = default;
 
@@ -69,7 +69,7 @@ private:
 		bool bool_;
 		double double_;
 		float float_;
-		int int_;
+		int32_t int_;
 		MemoryId reference_;
 	};
 
