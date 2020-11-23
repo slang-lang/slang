@@ -4,6 +4,6 @@ float:		double
 int:		int
 mediumtext:	string
 text:		string
-tinyint:	bool
+tinyint:	int
 timestamp:	string
 varchar:	string

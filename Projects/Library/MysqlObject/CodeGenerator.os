@@ -141,7 +141,7 @@ public object CodeGenerator {
             }
 
             var t = tokenIt.next();
-            result += "    " + t.Token + " = " + count++;
+            result += "    " + t.Token + " = " + t.Id;
         }
 
         return result + ";";

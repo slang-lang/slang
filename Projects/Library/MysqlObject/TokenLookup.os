@@ -42,9 +42,9 @@ public object TokenLookup {
 		int result = mysql_store_result( databaseHandle );
 		while ( mysql_fetch_row( result ) ) {
 			tokens.push_back( new TokenEntity(
-                cast<int>( mysql_get_field_value( result, "id" ) ),
-                mysql_get_field_value( result, "token" )
-            ) );
+				cast<int>( mysql_get_field_value( result, "id" ) ),
+				mysql_get_field_value( result, "token" )
+			) );
 		}
 
 		return tokens;
