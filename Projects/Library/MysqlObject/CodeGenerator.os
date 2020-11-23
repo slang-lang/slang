@@ -28,16 +28,16 @@ public object CodeGenerator {
         // connect to database
         connect();
 
-        // prepare output folders
+        // prepare output folders for lookups, tables and views
         prepareFolders();
 
-        // generate tables
+        // generate files for all tables
         generateTables();
 
-        // generate views
+        // generate files for all views
         generateViews();
 
-        // generate lookups
+        // generate files for all lookups
         generateLookups();
 
         // disconnect from database
@@ -68,7 +68,7 @@ public object CodeGenerator {
                 result += LINEBREAK;
             }
 
-            result += MEMBER_LOAD_PREFIX + field.PrettyName + " = cast<" + field.DataType + ">( mysql_get_field_value( result, \"" + field.RealName + "\" ) );";
+            result += MEMBER_LOAD_PREFIX + field.PrettyName + " = cast<" + field.PrettyType + ">( mysql_get_field_value( result, \"" + field.RealName + "\" ) );";
         }
 
         return result;
@@ -155,7 +155,7 @@ public object CodeGenerator {
                 result += LINEBREAK;
             }
 
-            result += MEMBER_DECLARATION_PREFIX + field.DataType + " " + field.PrettyName + ";";
+            result += MEMBER_DECLARATION_PREFIX + field.PrettyType + " " + field.PrettyName + ";";
         }
 
         return result;
@@ -191,7 +191,12 @@ public object CodeGenerator {
                 result += ", ";
             }
 
-            result += "`" + field.RealName + "` = '\" + " + field.PrettyName + " + \"'";;
+            if ( field.RealType == "datetime" || field.RealType == "timestamp" ) {
+                result += "`" + field.RealName + "` = NULLIF('\" + " + field.PrettyName + " + \"', '')";
+            }
+            else {
+                result += "`" + field.RealName + "` = '\" + " + field.PrettyName + " + \"'";
+            }
         }
 
         return result;
@@ -209,7 +214,12 @@ public object CodeGenerator {
                 result += ", ";
             }
 
-            result += "'\" + " + field.PrettyName + " + \"'";
+            if ( field.RealType == "datetime" || field.RealType == "timestamp" ) {
+                result += "`" + field.RealName + "` = NULLIF('\" + " + field.PrettyName + " + \"', '')";
+            }
+            else {
+                result += "'\" + " + field.PrettyName + " + \"'";
+            }
         }
 
         return result;
@@ -295,7 +305,7 @@ public object CodeGenerator {
         string primaryKeyType;
         foreach ( FieldEntry field : fields ) {
             if ( field.RealName == PrimaryKeyName ) {
-                primaryKeyType = field.DataType;
+                primaryKeyType = field.PrettyType;
                 break;
             }
         }
@@ -329,3 +339,4 @@ public object CodeGenerator {
     private TemplateLookup mTemplateLookup;
     private TokenLookup mTokenLookup;
 }
+

@@ -10,14 +10,16 @@ import Utils;
 
 
 public object FieldEntry const {
-	public string DataType const;
+	public string PrettyType const;
 	public string PrettyName const;
 	public string RealName const;
+	public string RealType const;
 
-	public void Constructor( string realName, string prettyName, string dataType ) {
-		DataType = dataType;
+	public void Constructor( string realName, string prettyName, string realType, string prettyType ) {
 		PrettyName = prettyName;
+		PrettyType = prettyType;
 		RealName = realName;
+		RealType = realType;
 	}
 
 	public bool operator==( string realName ) const {
@@ -25,7 +27,7 @@ public object FieldEntry const {
 	}
 
 	public string =operator( string ) const {
-		return "FieldEntry { 'RealName': '" + RealName + "', PrettyName': '" + PrettyName + "', 'DataType': '" + DataType + "'";
+		return "FieldEntry { 'RealName': '" + RealName + "', PrettyName': '" + PrettyName + "', 'RealType': '" + RealType + "', 'PrettyType': '" + PrettyType + "'";
 	}
 }
 
@@ -54,7 +56,12 @@ public object FieldLookup {
 			string type = mysql_get_field_value( result, "DATA_TYPE" );
 
 			try {
-				collection.push_back( new FieldEntry( column, Utils.prettify( column ), mDatatypeMapper.lookupType( type ) ) );
+				collection.push_back( new FieldEntry(
+					column,
+					Utils.prettify( column ),
+					type,
+					mDatatypeMapper.lookupType( type )
+				) );
 			}
 			catch ( IException e ) {
 				print( "Exception: " + e.what() );
