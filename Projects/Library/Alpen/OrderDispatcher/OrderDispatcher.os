@@ -138,7 +138,7 @@ public object OrderDispatcher {
         mOrders.clear();
 
         int result = DB.Query( ORDER_QUERY );
-        while ( mysql_next_row(result) ) {
+        while ( mysql_fetch_row(result) ) {
             mOrders.push_back( mStorage.LoadOrderByID( cast<int>( mysql_get_field_value(result, "order_id") ) ) );
 
             mLogger.info( cast<string>( mOrders.last() ) );
@@ -149,7 +149,7 @@ public object OrderDispatcher {
         mShuttles.clear();
 
         int result = DB.Query( SHUTTLE_QUERY );
-        while ( mysql_next_row(result) ) {
+        while ( mysql_fetch_row(result) ) {
             mShuttles.push_back( mStorage.LoadShuttleByID( cast<int>( mysql_get_field_value(result, "shuttle_id") ) ) );
 
             mLogger.info( cast<string>( mShuttles.last() ) );

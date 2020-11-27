@@ -53,7 +53,7 @@ public object Storage {
 
         Job job;
 
-        if ( mysql_next_row(result) ) {
+        if ( mysql_fetch_row(result) ) {
             job = LoadJobByResult(result);
         }
 
@@ -88,12 +88,12 @@ public object Storage {
 
         Order order;
 
-        while ( mysql_next_row(result) ) {
+        while ( mysql_fetch_row(result) ) {
             if ( !order ) {
                 order = LoadOrderByResult(result);
             }
 
-            int jobID = mysql_get_field_value(result, "job_id");
+            var jobID = cast<int>( mysql_get_field_value(result, "job_id") );
             if ( jobID ) {
                 assert( order );
                 assert( order.jobs );
@@ -128,7 +128,7 @@ public object Storage {
 
         Shuttle shuttle;
 
-        while ( mysql_next_row(result) ) {
+        while ( mysql_fetch_row(result) ) {
             if ( !shuttle ) {
                 shuttle = LoadShuttleByResult(result);
             }
