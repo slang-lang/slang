@@ -7,28 +7,16 @@ import System.String;
 
 
 public object TokenEntity {
-    public int Id const;
-    public string Token const;
+	public int Id const;
+	public string Token const;
 
-    public void Constructor( int id, string token ) {
-        Id = id;
-        Token = token;
-    }
+	public void Constructor( int id, string token ) {
+		Id = id;
+		Token = token;
+	}
 }
 
 public object TokenLookup {
-	public void Constructor() {
-		mLookupTables = new List<string>();
-	}
-
-	public void addLookupTable( string table ) modify {
-		mLookupTables.push_back( table );
-	}
-
-	public List<string> getLookupTables() const {
-		return mLookupTables;
-	}
-
 	public List<TokenEntity> getTokens( int databaseHandle, string database, string table ) const throws {
 		string query = "SELECT * FROM " + database + "." + table + " ORDER BY id ASC";
 
@@ -49,7 +37,5 @@ public object TokenLookup {
 
 		return tokens;
 	}
-
-	private List<string> mLookupTables;
 }
 

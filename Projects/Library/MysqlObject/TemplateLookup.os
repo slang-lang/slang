@@ -18,7 +18,7 @@ public object TemplateLookup implements IIterable {
         return mTemplates.getIterator();
     }
 
-    private string parseValue( CharacterIterator it ) const throws {
+    private string parseValue( CharacterIterator it ) const {
         string c;
         string value;
 
@@ -49,5 +49,6 @@ public object TemplateLookup implements IIterable {
         while ( it.hasNext() && it.next() != "\"" );
     }
 
-    private Map</*key*/ string, /*value*/ string> mTemplates;
+    private Map<string, string> mTemplates;
 }
+

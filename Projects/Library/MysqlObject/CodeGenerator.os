@@ -17,16 +17,15 @@ import Utils;
 public object CodeGenerator {
     public void Constructor() {
         mDatabaseHandle = mysql_init();
-
-        mEntityLookup = new EntityLookup();
-        mFieldLookup = new FieldLookup();
-        mTemplateLookup = new TemplateLookup();
-        mTokenLookup = new TokenLookup();
     }
 
     public void process() modify throws {
         // connect to database
         connect();
+
+        mEntityLookup = new EntityLookup( mDatabaseHandle, Config.Database );
+	mEntityLookup.fetchEntities();
+        mTemplateLookup = new TemplateLookup();
 
         // prepare output folders for lookups, tables and views
         prepareFolders();
@@ -75,43 +74,28 @@ public object CodeGenerator {
     }
 
     private void generateLookups() modify throws {
-        var entities = mEntityLookup.getTables( mDatabaseHandle, Config.Database );
+        var entities = mEntityLookup.getTables();
         var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "Lookup.txt" ).getText() );
 
         var libraryImports = LINEBREAK;
         libraryImports += "// import all library files" + LINEBREAK;
 
         int count;
-
-        foreach ( string name : entities ) {
-            var fields = mFieldLookup.getFields( mDatabaseHandle, name );
-
-            bool hasId;
-            bool hasToken;
-
-            foreach ( FieldEntry field : fields ) {
-                if ( field.RealName == PrimaryKeyName ) {
-                    hasId = true;
-                }
-                else if ( field.RealName == "token" ) {
-                    hasToken = true;
-                }
-            }
-
-            if ( !hasId || !hasToken ) {
+        foreach ( Pair<string, EntityType> entity : entities ) {
+            if ( !entity.second.HasLookup ) {
                 continue;
             }
 
             var template = copy baseTemplate;
 
-            template.ReplaceAll( TEMPLATE_ENTITY_NAME_PRETTY, Utils.prettify( name ) );        // entity name
-            template.ReplaceAll( TEMPLATE_ENUM_DECLARATION, generateEnumMembers( name ) );        // enum declaration list
+            template.ReplaceAll( TEMPLATE_ENTITY_NAME_PRETTY, Utils.prettify( entity.first ) );        // entity name
+            template.ReplaceAll( TEMPLATE_ENUM_DECLARATION, generateEnumMembers( entity.second ) );        // enum declaration list
 
-            var outFile = new System.IO.File( Config.Database + "/Lookups/" + Utils.prettify( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Config.Database + "/Lookups/" + Utils.prettify( entity.first ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
-            libraryImports += "import " + Utils.prettify( name ) + ";" + LINEBREAK;
+            libraryImports += "import " + Utils.prettify( entity.first ) + ";" + LINEBREAK;
 
             count++;
         }
@@ -125,13 +109,10 @@ public object CodeGenerator {
         print( "" + count + " lookup objects generated." );
     }
 
-    private string generateEnumMembers( string entityName ) {
+    private string generateEnumMembers( EntityType entity ) {
         string result;
 
-        int count = -1;
-        var tokens = mTokenLookup.getTokens( mDatabaseHandle, Config.Database, entityName );
-        var tokenIt = tokens.getIterator();
-
+        var tokenIt = entity.Tokens.getIterator();
         while ( tokenIt.hasNext() ) {
             if ( result ) {
                 if ( tokenIt.hasNext() ) {
@@ -215,7 +196,7 @@ public object CodeGenerator {
             }
 
             if ( field.RealType == "datetime" || field.RealType == "timestamp" ) {
-                result += "`" + field.RealName + "` = NULLIF('\" + " + field.PrettyName + " + \"', '')";
+                result += "NULLIF('\" + " + field.PrettyName + " + \"', '')";
             }
             else {
                 result += "'\" + " + field.PrettyName + " + \"'";
@@ -226,24 +207,24 @@ public object CodeGenerator {
     }
 
     private void generateTables() modify {
-        var entities = mEntityLookup.getTables( mDatabaseHandle, Config.Database );
+        var entities = mEntityLookup.getTables();
         var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "Table.txt" ).getText() );
 
         var libraryImports = LINEBREAK;
         libraryImports += "// import all library files" + LINEBREAK;
 
         int count;
-        foreach ( string name : entities ) {
+        foreach ( Pair<string, EntityType> entity : entities ) {
             var template = copy baseTemplate;
 
-            replaceSpecialTemplates( template, name );
+            replaceSpecialTemplates( template, entity.second );
             replaceUserTemplates( template );
     
-            var outFile = new System.IO.File( Config.Database + "/Tables/" + Utils.prettify( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Config.Database + "/Tables/" + Utils.prettify( entity.first ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
-            libraryImports += "import " + Utils.prettify( name ) + ";" + LINEBREAK;
+            libraryImports += "import " + Utils.prettify( entity.first ) + ";" + LINEBREAK;
 
             count++;
         }
@@ -262,24 +243,24 @@ public object CodeGenerator {
     }
 
     private void generateViews() modify {
-        var entities = mEntityLookup.getViews( mDatabaseHandle, Config.Database );
+        var entities = mEntityLookup.getViews();
         var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "View.txt" ).getText() );
 
         var libraryImports = LINEBREAK;
         libraryImports += "// import all library files" + LINEBREAK;
 
         int count;
-        foreach ( string name : entities ) {
+        foreach ( Pair<string, EntityType> entity : entities ) {
             var template = copy baseTemplate;
 
-            replaceSpecialTemplates( template, name );
+            replaceSpecialTemplates( template, entity.second );
             replaceUserTemplates( template );
 
-            var outFile = new System.IO.File( Config.Database + "/Views/" + Utils.prettify( name ) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Config.Database + "/Views/" + Utils.prettify( entity.first ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
-            libraryImports += "import " + Utils.prettify( name ) + ";" + LINEBREAK;
+            libraryImports += "import " + Utils.prettify( entity.first ) + ";" + LINEBREAK;
 
             count++;
         }
@@ -299,8 +280,8 @@ public object CodeGenerator {
         system( "mkdir -p " + Config.Output + "/Views" );
     }
 
-    private void replaceSpecialTemplates( String template, string name ) modify {
-        var fields = mFieldLookup.getFields( mDatabaseHandle, name );
+    private void replaceSpecialTemplates( String template, EntityType entity ) modify {
+        var fields = entity.Fields;
 
         string primaryKeyType;
         foreach ( FieldEntry field : fields ) {
@@ -310,19 +291,19 @@ public object CodeGenerator {
             }
         }
 
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME,                 name );                                          // name
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME_PRETTY,          Utils.prettify( name ) );                        // pretty printed name
-        template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,       toUpper( name ) );                               // name in upper case
-        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,          generateMemberDecl( name, fields ) );            // members
-        template.ReplaceAll( TEMPLATE_MEMBER_LIST,                 generateMemberList( name, fields, true ) );      // member list
-        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,                 generateLoaders( name, fields, true ) );         // loaders
-        template.ReplaceAll( TEMPLATE_MEMBER_PAIR,                 generateMemberPairs( name, fields, true ) );     // key values pairs
-        template.ReplaceAll( TEMPLATE_MEMBER_PAIR_WITHOUT_PRIMARY, generateMemberPairs( name, fields, false ) );    // key values pairs without primary key
-        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,               generateUpdates( name, fields, false ) );        // updates
-        template.ReplaceAll( TEMPLATE_MEMBER_VALUES,               generateMemberValues( name, fields, true ) );    // values
-        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_NAME,            PrimaryKeyName );                                // primary key name
-        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_NAME_PRETTY,     Utils.prettify( PrimaryKeyName ) );              // primary key pretty printed name
-        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_TYPE,            primaryKeyType );                                // primary key type
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME,                 entity.Name );                                          // name
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME_PRETTY,          Utils.prettify( entity.Name ) );                        // pretty printed name
+        template.ReplaceAll( TEMPLATE_ENTITY_NAME_UPPERCASE,       toUpper( entity.Name ) );                               // name in upper case
+        template.ReplaceAll( TEMPLATE_MEMBER_DECLARATION,          generateMemberDecl( entity.Name, fields ) );            // members
+        template.ReplaceAll( TEMPLATE_MEMBER_LIST,                 generateMemberList( entity.Name, fields, true ) );      // member list
+        template.ReplaceAll( TEMPLATE_MEMBER_LOAD,                 generateLoaders( entity.Name, fields, true ) );         // loaders
+        template.ReplaceAll( TEMPLATE_MEMBER_PAIR,                 generateMemberPairs( entity.Name, fields, true ) );     // key values pairs
+        template.ReplaceAll( TEMPLATE_MEMBER_PAIR_WITHOUT_PRIMARY, generateMemberPairs( entity.Name, fields, false ) );    // key values pairs without primary key
+        template.ReplaceAll( TEMPLATE_MEMBER_UPDATE,               generateUpdates( entity.Name, fields, false ) );        // updates
+        template.ReplaceAll( TEMPLATE_MEMBER_VALUES,               generateMemberValues( entity.Name, fields, true ) );    // values
+        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_NAME,            PrimaryKeyName );                                       // primary key name
+        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_NAME_PRETTY,     Utils.prettify( PrimaryKeyName ) );                     // primary key pretty printed name
+        template.ReplaceAll( TEMPLATE_PRIMARY_KEY_TYPE,            primaryKeyType );                                       // primary key type
     }
 
     private void replaceUserTemplates( String template ) modify {
@@ -335,8 +316,6 @@ public object CodeGenerator {
 
     private int mDatabaseHandle;
     private EntityLookup mEntityLookup;
-    private FieldLookup mFieldLookup;
     private TemplateLookup mTemplateLookup;
-    private TokenLookup mTokenLookup;
 }
 
