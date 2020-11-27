@@ -30,7 +30,7 @@ public object Map<K, V> implements ICollection {
 		mItems.clear();
 	}
 
-	public bool contains( K key ) const {
+	public bool contains( K key const ) const {
 		foreach ( Object p : mItems ) {
 			if ( ( Pair<K, V> p ) == key ) {
 				return true;
@@ -48,7 +48,7 @@ public object Map<K, V> implements ICollection {
 		return V mItems.first();
 	}
 
-	public V get( K key ) const throws {
+	public V get( K key const ) const throws {
 		foreach ( Object p : mItems ) {
 			if ( ( Pair<K, V> p ) == key ) {
 				return ( Pair<K, V> p ).second;
