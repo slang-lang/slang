@@ -1,11 +1,12 @@
 
 // Library imports
-import System.Collections.List;
 import System.Collections.Map;
+import System.Collections.Vector;
 import System.String;
 
 // Project imports
 import Consts;
+import DatatypeMapper;
 import FieldLookup;
 import TokenLookup;
 
@@ -14,10 +15,10 @@ public object EntityType {
 	public Vector<FieldEntry> Fields const;
 	public bool HasLookup const;
 	public string Name const;
-	public List<TokenEntity> Tokens const;
+	public Vector<TokenEntity> Tokens const;
 	public string Type const;
 
-	public void Constructor( string name, string type, bool hasLookup, Vector<FieldEntry> fields, List<TokenEntity> tokens ) {
+	public void Constructor( string name, string type, bool hasLookup, Vector<FieldEntry> fields, Vector<TokenEntity> tokens ) {
 		Fields = fields;
 		HasLookup = hasLookup;
 		Name = name;
@@ -86,7 +87,7 @@ public object EntityLookup {
 				}
 			}
 
-			List<TokenEntity> tokens;
+			Vector<TokenEntity> tokens;
 			if ( hasId && hasToken ) {
 				tokens = mTokenLookup.getTokens( mDatabaseHandle, mDatabaseName, name );
 			}

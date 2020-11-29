@@ -1,6 +1,6 @@
 
 // Library imports
-import System.Collections.List;
+import System.Collections.Vector;
 import System.String;
 
 // Project imports
@@ -17,7 +17,7 @@ public object TokenEntity {
 }
 
 public object TokenLookup {
-	public List<TokenEntity> getTokens( int databaseHandle, string database, string table ) const throws {
+	public Vector<TokenEntity> getTokens( int databaseHandle, string database, string table ) const throws {
 		string query = "SELECT * FROM " + database + "." + table + " ORDER BY id ASC";
 
 		int error = mysql_query( databaseHandle, query );
@@ -25,7 +25,7 @@ public object TokenLookup {
 			throw mysql_error( databaseHandle );
 		}
 
-		var tokens = new List<TokenEntity>();
+		var tokens = new Vector<TokenEntity>();
 
 		int result = mysql_store_result( databaseHandle );
 		while ( mysql_fetch_row( result ) ) {

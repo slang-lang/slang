@@ -5,18 +5,15 @@ import System.String;
 
 // Project imports
 import _config_.Config;
-import DatatypeMapper;
 import EntityLookup;
-import FieldLookup;
 import Scanner;
 import TemplateLookup;
-import TokenLookup;
 import Utils;
 
 
 public object CodeGenerator {
     public void Constructor() {
-        mDatabaseHandle = mysql_init();
+        // nothing to do here
     }
 
     public void process() modify throws {
@@ -24,8 +21,9 @@ public object CodeGenerator {
         connect();
 
         mEntityLookup = new EntityLookup( mDatabaseHandle, Config.Database );
-	mEntityLookup.fetchEntities();
         mTemplateLookup = new TemplateLookup();
+
+        mEntityLookup.fetchEntities();
 
         // prepare output folders for lookups, tables and views
         prepareFolders();
@@ -44,6 +42,7 @@ public object CodeGenerator {
     }
 
     private void connect() modify throws {
+        mDatabaseHandle = mysql_init();
         mDatabaseHandle = mysql_real_connect( mDatabaseHandle, Config.Host, Config.Port, Config.User, Config.Password, Config.Database );
     
         if ( !mDatabaseHandle ) {
