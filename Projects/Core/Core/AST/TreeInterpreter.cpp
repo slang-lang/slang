@@ -502,13 +502,15 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Object* self, Common::
 	initialize(&scope, method->mergeParameters(params));
 
 	// notify debugger
-	DEBUGGER( notifyEnter(&scope, Core::Debugger::immediateBreakToken) );
+	//DEBUGGER( notifyEnter( &scope, Core::Debugger::immediateBreakToken ) );
+	DEBUGGER( notifyEnter( &scope, method->getRootNode()->token() ) );
 
 	// interpret scope tokens
 	process(method->getRootNode());
 
 	// notify debugger
-	DEBUGGER( notifyExit(&scope, Core::Debugger::immediateBreakToken) );
+	//DEBUGGER( notifyExit( &scope, Core::Debugger::immediateBreakToken ) );
+	DEBUGGER( notifyExit( &scope, method->getRootNode()->token() ) );
 
 	// only set return value if we are a non-void method
 	if ( result && method->QualifiedTypename() != _void ) {

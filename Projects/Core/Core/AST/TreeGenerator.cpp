@@ -797,87 +797,23 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
  * syntax:
  * <lvalue> = <rvalue>
  */
-Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
+Node* TreeGenerator::process_assignment(TokenIterator& token)
 {
-	auto op = token;
+    auto* lhs = dynamic_cast<Expression*>( expression( token ) );
 
-	Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
+    auto* assignment = dynamic_cast<AssignmentExpression*>( lhs );
+    if ( assignment ) {
+        auto* lhs = assignment->mLHS;
+        auto* rhs = assignment->mRHS;
 
-	auto* rhs = dynamic_cast<Expression*>(expression(++token));
+        assignment->mLHS = nullptr;
+        assignment->mRHS = nullptr;
+        delete assignment;
 
-	SymbolExpression* inner = lhs;
-	while ( inner->mSymbolExpression ) {
-		inner = inner->mSymbolExpression;
-	}
+        return new AssignmentStatement( (*token), lhs, rhs );
+    }
 
-	if ( op->type() != Token::Type::ASSIGN ) {
-		Token operation;
-
-		switch ( op->type() ) {
-			case Token::Type::ASSIGN_ADDITION:      operation = Token(Token::Category::Operator, Token::Type::MATH_ADDITION, "+", op->position()); break;
-			case Token::Type::ASSIGN_BITAND:        operation = Token(Token::Category::Operator, Token::Type::BITAND, "&", op->position()); break;
-			case Token::Type::ASSIGN_BITCOMPLEMENT: operation = Token(Token::Category::Operator, Token::Type::BITCOMPLEMENT, "~", op->position()); break;
-			case Token::Type::ASSIGN_BITOR:         operation = Token(Token::Category::Operator, Token::Type::BITOR, "|", op->position()); break;
-			case Token::Type::ASSIGN_DIVIDE:        operation = Token(Token::Category::Operator, Token::Type::MATH_DIVIDE, "/", op->position()); break;
-			case Token::Type::ASSIGN_MODULO:        operation = Token(Token::Category::Operator, Token::Type::MATH_MODULO, "%", op->position()); break;
-			case Token::Type::ASSIGN_MULTIPLY:      operation = Token(Token::Category::Operator, Token::Type::MATH_MULTIPLY, "*", op->position()); break;
-			case Token::Type::ASSIGN_SUBTRACT:      operation = Token(Token::Category::Operator, Token::Type::MATH_SUBTRACT, "-", op->position()); break;
-			default: throw Designtime::Exceptions::SyntaxError("assignment type expected", token->position());
-		}
-
-		if ( inner->isAtomicType() ) {
-			rhs = new BinaryExpressionNoLeftOwner( lhs, operation, rhs, resolveType(token, lhs, operation, rhs) );
-		}
-		else {
-			// check if we are using a valid type
-			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
-			if ( !blueprint ) {
-				throw Designtime::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", operation.position());
-			}
-
-			SymbolExpression* sym = new DesigntimeSymbolExpression(lhs->mName, lhs->getResultType(), PrototypeConstraints(), false);
-			sym->mSurroundingScope = lhs->mSurroundingScope;
-			sym->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), resolveType(token, lhs, operation, rhs), PrototypeConstraints(), false);
-			sym->mSymbolExpression->mSurroundingScope = blueprint;
-
-			ExpressionList params;
-			params.emplace_back(rhs);
-
-			rhs = process_method(sym, (*token), params);
-		}
-	}
-
-	if ( lhs->isMember() && mMethod->isConstMethod() ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member symbol '" + lhs->innerName() + "' in const method", op->position());
-	}
-
-	if ( lhs->isConst() && !(mAllowConstModify && lhs->isMember()) ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + lhs->innerName() + "'", op->position());
-	}
-
-/*
-	if ( !lhs->isConst() && !lhs->isAtomicType() && rhs->isInnerConst() ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("tried to assign const type '" + rhs->getResultType() + "' to non-const symbol '" + lhs->innerName() + "'", op->position());
-	}
-*/
-
-	if ( lhs->isAtomicType() || inner->getResultType() == rhs->getResultType() ) {
-		return new AssignmentStatement( (*token), lhs, rhs );
-	}
-
-	// check if we are using a valid type
-	Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
-	if ( !blueprint ) {
-		throw Designtime::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", token->position());
-	}
-
-	inner->mSymbolExpression = new DesigntimeSymbolExpression("operator=", lhs->getResultType(), PrototypeConstraints(), false);
-	inner->mSymbolExpression->mSurroundingScope = blueprint;
-
-	ExpressionList params;
-	params.emplace_back(rhs);
-
-	return new AssignmentStatement( (*token), lhs, rhs );
+    return lhs;
 }
 
 /*
@@ -1758,9 +1694,16 @@ Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndC
 			node = process_scope(token, allowBreakAndContinue);	// this opens a new scope
 			++token;
 			break;
-		case Token::Type::IDENTIFIER:
-			node = process_identifier(token);
-			break;
+		case Token::Type::IDENTIFIER: {
+			auto tmp( token );
+
+			if ( (++tmp)->category() == Token::Category::Assignment ) {
+				node = process_assignment( token );
+			}
+			else {
+				node = process_identifier( token );
+			}
+		} break;
 		case Token::Type::KEYWORD:
 			node = process_keyword(token);
 			break;
