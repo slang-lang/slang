@@ -805,46 +805,36 @@ void LocalClient::printHelp()
 
 void LocalClient::printScope(IScope* scope)
 {
-	Common::Method* method = getMethodFromScope(scope);
+	auto* method = getMethodFromScope(scope);
 	if ( !method ) {
 		return;
 	}
 
-	AST::TreeLineBuffer buffer;
-	AST::TreeLineBuffer::Lines lines;
-	AST::PrintVisitor visitor;
+    auto currentLine = mBreakpoint.getLine() - 1;
+    auto filename = method->getRootNode()->token().position().mFile;
 
-	visitor.generate(method->getRootNode(), buffer);
+    std::ifstream file( filename );
 
-	buffer.getLines(lines);
+    // print 10 lines before and 10 lines after the current line
+    auto startLine = currentLine > 10 ? currentLine - 10 : 0;
+    auto endLine = startLine + 21;
 
-	unsigned int activeLine = mBreakpoint.getLine();
-	unsigned int currentLine = 0;
-	unsigned int previousLine = 0;
+    unsigned long curLine = 0;
+    std::string line;
+    while ( curLine <= endLine && std::getline( file, line ) ) {
+        if ( curLine >= startLine && curLine <= endLine ) {
+            if ( curLine == currentLine ) {
+                std::cout << curLine << ": > ";
+            }
+            else {
+                std::cout << curLine << ":   ";
+            }
 
-	AST::TreeLineBuffer::Lines::const_iterator it = lines.begin();
+            std::cout << line << std::endl;
+        }
 
-	while ( it != lines.end() ) {
-		currentLine = it->first.mLine;
-
-		if ( currentLine != previousLine ) {
-			std::cout << std::endl;
-			if ( currentLine == activeLine ) {
-				std::cout << "> ";
-			}
-			else {
-				std::cout << "  ";
-			}
-			std::cout << it->first.mLine << ": ";
-			previousLine = currentLine;
-		}
-
-		std::cout << it->second;
-
-		it++;
-	}
-
-	std::cout << std::endl << std::endl;
+        curLine++;
+    }
 }
 
 void LocalClient::printStackTrace()

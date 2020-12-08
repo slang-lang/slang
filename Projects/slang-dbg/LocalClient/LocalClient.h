@@ -66,8 +66,8 @@ public:
 public:	// IReceiver implementation
 	int notify(IScope* scope, const Core::BreakPoint& breakpoint);
 	int notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint);
-	int notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint);
-	int notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint);
+	int notifyExceptionCatch(IScope *scope, const Core::BreakPoint& breakpoint);
+	int notifyExceptionThrow(IScope *scope, const Core::BreakPoint& breakpoint);
 	int notifyExit(IScope* scope, const Core::BreakPoint& breakpoint);
 
     int handleBreakpoint(IScope* scope, const Core::BreakPoint& breakpoint);
