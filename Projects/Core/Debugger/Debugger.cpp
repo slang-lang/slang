@@ -124,31 +124,31 @@ void Debugger::notify(IScope* scope, const Token& token)
 	}
 }
 
-void Debugger::notifyEnter(IScope* scope, const Token& /*token*/)
+void Debugger::notifyEnter(IScope* scope, const Token& token)
 {
 	if ( mReceiver && mNextAction == NextAction::StepInto ) {
-		mReceiver->notifyEnter(scope, immediateBreakPoint);
+		mReceiver->notifyEnter(scope, BreakPoint( token.position() ) );
 	}
 }
 
-void Debugger::notifyExceptionCatch(IScope *scope, const Token &token)
+void Debugger::notifyExceptionCatch(IScope *scope, const Token& token)
 {
 	if ( mReceiver && mBreakOnExceptionCatch ) {
-		mReceiver->notifyExceptionCatch(scope, BreakPoint(token.position()));
+		mReceiver->notifyExceptionCatch(scope, BreakPoint( token.position() ) );
 	}
 }
 
-void Debugger::notifyExceptionThrow(IScope *scope, const Token &token)
+void Debugger::notifyExceptionThrow(IScope *scope, const Token& token)
 {
 	if ( mReceiver && mBreakOnExceptionThrow ) {
-		mReceiver->notifyExceptionThrow(scope, BreakPoint(token.position()));
+		mReceiver->notifyExceptionThrow(scope, BreakPoint( token.position() ));
 	}
 }
 
-void Debugger::notifyExit(IScope* scope, const Token& /*token*/)
+void Debugger::notifyExit(IScope* scope, const Token& token)
 {
 	if ( mReceiver && mNextAction == NextAction::StepOut ) {
-		mReceiver->notifyExit(scope, immediateBreakPoint);
+		mReceiver->notifyExit(scope, BreakPoint( token.position() ) );
 	}
 }
 
