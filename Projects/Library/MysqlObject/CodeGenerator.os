@@ -106,6 +106,17 @@ public object CodeGenerator {
         allFile.close();
 
         print( "" + count + " lookup objects generated." );
+
+        if ( count > 0 ) {
+            // prepare key lookup object
+            var keyLookupTemplate = new String( new Scanner( CONFIG_DIRECTORY + "KeyLookup.txt" ).getText() );
+
+            replaceUserTemplates( keyLookupTemplate );
+
+            var outFile = new System.IO.File( Config.Database + "/KeyLookup.os", System.IO.File.AccessMode.WriteOnly );
+            outFile.write( cast<string>( keyLookupTemplate ) );
+            outFile.close();
+        }
     }
 
     private string generateEnumMembers( EntityType entity ) {
