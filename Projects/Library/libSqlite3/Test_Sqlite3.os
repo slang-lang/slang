@@ -1,15 +1,12 @@
 #!/usr/local/bin/slang
 
 // library imports
-//import libParam.ParameterHandler;
 
 // project imports
 import All;
 
 
 public void Main( int argc, string args ) {
-	//var params = new ParameterHandler( argc, args );
-
 	var db = new Sqlite3Database( "test.db" );
 	var result = db.exec( "SELECT name, type FROM sqlite_master" );
 
