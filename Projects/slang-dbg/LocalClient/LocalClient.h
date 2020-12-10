@@ -57,10 +57,10 @@ public:
 	void setCurrentThread(Common::ThreadId threadId);
 	void setCurrentThread(const StringList& tokens);
 
-    void continueExecution();
+	void continueExecution();
 	void run(const StringList &tokens);
 	void shutdown();
-    void start();
+	void start();
 	void stop();
 
 public:	// IReceiver implementation
@@ -70,7 +70,7 @@ public:	// IReceiver implementation
 	int notifyExceptionThrow(IScope *scope, const Core::BreakPoint& breakpoint);
 	int notifyExit(IScope* scope, const Core::BreakPoint& breakpoint);
 
-    int handleBreakpoint(IScope* scope, const Core::BreakPoint& breakpoint);
+	int handleBreakpoint(IScope* scope, const Core::BreakPoint& breakpoint);
 
 private:	// Configuration
 	void loadConfig();
@@ -95,15 +95,17 @@ private:	// Symbol cache
 
 private:
 	std::string executeCommand(const StringList &tokens);
+	void frameDown();
+	void frameUp();
 	StringList parseCommands(const std::string& commands) const;
 	void prepare(const StringList& tokens);
 	void printHelp();
-    void printBreakPoints();
-    void printScope(IScope* scope);
-    void printStackTrace();
-    void printSymbol(const StringList& tokens);
-    void printThreads();
-    void printWatches();
+	void printBreakPoints();
+	void printScope(IScope* scope);
+	void printStackTrace();
+	void printSymbol(const StringList& tokens);
+	void printThreads();
+	void printWatches();
 	std::string read();
 	void toggleAutoList();
 	void toggleAutoStart();

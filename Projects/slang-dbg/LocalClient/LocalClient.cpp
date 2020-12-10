@@ -238,6 +238,9 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 		else if ( cmd == "delete" || cmd == "d" ) {
 			removeBreakPoint(tokens);
 		}
+		else if ( cmd == "down" ) {
+			frameDown();
+		}
 		else if ( cmd == "execute" || cmd == "e" ) {
 			executeMethod(tokens);
 		}
@@ -303,6 +306,9 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 		}
 		else if ( cmd == "unwatch" ) {
 			removeWatch(tokens);
+		}
+		else if ( cmd == "up" ) {
+			frameUp();
 		}
 		else if ( cmd == "watch" || cmd == "w" ) {
 			addWatch(tokens);
@@ -372,6 +378,34 @@ void LocalClient::executeMethod(const StringList &tokens)
 	catch ( ... ) {
 		writeln("unknown exception occured");
 	}
+}
+
+void LocalClient::frameDown()
+{
+	if ( mCurrentFrameId >= Controller::Instance().thread(mCurrentThreadId)->getNumFrames() ) {
+		return;
+	}
+
+	// update current frame id
+	++mCurrentFrameId;
+
+	writeln( "Frame: " + Utils::Tools::toString( mCurrentFrameId ) );
+
+	setCurrentFrame( mCurrentFrameId );
+}
+
+void LocalClient::frameUp()
+{
+	if ( mCurrentFrameId <= 0 ) {
+		return;
+	}
+
+	// update current frame id
+	--mCurrentFrameId;
+
+	writeln( "Frame: " + Utils::Tools::toString( mCurrentFrameId ) );
+
+	setCurrentFrame( mCurrentFrameId );
 }
 
 Symbol* LocalClient::getCachedSymbol(const std::string& name) const
@@ -789,6 +823,7 @@ void LocalClient::printHelp()
 		writeln("Debugging commands:");
 		writeln("\tbacktrace (bt)   print stack trace");
 		writeln("\tcontinue (c)     continue program execution");
+		writeln("\tdown             step down one frame");
 		writeln("\texecute (e)      execute program function");
 		writeln("\tframe (f)        select frame");
 		writeln("\tignore           ignore all breakpoints and continue program execution");
@@ -800,6 +835,7 @@ void LocalClient::printHelp()
 		writeln("\tprint (p)        print symbol");
 		writeln("\tthread (t)       select thread");
 		writeln("\tthreads          list current threads");
+		writeln("\tup               step up one frame");
 	}
 }
 
