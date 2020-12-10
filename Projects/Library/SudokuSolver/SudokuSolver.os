@@ -27,9 +27,9 @@ public int Main(int argc, string args) {
 		board.set(6, 1, 4);
 		board.set(3, 2, 3);
 		board.set(2, 3, 2);
-		board.set(5, 4, 2)
+		board.set(5, 4, 4)
 		board.set(1, 6, 2);
-		board.set(6, 6, 2);
+		board.set(6, 6, 3);
 
 /*
 		var board = new Board( 3, 3, 3 );

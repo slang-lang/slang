@@ -44,8 +44,7 @@ public object Board {
 
 			foreach ( int y : 1..SizeY * Repeat ) {
 				foreach ( int x : 1..SizeX * Repeat ) {
-					var xy = cast<string>( x ) + "," + cast<string>( y );
-					var cell = Cells.get( xy );
+					var cell = Cells.get( cast<string>( x ) + "," + cast<string>( y ) );
 
 					if ( cell.Value == 0 ) {
 						cell.PossibleValues.clear();
@@ -76,10 +75,9 @@ public object Board {
 	public Cell findEmptyCell() const {
 		foreach ( int y : 1..SizeY * Repeat ) {
 			foreach ( int x : 1..SizeX * Repeat ) {
-				var xy = cast<string>( x ) + "," + cast<string>( y );
-				var cell const = Cells.get( xy );
+				var cell const = Cells.get( cast<string>( x ) + "," + cast<string>( y ) );
 
-				if ( cell.Value == 0 ) {
+				if ( !cell.Value ) {
 					return cell;
 				}
 			}
@@ -120,8 +118,7 @@ public object Board {
 
 		foreach ( int y : 1..Repeat ) {
 			foreach ( int x : 1..Repeat ) {
-				var xy = cast<string>( bx * SizeX + x ) + "," + cast<string>( by * SizeY + y );
-				var cell const = Cells.get( xy );
+				var cell const = Cells.get( cast<string>( bx * SizeX + x ) + "," + cast<string>( by * SizeY + y ) );
 
 				if ( /*cell.X != ox && cell.Y != oy &&*/ cell.Value == value ) {
 					return true;
@@ -134,8 +131,7 @@ public object Board {
 
 	public bool isUsedInLine(int y, int value) const {
 		foreach ( int x : 1..SizeX * Repeat ) {
-			var xy = cast<string>( x ) + "," + cast<string>( y );
-			var cell const = Cells.get( xy );
+			var cell const = Cells.get( cast<string>( x ) + "," + cast<string>( y ) );
 
 			if ( /*cell.Y != y &&*/ cell.Value == value ) {
 				return true;
@@ -147,8 +143,7 @@ public object Board {
 
 	public bool isUsedInRow(int x, int value) const {
 		foreach ( int y : 1..SizeY * Repeat ) {
-			var xy = cast<string>( x ) + "," + cast<string>( y );
-			var cell const = Cells.get( xy );
+			var cell const = Cells.get( cast<string>( x ) + "," + cast<string>( y ) );
 
 			if ( /*cell.X != x &&*/ cell.Value == value ) {
 				return true;
@@ -179,8 +174,7 @@ public object Board {
 
 		foreach ( int y : 1..SizeY * Repeat ) {
 			foreach ( int x : 1..SizeX * Repeat ) {
-				var xy = cast<string>( x ) + "," + cast<string>( y );
-				var cell = Cells.get( xy );
+				var cell = Cells.get( cast<string>( x ) + "," + cast<string>( y ) );
 
 				if ( cell.Value == 0 ) {
 					cells.push_back( cell );
