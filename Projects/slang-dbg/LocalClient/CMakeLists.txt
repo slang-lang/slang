@@ -12,7 +12,6 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	ExtensionsSystem
-	ExtensionsJson
 	DebuggerCommon
 )
 

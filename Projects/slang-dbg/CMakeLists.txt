@@ -15,7 +15,6 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	ExtensionsSystem
-	ExtensionsJson
 	DebuggerVSCodeRemoteClient
 	DebuggerLocalClient
 	DebuggerCommon

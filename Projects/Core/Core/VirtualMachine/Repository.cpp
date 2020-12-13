@@ -623,8 +623,6 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_SUBTRACT, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 
 		// typecast operator
-		//mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _int, _int);
-		//mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _string, _string);
 		mTypeSystem->define(_int, Token::Type::TYPECAST, blueprint->QualifiedTypename(), _int);
 		mTypeSystem->define(_string, Token::Type::TYPECAST, blueprint->QualifiedTypename(), _string);
 

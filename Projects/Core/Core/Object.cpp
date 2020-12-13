@@ -260,9 +260,16 @@ void Object::garbageCollector()
 	Symbols tmp = mSymbols;
 
 	for ( auto& symIt : tmp ) {
-		if ( symIt.first != IDENTIFIER_BASE &&
-			 symIt.first != IDENTIFIER_THIS &&
-			 symIt.second && symIt.second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+		if ( symIt.first == IDENTIFIER_BASE ) {
+			auto* obj = dynamic_cast<Object*>( symIt.second );
+			if ( obj ) {
+				Controller::Instance().memory()->remove(obj->mReference);
+			}
+		}
+		else if ( symIt.first == IDENTIFIER_THIS ) {
+			// do nothing
+		}
+		else if ( symIt.second && symIt.second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 			delete symIt.second;
 		}
 

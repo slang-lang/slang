@@ -1130,9 +1130,6 @@ void LocalClient::start()
 	}
 
 	// add extensions
-#ifdef USE_JSON_EXTENSION
-	mVirtualMachine->addExtension(new Slang::Extensions::Json::JsonExtension());
-#endif
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine->addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
