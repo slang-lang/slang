@@ -15,7 +15,6 @@
 #include "SetEnv.h"
 #include "SetKeyboardBlockingMode.h"
 #include "Sleep.h"
-#include "StdTime.h"
 #include "System.h"
 #include "Write.h"
 #include "WriteLn.h"
@@ -92,6 +91,9 @@ void SystemExtension::initialize(IScope* scope)
 
 	// Strings
 	mStringsExtension.initialize( scope );
+
+    // Time
+    mTimeExtension.initialize( scope );
 }
 
 void SystemExtension::provideMethods( ExtensionMethods& methods )
@@ -106,7 +108,6 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 	methods.push_back( new PutEnv() );
 	methods.push_back( new SetEnv() );
 	methods.push_back( new Sleep() );
-	methods.push_back( new StdTime() );
 	methods.push_back( new SystemExecute() );
 	methods.push_back( new Write() );
 	methods.push_back( new WriteLn() );
@@ -141,6 +142,9 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 
 	// Strings
 	mStringsExtension.provideMethods( methods );
+
+    // Time
+    mTimeExtension.provideMethods( methods );
 }
 
 

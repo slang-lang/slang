@@ -6,6 +6,7 @@ ADD_SUBDIRECTORY(Math)
 ADD_SUBDIRECTORY(Network)
 ADD_SUBDIRECTORY(Reflection)
 ADD_SUBDIRECTORY(Strings)
+ADD_SUBDIRECTORY(Time)
 
 SET(SOURCES
 	System.cpp
@@ -22,7 +23,6 @@ SET(HEADERS
 	SetEnv.h
 	SetKeyboardBlockingMode.h
 	Sleep.h
-	StdTime.h
 	System.h
 	SystemExtension.h
 	Write.h
@@ -30,6 +30,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	ExtensionsSystemTime
 	ExtensionsSystemStrings
 	ExtensionsSystemReflection
 	ExtensionsSystemNetwork

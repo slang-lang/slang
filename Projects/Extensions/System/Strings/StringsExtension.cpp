@@ -6,6 +6,7 @@
 
 // Project includes
 #include "StrFind.h"
+#include "StrFTime.h"
 #include "StrLen.h"
 #include "StrLPad.h"
 #include "StrLTrim.h"
@@ -82,6 +83,7 @@ void SystemStringsExtension::initialize( IScope* scope )
 void SystemStringsExtension::provideMethods( ExtensionMethods& methods )
 {
 	methods.push_back( new StrFind() );
+    methods.push_back( new StrFTime() );
 	methods.push_back( new StrLen() );
 	methods.push_back( new StrLPad() );
 	methods.push_back( new StrLTrim() );

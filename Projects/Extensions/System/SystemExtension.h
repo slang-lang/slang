@@ -18,6 +18,7 @@
 #endif
 #include <System/Reflection/ReflectionExtension.h>
 #include <System/Strings/StringsExtension.h>
+#include <System/Time/TimeExtension.h>
 
 // Forward declarations
 
@@ -51,6 +52,7 @@ private:
 #endif
 	Reflection::SystemReflectionExtension mReflectionExtension;
 	Strings::SystemStringsExtension mStringsExtension;
+    Time::SystemTimeExtension mTimeExtension;
 };
 
 

@@ -8,6 +8,7 @@ SET(SOURCES
 SET(HEADERS
 	Defines.h
 	StrFind.h
+	StrFTime.h
 	StringsExtension.h
 	StrLen.h
 	StrLPad.h
