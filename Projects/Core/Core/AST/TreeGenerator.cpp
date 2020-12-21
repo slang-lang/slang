@@ -931,7 +931,7 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 	expect(Token::Type::COMPARE_LESS, token);
 	++token;
 
-	auto* targetExp = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
+	auto* targetExp = dynamic_cast<DesigntimeSymbolExpression*>(resolve(token, getScope(), false, Visibility::Public));
 	if ( !targetExp ) {
 		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
@@ -1950,7 +1950,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 {
 	Token start = (*token);
 
-	auto* lhs = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
+	auto* lhs = dynamic_cast<DesigntimeSymbolExpression*>(resolve(token, getScope(), false, Visibility::Public));
 	if ( !lhs ) {
 		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
@@ -2235,34 +2235,6 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	return symbol;
 }
 
-SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, IScope* base) const
-{
-	SymbolExpression* exp = resolve(token, base, false, Visibility::Public);
-	if ( !exp ) {
-		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
-	}
-
-	return exp;
-}
-
-SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* base) const
-{
-	if ( mThis ) {
-		// every class-method has a "this" local that points to the object's blueprint
-		// resolve symbol by using the "this" identifier (without exceptions so that we can try to resolve another time)
-		SymbolExpression* exp = resolve(token, mThis, true, Visibility::Private);
-		if ( exp ) {
-			// insert "this" symbol as "parent" of our recently resolved symbol
-			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConstMethod(), true, false);
-			symbol->mSymbolExpression = exp;
-
-			return symbol;
-		}
-	}
-
-	return resolveWithExceptions(token, base);
-}
-
 MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const
 {
 	if ( !symbol ) {
@@ -2332,6 +2304,34 @@ std::string TreeGenerator::resolveType(TokenIterator& token, const std::string& 
 	}
 
 	return "";
+}
+
+SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, IScope* base) const
+{
+    SymbolExpression* exp = resolve(token, base, false, Visibility::Public);
+    if ( !exp ) {
+        throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
+    }
+
+    return exp;
+}
+
+SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* base) const
+{
+    if ( mThis ) {
+        // every class-method has a "this" local that points to the object's blueprint
+        // resolve symbol by using the "this" identifier (without exceptions so that we can try to resolve another time)
+        SymbolExpression* exp = resolve(token, mThis, true, Visibility::Private);
+        if ( exp ) {
+            // insert "this" symbol as "parent" of our recently resolved symbol
+            SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConstMethod(), true, false);
+            symbol->mSymbolExpression = exp;
+
+            return symbol;
+        }
+    }
+
+    return resolveWithExceptions(token, base);
 }
 
 
