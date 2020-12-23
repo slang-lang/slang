@@ -75,6 +75,7 @@ private:
 
 private:
 	Script* createScript(const std::string& content);
+	bool loadExtension( const std::string& extension, const std::string& folder );
 	bool loadExtensions();
 	bool loadLibrary(const std::string& library);
 

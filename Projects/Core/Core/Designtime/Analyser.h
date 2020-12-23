@@ -33,6 +33,7 @@ public:
 	~Analyser() = default;
 
 public:
+	const StringList& getExtensionReferences() const;
 	const StringList& getLibraryReferences() const;
 
 public:	// Entry points
@@ -71,6 +72,7 @@ private: // wrapper methods
 
 private:
 	bool mDoSanityCheck;
+	StringList mExtensions;
 	std::string mFilename;
 	StringList mLibraries;
 	bool mProcessingInterface;

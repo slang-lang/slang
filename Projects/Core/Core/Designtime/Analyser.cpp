@@ -337,6 +337,12 @@ bool Analyser::createLibraryReference(TokenIterator& token)
 	expect(Token::Type::RESERVED_WORD, token);
 	++token;
 
+	bool extension = false;
+	if ( token->content() == "extension" ) {
+		++token;
+		extension = true;
+	}
+
 	while ( token->type() == Token::Type::IDENTIFIER ) {
 		reference += (*token++).content();
 
@@ -350,7 +356,12 @@ bool Analyser::createLibraryReference(TokenIterator& token)
 
 	expect(Token::Type::SEMICOLON, token);
 
-	mLibraries.push_back(reference);
+	if ( extension ) {
+		mExtensions.push_back(reference);
+	}
+	else {
+		mLibraries.push_back(reference);
+	}
 
 	return true;
 }
@@ -587,6 +598,11 @@ bool Analyser::createNamespace(TokenIterator& token)
 	mScope = tmpScope;
 
 	return true;
+}
+
+const StringList& Analyser::getExtensionReferences() const
+{
+	return mExtensions;
 }
 
 /*
