@@ -1,1 +1,1 @@
-This is the main development branch
+extended 'import' statement to be able to import extension libraries (= shared objects)
