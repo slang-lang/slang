@@ -77,18 +77,41 @@ VirtualMachine::~VirtualMachine()
 	}
 }
 
-void VirtualMachine::addExtension(Extensions::AExtension* extension, const std::string& library)
+bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std::string& library )
 {
 	if ( !extension ) {
 		// provided an invalid extension - ignore it...
 		OSerror( "invalid extension '" + library + "' detected!" );
 
-		return;
+		return false;
 	}
 
 	OSdebug( "Loaded extension " + extension->getName() + " version " + extension->getVersion() );
 
+	try {
+		OSdebug("adding extension '" + extension->getName() + "'");
+
+		auto* globalScope = Controller::Instance().globalScope();
+		Extensions::ExtensionMethods methods;
+
+		extension->initialize(globalScope);
+		extension->provideMethods(methods);
+
+		for ( auto it = methods.begin(); it != methods.end(); ++it ) {
+			OSdebug("adding extension method '" + extension->getName() + "." + (*it)->getName() + "'");
+
+			(*it)->setParent(globalScope);
+
+			globalScope->defineMethod((*it)->getName(), (*it));
+		}
+	}
+	catch ( std::exception &e ) {
+		OSerror( "error while loading extension: " + std::string( e.what() ) );
+	}
+
 	mExtensions.push_back( extension );
+
+	return true;
 }
 
 void VirtualMachine::addLibraryFolder(const std::string& library)
@@ -119,7 +142,9 @@ Script* VirtualMachine::createScript(const std::string& content)
 	// load all extension references
 	auto extensions = analyser.getExtensionReferences();
 	for ( const auto& ext : extensions ) {
-		loadExtension( ext, (*mLibraryFolders.begin()) );
+		if ( !loadExtension( ext, (*mLibraryFolders.begin()) ) ) {
+			throw Common::Exceptions::Exception( "could not load extension '" + ext + "' from '" + (*mLibraryFolders.begin()) + "'" );
+		}
 	}
 
 	// load all library references
@@ -222,6 +247,8 @@ void VirtualMachine::init()
 #ifdef _WIN32
 		// Extension loading is not supported under Windows
 #else
+		OSdebug("loading extensions...");
+
 		std::vector<std::string> sharedLibraries;
 		read_directory(SHARED_LIBRARY_DIRECTORY, sharedLibraries);
 
@@ -231,8 +258,6 @@ void VirtualMachine::init()
 		}
 #endif
 	}
-
-	loadExtensions();
 
 	mIsInitialized = true;
 }
@@ -251,43 +276,9 @@ bool VirtualMachine::loadExtension( const std::string& extension, const std::str
 	return false;
 #endif
 
-	OSinfo( "Loading extension '" + library + "'" );
+	OSdebug( "Loading extension '" + library + "'" );
 
-	auto* sharedObject = mExtensionManager.load( library );
-	addExtension( sharedObject, library );
-
-	return sharedObject;
-}
-
-bool VirtualMachine::loadExtensions()
-{
-	OSdebug("loading extensions...");
-
-	MethodScope* globalScope = Controller::Instance().globalScope();
-
-	for ( auto extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt ) {
-		try {
-			OSdebug("adding extension '" + (*extIt)->getName() + "'");
-
-			(*extIt)->initialize(globalScope);
-
-			Extensions::ExtensionMethods methods;
-			(*extIt)->provideMethods(methods);
-
-			for ( auto it = methods.begin(); it != methods.end(); ++it ) {
-				OSdebug("adding extension method '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
-
-				(*it)->setParent(globalScope);
-
-				globalScope->defineMethod((*it)->getName(), (*it));
-			}
-		}
-		catch ( std::exception &e ) {
-			OSerror( "error while loading extension: " + std::string( e.what() ) );
-		}
-	}
-
-	return true;
+	return addExtension( mExtensionManager.load( library ), library );
 }
 
 bool VirtualMachine::loadLibrary(const std::string& library)
@@ -317,7 +308,9 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 	// load all extension references
 	auto extensions = analyser.getExtensionReferences();
 	for ( const auto& ext : extensions ) {
-		loadExtension( ext, currentFolder );
+		if ( !loadExtension( ext, currentFolder ) ) {
+			throw Common::Exceptions::Exception( "could not load extension '" + ext + "' from '" + currentFolder + "'" );
+		}
 	}
 
 	const std::list<std::string>& libraries = analyser.getLibraryReferences();

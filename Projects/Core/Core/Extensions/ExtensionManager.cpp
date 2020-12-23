@@ -1,12 +1,12 @@
 
 // Header
 #include "ExtensionManager.h"
-#include <Utils.h>
 
 // Library includes
 #include <dlfcn.h>
 
 // Project includes
+#include <Utils.h>
 
 // Namespace declarations
 
@@ -59,3 +59,4 @@ dynamic_lib_handle ExtensionManager::load_lib( const std::string& path ) {
 
 }
 }
+

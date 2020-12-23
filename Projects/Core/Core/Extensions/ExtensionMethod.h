@@ -23,9 +23,12 @@ namespace Extensions {
 class ExtensionMethod : public Common::Method
 {
 public:
-	ExtensionMethod( IScope* parent, const std::string& name, const std::string& type,
-					Mutability::E mutabilty = Mutability::Const, MemoryLayout::E memoryLayout = MemoryLayout::Static,
-					LanguageFeatureState::E languageFeatureState = LanguageFeatureState::Stable )
+	ExtensionMethod( IScope* parent,
+			 const std::string& name,
+			 const std::string& type,
+			 Mutability::E mutabilty = Mutability::Const,
+			 MemoryLayout::E memoryLayout = MemoryLayout::Static,
+			 LanguageFeatureState::E languageFeatureState = LanguageFeatureState::Stable )
 	: Common::Method( parent, name, Common::TypeDeclaration( type ) )
 	{
 		mIsExtensionMethod = true;

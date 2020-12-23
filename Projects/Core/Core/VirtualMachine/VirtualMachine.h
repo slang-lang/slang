@@ -55,7 +55,7 @@ public:
 	~VirtualMachine();
 
 public:	// Setup
-	void addExtension(Extensions::AExtension* extension, const std::string& library = "<internal library>");
+	bool addExtension(Extensions::AExtension* extension, const std::string& library = "<internal library>");
 	void addLibraryFolder(const std::string& library);
 	void init();
 	void printExtensions();
@@ -76,7 +76,6 @@ private:
 private:
 	Script* createScript(const std::string& content);
 	bool loadExtension( const std::string& extension, const std::string& folder );
-	bool loadExtensions();
 	bool loadLibrary(const std::string& library);
 
 private:
