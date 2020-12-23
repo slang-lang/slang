@@ -8,7 +8,7 @@
     { "module": "libMysqlGeneric", "version_min": "0.5.1" }
   ],
   "target": {
-    "directory": "libMysql",
+    "directory": "libMariaDB",
     "type": "internal"
   }
 }

@@ -1,8 +1,8 @@
 {
-  "name": "Slang MariaDB library",
-  "name_short": "libMariaDB",
+  "name": "Slang MySQL library",
+  "name_short": "libMySQL",
   "version": "0.0.1",
-  "description": "Library for convenience access to a MariaDB database",
+  "description": "Library for convenience access to a MySQL database",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.0" },
     { "module": "libMysqlGeneric", "version_min": "0.5.1" }
