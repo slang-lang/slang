@@ -22,6 +22,7 @@ elseif( "${BUILD}" MATCHES "Release")
     # MESSAGE("Setting default build to: Release")
     SET(CMAKE_BUILD_TYPE "Release")
 
+    add_definitions(-Wno-deprecated-copy)
     add_definitions(-Wno-unused-value)
     add_definitions(-Wno-unused-variable)
     add_definitions(-Wno-write-strings)			# suppress "deprecated conversion from string constant to ‘char*’ [-Werror=write-strings]"
