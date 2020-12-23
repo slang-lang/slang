@@ -89,7 +89,6 @@ cp "${SCRIPTS_DIRECTORY}/webscript" "${PACKAGE_DIRECTORY_BIN}"
 
 # add new libraries
 echo "Deploying new libraries..."
-cp -r Projects/Library/.odepend "${PACKAGE_DIRECTORY_LIBRARY}"
 cp -r Projects/Library/Slang "${PACKAGE_DIRECTORY_LIBRARY}"
 cp -r Projects/Library/System "${PACKAGE_DIRECTORY_LIBRARY}"
 
