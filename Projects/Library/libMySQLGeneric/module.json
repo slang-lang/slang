@@ -1,14 +1,14 @@
 {
   "name": "Slang MySQL library",
-  "name_short": "libMysql",
+  "name_short": "libMysqlGeneric",
   "version": "0.5.1",
-  "description": "Library for convenience access to a MySQL database",
+  "description": "Library for convenience access to a MySQL or MariaDB database",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.0" },
     { "module": "System", "version_min": "0.3.4" }
   ],
   "target": {
-    "directory": "libMysql",
+    "directory": "libMysqlGeneric",
     "type": "internal"
   }
 }
