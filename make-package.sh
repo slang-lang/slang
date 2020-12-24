@@ -6,7 +6,8 @@ CONFLICTS="oscript"
 DESCRIPTION="Is an interpreter, debugger & package manager for the Slang programming language"
 MAINTAINER="Michael Adelmann <michael.adelmann@gmail.com>"
 PACKAGE="slang"
-PLATFORM=$(uname -m)
+#PLATFORM=$(uname -m)
+PLATFORM="any"
 PROVIDES="slang"
 REPLACES="oscript"
 VERSION=$(cat version)
@@ -74,7 +75,7 @@ echo "Architecture: ${PLATFORM}" >> Env/DEBIAN/control
 echo "Conficts: ${CONFLICTS}" >> Env/DEBIAN/control
 echo "Provides: ${PROVIDES}" >> Env/DEBIAN/control
 echo "Replaces: ${REPLACES}" >> Env/DEBIAN/control
-echo "Depends: \"${shlibs:Depends}\", \"${misc:depends}\"" >> Env/DEBIAN/control
+#echo "Depends: \"${shlibs:Depends}\", \"${misc:depends}\"" >> Env/DEBIAN/control
 echo "Description: ${DESCRIPTION}" >> Env/DEBIAN/control
 
 # add new binaries

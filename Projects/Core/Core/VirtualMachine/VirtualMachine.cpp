@@ -77,18 +77,41 @@ VirtualMachine::~VirtualMachine()
 	}
 }
 
-void VirtualMachine::addExtension(Extensions::AExtension* extension, const std::string& library)
+bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std::string& library )
 {
 	if ( !extension ) {
 		// provided an invalid extension - ignore it...
 		OSerror( "invalid extension '" + library + "' detected!" );
 
-		return;
+		return false;
 	}
 
 	OSdebug( "Loaded extension " + extension->getName() + " version " + extension->getVersion() );
 
+	try {
+		OSdebug("adding extension '" + extension->getName() + "'");
+
+		auto* globalScope = Controller::Instance().globalScope();
+		Extensions::ExtensionMethods methods;
+
+		extension->initialize(globalScope);
+		extension->provideMethods(methods);
+
+		for ( auto it = methods.begin(); it != methods.end(); ++it ) {
+			OSdebug("adding extension method '" + extension->getName() + "." + (*it)->getName() + "'");
+
+			(*it)->setParent(globalScope);
+
+			globalScope->defineMethod((*it)->getName(), (*it));
+		}
+	}
+	catch ( std::exception &e ) {
+		OSerror( "error while loading extension: " + std::string( e.what() ) );
+	}
+
 	mExtensions.push_back( extension );
+
+	return true;
 }
 
 void VirtualMachine::addLibraryFolder(const std::string& library)
@@ -116,9 +139,17 @@ Script* VirtualMachine::createScript(const std::string& content)
 	Designtime::Analyser analyser(mSettings.DoSanityCheck);
 	analyser.processString(content, mScriptFile);
 
+	// load all extension references
+	auto extensions = analyser.getExtensionReferences();
+	for ( const auto& ext : extensions ) {
+		if ( !loadExtension( ext, (*mLibraryFolders.begin()) ) ) {
+			throw Common::Exceptions::Exception( "could not load extension '" + ext + "' from '" + (*mLibraryFolders.begin()) + "'" );
+		}
+	}
+
 	// load all library references
-	StringList libraries = analyser.getLibraryReferences();
-	for ( StringList::const_iterator libIt = libraries.begin(); libIt != libraries.end(); ++libIt ) {
+	auto libraries = analyser.getLibraryReferences();
+	for ( auto libIt = libraries.begin(); libIt != libraries.end(); ++libIt ) {
 		bool imported = false;
 
 		for ( const auto& libraryFolder : mLibraryFolders ) {
@@ -216,6 +247,8 @@ void VirtualMachine::init()
 #ifdef _WIN32
 		// Extension loading is not supported under Windows
 #else
+		OSdebug("loading extensions...");
+
 		std::vector<std::string> sharedLibraries;
 		read_directory(SHARED_LIBRARY_DIRECTORY, sharedLibraries);
 
@@ -226,40 +259,26 @@ void VirtualMachine::init()
 #endif
 	}
 
-	loadExtensions();
-
 	mIsInitialized = true;
 }
 
-bool VirtualMachine::loadExtensions()
+bool VirtualMachine::loadExtension( const std::string& extension, const std::string& folder )
 {
-	OSdebug("loading extensions...");
+	auto library = folder + extension;
 
-	MethodScope* globalScope = Controller::Instance().globalScope();
+#if defined __APPLE__
+	library += ".dylib";
+#elif defined __linux
+	library += ".so";
+#else
+	OSerror( "Extension loading is not support under your OS!" );
 
-	for (Extensions::ExtensionCollection::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt ) {
-		try {
-			OSdebug("adding extension '" + (*extIt)->getName() + "'");
+	return false;
+#endif
 
-			(*extIt)->initialize(globalScope);
+	OSdebug( "Loading extension '" + library + "'" );
 
-			Extensions::ExtensionMethods methods;
-			(*extIt)->provideMethods(methods);
-
-			for ( Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-				OSdebug("adding extension method '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
-
-				(*it)->setParent(globalScope);
-
-				globalScope->defineMethod((*it)->getName(), (*it));
-			}
-		}
-		catch ( std::exception &e ) {
-			OSerror( "error while loading extension: " + std::string( e.what() ) );
-		}
-	}
-
-	return true;
+	return addExtension( mExtensionManager.load( library ), library );
 }
 
 bool VirtualMachine::loadLibrary(const std::string& library)
@@ -277,12 +296,22 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		return true;
 	}
 
-	mLibraryFolders.insert(Utils::Tools::Files::ExtractPathname(library));
+	auto currentFolder = Utils::Tools::Files::ExtractPathname( library );
+
+	mLibraryFolders.insert( currentFolder );
 
 	Designtime::Analyser analyser(mSettings.DoSanityCheck);
 	analyser.processFile(library);
 
 	mImportedLibraries.insert(library);
+
+	// load all extension references
+	auto extensions = analyser.getExtensionReferences();
+	for ( const auto& ext : extensions ) {
+		if ( !loadExtension( ext, currentFolder ) ) {
+			throw Common::Exceptions::Exception( "could not load extension '" + ext + "' from '" + currentFolder + "'" );
+		}
+	}
 
 	const std::list<std::string>& libraries = analyser.getLibraryReferences();
 	for ( const auto& lib : libraries ) {

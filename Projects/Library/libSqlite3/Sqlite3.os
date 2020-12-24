@@ -34,3 +34,4 @@ public object Sqlite3Database {
 
     private Sqlite3Connection mConnection;
 }
+

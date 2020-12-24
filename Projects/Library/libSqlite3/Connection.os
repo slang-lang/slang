@@ -1,4 +1,7 @@
 
+// load extension
+import extension libSlangSQLite3;
+
 
 public namespace Sqlite3 { }
 
@@ -22,3 +25,4 @@ public object Sqlite3Connection {
         return Handle != 0;
     }
 }
+
