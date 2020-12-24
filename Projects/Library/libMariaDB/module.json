@@ -1,8 +1,8 @@
 {
   "name": "Slang MariaDB library",
-  "name_short": "libMariaDB",
+  "name_short": "libMariaDB-x86_64",
   "version": "0.0.1",
-  "description": "Library for convenience access to a MariaDB database",
+  "description": "Wrapper module to access a 64bit x86 MariaDB instance",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.0" },
     { "module": "libMySQLGeneric", "version_min": "0.5.1" }
