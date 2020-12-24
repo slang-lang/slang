@@ -7,9 +7,8 @@ Standards-Version: 4.0.0
 Homepage: https://slang.ticketsharing.net/
 Package: slang
 Version: 0.7.3
-Architecture: armv7l
+Architecture: any
 Conficts: oscript
 Provides: slang
 Replaces: oscript
-Depends: "", ""
 Description: Is an interpreter, debugger & package manager for the Slang programming language
