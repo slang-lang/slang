@@ -14,7 +14,9 @@ public void Main( int argc, string args ) modify throws {
 		var cfg = processParameters( new ParameterHandler( argc, args ) );
 
 		var config = new ConfigLoader( cfg + "/config.json" );
-		config.load();
+		if ( System.IO.File.Exists( cfg + "/config.json" ) ) {
+			config.load();
+		}
 
 		if ( !Config.Database ) {
 			print( "database missing!" );

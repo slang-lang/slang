@@ -86,7 +86,7 @@ public object CodeGenerator {
             template.ReplaceAll( TEMPLATE_ENTITY_NAME_PRETTY, Utils.prettify( entity.first ) );        // entity name
             template.ReplaceAll( TEMPLATE_ENUM_DECLARATION, generateEnumMembers( entity.second ) );        // enum declaration list
 
-            var outFile = new System.IO.File( Config.Database + "/Lookups/" + Utils.prettify( entity.first ) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Config.Output + "/Lookups/" + Utils.prettify( entity.first ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
@@ -97,7 +97,7 @@ public object CodeGenerator {
 
         libraryImports += LINEBREAK;
 
-        var allFile = new System.IO.File( Config.Database + "/Lookups/All.os", System.IO.File.AccessMode.WriteOnly );
+        var allFile = new System.IO.File( Config.Output + "/Lookups/All.os", System.IO.File.AccessMode.WriteOnly );
         allFile.write( libraryImports );
         allFile.close();
 
@@ -109,7 +109,7 @@ public object CodeGenerator {
 
             replaceUserTemplates( keyLookupTemplate );
 
-            var outFile = new System.IO.File( Config.Database + "/KeyLookup.os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Config.Output + "/KeyLookup.os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( keyLookupTemplate ) );
             outFile.close();
         }
@@ -226,7 +226,7 @@ public object CodeGenerator {
             replaceSpecialTemplates( template, entity.second );
             replaceUserTemplates( template );
     
-            var outFile = new System.IO.File( Config.Database + "/Tables/" + Utils.prettify( entity.first ) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Config.Output + "/Tables/" + Utils.prettify( entity.first ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
@@ -237,7 +237,7 @@ public object CodeGenerator {
 
         libraryImports += LINEBREAK;
 
-        var allFile = new System.IO.File( Config.Database + "/Tables/All.os", System.IO.File.AccessMode.WriteOnly );
+        var allFile = new System.IO.File( Config.Output + "/Tables/All.os", System.IO.File.AccessMode.WriteOnly );
         allFile.write( libraryImports );
         allFile.close();
 
@@ -262,7 +262,7 @@ public object CodeGenerator {
             replaceSpecialTemplates( template, entity.second );
             replaceUserTemplates( template );
 
-            var outFile = new System.IO.File( Config.Database + "/Views/" + Utils.prettify( entity.first ) + ".os", System.IO.File.AccessMode.WriteOnly );
+            var outFile = new System.IO.File( Config.Output + "/Views/" + Utils.prettify( entity.first ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();
 
@@ -273,7 +273,7 @@ public object CodeGenerator {
 
         libraryImports += LINEBREAK;
 
-        var allFile = new System.IO.File( Config.Database + "/Views/All.os", System.IO.File.AccessMode.WriteOnly );
+        var allFile = new System.IO.File( Config.Output + "/Views/All.os", System.IO.File.AccessMode.WriteOnly );
         allFile.write( libraryImports );
         allFile.close();
 
