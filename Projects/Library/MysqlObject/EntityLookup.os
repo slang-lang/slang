@@ -44,7 +44,7 @@ public object EntityLookup {
 		mViews = getEntitiesByType( "VIEW" );
 	}
 
-	public EntityType getEntity( string entityName ) const {
+	public EntityType getEntity( string entityName ) const throws {
 		if ( mTables.contains( entityName ) ) {
 			return mTables[ entityName ];
 		}
@@ -101,9 +101,8 @@ public object EntityLookup {
 	private int mDatabaseHandle;
 	private string mDatabaseName;
 	private FieldLookup mFieldLookup;
-	private TokenLookup mTokenLookup;
-
 	private Map<string, EntityType> mTables;
+	private TokenLookup mTokenLookup;
 	private Map<string, EntityType> mViews;
 }
 

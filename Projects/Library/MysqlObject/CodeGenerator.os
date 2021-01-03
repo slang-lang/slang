@@ -12,10 +12,6 @@ import Utils;
 
 
 public object CodeGenerator {
-    public void Constructor() {
-        // nothing to do here
-    }
-
     public void process() modify throws {
         // connect to database
         connect();
@@ -50,7 +46,7 @@ public object CodeGenerator {
         }
     }
 
-    private void disconnect() modify {
+    private void disconnect() modify throws {
         mysql_close( mDatabaseHandle );
     }
 

@@ -36,8 +36,6 @@ public object ConfigLoader {
 		var text = new Scanner( mFilename ).getText();
 		var config = JsonObject reader.parse( text );
 
-		//print( config.toString() );
-
 		// Database config
 		// {
 		Config.Database	= Config.Database	?: config[ "Database" ].asString();
@@ -66,13 +64,11 @@ public object ConfigLoader {
 		config.addMember( "User",	new JsonValue( Config.User ) );
 		// }
 
-		//print( "Writer: " + config.toString() );
-
 		var file = new System.IO.File( mFilename, System.IO.File.AccessMode.WriteOnly );
 		file.write( config.toString() );
 		file.close();
 	}
 
-	private string mFilename;
+	private string mFilename const;
 }
 

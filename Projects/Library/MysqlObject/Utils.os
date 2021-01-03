@@ -1,32 +1,35 @@
 
+// Library imports
 import System.CharacterIterator;
+
+// Project imports
 
 
 public namespace Utils {
 
-    public string prettify( string name ) const {
-        var it = new CharacterIterator( name );
+public string prettify( string name ) const {
+	var it = new CharacterIterator( name );
 
-        string result;
-        bool upperCase = true;
+	string char;
+	string result;
+	bool upperCase = true;
 
-        while ( it.hasNext() ) {
-            string c = it.next();
+	while ( it.hasNext() && ( char = it.next() )) {
+		if ( char == "_" ) {
+			upperCase = true;
+			continue;
+		}
 
-            if ( c == "_" ) {
-                upperCase = true;
-                continue;
-            }
+		if ( upperCase ) {
+			char = toUpper( char );
+			upperCase = false;
+		}
 
-            if ( upperCase ) {
-                c = toUpper( c );
-                upperCase = false;
-            }
+		result += char;
+	}
 
-            result += c;
-        }
-
-        return result;
-    }
+	return result;
+}
 
 }
+

@@ -38,10 +38,10 @@ public object FieldLookup {
 
 	public Vector<FieldEntry> getFields( int databaseHandle, string entityName ) const throws {
 		string query = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE \
-						FROM INFORMATION_SCHEMA.COLUMNS \
-						WHERE TABLE_SCHEMA = '" + Config.Database + "' \
-						AND TABLE_NAME = '" + entityName + "' \
-						ORDER BY TABLE_NAME ASC, COLUMN_NAME ASC";
+				FROM INFORMATION_SCHEMA.COLUMNS \
+				WHERE TABLE_SCHEMA = '" + Config.Database + "' \
+				AND TABLE_NAME = '" + entityName + "' \
+				ORDER BY TABLE_NAME ASC, COLUMN_NAME ASC";
 
 		int error = mysql_query( databaseHandle, query );
 		if ( error ) {
@@ -52,8 +52,8 @@ public object FieldLookup {
 
 		int result = mysql_store_result( databaseHandle );
 		while ( mysql_fetch_row( result ) ) {
-			string column = mysql_get_field_value( result, "COLUMN_NAME" );
-			string type = mysql_get_field_value( result, "DATA_TYPE" );
+			var column = mysql_get_field_value( result, "COLUMN_NAME" );
+			var type = mysql_get_field_value( result, "DATA_TYPE" );
 
 			try {
 				collection.push_back( new FieldEntry(
@@ -71,6 +71,6 @@ public object FieldLookup {
 		return collection;
 	}
 
-	private DatatypeMapper mDatatypeMapper;
+	private DatatypeMapper mDatatypeMapper const;
 }
 

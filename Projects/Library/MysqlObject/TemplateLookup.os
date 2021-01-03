@@ -8,47 +8,47 @@ import Scanner;
 
 
 public object TemplateLookup implements IIterable {
-    public void Constructor() {
-        mTemplates = new Map<string, string>();
+	public void Constructor() {
+		mTemplates = new Map<string, string>();
 
-        process();
-    }
+		process();
+	}
 
-    public Iterator<Object> getIterator() const {
-        return mTemplates.getIterator();
-    }
+	public Iterator<Object> getIterator() const {
+		return mTemplates.getIterator();
+	}
 
-    private string parseValue( CharacterIterator it ) const {
-        string c;
-        string value;
+	private string parseValue( CharacterIterator it ) const {
+		string c;
+		string value;
 
-        while ( it.hasNext() && ( c = it.next() ) != "\"" ) {
-            value += c;
-        }
+		while ( it.hasNext() && ( c = it.next() ) != "\"" ) {
+			value += c;
+		}
 
-        return value;
-    }
+		return value;
+	}
 
-    private void process() modify throws {
-        var charIt = new Scanner( CONFIG_DIRECTORY + "Templates.txt" ).getIterator();
+	private void process() modify throws {
+		var charIt = new Scanner( CONFIG_DIRECTORY + "Templates.txt" ).getIterator();
 
-        while ( charIt.hasNext() ) {
-            skipChars( charIt );
+		while ( charIt.hasNext() ) {
+			skipChars( charIt );
 
-            var key = parseValue( charIt );
+			var key = parseValue( charIt );
 
-            skipChars( charIt );
+			skipChars( charIt );
 
-            var value = parseValue( charIt );
+			var value = parseValue( charIt );
 
-            mTemplates.insert( key, value );
-        }
-    }
+			mTemplates.insert( key, value );
+		}
+	}
 
-    private void skipChars( CharacterIterator it ) const {
-        while ( it.hasNext() && it.next() != "\"" );
-    }
+	private void skipChars( CharacterIterator it ) const {
+		while ( it.hasNext() && it.next() != "\"" );
+	}
 
-    private Map<string, string> mTemplates;
+	private Map<string, string> mTemplates;
 }
 

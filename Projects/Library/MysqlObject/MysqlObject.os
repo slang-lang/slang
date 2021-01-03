@@ -97,3 +97,4 @@ private void printVersion() {
 	print( APP_NAME + " " + APP_VERSION + " " + APP_COPYRIGHT );
 	print( "" );
 }
+
