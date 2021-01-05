@@ -45,6 +45,7 @@ void OperatorTest::process()
 	TEST(testBooleanOverloads_Less);
 	TEST(testBooleanOverloads_Less_Equal);
 	TEST(testBooleanOverloads_Unequal);
+	TEST(testEnumeration);
 	TEST(testIndexOperator);
 	TEST(testInverseOperator);
 	TEST(testIsOperator);
@@ -202,6 +203,20 @@ void OperatorTest::testBooleanOverloads_Unequal()
 		// exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
+}
+
+void OperatorTest::testEnumeration()
+{
+    try {
+        VirtualMachine vm;
+        vm.runScriptFromFile("Tests/Operator/Enumeration.os");
+
+        // automatic success
+    }
+    catch ( std::exception& e ) {
+        // exception has been thrown: test failed!
+        TFAIL(e.what());
+    }
 }
 
 void OperatorTest::testIndexOperator()

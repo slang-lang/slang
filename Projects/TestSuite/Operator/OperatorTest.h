@@ -41,6 +41,7 @@ private:	// Tests
 	void testBooleanOverloads_Less();
 	void testBooleanOverloads_Less_Equal();
 	void testBooleanOverloads_Unequal();
+	void testEnumeration();
 	void testIndexOperator();
 	void testInverseOperator();
 	void testIsOperator();

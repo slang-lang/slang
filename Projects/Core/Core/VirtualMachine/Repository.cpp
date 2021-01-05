@@ -607,13 +607,29 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		mTypeSystem->define(_int, Token::Type::ASSIGN, blueprint->QualifiedTypename(), _int);
 		mTypeSystem->define(_string, Token::Type::ASSIGN, blueprint->QualifiedTypename(), _string);
 
-		// comparison operators
+		// comparison operators (enum vs enum)
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,         blueprint->QualifiedTypename(), _bool);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS,          blueprint->QualifiedTypename(), _bool);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS_EQUAL,    blueprint->QualifiedTypename(), _bool);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER,       blueprint->QualifiedTypename(), _bool);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER_EQUAL, blueprint->QualifiedTypename(), _bool);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL,       blueprint->QualifiedTypename(), _bool);
+
+        // comparison operators (enum vs int)
+        mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_EQUAL,         Designtime::IntegerObject::TYPENAME, _bool);
+        mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS,          Designtime::IntegerObject::TYPENAME, _bool);
+        mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS_EQUAL,    Designtime::IntegerObject::TYPENAME, _bool);
+        mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER,       Designtime::IntegerObject::TYPENAME, _bool);
+        mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER_EQUAL, Designtime::IntegerObject::TYPENAME, _bool);
+        mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_UNEQUAL,       Designtime::IntegerObject::TYPENAME, _bool);
+
+        // comparison operators (int vs enum)
+        mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_EQUAL,         blueprint->QualifiedTypename(), _bool);
+        mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_LESS,          blueprint->QualifiedTypename(), _bool);
+        mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    blueprint->QualifiedTypename(), _bool);
+        mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_GREATER,       blueprint->QualifiedTypename(), _bool);
+        mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, blueprint->QualifiedTypename(), _bool);
+        mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       blueprint->QualifiedTypename(), _bool);
 
 		// arithmetic operators
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_ADDITION, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
