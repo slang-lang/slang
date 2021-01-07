@@ -3,6 +3,7 @@ double:		double
 float:		double 
 int:		int
 mediumtext:	string
+smallint:       int
 text:		string
 tinyint:	int
 timestamp:	string
