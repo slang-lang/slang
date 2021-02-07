@@ -30,29 +30,39 @@ namespace Strings {
 class StrFTime : public ExtensionMethod
 {
 public:
-    StrFTime()
-	: ExtensionMethod(0, "strftime", Designtime::IntegerObject::TYPENAME)
+	StrFTime()
+	: ExtensionMethod( 0, "strftime", Designtime::IntegerObject::TYPENAME )
 	{
 		ParameterList params;
-        params.push_back(Parameter::CreateDesigntime("format", Designtime::StringObject::TYPENAME, 0));
+		params.push_back( Parameter::CreateDesigntime( "format", Designtime::StringObject::TYPENAME, 0 ) );
+       		params.push_back( Parameter::CreateDesigntime( "time", Designtime::IntegerObject::TYPENAME, 0, true ) );
 
-		setSignature(params);
+		setSignature( params );
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token )
 	{
-        ParameterList list = mergeParameters(params);
+		ParameterList list = mergeParameters(params);
 
-        try {
-            ParameterList::const_iterator it = list.begin();
+		try {
+			ParameterList::const_iterator it = list.begin();
 
-            std::string param_format = (*it++).value().toStdString();
+			std::string param_format = (*it++).value().toStdString();
+			int32_t param_time = (*it++).value().toInt();
 
-            std::time_t t = std::time(nullptr);
-            std::tm tm = *std::localtime(&t);
-            std::stringstream ssr;
-            ssr << std::put_time( &tm, param_format.c_str() );
+			std::time_t time;
+			if ( param_time ) {
+				time = param_time;
+			}
+			else {
+				time = std::time(nullptr);
+			}
+
+			std::tm tm = *std::localtime(&time);
+
+			std::stringstream ssr;
+			ssr << std::put_time( &tm, param_format.c_str() );
 
 			*result = Runtime::StringObject( ssr.str() );
 		}
