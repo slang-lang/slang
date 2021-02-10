@@ -1,8 +1,8 @@
 {
-  "name": "Slang SQLite3 x86_64 extension",
-  "name_short": "extSQLite3-x86_64",
+  "name": "Slang SQLite3 armv7l extension",
+  "name_short": "extSQLite3-armv7l",
   "version": "0.0.1",
-  "description": "Wrapper module to access 64bit x86 SQLite3 databases",
+  "description": "Extension module to access armv7l SQLite3 databases",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.0" },
     { "module": "libSQLite3", "version_min": "0.1.3" }
