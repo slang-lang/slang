@@ -1,0 +1,14 @@
+{
+  "name": "Slang MySQL armv7l extension",
+  "name_short": "extMySQL-armv7l",
+  "version": "0.0.1",
+  "description": "Extension to access a MySQL database",
+  "dependencies": [
+    { "module": "Slang", "version_min": "0.7.0" },
+    { "module": "libMysqlGeneric", "version_min": "0.5.1" }
+  ],
+  "target": {
+    "directory": "extMysql",
+    "type": "internal"
+  }
+}
