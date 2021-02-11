@@ -1,7 +1,7 @@
 
 // import extension
-import extension libSlangMariaDB;
+import extension libSlangMySQL;
 
 // import MySQL library
-import libMySQLGeneric;
+import libMySQL;
 
