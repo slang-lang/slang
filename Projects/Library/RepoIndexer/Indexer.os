@@ -47,7 +47,7 @@ private object Indexer {
 				idx = idx2;
 			}
 
-			var module = new Module(curFile.SubString(0, idx), "", curFile.SubString(idx + 1));
+			var module = new Module(curFile.SubString(0, idx), curFile.SubString(idx + 1));
 			if ( !module.isValid() ) {
 				continue;
 			}
