@@ -6,18 +6,20 @@ import libSemVer.SemVer;
 
 
 private object Module {
+	public string architecture;
 	public string description;
 	public string name;
 	public SemVer version;
 
-	public void Constructor(string _name, SemVer _version, string _description = "") {
+	public void Constructor(string _name, SemVer _version, string _architecture = "", string _description = "") {
+		architecture = _architecture;
 		description = _description;
 		name = _name;
 		version = _version;
 	}
 
-	public void Constructor(string _name, string _version, string _description = "") {
-		Constructor(_name, SemVer.FromString( _version ), _description);
+	public void Constructor(string _name, string _version, string _architecture = "", string _description = "") {
+		Constructor(_name, SemVer.FromString( _version ), _architecture, _description);
 	}
 
 	public bool isValid() {

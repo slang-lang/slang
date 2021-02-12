@@ -47,7 +47,7 @@ private object Indexer {
 				idx = idx2;
 			}
 
-			var module = new Module(curFile.SubString(0, idx), curFile.SubString(idx + 1));
+			var module = new Module(curFile.SubString(0, idx), "", curFile.SubString(idx + 1));
 			if ( !module.isValid() ) {
 				continue;
 			}
@@ -84,6 +84,7 @@ private object Indexer {
 			builder.beginObject();
 			builder.addElement("name", m.name);
 			builder.addElement("version", cast<string>( m.version) );
+			builder.addElement("architecture", m.architecture);
 			builder.addElement("description", m.description);
 			builder.endObject();
 		}
