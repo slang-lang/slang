@@ -18,7 +18,7 @@
 class Repository
 {
 public:
-	explicit Repository(std::string  name = "");
+	explicit Repository( std::string name = "" );
 	~Repository() = default;
 
 public:

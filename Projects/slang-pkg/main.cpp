@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <set>
 #include <string>
+#include <sys/utsname.h>
 #ifdef _WIN32
 #	include <direct.h>
 #	define GetCurrentDir _getcwd
@@ -25,6 +26,7 @@
 #include <Tools/Strings.h>
 #include <Utils.h>
 #include "Defines.h"
+#include "Errors.h"
 #include "Repository.h"
 #include "Restriction.h"
 
@@ -69,14 +71,14 @@ enum e_Action {
 };
 
 
-static const char* CACHE_MODULES = "/cache/modules/";
-static const char* CACHE_REPOSITORIES = "/cache/repositories/";
-static const char* CONFIG_FILE = ".odepend/config.json";
-static const char* CONFIG_FOLDER = ".odepend/";
-static const char* FILE_VERSION_SEPARATOR = "_";
-static const char* MODULES = "/modules/";
-static const char* TMP = "/tmp/";
-static const char  VERSION_DEPERATOR = ':';
+static const std::string CACHE_MODULES = "/cache/modules/";
+static const std::string CACHE_REPOSITORIES = "/cache/repositories/";
+static const std::string CONFIG_FILE = ".odepend/config.json";
+static const std::string CONFIG_FOLDER = ".odepend/";
+static const std::string FILE_VERSION_SEPARATOR = "_";
+static const std::string MODULES = "/modules/";
+static const std::string TMP = "/tmp/";
+static const char VERSION_SEPARATOR = ':';
 
 
 void addRestriction(const StringList& params);
@@ -119,6 +121,7 @@ void upgrade(const StringList& params);
 
 
 e_Action mAction = None;
+std::string mArchitecture;
 std::string mBaseFolder;
 Json::Value mConfig;
 std::string mCurrentFolder;
@@ -242,7 +245,7 @@ void collectLocalModuleData()
 	DIR* dir = opendir(base.c_str());
 	if ( !dir ) {
 		std::cout << "!!! Error while accessing modules directory" << std::endl;
-		return;
+		exit( ERROR_MODULE_DIRECTORY );
 	}
 
  	struct dirent* dirEntry = readdir(dir);
@@ -475,7 +478,7 @@ void info(const StringList& params)
 	std::string moduleName;
 	std::string moduleVersion;
 
-	Utils::Tools::splitBy((*it), VERSION_DEPERATOR, moduleName, moduleVersion);
+	Utils::Tools::splitBy((*it), VERSION_SEPARATOR, moduleName, moduleVersion);
 
 	if ( moduleVersion.empty() ) {
 		Module tmpModule;
@@ -543,6 +546,15 @@ void info(const StringList& params)
 
 void init()
 {
+    struct utsname name;
+
+    if ( uname(&name) == -1 ) {
+        std::cout << "Cannot get system name!" << std::endl;
+        exit( ERROR_SYSTEM );
+    }
+
+    mArchitecture = name.machine;
+
 	// put initialization stuff here
 	mBaseFolder = TMP;
 
@@ -556,7 +568,7 @@ void init()
 				std::string left;
 				std::string right;
 
-				Utils::Tools::splitBy(path, VERSION_DEPERATOR, left, right);
+				Utils::Tools::splitBy(path, VERSION_SEPARATOR, left, right);
 
 				mLibraryFolder = left + "/";
 			}
@@ -613,7 +625,7 @@ void install(const StringList& params)
 		std::string source;
 		std::string version;
 
-		Utils::Tools::splitBy(param, VERSION_DEPERATOR, moduleName, version);
+		Utils::Tools::splitBy(param, VERSION_SEPARATOR, moduleName, version);
 
 		if ( version.empty() ) {
 			Module tmpModule;
@@ -638,7 +650,7 @@ void install(const StringList& params)
 		std::string source;
 		std::string version;
 
-		Utils::Tools::splitBy(param, VERSION_DEPERATOR, moduleName, version);
+		Utils::Tools::splitBy(param, VERSION_SEPARATOR, moduleName, version);
 
 		if ( version.empty() ) {
 			Module tmpModule;
@@ -851,7 +863,7 @@ void printUsage()
 
 void printVersion()
 {
-	std::cout << PRODUCT_NAME << " Dependency Manager " << PRODUCT_VERSION << " (cli)" << std::endl;
+	std::cout << PRODUCT_NAME << " Dependency Manager " << PRODUCT_VERSION << " (cli) " << mArchitecture << std::endl;
 	std::cout << COPYRIGHT << std::endl;
 	std::cout << "" << std::endl;
 }
@@ -941,6 +953,14 @@ void prepareModuleInstallation(const std::string& repo, const Module& installMod
 	}
 
 	Module module = collectModuleData(path, filename);
+
+	// check module architecture
+	if ( !module.mArchitecture.empty() ) {
+	    if ( module.mArchitecture != mArchitecture ) {
+	        std::cout << "ERROR: module architecture " << module.mArchitecture << " does not match system architecture!" << std::endl;
+	        exit( ERROR_ARCHITECTURE );
+	    }
+	}
 
 	Modules local = mLocalRepository.getModules();
 	for ( const auto& mDependencie : module.mDependencies ) {
@@ -1168,7 +1188,7 @@ void update()
 	}
 	else {
 		std::cout << "!!! Error while updating index for " << mRemoteRepository.getURL() << std::endl;
-		return;
+		exit( ERROR_INDEX_UPDATE );
 	}
 }
 

@@ -47,6 +47,7 @@ public:
 
 public:
 	Action::E mActionNeeded;
+	std::string mArchitecture;
 	std::string mDescription;
 	Dependencies mDependencies;
 	std::string mInstalledDirectory;

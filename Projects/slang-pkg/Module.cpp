@@ -12,6 +12,20 @@
 // Namespace declarations
 
 
+static const std::string ARCHITECTURE = "architecture";
+static const std::string DEPENDENCIES = "dependencies";
+static const std::string DESCRIPTION = "description";
+static const std::string DIRECTORY = "directory";
+static const std::string MODULE = "module";
+static const std::string NAME = "name";
+static const std::string SHORTNAME = "name_short";
+static const std::string SOURCE = "source";
+static const std::string TARGET = "target";
+static const std::string URL = "url";
+static const std::string VERSION = "version";
+static const std::string VERSION_MAX = "version_max";
+static const std::string VERSION_MIN = "version_min";
+
 Module::Module()
 : mActionNeeded(Action::None)
 {
@@ -46,22 +60,23 @@ bool Module::loadFromJson(const Json::Value& value)
 		return false;
 	}
 
-	mDescription = value["description"].asString();
-	mLongName = value["name"].asString();
-	mShortName = value["name_short"].asString();
-	mSource = value.isMember("source") ? value["source"].asString() : "";
-	mVersion = value["version"].asString();
+	mArchitecture = value.isMember( ARCHITECTURE ) ? value[ ARCHITECTURE ].asString() : "";
+	mDescription = value[ DESCRIPTION ].asString();
+	mLongName = value[ NAME ].asString();
+	mShortName = value[ SHORTNAME ].asString();
+	mSource = value.isMember( SOURCE ) ? value[ SOURCE ].asString() : "";
+	mVersion = value[ VERSION ].asString();
 
-	if ( value.isMember("dependencies") ) {
-		Json::Value dependencies = value["dependencies"];
+	if ( value.isMember( DEPENDENCIES ) ) {
+		Json::Value dependencies = value[ DEPENDENCIES ];
 
 		for ( const auto& depIt : dependencies.members() ) {
 			Json::Value dependency = depIt;
 
-			std::string moduleName = dependency["module"].asString();
-			std::string source = dependency.isMember("source") ? dependency["source"].asString() : "";
-			std::string version_max = dependency.isMember("version_max") ? dependency["version_max"].asString() : "";
-			std::string version_min = dependency.isMember("version_min") ? dependency["version_min"].asString() : "";
+			std::string moduleName = dependency[ MODULE ].asString();
+			std::string source = dependency.isMember( SOURCE ) ? dependency[ SOURCE ].asString() : "";
+			std::string version_max = dependency.isMember( VERSION_MAX ) ? dependency[ VERSION_MAX ].asString() : "";
+			std::string version_min = dependency.isMember( VERSION_MIN ) ? dependency[ VERSION_MIN ].asString() : "";
 
 			mDependencies.insert(
 				Dependency(moduleName, version_min, version_max, source)
@@ -70,17 +85,19 @@ bool Module::loadFromJson(const Json::Value& value)
 	}
 
 	// short name is the default value for the target directory
-	mTargetDirectory = value["name_short"].asString();
+	mTargetDirectory = value[ SHORTNAME ].asString();
 
-	if ( value.isMember("target") ) {
+	if ( value.isMember( TARGET ) ) {
+	    const auto& target = value[ TARGET ];
+
 		// override directory if present
-		if ( value["target"].isMember("directory") ) {
-			mTargetDirectory = value["target"]["directory"].asString();
+		if ( target.isMember( DIRECTORY ) ) {
+			mTargetDirectory = target[ DIRECTORY ].asString();
 		}
 
 		// URL
-		if ( value["target"].isMember("url") ) {
-			mURL = value["target"]["url"].asString();
+		if ( target.isMember( URL ) ) {
+			mURL = target[ URL ].asString();
 		}
 	}
 
@@ -91,3 +108,4 @@ std::string Module::toVersionString() const
 {
 	return mShortName + ":" + mVersion.toString();
 }
+
