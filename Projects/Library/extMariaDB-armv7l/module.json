@@ -1,6 +1,6 @@
 {
   "name": "Slang MariaDB armv7l extension",
-  "name_short": "libMariaDB-armv7l",
+  "name_short": "extMariaDB-armv7l",
   "version": "0.0.1",
   "description": "Extension to access a MySQL database",
   "dependencies": [

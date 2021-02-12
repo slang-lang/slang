@@ -1,6 +1,6 @@
 {
   "name": "Slang MariaDB x86_64 extension",
-  "name_short": "libMariaDB-x86_64",
+  "name_short": "extMariaDB-x86_64",
   "version": "0.0.1",
   "description": "Extension to access a MySQL database",
   "dependencies": [
