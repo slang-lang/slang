@@ -8,5 +8,6 @@ public void Main( int argc, string args ) {
 
 	logger.info( "Info message" );
 	logger.warning( "This is a warning" );
+	logger.error( "This is an error" );
 }
 
