@@ -270,15 +270,17 @@ bool VirtualMachine::loadExtension( const std::string& extension, const std::str
 	library += ".dylib";
 #elif defined __linux
 	library += ".so";
-#else
-	OSerror( "Extension loading is not support under your OS!" );
-
-	return false;
 #endif
 
+#if defined _MSC_VER
+	OSerror("Extension loading is not support under your OS!");
+
+	return false;
+#else
 	OSdebug( "Loading extension '" + library + "'" );
 
 	return addExtension( mExtensionManager.load( library ), library );
+#endif
 }
 
 bool VirtualMachine::loadLibrary(const std::string& library)
