@@ -35,7 +35,7 @@ public object JsonWriter {
 			mIndentation--;
 		}
 
-		return "[" + mWhiteSpaceStart + indent( mIndentation ) + result + mWhiteSpaceEnd + indent( mIndentation ) + "]";
+		return "[" + mWhiteSpaceStart + result + mWhiteSpaceEnd + indent( mIndentation ) + "]";
 	}
 
 	public string toString( JsonObject root const ) modify throws {
@@ -44,14 +44,14 @@ public object JsonWriter {
 		mIndentation++;
 		foreach ( Pair<string, JsonValue> p : root ) {
 			if ( result ) {
-				result += "," + mWhiteSpaceEnd + indent( mIndentation );
+				result += "," + mWhiteSpaceEnd;
 			}
 
-			result += "\"" + p.first + "\":" + toString( p.second );
+			result += indent( mIndentation) + "\"" + p.first + "\": " + toString( p.second );
 		}
 		mIndentation--;
 
-		return "{" + mWhiteSpaceStart + indent( mIndentation + 1 ) + result + mWhiteSpaceEnd + indent( mIndentation ) + "}";
+		return "{" + mWhiteSpaceStart + result + mWhiteSpaceEnd + indent( mIndentation) + "}";
 	}
 
 	public string toString( JsonValue root const ) modify throws {
@@ -77,8 +77,9 @@ public object JsonWriter {
 	}
 
 // Protected
-	protected string indent( int ) const {
-		return "";
+	protected string indent( int level ) const {
+		//return "";
+		return strlpad( "", level * 3, " " );
 	}
 
 	protected int mIndentation;
@@ -97,14 +98,8 @@ public object JsonStyledWriter extends JsonWriter {
 	}
 
 // Protected
-	protected string indent( int num ) const {
-		string result;
-
-		for ( int i = 0; i < num; i++ ) {
-			result += mWhiteSpaceIndent;
-		}
-
-		return result;
+	protected string indent( int level ) const {
+		return strlpad( "", level * 3, " " );
 	}
 }
 
