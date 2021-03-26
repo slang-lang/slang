@@ -7,6 +7,7 @@
     { "module": "Slang", "version_min": "0.7.0" },
     { "module": "System", "version_min": "0.3.4" }
   ],
+  "keywords": [ "database" ],
   "target": {
     "directory": "libMySQL",
     "type": "internal"

@@ -7,6 +7,7 @@
     { "module": "Slang", "version_min": "0.7.0" },
     { "module": "libMySQL", "version_min": "0.5.1" }
   ],
+  "keywords": [ "database" ],
   "target": {
     "directory": "extMariaDB",
     "type": "internal"
