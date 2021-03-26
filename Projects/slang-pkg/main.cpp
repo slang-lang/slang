@@ -442,17 +442,17 @@ void execute(const std::string& command)
 /*
  * Find Case Insensitive Sub String in a given substring
  */
-size_t findCaseInsensitive(std::string data, std::string toSearch, size_t pos)
+size_t findCaseInsensitive( std::string data, std::string toSearch, size_t pos )
 {
 	// Convert complete given String to lower case
-	std::transform(data.begin(), data.end(), data.begin(), ::tolower);
+	std::transform( data.begin(), data.end(), data.begin(), ::tolower );
 	// Convert complete given Sub String to lower case
-	std::transform(toSearch.begin(), toSearch.end(), toSearch.begin(), ::tolower);
+	std::transform( toSearch.begin(), toSearch.end(), toSearch.begin(), ::tolower );
 	// Find sub string in given string
-	return data.find(toSearch, pos);
+	return data.find( toSearch, pos );
 }
 
-void info(const StringList& params)
+void info( const StringList& params )
 {
 	// (1) collect local module data
 	// (2) update remote repository data
@@ -463,92 +463,91 @@ void info(const StringList& params)
 		return;
 	}
 
-	for ( auto it = params.begin(); it != params.end(); ++it ) {
-		if ( it != params.begin() ) {
+	for ( auto it = params.cbegin(); it != params.cend(); ++it ) {
+		if ( it != params.cbegin() ) {
 			std::cout << std::endl;
 		}
 
-	collectLocalModuleData();
-	if ( !prepareRemoteRepository() ) {
-		update();
-	}
+        collectLocalModuleData();
+        if ( !prepareRemoteRepository() ) {
+            update();
+        }
 
-	bool found = false;
+        bool found = false;
 
-	std::string moduleName;
-	std::string moduleVersion;
+        std::string moduleName;
+        std::string moduleVersion;
 
-	Utils::Tools::splitBy((*it), VERSION_SEPARATOR, moduleName, moduleVersion);
+        Utils::Tools::splitBy( (*it), VERSION_SEPARATOR, moduleName, moduleVersion );
 
-	if ( moduleVersion.empty() ) {
-		Module tmpModule;
+        if ( moduleVersion.empty() ) {
+            Module tmpModule;
 
-		if ( mRemoteRepository.getModule(moduleName, tmpModule) ) {
-			moduleVersion = tmpModule.mVersion.toString();
-		}
-	}
+            if ( mRemoteRepository.getModule(moduleName, tmpModule) ) {
+                moduleVersion = tmpModule.mVersion.toString();
+            }
+        }
 
-	Module infoModule;
+        Module infoModule;
 
-	{	// look up module in local repository
-		Modules local = mLocalRepository.getModules();
-		for ( const auto& localIt : local ) {
-			if ( localIt.mShortName == moduleName && localIt.mVersion == moduleVersion ) {
-				found = true;
+        {	// look up module in local repository
+            Modules local = mLocalRepository.getModules();
+            for ( const auto& localIt : local ) {
+                if ( localIt.mShortName == moduleName && localIt.mVersion == moduleVersion ) {
+                    found = true;
 
-				infoModule = localIt;
-			}
-		}
-	}
+                    infoModule = localIt;
+                }
+            }
+        }
 
-	if ( !found ) {	// lookup module in remote repository
-		std::string path = mBaseFolder + CACHE_MODULES;
-		std::string filename = moduleName + ".json";
-		std::string module_config = path + filename;
-		std::string url = mRemoteRepository.getURL() + MODULES + moduleName + FILE_VERSION_SEPARATOR + moduleVersion + ".json";
+        if ( !found ) {	// lookup module in remote repository
+            std::string path = mBaseFolder + CACHE_MODULES;
+            std::string filename = moduleName + ".json";
+            std::string module_config = path + filename;
+            std::string url = mRemoteRepository.getURL() + MODULES + moduleName + FILE_VERSION_SEPARATOR + moduleVersion + ".json";
 
-		bool result = download(url, module_config);
-		if ( result ) {
-			Module tmpModule = collectModuleData(path, filename);
-			if ( tmpModule.isValid() ) {
-				found = true;
+            bool result = download( url, module_config );
+            if ( result ) {
+                Module tmpModule = collectModuleData( path, filename );
+                if ( tmpModule.isValid() ) {
+                    found = true;
 
-				infoModule = tmpModule;
-			}
-		}
-	}
+                    infoModule = tmpModule;
+                }
+            }
+        }
 
-	if ( found ) {	// print out module information if found
-		std::cout << infoModule.mShortName << "(" << infoModule.mVersion.toString() << "): " << infoModule.mLongName << std::endl;
-		std::cout << infoModule.mDescription << std::endl;
-		std::cout << std::endl;
-		std::cout << "Dependencies:" << std::endl;
+        if ( found ) {	// print out module information if found
+            std::cout << infoModule.mShortName << "(" << infoModule.mVersion.toString() << "): " << infoModule.mLongName << std::endl;
+            std::cout << infoModule.mDescription << std::endl;
+            std::cout << std::endl;
+            std::cout << "Dependencies:" << std::endl;
 
-		if ( infoModule.mDependencies.empty() ) {
-			std::cout << "<none>" << std::endl;
-		}
-		else {
-			for ( const auto& mDependencie : infoModule.mDependencies ) {
-				std::cout << mDependencie.mModule << "\t\t";
-				std::cout << "min: " << (mDependencie.mMinVersion.empty() ? "<not set>" : mDependencie.mMinVersion);
-				std::cout << "\t\tmax: " << (mDependencie.mMaxVersion.empty() ? "<not set>" : mDependencie.mMaxVersion);
-				std::cout << "\t\tsource: " << (mDependencie.mSource.empty() ? "<not set>" : mDependencie.mSource);
-				std::cout << std::endl;
-			}
-		}
-	}
-	else {
-		std::cout << "!!! Requested module \"" << moduleName << "\" not found" << std::endl;
-	}
-
+            if ( infoModule.mDependencies.empty() ) {
+                std::cout << "<none>" << std::endl;
+            }
+            else {
+                for ( const auto& dependency : infoModule.mDependencies ) {
+                    std::cout << dependency.mModule << "\t\t";
+                    std::cout << "min: " << (dependency.mMinVersion.empty() ? "<not set>" : dependency.mMinVersion);
+                    std::cout << "\t\tmax: " << (dependency.mMaxVersion.empty() ? "<not set>" : dependency.mMaxVersion);
+                    std::cout << "\t\tsource: " << (dependency.mSource.empty() ? "<not set>" : dependency.mSource);
+                    std::cout << std::endl;
+                }
+            }
+        }
+        else {
+            std::cout << "!!! Requested module \"" << moduleName << "\" not found" << std::endl;
+        }
 	}
 }
 
 void init()
 {
-    struct utsname name;
+    struct utsname name{};
 
-    if ( uname(&name) == -1 ) {
+    if ( uname( &name ) == -1 ) {
         std::cout << "Cannot get system name!" << std::endl;
         exit( ERROR_SYSTEM );
     }
@@ -568,7 +567,7 @@ void init()
 				std::string left;
 				std::string right;
 
-				Utils::Tools::splitBy(path, VERSION_SEPARATOR, left, right);
+				Utils::Tools::splitBy( path, VERSION_SEPARATOR, left, right );
 
 				mLibraryFolder = left + "/";
 			}
@@ -577,13 +576,13 @@ void init()
 
 	{	// set current folder
 		char currentPath[FILENAME_MAX];
-		if ( !GetCurrentDir(currentPath, sizeof(currentPath)) )  {
+		if ( !GetCurrentDir( currentPath, sizeof( currentPath ) ) )  {
 			throw Slang::Common::Exceptions::Exception("invalid current directory!");
 		}
 
-		currentPath[sizeof(currentPath) - 1] = '\0'; /* not really required */
+		currentPath[ sizeof( currentPath ) - 1 ] = '\0'; /* not really required */
 
-		mCurrentFolder = std::string(currentPath) + "/";
+		mCurrentFolder = std::string( currentPath ) + "/";
 
 		if ( isLocalLibrary() ) {
 			mBaseFolder = mCurrentFolder + CONFIG_FOLDER;
@@ -596,10 +595,10 @@ void init()
 	loadConfig();
 
 	// initialize curl library
-	curl_global_init(CURL_GLOBAL_ALL);
+	curl_global_init( CURL_GLOBAL_ALL );
 }
 
-void install(const StringList& params)
+void install( const StringList& params )
 {
 	// (1) prepare dependencies
 	// (2) install missing dependencies
@@ -625,12 +624,12 @@ void install(const StringList& params)
 		std::string source;
 		std::string version;
 
-		Utils::Tools::splitBy(param, VERSION_SEPARATOR, moduleName, version);
+		Utils::Tools::splitBy( param, VERSION_SEPARATOR, moduleName, version );
 
 		if ( version.empty() ) {
 			Module tmpModule;
 
-			if ( mRemoteRepository.getModule(moduleName, tmpModule) ) {
+			if ( mRemoteRepository.getModule( moduleName, tmpModule ) ) {
 				source = tmpModule.mSource;
 				version = tmpModule.mVersion.toString();
 			}
@@ -639,7 +638,7 @@ void install(const StringList& params)
 			forceVersion = true;
 		}
 
-		prepareModuleInstallation(mRemoteRepository.getURL(), Module(moduleName, version, source));
+		prepareModuleInstallation( mRemoteRepository.getURL(), Module( moduleName, version, source ) );
 	}
 
 	bool allowInstall = true;
@@ -650,12 +649,12 @@ void install(const StringList& params)
 		std::string source;
 		std::string version;
 
-		Utils::Tools::splitBy(param, VERSION_SEPARATOR, moduleName, version);
+		Utils::Tools::splitBy( param, VERSION_SEPARATOR, moduleName, version );
 
 		if ( version.empty() ) {
 			Module tmpModule;
 
-			if ( mRemoteRepository.getModule(moduleName, tmpModule) ) {
+			if ( mRemoteRepository.getModule( moduleName, tmpModule ) ) {
 				source = tmpModule.mSource;
 				version = tmpModule.mVersion.toString();
 			}
@@ -664,7 +663,7 @@ void install(const StringList& params)
 			forceVersion = true;
 		}
 
-		Module missingModule(moduleName, version, source);
+		Module missingModule( moduleName, version, source );
 
 		if ( !checkRestrictions(missingModule) ) {
 			allowInstall = false;
@@ -679,14 +678,14 @@ void install(const StringList& params)
 		for ( const auto& moduleIt : missing ) {
 			Module tmp;
 
-			if ( mLocalRepository.getModule(moduleIt.mShortName, tmp) ) {
-				if ( !forceVersion && !(tmp.mVersion < moduleIt.mVersion) ) {
+			if ( mLocalRepository.getModule( moduleIt.mShortName, tmp ) ) {
+				if ( !forceVersion && !( tmp.mVersion < moduleIt.mVersion ) ) {
 					std::cout << "Same or newer version (" << tmp.mVersion.toString() << " vs " << moduleIt.mVersion.toString() << ") of module \"" << moduleIt.mShortName << "\" already installed" << std::endl;
 					continue;
 				}
 			}
 
-			installModule(mRemoteRepository.getURL(), moduleIt.mShortName);
+			installModule( mRemoteRepository.getURL(), moduleIt.mShortName );
 		}
 	}
 }
@@ -1079,7 +1078,7 @@ void removeRestriction(const std::string& module)
 	restrictions.removeMember(module);
 }
 
-void removeRestriction(const StringList& params)
+void removeRestriction( const StringList& params )
 {
 	// (1) check if the requested modules are actually installed
 	// (2) remove them by deleting their complete directory
@@ -1090,11 +1089,11 @@ void removeRestriction(const StringList& params)
 	}
 
 	for ( const auto& param : params ) {
-		removeRestriction(param);
+		removeRestriction( param );
 	}
 }
 
-void search(const StringList& params)
+void search( const StringList& params )
 {
 	// (1) load cached repositories from disk
 	// (2) substr-search through all entries for given params
@@ -1102,16 +1101,16 @@ void search(const StringList& params)
 	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
 	// check if filename exists
-	if ( !::Utils::Tools::Files::exists(filename) ) {
+	if ( !::Utils::Tools::Files::exists( filename ) ) {
 		// no configuration file exists
 		std::cout << "!!! File \"" + filename + "\" not found" << std::endl;
 		return;
 	}
 
 	Json::Value config;
-	readJsonFile(filename, config);
+	readJsonFile( filename, config );
 
-	if ( !config.isMember("modules") ) {
+	if ( !config.isMember( "modules" ) ) {
 		std::cout << "!!! Invalid cache file structure: \"modules\" missing" << std::endl;
 		return;
 	}
@@ -1120,24 +1119,41 @@ void search(const StringList& params)
 	std::string lookup = params.empty() ? "" : params.front();
 	StringList result;
 
-	Json::Value::Members members = config["modules"].members();
-	for ( Json::Value::Members::const_iterator it = members.begin(); it != members.end(); ++it ) {
-		if ( !it->isMember("name") ) {
+	Json::Value::Members members = config[ "modules" ].members();
+	for ( const auto& member : members ) {
+		if ( !member.isMember( "name" ) ) {
 			std::cout << "!!! Invalid cache file structure: \"name\" missing" << std::endl;
 			return;
 		}
 
-		std::string description = (*it).isMember("description") ? (*it)["description"].asString() : "";
-		std::string name = (*it)["name"].asString();
-		std::string version = (*it).isMember("version") ? (*it)["version"].asString() : "";
+		std::string description = member.isMember( "description" ) ? member[ "description" ].asString() : "";
+		std::string name = member[ "name" ].asString();
+		std::string version = member.isMember( "version" ) ? member[ "version" ].asString() : "";
 
-		if ( findCaseInsensitive(name, lookup) != std::string::npos ) {
-			result.push_back(name + "(" + version + ")" + (description.empty() ? "" : ": " + description));
+        if ( member.isMember( "keywords" ) ) {
+            auto oldSize = result.size();
+
+            auto keywords = member[ "keywords" ].members();
+            for ( const auto& keyword : keywords ) {
+                if ( findCaseInsensitive( keyword.asString(), lookup ) != std::string::npos ) {
+                    result.push_back( name + "(" + version + ")" + description );
+                    break;  // one result here is enough
+                }
+            }
+
+            if ( oldSize != result.size() ) {
+                // we obviously have found something
+                continue;
+            }
+        }
+
+		if ( findCaseInsensitive( name, lookup ) != std::string::npos ) {
+			result.push_back( name + "(" + version + ")" + description );
 			continue;
 		}
 
-		if ( findCaseInsensitive(description, lookup) != std::string::npos ) {
-			result.push_back(name + "(" + version + ")" + (description.empty() ? "" : ": " + description));
+		if ( findCaseInsensitive( description, lookup ) != std::string::npos ) {
+			result.push_back( name + "(" + version + ")" + description );
 			continue;
 		}
 	}
@@ -1146,8 +1162,8 @@ void search(const StringList& params)
 		std::cout << "Nothing found." << std::endl;
 	}
 	else {
-		for ( StringList::const_iterator resultIt = result.begin(); resultIt != result.end(); ++resultIt ) {
-			std::cout << (*resultIt) << std::endl;
+		for ( const auto& resultIt : result ) {
+			std::cout << resultIt << std::endl;
 		}
 	}
 }
@@ -1160,16 +1176,16 @@ void storeConfig()
 	writeJsonFile(filename, mConfig);
 }
 
-void writeJsonFile(const std::string& filename, Json::Value& result)
+void writeJsonFile( const std::string& filename, Json::Value& result )
 {
 	// write contents of Json::Value into filename
 
 	Json::StyledWriter writer;
-	std::string data = writer.toString(result);
+	std::string data = writer.toString( result );
 
 	std::fstream stream;
-	stream.open(filename.c_str(), std::ios::out);    // open file for writing
-	stream.write(data.c_str(), data.size());
+	stream.open( filename.c_str(), std::ios::out );    // open file for writing
+	stream.write( data.c_str(), data.size() );
 	stream.close();
 }
 

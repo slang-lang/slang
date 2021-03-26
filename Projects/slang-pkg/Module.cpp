@@ -5,8 +5,6 @@
 // Library includes
 #include <Json/Value.h>
 
-#include <utility>
-
 // Project includes
 
 // Namespace declarations
@@ -16,6 +14,7 @@ static const std::string ARCHITECTURE = "architecture";
 static const std::string DEPENDENCIES = "dependencies";
 static const std::string DESCRIPTION = "description";
 static const std::string DIRECTORY = "directory";
+static const std::string KEYWORDS = "keywords";
 static const std::string MODULE = "module";
 static const std::string NAME = "name";
 static const std::string SHORTNAME = "name_short";
@@ -27,24 +26,24 @@ static const std::string VERSION_MAX = "version_max";
 static const std::string VERSION_MIN = "version_min";
 
 Module::Module()
-: mActionNeeded(Action::None)
+: mActionNeeded( Action::None )
 {
 }
 
-Module::Module(std::string name_short, const std::string& version, std::string source)
-: mActionNeeded(Action::None),
-  mShortName(std::move(name_short)),
-  mSource(std::move(source)),
-  mVersion(version)
+Module::Module( std::string name_short, const std::string& version, std::string source )
+: mActionNeeded( Action::None ),
+  mShortName( std::move(name_short ) ),
+  mSource( std::move(source ) ),
+  mVersion( version )
 {
 }
 
-bool Module::operator<(const Module& other) const
+bool Module::operator<( const Module& other ) const
 {
 	return mShortName < other.mShortName;
 }
 
-bool Module::operator==(const Module& other) const
+bool Module::operator==( const Module& other ) const
 {
 	return mShortName == other.mShortName;
 }
@@ -54,7 +53,7 @@ bool Module::isValid() const
 	return mVersion.isValid();
 }
 
-bool Module::loadFromJson(const Json::Value& value)
+bool Module::loadFromJson( const Json::Value& value )
 {
 	if ( value.size() <= 0 ) {
 		return false;
@@ -68,10 +67,10 @@ bool Module::loadFromJson(const Json::Value& value)
 	mVersion = value[ VERSION ].asString();
 
 	if ( value.isMember( DEPENDENCIES ) ) {
-		Json::Value dependencies = value[ DEPENDENCIES ];
+		auto dependencies = value[ DEPENDENCIES ];
 
 		for ( const auto& depIt : dependencies.members() ) {
-			Json::Value dependency = depIt;
+			auto dependency = depIt;
 
 			std::string moduleName = dependency[ MODULE ].asString();
 			std::string source = dependency.isMember( SOURCE ) ? dependency[ SOURCE ].asString() : "";
@@ -83,6 +82,14 @@ bool Module::loadFromJson(const Json::Value& value)
 			);
 		}
 	}
+
+    if ( value.isMember( KEYWORDS ) ) {
+        auto keywords = value[ KEYWORDS ];
+
+        for ( const auto& wordIt : keywords.members() ) {
+            mKeywords.insert( wordIt.asString() );
+        }
+    }
 
 	// short name is the default value for the target directory
 	mTargetDirectory = value[ SHORTNAME ].asString();

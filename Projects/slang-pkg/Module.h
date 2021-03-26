@@ -33,16 +33,16 @@ public:
 
 public:
 	Module();
-	Module(std::string name_short, const std::string& version, std::string source);
+	Module( std::string name_short, const std::string& version, std::string source );
 	~Module() = default;
 
 public:
-	bool operator<(const Module& other) const;
-	bool operator==(const Module& other) const;
+	bool operator<( const Module& other ) const;
+	bool operator==( const Module& other ) const;
 
 public:
 	bool isValid() const;
-	bool loadFromJson(const Json::Value& value);
+	bool loadFromJson( const Json::Value& value );
 	std::string toVersionString() const;
 
 public:
@@ -51,6 +51,7 @@ public:
 	std::string mDescription;
 	Dependencies mDependencies;
 	std::string mInstalledDirectory;
+	std::set<std::string> mKeywords;
 	std::string mLongName;
 	std::string mShortName;
 	std::string mSource;
