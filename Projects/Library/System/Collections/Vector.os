@@ -81,6 +81,11 @@ public object Vector<T> implements ICollection {
 		}
 
 		mSize--;
+
+		if ( mSize == 0 ) {
+			mFirst = CollectionItem<T> null;
+			mLast = mFirst;
+		}
 	}
 
 	public T first() const throws {
