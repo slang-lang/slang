@@ -1,6 +1,6 @@
 
-#ifndef _Framework_TestFixture_h_
-#define _Framework_TestFixture_h_
+#ifndef _MyUnit_TestFixture_h_
+#define _MyUnit_TestFixture_h_
 
 
 // Library includes
@@ -17,7 +17,7 @@
 // Namespace declarations
 
 
-namespace Testing {
+namespace MyUnit {
 
 
 class TestFixture

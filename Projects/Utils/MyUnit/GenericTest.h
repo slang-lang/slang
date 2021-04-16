@@ -1,33 +1,30 @@
 
-#ifndef _Framework_GenericTest_h_
-#define _Framework_GenericTest_h_
+#ifndef _MyUnit_GenericTest_h_
+#define _MyUnit_GenericTest_h_
 
 
 // Library includes
+#include <iostream>
+#include <string>
 #include <typeinfo>
 #include <utility>
 
 // Project includes
 #include "TestFramework.h"
-#include <Common/Logger.h>
 
 // Forward declarations
 
 // Namespace declarations
 
 
-namespace Testing {
+namespace MyUnit {
 
 
 class TestResult
 {
 public:
-	TestResult()
-	: Failed(0),
-	  Run(0),
-	  Skipped(0)
-	{ }
-	TestResult( const TestResult& other )	= default;
+	TestResult() = default;
+	TestResult( const TestResult& other ) = default;
 
 	TestResult operator+( const TestResult& other ) {
 		Failed += other.Failed;
@@ -37,9 +34,9 @@ public:
 		return *this;
 	}
 
-	int Failed;
-	int Run;
-	int Skipped;
+	int Failed{ 0 };
+	int Run { 0 };
+	int Skipped { 0 };
 };
 
 
@@ -54,8 +51,8 @@ public:
 
 public:
 	explicit GenericTest( std::string name )
-	: mLastResult( Failed ),
-	  mName( std::move( name ) )
+	: mLastResult( Failed )
+	, mName( std::move( name ) )
 	{ }
 	virtual ~GenericTest() = default;
 
@@ -85,7 +82,6 @@ public:
 protected:
 	TestResult_e mLastResult;
 	std::string mName;
-
 	TestResult mResult;
 
 private:

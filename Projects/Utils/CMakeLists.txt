@@ -1,6 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(Common)
+ADD_SUBDIRECTORY(MyUnit)
 ADD_SUBDIRECTORY(Parsers)
 ADD_SUBDIRECTORY(Tools)
 
@@ -15,8 +16,9 @@ SET(HEADERS
 SET(DEPENDENCIES
 	UtilsTools
 	UtilsParsers
+	UtilsMyUnit
 	UtilsCommonConfiguration
 	UtilsCommon
 )
 
-build_static_lib(Utils "")
+build_static_lib( Utils "" )

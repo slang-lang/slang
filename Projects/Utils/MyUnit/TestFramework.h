@@ -1,6 +1,6 @@
 
-#ifndef _Framework_TestFramework_h_
-#define _Framework_TestFramework_h_
+#ifndef _MyUnit_TestFramework_h_
+#define _MyUnit_TestFramework_h_
 
 
 // Library includes
@@ -96,14 +96,6 @@
 			case GenericTest::Skipped: std::cout << "SKIPPED: "    << getName() << "::" << __FUNCTION__ << std::endl; break; \
 		} \
 	}
-
-
-namespace Testing {
-
-
-
-
-}
 
 
 #endif
