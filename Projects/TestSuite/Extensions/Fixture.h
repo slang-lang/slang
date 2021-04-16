@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Common/Logger.h>
+#include <Core/Types.h>
 #include <Framework/TestFixture.h>
 
 // Forward declarations
@@ -23,8 +24,8 @@ class Fixture : public TestFixture,
 				private Utils::Common::Logger
 {
 public:
-	explicit Fixture( const Utils::Common::ILogger* p );
-	~Fixture() = default;
+	explicit Fixture( const Utils::Common::ILogger* p, StringSet libraries );
+	virtual ~Fixture() = default;
 
 public:
 	void setup();

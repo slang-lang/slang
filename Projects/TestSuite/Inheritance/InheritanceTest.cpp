@@ -28,7 +28,7 @@ namespace Inheritance {
 
 
 InheritanceTest::InheritanceTest( const Utils::Common::ILogger* p )
-: GenericTest("InheritanceTest" ),
+: UnitTest("InheritanceTest" ),
   Utils::Common::Logger( p, "InheritanceTest" )
 {
 }

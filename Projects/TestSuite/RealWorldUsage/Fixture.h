@@ -23,7 +23,7 @@ class Fixture : public TestFixture,
 				private Utils::Common::Logger
 {
 public:
-	explicit Fixture( const Utils::Common::ILogger* p );
+	explicit Fixture( const Utils::Common::ILogger* p, StringSet libraries );
 	~Fixture() = default;
 
 public:

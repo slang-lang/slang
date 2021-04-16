@@ -14,16 +14,15 @@ namespace Testing {
 namespace Extensions {
 
 
-Fixture::Fixture( const Utils::Common::ILogger* p )
-: TestFixture( "Extensions" ),
-  Utils::Common::Logger( p, "Extensions" )
+Fixture::Fixture( const Utils::Common::ILogger* p, StringSet libraries )
+: TestFixture( "Extensions", std::move( libraries ) )
+, Utils::Common::Logger( p, "Extensions" )
 {
 }
 
 void Fixture::setup()
 {
-	ExtensionsTest* mathTest = new ExtensionsTest(this);
-	add(mathTest);
+	add( new ExtensionsTest( this ) );
 }
 
 void Fixture::teardown()

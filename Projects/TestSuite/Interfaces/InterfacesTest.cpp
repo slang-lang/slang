@@ -24,7 +24,7 @@ namespace Interfaces {
 
 
 InterfacesTest::InterfacesTest( const Utils::Common::ILogger* p )
-: GenericTest( "InterfacesTest" ),
+: UnitTest( "InterfacesTest" ),
   Utils::Common::Logger( p, "InterfacesTest" )
 {
 }

@@ -28,7 +28,7 @@ namespace Library {
 
 
 LibraryTest::LibraryTest( const Utils::Common::ILogger* p )
-: GenericTest( "LibraryTest" ),
+: UnitTest( "LibraryTest" ),
   Utils::Common::Logger( p, "LibraryTest" )
 {
 }

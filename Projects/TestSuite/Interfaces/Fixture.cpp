@@ -14,16 +14,15 @@ namespace Testing {
 namespace Interfaces {
 
 
-Fixture::Fixture( const Utils::Common::ILogger* p )
-: TestFixture( "Interfaces" ),
-  Utils::Common::Logger( p, "Interfaces" )
+Fixture::Fixture( const Utils::Common::ILogger* p, StringSet libraries )
+: TestFixture( "Interfaces", std::move( libraries ) )
+, Utils::Common::Logger( p, "Interfaces" )
 {
 }
 
 void Fixture::setup()
 {
-    InterfacesTest* interfacesTest = new InterfacesTest(this);
-    add(interfacesTest);
+    add( new InterfacesTest( this ) );
 }
 
 void Fixture::teardown()

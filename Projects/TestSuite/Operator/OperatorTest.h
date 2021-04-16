@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Common/Logger.h>
-#include <Framework/GenericTest.h>
+#include <Framework/UnitTest.h>
 
 // Forward declarations
 
@@ -18,7 +18,7 @@ namespace Testing {
 namespace Operator {
 
 
-class OperatorTest : public GenericTest,
+class OperatorTest : public UnitTest,
 					 private Utils::Common::Logger
 {
 public:

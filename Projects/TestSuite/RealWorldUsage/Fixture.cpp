@@ -14,16 +14,15 @@ namespace Testing {
 namespace RealWorldUsage {
 
 
-Fixture::Fixture( const Utils::Common::ILogger* p )
-: TestFixture( "RealWorldUsage" ),
-  Utils::Common::Logger( p, "RealWorldUsage" )
+Fixture::Fixture( const Utils::Common::ILogger* p, StringSet libraries )
+: TestFixture( "RealWorldUsage", std::move( libraries ) )
+, Utils::Common::Logger( p, "RealWorldUsage" )
 {
 }
 
 void Fixture::setup()
 {
-	RealWorldUsageTest* mathTest = new RealWorldUsageTest(this);
-	add(mathTest);
+	add( new RealWorldUsageTest( this ) );
 }
 
 void Fixture::teardown()

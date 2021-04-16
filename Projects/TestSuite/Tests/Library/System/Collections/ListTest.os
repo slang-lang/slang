@@ -11,6 +11,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase5() );
 	assert( TestCase6() );
 	assert( TestCase7() );
+	assert( TestCase8() );
 }
 
 private bool TestCase1() const {
@@ -273,6 +274,39 @@ private bool TestCase7() const {
 	}
 	catch {
 		return false;
+	}
+
+	return false;
+}
+
+private bool TestCase8() const {
+	print( "TestCase 8: erase and add" );
+
+	try {
+		var collection = new List<int>();
+
+		// Set up
+		collection.push_back( 1 );
+		collection.push_back( 2 );
+		collection.push_back( 3 );
+
+		// Test
+		assert( collection.size() == 3 );
+
+		collection.erase( 0 );
+
+		assert( collection.size() == 2 );
+		collection.erase( 0 );
+		assert( collection.size() == 1 );
+
+		collection.erase( 0 );
+		assert( collection.size() == 0 );
+
+		collection.push_back( 4 );
+
+		assert( collection.at( 0 ) == 4 );
+
+		return true;
 	}
 
 	return false;

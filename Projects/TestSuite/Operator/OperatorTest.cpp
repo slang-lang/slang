@@ -28,7 +28,7 @@ namespace Operator {
 
 
 OperatorTest::OperatorTest( const Utils::Common::ILogger* p )
-: GenericTest( "OperatorTest" ),
+: UnitTest( "OperatorTest" ),
   Utils::Common::Logger( p, "OperatorTest" )
 {
 }

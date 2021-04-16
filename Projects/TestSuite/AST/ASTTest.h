@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Common/Logger.h>
-#include <Framework/GenericTest.h>
+#include <Framework/UnitTest.h>
 
 // Forward declarations
 
@@ -18,11 +18,11 @@ namespace Testing {
 namespace AST {
 
 
-class ASTTest : public GenericTest,
+class ASTTest : public UnitTest,
 				private Utils::Common::Logger
 {
 public:
-	explicit ASTTest(const Utils::Common::ILogger* p);
+	explicit ASTTest( const Utils::Common::ILogger* p );
 	~ASTTest() = default;
 
 public:

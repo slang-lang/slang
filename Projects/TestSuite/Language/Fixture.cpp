@@ -14,16 +14,15 @@ namespace Testing {
 namespace Language {
 
 
-Fixture::Fixture( const Utils::Common::ILogger* p )
-: TestFixture( "Language" ),
-  Utils::Common::Logger( p, "Language" )
+Fixture::Fixture( const Utils::Common::ILogger* p, StringSet libraries )
+: TestFixture( "Language", std::move( libraries ) )
+, Utils::Common::Logger( p, "Language" )
 {
 }
 
 void Fixture::setup()
 {
-	LanguageTest* languageTest = new LanguageTest(this);
-	add(languageTest);
+	add( new LanguageTest( this ) );
 }
 
 void Fixture::teardown()

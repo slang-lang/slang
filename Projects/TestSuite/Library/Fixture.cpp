@@ -14,16 +14,15 @@ namespace Testing {
 namespace Library {
 
 
-Fixture::Fixture( const Utils::Common::ILogger* p )
-: TestFixture( "Library" ),
-  Utils::Common::Logger( p, "Library" )
+Fixture::Fixture( const Utils::Common::ILogger* p, StringSet libraries )
+: TestFixture( "Library", std::move( libraries ) )
+, Utils::Common::Logger( p, "Library" )
 {
 }
 
 void Fixture::setup()
 {
-	LibraryTest* libraryTest = new LibraryTest(this);
-	add(libraryTest);
+	add( new LibraryTest( this ) );
 }
 
 void Fixture::teardown()

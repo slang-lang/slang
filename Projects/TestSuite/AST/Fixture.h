@@ -12,7 +12,6 @@
 // Forward declarations
 
 // Namespace declarations
-using namespace Testing;
 
 
 namespace Testing {
@@ -23,17 +22,12 @@ class Fixture : public TestFixture,
 				private Utils::Common::Logger
 {
 public:
-	Fixture(const Utils::Common::ILogger *p);
-	~Fixture();
+	Fixture( const Utils::Common::ILogger *p, StringSet libraries );
+	~Fixture() = default;
 
 public:
 	void setup();
 	void teardown();
-
-protected:
-
-private:
-
 };
 
 

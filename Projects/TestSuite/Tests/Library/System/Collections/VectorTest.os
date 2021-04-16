@@ -19,6 +19,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase12() );
 	assert( TestCase13() );
 	assert( TestCase14() );
+	assert( TestCase15() );
 }
 
 private bool TestCase1() const {
@@ -427,7 +428,7 @@ private bool TestCase14() const {
         print("TestCase 14: pop_back");
 
         try {
-                Vector<Integer> list = new Vector<Integer>();
+                var list = new Vector<Integer>();
 
                 // Setup
                 list.push_back(new Integer(664));
@@ -441,7 +442,7 @@ private bool TestCase14() const {
 
                 assert( list.size() == 2 );
 
-                Integer item = Integer list.at(0);
+                var item = Integer list.at(0);
                 assert( item == 664 );
 
                 item = Integer list.at(1);
@@ -467,6 +468,37 @@ private bool TestCase14() const {
         }
 
         return false;
+}
+
+private bool TestCase15() const {
+	print( "TestCase 15: erase and add" );
+
+	try {
+		var collection = new Vector<int>();
+
+		// Set up
+		collection.push_back( 1 );
+		collection.push_back( 2 );
+		collection.push_back( 3 );
+
+		// Test
+		assert( collection.size() == 3 );
+
+		collection.erase( 0 );
+
+		assert( collection.size() == 2 );
+		collection.erase( 0 );
+		assert( collection.size() == 1 );
+
+		collection.erase( 0 );
+		assert( collection.size() == 0 );
+
+		collection.push_back( 4 );
+
+		return true;
+	}
+
+	return false;
 }
 
 

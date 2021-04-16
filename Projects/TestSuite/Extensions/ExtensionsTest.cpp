@@ -23,7 +23,7 @@ namespace Extensions {
 
 
 ExtensionsTest::ExtensionsTest( const ::Utils::Common::ILogger* p )
-: GenericTest( "ExtensionsTest" ),
+: UnitTest( "ExtensionsTest" ),
   Utils::Common::Logger( p, "ExtensionsTest" )
 {
 }

@@ -15,6 +15,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase7() );
 	assert( TestCase8() );
 	assert( TestCase9() );
+	assert( TestCase10() );
 }
 
 private bool TestCase1() const {
@@ -308,6 +309,39 @@ private bool TestCase9() const {
 		foreach ( int i : stack ) {
 			//print("i = " + i);
 		}
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase10() const {
+	print( "TestCase 10: erase and add" );
+
+	try {
+		var collection = new Stack<int>();
+
+		// Set up
+		collection.push( 1 );
+		collection.push( 2 );
+		collection.push( 3 );
+
+		// Test
+		assert( collection.size() == 3 );
+
+		collection.erase( 0 );
+
+		assert( collection.size() == 2 );
+		collection.erase( 0 );
+		assert( collection.size() == 1 );
+
+		collection.erase( 0 );
+		assert( collection.size() == 0 );
+
+		collection.push( 4 );
+
+		assert( collection.at( 0 ) == 4 );
 
 		return true;
 	}

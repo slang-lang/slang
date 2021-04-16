@@ -23,7 +23,7 @@ namespace RealWorldUsage {
 
 
 RealWorldUsageTest::RealWorldUsageTest( const Utils::Common::ILogger* p )
-: GenericTest( "RealWorldUsageTest" ),
+: UnitTest( "RealWorldUsageTest" ),
   Utils::Common::Logger( p, "RealWorldUsageTest" )
 {
 }
