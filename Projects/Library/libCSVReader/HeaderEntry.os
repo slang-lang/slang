@@ -7,7 +7,7 @@ import System.StringIterator;
 import Settings;
 
 
-public object HeaderEntry {
+public object HeaderEntry implements DataEntry {
     public void Constructor() {
         mColumns = new Vector<string>();
     }
@@ -48,7 +48,11 @@ public object HeaderEntry {
         return new DataEntry( entry );
     }
 
-    public string =operator( string ) const {
+    public override string operator[]( int index ) throws {
+        return mColumns[ index ];
+    }
+
+    public override string =operator( string ) const {
         string result;
 
         foreach ( string column : mColumns ) {

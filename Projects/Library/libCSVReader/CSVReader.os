@@ -11,7 +11,7 @@ import HeaderEntry;
 
 
 public object CSVReader implements ICollection, IIterable {
-    public void Constructor( string filename = "", bool columnTitles = true ) {
+    public void Constructor( string filename = "", bool columnTitles = false ) {
         mColumnTitles = columnTitles;
         mData = new Vector<DataEntry>();
         mHeader = new HeaderEntry();
