@@ -1,5 +1,6 @@
 
 // Library imports
+import libJson;
 import libJsonBuilder.StyledBuilder;
 import System.Collections.Set;
 import System.IO.File;
@@ -86,12 +87,47 @@ private object Indexer {
 			builder.addElement("version", cast<string>( m.version) );
 			builder.addElement("architecture", m.architecture);
 			builder.addElement("description", m.description);
+			builder.beginArray( "keywords" );
+/*
+			foreach ( string keyword : m.keywords ) {
+				builder.addValue( keyword );
+			}
+*/
+			builder.endArray();
 			builder.endObject();
 		}
 		builder.endArray();
 
 		var file = new System.IO.File(mPath + "/" + INDEX, "wt");
 		file.write(builder.getString());
+		file.close();
+
+
+
+		var data = new JsonArray( "modules" );
+
+		foreach ( Module m : mModules ) {
+			var module = new JsonObject();
+			module.addMember( "name", new JsonValue( m.name ) );
+			module.addMember( "version", new JsonValue( cast<string>( m.version) ) );
+			module.addMember( "architecture", new JsonValue( m.architecture ) );
+			module.addMember( "description", new JsonValue( m.description ) );
+
+			var keywords = new JsonArray();
+			if ( m.keywords ) {
+				foreach ( string keyword : m.keywords ) {
+					keywords.addMember( new JsonValue( keyword ) );
+				}
+			}
+			module.addMember( "keywords", keywords );
+
+			data.addMember( module );
+		}
+
+		print( data.toString() );
+
+		file = new System.IO.File( mPath + "/" + INDEX, "wt" );
+		file.write( data.toString() );
 		file.close();
 	}
 
