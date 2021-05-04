@@ -86,7 +86,7 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 		}
 
 		// invalid binary assignment operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->QualifiedTypename() + ".operator=(" + rvalue->QualifiedTypename() + ")'" );
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->QualifiedTypename() + ".operator=: conversion from " + lvalue->QualifiedTypename() + " to " + rvalue->QualifiedTypename() + " not supported" );
 	}
 }
 

@@ -101,7 +101,7 @@ void Debugger::notify(IScope* scope, const Token& token)
 	}
 
 	BreakPoint breakpoint(token.position());
-    auto breakIt = mBreakPoints.find(breakpoint);
+	auto breakIt = mBreakPoints.find(breakpoint);
 
 	bool stop = false;
 
