@@ -66,6 +66,33 @@ public object StyledBuilder {
 		mValue += "\"" + key + "\": \"" + value + "\"";
 	}
 
+	public void addValue(bool value) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
+
+		mIsFirstElement = false;
+		mValue += value;
+	}
+
+	public void addValue(int value) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
+
+		mIsFirstElement = false;
+		mValue += value;
+	}
+
+	public void addValue(string value) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
+
+		mIsFirstElement = false;
+		mValue += "\"" + value + "\"";
+	}
+
 	public void beginArray() modify {
 		if ( !mIsFirstElement ) {
 			mValue += ", " + ascii(10);
