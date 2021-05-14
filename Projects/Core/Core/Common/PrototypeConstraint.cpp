@@ -16,7 +16,7 @@ namespace Slang {
 
 
 PrototypeConstraint::PrototypeConstraint()
-: mIndex(-1)
+: mIndex(SIZE_MAX)
 {
 }
 

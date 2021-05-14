@@ -799,9 +799,9 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
  */
 Node* TreeGenerator::process_assignment(TokenIterator& token)
 {
-    auto* lhs = dynamic_cast<Expression*>( expression( token ) );
+    auto* expr = dynamic_cast<Expression*>( expression( token ) );
 
-    auto* assignment = dynamic_cast<AssignmentExpression*>( lhs );
+    auto* assignment = dynamic_cast<AssignmentExpression*>( expr );
     if ( assignment ) {
         auto* lhs = assignment->mLHS;
         auto* rhs = assignment->mRHS;
@@ -813,7 +813,7 @@ Node* TreeGenerator::process_assignment(TokenIterator& token)
         return new AssignmentStatement( (*token), lhs, rhs );
     }
 
-    return lhs;
+    return expr;
 }
 
 /*
@@ -2293,17 +2293,17 @@ std::string TreeGenerator::resolveType(TokenIterator& token, const std::string& 
 	try {
 		return mTypeSystem->getType(left, operation, right);
 	}
-	catch ( Common::Exceptions::UnknownIdentifier &e ) {
+	catch ( Common::Exceptions::UnknownIdentifier& ) {
 		throw Common::Exceptions::UnknownIdentifier("unknown type '" + left + "' detected during type check", token->position());
 	}
-	catch ( Common::Exceptions::UnknownOperation &e ) {
+	catch ( Common::Exceptions::UnknownOperation& ) {
 		throw Common::Exceptions::UnknownOperation("unknown operation " + operation.content() + " detected for type '" + left + "' during type check", token->position());
 	}
-	catch ( Common::Exceptions::TypeMismatch &e ) {
+	catch ( Common::Exceptions::TypeMismatch& ) {
 		throw Common::Exceptions::TypeMismatch(left + " " + operation.content() + " " + right, token->position());
 	}
 
-	return "";
+	//return "";	// unreachable code
 }
 
 SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, IScope* base) const

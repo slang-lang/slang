@@ -92,9 +92,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Extensions.h" />
-    <ClInclude Include="JSON\FromJson.h" />
-    <ClInclude Include="JSON\JsonExtension.h" />
-    <ClInclude Include="JSON\ToJson.h" />
     <ClInclude Include="System\Ascii.h" />
     <ClInclude Include="System\AssertMsg.h" />
     <ClInclude Include="System\Console\Cerr.h" />
@@ -160,7 +157,6 @@
     <ClInclude Include="System\WriteLn.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="JSON\JsonExtension.cpp" />
     <ClCompile Include="System\Console\Console.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
