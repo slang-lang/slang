@@ -9,6 +9,7 @@
 #include <Defines.h>
 #include "Ascii.h"
 #include "AssertMsg.h"
+#include "Fork.h"
 #include "GetChar.h"
 #include "GetEnv.h"
 #include "PutEnv.h"
@@ -16,6 +17,7 @@
 #include "SetKeyboardBlockingMode.h"
 #include "Sleep.h"
 #include "System.h"
+#include "Wait.h"
 #include "Write.h"
 #include "WriteLn.h"
 
@@ -92,8 +94,8 @@ void SystemExtension::initialize(IScope* scope)
 	// Strings
 	mStringsExtension.initialize( scope );
 
-    // Time
-    mTimeExtension.initialize( scope );
+	// Time
+	mTimeExtension.initialize( scope );
 }
 
 void SystemExtension::provideMethods( ExtensionMethods& methods )
@@ -118,6 +120,7 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 	// Unix/Linux only methods
 	methods.push_back( new Fork() );
 	methods.push_back( new SetKeyboardBlockingMode() );
+	methods.push_back( new Wait() );
 #endif
 
 	// Console
@@ -143,8 +146,8 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 	// Strings
 	mStringsExtension.provideMethods( methods );
 
-    // Time
-    mTimeExtension.provideMethods( methods );
+	// Time
+	mTimeExtension.provideMethods( methods );
 }
 
 
