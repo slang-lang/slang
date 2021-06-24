@@ -58,7 +58,7 @@ private:	// Tokenizer
 
 private:
 	StringSet mAccessMode;
-	std::string	mContent;
+	std::string mContent;
 	std::string mFilename;
 	StringSet mLanguageFeatureState;
 	StringSet mKeyword;
@@ -75,3 +75,4 @@ private:
 
 
 #endif
+

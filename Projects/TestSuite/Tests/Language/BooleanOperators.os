@@ -9,6 +9,7 @@ public void Main(int argc = 0, string argv = "") {
 	assert( false !| false );
 	assert( (1 == 1) && (2 == 2) );
 	assert( (true == false) || (false == true) || (false) || (true) );
+	assert( 1 << 1 );
 
 	bool bla = (false == false);
 	assert(bla);

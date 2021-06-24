@@ -112,6 +112,8 @@ public:	// Operators
 	virtual void operator_modulo(const Object *other);
 	virtual void operator_multiply(const Object *other);
 	virtual void operator_plus(const Object *other);
+	virtual void operator_shift_left(const Object *other);
+	virtual void operator_shift_right(const Object *other);
 	virtual void operator_subtract(const Object *other);
 	virtual void operator_unary_decrement();
 	virtual void operator_unary_increment();

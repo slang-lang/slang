@@ -327,7 +327,9 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 			 op != Token::Type::BITCOMPLEMENT &&
 			 op != Token::Type::BITOR &&
 			 op != Token::Type::MATH_ADDITION &&
-			 op != Token::Type::MATH_SUBTRACT ) {
+			 op != Token::Type::MATH_SUBTRACT &&
+			 op != Token::Type::OPERATOR_SHIFT_LEFT &&
+			 op != Token::Type::OPERATOR_SHIFT_RIGHT ) {
 			return expression;
 		}
 

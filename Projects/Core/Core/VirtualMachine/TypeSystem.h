@@ -21,11 +21,13 @@ namespace Slang {
 class TypeSystem
 {
 private:
-	class Right {
+	class Right
+	{
 	public:
 		bool contains(const std::string& right) const {
 			return mRight.find(right) != mRight.end();
 		}
+
 		void insert(const std::string& right) {
 			mRight.insert(
 				std::make_pair(right, std::string())
@@ -41,11 +43,13 @@ private:
 		std::map</*right*/ std::string, /*result*/std::string> mRight;
 	};
 
-	class Operation {
+	class Operation
+	{
 	public:
 		bool contains(Token::Type::E operation) const {
 			return mOperation.find(operation) != mOperation.end();
 		}
+
 		void insert(Token::Type::E operation) {
 			mOperation.insert(
 				std::make_pair(operation, Right())
@@ -61,11 +65,13 @@ private:
 		std::map</*operation*/ Token::Type::E, /*right*/ Right> mOperation;
 	};
 
-	class TypeMap {
+	class TypeMap
+	{
 	public:
 		bool contains(const std::string& left) const {
 			return mTypes.find(left) != mTypes.end();
 		}
+
 		void insert(const std::string& left) {
 			mTypes.insert(
 				std::make_pair(left, Operation())
@@ -112,3 +118,4 @@ private:
 
 
 #endif
+

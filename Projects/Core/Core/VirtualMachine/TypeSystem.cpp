@@ -97,6 +97,7 @@ void TypeSystem::initBool()
 	define(BoolObject::TYPENAME, Token::Type::ASSIGN, StringObject::TYPENAME, BoolObject::TYPENAME);
 
 	// arithmetic
+	// no arithmetic or shift operators available for boolean types
 
 	// boolean
 	define(BoolObject::TYPENAME, Token::Type::AND, BoolObject::TYPENAME, BoolObject::TYPENAME);
@@ -155,6 +156,7 @@ void TypeSystem::initDouble()
 	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME, DoubleObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, DoubleObject::TYPENAME);
+	// no shift operators available for double types
 
 	// boolean
 	define(DoubleObject::TYPENAME, Token::Type::AND, BoolObject::TYPENAME, BoolObject::TYPENAME);
@@ -244,6 +246,7 @@ void TypeSystem::initFloat()
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, FloatObject::TYPENAME);
+	// no shift operators available for float types
 
 	// boolean
 	define(FloatObject::TYPENAME, Token::Type::AND, BoolObject::TYPENAME, BoolObject::TYPENAME);
@@ -323,6 +326,8 @@ void TypeSystem::initInt()
 	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT,  IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::OPERATOR_SHIFT_RIGHT, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 
 	// bit
 	define(IntegerObject::TYPENAME, Token::Type::BITAND, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
@@ -414,6 +419,7 @@ void TypeSystem::initString()
 	define(StringObject::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME, StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::MATH_ADDITION, IntegerObject::TYPENAME, StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::MATH_ADDITION, StringObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, StringObject::TYPENAME, StringObject::TYPENAME);
 
 	// boolean
 	define(StringObject::TYPENAME, Token::Type::AND, BoolObject::TYPENAME, BoolObject::TYPENAME);

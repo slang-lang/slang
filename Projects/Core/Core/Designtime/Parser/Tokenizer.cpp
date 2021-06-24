@@ -291,6 +291,7 @@ bool Tokenizer::isWhiteSpace(const std::string& token) const
 /*
  * mergeOperators: merges all pairs of & or | operators together (i.e. '&' '&' become '&&')
  * mergeOperators: merges all pairs of + or - operators together (i.e. '+' '+' become '++')
+ * mergeOperators: merges all pairs of < or > operators together (i.e. '<' '<' become '<<')
  * mergeOperators: merges all pairs of [ or ] operators together (i.e. '[' ']' become '[]')
  */
 void Tokenizer::mergeOperators()
@@ -359,6 +360,22 @@ void Tokenizer::mergeOperators()
 			tmp.pop_back();
 			// ... and add AND instead
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_INCREMENT, "++", token->position()));
+		}
+		else if ( (lastType == Token::Type::COMPARE_LESS) && (activeType == Token::Type::COMPARE_LESS) ) {
+			// <<
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add AND instead
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_SHIFT_LEFT, "<<", token->position()));
+		}
+		else if ( (lastType == Token::Type::COMPARE_GREATER) && (activeType == Token::Type::COMPARE_GREATER) ) {
+			// >>
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add AND instead
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_SHIFT_RIGHT, ">>", token->position()));
 		}
 		else if ( (lastType == Token::Type::BRACKET_OPEN) && (activeType == Token::Type::BRACKET_CLOSE) ) {
 			// && and
@@ -802,3 +819,4 @@ const TokenList& Tokenizer::tokens() const
 
 
 }
+

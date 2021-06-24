@@ -11,6 +11,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase12() );
 	assert( TestCase13() );
 	assert( TestCase14() );
+	assert( TestCase15() );
 }
 
 private bool TestCase1() {
@@ -88,6 +89,15 @@ private bool TestCase14() {
 	print("TestCase 14: bool || double || float || int || string");
 
 	assert( true || 1.d || 1.f || 1 || "str" );
+
+	return true;
+}
+
+private bool TestCase15() {
+	print( "TestCase 15: shift operators" );
+
+	print( "5 << 1: " + (5 << 1) );
+	print( "9 << 1: " + (9 << 1) );
 
 	return true;
 }

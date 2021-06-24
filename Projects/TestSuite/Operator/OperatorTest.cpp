@@ -52,6 +52,8 @@ void OperatorTest::process()
 	TEST(testMathOverloadsWithNumbers);
 	TEST(testMathOverloadsWithObjects);
 	TEST(testRangeOperator);
+	TEST(testShiftLeft);
+	TEST(testShiftRight);
 	TEST(testUnaryMinus);
 	TEST(testUnaryPlus);
 	TEST(testUnaryValidate);
@@ -306,6 +308,34 @@ void OperatorTest::testRangeOperator()
 	}
 }
 
+void OperatorTest::testShiftLeft()
+{
+	try {
+		VirtualMachine vm;
+		vm.runScriptFromFile("Tests/Operator/ShiftLeft.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testShiftRight()
+{
+	try {
+		VirtualMachine vm;
+		vm.runScriptFromFile("Tests/Operator/ShiftRight.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
 void OperatorTest::testUnaryMinus()
 {
 	try {
@@ -351,3 +381,4 @@ void OperatorTest::testUnaryValidate()
 
 }
 }
+
