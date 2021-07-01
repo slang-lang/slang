@@ -12,9 +12,9 @@ if [ x$2 != "x" ]; then
 	REPO="$2"
 fi
 
-scp *.json ticketsharing:/home/ubuntu/projects/slang/repo/${REPO}/modules/
+scp *.json ticketsharing:/home/madelmann/projects/slang/repo/${REPO}/modules/
 rm *.json
 
-scp *.tar.gz ticketsharing:/home/ubuntu/projects/slang/repo/${REPO}/modules/
+scp *.tar.gz ticketsharing:/home/madelmann/projects/slang/repo/${REPO}/modules/
 rm *.tar.gz
 
