@@ -3,7 +3,7 @@
 public object TestObject {
 	public string Value;
 
-	public TestObject operator>> string other ) modify {
+	public TestObject operator>>( string other ) modify {
 		print("operator>>");
 
 		Value += other;
