@@ -22,12 +22,16 @@ public object FieldEntry const {
 		RealType = realType;
 	}
 
+	public bool operator==( FieldEntry other const ) const {
+		return RealName == other.RealName;
+	}
+
 	public bool operator==( string realName ) const {
 		return RealName == realName;
 	}
 
 	public string =operator( string ) const {
-		return "FieldEntry { 'RealName': '" + RealName + "', PrettyName': '" + PrettyName + "', 'RealType': '" + RealType + "', 'PrettyType': '" + PrettyType + "'";
+		return "FieldEntry { 'RealName': '" + RealName + "', PrettyName': '" + PrettyName + "', 'RealType': '" + RealType + "', 'PrettyType': '" + PrettyType + "' }";
 	}
 }
 

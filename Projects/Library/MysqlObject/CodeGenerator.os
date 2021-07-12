@@ -214,14 +214,25 @@ public object CodeGenerator {
 
     private void generateTables() modify {
         var entities = mEntityLookup.getTables();
-        var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "Table.txt" ).getText() );
+
+        var baseTemplateWithId    = new String( new Scanner( CONFIG_DIRECTORY + "table_with_id.txt" ).getText() );
+        var baseTemplateWithoutId = new String( new Scanner( CONFIG_DIRECTORY + "table_without_id.txt" ).getText() );
 
         var libraryImports = LINEBREAK;
         libraryImports += "// import all library files" + LINEBREAK;
 
+        var idField = new FieldEntry( PrimaryKeyName, "Id", "int", "int" );
+
         int count;
         foreach ( Pair<string, EntityType> entity : entities ) {
-            var template = copy baseTemplate;
+            String template;
+
+            if ( entity.second.Fields.indexOf( idField ) > 0 ) {
+               template = copy baseTemplateWithId;
+            }
+            else {
+               template = copy baseTemplateWithoutId;
+            }
 
             replaceSpecialTemplates( template, entity.second );
             replaceUserTemplates( template );
@@ -250,14 +261,25 @@ public object CodeGenerator {
 
     private void generateViews() modify {
         var entities = mEntityLookup.getViews();
-        var baseTemplate = new String( new Scanner( CONFIG_DIRECTORY + "View.txt" ).getText() );
+
+        var baseTemplateWithId    = new String( new Scanner( CONFIG_DIRECTORY + "view_with_id.txt" ).getText() );
+        var baseTemplateWithoutId = new String( new Scanner( CONFIG_DIRECTORY + "view_without_id.txt" ).getText() );
 
         var libraryImports = LINEBREAK;
         libraryImports += "// import all library files" + LINEBREAK;
 
+        var idField = new FieldEntry( PrimaryKeyName, "Id", "int", "int" );
+
         int count;
         foreach ( Pair<string, EntityType> entity : entities ) {
-            var template = copy baseTemplate;
+            String template;
+
+            if ( entity.second.Fields.indexOf( idField ) > 0 ) {
+               template = copy baseTemplateWithId;
+            }
+            else {
+               template = copy baseTemplateWithoutId;
+            }
 
             replaceSpecialTemplates( template, entity.second );
             replaceUserTemplates( template );
