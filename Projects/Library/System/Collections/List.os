@@ -28,7 +28,7 @@ public object List<T> implements ICollection {
 
 	public T at( int index ) const throws {
 		if ( index < 0 || index >= mSize ) {
-			throw new OutOfBoundsException("index(" + index + ") out of bounds");
+			throw new OutOfBoundsException( "index(" + index + ") out of bounds" );
 		}
 
 		CollectionItem<T> item = mFirst;

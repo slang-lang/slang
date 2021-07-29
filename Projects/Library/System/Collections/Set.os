@@ -117,7 +117,7 @@ public object Set<T> implements ICollection {
 		return -1;
 	}
 
-	public void insert (T value ) modify throws {
+	public void insert ( T value ) modify throws {
 		var item = new CollectionItem<T>( value );
 
 		if ( !mFirst ) {				// special handling for 1st element
@@ -144,7 +144,7 @@ public object Set<T> implements ICollection {
 			if ( !mAllowDuplicates ) {
 				if ( previous.mNext ) {
 					if ( item == previous.mNext ) {
-						throw new Exception("duplicate item");
+						throw new Exception( "duplicate item" );
 					}
 				}
 			}

@@ -72,7 +72,7 @@ public object Range implements ICollection, IIterable {
 	}
 
 	public int size() const {
-		return (mEnd - mStart) / mStep + 1;
+		return ( mEnd - mStart ) / mStep + 1;
 	}
 
 	public int operator[]( int index ) const throws {

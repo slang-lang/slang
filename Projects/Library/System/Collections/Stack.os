@@ -89,7 +89,7 @@ public object Stack<T> implements ICollection {
 		return new ReverseIterator<T>( ICollection this );
 	}
 
-	public int indexOf(T value) const {
+	public int indexOf( T value ) const {
 		var item = mFirst;
 
 		for ( int i = 0; i < mSize; i++ ) {
