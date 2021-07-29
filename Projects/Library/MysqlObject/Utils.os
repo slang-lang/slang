@@ -14,7 +14,7 @@ public string prettify( string name ) const {
 	string result;
 	bool upperCase = true;
 
-	while ( it.hasNext() && ( char = it.next() )) {
+	while ( it.hasNext() && ( char = it.next() ) ) {
 		if ( char == "_" ) {
 			upperCase = true;
 			continue;

@@ -61,16 +61,16 @@ public object EntityLookup {
 	}
 
 	private Map<string, EntityType> getEntitiesByType( string entityType ) const throws {
-		string query = "SHOW FULL TABLES IN " + mDatabaseName + " WHERE TABLE_TYPE LIKE '" + entityType + "'";
+		var query = "SHOW FULL TABLES IN " + mDatabaseName + " WHERE TABLE_TYPE LIKE '" + entityType + "'";
 
-		int error = mysql_query( mDatabaseHandle, query );
+		var error = mysql_query( mDatabaseHandle, query );
 		if ( error ) {
 			throw mysql_error( mDatabaseHandle );
 		}
 
 		var entities = new Map<string, EntityType>();
 
-		int result = mysql_store_result( mDatabaseHandle );
+		var result = mysql_store_result( mDatabaseHandle );
 		while ( mysql_fetch_row( result ) ) {
 			var name = mysql_get_field_value( result, 0 );
 

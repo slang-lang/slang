@@ -17,9 +17,10 @@ public object CodeGenerator {
         connect();
 
         mEntityLookup = new EntityLookup( mDatabaseHandle, Config.Database );
-        mTemplateLookup = new TemplateLookup();
-
         mEntityLookup.fetchEntities();
+
+        mTemplateLookup = new TemplateLookup();
+        mTemplateLookup.fetchTemplates();
 
         // prepare output folders for lookups, tables and views
         prepareFolders();
@@ -336,8 +337,6 @@ public object CodeGenerator {
 
     private void replaceUserTemplates( String template ) modify {
         foreach ( Pair<string, string> p : mTemplateLookup ) {
-            //print( "Replacing template '" + p.first + "' with '" + p.second + "'" );
-
             template.ReplaceAll( p.first, p.second );
         }
     }

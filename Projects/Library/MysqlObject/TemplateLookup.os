@@ -8,13 +8,13 @@ import Scanner;
 
 
 public object TemplateLookup implements IIterable {
-	public void Constructor() {
+	public void fetchTemplates() modify {
 		mTemplates = new Map<string, string>();
 
 		process();
 	}
 
-	public Iterator<Object> getIterator() const {
+	public Iterator getIterator() const {
 		return mTemplates.getIterator();
 	}
 

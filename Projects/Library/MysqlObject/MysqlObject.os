@@ -90,7 +90,7 @@ private void printUsage() {
 	print( "	--output	sets the output folder for the generated files (default: current directory)" );
 	print( "	--password	sets the password used to connected to the database" );
 	print( "	--port		sets the port used to connected to the database" );
-	print( "	--user		sets the user to connect to the database" );
+	print( "	--user		sets the user used to connect to the database" );
 	print( "	--version	print program version" );
 	print( "" );
 }
