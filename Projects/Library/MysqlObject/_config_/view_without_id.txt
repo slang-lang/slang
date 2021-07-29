@@ -14,13 +14,19 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# {
 		loadByQuery( query );
 	}
 
+	public void Constructor( int databaseHandle, int result ) {
+		DB = databaseHandle;
+
+		loadByResult( result );
+	}
+
 	public void loadByQuery( string query ) modify throws {
-		int error = mysql_query( DB, query );
+		var error = mysql_query( DB, query );
 		if ( error ) {
 			throw mysql_error( DB );
 		}
 
-		int result = mysql_store_result( DB );
+		var result = mysql_store_result( DB );
 		if ( !mysql_fetch_row( result ) ) {
 			throw "no result found";
 		}
@@ -59,18 +65,18 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollection
 	}
 
 	public Iterator<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#> getIterator() const {
-		return new Iterator<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#>( ICollection Collection );
+		return new Iterator<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#>( cast<ICollection>( Collection ) );
 	}
 
 	public void loadByQuery( string query ) modify throws {
-		int error = mysql_query( DB, query );
+		var error = mysql_query( DB, query );
 		if ( error ) {
 			throw mysql_error( DB );
 		}
 
 		Collection.clear();
 
-		int result = mysql_store_result( DB );
+		var result = mysql_store_result( DB );
 		while ( mysql_fetch_row( result ) ) {
 			var record = new #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#( DB );
 			record.loadByResult( result );

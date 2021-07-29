@@ -227,7 +227,7 @@ public object CodeGenerator {
         foreach ( Pair<string, EntityType> entity : entities ) {
             String template;
 
-            if ( entity.second.Fields.indexOf( idField ) > 0 ) {
+            if ( entity.second.Fields.indexOf( idField ) >= 0 ) {
                template = copy baseTemplateWithId;
             }
             else {
@@ -274,11 +274,11 @@ public object CodeGenerator {
         foreach ( Pair<string, EntityType> entity : entities ) {
             String template;
 
-            if ( entity.second.Fields.indexOf( idField ) > 0 ) {
-               template = copy baseTemplateWithId;
+            if ( entity.second.Fields.indexOf( idField ) >= 0 ) {
+                template = copy baseTemplateWithId;
             }
             else {
-               template = copy baseTemplateWithoutId;
+                template = copy baseTemplateWithoutId;
             }
 
             replaceSpecialTemplates( template, entity.second );

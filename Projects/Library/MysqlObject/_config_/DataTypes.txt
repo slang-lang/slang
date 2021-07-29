@@ -1,5 +1,6 @@
 bigint:         int
 datetime:	string
+decimal:	double
 double:		double
 float:		double 
 int:		int
