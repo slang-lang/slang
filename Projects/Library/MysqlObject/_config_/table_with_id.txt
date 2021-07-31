@@ -88,7 +88,7 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# {
 }
 
 
-public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollection /*<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#>*/ {
+public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollection { //<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#> {
 	public void Constructor( int databaseHandle, string query = "" ) {
 		Collection = new Vector<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#>();
 		DB = databaseHandle;
@@ -106,8 +106,16 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollectio
 		return Collection.empty();
 	}
 
+	public #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# first() const {
+		return Collection.first();
+	}
+
 	public Iterator<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#> getIterator() const {
 		return new Iterator<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#>( cast<ICollection>( Collection ) );
+	}
+
+	public #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# last() const {
+		return Collection.last();
 	}
 
 	public void loadByQuery( string query ) modify throws {
@@ -127,6 +135,14 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollectio
 		}
 	}
 
+	public void pop_back() modify {
+		Collection.pop_back();
+	}
+
+	public void pop_front() modify {
+		Collection.pop_front();
+	}
+
 	public int size() const {
 		return Collection.size();
 	}
@@ -134,4 +150,5 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollectio
 	private Vector<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#> Collection;
 	private int DB const;
 }
+
 

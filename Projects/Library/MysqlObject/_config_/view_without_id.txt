@@ -64,8 +64,16 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollection
 		return Collection.empty();
 	}
 
+	public #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# first() const {
+		return Collection.first();
+	}
+
 	public Iterator<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#> getIterator() const {
 		return new Iterator<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#>( cast<ICollection>( Collection ) );
+	}
+
+	public #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# last() const {
+		return Collection.last();
 	}
 
 	public void loadByQuery( string query ) modify throws {
@@ -83,6 +91,14 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollection
 
 			Collection.push_back( record );
 		}
+	}
+
+	public void pop_back() modify {
+		Collection.pop_back();
+	}
+
+	public void pop_front() modify {
+		Collection.pop_front();
 	}
 
 	public int size() const {
