@@ -26,6 +26,7 @@ SET(HEADERS
 	System.h
 	SystemExtension.h
 	Wait.h
+	WaitPID.h
 	Write.h
 	WriteLn.h
 )

@@ -18,6 +18,7 @@
 #include "Sleep.h"
 #include "System.h"
 #include "Wait.h"
+#include "WaitPID.h"
 #include "Write.h"
 #include "WriteLn.h"
 
@@ -37,7 +38,7 @@ namespace System {
 
 
 SystemExtension::SystemExtension()
-: AExtension( "Slang System" )
+: AExtension( "Slang System", "0.1.0" )
 {
 #ifdef _WIN32
 	// Win32 only
@@ -72,6 +73,9 @@ void SystemExtension::initialize(IScope* scope)
 	// Win32 only
 #else
 	// Unix/Linux only
+
+    scope->define( "WNOHANG", new Runtime::IntegerObject( "WNOHANG", WNOHANG ) );
+    scope->define( "WUNTRACED", new Runtime::IntegerObject( "WUNTRACED", WUNTRACED ) );
 #endif
 
 	// Console
@@ -121,6 +125,7 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 	methods.push_back( new Fork() );
 	methods.push_back( new SetKeyboardBlockingMode() );
 	methods.push_back( new Wait() );
+    methods.push_back( new WaitPID() );
 #endif
 
 	// Console
