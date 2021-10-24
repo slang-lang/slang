@@ -380,9 +380,8 @@ public object Parser {
 				(op.mType == TokenType.MATH_MINUS || op.mType == TokenType.MATH_PLUS) ) {
 			consume();
 
-			Expression right = parseFactor();
-
-			Expression exp = Expression new BinaryExpression(left, op.mValue, right);
+			var right = parseFactor();
+			var exp   = Expression new BinaryExpression(left, op.mValue, right);
 			left = exp;
 		}
 
@@ -392,16 +391,15 @@ public object Parser {
 	private Expression parseFactor() modify throws {
 		//print("parseFactor()");
 
-		Expression left = parseTerm();
+		var left = parseTerm();
 
 		Token op;
 		while ( (op = peek()) != null &&
 				(op.mType == TokenType.MATH_DIVIDE || op.mType == TokenType.MATH_MULTIPLY) ) {
 			consume();
 
-			Expression right = parseTerm();
-
-			Expression exp = Expression new BinaryExpression(left, op.mValue, right);
+			var right = parseTerm();
+			var exp   = Expression new BinaryExpression(left, op.mValue, right);
 			left = exp;
 		}
 
@@ -468,13 +466,13 @@ public object Parser {
 
 	private bool isComperator(Token token) const {
 		switch ( token.mType ) {
-			case TokenType.ASSIGN:			{ return true; }
-			case TokenType.GREATER:			{ return true; }
+			case TokenType.ASSIGN:		{ return true; }
+			case TokenType.GREATER:		{ return true; }
 			case TokenType.GREATER_EQUAL:	{ return true; }
-			case TokenType.LESS:			{ return true; }
-			case TokenType.LESS_EQUAL:		{ return true; }
-			case TokenType.UNEQUAL:			{ return true; }
-			default:						{ return false; }
+			case TokenType.LESS:		{ return true; }
+			case TokenType.LESS_EQUAL:	{ return true; }
+			case TokenType.UNEQUAL:		{ return true; }
+			default:			{ return false; }
 		}
 
 		return false;
