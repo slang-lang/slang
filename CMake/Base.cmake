@@ -2,7 +2,7 @@
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)   # binary root
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)      # library root
 
-SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -std=c++14")
+SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -Wno-deprecated-copy -std=c++14")
 
 if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
 

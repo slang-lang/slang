@@ -133,7 +133,7 @@ private: // Execution
 
 private:
 	// prevent usage
-	Interpreter(Common::ThreadId threadId);
+	explicit Interpreter(Common::ThreadId threadId);
 
 private:	// Initialization
 	void deinitialize();
