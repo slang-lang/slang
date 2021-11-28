@@ -7,7 +7,6 @@
 #include <string>
 
 // Project includes
-#include <Json/Value.h>
 #include "Module.h"
 
 // Forward declarations

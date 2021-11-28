@@ -3,7 +3,7 @@
 #include "Protocol.h"
 
 // Library includes
-#include <Json/Json.h>
+#include <json/json.h>
 
 // Project includes
 
@@ -57,8 +57,8 @@ Request* MessageConverter::convertToRequest(const Json::Value& message) const
 	if ( message.isMember("arguments") ) {
 		Json::Value array = message["arguments"];
 
-		for ( const auto& it : array.members() ) {
-			arguments.push_back(it.asString());
+		for ( const auto& argument : array ) {
+			arguments.push_back( argument.asString() );
 		}
 	}
 

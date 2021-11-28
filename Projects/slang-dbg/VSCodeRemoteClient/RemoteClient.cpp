@@ -332,7 +332,7 @@ void RemoteClient::SendMessage(VSCodeDebug::ProtocolMessage* message)
 		return;
 	}
 
-	std::cout << message->serialize().toString() << std::endl;
+	std::cout << message->serialize().asString() << std::endl;
 }
 
 void RemoteClient::SetBreakpoints(const VSCodeDebug::Request& request)
