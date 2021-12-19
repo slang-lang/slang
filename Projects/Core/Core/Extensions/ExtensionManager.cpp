@@ -22,13 +22,13 @@ void ExtensionManager::close_lib( dynamic_lib_handle handle )
 
 AExtension* ExtensionManager::instantiate( dynamic_lib_handle handle )
 {
-	if ( handle == nullptr ) {
+	if ( !handle ) {
 		return nullptr;
 	}
 
 	dynamic_lib_handle maker = dlsym( handle , "factory" );
 
-	if ( maker == nullptr ) {
+	if ( !maker ) {
 		return nullptr;
 	}
 

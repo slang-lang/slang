@@ -89,20 +89,20 @@ bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std:
 	OSdebug( "Loaded extension " + extension->getName() + " version " + extension->getVersion() );
 
 	try {
-		OSdebug("adding extension '" + extension->getName() + "'");
+		OSdebug( "adding extension '" + extension->getName() + "'" );
 
 		auto* globalScope = Controller::Instance().globalScope();
 		Extensions::ExtensionMethods methods;
 
-		extension->initialize(globalScope);
-		extension->provideMethods(methods);
+		extension->initialize( globalScope );
+		extension->provideMethods( methods );
 
-		for ( auto it = methods.begin(); it != methods.end(); ++it ) {
-			OSdebug("adding extension method '" + extension->getName() + "." + (*it)->getName() + "'");
+		for ( auto& method : methods ) {
+			OSdebug( "adding extension method '" + extension->getName() + "." + method->getName() + "'" );
 
-			(*it)->setParent(globalScope);
+			method->setParent( globalScope );
 
-			globalScope->defineMethod((*it)->getName(), (*it));
+			globalScope->defineMethod( method->getName(), method );
 		}
 	}
 	catch ( std::exception &e ) {
