@@ -104,6 +104,15 @@ public void AddObject(string value) {
 	mValue += value;
 }
 
+public void AddObject(string key, string value) {
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
+
+	mIsFirstElement = false;
+	mValue += "\"" + key + "\": " + value;
+}
+
 public void BeginArray() {
 	if ( !mIsFirstElement ) {
 		mValue += ", ";
