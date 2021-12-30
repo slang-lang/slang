@@ -20,6 +20,15 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# {
 		loadByResult( result );
 	}
 
+	public void deleteByPrimaryKey( #PRIMARY_KEY_TYPE# #PRIMARY_KEY_NAME# ) modify throws {
+		var query = "DELETE FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" + #PRIMARY_KEY_NAME# + "'";
+
+		var error = mysql_query( DB, query );
+		if ( error ) {
+			throw mysql_error( DB );
+		}
+	}
+
 	public void insert() modify throws {
 		var query = "INSERT INTO #ENTITY_NAME# ( #MEMBER_LIST# ) VALUES ( #MEMBER_VALUES# )";
 
