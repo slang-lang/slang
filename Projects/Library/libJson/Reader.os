@@ -18,8 +18,6 @@ public object JsonReader {
     }
 
     public JsonValue parse( string text ) modify throws {
-        //print("parse(" + text + ")");
-
         mTokenizer.parseString( text );
 
         JsonValue value;
