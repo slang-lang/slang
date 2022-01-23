@@ -20,35 +20,22 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "TRUE", Position null ) );
 		RESERVED_WORDS.push_back( new Token( TokenType.NULL, "NULL", Position null ) );
 
-		WHITESPACES = new String( " 	" );
-		WHITESPACES = WHITESPACES + LINEBREAK_DOS;
-		WHITESPACES = WHITESPACES + LINEBREAK_UNIX;
+		WHITESPACES = new String( " 	" + LINEBREAK_DOS + LINEBREAK_UNIX );
 	}
 
-	public Token currentToken() const {
-		return mCurrentToken.current();
-	}
-
-	public bool hasNextToken() const {
-		return mCurrentToken.hasNext();
-	}
-
-	public Token nextToken() modify {
-		return mCurrentToken.next();
-	}
-
-	public void parseString( string text ) modify throws {
-		mCharIterator = new String( text ).getIterator();
+	public List<Token> parseString( string text ) modify throws {
+		mCharIterator = new CharacterIterator( text );
 		mColumn = 1;
 		mLine = 1;
-		mTokens = new List<Token>();
+
+		var tokens = new List<Token>();
 
 		Token token;
 		while ( ( token = getNextToken() ) != null ) {
-			mTokens.push_back( token );
+			tokens.push_back( token );
 		}
 
-		mCurrentToken = mTokens.getIterator();
+		return tokens;
 	}
 
 	private string consume( int length = 1 ) modify {
@@ -162,10 +149,6 @@ public object Tokenizer {
 		}
 	}
 
-	private bool hasNext() const {
-		return mCharIterator.hasNext();
-	}
-
 	private bool isCharacter( string char ) const {
 		return CHARS.Contains( char );
 	}
@@ -179,7 +162,9 @@ public object Tokenizer {
 	}
 
 	private string peek( int pos = 1 ) const throws {
-		try { return mCharIterator.peek( pos ); }
+		try {
+			return mCharIterator.peek( pos );
+		}
 
 		return "";
 	}
@@ -188,7 +173,6 @@ public object Tokenizer {
 		string c;
 
 		while ( isWhiteSpace( c = peek() ) ) {
-			print( "skipping whitespace" );
 			consume();
 		}
 	}
@@ -204,7 +188,6 @@ public object Tokenizer {
 	// Private members
 	private CharacterIterator mCharIterator;
 	private int mColumn;
-	private Iterator<Token> mCurrentToken;
 	private int mLine;
 	private List<Token> mTokens;
 }
