@@ -7,9 +7,7 @@ import Exceptions;
 import Object;
 
 
-public namespace Json {
-}
-
+public namespace Json { }
 
 public object JsonWriter {
 // Public

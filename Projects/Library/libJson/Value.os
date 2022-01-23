@@ -7,6 +7,8 @@ import Exceptions;
 import Object;
 
 
+public namespace Json { }
+
 public enum JsonType {
 	Array,
 	Object,

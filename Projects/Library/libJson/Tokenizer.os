@@ -100,7 +100,7 @@ public object Tokenizer {
 
 		foreach ( Token token : RESERVED_WORDS ) {
 			if ( token == result ) {
-				return new Token( token.mType, token.mValue, new Position( mLine, column ) );
+				return new Token( token.type, token.value, new Position( mLine, column ) );
 			}
 		}
 
