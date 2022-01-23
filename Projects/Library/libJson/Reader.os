@@ -14,31 +14,31 @@ public namespace Json { }
 public object JsonReader {
     public JsonValue parse( string text ) modify throws {
         var tokenizer = new Tokenizer();
-        tokenizer.parseString( text );
+        var tokenIt = tokenizer.parseString( text ).getIterator();
 
         JsonValue value;
-        if ( tokenizer.hasNextToken() ) {
-            switch ( tokenizer.nextToken().type ) {
+        if ( tokenIt.hasNext() ) {
+            switch ( tokenIt.next().type ) {
                 case TokenType.BRACKET_OPEN: {
-                    value = parseArray( tokenizer );
+                    value = parseArray( tokenIt );
 
-                    if ( tokenizer.currentToken().type != TokenType.BRACKET_CLOSE ) {
+                    if ( tokenIt.current().type != TokenType.BRACKET_CLOSE ) {
                         throw "invalid JSON array";
                     }
                     break;
                 }
                 case TokenType.CURLY_BRACKET_OPEN: {
-                    value = parseObject( tokenizer );
+                    value = parseObject( tokenIt );
 
-                    if ( tokenizer.currentToken().type != TokenType.CURLY_BRACKET_CLOSE ) {
+                    if ( tokenIt.current().type != TokenType.CURLY_BRACKET_CLOSE ) {
                         throw "invalid JSON object";
                     }
                     break;
                 }
                 default: {
-                    value = parseValue( tokenizer );
+                    value = parseValue( tokenIt );
 
-                    if ( tokenizer.hasNextToken() ) {
+                    if ( tokenIt.hasNext() ) {
                         throw "invalid JSON value";
                     }
                     break;
@@ -49,15 +49,15 @@ public object JsonReader {
         return value;
     }
 
-    private JsonValue parseArray( Tokenizer t ) {
+    private JsonValue parseArray( Iterator<Token> t ) {
         var result = new JsonArray();
         
         require( t, TokenType.BRACKET_OPEN );
 
-        while ( t.currentToken().type != TokenType.BRACKET_CLOSE ) {
+        while ( t.current().type != TokenType.BRACKET_CLOSE ) {
             result.addMember( parseValue( t ) );
 
-            if ( t.currentToken().type != TokenType.COMMA ) {
+            if ( t.current().type != TokenType.COMMA ) {
                 break;
             }
             require( t, TokenType.COMMA );
@@ -68,20 +68,20 @@ public object JsonReader {
         return JsonValue result;
     }
 
-    private JsonValue parseObject( Tokenizer t ) throws {
+    private JsonValue parseObject( Iterator<Token> t ) throws {
         var result = new JsonObject();
 
         require( t, TokenType.CURLY_BRACKET_OPEN );
 
-        while ( t.currentToken().type != TokenType.CURLY_BRACKET_CLOSE ) {
-            string key = t.currentToken().value;
-            t.nextToken();
+        while ( t.current().type != TokenType.CURLY_BRACKET_CLOSE ) {
+            string key = t.current().value;
+            t.next();
 
             require( t, TokenType.COLON );
 
             result.addMember( key, parseValue( t ) );
 
-            if ( t.currentToken().type != TokenType.COMMA ) {
+            if ( t.current().type != TokenType.COMMA ) {
                 break;
             }
             require( t, TokenType.COMMA );
@@ -92,10 +92,10 @@ public object JsonReader {
         return JsonValue result;
     }
 
-    private JsonValue parseValue( Tokenizer t ) throws {
-        JsonValue value;
-        var token = t.currentToken();
+    private JsonValue parseValue( Iterator<Token> t ) throws {
+        var token = t.current();
 
+        JsonValue value;
         switch ( token.type ) {
             case TokenType.BRACKET_OPEN: {
                 value = parseArray( t );
@@ -107,27 +107,27 @@ public object JsonReader {
             }
             case TokenType.BOOLEAN: {
                 value = new JsonValue( token.value );
-                t.nextToken();
+                t.next();
                 break;
             }
             case TokenType.IDENTIFIER: {
                 value = new JsonValue( token.value );
-                t.nextToken();
+                t.next();
                 break;
             }
             case TokenType.NUMBER: {
                 value = new JsonValue( token.value );
-                t.nextToken();
+                t.next();
                 break;
             }
             case TokenType.STRING: {
                 value = new JsonValue( token.value );
-                t.nextToken();
+                t.next();
                 break;
             }
             case TokenType.NULL: {
                 value = new JsonValue( "null" );
-                t.nextToken();
+                t.next();
                 break;
             }
             default: {
@@ -138,13 +138,13 @@ public object JsonReader {
         return value;
     }
 
-    private void require( Tokenizer t, TokenType type ) throws {
-        if ( t.currentToken().type != type ) {
-            throw "required '" + TokenToString( type ) + "' but got '" + TokenToString( t.currentToken().type ) + "'";
+    private void require( Iterator<Token> t, TokenType type ) throws {
+        if ( t.current().type != type ) {
+            throw "required '" + TokenToString( type ) + "' but got '" + TokenToString( t.current().type ) + "'";
         }
 
-        if ( t.hasNextToken() ) {
-            t.nextToken();
+        if ( t.hasNext() ) {
+            t.next();
         }
     }
 }

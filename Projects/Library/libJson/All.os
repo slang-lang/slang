@@ -3,8 +3,7 @@
 import Array;
 import Exception;
 import Object;
-//import Reader;    // Reader is deprecated
-import Reader_Iterator;
+import Reader;
 import Token;
 import Value;
 import Writer;

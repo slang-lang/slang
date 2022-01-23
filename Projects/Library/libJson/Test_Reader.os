@@ -3,7 +3,7 @@
 // Library imports
 
 // Project imports
-import Reader_Iterator;
+import Reader;
 
 public void Main(int argc, string args) {
 	assert( TestCase1() );
