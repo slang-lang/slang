@@ -7,6 +7,8 @@ import Reader;
 
 public void Main(int argc, string args) {
 	assert( TestCase1() );
+	assert( TestCase2() );
+	assert( TestCase3() );
 }
 
 private bool TestCase1() {
@@ -35,5 +37,49 @@ private bool TestCase1() {
    }
 
    return false;
+}
+
+private bool TestCase2() {
+	print( "Read negative number" );
+
+	try {
+		var str = "{ \"key\": -1 }";
+		print( str );
+
+		var reader = new JsonReader();
+		var value = reader.parse( str );
+		assert( value );
+
+		print( value.toString() );
+
+		return true;
+	}
+	catch ( IException e ) {
+		print( "Exception: " + e.what() );
+	}
+
+	return false;
+}
+
+private bool TestCase3() {
+	print( "Read exponential number" );
+
+	try {
+		var str = "{ \"key\": 7e-5 }";
+		print( str );
+
+		var reader = new JsonReader();
+		var value = reader.parse( str );
+		assert( value );
+
+		print( value.toString() );
+
+		return true;
+	}
+	catch ( IException e ) {
+		print( "Exception: " + e.what() );
+	}
+
+	return false;
 }
 
