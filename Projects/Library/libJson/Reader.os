@@ -140,7 +140,7 @@ public object JsonReader {
 
     private void require( Iterator<Token> t, TokenType type ) throws {
         if ( t.current().type != type ) {
-            throw "required '" + TokenToString( type ) + "' but got '" + TokenToString( t.current().type ) + "'";
+            throw "required '" + TokenToString( type ) + "' but got '" + TokenToString( t.current().type ) + "' at " + t.current().position.toString();
         }
 
         if ( t.hasNext() ) {
