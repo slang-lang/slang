@@ -13,9 +13,9 @@ public object JsonWriter {
 // Public
 	public void Constructor() {
 		mIndentation = 0;
-		mWhiteSpaceEnd = "";
-		mWhiteSpaceIndent = "";
-		mWhiteSpaceStart = "";
+		mNumIndents = 0;
+		mWhiteSpaceEnd = " ";
+		mWhiteSpaceStart = " ";
 	}
 
 	public string toString( JsonArray root const ) modify throws {
@@ -45,11 +45,11 @@ public object JsonWriter {
 				result += "," + mWhiteSpaceEnd;
 			}
 
-			result += indent( mIndentation) + "\"" + p.first + "\": " + toString( p.second );
+			result += indent( mIndentation ) + "\"" + p.first + "\": " + toString( p.second );
 		}
 		mIndentation--;
 
-		return "{" + mWhiteSpaceStart + result + mWhiteSpaceEnd + indent( mIndentation) + "}";
+		return "{" + mWhiteSpaceStart + result + mWhiteSpaceEnd + indent( mIndentation ) + "}";
 	}
 
 	public string toString( JsonValue root const ) modify throws {
@@ -57,32 +57,24 @@ public object JsonWriter {
 			throw new JsonException( "invalid JsonValue provided!" );
 		}
 
-		string result;
-
-		// handle complex types
 		if ( root is JsonArray ) {
-			result += toString( JsonArray root );
+			return toString( JsonArray root );
 		}
 		else if ( root is JsonObject ) {
-			result += toString( JsonObject root );
-		}
-		else {
-			result += root.toString();
+			return toString( JsonObject root );
 		}
 
-		// handle value types
-		return result;
+		return root.toString();
 	}
 
 // Protected
 	protected string indent( int level ) const {
-		//return "";
-		return strlpad( "", level * 3, " " );
+		return strlpad( "", level * mNumIndents, " " );
 	}
 
 	protected int mIndentation;
+	protected int mNumIndents;
 	protected string mWhiteSpaceEnd;
-	protected string mWhiteSpaceIndent;
 	protected string mWhiteSpaceStart;
 }
 
@@ -90,14 +82,9 @@ public object JsonStyledWriter extends JsonWriter {
 // Public
 	public void Constructor() {
 		mIndentation = 0;
-		mWhiteSpaceEnd = LINEBREAK_UNIX;
-		mWhiteSpaceIndent = "     ";
-		mWhiteSpaceStart = LINEBREAK_UNIX;
-	}
-
-// Protected
-	protected string indent( int level ) const {
-		return strlpad( "", level * 3, " " );
+		mNumIndents = 3;
+		mWhiteSpaceEnd = LINEBREAK;
+		mWhiteSpaceStart = LINEBREAK;
 	}
 }
 

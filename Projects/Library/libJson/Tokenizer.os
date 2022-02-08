@@ -13,7 +13,7 @@ public namespace Json { }
 public object Tokenizer {
 	public void Constructor() {
 		CHARS = new String( "ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz_" );
-		DIGITS = new String( "0123456789.-" );
+		DIGITS = new String( "0123456789.-+e" );
 
 		RESERVED_WORDS = new List<Token>();
 		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "FALSE", Position null ) );
@@ -102,7 +102,7 @@ public object Tokenizer {
 				case isCharacter( c ): {
 					return getID();
 				}
-				case isDigit( c ): {
+				case isDigit( c ) || c == "+" || c == "-": {
 					return getDigit();
 				}
 				case isWhiteSpace( c ): {
@@ -167,6 +167,38 @@ public object Tokenizer {
 		}
 
 		return "";
+	}
+
+	private string readNumber() modify {
+		string result;
+
+		string char;
+		while ( ( char = peek() ) && isDigit( char ) ) {
+			result += consume();
+		}
+
+		if ( char == "." ) {
+			result += char;
+
+			while ( ( char = peek() ) && isDigit( char ) ) {
+				result += consume();
+			}
+		}
+
+		if ( char == "e" || char == "E" ) {
+			result += char;
+
+			if ( peek() == "." ) {
+				result += consume();
+			}
+
+			while ( ( char = peek() ) && isDigit( char ) ) {
+				result += consume();
+			}
+		}
+
+print( result );
+		return result;
 	}
 
 	private void skipWhiteSpace() modify {

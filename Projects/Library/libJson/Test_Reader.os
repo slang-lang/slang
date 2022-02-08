@@ -20,7 +20,7 @@ private bool TestCase1() {
         print( str );               // input string
 
         var reader = new JsonReader();
-        var value = reader.parse(str);
+        var value = reader.parse( str );
         assert( value );
 
         print( value.toString() );  // output string
@@ -28,10 +28,10 @@ private bool TestCase1() {
         return true;
    }
    catch ( string e ) {
-	   print("Exception: " + e);
+	   print( "Exception: " + e );
    }
    catch ( IException e ) {
-	   print("Exception: " + e.what());
+	   print( "Exception: " + e.what() );
    }
 
    return false;
