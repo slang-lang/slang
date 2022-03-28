@@ -93,6 +93,17 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollection
 		}
 	}
 
+	public void loadByResult( int result ) modify throws {
+		Collection.clear();
+
+		while ( mysql_fetch_row( result ) ) {
+			var record = new #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#( DB );
+			record.loadByResult( result );
+
+			Collection.push_back( record );
+		}
+	}
+
 	public void pop_back() modify {
 		Collection.pop_back();
 	}
@@ -103,6 +114,10 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollection
 
 	public int size() const {
 		return Collection.size();
+	}
+
+	public void push_back( #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# item ) {
+		Collection.push_back( item );
 	}
 
 	private Vector<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#> Collection;

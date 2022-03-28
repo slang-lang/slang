@@ -115,6 +115,17 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollectio
 		}
 	}
 
+	public void loadByResult( int result ) modify throws {
+		Collection.clear();
+
+		while ( mysql_fetch_row( result ) ) {
+			var record = new #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#( DB );
+			record.loadByResult( result );
+
+			Collection.push_back( record );
+		}
+	}
+
 	public void pop_back() modify {
 		Collection.pop_back();
 	}
@@ -125,6 +136,10 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollectio
 
 	public int size() const {
 		return Collection.size();
+	}
+
+	public void push_back( #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# item ) {
+		Collection.push_back( item );
 	}
 
 	private Vector<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#> Collection;

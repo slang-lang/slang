@@ -88,7 +88,7 @@ private void printUsage() {
 	print( "	--database	sets the database schema to connect to" );
 	print( "	--host		sets the host to connect to" );
 	print( "	--output	sets the output folder for the generated files (default: current directory)" );
-	print( "	--password	sets the password used to connected to the database" );
+	print( "	--password	sets the password used to connect to the database" );
 	print( "	--port		sets the port used to connected to the database" );
 	print( "	--user		sets the user used to connect to the database" );
 	print( "	--version	print program version" );
