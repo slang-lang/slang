@@ -167,7 +167,7 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollectio
 		return Collection.size();
 	}
 
-	public void push_back( #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# item ) {
+	public void push_back( #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# item ) modify {
 		Collection.push_back( item );
 	}
 

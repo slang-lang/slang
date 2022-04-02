@@ -116,7 +116,7 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollection
 		return Collection.size();
 	}
 
-	public void push_back( #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# item ) {
+	public void push_back( #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# item ) modify {
 		Collection.push_back( item );
 	}
 
