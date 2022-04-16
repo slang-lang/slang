@@ -7,6 +7,7 @@ SET(SOURCES
 
 SET(HEADERS
 	Defines.h
+	FGETS.h
 	FileClose.h
 	FileEOF.h
 	FileOpen.h

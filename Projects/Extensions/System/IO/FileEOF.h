@@ -48,7 +48,7 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
 
 			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");

@@ -40,9 +40,9 @@ public:
 		try {
 			std::string value;
 
-			int c = getchar();
+			auto c = getchar();
 			if ( c ) {
-				value = (char)c;
+				value = static_cast<char>( c );
 			}
 
 			*result = Runtime::StringObject(value);

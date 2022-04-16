@@ -26,7 +26,7 @@ public:
 	ExtensionMethod( IScope* parent,
 			 const std::string& name,
 			 const std::string& type,
-			 Mutability::E mutabilty = Mutability::Const,
+			 Mutability::E mutability = Mutability::Const,
 			 MemoryLayout::E memoryLayout = MemoryLayout::Static,
 			 LanguageFeatureState::E languageFeatureState = LanguageFeatureState::Stable )
 	: Common::Method( parent, name, Common::TypeDeclaration( type ) )
@@ -34,7 +34,7 @@ public:
 		mIsExtensionMethod = true;
 		mLanguageFeatureState = languageFeatureState;
 		mMemoryLayout = memoryLayout;
-		mMethodMutability = mutabilty;
+		mMethodMutability = mutability;
 		mMutability = Mutability::Modify;
 	}
 
