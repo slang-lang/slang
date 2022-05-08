@@ -20,14 +20,14 @@ public object KeyLookup<K, V> {
 	}
 
 	public void loadByQuery( string query ) modify throws {
-		int error = mysql_query( DB, query );
+		var error = mysql_query( DB, query );
 		if ( error ) {
 			throw mysql_error( DB );
 		}
 
 		Collection.clear();
 
-		int result = mysql_store_result( DB );
+		var result = mysql_store_result( DB );
 		while ( mysql_fetch_row( result ) ) {
 			var record = new V( DB );
 			record.loadByResult( result );
