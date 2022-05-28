@@ -7,6 +7,7 @@
 // Project includes
 #include "StrFind.h"
 #include "StrFTime.h"
+#include "StrPTime.h"
 #include "StrLen.h"
 #include "StrLPad.h"
 #include "StrLTrim.h"
@@ -28,7 +29,7 @@ namespace Strings {
 
 
 SystemStringsExtension::SystemStringsExtension()
-: AExtension( "Strings", "0.0.1" )
+: AExtension( "Strings", "0.1.0" )
 {
 }
 
@@ -84,6 +85,7 @@ void SystemStringsExtension::provideMethods( ExtensionMethods& methods )
 {
 	methods.push_back( new StrFind() );
     methods.push_back( new StrFTime() );
+    methods.push_back( new StrPTime() );
 	methods.push_back( new StrLen() );
 	methods.push_back( new StrLPad() );
 	methods.push_back( new StrLTrim() );

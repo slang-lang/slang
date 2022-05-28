@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_System_StrFTime_h
-#define Slang_Extensions_System_StrFTime_h
+#ifndef Slang_Extensions_System_StrPTime_h
+#define Slang_Extensions_System_StrPTime_h
 
 
 // Library includes
@@ -27,15 +27,15 @@ namespace System {
 namespace Strings {
 
 
-class StrFTime : public ExtensionMethod
+class StrPTime : public ExtensionMethod
 {
 public:
-	StrFTime()
-	: ExtensionMethod( 0, "strftime", Designtime::StringObject::TYPENAME )
+    StrPTime()
+	: ExtensionMethod( 0, "strptime", Designtime::IntegerObject::TYPENAME )
 	{
 		ParameterList params;
 		params.push_back( Parameter::CreateDesigntime( "format", Designtime::StringObject::TYPENAME, 0 ) );
-        params.push_back( Parameter::CreateDesigntime( "time", Designtime::IntegerObject::TYPENAME, 0, true ) );
+        params.push_back( Parameter::CreateDesigntime( "time", Designtime::StringObject::TYPENAME, 0 ) );
 
 		setSignature( params );
 	}
@@ -49,22 +49,18 @@ public:
 			ParameterList::const_iterator it = list.begin();
 
 			std::string param_format = (*it++).value().toStdString();
-			int32_t param_time = (*it++).value().toInt();
+            std::string param_time = (*it++).value().toStdString();
 
-			std::time_t time;
-			if ( param_time ) {
-				time = param_time;
-			}
-			else {
-				time = std::time( nullptr );
-			}
+            struct tm tm{};
 
-			std::tm tm = *std::localtime( &time );
+            if ( strptime(param_time.c_str(), "%Y-%m-%d %H:%M", &tm ) ) {
+                auto time = mktime( &tm );
 
-			std::stringstream ssr;
-			ssr << std::put_time( &tm, param_format.c_str() );
-
-			*result = Runtime::StringObject( ssr.str() );
+                *result = Runtime::IntegerObject( time );
+            }
+            else {
+                *result = Runtime::IntegerObject( 0 );
+            }
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
