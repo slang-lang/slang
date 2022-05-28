@@ -53,7 +53,7 @@ public:
 
             struct tm tm{};
 
-            if ( strptime(param_time.c_str(), "%Y-%m-%d %H:%M", &tm ) ) {
+            if ( strptime(param_time.c_str(), param_format.c_str(), &tm ) ) {
                 auto time = mktime( &tm );
 
                 *result = Runtime::IntegerObject( time );
