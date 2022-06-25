@@ -43,9 +43,34 @@ std::string stringTrimRight(const std::string& source, const std::string& t = " 
 
 std::string toLowerCase(std::string data);
 
-template <class T> inline std::string toString(const T& t) {
+template <class T>
+inline std::string toString( const T& t ) {
 	std::stringstream ss; ss << t; return ss.str();
 }
+
+/*
+template <>
+inline std::string toString<bool>( const bool& t ) {
+    return std::to_string( t );
+}
+*/
+
+template <>
+inline std::string toString<double>( const double& t ) {
+    return std::to_string( t );
+}
+
+template <>
+inline std::string toString<float>( const float& t ) {
+    return std::to_string( t );
+}
+
+/*
+template <>
+inline std::string toString<int>( const int& t ) {
+    return std::to_string( t );
+}
+*/
 
 
 }

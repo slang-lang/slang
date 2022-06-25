@@ -56,7 +56,7 @@ ILogger* Logger::getLogger()
 	return this;
 }
 
-void Logger::Log( const std::string& logLevel, const std::string& message, char* file, unsigned int line )
+void Logger::Log( const std::string& logLevel, const std::string& message, const std::string& file, unsigned int line )
 {
 	std::string msg = "[" + logLevel + "] ";
 	if ( !mClassName.empty() ) {
@@ -67,12 +67,12 @@ void Logger::Log( const std::string& logLevel, const std::string& message, char*
 		msg += ": ";
 	}
 	msg += message;
-	msg += "   [" + toString( file ) + ":" + toString( line ) + "]";
+	msg += "   [" + file + ":" + toString( line ) + "]";
 
 	mContext->write( msg );
 }
 
-void Logger::LogDebug( const std::string& message, char* file, unsigned int line )
+void Logger::LogDebug( const std::string& message, const std::string& file, unsigned int line )
 {
 	if ( mLoudness < LoudnessDebug ) {
 		return;
@@ -81,7 +81,7 @@ void Logger::LogDebug( const std::string& message, char* file, unsigned int line
 	Log( "DEBUG", message, file, line );
 }
 
-void Logger::LogDeprecate( const std::string& message, char* file, unsigned int line )
+void Logger::LogDeprecate( const std::string& message, const std::string& file, unsigned int line )
 {
 	if ( mLoudness < LoudnessDeprecated ) {
 		return;
@@ -90,7 +90,7 @@ void Logger::LogDeprecate( const std::string& message, char* file, unsigned int 
 	Log( "DEPRECATED", message, file, line );
 }
 
-void Logger::LogError( const std::string& message, char* file, unsigned int line )
+void Logger::LogError( const std::string& message, const std::string& file, unsigned int line )
 {
 	if ( mLoudness < LoudnessError ) {
 		return;
@@ -99,7 +99,7 @@ void Logger::LogError( const std::string& message, char* file, unsigned int line
 	Log( "ERROR", message, file, line );
 }
 
-void Logger::LogFatal( const std::string& message, char* file, unsigned int line )
+void Logger::LogFatal( const std::string& message, const std::string& file, unsigned int line )
 {
 	Log( "FATAL", message, file, line );
 
@@ -107,7 +107,7 @@ void Logger::LogFatal( const std::string& message, char* file, unsigned int line
 	exit( 1 );
 }
 
-void Logger::LogInfo( const std::string& message, char* file, unsigned int line )
+void Logger::LogInfo( const std::string& message, const std::string& file, unsigned int line )
 {
 	if ( mLoudness < LoudnessInfo ) {
 		return;
@@ -116,7 +116,7 @@ void Logger::LogInfo( const std::string& message, char* file, unsigned int line 
 	Log( "INFO", message, file, line );
 }
 
-void Logger::LogMethod( const std::string& message, char* file, unsigned int line )
+void Logger::LogMethod( const std::string& message, const std::string& file, unsigned int line )
 {
 	if ( mLoudness < LoudnessMethod ) {
 		return;
@@ -125,7 +125,7 @@ void Logger::LogMethod( const std::string& message, char* file, unsigned int lin
 	Log( "METHOD", message, file, line );
 }
 
-void Logger::LogWarn( const std::string& message, char* file, unsigned int line )
+void Logger::LogWarn( const std::string& message, const std::string& file, unsigned int line )
 {
 	if ( mLoudness < LoudnessWarning ) {
 		return;
