@@ -47,9 +47,25 @@ public object Range implements ICollection, IIterable {
 		return mEnd;
 	}
 
-	public Iterator<int> getIterator() const {
-		return new Iterator<int>( ICollection this );
+/* activate for double linked iterator usage
+	public Iterator<T> getIterator() modify {
+		return new Iterator<T>( mFirst );
 	}
+
+	public ReverseIterator<T> getReverseIterator() modify {
+		return new ReverseIterator<T>( mLast );
+	}
+*/
+
+///* activate for random access iterator usage
+	public Iterator<T> getIterator() const {
+		return new Iterator<T>( ICollection this );
+	}
+
+	public ReverseIterator<T> getReverseIterator() const {
+		return new ReverseIterator<T>( ICollection this );
+	}
+//*/
 
 	public int getStart() const {
 		return mStart;

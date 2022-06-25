@@ -58,6 +58,17 @@ public object Map<K, V> implements ICollection {
 		throw new Exception( "unknown key!" );
 	}
 
+/* activate for double linked iterator usage
+	public Iterator<T> getIterator() modify {
+		return new Iterator<Object>( mFirst );
+	}
+
+	public ReverseIterator<T> getReverseIterator() modify {
+		return new ReverseIterator<Object>( mLast );
+	}
+*/
+
+///* activate for random access iterator usage
 	public Iterator<Object> getIterator() const {
 		return new Iterator<Object>( cast<ICollection>( mItems ) );
 	}
@@ -65,6 +76,7 @@ public object Map<K, V> implements ICollection {
 	public ReverseIterator<Object> getReverseIterator() const {
 		return new ReverseIterator<Object>( cast<ICollection>( mItems ) );
 	}
+//*/
 
 	public int indexOf( K key ) const throws {
 		int count = 0;

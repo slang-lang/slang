@@ -33,16 +33,16 @@ public object Stack<T> implements ICollection {
 
 		var item = mFirst;
 		for ( int i = 0; i < index; i++ ) {
-			item = item.mNext;
+			item = item.next;
 		}
 
-		return item.mValue;
+		return item.value;
 	}
 
 	public void clear() modify {
 		for ( int i = 0; i < mSize; i = i++ ) {
-			delete mFirst.mValue;
-			mFirst = mFirst.mNext;
+			delete mFirst.value;
+			mFirst = mFirst.next;
 		}
 
 		mSize = 0;
@@ -62,25 +62,41 @@ public object Stack<T> implements ICollection {
 		}
 
 		if ( index == 0 ) {						// special handling for 1st element
-			mFirst = mFirst.mNext;
+			mFirst = mFirst.next;
+		}
+		else if ( index == mSize - 1 ) {	// special handling for last element
+			if ( mLast.previous ) {
+				mLast = mLast.previous;
+			}
 		}
 		else {									// default handling for erasing
 			var prev = mFirst;
 			for ( int i = 0; i < index - 1; i++ ) {
-				prev = prev.mNext;
+				prev = prev.next;
 			}
 
 			if ( index == mSize - 1 ) {
 				mLast = prev;
 			}
-			else if ( prev.mNext ) {
-				prev.mNext = prev.mNext.mNext;
+			else if ( prev.next ) {
+				prev.next = prev.next.next;
 			}
 		}
 
 		mSize--;
 	}
 
+/* activate for double linked iterator usage
+	public Iterator<T> getIterator() modify {
+		return new Iterator<T>( mFirst );
+	}
+
+	public ReverseIterator<T> getReverseIterator() modify {
+		return new ReverseIterator<T>( mLast );
+	}
+*/
+
+///* activate for random access iterator usage
 	public Iterator<T> getIterator() const {
 		return new Iterator<T>( ICollection this );
 	}
@@ -88,16 +104,17 @@ public object Stack<T> implements ICollection {
 	public ReverseIterator<T> getReverseIterator() const {
 		return new ReverseIterator<T>( ICollection this );
 	}
+//*/
 
 	public int indexOf( T value ) const {
 		var item = mFirst;
 
 		for ( int i = 0; i < mSize; i++ ) {
-			if ( item.mValue == value ) {
+			if ( item.value == value ) {
 				return i;
 			}
 
-			item = item.mNext;
+			item = item.next;
 		}
 
 		return -1;
@@ -108,7 +125,7 @@ public object Stack<T> implements ICollection {
 			throw new OutOfBoundsException( "empty collection" );
 		}
 
-		return mLast.mValue;
+		return mLast.value;
 	}
 
 	public T pop() modify throws {
@@ -116,7 +133,7 @@ public object Stack<T> implements ICollection {
 			throw new OutOfBoundsException( "empty collection" );
 		}
 
-		var last = mLast.mValue;
+		var last = mLast.value;
 
 		if ( mSize == 1 ) {
 			delete mFirst;
@@ -124,10 +141,10 @@ public object Stack<T> implements ICollection {
 		else {
 			var item = mFirst;
 			for ( int i = 0; i < mSize - 1; i++ ) {
-				item = item.mNext;
+				item = item.next;
 			}
 
-			delete item.mNext;
+			delete item.next;
 
 			mLast = item;
 		}
@@ -144,7 +161,7 @@ public object Stack<T> implements ICollection {
 			mFirst = item;
 		}
 		else {						// generic handling
-			mLast.mNext = item;
+			mLast.next = item;
 		}
 
 		mLast = item;

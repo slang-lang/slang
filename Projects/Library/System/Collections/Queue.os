@@ -57,6 +57,10 @@ public object Queue<T> implements ICollection {
 		return mItems.getIterator();
 	}
 
+	public ReverseIterator<T> getReverseIterator() const {
+		return mItems.getReverseIterator();
+	}
+
 	public T peek() const {
 		return mItems.last();
 	}
