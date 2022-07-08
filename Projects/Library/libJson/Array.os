@@ -31,7 +31,7 @@ public object JsonArray extends JsonValue implements IIterable {
 	}
 
 	public Iterator<JsonValue> getIterator() const {
-		return new Iterator<JsonValue>( ICollection mMembers );
+		return mMembers.getIterator();
 	}
 
 	public int size() const {
