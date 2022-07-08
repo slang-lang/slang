@@ -19,7 +19,7 @@ public void Main( int argc, string args ) {
 		var params = new ParameterHandler( argc, args );
 
 		foreach ( Parameter filename : params ) {
-			if ( params.size() > 2 ) {
+			if ( params.size() > 1 ) {
 				print( filename.Key + ":" );
 			}
 	
