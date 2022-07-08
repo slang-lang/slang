@@ -91,7 +91,7 @@ public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollectio
 	}
 
 	public Iterator<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#> getIterator() const {
-		return new Iterator<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#>( cast<ICollection>( Collection ) );
+		return Collection.getIterator();
 	}
 
 	public #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# last() const {

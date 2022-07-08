@@ -69,7 +69,7 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollection
 	}
 
 	public Iterator<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#> getIterator() const {
-		return new Iterator<#VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#>( cast<ICollection>( Collection ) );
+		return Collection.getIterator();
 	}
 
 	public #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX# last() const {
