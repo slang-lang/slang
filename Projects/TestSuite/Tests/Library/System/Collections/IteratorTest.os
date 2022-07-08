@@ -6,99 +6,132 @@ import System.String;
 
 public void Main(int argc = 0, string args = "") const {
 	assert( TestCase1() );
-	assert( TestCase2() );
+	//assert( TestCase2() );
 	assert( TestCase3() );
-	assert( TestCase4() );
+	//assert( TestCase4() );
+	assert( TestCase5() );
 }
 
 private bool TestCase1() const {
-	print("TestCase 1: iterate");
+	print("TestCase 1: forward iterator");
 
 	try {
-		var list = new List<String>();
-		assert(list is ICollection);
+		var list = new List<string>();
+		assert( list is ICollection );
+		assert( list is Object );
 
-		list.push_back(new String("1"));
-		list.push_back(new String("2"));
-		list.push_back(new String("3"));
+		list.push_back( "Item 1" );
+		list.push_back( "Item 2" );
+		list.push_back( "Item 3" );
 
-		Iterator<String> it = list.getIterator();
+		assert( list.size() == 3 );
 
+		int count;
+		var it = list.getIterator();
 		while ( it.hasNext() ) {
-			it.next();
-
-			//print(string it.current());
+			it++;
+			
+			print( "it = " + cast<string>( it.current() ) );
+			count++;
 		}
 
-		return true;
-	}
-	catch ( OutOfBoundsException e ) {
-		print(e.what());
-	}
-	catch ( IException e ) {
-		print(e.what());
+		//print( "count: " + cast<string>( count ) );
+		return count == list.size();
 	}
 
 	return false;
 }
 
 private bool TestCase2() const {
-	print("TestCase 2: reverse iterate");
+	print( "TestCase 2: reverse iterator" );
 
 	try {
-		var list = new List<String>();
-		assert(list is ICollection);
+		var list = new List<string>();
+		assert( list is ICollection );
+		assert( list is Object );
 
-		list.push_back(new String("1"));
-		list.push_back(new String("2"));
-		list.push_back(new String("3"));
+		// list.push_back( "Item 1" );
+		// list.push_back( "Item 2" );
+		// list.push_back( "Item 3" );
 
-		ReverseIterator<String> it = list.getReverseIterator();
+		list.push_front( "Item 3" );
+		list.push_front( "Item 2" );
+		list.push_front( "Item 1" );
 
+		print( "first: " + list.first() );
+		print( "last: " + list.last() );
+
+		assert( list.size() == 3 );
+
+		int count;
+		var it = list.getReverseIterator();
 		while ( it.hasNext() ) {
-			it.next();
-
-			//print(string it.current());
+			it++;
+			
+			print( "it = " + cast<string>( it.current() ) );
+			count++;
 		}
 
-		return true;
-	}
-	catch ( OutOfBoundsException e ) {
-		print( e.what() );
-	}
-	catch ( IException e ) {
-		print( e.what() );
+		print( "count: " + cast<string>( count ) );
+		return count == list.size();
 	}
 
 	return false;
 }
 
 private bool TestCase3() const {
-	print("TestCase 3: multiple iterators");
+	print( "TestCase 3: iterator operators" );
+
+	try {
+		var list = new List<String>();
+		assert( list is ICollection );
+		assert( list is Object );
+
+		list.push_back( new String( "Item 1" ) );
+		list.push_back( new String( "Item 2" ) );
+		list.push_back( new String( "Item 3" ) );
+
+		assert( list.size() == 3 );
+
+		var it = list.getIterator();
+
+		while ( it.hasNext() ) {
+			it++;
+			
+			print( "it = " + cast<string>( it.current() ) );
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase4() const {
+	print( "TestCase 4: multiple iterators" );
 
 	try {
 		var list = new List<String>();
 		assert( list is List<String> );
 
-		list.push_back(new String("1"));
-		list.push_back(new String("2"));
-		list.push_back(new String("3"));
+		list.push_back( new String( "1" ) );
+		list.push_back( new String( "2" ) );
+		list.push_back( new String( "3" ) );
 
-		Iterator<String> iterator = list.getIterator();
-		ReverseIterator<String> reverse = list.getReverseIterator();
+		var forward = list.getIterator();
+		var reverse = list.getReverseIterator();
 
-		while ( iterator.hasNext() && reverse.hasNext() ) {
-			iterator.next();
-			//print("iterator = " + iterator.current());
+		while ( forward.hasNext() && reverse.hasNext() ) {
+			assert( forward.next() );
+			print( "forward = " + cast<string>( forward.current() ) );
 
-			reverse.next();
-			//print("reverse = " + reverse.current());
-
-			//print("iterator = " + iterator.next());
-			//print("reverse = " + reverse.next());
+			assert( reverse.next() );
+			print( "reverse = " + cast<string>( reverse.current() ) );
 		}
 
-		return !iterator.hasNext() && !reverse.hasNext();
+		assert( !forward.hasNext() );
+		assert( !reverse.hasNext() );
+		return !forward.hasNext() && !reverse.hasNext();
 	}
 	catch ( OutOfBoundsException e ) {
 		print( e.what() );
@@ -110,29 +143,32 @@ private bool TestCase3() const {
 	return false;
 }
 
-private bool TestCase4() const {
-	print("TestCase 4: iterator operators");
+private bool TestCase5() const {
+	print( "TestCase 5: single item" );
 
 	try {
-		var list = new List<String>();
-		assert( list is ICollection );
-		assert( list is Object );
+		var list = new List<string>();
+		assert( list is List<string> );
 
-		list.push_back(new String("Item 1"));
-		list.push_back(new String("Item 2"));
-		list.push_back(new String("Item 3"));
+		list.push_back( "Item 1" );
 
-		assert( list.size() == 3 );
+		int count;
+		var forward = list.getIterator();
+		while ( forward.hasNext() ) {
+			assert( forward.next() );
+			print( "forward = " + cast<string>( forward.current() ) );
 
-		Iterator<String> it = list.getIterator();
-
-		while ( it.hasNext() ) {
-			it++;
-
-			//print("it = " + it.current());
+			count++;
 		}
 
-		return true;
+		assert( !forward.hasNext() );
+		return !forward.hasNext() && count == list.size();
+	}
+	catch ( OutOfBoundsException e ) {
+		print( e.what() );
+	}
+	catch ( IException e ) {
+		print( e.what() );
 	}
 
 	return false;

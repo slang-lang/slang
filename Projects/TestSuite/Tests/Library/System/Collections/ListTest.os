@@ -18,7 +18,7 @@ private bool TestCase1() const {
 	print("TestCase 1: push_back");
 
 	try {
-		List<Integer> list = new List<Integer>();
+		var list = new List<Integer>();
 
 		// Setup
 		list.push_back(new Integer(664));
@@ -52,7 +52,7 @@ private bool TestCase2() const {
 	print("TestCase 2: push_front");
 
 	try {
-		List<Integer> list = new List<Integer>();
+		var list = new List<Integer>();
 
 		list.push_front(new Integer(1389));
 		list.push_front(new Integer(173));
@@ -80,7 +80,7 @@ private bool TestCase3() const {
 	print("TestCase 3: pop_front");
 
 	try {
-		List<Integer> list = new List<Integer>();
+		var list = new List<Integer>();
 
 		// Setup
 		list.push_back(new Integer(664));
@@ -126,7 +126,7 @@ private bool TestCase4() const {
 	print("TestCase 4: pop_back");
 
 	try {
-		List<Integer> list = new List<Integer>();
+		var list = new List<Integer>();
 
 		// Setup
 		list.push_back(new Integer(664));
@@ -172,7 +172,7 @@ private bool TestCase5() const {
 	print("TestCase 5: clear");
 
 	try {
-		List<Integer> list = new List<Integer>();
+		var list = new List<Integer>();
 		assert( list );
 
 		list.push_back(new Integer(1));
@@ -184,14 +184,15 @@ private bool TestCase5() const {
 
 		Integer item;
 
-		Iterator<Integer> it = list.getIterator();
+		var it = list.getIterator();
+/*
 		while ( it.hasNext() ) {
 			it.next();
 
 			item = Integer it.current();
 			//print(string item);
 		}
-
+*/
 		list.clear();
 
 		it.reset();
@@ -215,7 +216,7 @@ private bool TestCase6() const {
 	print("TestCase 6: native data types");
 
 	try {
-		List<string> list = new List<string>();
+		var list = new List<string>();
 
 		assert( list );
 		assert( list is Object );
@@ -226,7 +227,7 @@ private bool TestCase6() const {
 
 		assert( list.size() == 3 );
 
-		Iterator<string> it = list.getIterator();
+		var it = list.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
