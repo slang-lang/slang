@@ -1,6 +1,5 @@
 
 import System.Exception;
-import CollectionItem;
 import ICollection;
 import Iterator;
 import List;
@@ -53,6 +52,8 @@ public object Queue<T> implements ICollection {
 		mItems.push_back( item );
 	}
 
+
+///* activate for double linked iterator usage
 	public Iterator<T> getIterator() const {
 		return mItems.getIterator();
 	}
@@ -60,6 +61,17 @@ public object Queue<T> implements ICollection {
 	public ReverseIterator<T> getReverseIterator() const {
 		return mItems.getReverseIterator();
 	}
+//*/
+
+/* activate for random access iterator usage
+	public Iterator<Object> getIterator() const {
+		return mItems.getIterator();
+	}
+
+	public ReverseIterator<Object> getReverseIterator() const {
+	return mItems.getReverseIterator();
+}
+*/
 
 	public T peek() const {
 		return mItems.last();
@@ -75,7 +87,7 @@ public object Queue<T> implements ICollection {
 
 	private List<T> mItems;
 
-	private Iterator<T> __iterator;						// this is a hack to automatically initialize a generic type
-	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
+	private Iterator<T> __iterator;					// this is a hack to automatically initialize a generic type
+	private ReverseIterator<T> __reverse_iterator;	// this is a hack to automatically initialize a generic type
 }
 

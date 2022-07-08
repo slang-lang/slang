@@ -101,17 +101,17 @@ public object Vector<T> implements ICollection {
 		return mFirst.value;
 	}
 
-/* activate for double linked iterator usage
-	public Iterator<T> getIterator() modify {
+///* activate for double linked iterator usage
+	public Iterator<T> getIterator() const {
 		return new Iterator<T>( mFirst );
 	}
 
-	public ReverseIterator<T> getReverseIterator() modify {
+	public ReverseIterator<T> getReverseIterator() const {
 		return new ReverseIterator<T>( mLast );
 	}
-*/
+//*/
 
-///* activate for random access iterator usage
+/* activate for random access iterator usage
 	public Iterator<T> getIterator() const {
 		return new Iterator<T>( ICollection this );
 	}
@@ -119,7 +119,7 @@ public object Vector<T> implements ICollection {
 	public ReverseIterator<T> getReverseIterator() const {
 		return new ReverseIterator<T>( ICollection this );
 	}
-//*/
+*/
 
 	public int indexOf( T value ) const {
 		var item = mFirst;
@@ -250,7 +250,7 @@ public object Vector<T> implements ICollection {
 	private CollectionItem<T> mLast;
 	private int mSize = 0;
 
-	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
-	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
+	private Iterator<T> __iterator;					// this is a hack to automatically initialize a generic type
+	private ReverseIterator<T> __reverse_iterator;	// this is a hack to automatically initialize a generic type
 }
 

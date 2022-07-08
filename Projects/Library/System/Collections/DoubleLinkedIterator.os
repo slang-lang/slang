@@ -1,13 +1,13 @@
 
 import System.Exception;
+import CollectionItem;
 
 // declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
 
 public object Iterator<T> {
-	public void Constructor( CollectionItem<T> first ) {
-		mCurrentItem = first;
-		mFirstItem   = first;
+	public void Constructor( CollectionItem<T> first const ) {
+		mFirstItem = first;
 	}
 
 	public T current() const throws {
@@ -19,25 +19,25 @@ public object Iterator<T> {
 	}
 
 	public bool hasNext() const throws {
-		if ( !mCurrentItem ) {
+		if ( !mFirstItem ) {
 			throw new Exception( "current(): iterator not initialized" );
 		}
-		if ( mCurrentItem ) {
-			return bool mCurrentItem.next;
+		if ( !mCurrentItem ) {
+			return bool mFirstItem;
 		}
 
-		return false;
+		return bool mCurrentItem.next;
 	}
 
 	public bool hasPrevious() const throws {
-		if ( !mCurrentItem ) {
+		if ( !mFirstItem ) {
 			throw new Exception( "current(): iterator not initialized" );
 		}
-		if ( mCurrentItem ) {
-			return bool mCurrentItem.previous;
+		if ( !mCurrentItem ) {
+			return bool mFirstItem;
 		}
 
-		return false;
+		return bool mCurrentItem.previous;
 	}
 
 	public T next() modify throws {
@@ -45,13 +45,18 @@ public object Iterator<T> {
 			throw new OutOfBoundsException( "next(): index out of bounds" );
 		}
 
-		mCurrentItem = mCurrentItem.next;
+		if ( !mCurrentItem ) {
+			mCurrentItem = mFirstItem;
+		}
+		else {
+			mCurrentItem = mCurrentItem.next;
+		}
 
 		return T mCurrentItem.value;
 	}
 
 	public T peek( int offset = 1 ) const throws {
-		if ( !mCurrentItem ) {
+		if ( !mCurrentItem && !mFirstItem ) {
 			throw new Exception( "current(): iterator not initialized" );
 		}
 
@@ -82,11 +87,11 @@ public object Iterator<T> {
 	}
 
 	public void reset() modify throws {
-		if ( !mCurrentItem ) {
+		if ( !mCurrentItem && !mFirstItem ) {
 			throw new Exception( "current(): iterator not initialized" );
 		}
 
-		mCurrentItem = mFirstItem;
+		mCurrentItem = CollectionItem<T> null;
 	}
 
 	public bool operator==( Iterator<T> other const ) const {
@@ -101,16 +106,18 @@ public object Iterator<T> {
 		return next();	
 	}
 
+	public T operator--() modify throws {
+		return previous();
+	}
+
 	private CollectionItem<T> mCurrentItem;
 	private CollectionItem<T> mFirstItem;
 }
 
 
-
 public object ReverseIterator<T> {
-	public void Constructor( CollectionItem<T> last ) {
-		mCurrentItem = last;
-		mLastItem    = last;
+	public void Constructor( CollectionItem<T> last const ) {
+		mLastItem = last;
 	}
 
 	public T current() const throws {
@@ -122,25 +129,25 @@ public object ReverseIterator<T> {
 	}
 
 	public bool hasNext() const throws {
-		if ( !mCurrentItem ) {
+		if ( !mLastItem ) {
 			throw new Exception( "current(): iterator not initialized" );
 		}
-		if ( mCurrentItem ) {
-			return bool mCurrentItem.previous;
+		if ( !mCurrentItem ) {
+			return bool mLastItem;
 		}
 
-		return false;
+		return bool mCurrentItem.previous;
 	}
 
 	public bool hasPrevious() const throws {
-		if ( !mCurrentItem ) {
+		if ( !mLastItem ) {
 			throw new Exception( "current(): iterator not initialized" );
 		}
-		if ( mCurrentItem ) {
-			return bool mCurrentItem.next;
+		if ( !mCurrentItem ) {
+			return bool mLastItem;
 		}
 
-		return false;
+		return bool mCurrentItem.next;
 	}
 
 	public T next() modify throws {
@@ -189,7 +196,7 @@ public object ReverseIterator<T> {
 			throw new Exception( "current(): iterator not initialized" );
 		}
 
-		mCurrentItem = mLastItem;
+		mCurrentItem = CollectionItem<T> null;
 	}
 
 	public bool operator==( ReverseIterator<T> other const ) const {
@@ -201,7 +208,11 @@ public object ReverseIterator<T> {
 	}
 
 	public T operator++() modify throws {
-		return next();		
+		return next();
+	}
+
+	public T operator--() modify throws {
+		return previous();
 	}
 
 	private CollectionItem<T> mCurrentItem;

@@ -101,17 +101,17 @@ public object Set<T> implements ICollection {
 	}
 
 
-/* activate for double linked iterator usage
-	public Iterator<T> getIterator() modify {
+///* activate for double linked iterator usage
+	public Iterator<T> getIterator() const {
 		return new Iterator<T>( mFirst );
 	}
 
-	public ReverseIterator<T> getReverseIterator() modify {
+	public ReverseIterator<T> getReverseIterator() const {
 		return new ReverseIterator<T>( mLast );
 	}
-*/
+//*/
 
-///* activate for random access iterator usage
+/* activate for random access iterator usage
 	public Iterator<T> getIterator() const {
 		return new Iterator<T>( ICollection this );
 	}
@@ -119,7 +119,7 @@ public object Set<T> implements ICollection {
 	public ReverseIterator<T> getReverseIterator() const {
 		return new ReverseIterator<T>( ICollection this );
 	}
-//*/
+*/
 
 	public int indexOf( T value ) const {
 		CollectionItem<T> item = mFirst;
@@ -195,7 +195,7 @@ public object Set<T> implements ICollection {
 	private CollectionItem<T> mLast;
 	private int mSize;
 
-	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
-	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
+	private Iterator<T> __iterator;					// this is a hack to automatically initialize a generic type
+	private ReverseIterator<T> __reverse_iterator;	// this is a hack to automatically initialize a generic type
 }
 

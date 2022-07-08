@@ -1,11 +1,11 @@
 
-import ICollection;
 import System.Exception;
+import ICollection;
 
 // declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
 
-public object Iterator<T> {
+public object RandomAccessIterator<T> {
 	public void Constructor( ICollection collection const ) {
 		mCollection = collection;
 
@@ -49,7 +49,7 @@ public object Iterator<T> {
 		mCurrentIndex = -1;
 	}
 
-	public bool operator==( Iterator<T> other const ) const {
+	public bool operator==( RandomAccessIterator<T> other const ) const {
 		return mCurrentIndex == other.mCurrentIndex;
 	}
 
@@ -65,7 +65,7 @@ public object Iterator<T> {
 	private int mCurrentIndex;
 }
 
-public object ReverseIterator<T> {
+public object ReverseRandomAccessIterator<T> {
 	public void Constructor( ICollection collection const ) {
 		mCollection = collection;
 
@@ -109,7 +109,7 @@ public object ReverseIterator<T> {
 		mCurrentIndex = mCollection.size();
 	}
 
-	public bool operator==( ReverseIterator<T> other const ) const {
+	public bool operator==( ReverseRandomAccessIterator<T> other const ) const {
 		return mCurrentIndex == other.mCurrentIndex;
 	}
 
