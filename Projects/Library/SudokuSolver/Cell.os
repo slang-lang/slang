@@ -11,7 +11,7 @@ public object Cell {
 	public int X const;
 	public int Y const;
 
-	public void Constructor(int x, int y) {
+	public void Constructor( int x, int y ) {
 		PossibleValues = new List<int>();
 		Value = 0;
 		X = x;
@@ -40,13 +40,13 @@ public object Cell {
 		return result;
 	}
 
-	public Cell operator=(int value) modify {
+	public Cell operator=( int value ) modify {
 		Value = value;
 
 		return this;
 	}
 
-	public string =operator(string) const {
+	public string =operator( string ) const {
 		return cast<string>( Value );
 	}
 }
