@@ -10,6 +10,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase3() );
 	//assert( TestCase4() );
 	assert( TestCase5() );
+	assert( TestCase6() );
 }
 
 private bool TestCase1() const {
@@ -151,6 +152,35 @@ private bool TestCase5() const {
 		assert( list is List<string> );
 
 		list.push_back( "Item 1" );
+
+		int count;
+		var forward = list.getIterator();
+		while ( forward.hasNext() ) {
+			assert( forward.next() );
+			print( "forward = " + cast<string>( forward.current() ) );
+
+			count++;
+		}
+
+		assert( !forward.hasNext() );
+		return !forward.hasNext() && count == list.size();
+	}
+	catch ( OutOfBoundsException e ) {
+		print( e.what() );
+	}
+	catch ( IException e ) {
+		print( e.what() );
+	}
+
+	return false;
+}
+
+private bool TestCase6() const {
+	print( "TestCase 6: empty collection" );
+
+	try {
+		var list = new List<string>();
+		assert( list is List<string> );
 
 		int count;
 		var forward = list.getIterator();

@@ -20,7 +20,8 @@ public object Iterator<T> {
 
 	public bool hasNext() const throws {
 		if ( !mFirstItem ) {
-			throw new Exception( "current(): iterator not initialized" );
+			//throw new Exception( "current(): iterator not initialized" );
+			return false;
 		}
 		if ( !mCurrentItem ) {
 			return bool mFirstItem;
@@ -31,7 +32,8 @@ public object Iterator<T> {
 
 	public bool hasPrevious() const throws {
 		if ( !mFirstItem ) {
-			throw new Exception( "current(): iterator not initialized" );
+			//throw new Exception( "current(): iterator not initialized" );
+			return false;
 		}
 		if ( !mCurrentItem ) {
 			return bool mFirstItem;
@@ -87,9 +89,9 @@ public object Iterator<T> {
 	}
 
 	public void reset() modify throws {
-		if ( !mCurrentItem && !mFirstItem ) {
-			throw new Exception( "current(): iterator not initialized" );
-		}
+		// if ( !mCurrentItem ) {
+		// 	throw new Exception( "current(): iterator not initialized" );
+		// }
 
 		mCurrentItem = CollectionItem<T> null;
 	}
@@ -130,7 +132,8 @@ public object ReverseIterator<T> {
 
 	public bool hasNext() const throws {
 		if ( !mLastItem ) {
-			throw new Exception( "current(): iterator not initialized" );
+			//throw new Exception( "current(): iterator not initialized" );
+			return false;
 		}
 		if ( !mCurrentItem ) {
 			return bool mLastItem;
@@ -141,7 +144,8 @@ public object ReverseIterator<T> {
 
 	public bool hasPrevious() const throws {
 		if ( !mLastItem ) {
-			throw new Exception( "current(): iterator not initialized" );
+			//throw new Exception( "current(): iterator not initialized" );
+			return false;
 		}
 		if ( !mCurrentItem ) {
 			return bool mLastItem;
@@ -192,9 +196,9 @@ public object ReverseIterator<T> {
 	}
 
 	public void reset() modify throws {
-		if ( !mCurrentItem ) {
-			throw new Exception( "current(): iterator not initialized" );
-		}
+		// if ( !mCurrentItem ) {
+		// 	throw new Exception( "current(): iterator not initialized" );
+		// }
 
 		mCurrentItem = CollectionItem<T> null;
 	}
