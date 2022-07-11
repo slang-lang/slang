@@ -112,7 +112,7 @@ bool stringToBool(const std::string& str)
 double stringToDouble(const std::string& str)
 {
 	if ( str.empty() ) {
-		return 0.f;
+		return 0.0;
 	}
 
 	std::stringstream stream;
@@ -126,7 +126,7 @@ double stringToDouble(const std::string& str)
 float stringToFloat(const std::string& str)
 {
 	if ( str.empty() ) {
-		return 0.f;
+		return 0.0f;
 	}
 
 	std::stringstream stream;
