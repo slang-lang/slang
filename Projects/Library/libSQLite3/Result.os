@@ -36,7 +36,7 @@ public object Sqlite3Row implements IIterable {
 	}
 
     public Iterator<Sqlite3Entry> getIterator() const {
-        return new Iterator<Sqlite3Entry>( cast<ICollection>( Entries ) );
+        return Entries.getIterator();
     }
 
     public Sqlite3Entry operator[]( int index ) const {
@@ -72,7 +72,7 @@ public object Sqlite3Result implements IIterable {
     }
 
     public Iterator<Sqlite3Row> getIterator() const {
-        return new Iterator<Sqlite3Row>( cast<ICollection>( Rows ) );
+        return Rows.getIterator();
     }
 
     public Sqlite3Row operator[]( int index ) const {
