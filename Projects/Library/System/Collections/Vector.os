@@ -45,8 +45,8 @@ public object Vector<T> implements ICollection {
 			mFirst = mFirst.next;
 		}
 
-		delete mFirst;
-		delete mLast;
+		mFirst = CollectionItem<T> null;
+		mLast = CollectionItem<T> null;
 		mSize = 0;
 	}
 

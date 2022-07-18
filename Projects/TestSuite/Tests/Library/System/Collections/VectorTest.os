@@ -20,6 +20,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase13() );
 	assert( TestCase14() );
 	assert( TestCase15() );
+	assert( TestCase16() );
 }
 
 private bool TestCase1() const {
@@ -501,4 +502,32 @@ private bool TestCase15() const {
 	return false;
 }
 
+private bool TestCase16() const {
+	print( "TestCase 16: add, clear and add" );
+
+	try {
+		var collection = new Vector<int>();
+
+		// Set up
+		collection.push_back( 1 );
+		collection.push_back( 2 );
+		collection.push_back( 3 );
+
+		// Test
+		assert( collection.size() == 3 );
+
+		var it1 = collection.getIterator();
+
+		collection.clear();
+		assert( collection.size() == 0 );
+
+		foreach ( int i : collection ) {
+			assert( !"hopefully we never get here!" );
+		}
+
+		return collection.empty();
+	}
+
+	return false;
+}
 

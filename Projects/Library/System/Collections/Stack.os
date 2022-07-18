@@ -45,6 +45,8 @@ public object Stack<T> implements ICollection {
 			mFirst = mFirst.next;
 		}
 
+		mFirst = CollectionItem<T> null;
+		mLast = CollectionItem<T> null;
 		mSize = 0;
 	}
 
