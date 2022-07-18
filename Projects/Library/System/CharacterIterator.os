@@ -97,7 +97,7 @@ public object CharacterIterator implements Iterator<string> {
 	/*
 	 * Equality operator
 	 */
-	public bool operator==(CharacterIterator other const ) const {
+	public bool operator==( CharacterIterator other const ) const {
 		return mValue == other.mValue && mCurrentIndex == other.mCurrentIndex;
 	}
 
