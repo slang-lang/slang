@@ -132,7 +132,7 @@ private void createTransportOrder(int orderID) const {
 private int getLastInsertId() const {
 	int result = DB.Query( "SELECT LAST_INSERT_ID() AS ID" );
 
-	if ( mysql_next_row(result) ) {
+	if ( mysql_fetch_row(result) ) {
 		return int mysql_get_field_value(result, "ID");
 	}
 

@@ -85,7 +85,7 @@ public object IPCService implements IIPCReceiver, IIPCSender {
 			var message = new IPCMessage();
 
 			// unserialize JSON message
-			FromJsonString(message, msg);
+			FromJson(message, msg);
 
 			return message;
 		}
