@@ -5,7 +5,7 @@ import libCSVReader;
 
 public void Main( int argc, string args ) {
 	try {
-		var filename = "example.csv";
+		var filename = "example_small.csv";
 
 		print( "Processing file '" + filename + "'..." );
 
