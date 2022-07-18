@@ -3,11 +3,9 @@
 // Library imports
 import libParam;
 import FileReader;
-import System.Math;
 
 // Project imports
 import Board;
-import Cell;
 
 
 public int Main( int argc, string args ) {
@@ -15,6 +13,7 @@ public int Main( int argc, string args ) {
 
 	var params = new ParameterHandler( argc, args );
 	if ( params.empty() ) {
+		print( "" );
 		print( "Usage: program <filename>.board" );
 		exit( -1 );
 	}
@@ -77,3 +76,4 @@ private void process( Board board ) {
 	print( board.toString() );
 	print( "" );
 }
+
