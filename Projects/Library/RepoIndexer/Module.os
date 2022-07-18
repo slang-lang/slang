@@ -3,7 +3,7 @@
 import System.Collections.Set;
 
 // Project imports
-import libSemVer.SemVer;
+import libSemVer;
 
 
 private object Module {

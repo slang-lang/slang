@@ -1,7 +1,7 @@
 {
   "name": "Slang repository indexer",
   "name_short": "RepoIndexer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Creates an index of an Slang repository",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.3" },

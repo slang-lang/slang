@@ -22,13 +22,13 @@ private object Indexer {
 	}
 
 	public void buildIndex() modify {
-		print("Building index from module information...");
+		print( "Building index from module information..." );
 
 		var command = "find " + mPath + "/modules -name \\*.json";
-		var fileIt = new StringIterator(system(command), LINEBREAK);
+		var fileIt = new StringIterator( system(command), LINEBREAK );
 
 		while ( fileIt.hasNext() ) {
-			var curFile = new String(fileIt.next());
+			var curFile = new String( fileIt.next() );
 
 			if ( !cast<string>( curFile ) ) {
 				continue;
@@ -36,38 +36,38 @@ private object Indexer {
 
 			int idx = -1;
 			int idx2;
-			while ( (idx2 = curFile.IndexOf(PATH_SEPARATOR, idx + 1)) != -1 ) {		// find last / character position
+			while ( ( idx2 = curFile.IndexOf( PATH_SEPARATOR, idx + 1 ) ) != -1 ) {		// find last / character position
 				idx = idx2;
 			}
 
-			curFile = curFile.SubString(idx + 1, curFile.Length());			// remove prefix
-			curFile = curFile.SubString(0, curFile.Length() - 5);			// remove file extension
+			curFile = curFile.SubString( idx + 1, curFile.Length() );			// remove prefix
+			curFile = curFile.SubString( 0, curFile.Length() - 5 );			// remove file extension
 
 			idx = -1;
-			while ( (idx2 = curFile.IndexOf(VERSION_SEPARATOR, idx + 1)) != -1 ) {		// find last _ character position
+			while ( ( idx2 = curFile.IndexOf( VERSION_SEPARATOR, idx + 1 ) ) != -1 ) {		// find last _ character position
 				idx = idx2;
 			}
 
-			var module = new Module(curFile.SubString(0, idx), curFile.SubString(idx + 1));
+			var module = new Module( curFile.SubString( 0, idx ), curFile.SubString( idx + 1 ) );
 			if ( !module.isValid() ) {
 				continue;
 			}
 
-			if ( (idx = mModules.indexOf(module)) != -1 ) {
-				var other = mModules.at(idx);
-				//print("found already existing module at index " + idx);
+			if ( ( idx = mModules.indexOf( module ) ) != -1 ) {
+				var other = mModules.at( idx );
+				//print( "found already existing module at index " + idx);
 
 				if ( other < module ) {
-					//print("erasing older module " + other.toString());
-					mModules.erase(idx);
+					//print( "erasing older module " + other.toString());
+					mModules.erase( idx );
 				}
 				else {
-					//print("inserting older module " + module.toString());
+					//print( "inserting older module " + module.toString());
 					continue;
 				}
 			}
 
-			mModules.insert(module);
+			mModules.insert( module );
 		}
 	}
 
@@ -76,17 +76,17 @@ private object Indexer {
 	}
 
 	public void storeIndexFile() const {
-		print("Storing index to file...");
+		print( "Storing index to file..." );
 
 		var builder = new Json.StyledBuilder();
 
-		builder.beginArray("modules");
+		builder.beginArray( "modules" );
 		foreach ( Module m : mModules ) {
 			builder.beginObject();
-			builder.addElement("name", m.name);
-			builder.addElement("version", cast<string>( m.version) );
-			builder.addElement("architecture", m.architecture);
-			builder.addElement("description", m.description);
+			builder.addElement( "name", m.name);
+			builder.addElement( "version", cast<string>( m.version ) );
+			builder.addElement( "architecture", m.architecture );
+			builder.addElement( "description", m.description );
 			builder.beginArray( "keywords" );
 /*
 			foreach ( string keyword : m.keywords ) {
@@ -98,8 +98,8 @@ private object Indexer {
 		}
 		builder.endArray();
 
-		var file = new System.IO.File(mPath + "/" + INDEX, "wt");
-		file.write(builder.getString());
+		var file = new System.IO.File( mPath + "/" + INDEX, "wt" );
+		file.write( builder.getString() );
 		file.close();
 
 
@@ -109,7 +109,7 @@ private object Indexer {
 		foreach ( Module m : mModules ) {
 			var module = new JsonObject();
 			module.addMember( "name", new JsonValue( m.name ) );
-			module.addMember( "version", new JsonValue( cast<string>( m.version) ) );
+			module.addMember( "version", new JsonValue( cast<string>( m.version ) ) );
 			module.addMember( "architecture", new JsonValue( m.architecture ) );
 			module.addMember( "description", new JsonValue( m.description ) );
 
@@ -132,18 +132,18 @@ private object Indexer {
 	}
 
 	public void storeDatabase() const throws {
-		print("Storing index to database...");
+		print( "Storing index to database..." );
 
 		try {
 			DB.connect();
 
-			int error = mysql_query(DB.mHandle, "BEGIN");
+			var error = mysql_query( DB.Handle, "BEGIN" );
 			if ( error ) {
-				print("Transaction start failed!");
-				throw mysql_error(DB.mHandle);
+				print( "Transaction start failed!" );
+				throw mysql_error( DB.Handle );
 			}
 
-			string query = "INSERT INTO modules (name, version, description, added) VALUES ";
+			string query = "INSERT INTO modules ( name, version, description, added ) VALUES ";
 			string values;
 
 			foreach ( Module m : mModules ) {
@@ -153,27 +153,27 @@ private object Indexer {
 
 				values += "( '" + m.name + "', '" + cast<string>( m.version ) + "', '" + m.description + "', NOW() )";
 			}
-			values += " ON DUPLICATE KEY UPDATE version = VALUES(version), last_update = NOW()";
+			values += " ON DUPLICATE KEY UPDATE version = VALUES( version ), last_update = NOW()";
 
-			error = mysql_query(DB.mHandle, query + values);
+			error = mysql_query( DB.Handle, query + values );
 			if ( error ) {
-				print("Inserting values failed!");
-				throw mysql_error(DB.mHandle);
+				print( "Inserting values failed!" );
+				throw mysql_error( DB.Handle );
 			}
 
-			error = mysql_query(DB.mHandle, "COMMIT");
+			error = mysql_query(DB.Handle, "COMMIT" );
 			if ( error ) {
-				print("Transaction commit failed!");
-				throw mysql_error(DB.mHandle);
+				print( "Transaction commit failed!" );
+				throw mysql_error( DB.Handle );
 			}
 		}
 		catch ( string e ) {
-			print("Exception: " + e);
+			print( "Exception: " + e );
 
-			int error = mysql_query(DB.mHandle, "ROLLBACK");
+			var error = mysql_query( DB.Handle, "ROLLBACK" );
 			if ( error ) {
-				print("Transaction rollback failed!");
-				print(mysql_error(DB.mHandle));
+				print( "Transaction rollback failed!" );
+				print( mysql_error( DB.Handle ) );
 			}
 		}
 		finally {
