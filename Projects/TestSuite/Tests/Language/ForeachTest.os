@@ -80,7 +80,7 @@ private bool TestCase3() {
 private bool TestCase4() {
 	print("TestCase 4: valid foreach with prototype");
 
-	List<Object> list = new List<Object>();
+	var list = new List<Object>();
 
 	list.push_back(Object new Prototype<int>(664));
 	list.push_back(Object new Prototype<int>(173));

@@ -1,11 +1,11 @@
 {
   "name": "Slang JSON library ",
   "name_short": "libJson",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "The Slang JSON library provides a way to generate JSON objects.",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.7.0" },
-    { "module": "System", "version_min": "0.3.4" }
+    { "module": "Slang", "version_min": "0.7.5" },
+    { "module": "System", "version_min": "0.4.2" }
   ],
   "target": {
     "directory": "libJson",

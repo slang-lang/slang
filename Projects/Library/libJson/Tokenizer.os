@@ -1,7 +1,7 @@
 
 // library imports
 import System.CharacterIterator;
-import System.Collections.List;
+import System.Collections.Vector;
 import System.IO.File;
 
 // project imports
@@ -15,20 +15,20 @@ public object Tokenizer {
 		CHARS = new String( "ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz_" );
 		DIGITS = new String( "0123456789.-+e" );
 
-		RESERVED_WORDS = new List<Token>();
-		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "FALSE", Position null ) );
-		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "TRUE", Position null ) );
-		RESERVED_WORDS.push_back( new Token( TokenType.NULL, "NULL", Position null ) );
+		RESERVED_WORDS = new Vector<Token>();
+		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "false", Position null ) );
+		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "true",  Position null ) );
+		RESERVED_WORDS.push_back( new Token( TokenType.NULL,    "null",  Position null ) );
 
 		WHITESPACES = new String( " 	" + LINEBREAK_DOS + LINEBREAK_UNIX );
 	}
 
-	public List<Token> parseString( string text ) modify throws {
+	public Vector<Token> parseString( string text ) modify {
 		mCharIterator = new CharacterIterator( text );
 		mColumn = 1;
 		mLine = 1;
 
-		var tokens = new List<Token>();
+		var tokens = new Vector<Token>();
 
 		Token token;
 		while ( ( token = getNextToken() ) != null ) {
@@ -197,7 +197,6 @@ public object Tokenizer {
 			}
 		}
 
-print( result );
 		return result;
 	}
 
@@ -214,13 +213,12 @@ print( result );
 	private String DIGITS const;
 	private String COMPARECHARS const;
 	private String DELIMITERCHARS const;
-	private List<Token> RESERVED_WORDS const;
+	private Vector<Token> RESERVED_WORDS const;
 	private String WHITESPACES const;
 
 	// Private members
 	private CharacterIterator mCharIterator;
 	private int mColumn;
 	private int mLine;
-	private List<Token> mTokens;
 }
 
