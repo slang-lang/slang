@@ -1,7 +1,7 @@
 {
   "name": "System Library",
   "name_short": "System",
-  "version": "0.4.3",
+  "version": "0.4.3a",
   "type": "library",
   "description": "Slang core system library",
   "dependencies": [

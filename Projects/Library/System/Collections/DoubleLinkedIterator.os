@@ -65,12 +65,12 @@ public object Iterator<T> {
 		var tmpItem = mCurrentItem;
 
 		if ( offset > 0 ) {
-			while ( offset-- > 0 ) {
+			while ( offset-- >= 0 ) {
 				tmpItem = tmpItem.next;
 			}
 		}
 		else if ( offset < 0 ) {
-			while ( offset++ < 0 ) {
+			while ( offset++ <= 0 ) {
 				tmpItem = tmpItem.previous;
 			}
 		}
