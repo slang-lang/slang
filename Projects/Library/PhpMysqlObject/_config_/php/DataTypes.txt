@@ -1,0 +1,14 @@
+bigint:
+datetime:
+decimal:
+double:
+float:
+int:
+mediumtext:
+smallint:
+longtext:
+text:
+tinytext:
+tinyint:
+timestamp:
+varchar:

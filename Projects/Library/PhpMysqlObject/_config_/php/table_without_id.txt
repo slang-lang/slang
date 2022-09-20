@@ -1,0 +1,74 @@
+<?php
+
+//import System.Collections.Vector;
+
+class #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#
+{
+#MEMBER_DECLARATION#
+
+	public function __construct( $databaseHandle, $query ) {
+		//echo 'The class "' . __CLASS__ . '" was initiated!';
+
+		$this->DB = $databaseHandle;
+
+		if ( $query ) {
+			$this->loadByQuery( $query );
+		}
+	}
+
+	public function __destruct() {
+		echo 'The class "' . __CLASS__ . '" was destroyed!';
+	}
+
+	public function insert() {
+		$query = "INSERT INTO #ENTITY_NAME# ( #MEMBER_LIST# ) VALUES ( #MEMBER_VALUES# )";
+		//echo "$query";
+
+		$result = mysqli_query( $this->DB, $query );
+
+		if ( mysqli_connect_errno() ) {
+			throw new Exception(mysqli_connect_errno());
+		}
+	}
+
+	public function insertOrUpdate() {
+		$query = "INSERT INTO #ENTITY_NAME# ( #MEMBER_LIST# ) VALUES ( #MEMBER_VALUES# ) ON DUPLICATE KEY UPDATE #MEMBER_PAIR_WITHOUT_PRIMARY#";
+		//echo "$query";
+
+		$result = mysqli_query( $this->DB, $query );
+
+		if ( mysqli_connect_errno() ) {
+			throw new Exception(mysqli_connect_errno());
+		}
+	}
+
+	public function loadByQuery( $query ) {
+		//echo "$query";
+
+		$result = mysqli_query( $this->DB, $query );
+
+		if ( !($row = $result->fetch_assoc()) ) {
+			throw new Exception("no result found");
+		}
+
+#MEMBER_LOAD#
+	}
+
+	public function loadByResult( $result )  {
+		$row = $result->fetch_assoc();
+
+#MEMBER_LOAD#
+	}
+
+	public function toString() {
+		print_r(get_object_vars($this));
+	}
+
+	public function update()  {
+#MEMBER_UPDATE#
+	}
+
+	private $DB;
+}
+
+?>

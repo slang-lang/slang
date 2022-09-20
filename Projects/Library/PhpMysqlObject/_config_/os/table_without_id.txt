@@ -1,0 +1,148 @@
+
+import System.Collections.Vector;
+
+public object #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# {
+#MEMBER_DECLARATION#
+
+	public void Constructor( int databaseHandle ) {
+		DB = databaseHandle;
+	}
+
+	public void Constructor( int databaseHandle, string query ) {
+		DB = databaseHandle;
+
+		loadByQuery( query );
+	}
+
+	public void Constructor( int databaseHandle, int result ) {
+		DB = databaseHandle;
+
+		loadByResult( result );
+	}
+
+	public void insert() modify throws {
+		var query = "INSERT INTO #ENTITY_NAME# ( #MEMBER_LIST# ) VALUES ( #MEMBER_VALUES# )";
+
+		var error = mysql_query( DB, query );
+		if ( error ) {
+			throw mysql_error( DB );
+		}
+	}
+
+	public void insertOrUpdate() modify throws {
+		var query = "INSERT INTO #ENTITY_NAME# ( #MEMBER_LIST# ) VALUES ( #MEMBER_VALUES# ) ON DUPLICATE KEY UPDATE #MEMBER_PAIR_WITHOUT_PRIMARY#";
+
+		var error = mysql_query( DB, query );
+		if ( error ) {
+			throw mysql_error( DB );
+		}
+	}
+
+	public void loadByQuery( string query ) modify throws {
+		var error = mysql_query( DB, query );
+		if ( error ) {
+			throw mysql_error( DB );
+		}
+
+		var result = mysql_store_result( DB );
+		if ( !mysql_fetch_row( result ) ) {
+			throw "no result found";
+		}
+
+#MEMBER_LOAD#
+	}
+
+	public void loadByResult( int result ) modify {
+#MEMBER_LOAD#
+	}
+
+	public void update() modify {
+#MEMBER_UPDATE#
+	}
+
+	public string =operator( string ) const {
+		return "#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# { #MEMBER_VALUES# }";
+	}
+
+	private int DB const;
+}
+
+
+public object #TABLE_PREFIX##ENTITY_NAME_PRETTY#Collection implements ICollection /*<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#>*/ {
+	public void Constructor( int databaseHandle, string query = "" ) {
+		Collection = new Vector<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#>();
+		DB = databaseHandle;
+
+		if ( query ) {
+			loadByQuery( query );
+		}
+	}
+
+	public #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# at( int index ) const throws {
+		return Collection.at( index );
+	}
+
+	public bool empty() const {
+		return Collection.empty();
+	}
+
+	public #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# first() const {
+		return Collection.first();
+	}
+
+	public Iterator<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#> getIterator() const {
+		return new Iterator<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#>( cast<ICollection>( Collection ) );
+	}
+
+	public #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# last() const {
+		return Collection.last();
+	}
+
+	public void loadByQuery( string query ) modify throws {
+		var error = mysql_query( DB, query );
+		if ( error ) {
+			throw mysql_error( DB );
+		}
+
+		Collection.clear();
+
+		var result = mysql_store_result( DB );
+		while ( mysql_fetch_row( result ) ) {
+			var record = new #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#( DB );
+			record.loadByResult( result );
+
+			Collection.push_back( record );
+		}
+	}
+
+	public void loadByResult( int result ) modify throws {
+		Collection.clear();
+
+		while ( mysql_fetch_row( result ) ) {
+			var record = new #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#( DB );
+			record.loadByResult( result );
+
+			Collection.push_back( record );
+		}
+	}
+
+	public void pop_back() modify {
+		Collection.pop_back();
+	}
+
+	public void pop_front() modify {
+		Collection.pop_front();
+	}
+
+	public int size() const {
+		return Collection.size();
+	}
+
+	public void push_back( #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX# item ) modify {
+		Collection.push_back( item );
+	}
+
+	private Vector<#TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#> Collection;
+	private int DB const;
+}
+
