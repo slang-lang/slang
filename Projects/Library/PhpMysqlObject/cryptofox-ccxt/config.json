@@ -1,0 +1,1 @@
+{ "Database": "cryptofox", "Host": "127.0.0.1", "OutputFormat": "php", "Password": "admin*", "Port": "3306", "TargetDirectory": "/home/madelmann/projects/cryptofox/ccxt/libs/Database/", "User": "root" }

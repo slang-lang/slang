@@ -53,8 +53,8 @@ class #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#
 	}
 
 	public function loadByPrimaryKey( $#PRIMARY_KEY_NAME# ) {
-		$query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" + $#PRIMARY_KEY_NAME# + "'";
-		//echo "$query";
+		$query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" . $#PRIMARY_KEY_NAME# . "'";
+		//echo "Query <$query>";
 
 		$result = mysqli_query( $this->DB, $query );
 

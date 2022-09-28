@@ -37,7 +37,7 @@ public object #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#
 	}
 
 	public void loadByPrimaryKey( #PRIMARY_KEY_TYPE# #PRIMARY_KEY_NAME# ) modify throws {
-		var query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" + #PRIMARY_KEY_NAME# + "'";
+		var query = "SELECT * FROM #ENTITY_NAME# WHERE #PRIMARY_KEY_NAME# = '" . #PRIMARY_KEY_NAME# . "'";
 
 		var error = mysql_query( DB, query );
 		if ( error ) {
