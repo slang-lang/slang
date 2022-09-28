@@ -6,7 +6,7 @@ class #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#
 {
 #MEMBER_DECLARATION#
 
-	public function __construct( $databaseHandle, $query ) {
+	public function __construct( $databaseHandle, $query = "" ) {
 		//echo 'The class "' . __CLASS__ . '" was initiated!';
 
 		$this->DB = $databaseHandle;
@@ -17,7 +17,7 @@ class #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#
 	}
 
 	public function __destruct() {
-		echo 'The class "' . __CLASS__ . '" was destroyed!';
+		//echo 'The class "' . __CLASS__ . '" was destroyed!';
 	}
 
 	public function insert() {

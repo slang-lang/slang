@@ -129,7 +129,7 @@ public object CodeGenerator {
             }
 
             var t = tokenIt.next();
-            result += "    case " + t.Token + " = " + t.Id;
+            result += "    const " + t.Token + " = " + t.Id;
         }
 
         return result + ";";
