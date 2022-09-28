@@ -180,10 +180,10 @@ public object CodeGenerator {
             }
 
             if ( field.RealType == "datetime" || field.RealType == "timestamp" ) {
-                result += "`" + field.RealName + "` = NULLIF('\" + $this->" + field.PrettyName + " + \"', '')";
+                result += "`" + field.RealName + "` = NULLIF('\" . $this->" + field.PrettyName + " . \"', '')";
             }
             else {
-                result += "`" + field.RealName + "` = '\" + $this->" + field.PrettyName + " + \"'";
+                result += "`" + field.RealName + "` = '\" . $this->" + field.PrettyName + " . \"'";
             }
         }
 
@@ -203,10 +203,10 @@ public object CodeGenerator {
             }
 
             if ( field.RealType == "datetime" || field.RealType == "timestamp" ) {
-                result += "NULLIF('\" + $this->" + field.PrettyName + " + \"', '')";
+                result += "NULLIF('\" . $this->" + field.PrettyName + " . \"', '')";
             }
             else {
-                result += "'\" + $this->" + field.PrettyName + " + \"'";
+                result += "'\" . $this->" + field.PrettyName + " . \"'";
             }
         }
 
