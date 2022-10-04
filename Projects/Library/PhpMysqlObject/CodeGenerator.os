@@ -41,7 +41,7 @@ public object CodeGenerator {
     private void connect() modify throws {
         mDatabaseHandle = mysql_init();
         mDatabaseHandle = mysql_real_connect( mDatabaseHandle, Config.Host, cast<int>( Config.Port ), Config.User, Config.Password, Config.Database );
-    
+
         if ( !mDatabaseHandle ) {
             throw "failed to connect to database '" + Config.Database + "'";
         }

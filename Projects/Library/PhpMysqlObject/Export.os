@@ -4,7 +4,7 @@
 import libParam;
 
 // Project imports
-import CodeGenerator;
+import CodeExporter;
 import ConfigLoader;
 import Consts;
 
@@ -13,8 +13,8 @@ public void Main( int argc, string args ) modify throws {
 	try {
 		var cfg = processParameters( new ParameterHandler( argc, args ) );
 
-		var config = new ConfigLoader( cfg + "/config.json" );
-		if ( System.IO.File.Exists( cfg + "/config.json" ) ) {
+		var config = new ConfigLoader( cfg + "/export.json" );
+		if ( System.IO.File.Exists( cfg + "/export.json" ) ) {
 			config.load();
 		}
 
@@ -23,7 +23,7 @@ public void Main( int argc, string args ) modify throws {
 			exit( -1 );
 		}
 
-		var generator = new CodeGenerator();
+		var generator = new CodeExporter();
 		generator.process();
 
 		config.store();

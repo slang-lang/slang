@@ -1,7 +1,7 @@
 {
   "name": "MySQL entity serializer for PHP",
   "name_short": "PhpMysqlObject",
-  "version": "0.10.1",
+  "version": "1.0.0",
   "description": "PhpMysqlObject serializes MySQL and MariaDB entities (tables, views) into PHP classes",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.3" },

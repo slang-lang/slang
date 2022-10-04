@@ -36,7 +36,7 @@ public object CodeExporter {
 
     private void connect() modify throws {
         mDatabaseHandle = mysql_init();
-        mDatabaseHandle = mysql_real_connect( mDatabaseHandle, Config.Host, Config.Port, Config.User, Config.Password, Config.Database );
+        mDatabaseHandle = mysql_real_connect( mDatabaseHandle, Config.Host, cast<int>( Config.Port ), Config.User, Config.Password, Config.Database );
 
         if ( !mDatabaseHandle ) {
             throw "failed to connect to database '" + Config.Database + "'";
@@ -63,7 +63,7 @@ public object CodeExporter {
             if ( mysql_fetch_row( result ) ) {
                 var content = mysql_get_field_value( result, "Create Function" );
 
-                var outFile = new System.IO.File( Config.Output + "/functions/" + entity + ".sql", System.IO.File.AccessMode.WriteOnly );
+                var outFile = new System.IO.File( Config.TargetDirectory + "/functions/" + entity + ".sql", System.IO.File.AccessMode.WriteOnly );
                 outFile.write( content + ";" );
                 outFile.close();
             }
@@ -90,7 +90,7 @@ public object CodeExporter {
             if ( mysql_fetch_row( result ) ) {
                 var content = mysql_get_field_value( result, "Create Procedure" );
 
-                var outFile = new System.IO.File( Config.Output + "/procedures/" + entity + ".sql", System.IO.File.AccessMode.WriteOnly );
+                var outFile = new System.IO.File( Config.TargetDirectory + "/procedures/" + entity + ".sql", System.IO.File.AccessMode.WriteOnly );
                 outFile.write( content + ";" );
                 outFile.close();
             }
@@ -117,7 +117,7 @@ public object CodeExporter {
             if ( mysql_fetch_row( result ) ) {
                 var content = mysql_get_field_value( result, 1 );
 
-                var outFile = new System.IO.File( Config.Output + "/tables/" + entity.first + ".sql", System.IO.File.AccessMode.WriteOnly );
+                var outFile = new System.IO.File( Config.TargetDirectory + "/tables/" + entity.first + ".sql", System.IO.File.AccessMode.WriteOnly );
                 outFile.write( content + ";" );
                 outFile.close();
             }
@@ -144,7 +144,7 @@ public object CodeExporter {
             if ( mysql_fetch_row( result ) ) {
                 var content = mysql_get_field_value( result, 1 );
 
-                var outFile = new System.IO.File( Config.Output + "/views/" + entity.first + ".sql", System.IO.File.AccessMode.WriteOnly );
+                var outFile = new System.IO.File( Config.TargetDirectory + "/views/" + entity.first + ".sql", System.IO.File.AccessMode.WriteOnly );
                 outFile.write( content + ";" );
                 outFile.close();
             }
@@ -156,10 +156,10 @@ public object CodeExporter {
     }
 
     private void prepareFolders() modify {
-        system( "mkdir -p " + Config.Output + "/functions" );
-        system( "mkdir -p " + Config.Output + "/procedures" );
-        system( "mkdir -p " + Config.Output + "/tables" );
-        system( "mkdir -p " + Config.Output + "/views" );
+        system( "mkdir -p " + Config.TargetDirectory + "/functions" );
+        system( "mkdir -p " + Config.TargetDirectory + "/procedures" );
+        system( "mkdir -p " + Config.TargetDirectory + "/tables" );
+        system( "mkdir -p " + Config.TargetDirectory + "/views" );
     }
 
     private int mDatabaseHandle;

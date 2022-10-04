@@ -25,8 +25,8 @@ class #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#
 
 		$result = mysqli_query( $this->DB, $query );
 
-		if ( mysqli_connect_errno() ) {
-			throw new Exception(mysqli_connect_errno());
+		if ( mysqli_error( $this->DB ) ) {
+			throw new Exception( mysqli_error( $this->DB ) );
 		}
 	}
 
@@ -36,8 +36,8 @@ class #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#
 
 		$result = mysqli_query( $this->DB, $query );
 
-		if ( mysqli_connect_errno() ) {
-			throw new Exception(mysqli_connect_errno());
+		if ( mysqli_error( $this->DB ) ) {
+			throw new Exception( mysqli_error( $this->DB ) );
 		}
 	}
 
@@ -46,7 +46,7 @@ class #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#
 
 		$result = mysqli_query( $this->DB, $query );
 		if ( !($row = $result->fetch_assoc()) ) {
-			throw new Exception("no result found");
+			throw new Exception( "no result found" );
 		}
 
 #MEMBER_LOAD#
@@ -59,7 +59,7 @@ class #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#
 		$result = mysqli_query( $this->DB, $query );
 
 		if ( !($row = $result->fetch_assoc()) ) {
-			throw new Exception("no result found");
+			throw new Exception( "no result found" );
 		}
 
 #MEMBER_LOAD#
@@ -72,7 +72,7 @@ class #TABLE_PREFIX##ENTITY_NAME_PRETTY##TABLE_POSTFIX#
 	}
 
 	public function toString() {
-		print_r(get_object_vars($this));
+		print_r( get_object_vars( $this ) );
 	}
 
 	public function update()  {
