@@ -40,8 +40,10 @@ public object EntityLookup {
 	}
 
 	public void fetchEntities() modify {
-		mTables = getEntitiesByType( "BASE TABLE" );
-		mViews = getEntitiesByType( "VIEW" );
+		mFunctions  = fetchFunctions();
+		mProcedures = fetchProcedures();
+		mTables     = getEntitiesByType( "BASE TABLE" );
+		mViews      = getEntitiesByType( "VIEW" );
 	}
 
 	public EntityType getEntity( string entityName ) const throws {
@@ -50,6 +52,14 @@ public object EntityLookup {
 		}
 
 		return mViews[ entityName ];
+	}
+
+	public Vector<string> getFunctions() const {
+		return mFunctions;
+	}
+
+	public Vector<string> getProcedures() const {
+		return mProcedures;
 	}
 
 	public Map<string, EntityType> getTables() const {
@@ -98,9 +108,51 @@ public object EntityLookup {
 		return entities;
 	}
 
+	private Vector<string> fetchFunctions() const throws {
+		var query = "SHOW FUNCTION STATUS WHERE DB = '" + mDatabaseName + "'";
+
+		var error = mysql_query( mDatabaseHandle, query );
+		if ( error ) {
+			throw mysql_error( mDatabaseHandle );
+		}
+
+		var entities = new Vector<string>();
+
+		var result = mysql_store_result( mDatabaseHandle );
+		while ( mysql_fetch_row( result ) ) {
+			var name = mysql_get_field_value( result, 1 );
+
+			entities.push_back( name );
+		}
+
+		return entities;
+	}
+
+	private Vector<string> fetchProcedures() const throws {
+		var query = "SHOW PROCEDURE STATUS WHERE DB = '" + mDatabaseName + "'";
+
+		var error = mysql_query( mDatabaseHandle, query );
+		if ( error ) {
+			throw mysql_error( mDatabaseHandle );
+		}
+
+		var entities = new Vector<string>();
+
+		var result = mysql_store_result( mDatabaseHandle );
+		while ( mysql_fetch_row( result ) ) {
+			var name = mysql_get_field_value( result, 1 );
+
+			entities.push_back( name );
+		}
+
+		return entities;
+	}
+
 	private int mDatabaseHandle;
 	private string mDatabaseName;
 	private FieldLookup mFieldLookup;
+	private Vector<string> mFunctions;
+	private Vector<string> mProcedures;
 	private Map<string, EntityType> mTables;
 	private TokenLookup mTokenLookup;
 	private Map<string, EntityType> mViews;

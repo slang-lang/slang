@@ -237,7 +237,7 @@ public object CodeGenerator {
 
             replaceSpecialTemplates( template, entity.second );
             replaceUserTemplates( template );
-    
+
             var outFile = new System.IO.File( Config.Output + "/Tables/" + Utils.prettify( entity.first ) + ".os", System.IO.File.AccessMode.WriteOnly );
             outFile.write( cast<string>( template ) );
             outFile.close();

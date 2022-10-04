@@ -13,8 +13,8 @@ public void Main( int argc, string args ) modify throws {
 	try {
 		var cfg = processParameters( new ParameterHandler( argc, args ) );
 
-		var config = new ConfigLoader( cfg + "/config.json" );
-		if ( System.IO.File.Exists( cfg + "/config.json" ) ) {
+		var config = new ConfigLoader( cfg + "/generate.json" );
+		if ( System.IO.File.Exists( cfg + "/generate.json" ) ) {
 			config.load();
 		}
 
