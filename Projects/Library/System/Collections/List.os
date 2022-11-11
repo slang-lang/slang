@@ -63,22 +63,27 @@ public object List<T> implements ICollection {
 			throw new OutOfBoundsException( "erase index(" + index + ") out of bounds" );
 		}
 
-		if ( index == 0 ) {			// special handling for first element
+		if ( index == 0 ) {						// special handling for 1st element
 			mFirst = mFirst.next;
 		}
-		else if ( index == mSize - 1 ) {	// special handling for last element
-			if ( mLast.previous ) {
-				mLast = mLast.previous;
-			}
+		else if ( index == mSize - 1 ) {		// special handling for last element
+			var prev = mFirst;
+
+			while( prev.next.next )
+				prev = prev.next;
+
+			prev.next = CollectionItem<T> null;
+			mLast = prev;
 		}
-		else {					// default handling for erasing
-			CollectionItem<T> prev = mFirst;
+		else {									// default handling for erasing
+			var prev = mFirst;
+
 			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.next;
 			}
 
 			if ( index == mSize - 1 ) {
-				mLast = prev;
+				mLast = prev.next;
 			}
 			else if ( prev.next ) {
 				prev.next = prev.next.next;
@@ -86,6 +91,11 @@ public object List<T> implements ICollection {
 		}
 
 		mSize--;
+
+		if ( mSize == 0 ) {
+			mFirst = CollectionItem<T> null;
+			mLast = mFirst;
+		}
 	}
 
 	public T first() const throws {

@@ -67,19 +67,24 @@ public object Set<T> implements ICollection {
 		if ( index == 0 ) {						// special handling for 1st element
 			mFirst = mFirst.next;
 		}
-		else if ( index == mSize - 1 ) {	// special handling for last element
-			if ( mLast.previous ) {
-				mLast = mLast.previous;
-			}
+		else if ( index == mSize - 1 ) {		// special handling for last element
+			var prev = mFirst;
+
+			while( prev.next.next )
+				prev = prev.next;
+
+			prev.next = CollectionItem<T> null;
+			mLast = prev;
 		}
 		else {									// default handling for erasing
-			CollectionItem<T> prev = mFirst;
+			var prev = mFirst;
+
 			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.next;
 			}
 
 			if ( index == mSize - 1 ) {
-				mLast = prev;
+				mLast = prev.next;
 			}
 			else if ( prev.next ) {
 				prev.next = prev.next.next;
@@ -137,7 +142,7 @@ public object Set<T> implements ICollection {
 		return -1;
 	}
 
-	public void insert ( T value ) modify throws {
+	public void insert( T value ) modify throws {
 		var item = new CollectionItem<T>( value );
 
 		if ( !mFirst ) {				// special handling for 1st element

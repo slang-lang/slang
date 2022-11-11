@@ -63,24 +63,29 @@ public object Vector<T> implements ICollection {
 			throw new OutOfBoundsException( "erase index(" + index + ") beyond end of list" );
 		}
 
-		if ( index == 0 ) {	            // special handling for 1st element
+		if ( index == 0 ) {						// special handling for 1st element
 			mFirst = mFirst.next;
 		}
-		else if ( index == mSize - 1 ) {	// special handling for last element
-			if ( mLast.previous ) {
-				mLast = mLast.previous;
-			}
-		}
-		else {	                        // default handling for erasing
+		else if ( index == mSize - 1 ) {		// special handling for last element
 			var prev = mFirst;
-			for ( int idx = 0; idx < index - 1; idx++ ) {
+
+			while( prev.next.next )
+				prev = prev.next;
+
+			prev.next = CollectionItem<T> null;
+			mLast = prev;
+		}
+		else {									// default handling for erasing
+			var prev = mFirst;
+
+			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.next;
 			}
 
 			if ( index == mSize - 1 ) {
-				mLast = prev;
+				mLast = prev.next;
 			}
-			else {
+			else if ( prev.next ) {
 				prev.next = prev.next.next;
 			}
 		}

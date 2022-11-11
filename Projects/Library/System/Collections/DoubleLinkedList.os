@@ -70,18 +70,23 @@ public object DoubleLinkedList<T> implements ICollection {
 			mFirst = mFirst.next;
 		}
 		else if ( index == mSize - 1 ) {		// special handling for last element
-			if ( mLast.previous ) {
-				mLast = mLast.previous;
-			}
+			var prev = mFirst;
+
+			while( prev.next.next )
+				prev = prev.next;
+
+			prev.next = CollectionItem<T> null;
+			mLast = prev;
 		}
 		else {									// default handling for erasing
 			var prev = mFirst;
+
 			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.next;
 			}
 
 			if ( index == mSize - 1 ) {
-				mLast = prev;
+				mLast = prev.next;
 			}
 			else if ( prev.next ) {
 				prev.next = prev.next.next;
@@ -89,6 +94,11 @@ public object DoubleLinkedList<T> implements ICollection {
 		}
 
 		mSize--;
+
+		if ( mSize == 0 ) {
+			mFirst = CollectionItem<T> null;
+			mLast = mFirst;
+		}
 	}
 
 	public T first() const throws {
