@@ -365,7 +365,7 @@ void createLocalLibrary()
 	if ( !Utils::Tools::Files::exists(mCurrentFolder + CONFIG_FILE) ) {
 		Json::Value repository;
 		repository[ "name" ] = "main";
-		repository[ "url" ] = "https://slang.ticketsharing.net/repo/stable";
+		repository[ "url" ] = "https://slang-lang.org/repo/stable";
 
 		Json::Value config;
 		config[ "repository" ] = repository;
