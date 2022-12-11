@@ -173,6 +173,10 @@ int main(int argc, const char* argv[])
 
 	mVirtualMachine.init();
 
+   for ( const auto& library : mLibraryFolders ) {
+      mVirtualMachine.addLibraryFolder( library );
+   }
+
 	if ( mPrintDebugInfo ) {
 		mVirtualMachine.printLibraryFolders();
 		mVirtualMachine.printExtensions();
@@ -188,10 +192,6 @@ int main(int argc, const char* argv[])
 		printUsage();
 
 		return 0;
-	}
-
-	for ( const auto& library : mLibraryFolders ) {
-		mVirtualMachine.addLibraryFolder( library );
 	}
 
 	try {

@@ -354,10 +354,10 @@ void VirtualMachine::printExtensions()
 
 void VirtualMachine::printLibraryFolders()
 {
-	std::cout << std::endl;
+   std::cout << "Libraries:" << std::endl;
 
 	for ( const auto& libraryFolder : mLibraryFolders ) {
-		std::cout << "Library: " + libraryFolder << std::endl;
+		std::cout << libraryFolder << std::endl;
 	}
 }
 
