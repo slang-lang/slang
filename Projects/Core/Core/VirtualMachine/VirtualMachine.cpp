@@ -97,12 +97,20 @@ bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std:
 		extension->initialize( globalScope );
 		extension->provideMethods( methods );
 
+		if ( !mSpecification.empty() ) {
+			mSpecification.push_back( "" );
+		}
+		mSpecification.push_back( "Extension " + extension->getName() + ":" );
+		mSpecification.push_back( "---" );
+
 		for ( auto& method : methods ) {
 			OSdebug( "adding extension method '" + extension->getName() + "." + method->getName() + "'" );
 
 			method->setParent( globalScope );
 
 			globalScope->defineMethod( method->getName(), method );
+
+			mSpecification.push_back( method->ToString() );
 		}
 	}
 	catch ( std::exception &e ) {
@@ -359,6 +367,34 @@ void VirtualMachine::printLibraryFolders()
 	for ( const auto& libraryFolder : mLibraryFolders ) {
 		std::cout << libraryFolder << std::endl;
 	}
+}
+
+void VirtualMachine::printSpecification( const std::string& specification )
+{
+	if ( specification.empty() ) {
+        for ( const auto& str : mSpecification ) {
+            std::cout << str << std::endl;
+        }
+
+        return;
+    }
+
+    int32_t found{ 0 };
+    for ( const auto& str : mSpecification ) {
+        if ( str.find( specification ) != std::string::npos ) {
+            std::cout << str << std::endl;
+
+            found++;
+        }
+    }
+
+    if ( found ) {
+        //std::cout << std::endl;
+        //std::cout << "found " << found << " occurrence(s) of " << specification << std::endl;
+    }
+    else {
+        std::cout << "no result found for '" << specification << "'" << std::endl;
+    }
 }
 
 void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::Object* result)

@@ -60,6 +60,7 @@ public:	// Setup
 	void init();
 	void printExtensions();
 	void printLibraryFolders();
+	void printSpecification( const std::string& specification );
 	Settings& settings();
 
 public:
@@ -91,6 +92,7 @@ private:
 	std::string mScriptFile;
 	ScriptCollection mScripts;
 	Settings mSettings;
+	StringList mSpecification;
 };
 
 
