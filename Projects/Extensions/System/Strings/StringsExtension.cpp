@@ -29,11 +29,11 @@ namespace Strings {
 
 
 SystemStringsExtension::SystemStringsExtension()
-: AExtension( "Strings", "0.1.0" )
+: AExtension( "Strings", "0.1.1" )
 {
 }
 
-void SystemStringsExtension::initialize( IScope* scope )
+void SystemStringsExtension::initialize( ExtensionNamespace* scope )
 {
 #ifdef _WIN32
 	// Win32 only

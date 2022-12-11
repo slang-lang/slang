@@ -28,11 +28,11 @@ const int32_t STDOUT = 2;
 const int32_t STDERR = 3;
 
 SystemIOExtension::SystemIOExtension()
-: AExtension( "IO", "0.1.0" )
+: AExtension( "IO", "0.1.1" )
 {
 }
 
-void SystemIOExtension::initialize( Slang::IScope* scope )
+void SystemIOExtension::initialize( ExtensionNamespace* scope )
 {
     // IO constants
     scope->define( "STDIN", new Runtime::IntegerObject( "STDIN", STDIN ) );

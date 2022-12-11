@@ -20,11 +20,11 @@ namespace Console {
 
 
 SystemConsoleExtension::SystemConsoleExtension()
-: AExtension( "Console", "0.0.1" )
+: AExtension( "Console", "0.0.2" )
 {
 }
 
-void SystemConsoleExtension::initialize( Slang::IScope* /*scope*/ )
+void SystemConsoleExtension::initialize( ExtensionNamespace* /*scope*/ )
 {
 	// nothing to do here
 }

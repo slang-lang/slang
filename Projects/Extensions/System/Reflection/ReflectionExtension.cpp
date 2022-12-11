@@ -18,11 +18,11 @@ namespace Reflection {
 
 
 SystemReflectionExtension::SystemReflectionExtension()
-: AExtension( "Reflection", "0.0.1" )
+: AExtension( "Reflection", "0.0.2" )
 {
 }
 
-void SystemReflectionExtension::initialize( IScope* /*scope*/ )
+void SystemReflectionExtension::initialize( ExtensionNamespace* /*scope*/ )
 {
 #ifdef _WIN32
 	// Win32 only

@@ -25,11 +25,11 @@ namespace Math {
 
 
 SystemMathExtension::SystemMathExtension()
-: AExtension( "Math", "0.0.1" )
+: AExtension( "Math", "0.0.2" )
 {
 }
 
-void SystemMathExtension::initialize( Slang::IScope* /*scope*/ )
+void SystemMathExtension::initialize( ExtensionNamespace* /*scope*/ )
 {
 	// nothing to do here
 }

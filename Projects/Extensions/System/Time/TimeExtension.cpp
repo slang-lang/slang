@@ -17,11 +17,11 @@ namespace Time {
 
 
 SystemTimeExtension::SystemTimeExtension()
-: AExtension( "Time", "0.0.1" )
+: AExtension( "Time", "0.0.2" )
 {
 }
 
-void SystemTimeExtension::initialize( IScope* /*scope*/ )
+void SystemTimeExtension::initialize( ExtensionNamespace* /*scope*/ )
 {
 #ifdef _WIN32
 	// Win32 only

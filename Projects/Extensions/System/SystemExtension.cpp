@@ -38,7 +38,7 @@ namespace System {
 
 
 SystemExtension::SystemExtension()
-: AExtension( "Slang System", "0.1.2" )
+: AExtension( "Slang System", "0.1.3" )
 {
 #ifdef _WIN32
 	// Win32 only
@@ -60,7 +60,7 @@ SystemExtension::~SystemExtension()
 #endif
 }
 
-void SystemExtension::initialize(IScope* scope)
+void SystemExtension::initialize( ExtensionNamespace* scope )
 {
 	// error constants
 	scope->define( "EACCES", new Runtime::IntegerObject( "EACCES", EACCES ) );

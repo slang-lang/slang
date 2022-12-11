@@ -169,7 +169,7 @@ void Method::initialize(const PrototypeConstraints& constraints)
 
 	// Prepare return type
 	// {
-	std::string type = constraints.lookupType(mReturnType.mName);
+	auto type = constraints.lookupType(mReturnType.mName);
 
 	if ( !mReturnType.mConstraints.empty() ) {
 		type += constraints.extractTypes(mReturnType.mConstraints);
@@ -181,7 +181,7 @@ void Method::initialize(const PrototypeConstraints& constraints)
 
 	// Update method signature
 	// {
-	StringSet atomicTypes = provideAtomicTypes();
+	auto atomicTypes = provideAtomicTypes();
 
 	for ( auto& paramIt : mSignature ) {
 		// look up parameter type in object-wide prototype constraints
