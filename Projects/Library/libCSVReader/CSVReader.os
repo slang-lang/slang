@@ -67,7 +67,7 @@ public object CSVReader implements ICollection, IIterable {
 
         bool isFirstLine = true;
 
-	    string char;
+        string char;
         string line;
         while ( !file.isEOF() ) {
             if ( ( char = file.readChar() ) == LINEBREAK ) {
@@ -80,7 +80,7 @@ public object CSVReader implements ICollection, IIterable {
                         mData.push_back( mHeader.produceEntry( line ) );
                     }
                 }
-		        else {
+                else {
                     mData.push_back( mHeader.produceEntry( line ) );
                 }
 
