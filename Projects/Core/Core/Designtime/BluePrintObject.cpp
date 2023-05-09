@@ -68,7 +68,7 @@ BluePrintObject::BluePrintObject(const std::string& unqualifiedTypename, const s
 : BlueprintSymbol(unqualifiedTypename),
   MethodScope(unqualifiedTypename, nullptr),
   mIsAtomicType(false),
-  mFilename(std::move(filename)),
+  mFilename(filename),
   mIsPrepared(false),
   mIsReference(false),
   mQualifiedTypename(unqualifiedTypename),
