@@ -63,7 +63,7 @@ private void process( Board board ) {
 
 	var midTime = time();
 
-	print( "Calculated possible values (in " + (midTime - startTime) + " seconds ):" );
+	print( "Calculated possible values (in " + ( midTime - startTime ) + " seconds ):" );
 	print( board.toString( true ) );
 	print( "" );
 

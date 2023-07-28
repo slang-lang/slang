@@ -19,7 +19,7 @@ public object Cell {
 	}
 
 	public Cell Copy() const {
-		Cell result = new Cell(X, Y);
+		Cell result = new Cell( X, Y );
 		result.PossibleValues = copy PossibleValues;
 		result.Value = Value;
 
