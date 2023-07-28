@@ -7,7 +7,7 @@ import IDispatchStep;
 
 
 // Pre condition: none
-// Post condition: returns a list of shuttles that is sorted by state (occupied shuttles are preferred)
+// Post condition: returns a list of shuttles that is sorted by state (empty shuttles are preferred)
 
 private object SortByOccupacity implements IShuttleSortAlgorithm {
     public bool compare(Shuttle left const, Shuttle right const) const {
