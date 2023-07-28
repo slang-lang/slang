@@ -19,7 +19,7 @@ public object Sqlite3Entry const {
         Value = value;
     }
 
-    public string =operator(string) const {
+    public string =operator( string ) const {
         return "{ \"" + Name + "\": \"" + Value + "\" }";
     }
 }
@@ -43,7 +43,7 @@ public object Sqlite3Row implements IIterable {
         return Entries[index];
     }
 
-    public string =operator(string) const {
+    public string =operator( string ) const {
         string result;
 
         foreach ( Sqlite3Entry entry : Entries ) {
@@ -79,7 +79,7 @@ public object Sqlite3Result implements IIterable {
         return Rows[index];
     }
 
-    public string =operator(string) const {
+    public string =operator( string ) const {
         string result;
 
         foreach ( Sqlite3Row row : Rows ) {

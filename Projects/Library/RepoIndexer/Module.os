@@ -1,9 +1,9 @@
 
 // Library imports
 import System.Collections.Set;
+import libSemVer;
 
 // Project imports
-import libSemVer;
 
 
 private object Module {

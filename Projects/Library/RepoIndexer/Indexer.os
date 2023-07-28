@@ -16,7 +16,7 @@ private object Indexer {
 	private Set<Module> mModules;
 	private string mPath;
 
-	public void Constructor(string path) {
+	public void Constructor( string path ) {
 		mModules = new Set<Module>();
 		mPath = path;
 	}
@@ -25,7 +25,7 @@ private object Indexer {
 		print( "Building index from module information..." );
 
 		var command = "find " + mPath + "/modules -name \\*.json";
-		var fileIt = new StringIterator( system(command), LINEBREAK );
+		var fileIt = new StringIterator( system( command ), LINEBREAK );
 
 		while ( fileIt.hasNext() ) {
 			var curFile = new String( fileIt.next() );
@@ -101,7 +101,6 @@ private object Indexer {
 		var file = new System.IO.File( mPath + "/" + INDEX, "wt" );
 		file.write( builder.getString() );
 		file.close();
-
 
 
 		var data = new JsonArray( "modules" );

@@ -30,7 +30,7 @@ public void Main( int argc, string args ) {
 				}
 				line += e.Value;
 
-				maxColLength = (maxColLength < strlen(e.Value)) ? strlen(e.Value) : maxColLength;
+				maxColLength = ( maxColLength < strlen( e.Value ) ) ? strlen( e.Value ) : maxColLength;
 
 				//print( "Entry(" + entryIdx + "): " + cast<string>( e ) );
 				entryIdx++;
