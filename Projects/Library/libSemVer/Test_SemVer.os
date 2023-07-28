@@ -3,7 +3,7 @@
 import SemVer;
 
 
-public void Main(int argc = 0, string args = "") {
+public void Main( int argc = 0, string args = "" ) {
     assert( TestCase1() );
     assert( TestCase2() );
     assert( TestCase3() );
@@ -11,9 +11,9 @@ public void Main(int argc = 0, string args = "") {
 }
 
 private bool TestCase1() {
-    print("TestCase 1: happy path without additional label");
+    print( "TestCase 1: happy path without additional label" );
 
-    var ver = SemVer.FromString("1.2.3");
+    var ver = SemVer.FromString( "1.2.3" );
 
     assert( ver.Major == 1 );
     assert( ver.Minor == 2 );
@@ -23,9 +23,9 @@ private bool TestCase1() {
 }
 
 private bool TestCase2() {
-    print("TestCase 2: happy path with additional label");
+    print( "TestCase 2: happy path with additional label" );
 
-    var ver = SemVer.FromString("1.2.3-rc1");
+    var ver = SemVer.FromString( "1.2.3-rc1" );
 
     assert( ver.Major == 1 );
     assert( ver.Minor == 2 );
@@ -36,10 +36,10 @@ private bool TestCase2() {
 }
 
 private bool TestCase3() {
-    print("TestCase 3: sad path");
+    print( "TestCase 3: sad path" );
 
     try {
-        var ver = SemVer.FromString("1.2");
+        var ver = SemVer.FromString( "1.2" );
     }
     catch ( string e ) {
         assert( e == "invalid semantic version number '1.2'" );
@@ -51,7 +51,7 @@ private bool TestCase3() {
 }
 
 private bool TestCase4() {
-    print("TestCase 4: increment version number");
+    print( "TestCase 4: increment version number" );
 
     var ver123 = new SemVer(1, 2, 3);
     assert( cast<string>( ver123 ) == "1.2.3" );
