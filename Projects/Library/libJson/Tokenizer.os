@@ -110,19 +110,7 @@ public object Tokenizer {
 					break;
 				}
 				case c == "\"": {
-					int column = mColumn;
-					int line = mLine;
-
-					consume();			// consume "
-
-					string value;
-					while ( peek() != "\"" ) {
-						value += consume();
-					}
-
-					consume();			// consume "
-
-					return new Token( TokenType.STRING, value, new Position( line, column ) );
+					return new Token( TokenType.STRING, readString(), new Position( mLine, mColumn ) );
 				}
 				case c == ":": {
 					return new Token( TokenType.COLON, consume(), new Position( mLine, mColumn ) );
@@ -198,6 +186,22 @@ public object Tokenizer {
 		}
 
 		return result;
+	}
+
+	private string readString() modify {
+		string ch = consume();		// consume "
+		string value;
+		while ( /*ch != "\\" &&*/ ( ch = mCharIterator.peek( 1 ) ) != "\"" ) {
+			if ( ch == "\\" ) {
+				ch = consume();
+			}
+
+			value += consume();
+		}
+
+		consume();			// consume "
+
+		return value;
 	}
 
 	private void skipWhiteSpace() modify {
