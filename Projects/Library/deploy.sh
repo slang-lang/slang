@@ -12,9 +12,9 @@ if [ x$2 != "x" ]; then
 	REPO="$2"
 fi
 
-scp *.json ticketsharing:/home/madelmann/projects/slang/repo/${REPO}/modules/
+scp *.json strato1:/home/madelmann/projects/slang-lang.org/repo/${REPO}/modules/
 rm *.json
 
-scp *.tar.gz ticketsharing:/home/madelmann/projects/slang/repo/${REPO}/modules/
+scp *.tar.gz strato1:/home/madelmann/projects/slang-lang.org/repo/${REPO}/modules/
 rm *.tar.gz
 
