@@ -6,6 +6,7 @@ class #VIEW_PREFIX##ENTITY_NAME_PRETTY##VIEW_POSTFIX#
 {
 #MEMBER_DECLARATION#
 
+<<<<<<< Updated upstream
 	public function __construct( $databaseHandle, $query = "" ) {
 		//echo 'The class "' . __CLASS__ . '" was initiated!';
 
