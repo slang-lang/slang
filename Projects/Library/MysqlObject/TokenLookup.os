@@ -18,7 +18,7 @@ public object TokenEntity {
 
 public object TokenLookup {
 	public Vector<TokenEntity> getTokens( int databaseHandle, string database, string table ) const throws {
-		string query = "SELECT * FROM " + database + "." + table + " ORDER BY id ASC";
+		var query = "SELECT * FROM " + database + "." + table + " ORDER BY id ASC";
 
 		var error = mysql_query( databaseHandle, query );
 		if ( error ) {

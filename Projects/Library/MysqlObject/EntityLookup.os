@@ -11,7 +11,7 @@ import FieldLookup;
 import TokenLookup;
 
 
-public object EntityType {
+public object EntityType const {
 	public Vector<FieldEntry> Fields const;
 	public bool HasLookup const;
 	public string Name const;
@@ -19,11 +19,11 @@ public object EntityType {
 	public string Type const;
 
 	public void Constructor( string name, string type, bool hasLookup, Vector<FieldEntry> fields, Vector<TokenEntity> tokens ) {
-		Fields = fields;
+		Fields    = fields;
 		HasLookup = hasLookup;
-		Name = name;
-		Tokens = tokens;
-		Type = type;
+		Name      = name;
+		Tokens    = tokens;
+		Type      = type;
 	}
 
 	public string =operator( string ) const {

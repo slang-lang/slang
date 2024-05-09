@@ -7,6 +7,7 @@ import libParam;
 import CodeGenerator;
 import ConfigLoader;
 import Consts;
+import ExtensionLoader;
 
 
 public void Main( int argc, string args ) modify throws {
@@ -18,6 +19,12 @@ public void Main( int argc, string args ) modify throws {
 			config.load();
 		}
 
+		var extensions = new ExtensionLoader( cfg + "/extensions.json" );
+		// if ( System.IO.File.Exists( cfg + "/extensions.json" ) ) {
+		// 	extensions.load();
+		// }
+		extensions.init();
+
 		if ( !Config.Database ) {
 			print( "database missing!" );
 			exit( -1 );
@@ -27,6 +34,7 @@ public void Main( int argc, string args ) modify throws {
 		generator.process();
 
 		config.store();
+		extensions.store();
 	}
 	catch ( string e ) {
 		print( "Exception: " + e );

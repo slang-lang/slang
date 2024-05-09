@@ -10,16 +10,18 @@ import Utils;
 
 
 public object FieldEntry const {
+	public bool   Extend const;
 	public string PrettyType const;
 	public string PrettyName const;
 	public string RealName const;
 	public string RealType const;
 
-	public void Constructor( string realName, string prettyName, string realType, string prettyType ) {
+	public void Constructor( string realName, string prettyName, string realType, string prettyType, bool extend = false ) {
+		Extend     = extend;
 		PrettyName = prettyName;
 		PrettyType = prettyType;
-		RealName = realName;
-		RealType = realType;
+		RealName   = realName;
+		RealType   = realType;
 	}
 
 	public bool operator==( FieldEntry other const ) const {
