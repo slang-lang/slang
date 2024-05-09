@@ -1,4 +1,0 @@
-"#TABLE_POSTFIX#": "Record"
-"#TABLE_PREFIX#" : "T"
-"#VIEW_POSTFIX#" : "Record"
-"#VIEW_PREFIX#"  : ""

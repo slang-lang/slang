@@ -1,6 +1,0 @@
-"#MEMBER_DECLARATION_PREFIX#"   : "	public ";
-"#MEMBER_LOAD_PREFIX#"  : "		";
-"#TABLE_POSTFIX#": "Record"
-"#TABLE_PREFIX#" : "T"
-"#VIEW_POSTFIX#" : "Record"
-"#VIEW_PREFIX#"  : ""
