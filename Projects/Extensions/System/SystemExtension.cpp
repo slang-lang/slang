@@ -74,8 +74,8 @@ void SystemExtension::initialize( ExtensionNamespace* scope )
 #else
 	// Unix/Linux only
 
-    scope->define( "WNOHANG", new Runtime::IntegerObject( "WNOHANG", WNOHANG ) );
-    scope->define( "WUNTRACED", new Runtime::IntegerObject( "WUNTRACED", WUNTRACED ) );
+	scope->define( "WNOHANG", new Runtime::IntegerObject( "WNOHANG", WNOHANG ) );
+	scope->define( "WUNTRACED", new Runtime::IntegerObject( "WUNTRACED", WUNTRACED ) );
 #endif
 
 	// Console
@@ -125,7 +125,7 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 	methods.push_back( new Fork() );
 	methods.push_back( new SetKeyboardBlockingMode() );
 	methods.push_back( new Wait() );
-    methods.push_back( new WaitPID() );
+	methods.push_back( new WaitPID() );
 #endif
 
 	// Console

@@ -59,9 +59,9 @@ public:
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
-			bool value = (*it++).value().toBool();
+			bool param_value = (*it++).value().toBool();
 
-			long size = fwrite(&value, sizeof(bool), 1, mFileHandles[param_handle]);
+			long size = fwrite(&param_value, sizeof(bool), 1, mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -107,9 +107,9 @@ public:
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
-			double value = (*it++).value().toDouble();
+			double param_value = (*it++).value().toDouble();
 
-			long size = fwrite(&value, sizeof(double), 1, mFileHandles[param_handle]);
+			long size = fwrite(&param_value, sizeof(double), 1, mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -155,9 +155,9 @@ public:
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
-			float value = (*it++).value().toFloat();
+			float param_value = (*it++).value().toFloat();
 
-			long size = fwrite(&value, sizeof(float), 1, mFileHandles[param_handle]);
+			long size = fwrite(&param_value, sizeof(float), 1, mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -203,9 +203,9 @@ public:
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
-			int value = (*it++).value().toInt();
+			int param_value = (*it++).value().toInt();
 
-			long size = fwrite(&value, sizeof(int), 1, mFileHandles[param_handle]);
+			long size = fwrite(&param_value, sizeof(int), 1, mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -251,15 +251,15 @@ public:
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
-			std::string value = params.back().value().toStdString();
+			std::string param_value = (*it++).value().toStdString();
 
-			//long size = fwrite(&value, sizeof(char), strlen(value.c_str()), mFileHandles[param_handle]);
-			int size = fputs(value.c_str(), mFileHandles[param_handle]);
+			long size = fwrite(&param_value, sizeof(char), strlen(param_value.c_str()), mFileHandles[param_handle]);
+			//int size = fputs(param_value.c_str(), mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
 
-			*result = Runtime::IntegerObject((int)size);
+			*result = Runtime::IntegerObject(static_cast<int>(size));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

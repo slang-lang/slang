@@ -34,21 +34,21 @@ SystemIOExtension::SystemIOExtension()
 
 void SystemIOExtension::initialize( ExtensionNamespace* scope )
 {
-    // IO constants
-    scope->define( "STDIN", new Runtime::IntegerObject( "STDIN", STDIN ) );
-    scope->define( "STDOUT", new Runtime::IntegerObject( "STDOUT", STDOUT ) );
-    scope->define( "STDERR", new Runtime::IntegerObject( "STDERR", STDERR ) );
+	// IO constants
+	scope->define( "STDIN", new Runtime::IntegerObject( "STDIN", STDIN ) );
+	scope->define( "STDOUT", new Runtime::IntegerObject( "STDOUT", STDOUT ) );
+	scope->define( "STDERR", new Runtime::IntegerObject( "STDERR", STDERR ) );
 
 	// nothing to do here
-    mFileHandles[ 0 ]      = nullptr;
-    mFileHandles[ STDIN ]  = stdin;
-    mFileHandles[ STDOUT ] = stdout;
-    mFileHandles[ STDERR ] = stderr;
+	mFileHandles[ 0 ]      = nullptr;
+	mFileHandles[ STDIN ]  = stdin;
+	mFileHandles[ STDOUT ] = stdout;
+	mFileHandles[ STDERR ] = stderr;
 }
 
 void SystemIOExtension::provideMethods( ExtensionMethods& methods )
 {
-    methods.push_back( new FGETS() );
+	methods.push_back( new FGETS() );
 	methods.push_back( new FileClose() );
 	methods.push_back( new FileEOF() );
 	methods.push_back( new FileOpen() );

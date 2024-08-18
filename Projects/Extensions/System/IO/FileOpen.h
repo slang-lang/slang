@@ -54,7 +54,7 @@ public:
 
 			FILE* fileHandle = fopen(param_filename.c_str(), param_accessmode.c_str());
 			if ( fileHandle ) {
-				result_handle = mFileHandles.size() + 1;
+				result_handle = mFileHandles.size();
 
 				mFileHandles.insert(std::make_pair(result_handle, fileHandle));
 			}

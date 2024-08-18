@@ -31,15 +31,15 @@ namespace IO {
 
 class FGETS : public ExtensionMethod
 {
-    static const int32_t READ_SIZE = 1024;
+	static const int32_t READ_SIZE = 1024;
 
 public:
-    FGETS()
+	FGETS()
 	: ExtensionMethod(0, "fgets", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-        params.push_back(Parameter::CreateDesigntime("stream", Designtime::IntegerObject::TYPENAME));
-        params.push_back(Parameter::CreateDesigntime("size", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("stream", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("size", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -47,32 +47,32 @@ public:
 public:
 	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
 	{
-        ParameterList list = mergeParameters(params);
+		ParameterList list = mergeParameters(params);
 
-        try {
-            ParameterList::const_iterator it = list.begin();
+		try {
+			ParameterList::const_iterator it = list.begin();
 
-            auto param_handle = (*it++).value().toInt();
-            auto param_size = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
+			auto param_size = (*it++).value().toInt();
 
-            if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
-                throw Runtime::Exceptions::RuntimeException("invalid file handle");
-            }
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
+				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			}
 
-            int32_t remainingSize{0};
-            while ( remainingSize < param_size ) {
-                auto readSize = param_size - remainingSize;
-                if ( readSize > READ_SIZE ) {
-                    readSize = READ_SIZE;
-                }
+			int32_t remainingSize{0};
+			while ( remainingSize < param_size ) {
+				auto readSize = param_size - remainingSize;
+				if ( readSize > READ_SIZE ) {
+					readSize = READ_SIZE;
+				}
 
-                char stream[READ_SIZE];
-                if ( fgets( stream, readSize, mFileHandles[param_handle] ) != nullptr ) {
-                    *result = Runtime::StringObject( std::string( stream ) );
-                }
+				char stream[READ_SIZE];
+				if ( fgets( stream, readSize, mFileHandles[param_handle] ) != nullptr ) {
+					*result = Runtime::StringObject( std::string( stream ) );
+				}
 
-                remainingSize += readSize;
-            }
+				remainingSize += readSize;
+			}
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
