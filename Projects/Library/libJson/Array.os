@@ -52,6 +52,10 @@ public object JsonArray extends JsonValue implements IIterable {
 		return mMembers.at( index );
 	}
 
+	public string =operator( string ) const {
+		return toString();
+	}
+
 	private Vector<JsonValue> mMembers;
 }
 

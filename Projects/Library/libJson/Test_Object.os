@@ -45,6 +45,8 @@ private bool TestCase1() {
 		tmpObj = tmpObj[ "o3" ];
 		print( tmpObj.toString() );
 
+		print( "cast<string>( tmpObj ): " + cast<string>( tmpObj ) );
+
 		return bool value;
 	}
 	catch ( string e ) {

@@ -125,6 +125,10 @@ public object JsonObject extends JsonValue implements IIterable {
 		throw "invalid key( '" + key + "' )!";
 	}
 
+	public string =operator( string ) const {
+		return toString();
+	}
+
 	private Map<string, JsonValue> mMembers;
 }
 
