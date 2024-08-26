@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include "FFLUSH.h"
 #include "FGETS.h"
 #include "FileClose.h"
 #include "FileEOF.h"
@@ -28,7 +29,7 @@ const int32_t STDOUT = 2;
 const int32_t STDERR = 3;
 
 SystemIOExtension::SystemIOExtension()
-: AExtension( "IO", "0.1.1" )
+: AExtension( "IO", "0.2.0" )
 {
 }
 
@@ -48,6 +49,7 @@ void SystemIOExtension::initialize( ExtensionNamespace* scope )
 
 void SystemIOExtension::provideMethods( ExtensionMethods& methods )
 {
+	methods.push_back( new FFLUSH() );
 	methods.push_back( new FGETS() );
 	methods.push_back( new FileClose() );
 	methods.push_back( new FileEOF() );
