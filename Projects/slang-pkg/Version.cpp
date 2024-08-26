@@ -80,7 +80,7 @@ void SemanticVersionNumber::parse(const std::string& version)
 	std::string label;
 	std::string major;
 	std::string minor;
-	std::string tmp = version;
+	std::string tmp = std::move( version );
 
 	Utils::Tools::splitBy(tmp, '.', major, tmp);
 	Utils::Tools::splitBy(tmp, '.', minor, tmp);

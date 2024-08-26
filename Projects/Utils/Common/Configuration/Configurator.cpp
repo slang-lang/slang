@@ -45,7 +45,7 @@ Configurator::~Configurator()
 
 Value Configurator::getValue(const std::string& key, int idx) const
 {
-	std::string member = key;
+	std::string member = std::move( key );
 	if ( idx != -1 ) {
 		member += ":" + Tools::toString(idx);
 	}
@@ -68,7 +68,7 @@ Value Configurator::getValue(const std::string& parent, int idx, const std::stri
 
 bool Configurator::isMember(const std::string& key, int idx) const
 {
-	std::string member = key;
+	std::string member = std::move( key );
 	if ( idx != -1 ) {
 		member += ":" + Tools::toString(idx);
 	}
