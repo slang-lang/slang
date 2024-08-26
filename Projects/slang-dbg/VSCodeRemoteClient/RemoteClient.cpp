@@ -379,6 +379,7 @@ void RemoteClient::start()
 	// add extensions
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine->addExtension(new Slang::Extensions::System::SystemExtension());
+	mVirtualMachine->addExtension(new Slang::Extensions::ExtensionsLIBC::Extension());
 #endif
 
 	try {

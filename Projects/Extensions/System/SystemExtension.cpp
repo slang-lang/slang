@@ -8,7 +8,6 @@
 // Project includes
 #include <Defines.h>
 #include "Ascii.h"
-#include "AssertMsg.h"
 #include "Fork.h"
 #include "GetChar.h"
 #include "GetEnv.h"
@@ -108,7 +107,6 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 
 	// Generic methods
 	methods.push_back( new Ascii() );
-	methods.push_back( new Assert() );
 	methods.push_back( new GetChar() );
 	methods.push_back( new GetEnv() );
 	methods.push_back( new PutEnv() );

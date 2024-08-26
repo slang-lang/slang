@@ -8,7 +8,7 @@
 #include "StrFind.h"
 #include "StrFTime.h"
 #include "StrPTime.h"
-#include "StrLen.h"
+//#include "StrLen.h"	// moved to LIBC
 #include "StrLPad.h"
 #include "StrLTrim.h"
 #include "StrPos.h"
@@ -86,7 +86,7 @@ void SystemStringsExtension::provideMethods( ExtensionMethods& methods )
 	methods.push_back( new StrFind() );
     methods.push_back( new StrFTime() );
     methods.push_back( new StrPTime() );
-	methods.push_back( new StrLen() );
+//	methods.push_back( new StrLen() );	// moved to LIBC
 	methods.push_back( new StrLPad() );
 	methods.push_back( new StrLTrim() );
 	methods.push_back( new StrPos() );

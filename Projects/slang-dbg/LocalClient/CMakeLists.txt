@@ -11,6 +11,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	ExtensionsLIBC
 	ExtensionsSystem
 	DebuggerCommon
 )
