@@ -142,12 +142,12 @@ AtomicValue& AtomicValue::operator=(MemoryId val)
 	return *this;
 }
 
-AtomicValue& AtomicValue::operator=(std::string val)
+AtomicValue& AtomicValue::operator=(const std::string& val)
 {
 	mValue.double_ = 0.0;
 
 	mType = Type::STRING;
-	mStringValue = std::move(val);
+	mStringValue = val;
 
 	return *this;
 }

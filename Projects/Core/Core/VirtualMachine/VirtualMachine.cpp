@@ -25,7 +25,7 @@
 
 
 namespace {
-	std::string buildFilename( std::string folder, std::string filename );
+	std::string buildFilename( const std::string& folder, const std::string& filename );
 }
 
 namespace Slang {
@@ -443,7 +443,7 @@ VirtualMachine::Settings& VirtualMachine::settings()
 }
 
 namespace {
-	std::string buildFilename( std::string folder, std::string filename ) {
+	std::string buildFilename( const std::string& folder, const std::string& filename ) {
 		std::string file = Utils::Tools::Files::BuildLibraryPath( folder, filename );
 		if ( Utils::Tools::Files::exists( file ) ) {
 			return file;

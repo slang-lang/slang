@@ -53,7 +53,7 @@ public:	// Assignment
 	AtomicValue& operator=( float val );
 	AtomicValue& operator=( int32_t val );
 	AtomicValue& operator=( MemoryId val );
-	AtomicValue& operator=( std::string val );
+	AtomicValue& operator=( const std::string& val );
 
 public:	// Conversion
 	bool toBool() const;
