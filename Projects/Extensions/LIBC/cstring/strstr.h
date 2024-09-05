@@ -10,9 +10,10 @@
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
-#include <Tools/Strings.h>
+#include <Core/VirtualMachine/Controller.h>
 
 // Forward declarations
 
@@ -21,8 +22,7 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace Strings {
+namespace ExtensionsLIBC {
 
 
 class STRSTR : public ExtensionMethod
@@ -32,9 +32,8 @@ public:
 	: ExtensionMethod( 0, "strstr", Designtime::StringObject::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back( Parameter::CreateDesigntime( "value", Designtime::StringObject::TYPENAME, 0 ) );
-		params.push_back( Parameter::CreateDesigntime( "start", Designtime::IntegerObject::TYPENAME, 0 ) );
-		params.push_back( Parameter::CreateDesigntime( "length", Designtime::IntegerObject::TYPENAME, -1, true ) );
+		params.push_back( Parameter::CreateDesigntime( "str", Designtime::StringObject::TYPENAME, 0 ) );
+		params.push_back( Parameter::CreateDesigntime( "substr", Designtime::IntegerObject::TYPENAME, 0 ) );
 
 		setSignature( params );
 	}
@@ -47,17 +46,10 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			auto param_value = (*it++).value().toStdString();
-			auto param_start = (*it++).value().toInt();
-			auto param_end = std::string::npos;
+			auto param_str    = (*it++).value().toStdString();
+			auto param_substr = (*it++).value().toStdString();
 
-			if ( params.size() >= 3 ) {
-				param_end = (*it++).value().toInt();
-			}
-
-			auto result_value = param_value.strfind( param_start, param_end );
-
-			*result = Runtime::StringObject( result_value );
+			*result = Runtime::StringObject( std::string( strstr( param_str.c_str(), param_substr.c_str() ) ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
@@ -72,7 +64,6 @@ public:
 };
 
 
-}
 }
 }
 }

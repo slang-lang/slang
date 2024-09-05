@@ -7,9 +7,18 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 SET(SOURCES
 	cassert/cassert.h
 	cstring/strcat.h
+	cstring/strchr.h
+	cstring/strcmp.h
+	cstring/strcoll.h
+	cstring/strcspn.h
 	cstring/strlen.h
 	cstring/strncat.h
 	cstring/strncmp.h
+	cstring/strpbrk.h
+	cstring/strspn.h
+	cstring/strrchr.h
+	cstring/strstr.h
+	locale/setlocale.h
 	Extension.cpp
 )
 
