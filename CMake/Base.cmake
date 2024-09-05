@@ -2,7 +2,7 @@
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)   # binary root
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)      # library root
 
-SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -Wno-deprecated-copy -std=c++14")
+SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -Wno-deprecated-copy -Wnon-virtual-dtor -Wno-undefined -Wno-type-limits -std=c++14")
 
 if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
 
@@ -22,7 +22,6 @@ elseif( "${BUILD}" MATCHES "Release")
     # MESSAGE("Setting default build to: Release")
     SET(CMAKE_BUILD_TYPE "Release")
 
-    add_definitions(-Wno-deprecated-copy)
     add_definitions(-Wno-unused-value)
     add_definitions(-Wno-unused-variable)
     add_definitions(-Wno-write-strings)			# suppress "deprecated conversion from string constant to ‘char*’ [-Werror=write-strings]"

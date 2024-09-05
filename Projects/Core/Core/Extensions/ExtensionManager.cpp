@@ -45,6 +45,11 @@ AExtension* ExtensionManager::load( const std::string& path )
 	dynamic_lib& lib = mLibraries.back();
 	lib.handle = load_lib( lib.path );
 
+	if ( !lib.handle ) {
+		OSerror( dlerror() );
+		return nullptr;
+	}
+
 	return instantiate( lib.handle );
 }
 

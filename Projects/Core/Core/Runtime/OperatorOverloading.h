@@ -4,10 +4,8 @@
 
 
 // Library includes
-#include <string>
 
 // Project includes
-#include <Core/Common/Position.h>
 
 // Forward declarations
 
