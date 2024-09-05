@@ -5,6 +5,7 @@
 
 // Library includes
 #include <cassert>
+#include <cstring>
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
@@ -48,7 +49,7 @@ public:
 
 			auto param_str1 = (*it++).value().toStdString();
 			auto param_str2 = (*it++).value().toStdString();
-            auto param_num  = (*it++).value().toInt();
+			auto param_num  = (*it++).value().toInt();
 
 			*result = Runtime::IntegerObject( strncmp( param_str1.c_str(), param_str2.c_str(), param_num ) );
 		}
