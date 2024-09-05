@@ -22,7 +22,7 @@
 #elif defined _WIN32
 	// Memory leak check - Begin
 	#define _CRTDBG_MAP_ALLOC
-	#include <stdlib.h>
+	#include <cstdlib>
 
 	#include <iostream>
 	#include <crtdbg.h>
@@ -34,7 +34,7 @@
 
 	//#include <vld.h>
 #else
-#	include <stdlib.h>
+#	include <cstdlib>
 #endif
 
 

@@ -3,6 +3,7 @@
 #include "PrototypeConstraint.h"
 
 // Library includes
+#include <cstdint>
 
 // Project includes
 #include <Core/Consts.h>
