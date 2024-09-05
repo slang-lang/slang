@@ -14,7 +14,7 @@
 
 #if __cplusplus > 201103L
 #define TRYMOVE(e) \
-	std::move(e)
+	e
 #else
 #define TRYMOVE(e) \
 	e

@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <cstdint>
 #include <list>
 #include <utility>
 

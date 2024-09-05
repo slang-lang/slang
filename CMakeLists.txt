@@ -1,8 +1,8 @@
+cmake_minimum_required(VERSION 3.5)
+
 PROJECT(Slang)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/Modules/")
-
-cmake_minimum_required(VERSION 3.0)
 
 # cmake policy changes. use "cmake --help-policy <policyid>" for details
 if ( CMAKE_VERSION VERSION_LESS "3.0.0" )

@@ -4,7 +4,7 @@
 
 
 // Library includes
-#include <stdlib.h>
+#include <cstdlib>
 
 // Project includes
 #include <Core/Common/Exceptions.h>

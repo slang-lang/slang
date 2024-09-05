@@ -8,10 +8,10 @@
 #include <stdexcept>
 #ifdef _WIN32
 #	include <stdio.h>
-#	include <stdlib.h>
+#	include <cstdlib>
 #else
 #	include <termios.h>
-#	include <stdlib.h>
+#	include <cstdlib>
 #endif
 
 // Project includes
