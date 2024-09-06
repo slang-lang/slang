@@ -9,7 +9,6 @@
 #include <Defines.h>
 #include "Ascii.h"
 #include "Fork.h"
-#include "GetChar.h"
 #include "GetEnv.h"
 #include "PutEnv.h"
 #include "SetEnv.h"
@@ -104,7 +103,6 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 
 	// Generic methods
 	methods.push_back( new Ascii() );
-	methods.push_back( new GetChar() );
 	methods.push_back( new GetEnv() );
 	methods.push_back( new PutEnv() );
 	methods.push_back( new SetEnv() );

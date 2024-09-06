@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/Extensions/AExtension.h>
+#include "stdio/stdio.hpp"
 
 // Forward declarations
 
@@ -31,6 +32,7 @@ public:
 private:
 //	ExtensionLIBC::CASSERT mCASSERTExtension;
 //	ExtensionLIBC::CERRNO mCERRNOExtension;
+    ExtensionLIBC::stdio::stdio_t mSTDIOExtension;
 };
 
 

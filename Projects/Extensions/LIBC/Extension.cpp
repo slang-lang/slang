@@ -55,6 +55,14 @@ void Extension::initialize( ExtensionNamespace* scope )
 	scope->define( "LC_NUMERIC",  new Runtime::IntegerObject( "LC_NUMERIC", LC_NUMERIC ) );
 	scope->define( "LC_TIME",     new Runtime::IntegerObject( "LC_TIME", LC_TIME ) );
 #endif
+
+#ifdef _WIN32
+	// Win32 only
+#else
+	// Unix/Linux only
+
+	mSTDIOExtension.initialize( scope );
+#endif
 }
 
 void Extension::provideMethods( ExtensionMethods& methods )
@@ -81,8 +89,13 @@ void Extension::provideMethods( ExtensionMethods& methods )
 	// locale
 	methods.push_back( new SETLOCALE() );
 
-	// stdio
-	//methods.push_back( new stdio::FGETS() );
+#ifdef _WIN32
+	// Win32 only
+#else
+	// Unix/Linux only
+
+	mSTDIOExtension.provideMethods( methods );
+#endif
 }
 
 

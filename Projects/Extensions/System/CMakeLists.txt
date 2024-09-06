@@ -14,20 +14,8 @@ SET(SOURCES
 )
 
 SET(HEADERS
-	Ascii.h
-	Fork.h
-	GetChar.h
-	GetEnv.h
-	PutEnv.h
-	SetEnv.h
-	SetKeyboardBlockingMode.h
-	Sleep.h
-	System.h
+    System.h
 	SystemExtension.h
-	Wait.h
-	WaitPID.h
-	Write.h
-	WriteLn.h
 )
 
 SET(DEPENDENCIES

@@ -39,6 +39,9 @@ namespace Extensions {
 namespace ExtensionLIBC {
 namespace stdio {
 
+
+stdio_t::FileHandles_t stdio_t::FileHandles;
+
 const int32_t STDIN  = 1;
 const int32_t STDOUT = 2;
 const int32_t STDERR = 3;
