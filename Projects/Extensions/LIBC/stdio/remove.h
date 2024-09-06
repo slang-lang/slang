@@ -1,14 +1,19 @@
 
-#ifndef Slang_Extensions_System_IO_FFLUSH_h
-#define Slang_Extensions_System_IO_FFLUSH_h
+#ifndef Slang_Extensions_LIBC_stdio_remove_h
+#define Slang_Extensions_LIBC_stdio_remove_h
 
 
 // Library includes
-#include <cstdlib>
+#ifdef __APPLE__
+#	include <unistd.h>
+#elif defined _WIN32
+#	include <io.h>
+#	pragma warning(disable:4996)
+#else
+#	include <unistd.h>
+#endif
 
 // Project includes
-#include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
@@ -16,7 +21,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include "Defines.h"
+#include "stdio.hpp"
 
 // Forward declarations
 
@@ -25,39 +30,32 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace IO {
+namespace ExtensionLIBC {
+namespace stdio {
 
 
-class FFLUSH : public ExtensionMethod
+class REMOVE : public ExtensionMethod
 {
 public:
-	FFLUSH()
-	: ExtensionMethod(0, "fflush", Designtime::IntegerObject::TYPENAME)
+	REMOVE()
+	: ExtensionMethod(0, "remove", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("stream", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("pathname", Designtime::StringObject::TYPENAME, 0));
 
 		setSignature(params);
 	}
 
-public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
 	{
 		ParameterList list = mergeParameters(params);
 
 		try {
-			ParameterList::const_iterator it = list.begin();
+            ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
+            auto param_pathname = (*it++).value().toStdString();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			auto value = fflush( mFileHandles[ param_handle ] );
-
-			*result = Runtime::IntegerObject( value );
+            *result = Runtime::IntegerObject( remove( param_pathname.c_str() ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

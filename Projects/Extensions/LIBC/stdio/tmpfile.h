@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_System_IO_FileSeek_h
-#define Slang_Extensions_System_IO_FileSeek_h
+#ifndef Slang_Extensions_LIBC_stdio_tmpfile_h
+#define Slang_Extensions_LIBC_stdio_tmpfile_h
 
 
 // Library includes
@@ -14,13 +14,14 @@
 #endif
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
+#include "stdio.hpp"
 
 // Forward declarations
 
@@ -29,19 +30,17 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace IO {
+namespace ExtensionLIBC {
+namespace stdio {
 
 
-class FileSeek : public ExtensionMethod
+class TMPFILE : public ExtensionMethod
 {
 public:
-	FileSeek()
-	: ExtensionMethod(0, "fseek", Designtime::IntegerObject::TYPENAME)
+	TMPFILE()
+	: ExtensionMethod(0, "tmpfile", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("offset", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -51,21 +50,16 @@ public:
 		ParameterList list = mergeParameters(params);
 
 		try {
-			ParameterList::const_iterator it = list.begin();
+            int result_handle = 0;
 
-			int param_handle = (*it++).value().toInt();
-			int param_offset = (*it++).value().toInt();
+			FILE* fileHandle = tmpfile();
+			if ( fileHandle ) {
+				result_handle = stdio_t::FileHandles.size();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+				stdio_t::FileHandles.insert(std::make_pair(result_handle, fileHandle));
 			}
 
-			long size = fseek(mFileHandles[param_handle], param_offset, SEEK_SET);
-			if ( size == -1 ) {
-				throw Runtime::Exceptions::RuntimeException("error while seeking file");
-			}
-
-			*result = Runtime::IntegerObject((int)size);
+            *result = Runtime::IntegerObject( result_handle );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

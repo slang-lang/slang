@@ -80,9 +80,6 @@ void SystemExtension::initialize( ExtensionNamespace* scope )
 	// Console
 	mConsoleExtension.initialize( scope );
 
-	// IO
-	mIOExtension.initialize( scope );
-
 	// Math
 	mMathExtension.initialize( scope );
 
@@ -128,9 +125,6 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 
 	// Console
 	mConsoleExtension.provideMethods( methods );
-
-	// IO
-	mIOExtension.provideMethods( methods );
 
 	// Math
 	mMathExtension.provideMethods( methods );

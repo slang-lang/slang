@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_System_IO_FileOpen_h
-#define Slang_Extensions_System_IO_FileOpen_h
+#ifndef Slang_Extensions_LIBC_stdio_fopen_h
+#define Slang_Extensions_LIBC_stdio_fopen_h
 
 
 // Library includes
@@ -14,7 +14,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include "Defines.h"
+#include "stdio.hpp"
 
 // Forward declarations
 
@@ -23,14 +23,14 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace IO {
+namespace ExtensionLIBC {
+namespace stdio {
 
 
-class FileOpen : public ExtensionMethod
+class FOPEN : public ExtensionMethod
 {
 public:
-	FileOpen()
+	FOPEN()
 	: ExtensionMethod(0, "fopen", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
@@ -54,9 +54,9 @@ public:
 
 			FILE* fileHandle = fopen(param_filename.c_str(), param_accessmode.c_str());
 			if ( fileHandle ) {
-				result_handle = mFileHandles.size();
+				result_handle = stdio_t::FileHandles.size();
 
-				mFileHandles.insert(std::make_pair(result_handle, fileHandle));
+				stdio_t::FileHandles.insert(std::make_pair(result_handle, fileHandle));
 			}
 
 			*result = Runtime::IntegerObject(result_handle);

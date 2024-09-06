@@ -6,7 +6,6 @@
 #include <cerrno>
 
 // Project includes
-#include <Defines.h>
 #include "cassert/cassert.h"
 #include "cstring/strcat.h"
 #include "cstring/strchr.h"
@@ -21,6 +20,7 @@
 #include "cstring/strrchr.h"
 #include "cstring/strstr.h"
 #include "locale/setlocale.h"
+#include "stdio/stdio.hpp"
 
 // Namespace declarations
 
@@ -48,12 +48,12 @@ void Extension::initialize( ExtensionNamespace* scope )
 #else
 	// Unix/Linux only
 
-	scope->define( "LC_ALL", new Runtime::IntegerObject( "LC_ALL", LC_ALL ) );
-	scope->define( "LC_COLLATE", new Runtime::IntegerObject( "LC_COLLATE", LC_COLLATE ) );
-	scope->define( "LC_CTYPE", new Runtime::IntegerObject( "LC_CTYPE", LC_CTYPE ) );
+	scope->define( "LC_ALL",      new Runtime::IntegerObject( "LC_ALL", LC_ALL ) );
+	scope->define( "LC_COLLATE",  new Runtime::IntegerObject( "LC_COLLATE", LC_COLLATE ) );
+	scope->define( "LC_CTYPE",    new Runtime::IntegerObject( "LC_CTYPE", LC_CTYPE ) );
 	scope->define( "LC_MONETARY", new Runtime::IntegerObject( "LC_MONETARY", LC_MONETARY ) );
-	scope->define( "LC_NUMERIC", new Runtime::IntegerObject( "LC_NUMERIC", LC_NUMERIC ) );
-	scope->define( "LC_TIME", new Runtime::IntegerObject( "LC_TIME", LC_TIME ) );
+	scope->define( "LC_NUMERIC",  new Runtime::IntegerObject( "LC_NUMERIC", LC_NUMERIC ) );
+	scope->define( "LC_TIME",     new Runtime::IntegerObject( "LC_TIME", LC_TIME ) );
 #endif
 }
 
@@ -80,6 +80,9 @@ void Extension::provideMethods( ExtensionMethods& methods )
 
 	// locale
 	methods.push_back( new SETLOCALE() );
+
+	// stdio
+	//methods.push_back( new stdio::FGETS() );
 }
 
 

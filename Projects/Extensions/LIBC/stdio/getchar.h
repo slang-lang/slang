@@ -1,9 +1,17 @@
 
-#ifndef Slang_Extensions_System_IO_FileClose_h
-#define Slang_Extensions_System_IO_FileClose_h
+#ifndef Slang_Extensions_LIBC_stdio_getchar_h
+#define Slang_Extensions_LIBC_stdio_getchar_h
 
 
 // Library includes
+#ifdef __APPLE__
+#	include <unistd.h>
+#elif defined _WIN32
+#	include <io.h>
+#	pragma warning(disable:4996)
+#else
+#	include <unistd.h>
+#endif
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
@@ -13,7 +21,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include "Defines.h"
+#include "stdio.hpp"
 
 // Forward declarations
 
@@ -22,18 +30,17 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace IO {
+namespace ExtensionLIBC {
+namespace stdio {
 
 
-class FileClose : public ExtensionMethod
+class GETCHAR : public ExtensionMethod
 {
 public:
-	FileClose()
-	: ExtensionMethod(0, "fclose", Designtime::IntegerObject::TYPENAME)
+	GETCHAR()
+	: ExtensionMethod(0, "getchar", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -43,20 +50,7 @@ public:
 		ParameterList list = mergeParameters(params);
 
 		try {
-			ParameterList::const_iterator it = list.begin();
-
-			int param_handle = (*it++).value().toInt();
-
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			int fileResult = fclose(mFileHandles[param_handle]);
-			if ( fileResult == -1 ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			*result = Runtime::IntegerObject(fileResult);
+		    *result = Runtime::IntegerObject( getchar() );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

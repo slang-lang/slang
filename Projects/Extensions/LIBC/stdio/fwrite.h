@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_System_IO_FileWrite_h
-#define Slang_Extensions_System_IO_FileWrite_h
+#ifndef Slang_Extensions_LIBC_stdio_fwrite_h
+#define Slang_Extensions_LIBC_stdio_fwrite_h
 
 
 // Library includes
@@ -20,7 +20,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include "Defines.h"
+#include "stdio.hpp"
 
 // Forward declarations
 
@@ -29,14 +29,14 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace IO {
+namespace ExtensionLIBC {
+namespace stdio {
 
 
-class FileWriteBool : public ExtensionMethod
+class FWRITEB : public ExtensionMethod
 {
 public:
-	FileWriteBool()
+	FWRITEB()
 	: ExtensionMethod(0, "fwriteb", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
@@ -53,15 +53,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
+			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			bool param_value = (*it++).value().toBool();
 
-			long size = fwrite(&param_value, sizeof(bool), 1, mFileHandles[param_handle]);
+			long size = fwrite(&param_value, sizeof(bool), 1, stdio_t::FileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -81,10 +81,10 @@ public:
 };
 
 
-class FileWriteDouble : public ExtensionMethod
+class FWRITED : public ExtensionMethod
 {
 public:
-	FileWriteDouble()
+	FWRITED()
 	: ExtensionMethod(0, "fwrited", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
@@ -101,15 +101,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
+			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			double param_value = (*it++).value().toDouble();
 
-			long size = fwrite(&param_value, sizeof(double), 1, mFileHandles[param_handle]);
+			long size = fwrite(&param_value, sizeof(double), 1, stdio_t::FileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -129,10 +129,10 @@ public:
 };
 
 
-class FileWriteFloat : public ExtensionMethod
+class FWRITEF : public ExtensionMethod
 {
 public:
-	FileWriteFloat()
+	FWRITEF()
 	: ExtensionMethod(0, "fwritef", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
@@ -149,15 +149,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
+			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			float param_value = (*it++).value().toFloat();
 
-			long size = fwrite(&param_value, sizeof(float), 1, mFileHandles[param_handle]);
+			long size = fwrite(&param_value, sizeof(float), 1, stdio_t::FileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -177,10 +177,10 @@ public:
 };
 
 
-class FileWriteInt : public ExtensionMethod
+class FWRITEI : public ExtensionMethod
 {
 public:
-	FileWriteInt()
+	FWRITEI()
 	: ExtensionMethod(0, "fwritei", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
@@ -197,15 +197,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
+			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			int param_value = (*it++).value().toInt();
 
-			long size = fwrite(&param_value, sizeof(int), 1, mFileHandles[param_handle]);
+			long size = fwrite(&param_value, sizeof(int), 1, stdio_t::FileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -225,10 +225,10 @@ public:
 };
 
 
-class FileWriteString : public ExtensionMethod
+class FWRITES : public ExtensionMethod
 {
 public:
-	FileWriteString()
+	FWRITES()
 	: ExtensionMethod(0, "fwrites", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
@@ -245,16 +245,16 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
+			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			std::string param_value = (*it++).value().toStdString();
 
-			//long size = fwrite(&param_value, sizeof(char), strlen(param_value.c_str()), mFileHandles[param_handle]);
-			long size = fputs(param_value.c_str(), mFileHandles[param_handle]);
+			//long size = fwrite(&param_value, sizeof(char), strlen(param_value.c_str()), stdio_t::FileHandles[param_handle]);
+			long size = fputs(param_value.c_str(), stdio_t::FileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}

@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_System_IO_FileRead_h
-#define Slang_Extensions_System_IO_FileRead_h
+#ifndef Slang_Extensions_LIBC_stdio_fread_h
+#define Slang_Extensions_LIBC_stdio_fread_h
 
 
 // Library includes
@@ -21,7 +21,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include "Defines.h"
+#include "stdio.hpp"
 
 // Forward declarations
 
@@ -30,14 +30,14 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace IO {
+namespace ExtensionLIBC {
+namespace stdio {
 
 
-class FileReadBool : public ExtensionMethod
+class FREADB : public ExtensionMethod
 {
 public:
-	FileReadBool()
+	FREADB()
 	: ExtensionMethod(0, "freadb", Designtime::BoolObject::TYPENAME)
 	{
 		ParameterList params;
@@ -53,15 +53,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
+			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			bool value = false;
 
-			long size = fread(&value, 1, sizeof(bool), mFileHandles[param_handle]);
+			long size = fread(&value, 1, sizeof(bool), stdio_t::FileHandles[param_handle]);
 			if ( size == -1 ) {    // error while reading
 				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
@@ -81,10 +81,10 @@ public:
 };
 
 
-class FileReadDouble : public ExtensionMethod
+class FREADD : public ExtensionMethod
 {
 public:
-	FileReadDouble()
+	FREADD()
 	: ExtensionMethod(0, "freadd", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
@@ -100,15 +100,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
+			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			double value = 0.0;
 
-			long size = fread(&value, 1, sizeof(double), mFileHandles[param_handle]);
+			long size = fread(&value, 1, sizeof(double), stdio_t::FileHandles[param_handle]);
 			if ( size == -1 ) {    // error while reading
 				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
@@ -128,10 +128,10 @@ public:
 };
 
 
-class FileReadFloat : public ExtensionMethod
+class FREADF : public ExtensionMethod
 {
 public:
-	FileReadFloat()
+	FREADF()
 	: ExtensionMethod(0, "freadf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
@@ -147,15 +147,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
+			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			float value = 0.f;
 
-			long size = fread(&value, 1, sizeof(float), mFileHandles[param_handle]);
+			long size = fread(&value, 1, sizeof(float), stdio_t::FileHandles[param_handle]);
 			if ( size == -1 ) {    // error while reading
 				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
@@ -175,10 +175,10 @@ public:
 };
 
 
-class FileReadInt : public ExtensionMethod
+class FREADI : public ExtensionMethod
 {
 public:
-	FileReadInt()
+	FREADI()
 	: ExtensionMethod(0, "freadi", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
@@ -194,15 +194,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
+			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			int value = 0;
 
-			long size = fread(&value, 1, sizeof(int), mFileHandles[param_handle]);
+			long size = fread(&value, 1, sizeof(int), stdio_t::FileHandles[param_handle]);
 			if ( size == -1 ) {    // error while reading
 				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
@@ -222,10 +222,10 @@ public:
 };
 
 
-class FileReadString : public ExtensionMethod
+class FREADS : public ExtensionMethod
 {
 public:
-	FileReadString()
+	FREADS()
 	: ExtensionMethod(0, "freads", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
@@ -242,10 +242,10 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
-			int param_length = (*it++).value().toInt();
+			auto param_handle = (*it++).value().toInt();
+			auto param_length = (*it++).value().toInt();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
+			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
@@ -254,7 +254,7 @@ public:
 			while ( param_length > 0 || param_length == -1 ) {
 				char charValue;
 
-				long size = fread(&charValue, 1, sizeof(char), mFileHandles[param_handle]);
+				long size = fread(&charValue, 1, sizeof(char), stdio_t::FileHandles[param_handle]);
 				if ( size == -1 ) {    // error while reading
 					return Runtime::ControlFlow::Throw;
 				}

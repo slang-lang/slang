@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_System_IO_FGETS_h
-#define Slang_Extensions_System_IO_FGETS_h
+#ifndef Slang_Extensions_LIBC_stdio_fgets_h
+#define Slang_Extensions_LIBC_stdio_fgets_h
 
 
 // Library includes
@@ -16,7 +16,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include "Defines.h"
+#include "stdio.hpp"
 
 // Forward declarations
 
@@ -25,8 +25,8 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace IO {
+namespace ExtensionLIBC {
+namespace stdio {
 
 
 class FGETS : public ExtensionMethod
@@ -35,28 +35,28 @@ class FGETS : public ExtensionMethod
 
 public:
 	FGETS()
-	: ExtensionMethod(0, "fgets", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod( 0, "fgets", Designtime::StringObject::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("stream", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("size", Designtime::IntegerObject::TYPENAME));
+		params.push_back( Parameter::CreateDesigntime( "stream", Designtime::IntegerObject::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "size", Designtime::IntegerObject::TYPENAME ) );
 
-		setSignature(params);
+		setSignature( params );
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token )
 	{
-		ParameterList list = mergeParameters(params);
+		ParameterList list = mergeParameters( params );
 
 		try {
 			ParameterList::const_iterator it = list.begin();
 
 			auto param_handle = (*it++).value().toInt();
-			auto param_size = (*it++).value().toInt();
+			auto param_size   = (*it++).value().toInt();
 
-			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			if ( stdio_t::FileHandles.find( param_handle ) == stdio_t::FileHandles.end() ) {
+				throw Runtime::Exceptions::RuntimeException( "invalid file handle" );
 			}
 
 			int32_t remainingSize{0};
@@ -67,7 +67,7 @@ public:
 				}
 
 				char stream[READ_SIZE];
-				if ( fgets( stream, readSize, mFileHandles[param_handle] ) != nullptr ) {
+				if ( fgets( stream, readSize, stdio_t::FileHandles[ param_handle ] ) != nullptr ) {
 					*result = Runtime::StringObject( std::string( stream ) );
 				}
 
@@ -75,10 +75,10 @@ public:
 			}
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringObject( std::string( e.what() ) );
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+			Controller::Instance().thread( threadId )->exception() = Runtime::ExceptionData( data, token.position() );
 			return Runtime::ControlFlow::Throw;
 		}
 

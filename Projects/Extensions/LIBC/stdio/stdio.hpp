@@ -1,10 +1,9 @@
 
-#ifndef Slang_Extensions_System_IO_Defines_h
-#define Slang_Extensions_System_IO_Defines_h
+#ifndef Slang_Extensions_LIBC_stdio_stdio_hpp
+#define Slang_Extensions_LIBC_stdio_stdio_hpp
 
 
 // Library includes
-#include <stdio.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -43,6 +42,7 @@
 #include <map>
 
 // Project includes
+#include <Core/Extensions/AExtension.h>
 
 // Forward declarations
 
@@ -51,13 +51,25 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace IO {
+namespace ExtensionLIBC {
+namespace stdio {
 
 
-typedef std::map<int /*file handle*/, FILE*> FileHandles;
+class stdio_t : public AExtension
+{
+public:
+    typedef std::map<int /*file handle*/, FILE*> FileHandles_t;
 
-extern FileHandles mFileHandles;
+    static FileHandles_t FileHandles;
+
+public:
+	stdio_t();
+	~stdio_t() = default;
+
+public:
+	void initialize( ExtensionNamespace* scope );
+	void provideMethods( ExtensionMethods& methods );
+};
 
 
 }
