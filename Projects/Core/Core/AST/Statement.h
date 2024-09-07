@@ -134,17 +134,20 @@ public:
 class AssertStatement : public Statement
 {
 public:
-	AssertStatement(const Token& token, Node* exp)
+	AssertStatement(const Token& token, Node* exp, Node* message)
 	: Statement(StatementType::AssertStatement, token),
 	  mExpression(exp),
+	  mMessage(message),
 	  mPosition(token.position())
 	{ }
 	~AssertStatement() override {
 		delete mExpression;
+		delete mMessage;
 	}
 
 public:
 	Node* mExpression;
+	Node* mMessage;
 	Common::Position mPosition;
 };
 
