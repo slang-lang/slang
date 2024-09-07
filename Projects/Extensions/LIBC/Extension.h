@@ -7,7 +7,9 @@
 
 // Project includes
 #include <Core/Extensions/AExtension.h>
+#include "math/math.hpp"
 #include "stdio/stdio.hpp"
+#include "stdlib/stdlib.hpp"
 
 // Forward declarations
 
@@ -23,16 +25,16 @@ class Extension : public AExtension
 {
 public:
 	Extension();
-	~Extension();
+	~Extension() = default;
 
 public:
 	void initialize( ExtensionNamespace* scope );
 	void provideMethods( ExtensionMethods& methods );
 
 private:
-//	ExtensionLIBC::CASSERT mCASSERTExtension;
-//	ExtensionLIBC::CERRNO mCERRNOExtension;
-    ExtensionLIBC::stdio::stdio_t mSTDIOExtension;
+    ExtensionLIBC::math::math_t     mMath;
+    ExtensionLIBC::stdio::stdio_t   mStdio;
+    ExtensionLIBC::stdlib::stdlib_t mStdlib;
 };
 
 

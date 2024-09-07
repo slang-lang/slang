@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_System_Math_Rand_h
-#define Slang_Extensions_System_Math_Rand_h
+#ifndef Slang_Extensions_LIBC_stdlib_rand_h
+#define Slang_Extensions_LIBC_stdlib_rand_h
 
 
 // Library includes
@@ -10,9 +10,10 @@
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include "Defines.h"
+#include "stdlib.h"
 
 // Forward declarations
 
@@ -21,14 +22,14 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace Math {
+namespace ExtensionLIBC {
+namespace stdlib {
 
 
-class Rand: public ExtensionMethod
+class RAND: public ExtensionMethod
 {
 public:
-	Rand()
+	RAND()
 	: ExtensionMethod(0, "rand", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;

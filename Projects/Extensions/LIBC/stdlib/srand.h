@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_System_Math_Srand_h
-#define Slang_Extensions_System_Math_Srand_h
+#ifndef Slang_Extensions_LIBC_stdlib_srand_h
+#define Slang_Extensions_LIBC_stdlib_srand_h
 
 
 // Library includes
@@ -20,14 +20,14 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace Math {
+namespace ExtensionLIBC {
+namespace stdlib {
 
 
-class Srand: public ExtensionMethod
+class SRAND: public ExtensionMethod
 {
 public:
-	Srand()
+	SRAND()
 	: ExtensionMethod(0, "srand", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;

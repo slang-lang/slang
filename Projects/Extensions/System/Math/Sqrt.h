@@ -13,7 +13,6 @@
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Tools.h>
-#include "Defines.h"
 
 // Forward declarations
 

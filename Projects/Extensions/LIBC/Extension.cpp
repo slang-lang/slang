@@ -20,7 +20,6 @@
 #include "cstring/strrchr.h"
 #include "cstring/strstr.h"
 #include "locale/setlocale.h"
-#include "stdio/stdio.hpp"
 
 // Namespace declarations
 
@@ -32,10 +31,6 @@ namespace ExtensionsLIBC {
 
 Extension::Extension()
 : AExtension( "LIBC", "0.0.2" )
-{
-}
-
-Extension::~Extension()
 {
 }
 
@@ -61,7 +56,8 @@ void Extension::initialize( ExtensionNamespace* scope )
 #else
 	// Unix/Linux only
 
-	mSTDIOExtension.initialize( scope );
+	mStdio.initialize( scope );
+	mStdlib.initialize( scope );
 #endif
 }
 
@@ -94,7 +90,8 @@ void Extension::provideMethods( ExtensionMethods& methods )
 #else
 	// Unix/Linux only
 
-	mSTDIOExtension.provideMethods( methods );
+	mStdio.provideMethods( methods );
+	mStdlib.provideMethods( methods );
 #endif
 }
 

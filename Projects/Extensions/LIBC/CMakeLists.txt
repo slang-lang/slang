@@ -3,7 +3,9 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 #ADD_SUBDIRECTORY(cassert)
 #ADD_SUBDIRECTORY(cstring)
 #ADD_SUBDIRECTORY(locale)
+ADD_SUBDIRECTORY(math)
 ADD_SUBDIRECTORY(stdio)
+ADD_SUBDIRECTORY(stdlib)
 
 
 SET(SOURCES
@@ -29,7 +31,9 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+    ExtensionsLIBCStdlib
     ExtensionsLIBCStdio
+    ExtensionsLIBCMath
 	CoreExtensions
 )
 
