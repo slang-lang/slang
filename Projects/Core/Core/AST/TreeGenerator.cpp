@@ -786,11 +786,18 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
 	++token;
 
 	Node* exp = expression(token);
+	Node* message{ nullptr };
+
+	if ( token->type() == Token::Type::COMMA ) {
+	   ++token;
+
+	   message = expression(token);
+	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return new AssertStatement(start, exp);
+	return new AssertStatement(start, exp, message);
 }
 
 /*
@@ -1379,7 +1386,7 @@ Statement* TreeGenerator::process_keyword(TokenIterator& token)
 {
 	Statement* statement = nullptr;
 
-	std::string keyword = (*token++).content();
+	std::string keyword{ (*token++).content() };
 
 	if ( keyword == KEYWORD_ASSERT ) {
 		statement = process_assert(token);

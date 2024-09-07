@@ -863,13 +863,20 @@ void TreeInterpreter::visit(Node* node)
 	}
 }
 
-void TreeInterpreter::visitAssert(AssertStatement* node)
+void TreeInterpreter::visitAssert(AssertStatement* assertStmt)
 {
 	Runtime::Object condition;
-	tryControl(evaluate(node->mExpression, &condition));
+	tryControl(evaluate(assertStmt->mExpression, &condition));
 
 	if ( !isTrue(condition) ) {
-		throw Runtime::Exceptions::AssertionFailed(printExpression(node->mExpression), node->mPosition);
+    	if ( assertStmt->mMessage ) {
+           	Runtime::Object message;
+           	tryControl(evaluate(assertStmt->mMessage, &message));
+
+           	::Utils::Printer::Instance()->print(message.getValue().toStdString(), assertStmt->mPosition.mFile, assertStmt->mPosition.mLine);
+    	}
+
+		throw Runtime::Exceptions::AssertionFailed(printExpression(assertStmt->mExpression), assertStmt->mPosition);
 	}
 }
 

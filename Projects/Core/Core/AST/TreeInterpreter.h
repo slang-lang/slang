@@ -72,7 +72,7 @@ private:
 	void visitIf(IfStatement* node);
 	void visitPrint(PrintStatement* node);
 	void visitReturn(ReturnStatement* node);
-	void visitStatements(Statements* node);
+	inline void visitStatements(Statements* node);
 	void visitSwitch(SwitchStatement* node);
 	void visitThrow(ThrowStatement* node);
 	void visitTry(TryStatement* node);
@@ -92,7 +92,7 @@ private:
 	inline void pushScope(IScope* scope = nullptr);
 	// }
 
-	void evaluate(Node* exp, Runtime::Object* result);
+	inline void evaluate(Node* exp, Runtime::Object* result);
 	void evaluateAssignmentExpression(AssignmentExpression* exp, Runtime::Object* result);
 	void evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result);
 	void evaluateBooleanBinaryExpression(BooleanBinaryExpression* exp, Runtime::Object* result);
