@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_LIBC_cassert_cassert_h
-#define Slang_Extensions_LIBC_cassert_cassert_h
+#ifndef Slang_Extensions_LIBC_cassert_cassert_any_h
+#define Slang_Extensions_LIBC_cassert_cassert_any_h
 
 
 // Library includes
@@ -44,9 +44,9 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		Runtime::Reference param_reference = (*it).reference();
-		Runtime::AtomicValue param_value = (*it++).value();
-		std::string param_text = (*it++).value().toStdString();
+		auto param_reference = (*it).reference();
+		auto param_condition = (*it++).value();
+		auto param_message   = (*it++).value().toStdString();
 
 		bool success = false;
 
@@ -57,13 +57,17 @@ public:
 		}
 		else {
 			Runtime::Object tmp;
-			tmp.setValue(param_value);
+			tmp.setValue(param_condition);
 
 			success = isTrue(tmp);
 		}
 
+		if ( param_message.empty() ) {
+		    param_message = "false";
+		}
+
 		if ( !success ) {
-			throw Runtime::Exceptions::AssertionFailed(param_text, token.position());
+			throw Runtime::Exceptions::AssertionFailed(param_message, token.position());
 		}
 
 		return Runtime::ControlFlow::Normal;

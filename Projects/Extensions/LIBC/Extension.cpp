@@ -70,7 +70,7 @@ void Extension::provideMethods( ExtensionMethods& methods )
 	assert( methods.empty() );
 
 	// cassert
-	methods.push_back( new CASSERT() );
+	//methods.push_back( new CASSERT() );
 
 	// cstring
 	methods.push_back( new STRCAT() );
