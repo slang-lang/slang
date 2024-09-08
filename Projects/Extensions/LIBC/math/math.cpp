@@ -7,11 +7,15 @@
 // Project includes
 #include "abs.h"
 #include "acos.h"
+#include "acosh.h"
 #include "asin.h"
+#include "asinh.h"
 #include "atan.h"
+#include "atanh.h"
 #include "atan2.h"
 #include "cbrt.h"
 #include "cos.h"
+#include "cosh.h"
 #include "exp.h"
 #include "exp2.h"
 #include "expm1.h"
@@ -29,8 +33,10 @@
 #include "pow.h"
 #include "remainder.h"
 #include "sin.h"
+#include "sinh.h"
 #include "sqrt.h"
 #include "tan.h"
+#include "tanh.h"
 
 // Namespace declarations
 
@@ -58,16 +64,24 @@ void math_t::provideMethods( ExtensionMethods& methods )
 {
     methods.push_back( new ACOS() );
     methods.push_back( new ACOSF() );
+    methods.push_back( new ACOSH() );
+    methods.push_back( new ACOSHF() );
     methods.push_back( new ASIN() );
     methods.push_back( new ASINF() );
+    methods.push_back( new ASINH() );
+    methods.push_back( new ASINHF() );
     methods.push_back( new ATAN() );
     methods.push_back( new ATANF() );
+    methods.push_back( new ATANH() );
+    methods.push_back( new ATANHF() );
     methods.push_back( new ATAN2() );
     methods.push_back( new ATAN2F() );
     methods.push_back( new CBRT() );
     methods.push_back( new CBRTF() );
     methods.push_back( new COS() );
     methods.push_back( new COSF() );
+    methods.push_back( new COSH() );
+    methods.push_back( new COSHF() );
     methods.push_back( new EXP() );
     methods.push_back( new EXPF() );
     methods.push_back( new EXP2() );
@@ -104,10 +118,14 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new REMAINDERF() );
     methods.push_back( new SIN() );
     methods.push_back( new SINF() );
+    methods.push_back( new SINH() );
+    methods.push_back( new SINHF() );
     methods.push_back( new SQRT() );
     methods.push_back( new SQRTF() );
     methods.push_back( new TAN() );
     methods.push_back( new TANF() );
+    methods.push_back( new TANH() );
+    methods.push_back( new TANHF() );
 }
 
 
