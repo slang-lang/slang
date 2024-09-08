@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_LIBC_math_remainder_hpp
-#define Slang_Extensions_LIBC_math_remainder_hpp
+#ifndef Slang_Extensions_LIBC_math_remainder_h
+#define Slang_Extensions_LIBC_math_remainder_h
 
 
 // Library includes

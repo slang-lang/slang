@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_LIBC_math_fdim_hpp
-#define Slang_Extensions_LIBC_math_fdim_hpp
+#ifndef Slang_Extensions_LIBC_math_fdim_h
+#define Slang_Extensions_LIBC_math_fdim_h
 
 
 // Library includes

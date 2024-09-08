@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_LIBC_math_fmax_hpp
-#define Slang_Extensions_LIBC_math_fmax_hpp
+#ifndef Slang_Extensions_LIBC_math_fmax_h
+#define Slang_Extensions_LIBC_math_fmax_h
 
 
 // Library includes

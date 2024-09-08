@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_LIBC_math_fma_h
-#define Slang_Extensions_LIBC_math_fma_h
+#ifndef Slang_Extensions_LIBC_math_hypot_h
+#define Slang_Extensions_LIBC_math_hypot_h
 
 
 // Library includes
@@ -28,16 +28,15 @@ namespace ExtensionLIBC {
 namespace math {
 
 
-class FMA: public ExtensionMethod
+class HYPOT: public ExtensionMethod
 {
 public:
-	FMA()
-	: ExtensionMethod(0, "fma", Designtime::DoubleObject::TYPENAME)
+	HYPOT()
+	: ExtensionMethod(0, "hypot", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
 		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("z", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -52,9 +51,8 @@ public:
 
 			auto param_x = (*it++).value().toDouble();
 			auto param_y = (*it++).value().toDouble();
-			auto param_z = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(fma(param_x, param_y, param_z));
+			*result = Runtime::DoubleObject(hypot(param_x, param_y));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
@@ -69,16 +67,15 @@ public:
 };
 
 
-class FMAF: public ExtensionMethod
+class HYPOTF: public ExtensionMethod
 {
 public:
-	FMAF()
-	: ExtensionMethod(0, "fmaf", Designtime::FloatObject::TYPENAME)
+	HYPOTF()
+	: ExtensionMethod(0, "hypotf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
 		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("z", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -93,9 +90,8 @@ public:
 
 			auto param_x = (*it++).value().toFloat();
 			auto param_y = (*it++).value().toFloat();
-			auto param_z = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(fmaf(param_x, param_y, param_z));
+			*result = Runtime::FloatObject(hypotf(param_x, param_y));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_LIBC_math_fmod_hpp
-#define Slang_Extensions_LIBC_math_fmod_hpp
+#ifndef Slang_Extensions_LIBC_math_fmod_h
+#define Slang_Extensions_LIBC_math_fmod_h
 
 
 // Library includes

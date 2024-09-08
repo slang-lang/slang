@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_LIBC_math_expm1_h
-#define Slang_Extensions_LIBC_math_expm1_h
+#ifndef Slang_Extensions_LIBC_math_pow_h
+#define Slang_Extensions_LIBC_math_pow_h
 
 
 // Library includes
@@ -26,14 +26,15 @@ namespace ExtensionLIBC {
 namespace math {
 
 
-class EXPM1: public ExtensionMethod
+class POW: public ExtensionMethod
 {
 public:
-	EXPM1()
-	: ExtensionMethod(0, "expm1", Designtime::DoubleObject::TYPENAME)
+	POW()
+	: ExtensionMethod(0, "pow", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("base", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("exponent", Designtime::DoubleObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -46,9 +47,10 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			auto param_arg = (*it++).value().toDouble();
+			auto param_base     = (*it++).value().toDouble();
+			auto param_exponent = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(expm1(param_arg));
+			*result = Runtime::DoubleObject(pow(param_base, param_exponent));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -63,14 +65,15 @@ public:
 };
 
 
-class EXPM1F: public ExtensionMethod
+class POWF: public ExtensionMethod
 {
 public:
-	EXPM1F()
-	: ExtensionMethod(0, "expm1f", Designtime::FloatObject::TYPENAME)
+	POWF()
+	: ExtensionMethod(0, "powf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("base", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("exponent", Designtime::FloatObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -83,9 +86,10 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			auto param_arg = (*it++).value().toFloat();
+			auto param_base     = (*it++).value().toFloat();
+			auto param_exponent = (*it++).value().toFloat();
 
-			*result = Runtime::DoubleObject(expm1f(param_arg));
+			*result = Runtime::DoubleObject(powf(param_base, param_exponent));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

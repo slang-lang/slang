@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_LIBC_math_fma_h
-#define Slang_Extensions_LIBC_math_fma_h
+#ifndef Slang_Extensions_LIBC_math_sqrt_h
+#define Slang_Extensions_LIBC_math_sqrt_h
 
 
 // Library includes
@@ -28,16 +28,14 @@ namespace ExtensionLIBC {
 namespace math {
 
 
-class FMA: public ExtensionMethod
+class SQRT: public ExtensionMethod
 {
 public:
-	FMA()
-	: ExtensionMethod(0, "fma", Designtime::DoubleObject::TYPENAME)
+	SQRT()
+	: ExtensionMethod(0, "sqrt", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("z", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -50,17 +48,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			auto param_x = (*it++).value().toDouble();
-			auto param_y = (*it++).value().toDouble();
-			auto param_z = (*it++).value().toDouble();
+			auto param_arg = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(fma(param_x, param_y, param_z));
+			*result = Runtime::DoubleObject(sqrt(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
 			*data = Runtime::StringObject(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception(data, token.position());
+			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
 		}
 
@@ -69,16 +65,14 @@ public:
 };
 
 
-class FMAF: public ExtensionMethod
+class SQRTF: public ExtensionMethod
 {
 public:
-	FMAF()
-	: ExtensionMethod(0, "fmaf", Designtime::FloatObject::TYPENAME)
+	SQRTF()
+	: ExtensionMethod(0, "sqrtf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("z", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -91,11 +85,9 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			auto param_x = (*it++).value().toFloat();
-			auto param_y = (*it++).value().toFloat();
-			auto param_z = (*it++).value().toFloat();
+			auto param_arg = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(fmaf(param_x, param_y, param_z));
+			*result = Runtime::FloatObject(sqrtf(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

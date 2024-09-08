@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_LIBC_math_abs_hpp
-#define Slang_Extensions_LIBC_math_abs_hpp
+#ifndef Slang_Extensions_LIBC_math_abs_h
+#define Slang_Extensions_LIBC_math_abs_h
 
 
 // Library includes
@@ -72,7 +72,7 @@ public:
 	: ExtensionMethod(0, "fabsf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("n", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -85,9 +85,9 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			auto param_value = (*it++).value().toFloat();
+			auto param_n = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(fabsf(param_value));
+			*result = Runtime::FloatObject(fabsf(param_n));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

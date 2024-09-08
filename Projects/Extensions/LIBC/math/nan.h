@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_LIBC_math_nan_hpp
-#define Slang_Extensions_LIBC_math_nan_hpp
+#ifndef Slang_Extensions_LIBC_math_nan_h
+#define Slang_Extensions_LIBC_math_nan_h
 
 
 // Library includes

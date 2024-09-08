@@ -50,7 +50,8 @@ public:
 		ParameterList list = mergeParameters(params);
 
 		try {
-            *result = Runtime::StringObject( std::string( tmpnam( nullptr ) ) );
+            //*result = Runtime::StringObject( std::string( tmpnam( nullptr ) ) );  // tmpnam is deprecated
+            *result = Runtime::StringObject( std::to_string( mkstemp( nullptr ) ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

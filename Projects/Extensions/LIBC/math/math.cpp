@@ -6,6 +6,7 @@
 
 // Project includes
 #include "abs.h"
+#include "cbrt.h"
 #include "exp.h"
 #include "exp2.h"
 #include "expm1.h"
@@ -14,8 +15,15 @@
 #include "fmax.h"
 #include "fmin.h"
 #include "fmod.h"
+#include "hypot.h"
+#include "log.h"
+#include "log10.h"
+#include "log1p.h"
+#include "log2.h"
 #include "nan.h"
+#include "pow.h"
 #include "remainder.h"
+#include "sqrt.h"
 
 // Namespace declarations
 
@@ -41,6 +49,8 @@ void math_t::initialize( ExtensionNamespace* scope )
 
 void math_t::provideMethods( ExtensionMethods& methods )
 {
+    methods.push_back( new CBRT() );
+    methods.push_back( new CBRTF() );
     methods.push_back( new EXP() );
     methods.push_back( new EXPF() );
     methods.push_back( new EXP2() );
@@ -59,10 +69,24 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new FMINF() );
     methods.push_back( new FMOD() );
     methods.push_back( new FMODF() );
+    methods.push_back( new HYPOT() );
+    methods.push_back( new HYPOTF() );
+    methods.push_back( new LOG() );
+    methods.push_back( new LOGF() );
+    methods.push_back( new LOG10() );
+    methods.push_back( new LOG10F() );
+    methods.push_back( new LOG1P() );
+    methods.push_back( new LOG1PF() );
+    methods.push_back( new LOG2() );
+    methods.push_back( new LOG2F() );
     methods.push_back( new MathNAN() );
     methods.push_back( new MathNANF() );
+    methods.push_back( new POW() );
+    methods.push_back( new POWF() );
     methods.push_back( new REMAINDER() );
     methods.push_back( new REMAINDERF() );
+    methods.push_back( new SQRT() );
+    methods.push_back( new SQRTF() );
 }
 
 
