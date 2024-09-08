@@ -2,6 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 #ADD_SUBDIRECTORY(cassert)
 #ADD_SUBDIRECTORY(cstring)
+ADD_SUBDIRECTORY(fenv)
 #ADD_SUBDIRECTORY(locale)
 ADD_SUBDIRECTORY(math)
 ADD_SUBDIRECTORY(stdio)
@@ -34,6 +35,7 @@ SET(DEPENDENCIES
     ExtensionsLIBCStdlib
     ExtensionsLIBCStdio
     ExtensionsLIBCMath
+    ExtensionsLIBCFenv
 	CoreExtensions
 )
 

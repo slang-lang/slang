@@ -56,6 +56,8 @@ void Extension::initialize( ExtensionNamespace* scope )
 #else
 	// Unix/Linux only
 
+	mFenv.initialize( scope );
+	mMath.initialize( scope );
 	mStdio.initialize( scope );
 	mStdlib.initialize( scope );
 #endif
@@ -90,6 +92,8 @@ void Extension::provideMethods( ExtensionMethods& methods )
 #else
 	// Unix/Linux only
 
+	mFenv.provideMethods( methods );
+	mMath.provideMethods( methods );
 	mStdio.provideMethods( methods );
 	mStdlib.provideMethods( methods );
 #endif
