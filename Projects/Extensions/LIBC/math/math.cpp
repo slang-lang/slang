@@ -16,6 +16,8 @@
 #include "cbrt.h"
 #include "cos.h"
 #include "cosh.h"
+#include "erf.h"
+#include "erfc.h"
 #include "exp.h"
 #include "exp2.h"
 #include "expm1.h"
@@ -25,6 +27,7 @@
 #include "fmin.h"
 #include "fmod.h"
 #include "hypot.h"
+#include "lgamma.h"
 #include "log.h"
 #include "log10.h"
 #include "log1p.h"
@@ -37,6 +40,7 @@
 #include "sqrt.h"
 #include "tan.h"
 #include "tanh.h"
+#include "tgamma.h"
 
 // Namespace declarations
 
@@ -82,6 +86,10 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new COSF() );
     methods.push_back( new COSH() );
     methods.push_back( new COSHF() );
+    methods.push_back( new ERF() );
+    methods.push_back( new ERFF() );
+    methods.push_back( new ERFC() );
+    methods.push_back( new ERFCF() );
     methods.push_back( new EXP() );
     methods.push_back( new EXPF() );
     methods.push_back( new EXP2() );
@@ -102,6 +110,8 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new FMODF() );
     methods.push_back( new HYPOT() );
     methods.push_back( new HYPOTF() );
+    methods.push_back( new LGAMMA() );
+    methods.push_back( new LGAMMAF() );
     methods.push_back( new LOG() );
     methods.push_back( new LOGF() );
     methods.push_back( new LOG10() );
@@ -126,6 +136,8 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new TANF() );
     methods.push_back( new TANH() );
     methods.push_back( new TANHF() );
+    methods.push_back( new TGAMMA() );
+    methods.push_back( new TGAMMAF() );
 }
 
 
