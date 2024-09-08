@@ -6,7 +6,12 @@
 
 // Project includes
 #include "abs.h"
+#include "acos.h"
+#include "asin.h"
+#include "atan.h"
+#include "atan2.h"
 #include "cbrt.h"
+#include "cos.h"
 #include "exp.h"
 #include "exp2.h"
 #include "expm1.h"
@@ -23,7 +28,9 @@
 #include "nan.h"
 #include "pow.h"
 #include "remainder.h"
+#include "sin.h"
 #include "sqrt.h"
+#include "tan.h"
 
 // Namespace declarations
 
@@ -49,8 +56,18 @@ void math_t::initialize( ExtensionNamespace* scope )
 
 void math_t::provideMethods( ExtensionMethods& methods )
 {
+    methods.push_back( new ACOS() );
+    methods.push_back( new ACOSF() );
+    methods.push_back( new ASIN() );
+    methods.push_back( new ASINF() );
+    methods.push_back( new ATAN() );
+    methods.push_back( new ATANF() );
+    methods.push_back( new ATAN2() );
+    methods.push_back( new ATAN2F() );
     methods.push_back( new CBRT() );
     methods.push_back( new CBRTF() );
+    methods.push_back( new COS() );
+    methods.push_back( new COSF() );
     methods.push_back( new EXP() );
     methods.push_back( new EXPF() );
     methods.push_back( new EXP2() );
@@ -85,8 +102,12 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new POWF() );
     methods.push_back( new REMAINDER() );
     methods.push_back( new REMAINDERF() );
+    methods.push_back( new SIN() );
+    methods.push_back( new SINF() );
     methods.push_back( new SQRT() );
     methods.push_back( new SQRTF() );
+    methods.push_back( new TAN() );
+    methods.push_back( new TANF() );
 }
 
 
