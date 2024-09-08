@@ -1,11 +1,10 @@
 
-#ifndef Slang_Extensions_System_Math_Trunc_h
-#define Slang_Extensions_System_Math_Trunc_h
+#ifndef Slang_Extensions_LIBC_math_foor_h
+#define Slang_Extensions_LIBC_math_foor_h
 
 
 // Library includes
 #include <math.h>
-#include <cmath>
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
@@ -14,6 +13,7 @@
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Tools.h>
+#include <Core/VirtualMachine/Controller.h>
 
 // Forward declarations
 
@@ -22,18 +22,18 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace Math {
+namespace ExtensionLIBC {
+namespace math {
 
 
-class TruncDouble: public ExtensionMethod
+class FLOOR: public ExtensionMethod
 {
 public:
-	TruncDouble()
-	: ExtensionMethod(0, "trunc", Designtime::DoubleObject::TYPENAME)
+	FLOOR()
+	: ExtensionMethod(0, "floor", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -46,13 +46,9 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			double param_value = (*it++).value().toDouble();
+			auto param_arg = (*it++).value().toDouble();
 
-#ifdef _WIN32
-			*result = Runtime::DoubleObject((param_value > 0) ? floor(param_value) : ceil(param_value));
-#else
-			*result = Runtime::DoubleObject(trunc(param_value));
-#endif
+			*result = Runtime::DoubleObject(floor(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -67,14 +63,14 @@ public:
 };
 
 
-class TruncFloat: public ExtensionMethod
+class FLOORF: public ExtensionMethod
 {
 public:
-	TruncFloat()
-	: ExtensionMethod(0, "trunc", Designtime::FloatObject::TYPENAME)
+	FLOORF()
+	: ExtensionMethod(0, "floorf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -87,13 +83,9 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			float param_value = (*it++).value().toFloat();
+			auto param_arg = (*it++).value().toDouble();
 
-#ifdef _WIN32
-			*result = Runtime::FloatObject((param_value > 0) ? floor(param_value) : ceil(param_value));
-#else
-			*result = Runtime::FloatObject(trunc(param_value));
-#endif
+			*result = Runtime::FloatObject(floorf(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

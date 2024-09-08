@@ -14,6 +14,7 @@
 #include "atanh.h"
 #include "atan2.h"
 #include "cbrt.h"
+#include "ceil.h"
 #include "cos.h"
 #include "cosh.h"
 #include "erf.h"
@@ -22,6 +23,7 @@
 #include "exp2.h"
 #include "expm1.h"
 #include "fdim.h"
+#include "floor.h"
 #include "fma.h"
 #include "fmax.h"
 #include "fmin.h"
@@ -33,14 +35,18 @@
 #include "log1p.h"
 #include "log2.h"
 #include "nan.h"
+#include "nearbyint.h"
 #include "pow.h"
 #include "remainder.h"
+#include "rint.h"
+#include "round.h"
 #include "sin.h"
 #include "sinh.h"
 #include "sqrt.h"
 #include "tan.h"
 #include "tanh.h"
 #include "tgamma.h"
+#include "trunc.h"
 
 // Namespace declarations
 
@@ -82,6 +88,8 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new ATAN2F() );
     methods.push_back( new CBRT() );
     methods.push_back( new CBRTF() );
+    methods.push_back( new CEIL() );
+    methods.push_back( new CEILF() );
     methods.push_back( new COS() );
     methods.push_back( new COSF() );
     methods.push_back( new COSH() );
@@ -100,6 +108,8 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new FABSF() );
     methods.push_back( new FDIM() );
     methods.push_back( new FDIMF() );
+    methods.push_back( new FLOOR() );
+    methods.push_back( new FLOORF() );
     methods.push_back( new FMA() );
     methods.push_back( new FMAF() );
     methods.push_back( new FMAX() );
@@ -122,10 +132,16 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new LOG2F() );
     methods.push_back( new MathNAN() );
     methods.push_back( new MathNANF() );
+    methods.push_back( new NEARBYINT() );
+    methods.push_back( new NEARBYINTF() );
     methods.push_back( new POW() );
     methods.push_back( new POWF() );
     methods.push_back( new REMAINDER() );
     methods.push_back( new REMAINDERF() );
+    methods.push_back( new RINT() );
+    methods.push_back( new RINTF() );
+    methods.push_back( new ROUND() );
+    methods.push_back( new ROUNDF() );
     methods.push_back( new SIN() );
     methods.push_back( new SINF() );
     methods.push_back( new SINH() );
@@ -138,6 +154,8 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new TANHF() );
     methods.push_back( new TGAMMA() );
     methods.push_back( new TGAMMAF() );
+    methods.push_back( new TRUNC() );
+    methods.push_back( new TRUNCF() );
 }
 
 

@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_System_Math_Floor_h
-#define Slang_Extensions_System_Math_Floor_h
+#ifndef Slang_Extensions_LIBC_math_rint_h
+#define Slang_Extensions_LIBC_math_rint_h
 
 
 // Library includes
@@ -22,18 +22,18 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace Math {
+namespace ExtensionLIBC {
+namespace math {
 
 
-class FloorDouble: public ExtensionMethod
+class RINT: public ExtensionMethod
 {
 public:
-	FloorDouble()
-	: ExtensionMethod(0, "floor", Designtime::DoubleObject::TYPENAME)
+	RINT()
+	: ExtensionMethod(0, "rint", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -46,9 +46,9 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			double param_value = (*it++).value().toDouble();
+			auto param_arg = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(floor(param_value));
+			*result = Runtime::DoubleObject(rint(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -63,14 +63,14 @@ public:
 };
 
 
-class FloorFloat: public ExtensionMethod
+class RINTF: public ExtensionMethod
 {
 public:
-	FloorFloat()
-	: ExtensionMethod(0, "floor", Designtime::FloatObject::TYPENAME)
+	RINTF()
+	: ExtensionMethod(0, "rintf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -83,9 +83,9 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			double param_value = (*it++).value().toDouble();
+			auto param_arg = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(floor(param_value));
+			*result = Runtime::FloatObject(rintf(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

@@ -1,13 +1,13 @@
 
-#ifndef Slang_Extensions_System_Math_Round_h
-#define Slang_Extensions_System_Math_Round_h
+#ifndef Slang_Extensions_LIBC_math_trunc_h
+#define Slang_Extensions_LIBC_math_trunc_h
 
 
 // Library includes
 #include <math.h>
+#include <cmath>
 
 // Project includes
-#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
@@ -22,18 +22,18 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace Math {
+namespace ExtensionLIBC {
+namespace math {
 
 
-class RoundDouble: public ExtensionMethod
+class TRUNC: public ExtensionMethod
 {
 public:
-	RoundDouble()
-	: ExtensionMethod(0, "round", Designtime::DoubleObject::TYPENAME)
+	TRUNC()
+	: ExtensionMethod(0, "trunc", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -46,12 +46,12 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			double param_value = (*it++).value().toDouble();
+			auto param_arg = (*it++).value().toDouble();
 
 #ifdef _WIN32
-			*result = Runtime::DoubleObject(floor(param_value + 0.5));
+			*result = Runtime::DoubleObject((param_arg > 0) ? floor(param_arg) : ceil(param_arg));
 #else
-			*result = Runtime::DoubleObject(round(param_value));
+			*result = Runtime::DoubleObject(trunc(param_arg));
 #endif
 		}
 		catch ( std::exception& e ) {
@@ -67,14 +67,14 @@ public:
 };
 
 
-class RoundFloat: public ExtensionMethod
+class TRUNCF: public ExtensionMethod
 {
 public:
-	RoundFloat()
-	: ExtensionMethod(0, "round", Designtime::FloatObject::TYPENAME)
+	TRUNCF()
+	: ExtensionMethod(0, "truncf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -87,12 +87,12 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			float param_value = (*it++).value().toFloat();
+			auto param_arg = (*it++).value().toFloat();
 
 #ifdef _WIN32
-			*result = Runtime::FloatObject(floor(param_value + 0.5f));
+			*result = Runtime::FloatObject((param_arg > 0) ? floorf(param_arg) : ceilf(param_arg));
 #else
-			*result = Runtime::FloatObject(round(param_value));
+			*result = Runtime::FloatObject(truncf(param_arg));
 #endif
 		}
 		catch ( std::exception& e ) {
