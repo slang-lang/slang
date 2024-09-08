@@ -21,7 +21,8 @@
 
 namespace Slang {
 namespace Extensions {
-namespace ExtensionsLIBC {
+namespace LIBC {
+namespace cstring {
 
 
 class STRLEN : public ExtensionMethod
@@ -61,6 +62,7 @@ public:
 };
 
 
+}
 }
 }
 }

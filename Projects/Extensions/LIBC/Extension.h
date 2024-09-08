@@ -19,7 +19,7 @@
 
 namespace Slang {
 namespace Extensions {
-namespace ExtensionsLIBC {
+namespace LIBC {
 
 
 class Extension : public AExtension
@@ -33,10 +33,10 @@ public:
 	void provideMethods( ExtensionMethods& methods );
 
 private:
-    ExtensionLIBC::fenv::fenv_t     mFenv;
-    ExtensionLIBC::math::math_t     mMath;
-    ExtensionLIBC::stdio::stdio_t   mStdio;
-    ExtensionLIBC::stdlib::stdlib_t mStdlib;
+    LIBC::fenv::fenv_t     mFenv;
+    LIBC::math::math_t     mMath;
+    LIBC::stdio::stdio_t   mStdio;
+    LIBC::stdlib::stdlib_t mStdlib;
 };
 
 

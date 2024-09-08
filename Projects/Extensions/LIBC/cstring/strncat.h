@@ -22,7 +22,8 @@
 
 namespace Slang {
 namespace Extensions {
-namespace ExtensionsLIBC {
+namespace LIBC {
+namespace cstring {
 
 
 class STRNCAT : public ExtensionMethod
@@ -65,6 +66,7 @@ public:
 };
 
 
+}
 }
 }
 }

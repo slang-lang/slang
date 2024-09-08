@@ -18,7 +18,7 @@
 
 namespace Slang {
 namespace Extensions {
-namespace ExtensionLIBC {
+namespace LIBC {
 namespace fenv {
 
 

@@ -24,7 +24,8 @@
 
 namespace Slang {
 namespace Extensions {
-namespace ExtensionsLIBC {
+namespace LIBC {
+namespace cstring {
 
 
 class STRPBRK : public ExtensionMethod
@@ -65,6 +66,7 @@ public:
 };
 
 
+}
 }
 }
 }

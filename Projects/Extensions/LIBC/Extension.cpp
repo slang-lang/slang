@@ -26,7 +26,7 @@
 
 namespace Slang {
 namespace Extensions {
-namespace ExtensionsLIBC {
+namespace LIBC {
 
 
 Extension::Extension()
@@ -71,21 +71,21 @@ void Extension::provideMethods( ExtensionMethods& methods )
 	//methods.push_back( new CASSERT() );
 
 	// cstring
-	methods.push_back( new STRCAT() );
-	methods.push_back( new STRCHR() );
-	methods.push_back( new STRCMP() );
-	methods.push_back( new STRCOLL() );
-	methods.push_back( new STRCSPN() );
-	methods.push_back( new STRLEN() );
-	methods.push_back( new STRNCAT() );
-	methods.push_back( new STRNCMP() );
-	methods.push_back( new STRPBRK() );
-	methods.push_back( new STRSPN() );
-	methods.push_back( new STRRCHR() );
-	methods.push_back( new STRSTR() );
+	methods.push_back( new cstring::STRCAT() );
+	methods.push_back( new cstring::STRCHR() );
+	methods.push_back( new cstring::STRCMP() );
+	methods.push_back( new cstring::STRCOLL() );
+	methods.push_back( new cstring::STRCSPN() );
+	methods.push_back( new cstring::STRLEN() );
+	methods.push_back( new cstring::STRNCAT() );
+	methods.push_back( new cstring::STRNCMP() );
+	methods.push_back( new cstring::STRPBRK() );
+	methods.push_back( new cstring::STRSPN() );
+	methods.push_back( new cstring::STRRCHR() );
+	methods.push_back( new cstring::STRSTR() );
 
 	// locale
-	methods.push_back( new SETLOCALE() );
+	methods.push_back( new locale::SETLOCALE() );
 
 #ifdef _WIN32
 	// Win32 only

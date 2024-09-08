@@ -21,7 +21,8 @@
 
 namespace Slang {
 namespace Extensions {
-namespace ExtensionsLIBC {
+namespace LIBC {
+namespace locale {
 
 
 class SETLOCALE : public ExtensionMethod
@@ -62,6 +63,7 @@ public:
 };
 
 
+}
 }
 }
 }
