@@ -71,10 +71,21 @@ math_t::math_t()
 
 void math_t::initialize( ExtensionNamespace* scope )
 {
-    (void)scope;
-
 	// constants
-	//scope->define( "RAND_MAX", new Runtime::IntegerObject( "RAND_MAX", RAND_MAX ) );
+	scope->define( "FP_NORMAL",    new Runtime::FloatObject(  "FP_NORMAL",    FP_NORMAL ) );
+	scope->define( "FP_SUBNORMAL", new Runtime::FloatObject(  "FP_SUBNORMAL", FP_SUBNORMAL ) );
+	scope->define( "FP_ZERO",      new Runtime::FloatObject(  "FP_ZERO",      FP_ZERO ) );
+	scope->define( "FP_INFINITE",  new Runtime::FloatObject(  "FP_INFINITE",  FP_INFINITE ) );
+	scope->define( "FP_NAN",       new Runtime::FloatObject(  "FP_NAN",       FP_NAN ) );
+
+	scope->define( "FP_FAST_FMA",  new Runtime::DoubleObject( "FP_FAST_FMA",  FP_FAST_FMA ) );
+	scope->define( "FP_FAST_FMAF", new Runtime::DoubleObject( "FP_FAST_FMAF", FP_FAST_FMAF ) );
+
+	scope->define( "HUGE_VAL",     new Runtime::DoubleObject( "HUGE_VAL",     HUGE_VAL ) );
+	scope->define( "HUGE_VALF",    new Runtime::FloatObject(  "HUGE_VALF",    HUGE_VALF ) );
+
+	scope->define( "INFINITY",     new Runtime::DoubleObject( "INFINITY",     INFINITY ) );
+	scope->define( "NAN",          new Runtime::DoubleObject( "NAN",          NAN ) );
 }
 
 void math_t::provideMethods( ExtensionMethods& methods )
