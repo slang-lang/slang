@@ -6,6 +6,9 @@
 
 // Project includes
 #include "abs.h"
+#include "exp.h"
+#include "exp2.h"
+#include "expm1.h"
 #include "fdim.h"
 #include "fma.h"
 #include "fmax.h"
@@ -38,6 +41,12 @@ void math_t::initialize( ExtensionNamespace* scope )
 
 void math_t::provideMethods( ExtensionMethods& methods )
 {
+    methods.push_back( new EXP() );
+    methods.push_back( new EXPF() );
+    methods.push_back( new EXP2() );
+    methods.push_back( new EXP2F() );
+    methods.push_back( new EXPM1() );
+    methods.push_back( new EXPM1F() );
     methods.push_back( new FABS() );
     methods.push_back( new FABSF() );
     methods.push_back( new FDIM() );

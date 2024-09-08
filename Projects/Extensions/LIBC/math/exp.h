@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_System_Math_Exp_h
-#define Slang_Extensions_System_Math_Exp_h
+#ifndef Slang_Extensions_LIBC_math_exp_hpp
+#define Slang_Extensions_LIBC_math_exp_hpp
 
 
 // Library includes
@@ -22,18 +22,18 @@
 
 namespace Slang {
 namespace Extensions {
-namespace System {
-namespace Math {
+namespace ExtensionLIBC {
+namespace math {
 
 
-class ExpDouble: public ExtensionMethod
+class EXP: public ExtensionMethod
 {
 public:
-	ExpDouble()
+	EXP()
 	: ExtensionMethod(0, "exp", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -46,9 +46,9 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			double param_value = (*it++).value().toDouble();
+			auto param_arg = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(exp(param_value));
+			*result = Runtime::DoubleObject(exp(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -63,14 +63,14 @@ public:
 };
 
 
-class ExpFloat: public ExtensionMethod
+class EXPF: public ExtensionMethod
 {
 public:
-	ExpFloat()
-	: ExtensionMethod(0, "exp", Designtime::FloatObject::TYPENAME)
+	EXPF()
+	: ExtensionMethod(0, "expf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -83,9 +83,9 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			float param_value = (*it++).value().toFloat();
+			auto param_arg = (*it++).value().toFloat();
 
-			*result = Runtime::DoubleObject(expf(param_value));
+			*result = Runtime::DoubleObject(expf(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
