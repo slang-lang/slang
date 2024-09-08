@@ -46,8 +46,6 @@ public:	// Operators
 	void operator_modulo( const Object* other );
 	void operator_multiply( const Object* other );
 	void operator_plus( const Object* other );
-	void operator_shift_left( const Object* other );
-	void operator_shift_right( const Object* other );
 	void operator_subtract( const Object* other );
 	void operator_unary_decrement();
 	void operator_unary_increment();
@@ -61,4 +59,3 @@ public:	// Operators
 
 
 #endif
-

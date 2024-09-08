@@ -136,7 +136,7 @@ public object String implements IIterable {
 
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -358,6 +358,60 @@ public object String implements IIterable {
 	}
 
 	/*
+	 * Left shift operator
+	 */
+	public String operator<<( string other const ) modify {
+		mValue += other;
+
+		return this;
+	}
+
+	/*
+	 * Boolean shift operator
+	 */
+	public String operator<<( bool other const ) modify {
+		mValue += other;
+
+		return this;
+	}
+
+	/*
+	 * Double shift operator
+	 */
+	public String operator<<( double other const ) modify {
+		mValue += other;
+
+		return this;
+	}
+
+	/*
+	 * Float shift operator
+	 */
+	public String operator<<( float other const ) modify {
+		mValue += other;
+
+		return this;
+	}
+
+	/*
+	 * Integer shift operator
+	 */
+	public String operator<<( int other const ) modify {
+		mValue += other;
+
+		return this;
+	}
+
+	/*
+	 * Left shift operator
+	 */
+	public String operator<<( String other const ) modify {
+		mValue += other.mValue;
+
+		return this;
+	}
+
+	/*
 	 * Returns the character at the given position
 	 */
 	public string operator[]( int index ) const throws {
@@ -374,4 +428,3 @@ public object String implements IIterable {
 public String String( string value ) const {
 	return new String( value );
 }
-

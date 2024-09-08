@@ -284,30 +284,6 @@ void IntegerObject::operator_plus( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void IntegerObject::operator_shift_left( const Object* other )
-{
-	const std::string& target = other->QualifiedTypename();
-
-	if ( target == IntegerObject::TYPENAME ) {
-		mValue = mValue.toInt() << other->getValue().toInt();
-		return;
-	}
-
-	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator<<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
-}
-
-void IntegerObject::operator_shift_right( const Object* other )
-{
-	const std::string& target = other->QualifiedTypename();
-
-	if ( target == IntegerObject::TYPENAME ) {
-		mValue = mValue.toInt() >> other->getValue().toInt();
-		return;
-	}
-
-	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator>>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
-}
-
 void IntegerObject::operator_subtract( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
@@ -349,4 +325,3 @@ void IntegerObject::operator_unary_not()
 
 }
 }
-

@@ -38,6 +38,7 @@ public:	// Operators
 	bool operator_less( const Object* other );
 	bool operator_less_equal( const Object* other );
 	void operator_plus( const Object* other );
+	void operator_shift_left( const Object* other );
 };
 
 
