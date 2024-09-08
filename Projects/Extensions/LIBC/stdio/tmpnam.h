@@ -50,8 +50,11 @@ public:
 		ParameterList list = mergeParameters(params);
 
 		try {
-            //*result = Runtime::StringObject( std::string( tmpnam( nullptr ) ) );  // tmpnam is deprecated
-            *result = Runtime::StringObject( std::to_string( mkstemp( nullptr ) ) );
+#ifdef __APPLE__
+			*result = Runtime::StringObject( std::to_string( mkstemp( nullptr ) ) );  // tmpnam is deprecated
+#else
+			*result = Runtime::StringObject( std::string( tmpnam( nullptr ) ) );
+#endif
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
