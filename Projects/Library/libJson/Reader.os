@@ -9,42 +9,36 @@ import Tokenizer;
 import Value;
 
 
-public namespace Json {
-}
+public namespace Json { }
 
 public object JsonReader {
-    public void Constructor() {
-        mTokenizer = new Tokenizer();
-    }
-
     public JsonValue parse( string text ) modify throws {
-        //print("parse(" + text + ")");
-
-        mTokenizer.parseString( text );
+        var tokenizer = new Tokenizer();
+        var tokenIt = tokenizer.parseString( text ).getIterator();
 
         JsonValue value;
-        if ( mTokenizer.hasNextToken() ) {
-            switch ( mTokenizer.nextToken().mType ) {
+        if ( tokenIt.hasNext() ) {
+            switch ( tokenIt.next().type ) {
                 case TokenType.BRACKET_OPEN: {
-                    value = parseArray( mTokenizer );
+                    value = parseArray( tokenIt );
 
-                    if ( mTokenizer.currentToken().mType != TokenType.BRACKET_CLOSE ) {
+                    if ( tokenIt.current().type != TokenType.BRACKET_CLOSE ) {
                         throw "invalid JSON array";
                     }
                     break;
                 }
                 case TokenType.CURLY_BRACKET_OPEN: {
-                    value = parseObject( mTokenizer );
+                    value = parseObject( tokenIt );
 
-                    if ( mTokenizer.currentToken().mType != TokenType.CURLY_BRACKET_CLOSE ) {
+                    if ( tokenIt.current().type != TokenType.CURLY_BRACKET_CLOSE ) {
                         throw "invalid JSON object";
                     }
                     break;
                 }
                 default: {
-                    value = parseValue( mTokenizer );
+                    value = parseValue( tokenIt );
 
-                    if ( mTokenizer.hasNextToken() ) {
+                    if ( tokenIt.hasNext() ) {
                         throw "invalid JSON value";
                     }
                     break;
@@ -55,19 +49,15 @@ public object JsonReader {
         return value;
     }
 
-    private JsonValue parseArray( Tokenizer t ) {
-        if ( !t ) {
-            return JsonValue null;
-        }
-
+    private JsonValue parseArray( Iterator<Token> t ) {
+        var result = new JsonArray();
+        
         require( t, TokenType.BRACKET_OPEN );
 
-        JsonArray result = new JsonArray();
-
-        while ( t.currentToken().mType != TokenType.BRACKET_CLOSE ) {
+        while ( t.current().type != TokenType.BRACKET_CLOSE ) {
             result.addMember( parseValue( t ) );
 
-            if ( t.currentToken().mType != TokenType.COMMA ) {
+            if ( t.current().type != TokenType.COMMA ) {
                 break;
             }
             require( t, TokenType.COMMA );
@@ -78,24 +68,20 @@ public object JsonReader {
         return JsonValue result;
     }
 
-    private JsonValue parseObject( Tokenizer t ) throws {
-        if ( !t ) {
-            return JsonValue null;
-        }
+    private JsonValue parseObject( Iterator<Token> t ) throws {
+        var result = new JsonObject();
 
         require( t, TokenType.CURLY_BRACKET_OPEN );
 
-        var result = new JsonObject();
-
-        while ( t.currentToken().mType != TokenType.CURLY_BRACKET_CLOSE ) {
-            string key = t.currentToken().mValue;
-            t.nextToken();
+        while ( t.current().type != TokenType.CURLY_BRACKET_CLOSE ) {
+            string key = t.current().value;
+            t.next();
 
             require( t, TokenType.COLON );
 
             result.addMember( key, parseValue( t ) );
 
-            if ( t.currentToken().mType != TokenType.COMMA ) {
+            if ( t.current().type != TokenType.COMMA ) {
                 break;
             }
             require( t, TokenType.COMMA );
@@ -106,14 +92,11 @@ public object JsonReader {
         return JsonValue result;
     }
 
-    private JsonValue parseValue( Tokenizer t ) throws {
-        if ( !t ) {
-            return JsonValue null;
-        }
+    private JsonValue parseValue( Iterator<Token> t ) throws {
+        var token = t.current();
 
         JsonValue value;
-
-        switch ( t.currentToken().mType ) {
+        switch ( token.type ) {
             case TokenType.BRACKET_OPEN: {
                 value = parseArray( t );
                 break;
@@ -123,48 +106,46 @@ public object JsonReader {
                 break;
             }
             case TokenType.BOOLEAN: {
-                value = new JsonValue( t.currentToken().mValue );
-                t.nextToken();
+                value = new JsonValue( token.value );
+                t.next();
                 break;
             }
             case TokenType.IDENTIFIER: {
-                value = new JsonValue( t.currentToken().mValue );
-                t.nextToken();
+                value = new JsonValue( token.value );
+                t.next();
                 break;
             }
             case TokenType.NUMBER: {
-                value = new JsonValue( t.currentToken().mValue );
-                t.nextToken();
+                value = new JsonValue( token.value );
+                t.next();
                 break;
             }
             case TokenType.STRING: {
-                value = new JsonValue( t.currentToken().mValue );
-                t.nextToken();
+                value = new JsonValue( token.value );
+                t.next();
                 break;
             }
             case TokenType.NULL: {
                 value = new JsonValue( "null" );
-                t.nextToken();
+                t.next();
                 break;
             }
             default: {
-                throw "invalid token at " + t.currentToken().mPosition.toString();
+                throw "invalid token at " + token.position.toString();
             }
         }
 
         return value;
     }
 
-    private void require( Tokenizer t, TokenType type ) throws {
-        if ( t.currentToken().mType != type ) {
-            throw "required '" + TokenToString( type ) + "' but got '" + TokenToString( t.currentToken().mType ) + "'";
+    private void require( Iterator<Token> t, TokenType type ) throws {
+        if ( t.current().type != type ) {
+            throw "required '" + TokenToString( type ) + "' but got '" + TokenToString( t.current().type ) + "' at " + t.current().position.toString();
         }
 
-        if ( t.hasNextToken() ) {
-            t.nextToken();
+        if ( t.hasNext() ) {
+            t.next();
         }
     }
-
-    private Tokenizer mTokenizer;
 }
 

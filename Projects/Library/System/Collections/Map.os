@@ -1,6 +1,5 @@
 
 import System.Exception;
-import CollectionItem;
 import ICollection;
 import Iterator;
 import List;
@@ -58,13 +57,25 @@ public object Map<K, V> implements ICollection {
 		throw new Exception( "unknown key!" );
 	}
 
+///* activate for double linked iterator usage
 	public Iterator<Object> getIterator() const {
-		return new Iterator<Object>( cast<ICollection>( mItems ) );
+		return mItems.getIterator();
 	}
 
 	public ReverseIterator<Object> getReverseIterator() const {
-		return new ReverseIterator<Object>( cast<ICollection>( mItems ) );
+		return mItems.getReverseIterator();
 	}
+//*/
+
+/* activate for random access iterator usage
+	public Iterator<Object> getIterator() const {
+		return mItems.getIterator();
+	}
+
+	public ReverseIterator<Object> getReverseIterator() const {
+		return mItems.getReverseIterator();
+	}
+*/
 
 	public int indexOf( K key ) const throws {
 		int count = 0;
@@ -123,6 +134,6 @@ public object Map<K, V> implements ICollection {
 	private List<Object> mItems;		// a list of Pair<K, V>
 
 	private Iterator<Object> __iterator;				// this is a hack to automatically initialize a generic type
-	private ReverseIterator<Object> __reverse_iterator;		// this is a hack to automatically initialize a generic type
+	private ReverseIterator<Object> __reverse_iterator;	// this is a hack to automatically initialize a generic type
 }
 

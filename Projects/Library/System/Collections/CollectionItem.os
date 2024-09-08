@@ -6,16 +6,16 @@ public namespace System.Collections { }
  * Double linked collection item
  */
 private object CollectionItem<T> {
-	public CollectionItem<T> mNext;
-	public CollectionItem<T> mPrevious;
-	public T mValue;
+	public CollectionItem<T> next;
+	public CollectionItem<T> previous;
+	public T value;
 
 	public void Constructor() {
 		// this is empty by intend
 	}
 
-	public void Constructor( T value ) {
-		mValue = value;
+	public void Constructor( T v ) {
+		value = v;
 	}
 
 	public void Destructor() {
@@ -25,34 +25,34 @@ private object CollectionItem<T> {
 	public CollectionItem<T> Copy() const {
 		var result = new CollectionItem<T>();
 
-		result.mNext = mNext;
-		result.mPrevious = mPrevious;
-		result.mValue = mValue;
+		result.next = next;
+		result.previous = previous;
+		result.value = value;
 
 		return result;
 	}
 
 	public T get() const {
-		return mValue;
+		return value;
 	}
 
 	public CollectionItem<T> next() const {
-		return mNext;
+		return next;
 	}
 
 	public void next( CollectionItem<T> n ) modify {
-		mNext = n;
+		next = n;
 	}
 
 	public CollectionItem<T> previous() const {
-		return mPrevious;
+		return previous;
 	}
 
 	public void previous( CollectionItem<T> p ) modify {
-		mPrevious = p;
+		previous = p;
 	}
 
-	public void set( T value ) modify {
-		mValue = value;
+	public void set( T v ) modify {
+		value = v;
 	}
 }

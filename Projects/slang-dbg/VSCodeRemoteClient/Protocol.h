@@ -6,7 +6,7 @@
 // Library includes
 #include <string>
 #include <utility>
-#include <Json/Value.h>
+#include <json/value.h>
 
 // Project includes
 #include <Common/AClient.h>
@@ -56,10 +56,10 @@ public:
 	Json::Value serialize() const {
 		Json::Value result;
 
-		result.addMember("seq", seq);
-		result.addMember("type", type);
+		result[ "seq" ] = seq;
+		result[ "type" ] = type;
 
-		result.addMember("eventtype", eventtype);
+		result[ "eventtype" ] = eventtype;
 
 		return result;
 	}
@@ -82,17 +82,17 @@ public:
 	Json::Value serialize() const {
 		Json::Value result;
 
-		result.addMember("seq", seq);
-		result.addMember("type", type);
+		result[ "seq" ] = seq;
+		result[ "type" ] = type;
 
-		result.addMember("command", command);
+		result[ "command" ] = command;
 
 		if ( !arguments.empty() ) {
 			Json::Value args;
 			for ( const auto& argument : arguments ) {
-				args.addElement(Json::Value(argument));
+				args.append( Json::Value( argument ) );
 			}
-			result.addMember("arguments", args);
+			result[ "arguments" ] = args;
 		}
 
 		return result;
@@ -117,10 +117,10 @@ public:
 	Json::Value serialize() const {
 		Json::Value result;
 
-		result.addMember("seq", seq);
-		result.addMember("type", type);
+		result[ "seq" ] = seq;
+		result[ "type" ] = type;
 
-		result.addMember("success", success);
+		result[ "success" ] = success;
 
 		return result;
 	}
@@ -141,7 +141,6 @@ private:
 	Request* convertToRequest(const Json::Value& message) const;
 	Response* convertToResponse(const Json::Value& message) const;
 };
-
 
 
 }

@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <cstdint>
 #include <list>
 #include <utility>
 
@@ -124,7 +125,7 @@ public:
 	};
 
 public:
-	explicit BinaryExpression(Node* lhs, Token operation, Node* rhs, const std::string& resultType)
+	explicit BinaryExpression(Node* lhs, const Token& operation, Node* rhs, const std::string& resultType)
 	: Expression(ExpressionType::BinaryExpression),
 	  mLHS(lhs),
 	  mOperation(std::move(operation)),
@@ -150,7 +151,7 @@ protected:
 class BinaryExpressionNoLeftOwner : public BinaryExpression
 {
 public:
-	explicit BinaryExpressionNoLeftOwner( Node* lhs, Token operation, Node* rhs, const std::string& resultType )
+	explicit BinaryExpressionNoLeftOwner( Node* lhs, const Token& operation, Node* rhs, const std::string& resultType )
 	: BinaryExpression( lhs, operation, rhs, resultType )
 	{ }
 	~BinaryExpressionNoLeftOwner() override {
@@ -162,7 +163,7 @@ public:
 class BinaryExpressionOwner : public BinaryExpression
 {
 public:
-	explicit BinaryExpressionOwner( Node* lhs, Token operation, Node* rhs, const std::string& resultType )
+	explicit BinaryExpressionOwner( Node* lhs, const Token& operation, Node* rhs, const std::string& resultType )
 	: BinaryExpression( lhs, operation, rhs, resultType )
 	{ }
 	~BinaryExpressionOwner() override {
@@ -666,7 +667,7 @@ public:
 	};
 
 public:
-	explicit UnaryExpression(Token  operation, Node* exp, ValueType::E valueType)
+	explicit UnaryExpression(const Token& operation, Node* exp, ValueType::E valueType)
 	: Expression(ExpressionType::UnaryExpression),
 	  mExpression(exp),
 	  mOperation(std::move(operation)),

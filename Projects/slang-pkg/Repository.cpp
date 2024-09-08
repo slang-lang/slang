@@ -6,7 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <utility>
-#include <Json/Json.h>
+#include <json/json.h>
 
 // Project includes
 #include <Tools/Files.h>
@@ -75,14 +75,12 @@ bool Repository::processIndex(const Json::Value& value)
 
 	Json::Value modules = value["modules"];
 
-	for ( const auto& it : modules.members() ) {
-		std::string name_short = it["name"].asString();
-		std::string source = it.isMember("source") ? it["source"].asString() : mURL;
-		std::string version = it["version"].asString();
+	for ( const auto& module : modules ) {
+		std::string name_short = module["name"].asString();
+		std::string source = module.isMember("source") ? module["source"].asString() : mURL;
+		std::string version = module["version"].asString();
 
-		Module module(name_short, version, source);
-
-		mModules.insert(module);
+		mModules.insert( Module(name_short, version, source) );
 	}
 
 	return true;

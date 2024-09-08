@@ -34,18 +34,20 @@ public object Set<T> implements ICollection {
 
 		CollectionItem<T> item = mFirst;
 		for ( int i = 0; i < index; i++ ) {
-			item = item.mNext;
+			item = item.next;
 		}
 
-		return item.mValue;
+		return item.value;
 	}
 
 	public void clear() modify {
 		for ( int i = 0; i < mSize; i++ ) {
-			delete mFirst.mValue;
-			mFirst = mFirst.mNext;
+			delete mFirst.value;
+			mFirst = mFirst.next;
 		}
 
+		mFirst = CollectionItem<T> null;
+		mLast = CollectionItem<T> null;
 		mSize = 0;
 	}
 
@@ -63,19 +65,29 @@ public object Set<T> implements ICollection {
 		}
 
 		if ( index == 0 ) {						// special handling for 1st element
-			mFirst = mFirst.mNext;
+			mFirst = mFirst.next;
+		}
+		else if ( index == mSize - 1 ) {		// special handling for last element
+			var prev = mFirst;
+
+			while( prev.next.next )
+				prev = prev.next;
+
+			prev.next = CollectionItem<T> null;
+			mLast = prev;
 		}
 		else {									// default handling for erasing
-			CollectionItem<T> prev = mFirst;
+			var prev = mFirst;
+
 			for ( int i = 0; i < index - 1; i++ ) {
-				prev = prev.mNext;
+				prev = prev.next;
 			}
 
 			if ( index == mSize - 1 ) {
-				mLast = prev;
+				mLast = prev.next;
 			}
-			else if ( prev.mNext ) {
-				prev.mNext = prev.mNext.mNext;
+			else if ( prev.next ) {
+				prev.next = prev.next.next;
 			}
 		}
 
@@ -92,40 +104,53 @@ public object Set<T> implements ICollection {
 			throw new OutOfBoundsException( "empty collection" );
 		}
 
-		return mFirst.mValue;
+		return mFirst.value;
 	}
 
+
+///* activate for double linked iterator usage
 	public Iterator<T> getIterator() const {
-		return new Iterator<T>( cast<ICollection>( this ) );
+		return new Iterator<T>( mFirst );
 	}
 
 	public ReverseIterator<T> getReverseIterator() const {
-		return new ReverseIterator<T>( cast<ICollection>( this ) );
+		return new ReverseIterator<T>( mLast );
 	}
+//*/
+
+/* activate for random access iterator usage
+	public Iterator<T> getIterator() const {
+		return new Iterator<T>( ICollection this );
+	}
+
+	public ReverseIterator<T> getReverseIterator() const {
+		return new ReverseIterator<T>( ICollection this );
+	}
+*/
 
 	public int indexOf( T value ) const {
 		CollectionItem<T> item = mFirst;
 
 		for ( int i = 0; i < mSize; i++ ) {
-			if ( item.mValue == value ) {
+			if ( item.value == value ) {
 				return i;
 			}
 
-			item = item.mNext;
+			item = item.next;
 		}
 
 		return -1;
 	}
 
-	public void insert (T value ) modify throws {
+	public void insert( T value ) modify throws {
 		var item = new CollectionItem<T>( value );
 
 		if ( !mFirst ) {				// special handling for 1st element
 			mFirst = item;
 			mLast = item;
 		}
-		else if ( (T value) < (T mFirst.mValue) ) {		// special handling for inserting in 1st position
-			item.mNext = mFirst;
+		else if ( (T value) < (T mFirst.value) ) {		// special handling for inserting in 1st position
+			item.next = mFirst;
 			mFirst = item;
 		}
 		else {						// default handling for insertions
@@ -133,24 +158,24 @@ public object Set<T> implements ICollection {
 			CollectionItem<T> previous;
 
 			for ( int i = 0; i < mSize; i++ ) {
-				if ( (T value) < (T tmp.mValue) ) {
+				if ( (T value) < (T tmp.value) ) {
 					break;
 				}
 
 				previous = tmp;
-				tmp = tmp.mNext;
+				tmp = tmp.next;
 			}
 
 			if ( !mAllowDuplicates ) {
-				if ( previous.mNext ) {
-					if ( item == previous.mNext ) {
-						throw new Exception("duplicate item");
+				if ( previous.next ) {
+					if ( item == previous.next ) {
+						throw new Exception( "duplicate item" );
 					}
 				}
 			}
 
-			item.mNext = previous.mNext;
-			previous.mNext = item;
+			item.next = previous.next;
+			previous.next = item;
 		}
 
 		mSize++;
@@ -161,7 +186,7 @@ public object Set<T> implements ICollection {
 			throw new OutOfBoundsException( "empty collection" );
 		}
 
-		return mLast.mValue;
+		return mLast.value;
 	}
 
 	public int size() const {
@@ -177,7 +202,7 @@ public object Set<T> implements ICollection {
 	private CollectionItem<T> mLast;
 	private int mSize;
 
-	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
-	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
+	private Iterator<T> __iterator;					// this is a hack to automatically initialize a generic type
+	private ReverseIterator<T> __reverse_iterator;	// this is a hack to automatically initialize a generic type
 }
 

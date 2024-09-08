@@ -4,7 +4,7 @@
 
 
 // Library includes
-#include <stdlib.h>
+#include <cstdlib>
 #ifdef _WIN32
 	// Win32 only methods
 #	include <Windows.h>

@@ -1,94 +1,25 @@
 #!/usr/local/bin/slang
 
 // Library imports
+import libParam;
+import FileReader;
 
 // Project imports
 import Board;
-import Cell;
 
 
-public int Main(int argc, string args) {
-	print( "Sudoku Solver v0.0.1" );
+public int Main( int argc, string args ) {
+	print( "Sudoku Solver v0.1.0" );
+
+	var params = new ParameterHandler( argc, args );
+	if ( params.empty() ) {
+		print( "" );
+		print( "Usage: program <filename>.board" );
+		exit( -1 );
+	}
 
 	try {
-/*
-		var board = new Board(2, 2, 2);
-
-		board.set(1, 1, 1, true);
-		board.set(2, 1, 2, true);
-		board.set(2, 2, 4, true);
-		board.set(3, 1, 3, true);
-		board.set(3, 3, 4, true);
-		//board.set(4, 4, 1, true);
-*/
-
-		var board = new Board( 3, 3, 2 );
-		board.set(1, 1, 6);
-		board.set(6, 1, 4);
-		board.set(3, 2, 3);
-		board.set(2, 3, 2);
-		board.set(5, 4, 4)
-		board.set(1, 6, 2);
-		board.set(6, 6, 3);
-
-/*
-		var board = new Board( 3, 3, 3 );
-		board.set(1, 1, 9);
-		board.set(2, 1, 7);
-		board.set(4, 1, 1);
-		board.set(9, 1, 5);
-		board.set(3, 2, 5);
-		board.set(5, 2, 9);
-		board.set(7, 2, 2);
-		board.set(9, 2, 1);
-		board.set(1, 3, 8);
-		board.set(5, 3, 4);
-		board.set(5, 4, 8);
-		board.set(4, 5, 7);
-		board.set(5, 6, 2);
-		board.set(6, 6, 6);
-		board.set(9, 6, 9);
-		board.set(1, 7, 2);
-		board.set(4, 7, 3);
-		board.set(9, 7, 6);
-		board.set(4, 8, 2);
-		board.set(7, 8, 9);
-		board.set(3, 9, 1);
-		board.set(4, 9, 9);
-		board.set(6, 9, 4);
-		board.set(7, 9, 5);
-		board.set(8, 9, 7);
-*/
-
-		print( "Start:" );
-		print( board.toString() );
-		print( "" );
-
-/*
-		assert( board.isSafe( 1, 1, 4 ) );
-		assert( board.isUsedInBox( 0, 1, 2 ) );
-		assert( ! board.isUsedInBox( 1, 1, 4) );
-		assert( board.isUsedInLine( 3, 1 ) );
-		assert( board.isUsedInRow( 3, 2 ) );
-
-		var cell = board.findEmptyCell();
-		assert( cell && cell.X == 2 && cell.Y == 1 );
-*/
-
-		board.calculatePossibleValues();
-
-		print( "Calculated possible values:" );
-		print( board.toString( true ) );
-		print( "" );
-
-		var startTime = time();
-		board.solve();
-		var endTime = time();
-
-		print( "" );
-		print( "Solved in " + (endTime - startTime) + " seconds:" );
-		print( board.toString() );
-		print( "" );
+		process( loadBoardFromFile( params[ 0 ].Key ) );
 	}
 	catch ( string e ) {
 		print( "Exception: " + e );
@@ -98,5 +29,51 @@ public int Main(int argc, string args) {
 	}
 
 	return 0;
+}
+
+private Board loadBoardFromFile( string filename ) const {
+	var it = new Scanner( filename ).getStringIterator( LINEBREAK );
+
+	var board = new Board( 3, 3, 3 );
+
+	int y = 1;
+	while ( it.hasNext() ) {
+		var line = it.next();
+
+		for ( int x = 1; x <= strlen( line ); x++ ) {
+			var value = cast<int>( substr( line, x - 1, 1 ) );
+			
+			board.set( x, y, value );
+		}
+
+		y++;
+	}
+
+	return board;
+}
+
+private void process( Board board ) {
+	print( "" );
+	print( board.toString() );
+	print( "" );
+
+	var startTime = time();
+
+	board.calculatePossibleValues();
+
+	var midTime = time();
+
+	print( "Calculated possible values (in " + ( midTime - startTime ) + " seconds ):" );
+	print( board.toString( true ) );
+	print( "" );
+
+	board.solve();
+
+	var endTime = time();
+
+	print( "" );
+	print( "Solved in " + (endTime - midTime) + " seconds:" );
+	print( board.toString() );
+	print( "" );
 }
 

@@ -9,7 +9,7 @@ import Cell;
 
 
 public object Board {
-	public void Constructor(int sizeX, int sizeY, int repeat) {
+	public void Constructor( int sizeX, int sizeY, int repeat ) {
 		Cells = new Map<string, Cell>();
 		Repeat = repeat;
 		SizeX = sizeX;
@@ -86,14 +86,14 @@ public object Board {
 		return Cell null;
 	}
 
-	public Cell getCell(int x, int y) const {
+	public Cell getCell( int x, int y ) const {
 		return Cells.get( cast<string>( x ) + "," + cast<string>( y ) );
 	}
 
-	public bool isSafe(int x, int y, int value) const {
+	public bool isSafe( int x, int y, int value ) const {
 		return	!isUsedInBox( x, y, value ) &&
-			!isUsedInLine( y, value ) &&
-			!isUsedInRow( x, value );
+				!isUsedInLine( y, value ) &&
+				!isUsedInRow( x, value );
 	}
 
 	public bool isSane() const {
@@ -112,7 +112,7 @@ public object Board {
 		return true;
 	}
 
-	public bool isUsedInBox(int ox, int oy, int value) const {
+	public bool isUsedInBox( int ox, int oy, int value ) const {
 		int bx = (ox - 1) / SizeX;
 		int by = (oy - 1) / SizeY;
 
@@ -129,7 +129,7 @@ public object Board {
 		return false;
 	}
 
-	public bool isUsedInLine(int y, int value) const {
+	public bool isUsedInLine( int y, int value ) const {
 		foreach ( int x : 1..SizeX * Repeat ) {
 			var cell const = Cells.get( cast<string>( x ) + "," + cast<string>( y ) );
 
@@ -141,7 +141,7 @@ public object Board {
 		return false;
 	}
 
-	public bool isUsedInRow(int x, int value) const {
+	public bool isUsedInRow( int x, int value ) const {
 		foreach ( int y : 1..SizeY * Repeat ) {
 			var cell const = Cells.get( cast<string>( x ) + "," + cast<string>( y ) );
 
@@ -153,13 +153,15 @@ public object Board {
 		return false;
 	}
 
-	public void set(int x, int y, int value, bool validate = false) modify {
+	public void set( int x, int y, int value, bool validate = false ) modify throws {
 		if ( validate ) {
-			assert( isSafe(x, y, value ) );
+			if( !isSafe(x, y, value ) ) {
+				throw "Invalid value " + value + " in (" + x + " / " + y + ")";
+			}
 		}
 
 		var cell = Cells.get( cast<string>( x ) + "," + cast<string>( y ) );
-		cell = value;
+		cell.Value = value;
 
 		Solved = false;
 	}
@@ -190,7 +192,7 @@ public object Board {
 		//print("Solved: " + Solved);
 	}
 
-	private bool solve(Vector<Cell> cells, int index) const {
+	private bool solve( Vector<Cell> cells, int index ) const {
 		// clear all non-fixed values
 		// {
 		foreach ( int idx : index..(cells.size() - 1) ) {
@@ -226,7 +228,7 @@ public object Board {
 		return false;
 	}
 
-	public string toString(bool showPossibleValues = false) const {
+	public string toString( bool showPossibleValues = false ) const {
 		string result;
 
 		foreach ( int y : 1..SizeY * Repeat ) {

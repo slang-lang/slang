@@ -43,9 +43,66 @@ std::string stringTrimRight(const std::string& source, const std::string& t = " 
 
 std::string toLowerCase(std::string data);
 
-template <class T> inline std::string toString(const T& t) {
-	std::stringstream ss; ss << t; return ss.str();
+template <class T>
+inline std::string toString( const T& t ) {
+	std::stringstream ss;
+    ss << t;
+    return ss.str();
 }
+
+/*
+template <>
+inline std::string toString<bool>( const bool& t ) {
+    return std::to_string( t );
+}
+*/
+
+template <>
+inline std::string toString<double>( const double& t ) {
+    //return std::to_string( t );
+
+    auto str = std::to_string( t );
+
+    auto pos = str.find( '.' );
+    if ( pos != std::string::npos ) {
+        while ( str[ str.length() - 1 ] == '0' ) {
+            str.resize( str.length() - 1 );
+        }
+
+        if ( !str.empty() && str[ str.length() - 1 ] == '.' ) {
+            str.resize( str.length() - 1 );
+        }
+    }
+
+    return str;
+}
+
+template <>
+inline std::string toString<float>( const float& t ) {
+    //return std::to_string( t );
+
+    auto str = std::to_string( t );
+
+    auto pos = str.find( '.' );
+    if ( pos != std::string::npos ) {
+        while ( str[ str.length() - 1 ] == '0' ) {
+            str.resize( str.length() - 1 );
+        }
+
+        if ( !str.empty() && str[ str.length() - 1 ] == '.' ) {
+            str.resize( str.length() - 1 );
+        }
+    }
+
+    return str;
+}
+
+/*
+template <>
+inline std::string toString<int>( const int& t ) {
+    return std::to_string( t );
+}
+*/
 
 
 }

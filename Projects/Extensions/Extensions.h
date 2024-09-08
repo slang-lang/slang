@@ -5,6 +5,7 @@
 
 // Extension includes
 #ifdef USE_SYSTEM_EXTENSION
+#	include <LIBC/Extension.h>
 #	include <System/SystemExtension.h>
 #endif
 

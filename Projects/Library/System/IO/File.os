@@ -69,7 +69,7 @@ public namespace System.IO {
 		}
 
 		public bool isEOF() const {
-			return feof( mHandle );
+			return feof( mHandle ) != 0;
 		}
 
 		public bool isOpen() const {

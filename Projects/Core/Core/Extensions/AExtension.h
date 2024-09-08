@@ -10,6 +10,7 @@
 
 // Project includes
 #include "ExtensionMethod.h"
+#include "ExtensionNamespace.h"
 
 // Forward declarations
 
@@ -33,7 +34,7 @@ public:
 	virtual ~AExtension() = default;
 
 public:
-	virtual void initialize( Slang::IScope* scope ) = 0;
+	virtual void initialize( Slang::Extensions::ExtensionNamespace* space ) = 0;
 	virtual void provideMethods( Slang::Extensions::ExtensionMethods& methods ) = 0;
 
 public:

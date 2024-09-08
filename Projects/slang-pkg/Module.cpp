@@ -3,7 +3,7 @@
 #include "Module.h"
 
 // Library includes
-#include <Json/Value.h>
+#include <json/value.h>
 
 // Project includes
 
@@ -69,9 +69,7 @@ bool Module::loadFromJson( const Json::Value& value )
 	if ( value.isMember( DEPENDENCIES ) ) {
 		auto dependencies = value[ DEPENDENCIES ];
 
-		for ( const auto& depIt : dependencies.members() ) {
-			auto dependency = depIt;
-
+		for ( const auto& dependency : dependencies ) {
 			std::string moduleName = dependency[ MODULE ].asString();
 			std::string source = dependency.isMember( SOURCE ) ? dependency[ SOURCE ].asString() : "";
 			std::string version_max = dependency.isMember( VERSION_MAX ) ? dependency[ VERSION_MAX ].asString() : "";
@@ -86,8 +84,8 @@ bool Module::loadFromJson( const Json::Value& value )
     if ( value.isMember( KEYWORDS ) ) {
         auto keywords = value[ KEYWORDS ];
 
-        for ( const auto& wordIt : keywords.members() ) {
-            mKeywords.insert( wordIt.asString() );
+        for ( const auto& word : keywords ) {
+            mKeywords.insert( word.asString() );
         }
     }
 

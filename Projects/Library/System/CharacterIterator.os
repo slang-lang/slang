@@ -7,16 +7,16 @@ public namespace System { }
 
 public object CharacterIterator implements Iterator<string> {
 	/*
-	 * Standard string constructor
+	 * Standard constructor
 	 */
-	public void Constructor(string value = "") {
+	public void Constructor( string value = "" ) {
 		reset( value );
 	}
 
 	/*
-	 * Standard String constructor
+	 * Constructor using String value
 	 */
-	public void Constructor(String value const) {
+	public void Constructor( String value const ) {
 		reset( cast<string>( value ) );
 	}
 
@@ -24,7 +24,7 @@ public object CharacterIterator implements Iterator<string> {
 	 * Copy operator
 	 */
 	public CharacterIterator Copy() const {
-		return new CharacterIterator(mValue);
+		return new CharacterIterator( mValue );
 	}
 
 	/*
@@ -34,13 +34,13 @@ public object CharacterIterator implements Iterator<string> {
 	 */
 	public string current() const throws {
 		if ( mCurrentIndex < 0 ) {
-			throw new NotInitializedException("iterator not initialized");
+			throw new NotInitializedException( "iterator not initialized" );
 		}
-		if ( mCurrentIndex > mLength) {
-			throw new OutOfBoundsException("index(" + mCurrentIndex + ") out of bounds");
+		if ( mCurrentIndex > mLength ) {
+			throw new OutOfBoundsException( "index(" + mCurrentIndex + ") out of bounds" );
 		}
 
-		return substr(mValue, mCurrentIndex, 1);
+		return substr( mValue, mCurrentIndex, 1 );
 	}
 
 	/*
@@ -56,32 +56,32 @@ public object CharacterIterator implements Iterator<string> {
 	 */
 	public string next() modify throws {
 		if ( mCurrentIndex + 1 > mLength ) {
-			throw new OutOfBoundsException("index(" + mCurrentIndex + 1 + ") out of bounds");
+			throw new OutOfBoundsException( "index(" + mCurrentIndex + 1 + ") out of bounds" );
 		}
 
 		mCurrentIndex++;
 
-		return substr(mValue, mCurrentIndex, 1);
+		return substr( mValue, mCurrentIndex, 1 );
 	}
 
 	/*
 	 * returns the next character of the held string value without changing the current iteration index
 	 * throws OutOfBoundsException
 	 */
-	public string peek(int offset = 1) const throws {
+	public string peek( int offset = 1 ) const throws {
 		if ( mCurrentIndex + offset < 0 || mCurrentIndex + offset > mLength ) {
-			throw new OutOfBoundsException("index(" + mCurrentIndex + offset + ") out of bounds");
+			throw new OutOfBoundsException( "index(" + mCurrentIndex + offset + ") out of bounds" );
 		}
 
-		return substr(mValue, mCurrentIndex + offset, 1);
+		return substr( mValue, mCurrentIndex + offset, 1 );
 	}
 
 	/*
 	 * resets the current iteration
 	 */
-	public void reset(string value = "") modify {
+	public void reset( string value = "" ) modify {
 		mCurrentIndex = -1;
-		mLength = strlen(value);
+		mLength = strlen( value );
 		mValue = value;
 	}
 
@@ -90,14 +90,14 @@ public object CharacterIterator implements Iterator<string> {
 	 * equivalent to calling current()
 	 * throws NotInitializedException, OutOfBoundsException
 	 */
-	public string =operator(string) const throws {
+	public string =operator( string ) const throws {
 		return current();
 	}
 
 	/*
 	 * Equality operator
 	 */
-	public bool operator==(CharacterIterator other const) const {
+	public bool operator==( CharacterIterator other const ) const {
 		return mValue == other.mValue && mCurrentIndex == other.mCurrentIndex;
 	}
 

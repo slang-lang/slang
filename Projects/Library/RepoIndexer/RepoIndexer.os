@@ -12,11 +12,10 @@ public int Main( int argc, string args ) modify {
 	try {
 		var params = new ParameterHandler( argc, args, true );
 
-		var main = new Indexer( ( params.size(  ) > 0 ) ? params[ 0 ].Key : PATH );
-		
-		main.buildIndex(  );
-		main.storeDatabase(  );
-		main.storeIndexFile(  );
+		var main = new Indexer( params.empty() ? PATH : params[ 0 ].Key );
+		main.buildIndex();
+		main.storeDatabase();
+		main.storeIndexFile();
 
 		return 0;
 	}
@@ -24,7 +23,7 @@ public int Main( int argc, string args ) modify {
 		print( "Exception: " + e );
 	}
 	catch (  IException e  ) {
-		print( "Exception: " + e.what(  ) );
+		print( "Exception: " + e.what() );
 	}
 	catch {
 		print( "Unknown exception caught!" );

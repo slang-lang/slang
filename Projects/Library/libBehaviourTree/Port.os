@@ -47,3 +47,4 @@ public object OutputPort extends Port {
 }
 
 public object PortCollection extends Vector<Port>;
+

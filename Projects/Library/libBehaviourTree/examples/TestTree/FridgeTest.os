@@ -7,6 +7,8 @@ public object CloseFridge extends Action {
     }
 
     public NodeStatus tick() modify {
+        print( "CloseFridge.tick()" );
+
         return NodeStatus.Success;
     }
 }
@@ -21,6 +23,8 @@ public object GrabBeer extends Action {
     }
 
     public NodeStatus tick() modify {
+        print( "GrabBeer.tick()" );
+
         if ( !Value ) {
             return NodeStatus.Failure;
         }
@@ -35,6 +39,9 @@ public object OpenFridge extends Action {
     }
 
     public NodeStatus tick() modify {
+        print( "OpenFridge.tick()" );
+
         return NodeStatus.Success;
     }
 }
+

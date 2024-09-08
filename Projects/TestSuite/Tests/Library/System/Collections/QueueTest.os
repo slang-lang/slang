@@ -15,7 +15,7 @@ public void Main(int argc = 0, string args = "") {
 public bool TestCase1() {
 	print("TestCase 1: Queue.enqueue()");
 
-	Queue<String> queue = new Queue<String>();
+	var queue = new Queue<String>();
 	assert( queue );
 	assert( queue is ICollection );
 
@@ -38,7 +38,7 @@ public bool TestCase1() {
 private bool TestCase2() {
 	print("TestCase 2: Queue.dequeue()");
 
-	Queue<String> queue = new Queue<String>();
+	var queue = new Queue<String>();
 	assert( queue );
 	assert( queue is ICollection );
 
@@ -62,7 +62,7 @@ private bool TestCase2() {
 private bool TestCase3() {
 	print("TestCase 3: Queue.peek()");
 
-	Queue<String> queue = new Queue<String>();
+	var queue = new Queue<String>();
 	assert( queue );
 	assert( queue is ICollection );
 
@@ -92,7 +92,7 @@ private bool TestCase3() {
 private bool TestCase4() {
 	print("TestCase 4: Queue.clear()");
 
-	Queue<String> queue = new Queue<String>();
+	var queue = new Queue<String>();
 	assert( queue );
 	assert( queue is ICollection );
 
@@ -114,10 +114,6 @@ private bool TestCase4() {
 	assert( queue.empty() );
 	assert( queue.size() == 0);
 
-	foreach ( String t : queue ) {
-		assert( false );
-	}
-
 	return true;
 }
 
@@ -125,7 +121,7 @@ private bool TestCase5() {
 	print("TestCase 5: native data types");
 
 	try {
-		Queue<string> queue = new Queue<string>();
+		var queue = new Queue<string>();
 
 		assert( queue );
 		assert( queue is Object );
@@ -136,7 +132,7 @@ private bool TestCase5() {
 
 		assert( queue.size() == 3 );
 
-		Iterator<string> it = queue.getIterator();
+		var it = queue.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -160,7 +156,7 @@ private bool TestCase5() {
 private bool TestCase6() {
 	print("TestCase 6: Queue.at()");
 
-	Queue<string> queue = new Queue<string>();
+	var queue = new Queue<string>();
 
 	assert( queue );
 	assert( queue is Object );

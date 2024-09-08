@@ -4,14 +4,8 @@ import System.CharacterIterator;
 import System.Collections.List;
 import System.Exception;
 
-// Project imports
-
 
 public object Parameter const {
-/*
- * Public
- */
-
 	public string Key const;
 	public string Value const;
 
@@ -35,10 +29,12 @@ public object Parameter const {
 
 
 public object ParameterHandler implements IIterable {
-/*
- * Public
- */
-
+	/*
+	 * Constructor( int, int, bool )
+	 * argc: number of arguments
+	 * args: argument string
+	 * skipProgramName: skip/use 1st parameter
+	 */
 	public void Constructor( int argc, string args, bool skipProgramName = true ) {
 		mParameters = new List<Parameter>();
 
@@ -144,9 +140,6 @@ public object ParameterHandler implements IIterable {
 		return mParameters.size();
 	}
 
-/*
- * Private
- */
 	/*
 	 * inserts the parsed parameters
 	 */

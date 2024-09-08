@@ -3,6 +3,8 @@
 public void Main(int argc, string args) {
 	print("DoubleLinkedListTest.os");
 	system("./DoubleLinkedListTest.os");
+	print("IteratorPerformanceTest.os");
+	system("./IteratorPerformanceTest.os");
 	print("IteratorTest.os");
 	system("./IteratorTest.os");
 	print("ListTest.os");

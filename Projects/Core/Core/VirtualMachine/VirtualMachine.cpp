@@ -25,7 +25,7 @@
 
 
 namespace {
-	std::string buildFilename( std::string folder, std::string filename );
+	std::string buildFilename( const std::string& folder, const std::string& filename );
 }
 
 namespace Slang {
@@ -89,20 +89,28 @@ bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std:
 	OSdebug( "Loaded extension " + extension->getName() + " version " + extension->getVersion() );
 
 	try {
-		OSdebug("adding extension '" + extension->getName() + "'");
+		OSdebug( "adding extension '" + extension->getName() + "'" );
 
 		auto* globalScope = Controller::Instance().globalScope();
 		Extensions::ExtensionMethods methods;
 
-		extension->initialize(globalScope);
-		extension->provideMethods(methods);
+		extension->initialize( globalScope );
+		extension->provideMethods( methods );
 
-		for ( auto it = methods.begin(); it != methods.end(); ++it ) {
-			OSdebug("adding extension method '" + extension->getName() + "." + (*it)->getName() + "'");
+		if ( !mSpecification.empty() ) {
+			mSpecification.push_back( "" );
+		}
+		mSpecification.push_back( "Extension " + extension->getName() + ":" );
+		mSpecification.push_back( "---" );
 
-			(*it)->setParent(globalScope);
+		for ( auto& method : methods ) {
+			OSdebug( "adding extension method '" + extension->getName() + "." + method->getName() + "'" );
 
-			globalScope->defineMethod((*it)->getName(), (*it));
+			method->setParent( globalScope );
+
+			globalScope->defineMethod( method->getName(), method );
+
+			mSpecification.push_back( method->ToString() );
 		}
 	}
 	catch ( std::exception &e ) {
@@ -354,11 +362,39 @@ void VirtualMachine::printExtensions()
 
 void VirtualMachine::printLibraryFolders()
 {
-	std::cout << std::endl;
+   std::cout << "Libraries:" << std::endl;
 
 	for ( const auto& libraryFolder : mLibraryFolders ) {
-		std::cout << "Library: " + libraryFolder << std::endl;
+		std::cout << libraryFolder << std::endl;
 	}
+}
+
+void VirtualMachine::printSpecification( const std::string& specification )
+{
+	if ( specification.empty() ) {
+        for ( const auto& str : mSpecification ) {
+            std::cout << str << std::endl;
+        }
+
+        return;
+    }
+
+    int32_t found{ 0 };
+    for ( const auto& str : mSpecification ) {
+        if ( str.find( specification ) != std::string::npos ) {
+            std::cout << str << std::endl;
+
+            found++;
+        }
+    }
+
+    if ( found ) {
+        //std::cout << std::endl;
+        //std::cout << "found " << found << " occurrence(s) of " << specification << std::endl;
+    }
+    else {
+        std::cout << "no result found for '" << specification << "'" << std::endl;
+    }
 }
 
 void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::Object* result)
@@ -407,7 +443,7 @@ VirtualMachine::Settings& VirtualMachine::settings()
 }
 
 namespace {
-	std::string buildFilename( std::string folder, std::string filename ) {
+	std::string buildFilename( const std::string& folder, const std::string& filename ) {
 		std::string file = Utils::Tools::Files::BuildLibraryPath( folder, filename );
 		if ( Utils::Tools::Files::exists( file ) ) {
 			return file;

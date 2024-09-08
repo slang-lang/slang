@@ -31,11 +31,11 @@ class StrFTime : public ExtensionMethod
 {
 public:
 	StrFTime()
-	: ExtensionMethod( 0, "strftime", Designtime::IntegerObject::TYPENAME )
+	: ExtensionMethod( 0, "strftime", Designtime::StringObject::TYPENAME )
 	{
 		ParameterList params;
 		params.push_back( Parameter::CreateDesigntime( "format", Designtime::StringObject::TYPENAME, 0 ) );
-       		params.push_back( Parameter::CreateDesigntime( "time", Designtime::IntegerObject::TYPENAME, 0, true ) );
+        params.push_back( Parameter::CreateDesigntime( "time", Designtime::IntegerObject::TYPENAME, 0, true ) );
 
 		setSignature( params );
 	}
@@ -43,7 +43,7 @@ public:
 public:
 	Runtime::ControlFlow::E execute( Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token )
 	{
-		ParameterList list = mergeParameters(params);
+		ParameterList list = mergeParameters( params );
 
 		try {
 			ParameterList::const_iterator it = list.begin();
@@ -56,10 +56,10 @@ public:
 				time = param_time;
 			}
 			else {
-				time = std::time(nullptr);
+				time = std::time( nullptr );
 			}
 
-			std::tm tm = *std::localtime(&time);
+			std::tm tm = *std::localtime( &time );
 
 			std::stringstream ssr;
 			ssr << std::put_time( &tm, param_format.c_str() );
@@ -67,10 +67,10 @@ public:
 			*result = Runtime::StringObject( ssr.str() );
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringObject( std::string( e.what() ) );
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+			Controller::Instance().thread( threadId )->exception() = Runtime::ExceptionData( data, token.position() );
 			return Runtime::ControlFlow::Throw;
 		}
 

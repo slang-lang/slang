@@ -6,6 +6,8 @@ import System.Exception;
 // Project imports
 
 
+public namespace Json { }
+
 public object JsonException const implements IException {
 	public void Constructor( string msg ) {
 		_ex = msg;

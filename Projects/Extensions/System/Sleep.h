@@ -5,7 +5,7 @@
 
 // Library includes
 #ifdef _WIN32
-#	include <stdlib.h>
+#	include <cstdlib>
 #else
 	#include <chrono>
 	#include <thread>

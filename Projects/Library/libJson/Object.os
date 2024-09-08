@@ -16,6 +16,7 @@ public object JsonObject extends JsonValue implements IIterable {
 
 		mMembers = new Map<string, JsonValue>();
 		mType = JsonType.Object;
+		mValueType = JsonValueType.Object;
 	}
 
 	public void Constructor( string key, JsonArray value ) {
@@ -121,7 +122,11 @@ public object JsonObject extends JsonValue implements IIterable {
 			}
 		}
 
-		throw "invalid key('" + key + "')!";
+		throw "invalid key( '" + key + "' )!";
+	}
+
+	public string =operator( string ) const {
+		return toString();
 	}
 
 	private Map<string, JsonValue> mMembers;

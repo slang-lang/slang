@@ -1,7 +1,7 @@
 
 // library imports
 import System.CharacterIterator;
-import System.Collections.List;
+import System.Collections.Vector;
 import System.IO.File;
 
 // project imports
@@ -13,42 +13,29 @@ public namespace Json { }
 public object Tokenizer {
 	public void Constructor() {
 		CHARS = new String( "ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz_" );
-		DIGITS = new String( "0123456789.-" );
+		DIGITS = new String( "0123456789.-+e" );
 
-		RESERVED_WORDS = new List<Token>();
-		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "FALSE", Position null ) );
-		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "TRUE", Position null ) );
-		RESERVED_WORDS.push_back( new Token( TokenType.NULL, "NULL", Position null ) );
+		RESERVED_WORDS = new Vector<Token>();
+		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "false", Position null ) );
+		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "true",  Position null ) );
+		RESERVED_WORDS.push_back( new Token( TokenType.NULL,    "null",  Position null ) );
 
-		WHITESPACES = new String( " 	" );
-		WHITESPACES = WHITESPACES + LINEBREAK_DOS;
-		WHITESPACES = WHITESPACES + LINEBREAK_UNIX;
+		WHITESPACES = new String( " 	" + LINEBREAK_DOS + LINEBREAK_UNIX );
 	}
 
-	public Token currentToken() const {
-		return mCurrentToken.current();
-	}
-
-	public bool hasNextToken() const {
-		return mCurrentToken.hasNext();
-	}
-
-	public Token nextToken() modify {
-		return mCurrentToken.next();
-	}
-
-	public void parseString( string text ) modify throws {
-		mCharIterator = new String( text ).getIterator();
+	public Vector<Token> parseString( string text ) modify {
+		mCharIterator = new CharacterIterator( text );
 		mColumn = 1;
 		mLine = 1;
-		mTokens = new List<Token>();
+
+		var tokens = new Vector<Token>();
 
 		Token token;
 		while ( ( token = getNextToken() ) != null ) {
-			mTokens.push_back( token );
+			tokens.push_back( token );
 		}
 
-		mCurrentToken = mTokens.getIterator();
+		return tokens;
 	}
 
 	private string consume( int length = 1 ) modify {
@@ -100,7 +87,7 @@ public object Tokenizer {
 
 		foreach ( Token token : RESERVED_WORDS ) {
 			if ( token == result ) {
-				return new Token( token.mType, token.mValue, new Position( mLine, column ) );
+				return new Token( token.type, token.value, new Position( mLine, column ) );
 			}
 		}
 
@@ -115,7 +102,7 @@ public object Tokenizer {
 				case isCharacter( c ): {
 					return getID();
 				}
-				case isDigit( c ): {
+				case isDigit( c ) || c == "+" || c == "-": {
 					return getDigit();
 				}
 				case isWhiteSpace( c ): {
@@ -123,19 +110,7 @@ public object Tokenizer {
 					break;
 				}
 				case c == "\"": {
-					int column = mColumn;
-					int line = mLine;
-
-					consume();			// consume "
-
-					string value;
-					while ( peek() != "\"" ) {
-						value += consume();
-					}
-
-					consume();			// consume "
-
-					return new Token( TokenType.STRING, value, new Position( line, column ) );
+					return new Token( TokenType.STRING, readString(), new Position( mLine, mColumn ) );
 				}
 				case c == ":": {
 					return new Token( TokenType.COLON, consume(), new Position( mLine, mColumn ) );
@@ -162,10 +137,6 @@ public object Tokenizer {
 		}
 	}
 
-	private bool hasNext() const {
-		return mCharIterator.hasNext();
-	}
-
 	private bool isCharacter( string char ) const {
 		return CHARS.Contains( char );
 	}
@@ -179,16 +150,64 @@ public object Tokenizer {
 	}
 
 	private string peek( int pos = 1 ) const throws {
-		try { return mCharIterator.peek( pos ); }
+		try {
+			return mCharIterator.peek( pos );
+		}
 
 		return "";
+	}
+
+	private string readNumber() modify {
+		string result;
+
+		string char;
+		while ( ( char = peek() ) && isDigit( char ) ) {
+			result += consume();
+		}
+
+		if ( char == "." ) {
+			result += char;
+
+			while ( ( char = peek() ) && isDigit( char ) ) {
+				result += consume();
+			}
+		}
+
+		if ( char == "e" || char == "E" ) {
+			result += char;
+
+			if ( peek() == "." ) {
+				result += consume();
+			}
+
+			while ( ( char = peek() ) && isDigit( char ) ) {
+				result += consume();
+			}
+		}
+
+		return result;
+	}
+
+	private string readString() modify {
+		string ch = consume();		// consume "
+		string value;
+		while ( /*ch != "\\" &&*/ ( ch = mCharIterator.peek( 1 ) ) != "\"" ) {
+			if ( ch == "\\" ) {
+				ch = consume();
+			}
+
+			value += consume();
+		}
+
+		consume();			// consume "
+
+		return value;
 	}
 
 	private void skipWhiteSpace() modify {
 		string c;
 
 		while ( isWhiteSpace( c = peek() ) ) {
-			print( "skipping whitespace" );
 			consume();
 		}
 	}
@@ -198,14 +217,12 @@ public object Tokenizer {
 	private String DIGITS const;
 	private String COMPARECHARS const;
 	private String DELIMITERCHARS const;
-	private List<Token> RESERVED_WORDS const;
+	private Vector<Token> RESERVED_WORDS const;
 	private String WHITESPACES const;
 
 	// Private members
 	private CharacterIterator mCharIterator;
 	private int mColumn;
-	private Iterator<Token> mCurrentToken;
 	private int mLine;
-	private List<Token> mTokens;
 }
 

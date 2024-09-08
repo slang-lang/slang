@@ -1,7 +1,7 @@
 
 import System.Exception;
 import ICollection;
-import IIterable;
+import RandomAccessIterator;
 
 // declare 'System.Collections' namespace to prevent a user defined private 'System' namespace
 public namespace System.Collections { }
@@ -47,9 +47,16 @@ public object Range implements ICollection, IIterable {
 		return mEnd;
 	}
 
-	public Iterator<int> getIterator() const {
-		return new Iterator<int>( ICollection this );
+
+///* activate for random access iterator usage
+	public RandomAccessIterator<int> getIterator() const {
+		return new RandomAccessIterator<int>( ICollection this );
 	}
+
+	public ReverseRandomAccessIterator<int> getReverseIterator() const {
+		return new ReverseRandomAccessIterator<int>( ICollection this );
+	}
+//*/
 
 	public int getStart() const {
 		return mStart;
@@ -72,7 +79,7 @@ public object Range implements ICollection, IIterable {
 	}
 
 	public int size() const {
-		return (mEnd - mStart) / mStep + 1;
+		return ( mEnd - mStart ) / mStep + 1;
 	}
 
 	public int operator[]( int index ) const throws {
@@ -82,6 +89,9 @@ public object Range implements ICollection, IIterable {
 	private int mEnd const;
 	private int mStart const;
 	private int mStep const;
+
+	private RandomAccessIterator<int> __iterator;					// this is a hack to automatically initialize a generic type
+	private ReverseRandomAccessIterator<int> __reverse_iterator;	// this is a hack to automatically initialize a generic type
 }
 
 

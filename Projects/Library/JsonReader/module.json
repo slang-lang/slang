@@ -1,0 +1,18 @@
+{
+  "name": "JsonReader",
+  "name_short": "JsonReader",
+  "version": "0.1.1",
+  "description": "Script which reads in a JSON encoded text file and prints its contents pretty printed to stdout.",
+  "dependencies": [
+    { "module": "FileReader", "version_min": "0.3.1" },
+    { "module": "Slang", "version_min": "0.7.3" },
+    { "module": "System", "version_min": "0.3.4" },
+    { "module": "libJson", "version_min": "0.3.0" },
+    { "module": "libParam", "version_min": "0.2.0" }
+  ],
+  "keywords": [ "cat", "json" ],
+  "target": {
+    "directory": "JsonReader",
+    "type": "internal"
+  }
+}

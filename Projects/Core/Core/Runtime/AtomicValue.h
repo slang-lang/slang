@@ -22,7 +22,8 @@ namespace Runtime {
 class AtomicValue
 {
 public:
-	class Type {
+	class Type
+	{
 	public:
 		enum E {
 			UNKNOWN,
@@ -38,21 +39,21 @@ public:
 public:	// Construction
 	AtomicValue();
 	AtomicValue( bool val );
-    AtomicValue( double val );
-    AtomicValue( float val );
-    AtomicValue( int32_t val );
+	AtomicValue( double val );
+	AtomicValue( float val );
+	AtomicValue( int32_t val );
 	explicit AtomicValue( MemoryId val );
-    AtomicValue( std::string val );
+	AtomicValue( std::string val );
 
 	~AtomicValue() = default;
 
 public:	// Assignment
-	AtomicValue& operator=(bool val);
-	AtomicValue& operator=(double val);
-	AtomicValue& operator=(float val);
-	AtomicValue& operator=(int32_t val);
-	AtomicValue& operator=(MemoryId val);
-	AtomicValue& operator=(const std::string& val);
+	AtomicValue& operator=( bool val );
+	AtomicValue& operator=( double val );
+	AtomicValue& operator=( float val );
+	AtomicValue& operator=( int32_t val );
+	AtomicValue& operator=( MemoryId val );
+	AtomicValue& operator=( const std::string& val );
 
 public:	// Conversion
 	bool toBool() const;

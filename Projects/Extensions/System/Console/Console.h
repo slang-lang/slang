@@ -26,7 +26,7 @@ public:
 	~SystemConsoleExtension() = default;
 
 public:
-	void initialize( IScope* scope );
+	void initialize( ExtensionNamespace* scope );
 	void provideMethods( ExtensionMethods& methods );
 };
 

@@ -5,7 +5,7 @@
 // Library includes
 #include <csignal>
 #include <fstream>
-#include <Json/Json.h>
+#include <json/json.h>
 
 // Project includes
 #include <Common/Settings.h>
@@ -596,7 +596,10 @@ void LocalClient::loadConfig()
 	std::string data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());	// read stream
 	stream.close();
 
-	Json::Value config = Json::Parser::parse(data);
+    Json::Value config;
+
+    Json::Reader reader;
+    reader.parse( data, config );
 
 	// (1) slang-dbg config
 	if ( config.isMember("autolist") ) {
@@ -621,9 +624,8 @@ void LocalClient::loadConfig()
 	// (2) breakpoints
 	if ( config.isMember("breakpoints") ) {
 		// parse breakpoints
-		Json::Value::Members breakpoints = config["breakpoints"].members();
-		for ( Json::Value::Members::const_iterator it = breakpoints.begin(); it != breakpoints.end(); ++it ) {
-			std::string command = "breakpoint " + it->asString();
+		for ( const auto& breakpoint : config["breakpoints"] ) {
+			std::string command = "breakpoint " + breakpoint.asString();
 
 			addBreakPoint(
 				parseCommands(command)
@@ -634,9 +636,8 @@ void LocalClient::loadConfig()
 	// (3) watches
 	if ( config.isMember("watches") ) {
 		// parse watches
-		Json::Value::Members watches = config["watches"].members();
-		for ( Json::Value::Members::const_iterator it = watches.begin(); it != watches.end(); ++it ) {
-			std::string command = "watch " + it->asString();
+		for ( const auto& watch : config["watches"] ) {
+			std::string command = "watch " + watch.asString();
 
 			addWatch(
 				parseCommands(command)
@@ -999,31 +1000,31 @@ void LocalClient::saveConfig()
 	Json::Value config;
 
 	// (1) slang-dbg config
-	config.addMember("autolist", Json::Value(mSettings->autoList()));
-	config.addMember("autostart", Json::Value(mSettings->autoStart()));
-	config.addMember("autostop", Json::Value(mSettings->autoStop()));
-	config.addMember("autowatch", Json::Value(mSettings->autoWatch()));
-	config.addMember("breakonexceptioncatch", Json::Value(mSettings->breakOnExceptionCatch()));
-	config.addMember("breakonexceptionthrow", Json::Value(mSettings->breakOnExceptionThrow()));
+	config[ "autolist" ] = mSettings->autoList();
+	config[ "autostart" ] = mSettings->autoStart();
+	config[ "autostop" ] = mSettings->autoStop();
+	config[ "autowatch" ] = mSettings->autoWatch();
+	config[ "breakonexceptioncatch" ] = mSettings->breakOnExceptionCatch();
+	config[ "breakonexceptionthrow" ] = mSettings->breakOnExceptionThrow();
 
 	// (2) write breakpoints to config
 	Json::Value breakpoints;
 	Core::BreakPointCollection breakpointList = mDebugger->getBreakPoints();
 	for ( const auto& it : breakpointList) {
-		breakpoints.addElement(it.toConfigString());
+		breakpoints.append( it.toConfigString() );
 	}
-	config.addMember("breakpoints", breakpoints);
+	config[ "breakpoints" ] = breakpoints;
 
 	// (3) write watches to config
 	Json::Value watches;
 	for ( const auto& watch : mWatches ) {
-		watches.addElement(watch.symbol());
+		watches.append( watch.symbol() );
 	}
-	config.addMember("watches", watches);
+	config[ "watches" ] = watches;
 
 	// serialize config to string
 	Json::StyledWriter writer;
-	std::string data = writer.toString(config);
+	std::string data = writer.write( config );
 
 	std::string filename = mSettings->filename() + ".dbg";
 
@@ -1132,6 +1133,7 @@ void LocalClient::start()
 	// add extensions
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine->addExtension(new Slang::Extensions::System::SystemExtension());
+	mVirtualMachine->addExtension(new Slang::Extensions::LIBC::Extension());
 #endif
 
 	try {

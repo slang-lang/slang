@@ -1,8 +1,4 @@
 
-SET(JSON_PACKAGE_NAME "libMyJson-0.2.4_51")
-SET(JSON_TARBALL "${JSON_PACKAGE_NAME}.tar.gz")
-SET(JSON_DOWNLOAD_URL "https://sourceforge.net/projects/libmyjson/files/libMyJson-0.2.4_51.tar.gz/download")
-
 
 function(build_shared_lib target modules)
 
@@ -170,27 +166,24 @@ endfunction()
 ### JSON
 
 function(_could_not_find_json)
-  MESSAGE(STATUS "Could not find (the correct version of) Json.")
-  MESSAGE(STATUS "Slang currently requires ${JSON_PACKAGE_NAME}\n")
-  MESSAGE(FATAL_ERROR "You can download from ${JSON_DOWNLOAD_URL}")
+    MESSAGE(STATUS "Could not find (the correct version of) JSON.")
+
+    MESSAGE(FATAL_ERROR "Slang currently requires ${JSON_PACKAGE_NAME}\n")
 endfunction()
 
 
 function(_json_check_existence)
 
+    set(JSON_PACKAGE_NAME "jsoncpp")
+
+    find_package(${JSON_PACKAGE_NAME} REQUIRED)
+
     # make sure the appropriate environment variable is set!
-    if(NOT BUILD_JSON_INC)
-       _could_not_find_json()
-    else()
+    if(NOT JSON_FOUND)
+        MESSAGE( STATUS "JSON_FOUND: ${JSON_FOUND}" )
+        MESSAGE( STATUS "BUILD_JSON_INC: ${BUILD_JSON_INC}" )
 
-        if("${BUILD_JSON_INC}" STREQUAL "")
-            MESSAGE(FATAL_ERROR "BUILD_JSON_INC needed for json!")
-        endif()
-
-        if("${BUILD_JSON_LIB}" STREQUAL "")
-            MESSAGE(FATAL_ERROR "BUILD_JSON_LIB needed for json!")
-        endif()
-
+        _could_not_find_json()
     endif()
 
 endfunction()
@@ -198,8 +191,10 @@ endfunction()
 
 function(_handle_post_json target)
 
+    # for a proper library this also setups any required include directories or other compilation options
     _json_check_existence()
-    target_link_libraries(${target} Json)
+    include_directories(${BUILD_JSON_INC})
+    target_link_libraries(${target} jsoncpp)	# using jsoncpp
 
 endfunction()
 

@@ -7,6 +7,8 @@ import Exceptions;
 import Object;
 
 
+public namespace Json { }
+
 public enum JsonType {
 	Array,
 	Object,
@@ -15,6 +17,7 @@ public enum JsonType {
 }
 
 public enum JsonValueType {
+	Array,
 	Bool,
 	Null,
 	Number,
@@ -61,6 +64,14 @@ public object JsonValue {
 		setValue( cast<JsonValue>( obj ) );
 	}
 
+	public JsonArray asArray() const throws {
+		if ( mValueType != JsonValueType.Array ) {
+			throw new InvalidTypeException( "array" );
+		}
+
+		return JsonArray mObjectValue;
+	}
+
 	public bool asBool() const {
 		if ( mValueType == JsonValueType.Object ) {
 			return bool mObjectValue;
@@ -70,9 +81,7 @@ public object JsonValue {
 	}
 
 	public double asDouble() const throws {
-		if ( mValueType == JsonValueType.Object
-		//  || mValueType == JsonValueType.String
-		) {
+		if ( mValueType == JsonValueType.Object ) {
 			throw new InvalidTypeException( "double" );
 		}
 
@@ -80,9 +89,7 @@ public object JsonValue {
 	}
 
 	public float asFloat() const throws {
-		if ( mValueType == JsonValueType.Object
-		//  || mValueType == JsonValueType.String
-		) {
+		if ( mValueType == JsonValueType.Object ) {
 			throw new InvalidTypeException( "float" );
 		}
 
@@ -90,13 +97,19 @@ public object JsonValue {
 	}
 
 	public int asInt() const throws {
-		if ( mValueType == JsonValueType.Object
-		//  || mValueType == JsonValueType.String
-		) {
+		if ( mValueType == JsonValueType.Object ) {
 			throw new InvalidTypeException( "int" );
 		}
 
 		return cast<int>( mValue );
+	}
+
+	public JsonObject asObject() const throws {
+		if ( mValueType != JsonValueType.Object ) {
+			throw new InvalidTypeException( "object" );
+		}
+
+		return JsonObject mObjectValue;
 	}
 
 	public string asString() const {
@@ -115,6 +128,10 @@ public object JsonValue {
 		return mValueType;
 	}
 
+	public bool isArray() const {
+		return mValueType == JsonValueType.Array;
+	}
+
 	public bool isBool() const {
 		return mValueType == JsonValueType.Bool;
 	}
@@ -125,6 +142,10 @@ public object JsonValue {
 
 	public bool isNumber() const {
 		return mValueType == JsonValueType.Number;
+	}
+
+	public bool isObject() const {
+		return mValueType == JsonValueType.Object;
 	}
 
 	public bool isString() const {
@@ -180,10 +201,10 @@ public object JsonValue {
 	public string toString() const throws {
 		switch ( mType ) {
 			case JsonType.Array: {
-				return (JsonArray mObjectValue).toString();
+				return ( JsonArray mObjectValue ).toString();
 			}
 			case JsonType.Object: {
-				return (JsonObject mObjectValue).toString();
+				return ( JsonObject mObjectValue ).toString();
 			}
 			case JsonType.Value: {
 				switch ( mValueType ) {

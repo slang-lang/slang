@@ -15,6 +15,7 @@ public object JsonArray extends JsonValue implements IIterable {
 
 		mMembers = new Vector<JsonValue>();
 		mType = JsonType.Array;
+		mValueType = JsonValueType.Array;
 	}
 
 	public void addMember( JsonArray value ) modify {
@@ -30,7 +31,7 @@ public object JsonArray extends JsonValue implements IIterable {
 	}
 
 	public Iterator<JsonValue> getIterator() const {
-		return new Iterator<JsonValue>( ICollection mMembers );
+		return mMembers.getIterator();
 	}
 
 	public int size() const {
@@ -49,6 +50,10 @@ public object JsonArray extends JsonValue implements IIterable {
 
 	public JsonValue operator[]( int index ) const throws {
 		return mMembers.at( index );
+	}
+
+	public string =operator( string ) const {
+		return toString();
 	}
 
 	private Vector<JsonValue> mMembers;

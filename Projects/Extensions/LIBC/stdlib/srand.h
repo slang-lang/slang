@@ -1,0 +1,70 @@
+
+#ifndef Slang_Extensions_LIBC_stdlib_srand_h
+#define Slang_Extensions_LIBC_stdlib_srand_h
+
+
+// Library includes
+#include <math.h>
+
+// Project includes
+#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Tools.h>
+#include "Defines.h"
+
+// Forward declarations
+
+// Namespace declarations
+
+
+namespace Slang {
+namespace Extensions {
+namespace LIBC {
+namespace stdlib {
+
+
+class SRAND: public ExtensionMethod
+{
+public:
+    SRAND()
+    : ExtensionMethod(0, "srand", Designtime::VoidObject::TYPENAME)
+    {
+        ParameterList params;
+        params.push_back(Parameter::CreateDesigntime("seed", Designtime::IntegerObject::TYPENAME));
+
+        setSignature(params);
+    }
+
+public:
+    Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+    {
+        ParameterList list = mergeParameters(params);
+
+        try {
+            ParameterList::const_iterator it = list.begin();
+
+            auto param_seed = (it++)->value().toInt();
+
+            srand(param_seed);
+        }
+        catch ( std::exception& e ) {
+            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+            *data = Runtime::StringObject(std::string(e.what()));
+
+            Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+            return Runtime::ControlFlow::Throw;
+        }
+
+        return Runtime::ControlFlow::Normal;
+    }
+};
+
+
+}
+}
+}
+}
+
+
+#endif

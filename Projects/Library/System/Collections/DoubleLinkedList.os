@@ -36,18 +36,20 @@ public object DoubleLinkedList<T> implements ICollection {
 
 		var item = mFirst;
 		for ( int i = 0; i < index; i++ ) {
-			item = item.mNext;
+			item = item.next;
 		}
 
-		return item.mValue;
+		return item.value;
 	}
 
 	public void clear() modify {
 		for ( int i = 0; i < mSize; i++ ) {
-			delete mFirst.mValue;
-			mFirst = mFirst.mNext;
+			delete mFirst.value;
+			mFirst = mFirst.next;
 		}
 
+		mFirst = CollectionItem<T> null;
+		mLast = CollectionItem<T> null;
 		mSize = 0;
 	}
 
@@ -65,23 +67,38 @@ public object DoubleLinkedList<T> implements ICollection {
 		}
 
 		if ( index == 0 ) {						// special handling for 1st element
-			mFirst = mFirst.mNext;
+			mFirst = mFirst.next;
+		}
+		else if ( index == mSize - 1 ) {		// special handling for last element
+			var prev = mFirst;
+
+			while( prev.next.next )
+				prev = prev.next;
+
+			prev.next = CollectionItem<T> null;
+			mLast = prev;
 		}
 		else {									// default handling for erasing
 			var prev = mFirst;
+
 			for ( int i = 0; i < index - 1; i++ ) {
-				prev = prev.mNext;
+				prev = prev.next;
 			}
 
 			if ( index == mSize - 1 ) {
-				mLast = prev;
+				mLast = prev.next;
 			}
-			else if ( prev.mNext ) {
-				prev.mNext = prev.mNext.mNext;
+			else if ( prev.next ) {
+				prev.next = prev.next.next;
 			}
 		}
 
 		mSize--;
+
+		if ( mSize == 0 ) {
+			mFirst = CollectionItem<T> null;
+			mLast = mFirst;
+		}
 	}
 
 	public T first() const throws {
@@ -89,9 +106,20 @@ public object DoubleLinkedList<T> implements ICollection {
 			throw new OutOfBoundsException( "empty collection" );
 		}
 
-		return mFirst.mValue;
+		return mFirst.value;
 	}
 
+///* activate for double linked iterator usage
+	public Iterator<T> getIterator() const {
+		return new Iterator<T>( mFirst );
+	}
+
+	public ReverseIterator<T> getReverseIterator() const {
+		return new ReverseIterator<T>( mLast );
+	}
+//*/
+
+/* activate for random access iterator usage
 	public Iterator<T> getIterator() const {
 		return new Iterator<T>( ICollection this );
 	}
@@ -99,16 +127,17 @@ public object DoubleLinkedList<T> implements ICollection {
 	public ReverseIterator<T> getReverseIterator() const {
 		return new ReverseIterator<T>( ICollection this );
 	}
+*/
 
 	public int indexOf( T value ) const {
 		var item = mFirst;
 
 		for ( int i = 0; i < mSize; i++ ) {
-			if ( item.mValue == value ) {
+			if ( item.value == value ) {
 				return i;
 			}
 
-			item = item.mNext;
+			item = item.next;
 		}
 
 		return -1;
@@ -119,7 +148,7 @@ public object DoubleLinkedList<T> implements ICollection {
 			throw new OutOfBoundsException( "empty collection" );
 		}
 
-		return mLast.mValue;
+		return mLast.value;
 	}
 
 	public void pop_back() modify throws {
@@ -133,10 +162,10 @@ public object DoubleLinkedList<T> implements ICollection {
 		else {
 			var item = mFirst;
 			for ( int i = 0; i < mSize - 1; i++ ) {
-				item = item.mNext;
+				item = item.next;
 			}
 
-			delete item.mNext;
+			delete item.next;
 		}
 
 		mSize--;
@@ -147,7 +176,7 @@ public object DoubleLinkedList<T> implements ICollection {
 			throw new OutOfBoundsException( "empty collection" );
 		}
 
-		mFirst = mFirst.mNext;
+		mFirst = mFirst.next;
 
 		mSize--;
 	}
@@ -159,10 +188,10 @@ public object DoubleLinkedList<T> implements ICollection {
 			mFirst = item;
 		}
 		else {
-			mLast.mNext = item;
+			mLast.next = item;
 		}
 
-		//item.mPrevious = mLast;	// this leaves a mem leak... ;-(
+		//item.previous = mLast;	// this leaves a mem leak... ;-(
 		mLast = item;
 
 		mSize++;
@@ -170,9 +199,9 @@ public object DoubleLinkedList<T> implements ICollection {
 
 	public void push_front( T value ) modify {
 		var item = new CollectionItem<T>( value );
-		item.mNext = mFirst;
+		item.next = mFirst;
 
-		//mFirst.mPrevious = item;	// this leaves a mem leak... ;-(
+		//mFirst.previous = item;	// this leaves a mem leak... ;-(
 		mFirst = item;
 
 		mSize++;

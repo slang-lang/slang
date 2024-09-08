@@ -25,11 +25,11 @@ namespace Network {
 
 
 SystemNetworkExtension::SystemNetworkExtension()
-: AExtension( "Network", "0.0.1" )
+: AExtension( "Network", "0.0.2" )
 {
 }
 
-void SystemNetworkExtension::initialize( IScope* scope )
+void SystemNetworkExtension::initialize( ExtensionNamespace* scope )
 {
 	// domain constants
 	scope->define( "AF_UNIX", new Runtime::IntegerObject( AF_UNIX ) );

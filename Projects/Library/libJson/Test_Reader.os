@@ -7,6 +7,9 @@ import Reader;
 
 public void Main(int argc, string args) {
 	assert( TestCase1() );
+	assert( TestCase2() );
+	assert( TestCase3() );
+	assert( TestCase4() );
 }
 
 private bool TestCase1() {
@@ -20,7 +23,7 @@ private bool TestCase1() {
         print( str );               // input string
 
         var reader = new JsonReader();
-        var value = reader.parse(str);
+        var value = reader.parse( str );
         assert( value );
 
         print( value.toString() );  // output string
@@ -28,12 +31,78 @@ private bool TestCase1() {
         return true;
    }
    catch ( string e ) {
-	   print("Exception: " + e);
+	   print( "Exception: " + e );
    }
    catch ( IException e ) {
-	   print("Exception: " + e.what());
+	   print( "Exception: " + e.what() );
    }
 
    return false;
+}
+
+private bool TestCase2() {
+	print( "Read negative number" );
+
+	try {
+		var str = "{ \"key\": -1 }";
+		print( str );
+
+		var reader = new JsonReader();
+		var value = reader.parse( str );
+		assert( value );
+
+		print( value.toString() );
+
+		return true;
+	}
+	catch ( IException e ) {
+		print( "Exception: " + e.what() );
+	}
+
+	return false;
+}
+
+private bool TestCase3() {
+	print( "Read exponential number" );
+
+	try {
+		var str = "{ \"key\": 7e-5 }";
+		print( str );
+
+		var reader = new JsonReader();
+		var value = reader.parse( str );
+		assert( value );
+
+		print( value.toString() );
+
+		return true;
+	}
+	catch ( IException e ) {
+		print( "Exception: " + e.what() );
+	}
+
+	return false;
+}
+
+private bool TestCase4() {
+	print( "TestCase 4: escape sequences" );
+
+	try {
+		var str = "{ \"key\": \"string \\\"escape\\\" string\" }";
+		print( str );
+
+		var reader = new JsonReader();
+		var value = reader.parse( str );
+		assert( value );
+
+		print( value.toString() );
+
+		return true;
+	}
+	catch ( IException e ) {
+		print( "Exception: " + e.what() );
+	}
+
+	return false;
 }
 

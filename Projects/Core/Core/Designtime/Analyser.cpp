@@ -40,7 +40,7 @@ bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& t
 	Runtime::AtomicValue previous_value = Runtime::AtomicValue(-1);
 	Runtime::AtomicValue value = Runtime::AtomicValue(-1);
 
-	// Format: <identifier> = <value>[, or ;]
+	// Format: <identifier> = <value>[, [or ;]]
 	while ( token != tokens.end() ) {
 		expect(Token::Type::IDENTIFIER, token);
 
@@ -78,13 +78,14 @@ bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& t
 		symbol->define(name, entry);
 
 		if ( token->type() == Token::Type::COMMA ) {
-			++token;
+            if ( lookahead(token) == tokens.end() ) {
+                throw Designtime::Exceptions::SyntaxError("new enum value expected but none found!", token->position());
+            }
 
-			if ( lookahead(token) == tokens.end() ) {
-				throw Designtime::Exceptions::SyntaxError("new enum value expected but none found!", token->position());
-			}
+			++token;
 		}
-		else if ( token->type() == Token::Type::SEMICOLON ) {
+		else if ( token->type() == Token::Type::SEMICOLON || token == tokens.end() ) {
+            // omitting the semicolon as last token is also allowed
 			return true;
 		}
 		else {

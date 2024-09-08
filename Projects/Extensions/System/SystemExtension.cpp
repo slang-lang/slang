@@ -8,9 +8,7 @@
 // Project includes
 #include <Defines.h>
 #include "Ascii.h"
-#include "AssertMsg.h"
 #include "Fork.h"
-#include "GetChar.h"
 #include "GetEnv.h"
 #include "PutEnv.h"
 #include "SetEnv.h"
@@ -18,6 +16,7 @@
 #include "Sleep.h"
 #include "System.h"
 #include "Wait.h"
+#include "WaitPID.h"
 #include "Write.h"
 #include "WriteLn.h"
 
@@ -37,7 +36,7 @@ namespace System {
 
 
 SystemExtension::SystemExtension()
-: AExtension( "Slang System" )
+: AExtension( "Slang System", "0.1.3" )
 {
 #ifdef _WIN32
 	// Win32 only
@@ -59,7 +58,7 @@ SystemExtension::~SystemExtension()
 #endif
 }
 
-void SystemExtension::initialize(IScope* scope)
+void SystemExtension::initialize( ExtensionNamespace* scope )
 {
 	// error constants
 	scope->define( "EACCES", new Runtime::IntegerObject( "EACCES", EACCES ) );
@@ -72,16 +71,13 @@ void SystemExtension::initialize(IScope* scope)
 	// Win32 only
 #else
 	// Unix/Linux only
+
+	scope->define( "WNOHANG", new Runtime::IntegerObject( "WNOHANG", WNOHANG ) );
+	scope->define( "WUNTRACED", new Runtime::IntegerObject( "WUNTRACED", WUNTRACED ) );
 #endif
 
 	// Console
 	mConsoleExtension.initialize( scope );
-
-	// IO
-	mIOExtension.initialize( scope );
-
-	// Math
-	mMathExtension.initialize( scope );
 
 	// Network
 #ifdef _WIN32
@@ -104,8 +100,6 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 
 	// Generic methods
 	methods.push_back( new Ascii() );
-	methods.push_back( new Assert() );
-	methods.push_back( new GetChar() );
 	methods.push_back( new GetEnv() );
 	methods.push_back( new PutEnv() );
 	methods.push_back( new SetEnv() );
@@ -121,16 +115,11 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 	methods.push_back( new Fork() );
 	methods.push_back( new SetKeyboardBlockingMode() );
 	methods.push_back( new Wait() );
+	methods.push_back( new WaitPID() );
 #endif
 
 	// Console
 	mConsoleExtension.provideMethods( methods );
-
-	// IO
-	mIOExtension.provideMethods( methods );
-
-	// Math
-	mMathExtension.provideMethods( methods );
 
 	// Network
 #ifdef _WIN32

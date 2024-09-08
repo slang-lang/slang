@@ -22,7 +22,7 @@
 #elif defined _WIN32
 	// Memory leak check - Begin
 	#define _CRTDBG_MAP_ALLOC
-	#include <stdlib.h>
+	#include <cstdlib>
 
 	#include <iostream>
 	#include <crtdbg.h>
@@ -34,7 +34,7 @@
 
 	//#include <vld.h>
 #else
-#	include <stdlib.h>
+#	include <cstdlib>
 #endif
 
 
@@ -43,8 +43,10 @@ StringSet mLibraryFolders;
 Utils::Common::StdOutLogger mLogger;
 Slang::ParameterList mParameters;
 bool mPrintDebugInfo = false;
+bool mPrintSpecification = false;
 bool mPrintUsage = false;
 bool mPrintVersion = false;
+std::string mRequestedSpecification;
 bool mSanityCheck = true;
 bool mSyntaxCheck = false;
 
@@ -59,6 +61,7 @@ void printUsage()
 	std::cout << "-l | --library <library>   Library root path" << std::endl;
 	std::cout << "-q | --quiet               Quiet mode, chats as less as possible" << std::endl;
 	std::cout << "--skip-sanitycheck         Skips sanity check before parsing" << std::endl;
+	std::cout << "--spec [query]             Print specification, can be followed by an optional query" << std::endl;
 	std::cout << "--syntax <file>            Syntax check only" << std::endl;
 	std::cout << "-v | --verbose             Verbose output" << std::endl;
 	std::cout << "--version                  Version information" << std::endl;
@@ -118,6 +121,13 @@ void processParameters(int argc, const char* argv[])
 			else if ( Utils::Tools::StringCompare(argv[i], "--skip-sanitycheck") ) {
 				mSanityCheck = false;
 			}
+			else if ( Utils::Tools::StringCompare(argv[i], "--spec") ) {
+				mPrintSpecification = true;
+
+				if ( argc > ++i ) {
+					mRequestedSpecification = argv[i];
+				}
+			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--syntax") ) {
 				mSyntaxCheck = true;
 			}
@@ -165,6 +175,7 @@ int main(int argc, const char* argv[])
 	// add extensions
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine.addExtension(new Slang::Extensions::System::SystemExtension());
+	mVirtualMachine.addExtension(new Slang::Extensions::LIBC::Extension());
 #endif
 
 	mVirtualMachine.settings().DoCollectErrors = true;
@@ -173,9 +184,18 @@ int main(int argc, const char* argv[])
 
 	mVirtualMachine.init();
 
+    for ( const auto& library : mLibraryFolders ) {
+        mVirtualMachine.addLibraryFolder( library );
+    }
+
 	if ( mPrintDebugInfo ) {
 		mVirtualMachine.printLibraryFolders();
 		mVirtualMachine.printExtensions();
+
+		return 0;
+	}
+	else if ( mPrintSpecification ) {
+		mVirtualMachine.printSpecification( mRequestedSpecification );
 
 		return 0;
 	}
@@ -188,10 +208,6 @@ int main(int argc, const char* argv[])
 		printUsage();
 
 		return 0;
-	}
-
-	for ( const auto& library : mLibraryFolders ) {
-		mVirtualMachine.addLibraryFolder( library );
 	}
 
 	try {

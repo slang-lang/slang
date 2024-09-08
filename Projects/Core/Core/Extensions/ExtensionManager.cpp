@@ -22,13 +22,13 @@ void ExtensionManager::close_lib( dynamic_lib_handle handle )
 
 AExtension* ExtensionManager::instantiate( dynamic_lib_handle handle )
 {
-	if ( handle == nullptr ) {
+	if ( !handle ) {
 		return nullptr;
 	}
 
 	dynamic_lib_handle maker = dlsym( handle , "factory" );
 
-	if ( maker == nullptr ) {
+	if ( !maker ) {
 		return nullptr;
 	}
 
@@ -44,6 +44,11 @@ AExtension* ExtensionManager::load( const std::string& path )
 
 	dynamic_lib& lib = mLibraries.back();
 	lib.handle = load_lib( lib.path );
+
+	if ( !lib.handle ) {
+		OSerror( dlerror() );
+		return nullptr;
+	}
 
 	return instantiate( lib.handle );
 }

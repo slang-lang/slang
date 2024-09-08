@@ -16,8 +16,8 @@ public void Main( int argc, string args ) {
 		print( "Results(" + result.Rows.size() + ") = " + cast<string>( result ) );
 
 		int maxColLength;
-
 		int rowIdx;
+
 		foreach ( Sqlite3Row row : result ) {
 			//print( "Row(" + rowIdx + "): " );
 
@@ -30,7 +30,7 @@ public void Main( int argc, string args ) {
 				}
 				line += e.Value;
 
-				maxColLength = (maxColLength < strlen(e.Value)) ? strlen(e.Value) : maxColLength;
+				maxColLength = ( maxColLength < strlen( e.Value ) ) ? strlen( e.Value ) : maxColLength;
 
 				//print( "Entry(" + entryIdx + "): " + cast<string>( e ) );
 				entryIdx++;

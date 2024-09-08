@@ -332,7 +332,7 @@ void RemoteClient::SendMessage(VSCodeDebug::ProtocolMessage* message)
 		return;
 	}
 
-	std::cout << message->serialize().toString() << std::endl;
+	std::cout << message->serialize().asString() << std::endl;
 }
 
 void RemoteClient::SetBreakpoints(const VSCodeDebug::Request& request)
@@ -379,6 +379,7 @@ void RemoteClient::start()
 	// add extensions
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine->addExtension(new Slang::Extensions::System::SystemExtension());
+	mVirtualMachine->addExtension(new Slang::Extensions::LIBC::Extension());
 #endif
 
 	try {

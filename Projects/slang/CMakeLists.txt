@@ -8,6 +8,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	ExtensionsLIBC
 	ExtensionsSystem
 	DebuggerVSCodeRemoteClient
 	DebuggerLocalClient

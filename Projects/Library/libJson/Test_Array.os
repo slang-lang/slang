@@ -25,9 +25,13 @@ private bool TestCase1() {
 		//print( value.toString() );
 	}
 
+	assert( array.isArray() );
+
 	var value const = array[1];
 	//print( array[1].asString() );
 	assert( value.asString() == "1389" );
+
+	print( "cast<string>( array ): " + cast<string>( array ) );
 
 	return true;
 }

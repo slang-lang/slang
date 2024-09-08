@@ -14,7 +14,7 @@
 #	define GetCurrentDir getcwd
 #endif
 #include <curl/curl.h>
-#include <Json/Json.h>
+#include <json/json.h>
 
 // Project includes
 #include <Common/StdOutLogger.h>
@@ -37,7 +37,7 @@
 #elif defined _WIN32
 	// Memory leak check - Begin
 	#define _CRTDBG_MAP_ALLOC
-	#include <stdlib.h>
+	#include <cstdlib>
 
 	#include <iostream>
 	#include <crtdbg.h>
@@ -49,7 +49,7 @@
 
 	//#include <vld.h>
 #else
-#	include <stdlib.h>
+#	include <cstdlib>
 #endif
 
 
@@ -169,16 +169,16 @@ void addRestriction(const StringList& params)
 		if ( (*paramIt) == "max" ) {
 			++paramIt;
 
-			SemanticVersionNumber version((*paramIt));
+			SemanticVersionNumber version( (*paramIt) );
 
-			value.addMember("version_max", version.toString());
+			value[ "version_max" ] = version.toString();
 		}
 		else if ( (*paramIt) == "min" ) {
 			++paramIt;
 
 			SemanticVersionNumber version((*paramIt));
 
-			value.addMember("version_min", version.toString());
+			value[ "version_min" ] = version.toString();
 		}
 	}
 
@@ -364,12 +364,12 @@ void createLocalLibrary()
 
 	if ( !Utils::Tools::Files::exists(mCurrentFolder + CONFIG_FILE) ) {
 		Json::Value repository;
-		repository.addMember("name", "main");
-		repository.addMember("url", "https://slang.ticketsharing.net/repo/stable");
+		repository[ "name" ] = "main";
+		repository[ "url" ] = "https://slang-lang.org/repo/stable";
 
 		Json::Value config;
-		config.addMember("repository", repository);
-		config.addMember("restrictions", Json::Value());
+		config[ "repository" ] = repository;
+		config[ "restrictions" ] = Json::Value();
 
 		writeJsonFile(mCurrentFolder + CONFIG_FILE, config);
 	}
@@ -806,7 +806,7 @@ void loadConfig()
 	}
 
 	if ( !mConfig.isMember("restrictions") ) {
-		mConfig.addMember("restrictions", Json::Value());
+		mConfig[ "restrictions" ] = Json::Value();
 	}
 
 	loadRestrictions();
@@ -821,20 +821,20 @@ void loadRestrictions()
 
 	// load restrictions from config
 	Json::Value restrictions = mConfig["restrictions"];
-	for ( const auto& it : restrictions.members() ) {
-		std::string moduleName = it.key();
+	for ( const auto& restrictionName : restrictions.getMemberNames() ) {
+        auto restriction = restrictions[ restrictionName ];
 
 		std::string versionMin;
-		if ( it.isMember("version_min") ) {
-			versionMin = it["version_min"].asString();
+		if ( restriction.isMember( "version_min" ) ) {
+			versionMin = restriction[ "version_min" ].asString();
 		}
 		std::string versionMax;
-		if ( it.isMember("version_max") ) {
-			versionMax = it["version_max"].asString();
+		if ( restriction.isMember( "version_max" ) ) {
+			versionMax = restriction[ "version_max" ].asString();
 		}
 
 		mLocalRestrictions.insert(
-			Restriction(moduleName, versionMin, versionMax)
+			Restriction(restrictionName, versionMin, versionMax)
 		);
 	}
 }
@@ -1036,7 +1036,8 @@ void readJsonFile(const std::string& filename, Json::Value& result)
 	std::string data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());	// read stream
 	stream.close();
 
-	result = Json::Parser::parse(data);
+    Json::Reader reader;
+	reader.parse( data, result );
 }
 
 void remove(const StringList& params)
@@ -1119,8 +1120,7 @@ void search( const StringList& params )
 	std::string lookup = params.empty() ? "" : params.front();
 	StringList result;
 
-	Json::Value::Members members = config[ "modules" ].members();
-	for ( const auto& member : members ) {
+	for ( const auto& member : config[ "modules" ] ) {
 		if ( !member.isMember( "name" ) ) {
 			std::cout << "!!! Invalid cache file structure: \"name\" missing" << std::endl;
 			return;
@@ -1133,8 +1133,7 @@ void search( const StringList& params )
         if ( member.isMember( "keywords" ) ) {
             auto oldSize = result.size();
 
-            auto keywords = member[ "keywords" ].members();
-            for ( const auto& keyword : keywords ) {
+            for ( const auto& keyword : member[ "keywords" ] ) {
                 if ( findCaseInsensitive( keyword.asString(), lookup ) != std::string::npos ) {
                     result.push_back( name + "(" + version + ")" + description );
                     break;  // one result here is enough
@@ -1181,7 +1180,7 @@ void writeJsonFile( const std::string& filename, Json::Value& result )
 	// write contents of Json::Value into filename
 
 	Json::StyledWriter writer;
-	std::string data = writer.toString( result );
+	std::string data = writer.write( result );
 
 	std::fstream stream;
 	stream.open( filename.c_str(), std::ios::out );    // open file for writing

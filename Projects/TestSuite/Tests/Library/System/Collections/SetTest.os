@@ -50,7 +50,7 @@ private bool TestCase1() const {
 	print("TestCase 1: Set.insert()");
 
 	try {
-		Set<TestObject> set = new Set<TestObject>();
+		var set = new Set<TestObject>();
 
 		TestObject item;
 
@@ -66,7 +66,7 @@ private bool TestCase1() const {
 
 		TestObject last;
 
-		Iterator<TestObject> it = set.getIterator();
+		var it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -93,7 +93,7 @@ private bool TestCase2() const {
 	print("TestCase 2: Set.erase()");
 
 	try {
-		Set<Integer> set = new Set<Integer>();
+		var set = new Set<Integer>();
 		assert( set is Object );
 
 		int count = 0;
@@ -107,7 +107,7 @@ private bool TestCase2() const {
 
 		//print("before erase: set has " + set.size() + " item(s)");
 
-		Iterator<Integer> it = set.getIterator();
+		var it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -146,7 +146,7 @@ private bool TestCase3() {
 	print("TestCase 3: Set.clear()");
 
 	try {
-		Set<Integer> set = new Set<Integer>();
+		var set = new Set<Integer>();
 		assert( set is Object );
 
 		int count;
@@ -178,7 +178,7 @@ private bool TestCase4() {
 	print("TestCase 4: Set iterate");
 
 	try {
-		Set<Integer> set = new Set<Integer>();
+		var set = new Set<Integer>();
 
 		int count;
 		while ( count < 10 ) {
@@ -190,7 +190,7 @@ private bool TestCase4() {
 		assert( !set.empty() );
 		assert( set.size() == 10 );
 
-		Iterator<Integer> it = set.getIterator();
+		var it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 

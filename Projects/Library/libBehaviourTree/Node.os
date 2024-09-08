@@ -38,6 +38,35 @@ public abstract object Node {
 
     public abstract void print();
     public abstract NodeStatus tick() modify;
+
+/*
+    protected Port getInput( string portName ) const {
+       var portIt = Ports.getIterator();
+       while ( portIt.hasNext() ) {
+          var p = portIt.next();
+
+          if ( p.Name == portName ) {
+             return p;
+          }
+       }
+
+       return null Port;
+    }
+
+    protected Port getOutput( string portName ) const {
+       var portIt = Ports.getIterator();
+       while ( portIt.hasNext() ) {
+          var p = portIt.next();
+
+          if( p.Name == portName && p.Type == PortType.Output ) {
+             return p;
+          }
+       }
+
+       return null Port;
+    }
+*/
 }
 
 public object NodeCollection extends Vector<Node>;
+

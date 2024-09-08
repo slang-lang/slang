@@ -6,6 +6,7 @@ public void Main(int argc, string args) {
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
+	assert( TestCase4() );
 }
 
 bool TestCase1() {
@@ -127,3 +128,28 @@ private bool TestCase3() {
 
 	return false;
 }
+
+private bool TestCase4() {
+	print( "TestCase4: parse strings" );
+
+	try {
+		int argc = 1;
+		string args = "--broker=\"broker name\"";
+
+		var params = new ParameterHandler( argc, args, false );
+
+		{	// debug print
+			int count;
+			foreach ( Parameter param : params ) {
+				print( cast<string>( count++ ) + ": " + param.toString() );
+			}
+		}
+		return params[0].Value == "broker name";
+	}
+	catch ( IException e ) {
+		print( "Exception: " + e.what() );
+	}
+
+	return false;
+}
+

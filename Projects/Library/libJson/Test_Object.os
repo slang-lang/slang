@@ -31,6 +31,8 @@ private bool TestCase1() {
 		o1.addMember( "another", new JsonValue( "object" ) );
 		print( o1.toString() );
 
+		assert( o1.isObject() );
+
 		assert( o1.isMember( "o1" ) );
 		var valo1 const = JsonObject o1[ "o1" ];
 
@@ -42,6 +44,8 @@ private bool TestCase1() {
 		assert( ! tmpObj.isMember( "o4" ) );
 		tmpObj = tmpObj[ "o3" ];
 		print( tmpObj.toString() );
+
+		print( "cast<string>( tmpObj ): " + cast<string>( tmpObj ) );
 
 		return bool value;
 	}

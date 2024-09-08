@@ -33,20 +33,20 @@ public object Vector<T> implements ICollection {
 
 		var item = mFirst;
 		for ( int idx = 0; idx < index; idx++ ) {
-			item = item.mNext;
+			item = item.next;
 		}
 
-		return item.mValue;
+		return item.value;
 	}
 
 	public void clear() modify {
 		for ( int idx = 0; idx < mSize; idx++ ) {
-			delete mFirst.mValue;
-			mFirst = mFirst.mNext;
+			delete mFirst.value;
+			mFirst = mFirst.next;
 		}
 
-		delete mFirst;
-		delete mLast;
+		mFirst = CollectionItem<T> null;
+		mLast = CollectionItem<T> null;
 		mSize = 0;
 	}
 
@@ -63,20 +63,30 @@ public object Vector<T> implements ICollection {
 			throw new OutOfBoundsException( "erase index(" + index + ") beyond end of list" );
 		}
 
-		if ( index == 0 ) {	            // special handling for 1st element
-			mFirst = mFirst.mNext;
+		if ( index == 0 ) {						// special handling for 1st element
+			mFirst = mFirst.next;
 		}
-		else {	                        // default handling for erasing
+		else if ( index == mSize - 1 ) {		// special handling for last element
 			var prev = mFirst;
-			for ( int idx = 0; idx < index - 1; idx++ ) {
-				prev = prev.mNext;
+
+			while( prev.next.next )
+				prev = prev.next;
+
+			prev.next = CollectionItem<T> null;
+			mLast = prev;
+		}
+		else {									// default handling for erasing
+			var prev = mFirst;
+
+			for ( int i = 0; i < index - 1; i++ ) {
+				prev = prev.next;
 			}
 
 			if ( index == mSize - 1 ) {
-				mLast = prev;
+				mLast = prev.next;
 			}
-			else {
-				prev.mNext = prev.mNext.mNext;
+			else if ( prev.next ) {
+				prev.next = prev.next.next;
 			}
 		}
 
@@ -93,9 +103,20 @@ public object Vector<T> implements ICollection {
 			throw new OutOfBoundsException( "empty collection" );
 		}
 
-		return mFirst.mValue;
+		return mFirst.value;
 	}
 
+///* activate for double linked iterator usage
+	public Iterator<T> getIterator() const {
+		return new Iterator<T>( mFirst );
+	}
+
+	public ReverseIterator<T> getReverseIterator() const {
+		return new ReverseIterator<T>( mLast );
+	}
+//*/
+
+/* activate for random access iterator usage
 	public Iterator<T> getIterator() const {
 		return new Iterator<T>( ICollection this );
 	}
@@ -103,16 +124,17 @@ public object Vector<T> implements ICollection {
 	public ReverseIterator<T> getReverseIterator() const {
 		return new ReverseIterator<T>( ICollection this );
 	}
+*/
 
 	public int indexOf( T value ) const {
 		var item = mFirst;
 
 		for ( int idx = 0; idx < mSize; idx++ ) {
-			if ( item.mValue == value ) {
+			if ( item.value == value ) {
 				return idx;
 			}
 
-			item = item.mNext;
+			item = item.next;
 		}
 
 		return -1;
@@ -130,21 +152,21 @@ public object Vector<T> implements ICollection {
 			mLast = item;
 		}
 		else if ( index == 0 ) {		// special handling for 1st element
-			item.mNext = mFirst;
+			item.next = mFirst;
 			mFirst = item;
 		}
 		else if ( index == mSize ) {		// special handling for last element
-			mLast.mNext = item;
+			mLast.next = item;
 			mLast = item;
 		}
 		else {					// default handling for insertions
 			var tmp = mFirst;
 			for ( int idx = 0; idx < index - 1; idx++ ) {
-				tmp = tmp.mNext;
+				tmp = tmp.next;
 			}
 
-			item.mNext = tmp.mNext;
-			tmp.mNext = item;
+			item.next = tmp.next;
+			tmp.next = item;
 		}
 
 		mSize++;
@@ -155,7 +177,7 @@ public object Vector<T> implements ICollection {
 			throw new OutOfBoundsException( "empty collection" );
 		}
 
-		return mLast.mValue;
+		return mLast.value;
 	}
 
 	public void pop_back() modify throws {
@@ -170,11 +192,11 @@ public object Vector<T> implements ICollection {
 		else {                                  // generic handling
 			var item = mFirst;
 			for ( int idx = 0; idx < mSize - 1; idx++ ) {
-				item = item.mNext;
+				item = item.next;
 			}
 
 			mLast = item;
-			delete item.mNext;
+			delete item.next;
 		}
 
 		mSize--;
@@ -185,7 +207,7 @@ public object Vector<T> implements ICollection {
 			throw new OutOfBoundsException( "empty collection" );
 		}
 
-		mFirst = mFirst.mNext;
+		mFirst = mFirst.next;
 		if ( !mFirst ) {
 			delete mLast;
 		}
@@ -200,7 +222,7 @@ public object Vector<T> implements ICollection {
 			mFirst = item;
 		}
 		else {                                  // generic handling
-			mLast.mNext = item;
+			mLast.next = item;
 		}
 
 		mLast = item;
@@ -211,7 +233,7 @@ public object Vector<T> implements ICollection {
 	public void push_front( T value ) modify {
 		var item = new CollectionItem<T>( value );
 
-		item.mNext = mFirst;
+		item.next = mFirst;
 		mFirst = item;
 
 		if ( mSize == 0 ) {
@@ -233,7 +255,7 @@ public object Vector<T> implements ICollection {
 	private CollectionItem<T> mLast;
 	private int mSize = 0;
 
-	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
-	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
+	private Iterator<T> __iterator;					// this is a hack to automatically initialize a generic type
+	private ReverseIterator<T> __reverse_iterator;	// this is a hack to automatically initialize a generic type
 }
 
