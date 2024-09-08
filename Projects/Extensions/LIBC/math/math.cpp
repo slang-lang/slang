@@ -15,6 +15,7 @@
 #include "atan2.h"
 #include "cbrt.h"
 #include "ceil.h"
+#include "copysign.h"
 #include "cos.h"
 #include "cosh.h"
 #include "erf.h"
@@ -29,17 +30,23 @@
 #include "fmin.h"
 #include "fmod.h"
 #include "hypot.h"
+#include "ilogb.h"
+#include "ldexp.h"
 #include "lgamma.h"
 #include "log.h"
 #include "log10.h"
 #include "log1p.h"
 #include "log2.h"
+#include "logb.h"
 #include "nan.h"
 #include "nearbyint.h"
+#include "nextafter.h"
+#include "nexttoward.h"
 #include "pow.h"
 #include "remainder.h"
 #include "rint.h"
 #include "round.h"
+#include "scalbn.h"
 #include "sin.h"
 #include "sinh.h"
 #include "sqrt.h"
@@ -90,6 +97,8 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new CBRTF() );
     methods.push_back( new CEIL() );
     methods.push_back( new CEILF() );
+    methods.push_back( new COPYSIGN() );
+    methods.push_back( new COPYSIGNF() );
     methods.push_back( new COS() );
     methods.push_back( new COSF() );
     methods.push_back( new COSH() );
@@ -120,6 +129,10 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new FMODF() );
     methods.push_back( new HYPOT() );
     methods.push_back( new HYPOTF() );
+    methods.push_back( new ILOGB() );
+    methods.push_back( new ILOGBF() );
+    methods.push_back( new LDEXP() );
+    methods.push_back( new LDEXPF() );
     methods.push_back( new LGAMMA() );
     methods.push_back( new LGAMMAF() );
     methods.push_back( new LOG() );
@@ -130,10 +143,16 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new LOG1PF() );
     methods.push_back( new LOG2() );
     methods.push_back( new LOG2F() );
+    methods.push_back( new LOGB() );
+    methods.push_back( new LOGBF() );
     methods.push_back( new MathNAN() );
     methods.push_back( new MathNANF() );
     methods.push_back( new NEARBYINT() );
     methods.push_back( new NEARBYINTF() );
+    methods.push_back( new NEXTAFTER() );
+    methods.push_back( new NEXTAFTERF() );
+    methods.push_back( new NEXTTOWARD() );
+    methods.push_back( new NEXTTOWARDF() );
     methods.push_back( new POW() );
     methods.push_back( new POWF() );
     methods.push_back( new REMAINDER() );
@@ -142,6 +161,8 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new RINTF() );
     methods.push_back( new ROUND() );
     methods.push_back( new ROUNDF() );
+    methods.push_back( new SCALBN() );
+    methods.push_back( new SCALBNF() );
     methods.push_back( new SIN() );
     methods.push_back( new SINF() );
     methods.push_back( new SINH() );

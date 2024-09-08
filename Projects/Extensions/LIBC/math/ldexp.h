@@ -1,6 +1,6 @@
 
-#ifndef Slang_Extensions_LIBC_math_pow_h
-#define Slang_Extensions_LIBC_math_pow_h
+#ifndef Slang_Extensions_LIBC_math_ldexp_h
+#define Slang_Extensions_LIBC_math_ldexp_h
 
 
 // Library includes
@@ -26,15 +26,15 @@ namespace ExtensionLIBC {
 namespace math {
 
 
-class POW: public ExtensionMethod
+class LDEXP: public ExtensionMethod
 {
 public:
-	POW()
-	: ExtensionMethod(0, "pow", Designtime::DoubleObject::TYPENAME)
+	LDEXP()
+	: ExtensionMethod(0, "ldexp", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("base", Designtime::DoubleObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("exponent", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("exp", Designtime::DoubleObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -47,10 +47,10 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			auto param_base     = (*it++).value().toDouble();
-			auto param_exponent = (*it++).value().toDouble();
+			auto param_arg = (*it++).value().toDouble();
+			auto param_exp = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(pow(param_base, param_exponent));
+			*result = Runtime::DoubleObject(ldexp(param_arg, param_exp));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -65,15 +65,15 @@ public:
 };
 
 
-class POWF: public ExtensionMethod
+class LDEXPF: public ExtensionMethod
 {
 public:
-	POWF()
-	: ExtensionMethod(0, "powf", Designtime::FloatObject::TYPENAME)
+	LDEXPF()
+	: ExtensionMethod(0, "ldexpf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("base", Designtime::FloatObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("exponent", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("exp", Designtime::FloatObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -86,10 +86,10 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			auto param_base     = (*it++).value().toFloat();
-			auto param_exponent = (*it++).value().toFloat();
+			auto param_arg = (*it++).value().toFloat();
+			auto param_exp = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(powf(param_base, param_exponent));
+			*result = Runtime::FloatObject(ldexpf(param_arg, param_exp));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

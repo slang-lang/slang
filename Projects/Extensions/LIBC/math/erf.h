@@ -85,7 +85,7 @@ public:
 
 			auto param_arg = (*it++).value().toFloat();
 
-			*result = Runtime::DoubleObject(erff(param_arg));
+			*result = Runtime::FloatObject(erff(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

@@ -1,17 +1,20 @@
 
-#ifndef Slang_Extensions_LIBC_math_pow_h
-#define Slang_Extensions_LIBC_math_pow_h
+#ifndef Slang_Extensions_LIBC_math_logb_h
+#define Slang_Extensions_LIBC_math_logb_h
 
 
 // Library includes
-#include <math.h>
+#include <cmath>
 
 // Project includes
+#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -26,15 +29,14 @@ namespace ExtensionLIBC {
 namespace math {
 
 
-class POW: public ExtensionMethod
+class LOGB: public ExtensionMethod
 {
 public:
-	POW()
-	: ExtensionMethod(0, "pow", Designtime::DoubleObject::TYPENAME)
+	LOGB()
+	: ExtensionMethod(0, "logb", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("base", Designtime::DoubleObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("exponent", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::StringObject::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -47,16 +49,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			auto param_base     = (*it++).value().toDouble();
-			auto param_exponent = (*it++).value().toDouble();
+			auto param_arg = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(pow(param_base, param_exponent));
+			*result = Runtime::DoubleObject(logb(param_arg));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
 			*data = Runtime::StringObject(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+			Controller::Instance().thread(threadId)->exception(data, token.position());
 			return Runtime::ControlFlow::Throw;
 		}
 
@@ -65,15 +66,14 @@ public:
 };
 
 
-class POWF: public ExtensionMethod
+class LOGBF: public ExtensionMethod
 {
 public:
-	POWF()
-	: ExtensionMethod(0, "powf", Designtime::FloatObject::TYPENAME)
+	LOGBF()
+	: ExtensionMethod(0, "logbf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("base", Designtime::FloatObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("exponent", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::StringObject::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -86,16 +86,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			auto param_base     = (*it++).value().toFloat();
-			auto param_exponent = (*it++).value().toFloat();
+			auto param_arg = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(powf(param_base, param_exponent));
+			*result = Runtime::FloatObject(logbf(param_arg));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
 			*data = Runtime::StringObject(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+			Controller::Instance().thread(threadId)->exception(data, token.position());
 			return Runtime::ControlFlow::Throw;
 		}
 
