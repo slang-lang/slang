@@ -8,9 +8,7 @@
 // Project includes
 #include <Defines.h>
 #include "Ascii.h"
-#include "AssertMsg.h"
 #include "Fork.h"
-#include "GetChar.h"
 #include "GetEnv.h"
 #include "PutEnv.h"
 #include "SetEnv.h"
@@ -81,12 +79,6 @@ void SystemExtension::initialize( ExtensionNamespace* scope )
 	// Console
 	mConsoleExtension.initialize( scope );
 
-	// IO
-	mIOExtension.initialize( scope );
-
-	// Math
-	mMathExtension.initialize( scope );
-
 	// Network
 #ifdef _WIN32
 	// Win32 only
@@ -108,8 +100,6 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 
 	// Generic methods
 	methods.push_back( new Ascii() );
-	methods.push_back( new Assert() );
-	methods.push_back( new GetChar() );
 	methods.push_back( new GetEnv() );
 	methods.push_back( new PutEnv() );
 	methods.push_back( new SetEnv() );
@@ -130,12 +120,6 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 
 	// Console
 	mConsoleExtension.provideMethods( methods );
-
-	// IO
-	mIOExtension.provideMethods( methods );
-
-	// Math
-	mMathExtension.provideMethods( methods );
 
 	// Network
 #ifdef _WIN32

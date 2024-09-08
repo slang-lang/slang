@@ -8,8 +8,6 @@
 // Project includes
 #include <Core/Extensions/AExtension.h>
 #include <System/Console/Console.h>
-#include <System/IO/IO.h>
-#include <System/Math/MathExtension.h>
 #ifdef _WIN32
 	// Win32 only
 #else
@@ -42,8 +40,6 @@ public:
 
 private:
 	Console::SystemConsoleExtension mConsoleExtension;
-	IO::SystemIOExtension mIOExtension;
-	Math::SystemMathExtension mMathExtension;
 #ifdef _WIN32
 	// Win32 only
 #else
