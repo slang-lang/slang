@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include "abs.h"
 #include "rand.h"
 #include "srand.h"
