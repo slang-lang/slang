@@ -10,25 +10,25 @@ ADD_SUBDIRECTORY(stdlib)
 
 
 SET(SOURCES
-	cassert/cassert.h
-	cstring/strcat.h
-	cstring/strchr.h
-	cstring/strcmp.h
-	cstring/strcoll.h
-	cstring/strcspn.h
-	cstring/strlen.h
-	cstring/strncat.h
-	cstring/strncmp.h
-	cstring/strpbrk.h
-	cstring/strspn.h
-	cstring/strrchr.h
-	cstring/strstr.h
-	locale/setlocale.h
-	Extension.cpp
+    cassert/cassert.h
+    cstring/strcat.h
+    cstring/strchr.h
+    cstring/strcmp.h
+    cstring/strcoll.h
+    cstring/strcspn.h
+    cstring/strlen.h
+    cstring/strncat.h
+    cstring/strncmp.h
+    cstring/strpbrk.h
+    cstring/strspn.h
+    cstring/strrchr.h
+    cstring/strstr.h
+    locale/setlocale.h
+    Extension.cpp
 )
 
 SET(HEADERS
-	Extension.h
+    Extension.h
 )
 
 SET(DEPENDENCIES
@@ -36,7 +36,7 @@ SET(DEPENDENCIES
     ExtensionsLIBCStdio
     ExtensionsLIBCMath
     ExtensionsLIBCFenv
-	CoreExtensions
+    CoreExtensions
 )
 
 SET(MODULES
