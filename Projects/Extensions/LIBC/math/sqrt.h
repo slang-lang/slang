@@ -28,10 +28,10 @@ namespace ExtensionLIBC {
 namespace math {
 
 
-class SQRT: public ExtensionMethod
+class SQRTDouble: public ExtensionMethod
 {
 public:
-	SQRT()
+	SQRTDouble()
 	: ExtensionMethod(0, "sqrt", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
@@ -54,6 +54,43 @@ public:
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
+			*data = Runtime::StringObject(std::string(e.what()));
+
+			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+			return Runtime::ControlFlow::Throw;
+		}
+
+		return Runtime::ControlFlow::Normal;
+	}
+};
+
+
+class SQRTFloat: public ExtensionMethod
+{
+public:
+	SQRTFloat()
+	: ExtensionMethod(0, "sqrt", Designtime::FloatObject::TYPENAME)
+	{
+		ParameterList params;
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
+
+		setSignature(params);
+	}
+
+public:
+	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	{
+		ParameterList list = mergeParameters(params);
+
+		try {
+			ParameterList::const_iterator it = list.begin();
+
+			auto param_arg = (*it++).value().toFloat();
+
+			*result = Runtime::FloatObject(sqrt(param_arg));
+		}
+		catch ( std::exception& e ) {
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());

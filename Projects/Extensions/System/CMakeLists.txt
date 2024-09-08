@@ -2,7 +2,6 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(Console)
 #ADD_SUBDIRECTORY(IO)
-ADD_SUBDIRECTORY(Math)
 ADD_SUBDIRECTORY(Network)
 ADD_SUBDIRECTORY(Reflection)
 ADD_SUBDIRECTORY(Strings)
@@ -23,7 +22,6 @@ SET(DEPENDENCIES
 	ExtensionsSystemStrings
 	ExtensionsSystemReflection
 	ExtensionsSystemNetwork
-	ExtensionsSystemMath
 	ExtensionsSystemConsole
 	CoreExtensions
 )

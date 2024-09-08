@@ -181,8 +181,9 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new SINF() );
     methods.push_back( new SINH() );
     methods.push_back( new SINHF() );
-    methods.push_back( new SQRT() );
+    methods.push_back( new SQRTDouble() );
     methods.push_back( new SQRTF() );
+    methods.push_back( new SQRTFloat() );
     methods.push_back( new TAN() );
     methods.push_back( new TANF() );
     methods.push_back( new TANH() );

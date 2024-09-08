@@ -79,9 +79,6 @@ void SystemExtension::initialize( ExtensionNamespace* scope )
 	// Console
 	mConsoleExtension.initialize( scope );
 
-	// Math
-	mMathExtension.initialize( scope );
-
 	// Network
 #ifdef _WIN32
 	// Win32 only
@@ -123,9 +120,6 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 
 	// Console
 	mConsoleExtension.provideMethods( methods );
-
-	// Math
-	mMathExtension.provideMethods( methods );
 
 	// Network
 #ifdef _WIN32
