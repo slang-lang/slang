@@ -25,12 +25,12 @@ namespace LIBC {
 class Extension : public AExtension
 {
 public:
-	Extension();
-	~Extension() = default;
+    Extension();
+    ~Extension() = default;
 
 public:
-	void initialize( ExtensionNamespace* scope );
-	void provideMethods( ExtensionMethods& methods );
+    void initialize( ExtensionNamespace* scope );
+    void provideMethods( ExtensionMethods& methods );
 
 private:
     LIBC::fenv::fenv_t     mFenv;

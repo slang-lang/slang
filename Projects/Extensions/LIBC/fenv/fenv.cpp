@@ -29,18 +29,18 @@ fenv_t::fenv_t()
 
 void fenv_t::initialize( ExtensionNamespace* scope )
 {
-	// constants
-	scope->define( "FE_DIVBYZERO", new Runtime::IntegerObject( "FE_DIVBYZERO", FE_DIVBYZERO ) );
-	scope->define( "FE_INEXACT", new Runtime::IntegerObject( "FE_INEXACT", FE_INEXACT ) );
-	scope->define( "FE_INVALID", new Runtime::IntegerObject( "FE_INVALID", FE_INVALID ) );
-	scope->define( "FE_OVERFLOW", new Runtime::IntegerObject( "FE_OVERFLOW", FE_OVERFLOW ) );
-	scope->define( "FE_UNDERFLOW", new Runtime::IntegerObject( "FE_UNDERFLOW", FE_UNDERFLOW ) );
-	scope->define( "FE_ALL_EXCEPT", new Runtime::IntegerObject( "FE_ALL_EXCEPT", FE_ALL_EXCEPT ) );
+    // constants
+    scope->define( "FE_DIVBYZERO", new Runtime::IntegerObject( "FE_DIVBYZERO", FE_DIVBYZERO ) );
+    scope->define( "FE_INEXACT", new Runtime::IntegerObject( "FE_INEXACT", FE_INEXACT ) );
+    scope->define( "FE_INVALID", new Runtime::IntegerObject( "FE_INVALID", FE_INVALID ) );
+    scope->define( "FE_OVERFLOW", new Runtime::IntegerObject( "FE_OVERFLOW", FE_OVERFLOW ) );
+    scope->define( "FE_UNDERFLOW", new Runtime::IntegerObject( "FE_UNDERFLOW", FE_UNDERFLOW ) );
+    scope->define( "FE_ALL_EXCEPT", new Runtime::IntegerObject( "FE_ALL_EXCEPT", FE_ALL_EXCEPT ) );
 
-	scope->define( "FE_DOWNWARD",   new Runtime::IntegerObject( "FE_DOWNWARD",   FE_DOWNWARD ) );
-	scope->define( "FE_TONEAREST",  new Runtime::IntegerObject( "FE_TONEAREST",  FE_TONEAREST ) );
-	scope->define( "FE_TOWARDZERO", new Runtime::IntegerObject( "FE_TOWARDZERO", FE_TOWARDZERO ) );
-	scope->define( "FE_UPWARD",     new Runtime::IntegerObject( "FE_UPWARD",     FE_UPWARD ) );
+    scope->define( "FE_DOWNWARD",   new Runtime::IntegerObject( "FE_DOWNWARD",   FE_DOWNWARD ) );
+    scope->define( "FE_TONEAREST",  new Runtime::IntegerObject( "FE_TONEAREST",  FE_TONEAREST ) );
+    scope->define( "FE_TOWARDZERO", new Runtime::IntegerObject( "FE_TOWARDZERO", FE_TOWARDZERO ) );
+    scope->define( "FE_UPWARD",     new Runtime::IntegerObject( "FE_UPWARD",     FE_UPWARD ) );
 }
 
 void fenv_t::provideMethods( ExtensionMethods& methods )

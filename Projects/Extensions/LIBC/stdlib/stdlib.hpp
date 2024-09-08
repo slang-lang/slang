@@ -22,12 +22,12 @@ namespace stdlib {
 class stdlib_t : public AExtension
 {
 public:
-	stdlib_t();
-	~stdlib_t() = default;
+    stdlib_t();
+    ~stdlib_t() = default;
 
 public:
-	void initialize( ExtensionNamespace* scope );
-	void provideMethods( ExtensionMethods& methods );
+    void initialize( ExtensionNamespace* scope );
+    void provideMethods( ExtensionMethods& methods );
 };
 
 

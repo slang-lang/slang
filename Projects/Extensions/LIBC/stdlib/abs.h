@@ -33,111 +33,111 @@ namespace stdlib {
 class ABSDouble: public ExtensionMethod
 {
 public:
-	ABSDouble()
-	: ExtensionMethod(0, "abs", Designtime::DoubleObject::TYPENAME)
-	{
-		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
+    ABSDouble()
+    : ExtensionMethod(0, "abs", Designtime::DoubleObject::TYPENAME)
+    {
+        ParameterList params;
+        params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
 
-		setSignature(params);
-	}
+        setSignature(params);
+    }
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
-	{
-		ParameterList list = mergeParameters(params);
+    Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+    {
+        ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+        try {
+            ParameterList::const_iterator it = list.begin();
 
-			auto param_arg = (*it++).value().toDouble();
+            auto param_arg = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(std::abs(param_arg));
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
-			*data = Runtime::StringObject(std::string(e.what()));
+            *result = Runtime::DoubleObject(std::abs(param_arg));
+        }
+        catch ( std::exception& e ) {
+            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
+            *data = Runtime::StringObject(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+            Controller::Instance().thread(threadId)->exception(data, token.position());
+            return Runtime::ControlFlow::Throw;
+        }
 
-		return Runtime::ControlFlow::Normal;
-	}
+        return Runtime::ControlFlow::Normal;
+    }
 };
 
 
 class ABSFloat: public ExtensionMethod
 {
 public:
-	ABSFloat()
-	: ExtensionMethod(0, "abs", Designtime::FloatObject::TYPENAME)
-	{
-		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
+    ABSFloat()
+    : ExtensionMethod(0, "abs", Designtime::FloatObject::TYPENAME)
+    {
+        ParameterList params;
+        params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
 
-		setSignature(params);
-	}
+        setSignature(params);
+    }
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
-	{
-		ParameterList list = mergeParameters(params);
+    Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+    {
+        ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+        try {
+            ParameterList::const_iterator it = list.begin();
 
-			auto param_arg = (*it++).value().toFloat();
+            auto param_arg = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(std::abs(param_arg));
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
-			*data = Runtime::StringObject(std::string(e.what()));
+            *result = Runtime::FloatObject(std::abs(param_arg));
+        }
+        catch ( std::exception& e ) {
+            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
+            *data = Runtime::StringObject(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+            Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+            return Runtime::ControlFlow::Throw;
+        }
 
-		return Runtime::ControlFlow::Normal;
-	}
+        return Runtime::ControlFlow::Normal;
+    }
 };
 
 
 class ABSInt: public ExtensionMethod
 {
 public:
-	ABSInt()
-	: ExtensionMethod(0, "abs", Designtime::IntegerObject::TYPENAME)
-	{
-		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::IntegerObject::TYPENAME)));
+    ABSInt()
+    : ExtensionMethod(0, "abs", Designtime::IntegerObject::TYPENAME)
+    {
+        ParameterList params;
+        params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::IntegerObject::TYPENAME)));
 
-		setSignature(params);
-	}
+        setSignature(params);
+    }
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
-	{
-		ParameterList list = mergeParameters(params);
+    Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+    {
+        ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+        try {
+            ParameterList::const_iterator it = list.begin();
 
-			auto param_arg = (*it++).value().toInt();
+            auto param_arg = (*it++).value().toInt();
 
-			result->assign(Runtime::IntegerObject(std::abs(param_arg)));
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
-			*data = Runtime::StringObject(std::string(e.what()));
+            result->assign(Runtime::IntegerObject(std::abs(param_arg)));
+        }
+        catch ( std::exception& e ) {
+            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
+            *data = Runtime::StringObject(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+            Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+            return Runtime::ControlFlow::Throw;
+        }
 
-		return Runtime::ControlFlow::Normal;
-	}
+        return Runtime::ControlFlow::Normal;
+    }
 };
 
 

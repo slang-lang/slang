@@ -28,51 +28,51 @@ namespace cassert {
 class CASSERT : public ExtensionMethod
 {
 public:
-	CASSERT()
-	: ExtensionMethod(0, "assert", Designtime::VoidObject::TYPENAME)
-	{
-		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("condition", Common::TypeDeclaration(_any)));
-		params.push_back(Parameter::CreateDesigntime("message", Designtime::StringObject::TYPENAME, Runtime::AtomicValue(std::string(VALUE_NONE)), true));
+    CASSERT()
+    : ExtensionMethod(0, "assert", Designtime::VoidObject::TYPENAME)
+    {
+        ParameterList params;
+        params.push_back(Parameter::CreateDesigntime("condition", Common::TypeDeclaration(_any)));
+        params.push_back(Parameter::CreateDesigntime("message", Designtime::StringObject::TYPENAME, Runtime::AtomicValue(std::string(VALUE_NONE)), true));
 
-		setExceptions(CheckedExceptions::Throw);
-		setSignature(params);
-	}
+        setExceptions(CheckedExceptions::Throw);
+        setSignature(params);
+    }
 
-	Runtime::ControlFlow::E execute(Common::ThreadId /*threadId*/, const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
-	{
-		ParameterList list = mergeParameters(params);
+    Runtime::ControlFlow::E execute(Common::ThreadId /*threadId*/, const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+    {
+        ParameterList list = mergeParameters(params);
 
-		ParameterList::const_iterator it = list.begin();
+        ParameterList::const_iterator it = list.begin();
 
-		auto param_reference = (*it).reference();
-		auto param_condition = (*it++).value();
-		auto param_message   = (*it++).value().toStdString();
+        auto param_reference = (*it).reference();
+        auto param_condition = (*it++).value();
+        auto param_message   = (*it++).value().toStdString();
 
-		bool success = false;
+        bool success = false;
 
-		if ( param_reference.isValid() ) {
-			Runtime::Object* condition = Controller::Instance().memory()->get(param_reference);
+        if ( param_reference.isValid() ) {
+            Runtime::Object* condition = Controller::Instance().memory()->get(param_reference);
 
-			success = isTrue(condition);
-		}
-		else {
-			Runtime::Object tmp;
-			tmp.setValue(param_condition);
+            success = isTrue(condition);
+        }
+        else {
+            Runtime::Object tmp;
+            tmp.setValue(param_condition);
 
-			success = isTrue(tmp);
-		}
+            success = isTrue(tmp);
+        }
 
-		if ( param_message.empty() ) {
-		    param_message = "false";
-		}
+        if ( param_message.empty() ) {
+            param_message = "false";
+        }
 
-		if ( !success ) {
-			throw Runtime::Exceptions::AssertionFailed(param_message, token.position());
-		}
+        if ( !success ) {
+            throw Runtime::Exceptions::AssertionFailed(param_message, token.position());
+        }
 
-		return Runtime::ControlFlow::Normal;
-	}
+        return Runtime::ControlFlow::Normal;
+    }
 };
 
 

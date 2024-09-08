@@ -22,12 +22,12 @@ namespace fenv {
 class fenv_t : public AExtension
 {
 public:
-	fenv_t();
-	~fenv_t() = default;
+    fenv_t();
+    ~fenv_t() = default;
 
 public:
-	void initialize( ExtensionNamespace* scope );
-	void provideMethods( ExtensionMethods& methods );
+    void initialize( ExtensionNamespace* scope );
+    void provideMethods( ExtensionMethods& methods );
 };
 
 

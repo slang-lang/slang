@@ -29,30 +29,30 @@ namespace stdlib {
 class RAND: public ExtensionMethod
 {
 public:
-	RAND()
-	: ExtensionMethod(0, "rand", Designtime::IntegerObject::TYPENAME)
-	{
-		ParameterList params;
+    RAND()
+    : ExtensionMethod(0, "rand", Designtime::IntegerObject::TYPENAME)
+    {
+        ParameterList params;
 
-		setSignature(params);
-	}
+        setSignature(params);
+    }
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
-	{
-		try {
-			*result = Runtime::IntegerObject(rand());
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+    Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
+    {
+        try {
+            *result = Runtime::IntegerObject(rand());
+        }
+        catch ( std::exception& e ) {
+            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+            *data = Runtime::StringObject(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+            Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+            return Runtime::ControlFlow::Throw;
+        }
 
-		return Runtime::ControlFlow::Normal;
-	}
+        return Runtime::ControlFlow::Normal;
+    }
 };
 
 

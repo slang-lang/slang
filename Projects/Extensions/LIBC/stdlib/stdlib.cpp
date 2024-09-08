@@ -27,8 +27,8 @@ stdlib_t::stdlib_t()
 
 void stdlib_t::initialize( ExtensionNamespace* scope )
 {
-	// constants
-	scope->define( "RAND_MAX", new Runtime::IntegerObject( "RAND_MAX", RAND_MAX ) );
+    // constants
+    scope->define( "RAND_MAX", new Runtime::IntegerObject( "RAND_MAX", RAND_MAX ) );
 }
 
 void stdlib_t::provideMethods( ExtensionMethods& methods )

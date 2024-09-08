@@ -29,37 +29,36 @@ namespace fenv {
 class FESETROUND: public ExtensionMethod
 {
 public:
-	FESETROUND()
-	: ExtensionMethod(0, "fesetround", Designtime::IntegerObject::TYPENAME)
-	{
-		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("round", Common::TypeDeclaration(Designtime::IntegerObject::TYPENAME)));
+    FESETROUND()
+    : ExtensionMethod(0, "fesetround", Designtime::IntegerObject::TYPENAME)
+    {
+        ParameterList params;
+        params.push_back(Parameter::CreateDesigntime("round", Common::TypeDeclaration(Designtime::IntegerObject::TYPENAME)));
 
-		setSignature(params);
-	}
+        setSignature(params);
+    }
 
-public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
-	{
-		ParameterList list = mergeParameters(params);
+    Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+    {
+        ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+        try {
+            ParameterList::const_iterator it = list.begin();
 
-			auto param_round = (*it++).value().toInt();
+            auto param_round = (*it++).value().toInt();
 
-			*result = Runtime::IntegerObject(fesetround(param_round));
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
-			*data = Runtime::StringObject(std::string(e.what()));
+            *result = Runtime::IntegerObject(fesetround(param_round));
+        }
+        catch ( std::exception& e ) {
+            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
+            *data = Runtime::StringObject(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+            Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+            return Runtime::ControlFlow::Throw;
+        }
 
-		return Runtime::ControlFlow::Normal;
-	}
+        return Runtime::ControlFlow::Normal;
+    }
 };
 
 

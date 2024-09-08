@@ -27,37 +27,37 @@ namespace stdlib {
 class SRAND: public ExtensionMethod
 {
 public:
-	SRAND()
-	: ExtensionMethod(0, "srand", Designtime::VoidObject::TYPENAME)
-	{
-		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::IntegerObject::TYPENAME));
+    SRAND()
+    : ExtensionMethod(0, "srand", Designtime::VoidObject::TYPENAME)
+    {
+        ParameterList params;
+        params.push_back(Parameter::CreateDesigntime("seed", Designtime::IntegerObject::TYPENAME));
 
-		setSignature(params);
-	}
+        setSignature(params);
+    }
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
-	{
-		ParameterList list = mergeParameters(params);
+    Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+    {
+        ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+        try {
+            ParameterList::const_iterator it = list.begin();
 
-			int param_value = (it++)->value().toInt();
+            auto param_seed = (it++)->value().toInt();
 
-			srand(param_value);
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+            srand(param_seed);
+        }
+        catch ( std::exception& e ) {
+            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+            *data = Runtime::StringObject(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+            Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
+            return Runtime::ControlFlow::Throw;
+        }
 
-		return Runtime::ControlFlow::Normal;
-	}
+        return Runtime::ControlFlow::Normal;
+    }
 };
 
 

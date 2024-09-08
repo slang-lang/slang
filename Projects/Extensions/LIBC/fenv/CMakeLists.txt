@@ -1,16 +1,16 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	fenv.cpp
+    fenv.cpp
 )
 
 SET(HEADERS
-	fenv.hpp
+    fenv.hpp
 )
 
 SET(DEPENDENCIES
-	Utils
-	Core
+    Utils
+    Core
 )
 
 SET(MODULES
