@@ -449,10 +449,10 @@ void TypeSystem::initString()
 	define(StringObject::TYPENAME, Token::Type::COMPARE_UNEQUAL, StringObject::TYPENAME, BoolObject::TYPENAME);
 
 	// shift
-	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, StringObject::TYPENAME, BoolObject::TYPENAME);
-	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, StringObject::TYPENAME, DoubleObject::TYPENAME);
-	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, StringObject::TYPENAME, FloatObject::TYPENAME);
-	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, StringObject::TYPENAME, IntegerObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, BoolObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, DoubleObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, FloatObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, IntegerObject::TYPENAME, StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, StringObject::TYPENAME, StringObject::TYPENAME);
 
 	// typecasts
