@@ -443,6 +443,16 @@ void Object::operator_plus(const Object *other)
 	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
+void Object::operator_shift_left(const Object *other)
+{
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+}
+
+void Object::operator_shift_right(const Object *other)
+{
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+}
+
 void Object::operator_subtract(const Object *other)
 {
 	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");

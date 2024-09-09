@@ -181,16 +181,34 @@ void StringObject::operator_plus( const Object* other )
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
+		 other->isEnumerationValue() ) {
 		mValue = mValue.toStdString() + other->getValue().toStdString();
 		return;
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
+}
+
+void StringObject::operator_shift_left( const Object* other )
+{
+	const std::string& target = other->QualifiedTypename();
+
+	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
+		 target == EnumerationObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == StringObject::TYPENAME ||
+		 other->isEnumerationValue() ) {
+		mValue = mValue.toStdString() + other->getValue().toStdString();
+		return;
+	}
+
+	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator<<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
 

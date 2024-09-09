@@ -35,6 +35,8 @@ bool operator_binary_less_equal( Object* lvalue, Object* rvalue );
 void operator_binary_modulo( Object* lvalue, Object* rvalue );
 void operator_binary_multiply( Object* lvalue, Object* rvalue );
 void operator_binary_plus( Object* lvalue, Object* rvalue );
+void operator_binary_shift_left( Object* lvalue, Object* rvalue );
+void operator_binary_shift_right( Object* lvalue, Object* rvalue );
 void operator_binary_subtract( Object* lvalue, Object* rvalue );
 void operator_unary_decrement( Object* lvalue );
 void operator_unary_increment( Object* lvalue );
@@ -49,3 +51,4 @@ void operator_unary_validate( Object* base );
 
 
 #endif
+

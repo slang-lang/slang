@@ -97,6 +97,7 @@ void TypeSystem::initBool()
 	define(BoolObject::TYPENAME, Token::Type::ASSIGN, StringObject::TYPENAME, BoolObject::TYPENAME);
 
 	// arithmetic
+	// no arithmetic or shift operators available for boolean types
 
 	// boolean
 	define(BoolObject::TYPENAME, Token::Type::AND, BoolObject::TYPENAME, BoolObject::TYPENAME);
@@ -155,6 +156,7 @@ void TypeSystem::initDouble()
 	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME, DoubleObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, DoubleObject::TYPENAME);
+	// no shift operators available for double types
 
 	// boolean
 	define(DoubleObject::TYPENAME, Token::Type::AND, BoolObject::TYPENAME, BoolObject::TYPENAME);
@@ -244,6 +246,7 @@ void TypeSystem::initFloat()
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, FloatObject::TYPENAME);
+	// no shift operators available for float types
 
 	// boolean
 	define(FloatObject::TYPENAME, Token::Type::AND, BoolObject::TYPENAME, BoolObject::TYPENAME);
@@ -445,6 +448,13 @@ void TypeSystem::initString()
 	define(StringObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL, StringObject::TYPENAME, BoolObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::COMPARE_UNEQUAL, StringObject::TYPENAME, BoolObject::TYPENAME);
 
+	// shift
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, BoolObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, DoubleObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, FloatObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, IntegerObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, StringObject::TYPENAME, StringObject::TYPENAME);
+
 	// typecasts
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, BoolObject::TYPENAME, BoolObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
@@ -456,4 +466,3 @@ void TypeSystem::initString()
 
 
 }
-

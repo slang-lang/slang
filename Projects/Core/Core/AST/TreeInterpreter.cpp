@@ -146,6 +146,12 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 		case Token::Type::MATH_SUBTRACT: Runtime::operator_binary_subtract(&left, &right); break;
 		// }
 
+		// shift operators
+		// {
+		case Token::Type::OPERATOR_SHIFT_LEFT:  Runtime::operator_binary_shift_left(&left, &right); break;
+		case Token::Type::OPERATOR_SHIFT_RIGHT: Runtime::operator_binary_shift_right(&left, &right); break;
+		// }
+
 		// default handling
 		// {
 		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mOperation.content() + " not supported");

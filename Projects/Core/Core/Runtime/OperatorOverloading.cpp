@@ -663,6 +663,106 @@ void operator_binary_plus( Object* lvalue, Object* rvalue )
 	}
 }
 
+void operator_binary_shift_left( Object* lvalue, Object* rvalue )
+{
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+	}
+
+	std::string target = lvalue->QualifiedTypename();
+
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_shift_left( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_shift_left( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_shift_left( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_shift_left( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_shift_left( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_shift_left( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else {
+		// invalid left shift operator handling!
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator<<()'" );
+	}
+}
+
+void operator_binary_shift_right( Object* lvalue, Object* rvalue )
+{
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+	}
+
+	std::string target = lvalue->QualifiedTypename();
+
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else {
+		// invalid right shift operator handling!
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator>>()'" );
+	}
+}
+
 void operator_binary_subtract( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
@@ -970,3 +1070,4 @@ void operator_unary_validate( Object* base )
 
 }
 }
+
