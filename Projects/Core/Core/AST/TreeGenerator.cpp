@@ -547,7 +547,6 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 void TreeGenerator::popScope()
 {
 	mStackFrame->popScope();
-	//mStackFrame->popStack();
 }
 
 void TreeGenerator::popTokens()
@@ -1149,8 +1148,6 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	// Body parsing
 	Node* loopBody = process_statement(token, true);
-
-	popScope();
 
 	popScope();
 
@@ -2111,7 +2108,6 @@ void TreeGenerator::pushScope(IScope* scope, bool allowBreakAndContinue)
 	}
 
 	mStackFrame->pushScope(scope, allowDelete, allowBreakAndContinue || mStackFrame->allowBreakAndContinue());
-	//mStackFrame->pushStack();
 }
 
 std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* symbol) const
