@@ -13,7 +13,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Runtime {
 
 
@@ -25,8 +25,8 @@ public:
 
 public:
 	UserObject();
-	explicit UserObject(const std::string& name, const std::string& filename, const std::string& type, bool isReference = false);
-	explicit UserObject(const Object& object);
+	explicit UserObject( const std::string& name, const std::string& filename, const std::string& type, bool isReference = false );
+	explicit UserObject( const Object& object) ;
 };
 
 

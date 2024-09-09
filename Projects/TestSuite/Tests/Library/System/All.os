@@ -1,6 +1,4 @@
-#!/usr/local/bin/oscript
-
-import System.All;
+#!/usr/local/bin/slang
 
 public void Main(int argc, string args) {
 	print("BooleanTest.os");

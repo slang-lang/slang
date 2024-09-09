@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Common/Logger.h>
-#include <Framework/GenericTest.h>
+#include <Framework/UnitTest.h>
 
 // Forward declarations
 
@@ -18,12 +18,12 @@ namespace Testing {
 namespace Inheritance {
 
 
-class InheritanceTest : public GenericTest,
+class InheritanceTest : public UnitTest,
 						private Utils::Common::Logger
 {
 public:
-    InheritanceTest(const Utils::Common::ILogger *p);
-    ~InheritanceTest();
+    explicit InheritanceTest( const Utils::Common::ILogger* p );
+    ~InheritanceTest() = default;
 
 public:
     void process();

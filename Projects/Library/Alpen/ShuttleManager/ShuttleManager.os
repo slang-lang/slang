@@ -117,7 +117,7 @@ public object ShuttleManager {
 		mShuttles.clear();
 
 		int result = DB.Query( SHUTTLE_QUERY );
-		while( mysql_next_row(result) ) {
+		while( mysql_fetch_row(result) ) {
 			mShuttles.push_back( mStorage.LoadShuttleByID( int mysql_get_field_value(result, "shuttle_id") ) );
 
 			mLogger.info( cast<string>( mShuttles.last() ) );

@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>ObjectiveScript</ProjectName>
+    <ProjectName>Core</ProjectName>
     <ProjectGuid>{C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29}</ProjectGuid>
-    <RootNamespace>ObjectiveScript</RootNamespace>
+    <RootNamespace>Slang</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -159,10 +159,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="Core\Designtime\Ancestor.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Core\Designtime\BluePrintGeneric.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
     </ClCompile>
@@ -349,7 +345,6 @@
     <ClInclude Include="Core\Defines.h" />
     <ClInclude Include="Core\Designtime\Analyser.h" />
     <ClInclude Include="Core\Designtime\Ancestor.h" />
-    <ClInclude Include="Core\Designtime\BluePrintGeneric.h" />
     <ClInclude Include="Core\Designtime\BluePrintObject.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\BoolObject.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\DoubleObject.h" />
@@ -368,8 +363,11 @@
     <ClInclude Include="Core\Extensions\ExtensionMethod.h" />
     <ClInclude Include="Core\Interfaces\IPrinter.h" />
     <ClInclude Include="Core\Interfaces\IScope.h" />
+    <ClInclude Include="Core\MemleakCheck.h" />
     <ClInclude Include="Core\Object.h" />
     <ClInclude Include="Core\ObjectiveScript.h" />
+    <ClInclude Include="Core\Runtime\Interpreter.h" />
+    <ClInclude Include="Core\Slang.h" />
     <ClInclude Include="Core\Parameter.h" />
     <ClInclude Include="Core\Runtime\AtomicValue.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\BoolObject.h" />
@@ -395,6 +393,7 @@
     <ClInclude Include="Core\Types.h" />
     <ClInclude Include="Core\Utils\Position.h" />
     <ClInclude Include="Core\Utils\Utils.h" />
+    <ClInclude Include="Core\Version.h" />
     <ClInclude Include="Core\VirtualMachine\Controller.h" />
     <ClInclude Include="Core\VirtualMachine\Memory.h" />
     <ClInclude Include="Core\VirtualMachine\Repository.h" />

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_Controller_h
-#define ObjectiveScript_Core_VirtualMachine_Controller_h
+#ifndef Slang_Core_Core_VirtualMachine_Controller_h
+#define Slang_Core_Core_VirtualMachine_Controller_h
 
 
 // Library includes
@@ -16,7 +16,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Common {
@@ -46,7 +46,7 @@ public:
 	};
 
 public:
-	~Controller();
+	~Controller() = default;
 
 public:
 	void deinit();

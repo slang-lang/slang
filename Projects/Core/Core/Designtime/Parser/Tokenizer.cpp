@@ -9,10 +9,12 @@
 #include <Core/Tools.h>
 #include <Utils.h>
 
+#include <utility>
+
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 const std::string CONTROLCHARS	= "#.,;:=()[]{}!?<>+-*/%&|~'\" ";
@@ -20,14 +22,17 @@ const std::string WHITESPACES	= "\t\n\r ";
 const std::string DELIMITERS	= CONTROLCHARS + WHITESPACES;
 
 
-Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
-: mContent(content),
-  mFilename(filename),
-  mLanguageFeatures(provideLanguageFeatures()),
-  mKeywords(provideKeyWords()),
-  mModifiers(provideModifiers()),
-  mReservedWords(provideReservedWords()),
-  mTypes(provideAtomicTypes())
+Tokenizer::Tokenizer(std::string filename, std::string content)
+: mAccessMode( provideAccessMode() ),
+  mContent( std::move(content ) ),
+  mFilename( std::move(filename ) ),
+  mLanguageFeatureState( provideLanguageFeatures() ),
+  mKeyword( provideKeyWords() ),
+  mMemoryLayout( provideMemoryLayout() ),
+  mModifier( provideModifier() ),
+  mMutability( provideMutability() ),
+  mReservedWord( provideReservedWords() ),
+  mType( provideAtomicTypes() )
 {
 }
 
@@ -64,6 +69,7 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_NOT; }
 	else if ( content == "~" ) { category = Token::Category::Operator; type = Token::Type::TILDE; }
 	else if ( content == OPERATOR_IS ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_IS; }
+	else if ( isAccessMode(content) ) { category = Token::Category::Modifier; type = Token::Type::ACCESS_MODE; }
 	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
 	else if ( isDouble(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_DOUBLE;
 		// remove trailing 'd' character
@@ -81,15 +87,16 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	}
 */
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
-	else if ( isLanguageFeature(content) ) { category = Token::Category::Attribute; isOptional = true; type = Token::Type::LANGUAGEFEATURE; }
+	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::LANGUAGE_FEATURE_STATE; }
 	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
 		// remove leading and trailing quotation marks (")
 		content = con.substr(1, con.length() - 2);
 	}
+	else if ( isMemoryLayout(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MEMORY_LAYOUT; }
 	else if ( isModifier(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MODIFIER; }
+	else if ( isMutability(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MUTABILITY; }
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
-	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
-	else if ( isVisibility(content) ) { category = Token::Category::ReservedWord; isOptional = true; type = Token::Type::VISIBILITY; }
+	else if ( isVisibility(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::VISIBILITY; }
 	else if ( isWhiteSpace(content) ) { return; }
 
 	mTokens.push_back(
@@ -108,9 +115,14 @@ void Tokenizer::addToken(const Token& token)
 	mTokens.push_back(token);
 }
 
+bool Tokenizer::isAccessMode(const std::string& token) const
+{
+	return mAccessMode.find(token) != mAccessMode.end();
+}
+
 bool Tokenizer::isBoolean(const std::string& token) const
 {
-	return ( token == BOOL_FALSE || token == BOOL_TRUE );
+	return (token == VALUE_FALSE || token == VALUE_TRUE );
 }
 
 bool Tokenizer::isDouble(const std::string& token) const
@@ -171,12 +183,12 @@ bool Tokenizer::isFloat(const std::string& token) const
 
 bool Tokenizer::isInteger(const std::string& token) const
 {
-	if ( token.size() == 0 ) {
+	if ( token.empty() ) {
 		return false;
 	}
 
-	for ( unsigned int c = 0; c < token.size(); c++ ) {
-		switch ( token[c] ) {
+	for ( char c : token ) {
+		switch ( c ) {
 			case '1':
 			case '2':
 			case '3':
@@ -198,12 +210,12 @@ bool Tokenizer::isInteger(const std::string& token) const
 
 bool Tokenizer::isIntegerWithType(const std::string& token) const
 {
-	if ( token.size() <= 1 ) {
+	if ( token.empty() ) {
 		return false;
 	}
 
-	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
-		switch ( token[c] ) {
+	for ( char c : token ) {
+		switch ( c ) {
 			case '1':
 			case '2':
 			case '3':
@@ -226,12 +238,12 @@ bool Tokenizer::isIntegerWithType(const std::string& token) const
 
 bool Tokenizer::isKeyword(const std::string& token) const
 {
-	return mKeywords.find(token) != mKeywords.end();
+	return mKeyword.find(token) != mKeyword.end();
 }
 
 bool Tokenizer::isLanguageFeature(const std::string& token) const
 {
-	return mLanguageFeatures.find(token) != mLanguageFeatures.end();
+	return mLanguageFeatureState.find(token) != mLanguageFeatureState.end();
 }
 
 bool Tokenizer::isLiteral(const std::string& token) const
@@ -246,19 +258,24 @@ bool Tokenizer::isLiteral(const std::string& token) const
 	return false;
 }
 
+bool Tokenizer::isMemoryLayout(const std::string& token) const
+{
+	return mMemoryLayout.find(token) != mMemoryLayout.end();
+}
+
 bool Tokenizer::isModifier(const std::string& token) const
 {
-	return mModifiers.find(token) != mModifiers.end();
+	return mModifier.find(token) != mModifier.end();
+}
+
+bool Tokenizer::isMutability(const std::string& token) const
+{
+	return mMutability.find(token) != mMutability.end();
 }
 
 bool Tokenizer::isReservedWord(const std::string& token) const
 {
-	return mReservedWords.find(token) != mReservedWords.end();
-}
-
-bool Tokenizer::isType(const std::string& token) const
-{
-	return mTypes.find(token) != mTypes.end();
+	return mReservedWord.find(token) != mReservedWord.end();
 }
 
 bool Tokenizer::isVisibility(const std::string& token) const
@@ -274,6 +291,7 @@ bool Tokenizer::isWhiteSpace(const std::string& token) const
 /*
  * mergeOperators: merges all pairs of & or | operators together (i.e. '&' '&' become '&&')
  * mergeOperators: merges all pairs of + or - operators together (i.e. '+' '+' become '++')
+ * mergeOperators: merges all pairs of < or > operators together (i.e. '<' '<' become '<<')
  * mergeOperators: merges all pairs of [ or ] operators together (i.e. '[' ']' become '[]')
  */
 void Tokenizer::mergeOperators()
@@ -342,6 +360,22 @@ void Tokenizer::mergeOperators()
 			tmp.pop_back();
 			// ... and add AND instead
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_INCREMENT, "++", token->position()));
+		}
+		else if ( (lastType == Token::Type::COMPARE_LESS) && (activeType == Token::Type::COMPARE_LESS) ) {
+			// <<
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add AND instead
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_SHIFT_LEFT, "<<", token->position()));
+		}
+		else if ( (lastType == Token::Type::COMPARE_GREATER) && (activeType == Token::Type::COMPARE_GREATER) ) {
+			// >>
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add AND instead
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_SHIFT_RIGHT, ">>", token->position()));
 		}
 		else if ( (lastType == Token::Type::BRACKET_OPEN) && (activeType == Token::Type::BRACKET_CLOSE) ) {
 			// && and
@@ -614,7 +648,7 @@ void Tokenizer::mergeAssignments()
  */
 void Tokenizer::replaceConstDataTypes()
 {
-	TokenList::iterator token = mTokens.begin();
+	auto token = mTokens.begin();
 	TokenList::iterator tmp;
 
 	// try to combine all operator tokens
@@ -728,7 +762,7 @@ void Tokenizer::replaceConstDataTypes()
 				while ( numCombines > 0 ) {
 					numCombines--;	// decrement combinations
 
-					opToken->resetContentTo((*opToken).content() + token->content());	// combine token contents
+					opToken->resetContentTo(opToken->content() + token->content());	// combine token contents
 					opToken->resetTypeTo(token->type());    // and reset our opToken's type
 
 					mTokens.erase(token++);	// remove the following token
@@ -747,8 +781,8 @@ void Tokenizer::replaceConstDataTypes()
  */
 void Tokenizer::replaceOperators()
 {
-	TokenIteratorMutable token = mTokens.begin();
-	TokenIteratorMutable last = mTokens.end();
+	auto token = mTokens.begin();
+	auto last = mTokens.end();
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {
@@ -771,7 +805,7 @@ void Tokenizer::replaceOperators()
 
 			// ... and retype current token
 			token->resetTypeTo(Token::Type::IDENTIFIER);
-			token->resetContentTo(RESERVED_WORD_OPERATOR + (*token).content());
+			token->resetContentTo(RESERVED_WORD_OPERATOR + token->content());
 		}
 
 		last = token++;
@@ -785,3 +819,4 @@ const TokenList& Tokenizer::tokens() const
 
 
 }
+

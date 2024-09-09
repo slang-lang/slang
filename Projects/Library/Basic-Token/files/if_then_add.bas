@@ -4,4 +4,3 @@
 40 IF A < B THEN LET A = A + 1
 50 PRINT "A = " + A
 60 IF A < B THEN GOTO 40
-

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Parameter_h
-#define ObjectiveScript_Core_Parameter_h
+#ifndef Slang_Core_Core_Parameter_h
+#define Slang_Core_Core_Parameter_h
 
 
 // Library includes
@@ -18,7 +18,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Runtime {
@@ -40,8 +40,8 @@ public:
 
 public:
 	Parameter();
-	Parameter(const std::string& name,
-			  const Common::TypeDeclaration& type,
+	Parameter(std::string name,
+			  Common::TypeDeclaration type,
 			  const Runtime::AtomicValue& value,
 			  bool hasDefaultValue,
 			  Mutability::E mutability,

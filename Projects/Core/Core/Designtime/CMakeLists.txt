@@ -6,7 +6,6 @@ ADD_SUBDIRECTORY(Parser)
 SET(SOURCES
 	Analyser.cpp
 	Ancestor.cpp
-	BluePrintGeneric.cpp
 	BluePrintObject.cpp
 	SanityChecker.cpp
 )
@@ -14,7 +13,6 @@ SET(SOURCES
 SET(HEADERS
 	Analyser.h
 	Ancestor.h
-	BluePrintGeneric.h
 	BluePrintObject.h
 	Exceptions.h
 	SanityChecker.h

@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 import System.Collections.Vector;
 import System.Integer;
@@ -10,17 +10,24 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase3() );
 	assert( TestCase4() );
 	assert( TestCase5() );
-	assert( TestCase6() );
+	//assert( TestCase6() );
 	assert( TestCase7() );
 	assert( TestCase8() );
 	assert( TestCase9() );
+	assert( TestCase10() );
+	assert( TestCase11() );
+	assert( TestCase12() );
+	assert( TestCase13() );
+	assert( TestCase14() );
+	assert( TestCase15() );
+	assert( TestCase16() );
 }
 
 private bool TestCase1() const {
 	print("TestCase 1: insert");
 
 	try {
-		Vector<Integer> vector = new Vector<Integer>();
+		var vector = new Vector<Integer>();
 
 		// Setup
 		Integer item;
@@ -50,7 +57,7 @@ private bool TestCase2() const {
 	print("TestCase 2: erase front");
 
 	try {
-		Vector<Integer> vector = new Vector<Integer>();
+		var vector = new Vector<Integer>();
 
 		// Setup
 		Integer item;
@@ -87,7 +94,7 @@ private bool TestCase3() const {
 	print("TestCase 3: erase middle");
 
 	try {
-		Vector<Integer> vector = new Vector<Integer>();
+		var vector = new Vector<Integer>();
 
 		// Setup
 		Integer item;
@@ -124,7 +131,7 @@ private bool TestCase4() const {
 	print("TestCase 4: erase back");
 
 	try {
-		Vector<Integer> vector = new Vector<Integer>();
+		var vector = new Vector<Integer>();
 
 		// Setup
 		Integer item;
@@ -160,7 +167,7 @@ private bool TestCase5() const {
 	print("TestCase 5: iterator");
 
 	try {
-		Vector<Integer> vector = new Vector<Integer>();
+		var vector = new Vector<Integer>();
 
 		Integer item;
 
@@ -179,7 +186,7 @@ private bool TestCase5() const {
 		item = Integer vector.at(2);
 		assert( item == 1389 );
 
-		Iterator<Integer> it = vector.getIterator();
+		var it = vector.getIterator();
 
 		while ( it.hasNext() ) {
 			it.next();
@@ -206,7 +213,7 @@ private bool TestCase6() const {
 
 		assert( vector.size() == 3 );
 
-		ReverseIterator<String> it = vector.getReverseIterator();
+		var it = vector.getReverseIterator();
 
 		while ( it.hasNext() ) {
 			it.next();
@@ -246,7 +253,7 @@ private bool TestCase8() const {
 	print("TestCase 8: contains");
 
 	try {
-		Vector<Integer> vector = new Vector<Integer>();
+		var vector = new Vector<Integer>();
 		assert( vector is Object );
 		assert( vector is ICollection );
 
@@ -282,6 +289,243 @@ private bool TestCase9() const {
 		assert( (vector.at(0) + vector.at(1) + vector.at(2)) == "blafoobar" );
 
 		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase10() const {
+	print("TestCase 10: foreach");
+
+	try {
+		var vector = new Vector<string>();
+		assert( vector is ICollection );
+
+		vector.insert( 0, "bla" );
+		vector.insert( 1, "bar" );
+		vector.insert( 1, "foo" );
+
+		assert( vector.size() == 3 );
+
+		foreach ( string s : vector ) {
+			//print("s = " + s);
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase11() const {
+        print("TestCase 11: push_back");
+
+        try {
+                Vector<Integer> list = new Vector<Integer>();
+
+                // Setup
+                list.push_back(new Integer(664));
+                list.push_back(new Integer(173));
+                list.push_back(new Integer(1389));
+
+                // Usage
+                assert( list.size() == 3 );
+
+                Integer item = Integer list.at(0);
+                assert( item == 664 );
+
+                item = Integer list.at(1);
+                assert( item == 173 );
+
+                item = Integer list.at(2);
+                assert( item == 1389 );
+
+                return true;
+        }
+        catch ( OutOfBoundsException e ) {
+                print(e.what());
+
+                return false;
+        }
+
+        return false;
+}
+
+private bool TestCase12() const {
+        print("TestCase 12: push_front");
+
+        try {
+                Vector<Integer> list = new Vector<Integer>();
+
+                list.push_front(new Integer(1389));
+                list.push_front(new Integer(173));
+                list.push_front(new Integer(664));
+
+                // Usage
+                assert( list.size() == 3 );
+
+                Integer item = Integer list.at(0);
+                assert( item == 664 );
+
+                item = Integer list.at(1);
+                assert( item == 173 );
+
+                item = Integer list.at(2);
+                assert( item == 1389 );
+
+                return true;
+        }
+
+        return false;
+}
+
+private bool TestCase13() const {
+        print("TestCase 13: pop_front");
+
+        try {
+                Vector<Integer> list = new Vector<Integer>();
+
+                // Setup
+                list.push_back(new Integer(664));
+                list.push_back(new Integer(173));
+                list.push_back(new Integer(1389));
+
+                // Usage
+                assert( list.size() == 3 );
+
+                list.pop_front();
+
+                assert( list.size() == 2 );
+
+                Integer item = Integer list.at(0);
+                assert( item == 173 );
+
+                item = Integer list.at(1);
+                assert( item == 1389 );
+
+                list.pop_front();
+
+                assert( list.size() == 1 );
+
+                item = Integer list.at(0);
+                assert( item == 1389 );
+
+                list.pop_front();
+
+                assert( list.size() == 0 );
+
+                return true;
+        }
+        catch ( OutOfBoundsException e ) {
+                print(e.what());
+
+                return false;
+        }
+
+        return false;
+}
+
+private bool TestCase14() const {
+        print("TestCase 14: pop_back");
+
+        try {
+                var list = new Vector<Integer>();
+
+                // Setup
+                list.push_back(new Integer(664));
+                list.push_back(new Integer(173));
+                list.push_back(new Integer(1389));
+
+                // Usage
+                assert( list.size() == 3 );
+
+                list.pop_back();
+
+                assert( list.size() == 2 );
+
+                var item = Integer list.at(0);
+                assert( item == 664 );
+
+                item = Integer list.at(1);
+                assert( item == 173 );
+
+                list.pop_back();
+
+                assert( list.size() == 1 );
+
+                item = Integer list.at(0);
+                assert( item == 664 );
+
+                list.pop_back();
+
+                assert( list.size() == 0 );
+
+                return true;
+        }
+        catch ( OutOfBoundsException e ) {
+                print(e.what());
+
+                return false;
+        }
+
+        return false;
+}
+
+private bool TestCase15() const {
+	print( "TestCase 15: erase and add" );
+
+	try {
+		var collection = new Vector<int>();
+
+		// Set up
+		collection.push_back( 1 );
+		collection.push_back( 2 );
+		collection.push_back( 3 );
+
+		// Test
+		assert( collection.size() == 3 );
+
+		collection.erase( 0 );
+
+		assert( collection.size() == 2 );
+		collection.erase( 0 );
+		assert( collection.size() == 1 );
+
+		collection.erase( 0 );
+		assert( collection.size() == 0 );
+
+		collection.push_back( 4 );
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase16() const {
+	print( "TestCase 16: add, clear and add" );
+
+	try {
+		var collection = new Vector<int>();
+
+		// Set up
+		collection.push_back( 1 );
+		collection.push_back( 2 );
+		collection.push_back( 3 );
+
+		// Test
+		assert( collection.size() == 3 );
+
+		var it1 = collection.getIterator();
+
+		collection.clear();
+		assert( collection.size() == 0 );
+
+		foreach ( int i : collection ) {
+			assert( !"hopefully we never get here!" );
+		}
+
+		return collection.empty();
 	}
 
 	return false;

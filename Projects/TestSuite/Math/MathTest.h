@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Common/Logger.h>
-#include <Framework/GenericTest.h>
+#include <Framework/UnitTest.h>
 
 // Forward declarations
 
@@ -18,12 +18,12 @@ namespace Testing {
 namespace Math {
 
 
-class MathTest : public GenericTest,
+class MathTest : public UnitTest,
 				 private Utils::Common::Logger
 {
 public:
-	MathTest(const Utils::Common::ILogger *p);
-	virtual ~MathTest() { }
+	explicit MathTest( const Utils::Common::ILogger* p );
+	~MathTest() = default;
 
 public:
 	void process();

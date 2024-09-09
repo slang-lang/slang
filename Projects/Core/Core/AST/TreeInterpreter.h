@@ -1,16 +1,14 @@
 
-#ifndef ObjectiveScript_Core_AST_TreeInterpreter_h
-#define ObjectiveScript_Core_AST_TreeInterpreter_h
+#ifndef Slang_Core_Core_AST_TreeInterpreter_h
+#define Slang_Core_Core_AST_TreeInterpreter_h
 
 
 // Library includes
 
 // Project includes
 #include <Core/Common/Types.h>
-#include <Core/Designtime/Parser/Token.h>
-#include <Core/Runtime/ControlFlow.h>
-#include <Core/Runtime/ExceptionData.h>
 #include <Core/Parameter.h>
+#include <Core/Runtime/ControlFlow.h>
 #include "Expression.h"
 #include "Operator.h"
 #include "Statement.h"
@@ -20,7 +18,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Common {
@@ -48,8 +46,8 @@ class Statements;
 class TreeInterpreter
 {
 public:
-	TreeInterpreter(Common::ThreadId id);
-	~TreeInterpreter();
+	explicit TreeInterpreter(Common::ThreadId id);
+	~TreeInterpreter() = default;
 
 public: // Execution
 	Runtime::ControlFlow::E execute(Runtime::Object* self, Common::Method* method, const ParameterList& params, Runtime::Object* result);
@@ -64,6 +62,7 @@ private:
 	inline void visitStatement(Statement* node);
 
 	void visitAssert(AssertStatement* node);
+	void visitAssignment(AssignmentStatement* node);
 	void visitBreak(BreakStatement* node);
 	void visitContinue(ContinueStatement* node);
 	void visitDelete(DeleteStatement* node);
@@ -73,7 +72,7 @@ private:
 	void visitIf(IfStatement* node);
 	void visitPrint(PrintStatement* node);
 	void visitReturn(ReturnStatement* node);
-	void visitStatements(Statements* node);
+	inline void visitStatements(Statements* node);
 	void visitSwitch(SwitchStatement* node);
 	void visitThrow(ThrowStatement* node);
 	void visitTry(TryStatement* node);
@@ -82,22 +81,18 @@ private:
 	void visitWhile(WhileStatement* node);
 
 private:
-	MethodScope* getEnclosingMethodScope(IScope *scope = 0) const;
-	NamedScope* getEnclosingNamedScope(IScope *scope = 0) const;
-	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
-	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
+	MethodScope* getEnclosingMethodScope(IScope *scope = nullptr) const;
+	NamedScope* getEnclosingNamedScope(IScope *scope = nullptr) const;
+	Runtime::Object* getEnclosingObject(IScope* scope = nullptr) const;
 
 	// Scope stack
 	// {
 	inline IScope* getScope() const;
 	inline void popScope();
-	inline void pushScope(IScope* scope = 0);
-
-	inline void popStack();
-	inline void pushStack();
+	inline void pushScope(IScope* scope = nullptr);
 	// }
 
-	void evaluate(Node* exp, Runtime::Object* result, Runtime::Object* scope = NULL);
+	inline void evaluate(Node* exp, Runtime::Object* result);
 	void evaluateAssignmentExpression(AssignmentExpression* exp, Runtime::Object* result);
 	void evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result);
 	void evaluateBooleanBinaryExpression(BooleanBinaryExpression* exp, Runtime::Object* result);
@@ -121,7 +116,7 @@ private:
 	MethodSymbol* resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const;
 
 private:	// Initialization
-	void deinitialize();
+	void finalize();
 	void initialize(IScope* scope, const ParameterList& params);
 
 private:	// Interpreter stuff

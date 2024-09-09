@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Interfaces_IScope_h
-#define ObjectiveScript_Core_Interfaces_IScope_h
+#ifndef Slang_Core_Core_Interfaces_IScope_h
+#define Slang_Core_Core_Interfaces_IScope_h
 
 
 // Library includes
@@ -14,7 +14,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 // Forward declarations
@@ -46,7 +46,7 @@ public:
 	};
 
 public:
-	virtual ~IScope() { }
+	virtual ~IScope() = default;
 
 	virtual void define(const std::string& name, Symbol* symbol) = 0;
 	virtual void defineExternal(const std::string& name, Symbol* symbol) = 0;
@@ -54,7 +54,7 @@ public:
 	virtual std::string getFullScopeName() const = 0;
 	virtual const std::string& getScopeName() const = 0;
 	virtual IScope::IType::E getScopeType() const = 0;
-	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Private) const = 0;
+	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const = 0;
 	virtual void undefine(const std::string& name) = 0;
 };
 

@@ -12,14 +12,10 @@
 
 // Project includes
 #include <Core/AST/Generator.h>
-#include <Core/AST/TreeGenerator.h>
-#include <Core/AST/TreeInterpreter.h>
-#include <Core/AST/TreeOptimizer.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Defines.h>
 #include <Core/Designtime/Analyser.h>
 #include <Core/Runtime/Script.h>
-#include <Core/Tools.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
@@ -28,7 +24,11 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace {
+	std::string buildFilename( const std::string& folder, const std::string& filename );
+}
+
+namespace Slang {
 
 
 #ifdef _WIN32
@@ -37,13 +37,18 @@ namespace ObjectiveScript {
 void read_directory(const std::string& dirname, std::vector<std::string>& files)
 {
     DIR* dirp = opendir(dirname.c_str());
+    if ( !dirp ) {
+		// couldn't opern directory
+		return;
+    }
+
     struct dirent * dp;
 
-    while ( (dp = readdir(dirp)) != NULL ) {
+    while ( (dp = readdir(dirp)) != nullptr ) {
         std::string file(dp->d_name);
 
         if ( file != "." && file != ".." ) {
-			files.push_back(dirname + "/" + file);
+		files.push_back(dirname + "/" + file);
         }
     }
 
@@ -60,29 +65,64 @@ VirtualMachine::VirtualMachine()
 
 VirtualMachine::~VirtualMachine()
 {
-	for ( ScriptCollection::iterator it = mScripts.begin(); it != mScripts.end(); ++it ) {
-		delete (*it);
+	for ( auto& script : mScripts ) {
+		delete script;
 	}
 	mScripts.clear();
 
 	Controller::Instance().deinit();
 
-	for ( Extensions::ExtensionList::iterator it = mExtensions.begin(); it != mExtensions.end(); ++it ) {
-		delete (*it);
+	for ( auto& extension : mExtensions ) {
+		delete extension;
 	}
 }
 
-void VirtualMachine::addExtension(AExtension *extension)
+bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std::string& library )
 {
 	if ( !extension ) {
 		// provided an invalid extension - ignore it...
-		return;
+		OSerror( "invalid extension '" + library + "' detected!" );
+
+		return false;
 	}
 
-	mExtensions.push_back(extension);
+	OSdebug( "Loaded extension " + extension->getName() + " version " + extension->getVersion() );
+
+	try {
+		OSdebug( "adding extension '" + extension->getName() + "'" );
+
+		auto* globalScope = Controller::Instance().globalScope();
+		Extensions::ExtensionMethods methods;
+
+		extension->initialize( globalScope );
+		extension->provideMethods( methods );
+
+		if ( !mSpecification.empty() ) {
+			mSpecification.push_back( "" );
+		}
+		mSpecification.push_back( "Extension " + extension->getName() + ":" );
+		mSpecification.push_back( "---" );
+
+		for ( auto& method : methods ) {
+			OSdebug( "adding extension method '" + extension->getName() + "." + method->getName() + "'" );
+
+			method->setParent( globalScope );
+
+			globalScope->defineMethod( method->getName(), method );
+
+			mSpecification.push_back( method->ToString() );
+		}
+	}
+	catch ( std::exception &e ) {
+		OSerror( "error while loading extension: " + std::string( e.what() ) );
+	}
+
+	mExtensions.push_back( extension );
+
+	return true;
 }
 
-void VirtualMachine::addLibraryFolder(const std::string &library)
+void VirtualMachine::addLibraryFolder(const std::string& library)
 {
 	if ( library.empty() ) {
 		return;
@@ -99,25 +139,29 @@ Script* VirtualMachine::createScript(const std::string& content)
 {
 	if ( !mIsInitialized ) {
 		init();
-		printLibraryFolders();
 	}
 
-
-	Script *script = new Script();
+	auto *script = new Script();
 	mScripts.insert(script);
 
 	Designtime::Analyser analyser(mSettings.DoSanityCheck);
 	analyser.processString(content, mScriptFile);
 
+	// load all extension references
+	auto extensions = analyser.getExtensionReferences();
+	for ( const auto& ext : extensions ) {
+		if ( !loadExtension( ext, (*mLibraryFolders.begin()) ) ) {
+			throw Common::Exceptions::Exception( "could not load extension '" + ext + "' from '" + (*mLibraryFolders.begin()) + "'" );
+		}
+	}
+
 	// load all library references
-	StringList libraries = analyser.getLibraryReferences();
-	for ( StringList::const_iterator libIt = libraries.begin(); libIt != libraries.end(); ++libIt ) {
+	auto libraries = analyser.getLibraryReferences();
+	for ( auto libIt = libraries.begin(); libIt != libraries.end(); ++libIt ) {
 		bool imported = false;
 
-		for ( StringSet::const_iterator folderIt = mLibraryFolders.begin(); folderIt != mLibraryFolders.end(); ++folderIt ) {
-			std::string filename = Utils::Tools::Files::BuildLibraryPath((*folderIt), (*libIt));
-
-			if ( loadLibrary(filename) ) {
+		for ( const auto& libraryFolder : mLibraryFolders ) {
+			if ( loadLibrary( buildFilename( libraryFolder, (*libIt) ) ) ) {
 				imported = true;
 				break;
 			}
@@ -192,9 +236,9 @@ void VirtualMachine::init()
 {
 	OSdebug("initializing virtual machine...");
 
-	const char* homepath = getenv(OBJECTIVESCRIPT_LIBRARY);
+	auto* homepath = getenv(SLANG_LIBRARY);
 	if ( homepath ) {
-		std::string path = std::string(homepath);
+		std::string path(homepath);
 
 		while ( !path.empty() ) {
 			std::string left;
@@ -211,52 +255,40 @@ void VirtualMachine::init()
 #ifdef _WIN32
 		// Extension loading is not supported under Windows
 #else
+		OSdebug("loading extensions...");
+
 		std::vector<std::string> sharedLibraries;
 		read_directory(SHARED_LIBRARY_DIRECTORY, sharedLibraries);
 
 		// load installed shared libraries
-		for ( std::string library : sharedLibraries ) {
-			OSdebug("Loading extensions " + library);
-
-			addExtension( mExtensionManager.load(library) );
+		for ( const std::string& library : sharedLibraries ) {
+			addExtension( mExtensionManager.load(library), library );
 		}
 #endif
 	}
 
-	loadExtensions();
-
 	mIsInitialized = true;
 }
 
-bool VirtualMachine::loadExtensions()
+bool VirtualMachine::loadExtension( const std::string& extension, const std::string& folder )
 {
-	OSdebug("loading extensions...");
+	auto library = folder + extension;
 
-	MethodScope* globalScope = Controller::Instance().globalScope();
+#if defined __APPLE__
+	library += ".dylib";
+#elif defined __linux
+	library += ".so";
+#endif
 
-	for ( Extensions::ExtensionList::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt ) {
-		try {
-			OSdebug("adding extension '" + (*extIt)->getName() + "'");
+#if defined _MSC_VER
+	OSerror("Extension loading is not support under your OS!");
 
-			(*extIt)->initialize(globalScope);
+	return false;
+#else
+	OSdebug( "Loading extension '" + library + "'" );
 
-			Extensions::ExtensionMethods methods;
-			(*extIt)->provideMethods(methods);
-
-			for ( Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-				OSdebug("adding extension method '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
-
-				(*it)->setParent(globalScope);
-
-				globalScope->defineMethod((*it)->getName(), (*it));
-			}
-		}
-		catch ( std::exception &e ) {
-			std::cout << "error while loading extension: " << e.what() << std::endl;
-		}
-	}
-
-	return true;
+	return addExtension( mExtensionManager.load( library ), library );
+#endif
 }
 
 bool VirtualMachine::loadLibrary(const std::string& library)
@@ -274,39 +306,95 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		return true;
 	}
 
-	mLibraryFolders.insert(Utils::Tools::Files::ExtractPathname(library));
+	auto currentFolder = Utils::Tools::Files::ExtractPathname( library );
+
+	mLibraryFolders.insert( currentFolder );
 
 	Designtime::Analyser analyser(mSettings.DoSanityCheck);
 	analyser.processFile(library);
 
 	mImportedLibraries.insert(library);
 
+	// load all extension references
+	auto extensions = analyser.getExtensionReferences();
+	for ( const auto& ext : extensions ) {
+		if ( !loadExtension( ext, currentFolder ) ) {
+			throw Common::Exceptions::Exception( "could not load extension '" + ext + "' from '" + currentFolder + "'" );
+		}
+	}
+
 	const std::list<std::string>& libraries = analyser.getLibraryReferences();
-	for ( std::list<std::string>::const_iterator libIt = libraries.begin(); libIt != libraries.end(); ++libIt ) {
+	for ( const auto& lib : libraries ) {
 		bool imported = false;
 
-		for ( StringSet::const_iterator folderIt = mLibraryFolders.begin(); folderIt != mLibraryFolders.end(); ++folderIt ) {
-			std::string filename = Utils::Tools::Files::BuildLibraryPath((*folderIt), (*libIt));
-
-			if ( loadLibrary(filename) ) {
+		for ( const auto& libraryFolder : mLibraryFolders ) {
+			if ( loadLibrary( buildFilename( libraryFolder, lib ) ) ) {
 				imported = true;
 				break;
 			}
 		}
 
 		if ( !imported ) {
-			throw Common::Exceptions::Exception("could not resolve import '" + (*libIt) + "'");
+			throw Common::Exceptions::Exception("could not resolve import '" + lib + "' in file '" + library + "'");
 		}
 	}
 
 	return true;
 }
 
+void VirtualMachine::printExtensions()
+{
+	std::cout << std::endl;
+	std::cout << "Extensions:" << std::endl;
+
+	for ( const auto& extension : mExtensions ) {
+		std::cout << extension->getName();
+
+		if ( !extension->getVersion().empty() ) {
+			std::cout << " version " << extension->getVersion();
+		}
+
+		std::cout << std::endl;
+	}
+
+	std::cout << std::endl;
+}
+
 void VirtualMachine::printLibraryFolders()
 {
-	for ( StringSet::const_iterator it = mLibraryFolders.begin(); it != mLibraryFolders.end(); ++it ) {
-		OSdebug("Library: " + (*it));
+   std::cout << "Libraries:" << std::endl;
+
+	for ( const auto& libraryFolder : mLibraryFolders ) {
+		std::cout << libraryFolder << std::endl;
 	}
+}
+
+void VirtualMachine::printSpecification( const std::string& specification )
+{
+	if ( specification.empty() ) {
+        for ( const auto& str : mSpecification ) {
+            std::cout << str << std::endl;
+        }
+
+        return;
+    }
+
+    int32_t found{ 0 };
+    for ( const auto& str : mSpecification ) {
+        if ( str.find( specification ) != std::string::npos ) {
+            std::cout << str << std::endl;
+
+            found++;
+        }
+    }
+
+    if ( found ) {
+        //std::cout << std::endl;
+        //std::cout << "found " << found << " occurrence(s) of " << specification << std::endl;
+    }
+    else {
+        std::cout << "no result found for '" << specification << "'" << std::endl;
+    }
 }
 
 void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::Object* result)
@@ -326,20 +414,20 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 
 	Thread* thread = Controller::Instance().threads()->createThread();
 
-	Runtime::ControlFlow::E controlflow = thread->execute(NULL, main, params, result);
+	Runtime::ControlFlow::E controlflow = thread->execute(nullptr, main, params, result);
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		throw Runtime::ControlFlow::Throw;
 	}
 }
 
-void VirtualMachine::runScriptFromFile(const std::string &filename, const ObjectiveScript::ParameterList &params, ObjectiveScript::Runtime::Object *result)
+void VirtualMachine::runScriptFromFile(const std::string &filename, const Slang::ParameterList &params, Slang::Runtime::Object *result)
 {
 	Script* script = createScriptFromFile(filename);
 
 	run(script, params, result);
 }
 
-void VirtualMachine::runScriptFromString(const std::string &content, const ObjectiveScript::ParameterList &params, ObjectiveScript::Runtime::Object *result)
+void VirtualMachine::runScriptFromString(const std::string &content, const Slang::ParameterList &params, Slang::Runtime::Object *result)
 {
 	Script* script = createScriptFromString(content);
 
@@ -353,3 +441,16 @@ VirtualMachine::Settings& VirtualMachine::settings()
 
 
 }
+
+namespace {
+	std::string buildFilename( const std::string& folder, const std::string& filename ) {
+		std::string file = Utils::Tools::Files::BuildLibraryPath( folder, filename );
+		if ( Utils::Tools::Files::exists( file ) ) {
+			return file;
+		}
+
+		return Utils::Tools::Files::BuildLibraryPath( folder, filename + std::string( "/All" ) );
+
+	}
+}
+

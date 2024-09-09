@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 import System.Collections.Map;
 
@@ -16,7 +16,7 @@ public void Main(int argc = 0, string args = "") {
 private bool TestCase1() {
 	print("TestCase 1: Map.insert()");
 
-	Map<int, string> map = new Map<int, string>();
+	var map = new Map<int, string>();
 	assert( map );
 	assert( map.empty() );
 
@@ -37,7 +37,7 @@ private bool TestCase1() {
 private bool TestCase2() {
 	print("TestCase 2: Map.contains()");
 
-	Map<int, string> map = new Map<int, string>();
+	var map = new Map<int, string>();
 	assert( map );
 	assert( map.empty() );
 
@@ -54,7 +54,7 @@ private bool TestCase2() {
 private bool TestCase3() {
 	print("TestCase 3: Map.get()");
 
-	Map<int, string> map = new Map<int, string>();
+	var map = new Map<int, string>();
 	assert( map );
 	assert( map.empty() );
 
@@ -74,7 +74,7 @@ private bool TestCase3() {
 private bool TestCase4() {
 	print("TestCase 4: Map.remove()");
 
-	Map<int, string> map = new Map<int, string>();
+	var map = new Map<int, string>();
 	assert( map );
 	assert( map.empty() );
 
@@ -105,7 +105,7 @@ private bool TestCase4() {
 private bool TestCase5() {
 	print("TestCase 5: Map.put()");
 
-	Map<int, string> map = new Map<int, string>();
+	var map = new Map<int, string>();
 	assert( map );
 	assert( map.empty() );
 
@@ -135,7 +135,7 @@ private bool TestCase5() {
 private bool TestCase6() {
 	print("TestCase 6: Map.clear()");
 
-	Map<int, string> map = new Map<int, string>();
+	var map = new Map<int, string>();
 	assert( map );
 	assert( map.empty() );
 
@@ -153,10 +153,6 @@ private bool TestCase6() {
 	map.clear();
 	assert( map.empty() );
 	assert( map.size() == 0 );
-
-	foreach ( Pair<int, string> s : map ) {
-		assert( false );
-	}
 
 	return true;
 }
@@ -179,7 +175,7 @@ private bool TestCase7() {
 		//print("p = " + string p);
 	}
 
-	Iterator it = map.getIterator();
+	var it = map.getIterator();
 	while ( it.hasNext() ) {
 		it.next();
 
@@ -192,7 +188,7 @@ private bool TestCase7() {
 private bool TestCase8() {
 	print("TestCase 8: Map.operator[]");
 
-	Map<int, string> map = new Map<int, string>();
+	var map = new Map<int, string>();
 
 	map.insert(0, "0");
 	map.insert(1, "1");

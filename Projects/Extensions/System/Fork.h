@@ -1,10 +1,10 @@
 
-#ifndef ObjectiveScript_Extensions_System_Fork_h
-#define ObjectiveScript_Extensions_System_Fork_h
+#ifndef Slang_Extensions_System_Fork_h
+#define Slang_Extensions_System_Fork_h
 
 
 // Library includes
-#include <stdlib.h>
+#include <cstdlib>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -20,7 +20,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 

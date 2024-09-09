@@ -15,14 +15,15 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Runtime {
 
 
 class AtomicValue
 {
 public:
-	class Type {
+	class Type
+	{
 	public:
 		enum E {
 			UNKNOWN,
@@ -37,28 +38,28 @@ public:
 
 public:	// Construction
 	AtomicValue();
-	AtomicValue(bool val);
-	AtomicValue(double val);
-	AtomicValue(float val);
-	AtomicValue(int val);
-	explicit AtomicValue(MemoryId val);
-	AtomicValue(const std::string& val);
+	AtomicValue( bool val );
+	AtomicValue( double val );
+	AtomicValue( float val );
+	AtomicValue( int32_t val );
+	explicit AtomicValue( MemoryId val );
+	AtomicValue( std::string val );
 
-	~AtomicValue();
+	~AtomicValue() = default;
 
 public:	// Assignment
-	void operator=(bool val);
-	void operator=(double val);
-	void operator=(float val);
-	void operator=(int val);
-	void operator=(MemoryId val);
-	void operator=(const std::string& val);
+	AtomicValue& operator=( bool val );
+	AtomicValue& operator=( double val );
+	AtomicValue& operator=( float val );
+	AtomicValue& operator=( int32_t val );
+	AtomicValue& operator=( MemoryId val );
+	AtomicValue& operator=( const std::string& val );
 
 public:	// Conversion
 	bool toBool() const;
 	double toDouble() const;
 	float toFloat() const;
-	int toInt() const;
+	int32_t toInt() const;
 	MemoryId toReference() const;
 	std::string toStdString() const;
 
@@ -69,14 +70,14 @@ private:
 		bool bool_;
 		double double_;
 		float float_;
-		int int_;
+		int32_t int_;
 		MemoryId reference_;
 	};
 
 private:
 	std::string mStringValue;
 	Type::E mType;
-	ValueHolder mValue;
+	ValueHolder mValue{};
 };
 
 

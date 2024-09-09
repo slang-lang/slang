@@ -15,21 +15,31 @@
 
 // Namespace declaration
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 bool isAtomicType(const std::string& type)
 {
-	static const StringSet atomicTypes = provideAtomicTypes();
+	static const StringSet& atomicTypes = provideAtomicTypes();
 
-	StringSet::const_iterator it = atomicTypes.find(type);
+	auto it = atomicTypes.find(type);
 
 	return it != atomicTypes.end();
 }
 
+StringSet provideAccessMode()
+{
+	static StringSet accessMode;
+
+	accessMode.insert(RESERVED_WORD_BY_REFERENCE);
+	accessMode.insert(RESERVED_WORD_BY_VALUE);
+
+	return accessMode;
+}
+
 StringSet provideAtomicTypes()
 {
-	StringSet types;
+	static StringSet types;
 
 	types.insert(Runtime::BoolObject::TYPENAME);
 	types.insert(Runtime::DoubleObject::TYPENAME);
@@ -43,7 +53,7 @@ StringSet provideAtomicTypes()
 
 StringSet provideLanguageFeatures()
 {
-	StringSet languageFeatures;
+	static StringSet languageFeatures;
 
 	languageFeatures.insert(LANGUAGE_FEATURE_DEPRECATED);
 	languageFeatures.insert(LANGUAGE_FEATURE_NOTIMPLEMENTED);
@@ -55,7 +65,7 @@ StringSet provideLanguageFeatures()
 
 StringSet provideKeyWords()
 {
-	StringSet keywords;
+	static StringSet keywords;
 
 	keywords.insert(KEYWORD_ASSERT);
 	keywords.insert(KEYWORD_BREAK);
@@ -85,28 +95,44 @@ StringSet provideKeyWords()
 	return keywords;
 }
 
-StringSet provideModifiers()
+StringSet provideMemoryLayout()
 {
-	StringSet modifiers;
+	static StringSet memoryLayout;
 
-	modifiers.insert(MODIFIER_ABSTRACT);
-	modifiers.insert(MODIFIER_CONST);
-	modifiers.insert(MODIFIER_FINAL);
-	modifiers.insert(MODIFIER_MODIFY);
-	modifiers.insert(MODIFIER_RECURSIVE);
-	modifiers.insert(MODIFIER_SEALED);
-	modifiers.insert(MODIFIER_STATIC);
-	modifiers.insert(MODIFIER_THROWS);
-	modifiers.insert(MODIFIER_VIRTUAL);
+	memoryLayout.insert(MEMORY_LAYOUT_ABSTRACT);
+	memoryLayout.insert(MEMORY_LAYOUT_FINAL);
+	memoryLayout.insert(MEMORY_LAYOUT_OVERRIDE);
+	memoryLayout.insert(MEMORY_LAYOUT_STATIC);
+	memoryLayout.insert(MEMORY_LAYOUT_VIRTUAL);
 
-	return modifiers;
+	return memoryLayout;
+}
+
+StringSet provideModifier()
+{
+	static StringSet modifier;
+
+	modifier.insert(MODIFIER_RECURSIVE);
+	modifier.insert(MODIFIER_SEALED);
+	modifier.insert(MODIFIER_THROWS);
+
+	return modifier;
+}
+
+StringSet provideMutability()
+{
+	static StringSet mutability;
+
+	mutability.insert(MUTABILITY_CONST);
+	mutability.insert(MUTABILITY_MODIFY);
+
+	return mutability;
 }
 
 StringSet provideReservedWords()
 {
-	StringSet reservedWords;
+	static StringSet reservedWords;
 
-	reservedWords.insert(RESERVED_WORD_BY_REFERENCE);
 	reservedWords.insert(RESERVED_WORD_ENUM);
 	reservedWords.insert(RESERVED_WORD_EXTENDS);
 	reservedWords.insert(RESERVED_WORD_IMPLEMENTS);
@@ -133,8 +159,8 @@ std::string toString(const Parameter& param)
 		result += ANONYMOUS_OBJECT;
 	}
 
-	result += " "; result += Mutability::convert(param.mutability());
-	result += " "; result += AccessMode::convert(param.access());
+	result += " " + Mutability::convert(param.mutability());
+	result += " " + AccessMode::convert(param.access());
 
 	if ( param.hasDefaultValue() ) {
 		result += " = ";
@@ -153,10 +179,10 @@ std::string toString(const ParameterList& list)
 {
 	std::string result;
 
-	for ( ParameterList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+	for ( auto it = list.begin(); it != list.end(); ++it ) {
 		result += toString((*it));
 
-		ParameterList::const_iterator copy = it;
+		auto copy = it;
 		if ( ++copy != list.end() ) {
 			result += ", ";
 		}
@@ -169,10 +195,10 @@ std::string toString(const Runtime::ReferencesList& list)
 {
 	std::string result;
 
-	for ( Runtime::ReferencesList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+	for ( auto it = list.begin(); it != list.end(); ++it ) {
 		//result += it->getAddress();
 
-		Runtime::ReferencesList::const_iterator copy = it;
+		auto copy = it;
 		if ( ++copy != list.end() ) {
 			result += ", ";
 		}
@@ -185,10 +211,10 @@ std::string toString(const StringList& list)
 {
 	std::string result;
 
-	for ( StringList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+	for ( auto it = list.begin(); it != list.end(); ++it ) {
 		result += (*it);
 
-		StringList::const_iterator copy = it;
+		auto copy = it;
 		if ( ++copy != list.end() ) {
 			result += ", ";
 		}

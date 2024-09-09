@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_Threads_h
-#define ObjectiveScript_Core_VirtualMachine_Threads_h
+#ifndef Slang_Core_Core_VirtualMachine_Threads_h
+#define Slang_Core_Core_VirtualMachine_Threads_h
 
 
 // Library includes
@@ -20,7 +20,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Common {
@@ -50,7 +50,7 @@ public:
 
 public:
 	Thread();
-	Thread(Common::ThreadId id);
+	explicit Thread(Common::ThreadId id);
 	~Thread();
 
 public:	// Initialization
@@ -90,8 +90,8 @@ private:
 class Threads
 {
 public:
-	Threads();
-	~Threads();
+	Threads() = default;
+	~Threads() = default;
 
 public:
 	void deinit();

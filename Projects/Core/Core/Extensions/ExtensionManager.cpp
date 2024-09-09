@@ -1,34 +1,34 @@
 
 // Header
 #include "ExtensionManager.h"
-#include <Utils.h>
 
 // Library includes
 #include <dlfcn.h>
 
 // Project includes
+#include <Utils.h>
 
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 
 
-void ExtensionManager::close_lib(dynamic_lib_handle handle)
+void ExtensionManager::close_lib( dynamic_lib_handle handle )
 {
-	dlclose(handle);
+	dlclose( handle );
 }
 
-AExtension* ExtensionManager::instantiate(const dynamic_lib_handle handle)
+AExtension* ExtensionManager::instantiate( dynamic_lib_handle handle )
 {
-	if ( handle == nullptr ) {
+	if ( !handle ) {
 		return nullptr;
 	}
 
-	dynamic_lib_handle maker = dlsym(handle , "factory");
+	dynamic_lib_handle maker = dlsym( handle , "factory" );
 
-	if ( maker == nullptr ) {
+	if ( !maker ) {
 		return nullptr;
 	}
 
@@ -38,20 +38,25 @@ AExtension* ExtensionManager::instantiate(const dynamic_lib_handle handle)
 	return func();
 }
 
-AExtension* ExtensionManager::load(const std::string& path)
+AExtension* ExtensionManager::load( const std::string& path )
 {
-	mLibraries.push_back( dynamic_lib(path) );
+	mLibraries.push_back( dynamic_lib( path ) );
 
 	dynamic_lib& lib = mLibraries.back();
-	lib.handle = load_lib(lib.path);
+	lib.handle = load_lib( lib.path );
 
-	return instantiate(lib.handle);
+	if ( !lib.handle ) {
+		OSerror( dlerror() );
+		return nullptr;
+	}
+
+	return instantiate( lib.handle );
 }
 
-dynamic_lib_handle ExtensionManager::load_lib(const std::string& path) {
-	OSdebug("Loading shared library from '" + path + "'...");
+dynamic_lib_handle ExtensionManager::load_lib( const std::string& path ) {
+	OSdebug( "Loading shared library from '" + path + "'..." );
 
-	return dlopen(path.data(), RTLD_NOW); // get a handle to the lib, may be nullptr.
+	return dlopen( path.data(), RTLD_NOW ); // get a handle to the lib, may be nullptr.
 	// RTLD_NOW ensures that all the symbols are resolved immediately. This means that
 	// if a symbol cannot be found, the program will crash now instead of later.
 }

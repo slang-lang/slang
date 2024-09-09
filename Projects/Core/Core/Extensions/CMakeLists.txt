@@ -8,6 +8,7 @@ SET(HEADERS
 	AExtension.h
 	ExtensionManager.h
 	ExtensionMethod.h
+	ExtensionNamespace.h
 )
 
 SET(DEPENDENCIES

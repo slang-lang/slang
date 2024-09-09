@@ -1,0 +1,17 @@
+{
+  "name": "Slang YAML library ",
+  "name_short": "libYAML",
+  "version": "0.0.0",
+  "description": "The Slang YAML library provides a way to serialize YAML documents.",
+  "dependencies": [
+    { "module": "FileReader", "version_min": "0.3.1" },
+    { "module": "Slang", "version_min": "0.7.3" },
+    { "module": "System", "version_min": "0.3.4" },
+    { "module": "libParam", "version_min": "0.2.0" }
+  ],
+  "keywords": [ "yaml" ],
+  "target": {
+    "directory": "libYAML",
+    "type": "internal"
+  }
+}

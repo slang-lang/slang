@@ -1,10 +1,10 @@
 
-#ifndef ObjectiveScript_Extensions_System_SetEnv_h
-#define ObjectiveScript_Extensions_System_SetEnv_h
+#ifndef Slang_Extensions_System_SetEnv_h
+#define Slang_Extensions_System_SetEnv_h
 
 
 // Library includes
-#include <stdlib.h>
+#include <cstdlib>
 #ifdef _WIN32
 	// Win32 only methods
 #	include <Windows.h>
@@ -25,7 +25,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 
@@ -52,9 +52,10 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_name = (*it++).value().toStdString();
-			std::string param_value = (*it++).value().toStdString();
-			int param_overwrite = (*it++).value().toInt();
+			auto param_name = (*it++).value().toStdString();
+			auto param_value = (*it++).value().toStdString();
+
+			auto param_overwrite = (*it++).value().toInt();
 
 #ifdef _WIN32
 			*result = Runtime::IntegerObject(SetEnvironmentVariable(param_name.c_str(), param_value.c_str()));

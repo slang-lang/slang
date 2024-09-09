@@ -13,24 +13,24 @@ namespace Utils {
 namespace Common {
 
 
-Context::Context(const char* file)
+FileContext::FileContext(const std::string& file)
 {
-	mLogFile.open(file, std::ios::app);
+	mLogFile.open( file.c_str(), std::ios::app );
 }
 
-Context::~Context()
+FileContext::~FileContext()
 {
 	mLogFile.close();
 }
 
-void Context::write(const char* msg)
+void FileContext::write(const std::string& msg)
 {
 	mLogFile << msg << std::endl;
 	mLogFile << std::flush;
 }
 
 
-void StdOutContext::write(const char* msg)
+void StdOutContext::write( const std::string& msg )
 {
 	std::cout << msg << std::endl;
 }

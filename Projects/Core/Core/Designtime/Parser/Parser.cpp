@@ -15,7 +15,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Designtime {
 
 
@@ -25,7 +25,7 @@ bool checkSyntax(TokenIterator foundIt, const TokenList& expected)
 		return false;
 	}
 
-	for ( TokenIterator expectedIt = expected.begin(); expectedIt != expected.end(); ++expectedIt, ++foundIt ) {
+	for ( auto expectedIt = expected.begin(); expectedIt != expected.end(); ++expectedIt, ++foundIt ) {
 		if ( expectedIt->isOptional() ) {
 			// optional tokens have to be skipped during syntax check
 			++expectedIt;
@@ -54,8 +54,8 @@ PrototypeConstraints mergeConstraints(const PrototypeConstraints& designtime, co
 		throw Designtime::Exceptions::SyntaxError("prototype constraint size mismatch");
 	}
 
-	PrototypeConstraints::const_iterator designIt = designtime.begin();
-	PrototypeConstraints::const_iterator runIt = runtime.begin();
+	auto designIt = designtime.begin();
+	auto runIt = runtime.begin();
 
 	while ( designIt != designtime.end() ) {
 		result.push_back(
@@ -70,7 +70,7 @@ PrototypeConstraints mergeConstraints(const PrototypeConstraints& designtime, co
 }
 
 
-std::string Parser::buildDesigntimeConstraintTypename(const std::string &name, const PrototypeConstraints &constraints)
+std::string Parser::buildDesigntimeConstraintTypename(const std::string& name, const PrototypeConstraints& constraints)
 {
 	if ( constraints.empty() ) {
 		return name;
@@ -78,7 +78,7 @@ std::string Parser::buildDesigntimeConstraintTypename(const std::string &name, c
 
 	std::string type = name;
 	type += "<";
-	for ( PrototypeConstraints::const_iterator it = constraints.cbegin(); it != constraints.cend(); ++it ) {
+	for ( auto it = constraints.cbegin(); it != constraints.cend(); ++it ) {
 		type += it->mDesignType;
 
 		if ( std::distance(it, constraints.end()) > 1 ) {
@@ -90,7 +90,7 @@ std::string Parser::buildDesigntimeConstraintTypename(const std::string &name, c
 	return type;
 }
 
-std::string Parser::buildRuntimeConstraintTypename(const std::string &name, const PrototypeConstraints &constraints)
+std::string Parser::buildRuntimeConstraintTypename(const std::string& name, const PrototypeConstraints& constraints)
 {
 	if ( constraints.empty() ) {
 		return name;
@@ -98,7 +98,7 @@ std::string Parser::buildRuntimeConstraintTypename(const std::string &name, cons
 
 	std::string type = name;
 	type += "<";
-	for ( PrototypeConstraints::const_iterator it = constraints.cbegin(); it != constraints.cend(); ++it ) {
+	for ( auto it = constraints.cbegin(); it != constraints.cend(); ++it ) {
 		type += it->mRunType.empty() ? _object : it->mRunType;
 
 		if ( std::distance(it, constraints.end()) > 1 ) {
@@ -181,7 +181,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 	return ancestors;
 }
 
-PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator &token)
+PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator& token)
 {
 	PrototypeConstraints constraints;
 	
@@ -206,9 +206,6 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 			++token;
 
 			if ( token->type() == Token::Type::IDENTIFIER ) {
-				constraint = token->content();
-			}
-			else if ( token->type() == Token::Type::TYPE ) {
 				constraint = token->content();
 			}
 			else {
@@ -342,18 +339,13 @@ bool Parser::isEnumDeclaration(TokenIterator token)
 // [<visibility>] [language feature] interface <identifier> [modifier] { ... }
 bool Parser::isInterfaceDeclaration(TokenIterator token)
 {
-	if ( token->isOptional() && token->type() == Token::Type::VISIBILITY ) {
+	if ( token->type() == Token::Type::VISIBILITY ) {
 		// visibility token is okay
 		++token;
 	}
 
-	if ( token->isOptional() && token->category() == Token::Category::Attribute && token->type() == Token::Type::LANGUAGEFEATURE ) {
+	if ( token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
 		// language feature is okay
-		++token;
-	}
-
-	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
-		// abstract is okay
 		++token;
 	}
 
@@ -372,103 +364,16 @@ bool Parser::isLibraryReference(TokenIterator token)
 	return checkSyntax(token, tokens);
 }
 
-// member declaration:
-// [<visibility>] [language feature] <identifier> <identifier> [modifier] = || ;
-bool Parser::isMemberDeclaration(TokenIterator token)
-{
-	if ( token->type() == Token::Type::VISIBILITY ) {
-		// visibility token is okay
-		++token;
-	}
-
-	if ( token->isOptional() ) {
-		// language feature is okay
-		++token;
-	}
-
-	while ( token->type() == Token::Type::IDENTIFIER ) {
-		// identifier token is okay
-		++token;
-
-		if ( token->type() == Token::Type::OPERATOR_SCOPE ) {
-			// scope token is okay
-			++token;
-			continue;
-		}
-	}
-
-	if ( token->type() == Token::Type::TYPE ) {
-		// type is okay
-		++token;
-	}
-
-	if ( token->type() == Token::Type::IDENTIFIER ) {
-		// name is okay
-		++token;
-	}
-
-	if ( token->isOptional() ) {
-		// modifier is okay
-		++token;
-	}
-
-	// check for an assignment or semicolon
-	return token->type() == Token::Type::ASSIGN || token->type() == Token::Type::SEMICOLON;
-}
-
-// syntax:
-// [<visibility>] <type> <identifier> (
-// [<visibility>] <identifier> <identifier> (
-bool Parser::isMethodDeclaration(TokenIterator token)
-{
-	if ( token->type() == Token::Type::VISIBILITY ) {
-		// visibility token is okay
-		++token;
-	}
-
-	if ( token->isOptional() ) {
-		// language feature is okay
-		++token;
-	}
-
-	while ( token->type() == Token::Type::IDENTIFIER ) {
-		++token;
-
-		if ( token->type() == Token::Type::OPERATOR_SCOPE ) {
-			++token;
-			continue;
-		}
-	}
-
-	if ( token->type() == Token::Type::TYPE ) {
-		// type is okay
-		++token;
-	}
-
-	if ( token->category() == Token::Category::Modifier ) {
-		// modifier is okay
-		++token;
-	}
-
-	if ( token->type() == Token::Type::IDENTIFIER ) {
-		// name is okay
-		++token;
-	}
-
-	// check for open parenthesis
-	return token->type() == Token::Type::PARENTHESIS_OPEN;
-}
-
 // namespace declaration:
 // [<visibility>] [language feature] namespace <identifier> { ... }
 bool Parser::isNamespaceDeclaration(TokenIterator token)
 {
-	if ( token->isOptional() && token->type() == Token::Type::VISIBILITY ) {
+	if ( token->type() == Token::Type::VISIBILITY ) {
 		// visibility token is okay
 		++token;
 	}
 
-	if ( token->isOptional() && token->type() == Token::Type::LANGUAGEFEATURE ) {
+	if ( token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
 		// language feature is okay
 		++token;
 	}
@@ -480,50 +385,43 @@ bool Parser::isNamespaceDeclaration(TokenIterator token)
 // [<visibility>] [language feature] object <identifier> [modifier] [extends <identifier>] [implements <identifier>, ...] { ... }
 bool Parser::isObjectDeclaration(TokenIterator token)
 {
-	if ( token->isOptional() && token->type() == Token::Type::VISIBILITY ) {
+	if ( token->type() == Token::Type::VISIBILITY ) {
 		// visibility token is okay
 		++token;
 	}
 
-	if ( token->isOptional() && token->category() == Token::Category::Attribute && token->type() == Token::Type::LANGUAGEFEATURE ) {
+	if ( token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
 		// language feature is okay
 		++token;
 	}
 
-	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
-		// abstract is okay
+	if ( token->type() == Token::Type::MEMORY_LAYOUT ) {
+		// memory layout is okay
 		++token;
 	}
 
-	return !(token->type() != Token::Type::RESERVED_WORD || token->content() != std::string(RESERVED_WORD_OBJECT));
+	return !(token->type() != Token::Type::RESERVED_WORD || token->content() != RESERVED_WORD_OBJECT);
 }
 
 AccessMode::E Parser::parseAccessMode(TokenIterator& token, AccessMode::E defaultValue)
 {
 	AccessMode::E result = defaultValue;
 
-	if ( token->type() == Token::Type::RESERVED_WORD ) {
-		result = AccessMode::convert(token->content());
-
-		if ( result == AccessMode::Unspecified ) {
-			// invalid type
-			throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
-		}
-
-		++token;
+	if ( token->type() == Token::Type::ACCESS_MODE || token->content() == DEFAULT ) {
+		result = AccessMode::convert((*token++).content());
 	}
 
 	return result;
 }
 
-BluePrintType::E Parser::parseBluePrintType(TokenIterator &token)
+BlueprintType::E Parser::parseBluePrintType(TokenIterator &token)
 {
-	return BluePrintType::convert((*token++).content());
+	return BlueprintType::convert((*token++).content());
 }
 
 CheckedExceptions::E Parser::parseExceptions(TokenIterator& token, CheckedExceptions::E defaultValue)
 {
-	CheckedExceptions::E result = CheckedExceptions::convert((*token).content());
+	CheckedExceptions::E result = CheckedExceptions::convert(token->content());
 
 	if ( result != CheckedExceptions::Unspecified ) {
 		// an exception modifier has been detected => increment the token iterator and return the found modifier
@@ -536,31 +434,12 @@ CheckedExceptions::E Parser::parseExceptions(TokenIterator& token, CheckedExcept
 	return defaultValue;
 }
 
-ImplementationType::E Parser::parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue)
-{
-	ImplementationType::E result = defaultValue;
-
-	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
-		ImplementationType::E value = ImplementationType::convert((*token++).content());
-
-		if ( value != ImplementationType::Unspecified ) {
-			result = value;
-		}
-	}
-
-	return result;
-}
-
 LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue)
 {
 	LanguageFeatureState::E result = defaultValue;
 
-	if ( token->isOptional() && token->category() == Token::Category::Attribute && token->type() == Token::Type::LANGUAGEFEATURE ) {
-		LanguageFeatureState::E value = LanguageFeatureState::convert((*token++).content());
-
-		if ( value != LanguageFeatureState::Unspecified ) {
-			result = value;
-		}
+	if ( token->type() == Token::Type::LANGUAGE_FEATURE_STATE ) {
+		result = LanguageFeatureState::convert((*token++).content());
 	}
 
 	return result;
@@ -568,35 +447,27 @@ LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, 
 
 MemoryLayout::E Parser::parseMemoryLayout(TokenIterator& token, MemoryLayout::E defaultValue)
 {
-	MemoryLayout::E result = MemoryLayout::convert((*token).content());
+	MemoryLayout::E result = defaultValue;
 
-	if ( result != MemoryLayout::Unspecified ) {
-		// a memory layout modifier has been detected => increment the token iterator and return the found modifier
-		++token;
-
-		return result;
+	if ( token->type() == Token::Type::MEMORY_LAYOUT ) {
+		result = MemoryLayout::convert((*token++).content());
 	}
 
-	// no memory layout token found => return the default value without incrementing the token iterator
-	return defaultValue;
+	return result;
 }
 
 Mutability::E Parser::parseMutability(TokenIterator& token, Mutability::E defaultValue)
 {
-	Mutability::E result = Mutability::convert((*token).content());
+	Mutability::E result = defaultValue;
 
-	if ( result != Mutability::Unknown ) {
-		// a mutability modifier has been detected => increment the token iterator and return the found modifier
-		++token;
-
-		return result;
+	if ( token->type() == Token::Type::MUTABILITY ) {
+		result = Mutability::convert((*token++).content());
 	}
 
-	// no mutability token found => return the default value without incrementing the token iterator
-	return defaultValue;
+	return result;
 }
 
-ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
+ParameterList Parser::parseParameters(TokenIterator& token, IScope* scope)
 {
 	ParameterList params;
 
@@ -615,31 +486,8 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		}
 		// }
 
-		Mutability::E mutability = Mutability::Modify;
-		if ( token->category() == Token::Category::Modifier ) {
-			if ( token->content() == MODIFIER_CONST ) {
-				mutability = Mutability::Const;
-				++token;
-			}
-			else if ( token->content() == MODIFIER_MODIFY ) {
-				mutability = Mutability::Modify;
-				++token;
-			}
-			else {
-				throw Designtime::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
-			}
-		}
-
-		AccessMode::E accessMode = AccessMode::Unspecified;
-		if ( token->category() == Token::Category::ReservedWord ) {
-			if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
-				accessMode = AccessMode::ByReference;
-				++token;
-			}
-			else {
-				throw Designtime::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
-			}
-		}
+		Mutability::E mutability = parseMutability( token, Mutability::Modify );
+		AccessMode::E accessMode = parseAccessMode( token, AccessMode::Unspecified );
 
 		bool hasDefaultValue = false;
 		Runtime::AtomicValue value;
@@ -658,7 +506,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 
 		if ( hasDefaultValue && accessMode == AccessMode::ByReference ) {
 			// parameters with default values cannot be accessed by reference
-			throw Designtime::Exceptions::SyntaxError("default parameters are not allowed to be accessed by reference");
+			throw Designtime::Exceptions::SyntaxError("parameters with default values are not allowed to be accessed by reference");
 		}
 
 		params.push_back(
@@ -780,21 +628,6 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 	}
 
 	return value;
-}
-
-Virtuality::E Parser::parseVirtuality(TokenIterator& token, Virtuality::E defaultValue)
-{
-	Virtuality::E result = Virtuality::convert((*token).content());
-
-	if ( result != Virtuality::Unknown ) {
-		// a virtuality modifier has been detected => increment the token iterator and return the found modifier
-		++token;
-
-		return result;
-	}
-
-	// no virtuality token found => return the default value without incrementing the token iterator
-	return defaultValue;
 }
 
 Visibility::E Parser::parseVisibility(TokenIterator& token, Visibility::E defaultValue)

@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Common/Logger.h>
-#include <Framework/GenericTest.h>
+#include <Framework/UnitTest.h>
 
 // Forward declarations
 
@@ -18,11 +18,12 @@ namespace Testing {
 namespace Library {
 
 
-class LibraryTest : public GenericTest,
+class LibraryTest : public UnitTest,
 				 	private Utils::Common::Logger
 {
 public:
-	LibraryTest(const Utils::Common::ILogger *p);
+	explicit LibraryTest( const Utils::Common::ILogger* p );
+	~LibraryTest() = default;
 
 public:
 	void process();

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Runtime_Script_h
-#define ObjectiveScript_Core_Runtime_Script_h
+#ifndef Slang_Core_Core_Runtime_Script_h
+#define Slang_Core_Core_Runtime_Script_h
 
 
 // Library includes
@@ -14,7 +14,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Runtime {
@@ -25,8 +25,8 @@ class Symbol;
 class Script
 {
 public:
-	Script();
-	~Script();
+	Script() = default;
+	~Script() = default;
 
 public:	//Helpers
 	Symbol* resolve(const std::string& symbol);

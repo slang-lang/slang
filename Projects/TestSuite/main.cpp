@@ -1,7 +1,6 @@
 
 // Library includes
 #include <list>
-#include <map>
 
 // Project includes
 #include <Common/StdOutLogger.h>
@@ -14,6 +13,7 @@
 
 // Fixtures
 #include <AST/Fixture.h>
+#include <Extensions/Fixture.h>
 #include <Inheritance/Fixture.h>
 #include <Interfaces/Fixture.h>
 #include <Language/Fixture.h>
@@ -21,7 +21,6 @@
 #include <Math/Fixture.h>
 #include <Operator/Fixture.h>
 #include <Prototype/Fixture.h>
-#include <TestFramework/Fixture.h>
 
 // Namespace declarations
 
@@ -29,7 +28,7 @@
 #ifdef _WIN32
 	// Memory leak check - Begin
 	#define _CRTDBG_MAP_ALLOC
-	#include <stdlib.h>
+	#include <cstdlib>
 
 	#include <iostream>
 	#include <crtdbg.h>
@@ -43,22 +42,23 @@
 #endif
 
 
-typedef std::list<TestFixture*> FixtureList;
+typedef std::list<MyUnit::TestFixture*> FixtureList;
 
-Utils::Common::ILogger* mLogger = 0;
-Utils::Printer* mPrinter = 0;
+StringSet mLibraryFolders;
+Utils::Common::ILogger* mLogger { nullptr };
+Utils::Printer* mPrinter { nullptr };
 
 
 void cleanup() {
 	if ( mLogger ) {
 		delete mLogger;
-		mLogger = 0;
+		mLogger = nullptr;
 	}
 }
 
 void initialize() {
 	mLogger = new Utils::Common::StdOutLogger();
-	mPrinter = Utils::PrinterDriver::Instance();
+	mPrinter = Utils::Printer::Instance();
 }
 
 void printUsage()
@@ -66,6 +66,7 @@ void printUsage()
 	std::cout << "Usage: TestSuite [options] [args...]" << std::endl;
 	std::cout << std::endl;
 	std::cout << "-h | --help           This help" << std::endl;
+    std::cout << "-l | --library <library>   Library root path" << std::endl;
 	std::cout << "-q | --quiet          Quiet mode, chats as less as possible" << std::endl;
 	std::cout << "--show                Print test suites information" << std::endl;
 	std::cout << "--showtests           Print unit tests of given test suite" << std::endl;
@@ -84,18 +85,26 @@ int main(int argc, const char* argv[])
 
 	initialize();
 
-	bool executed = false;
 	bool show = false;
-	std::string toRun = "";
+	std::string toRun;
 
 	if ( argc > 1 ) {
-		for (int i = 1; i < argc; i++) {
-			if ( Utils::Tools::StringCompare(argv[i], "--help") ) {
+		for ( int i = 1; i < argc; i++ ) {
+			if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
 				printUsage();
 				cleanup();
 
 				return 0;
 			}
+            else if ( Utils::Tools::StringCompare(argv[i], "-l") || Utils::Tools::StringCompare(argv[i], "--library") ) {
+                if ( argc <= ++i ) {
+                    std::cout << "invalid number of parameters provided!" << std::endl;
+
+                    exit(-1);
+                }
+
+                mLibraryFolders.insert(argv[i]);
+            }
 			else if ( Utils::Tools::StringCompare(argv[i], "-q") || Utils::Tools::StringCompare(argv[i], "--quiet") ) {
 				mLogger->setLoudness(Utils::Common::ILogger::LoudnessMute);
 
@@ -136,50 +145,50 @@ int main(int argc, const char* argv[])
 	try {
 		FixtureList mFixtures;
 
-/*
-		Testing::Framework::Fixture testing(logger);
-		mFixtures.push_back(&testing);
-*/
+		Testing::AST::Fixture ast( mLogger, mLibraryFolders );
+		mFixtures.push_back( &ast );
 
-		Testing::AST::Fixture ast(mLogger);
-		mFixtures.push_back(&ast);
+		Testing::Extensions::Fixture extensions( mLogger, mLibraryFolders );
+		mFixtures.push_back( &extensions );
 
-		Testing::Inheritance::Fixture inheritance(mLogger);
-		mFixtures.push_back(&inheritance);
+		Testing::Inheritance::Fixture inheritance( mLogger, mLibraryFolders );
+		mFixtures.push_back( &inheritance );
 
-		Testing::Interfaces::Fixture interfaces(mLogger);
-		mFixtures.push_back(&interfaces);
+		Testing::Interfaces::Fixture interfaces( mLogger, mLibraryFolders );
+		mFixtures.push_back( &interfaces );
 
-		Testing::Language::Fixture language(mLogger);
-		mFixtures.push_back(&language);
+		Testing::Language::Fixture language( mLogger, mLibraryFolders );
+		mFixtures.push_back( &language );
 
-		Testing::Library::Fixture library(mLogger);
-		mFixtures.push_back(&library);
+		Testing::Library::Fixture library( mLogger, mLibraryFolders );
+		mFixtures.push_back( &library );
 
-		Testing::Math::Fixture math(mLogger);
-		mFixtures.push_back(&math);
+		Testing::Math::Fixture math( mLogger, mLibraryFolders );
+		mFixtures.push_back( &math );
 
-		Testing::Operator::Fixture operator_overloading(mLogger);
-		mFixtures.push_back(&operator_overloading);
+		Testing::Operator::Fixture operator_overloading( mLogger, mLibraryFolders );
+		mFixtures.push_back( &operator_overloading );
 
-		Testing::Prototype::Fixture prototype(mLogger);
-		mFixtures.push_back(&prototype);
+		Testing::Prototype::Fixture prototype( mLogger, mLibraryFolders );
+		mFixtures.push_back( &prototype );
 
-		TestResult result;
+		MyUnit::TestResult result;
 
-		for ( FixtureList::iterator it = mFixtures.begin(); it != mFixtures.end(); ++it ) {
+		bool executed = false;
+
+		for ( auto& mFixture : mFixtures ) {
 			if ( show ) {
 				if ( toRun.empty() ) {
-					std::cout << (*it)->getName() << std::endl;
+					std::cout << mFixture->getName() << std::endl;
 					continue;
 				}
-				else if ( toRun == (*it)->getName() ) {
-					(*it)->print();
+				else if ( toRun == mFixture->getName() ) {
+					mFixture->print();
 				}
 			}
-			else if ( toRun.empty() || toRun == (*it)->getName() ) {
+			else if ( toRun.empty() || toRun == mFixture->getName() ) {
 				executed = true;
-				result = result + (*it)->run();
+				result = result + mFixture->run();
 			}
 		}
 
@@ -200,12 +209,12 @@ int main(int argc, const char* argv[])
 
 		return 0;
 	}
-	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
-		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
+	catch ( Slang::Runtime::ControlFlow::E &e ) {
+		if ( e != Slang::Runtime::ControlFlow::ExitProgram ) {
 			OSerror("abnormal program termination!");
 		}
 	}
-	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types
+	catch ( std::exception& e ) {
 		OSerror(e.what());
 	}
 	catch ( ... ) {	// catch everything
@@ -213,7 +222,7 @@ int main(int argc, const char* argv[])
 	}
 
 	// if we get here something bad has happened
-	ObjectiveScript::Controller::Instance().threads()->print();
+	Slang::Controller::Instance().threads()->print();
 
 	return -1;
 }

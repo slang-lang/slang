@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Common/Logger.h>
-#include <Framework/GenericTest.h>
+#include <Framework/UnitTest.h>
 
 // Forward declarations
 
@@ -18,12 +18,12 @@ namespace Testing {
 namespace Language {
 
 
-class LanguageTest : public GenericTest,
+class LanguageTest : public UnitTest,
 					 private Utils::Common::Logger
 {
 public:
-	LanguageTest(const Utils::Common::ILogger *p);
-	virtual ~LanguageTest() { }
+	explicit LanguageTest( const Utils::Common::ILogger* p );
+	~LanguageTest() = default;
 
 public:
 	void process();

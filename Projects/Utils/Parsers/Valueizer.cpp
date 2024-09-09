@@ -22,7 +22,7 @@ Valueizer::Valueizer(const std::string& s, const std::string& delimiters)
 {
 }
 
-const Value Valueizer::getTokenAsValue() const
+Value Valueizer::getTokenAsValue() const
 {
 	return Value("", "", mToken);
 }

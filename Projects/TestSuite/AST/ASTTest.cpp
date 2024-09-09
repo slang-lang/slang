@@ -21,7 +21,7 @@
 #endif
 
 // Namespace declarations
-using namespace ObjectiveScript;
+using namespace Slang;
 
 
 
@@ -29,13 +29,9 @@ namespace Testing {
 namespace AST {
 
 
-ASTTest::ASTTest(const ::Utils::Common::ILogger *p)
-: GenericTest("ASTTest"),
-  ::Utils::Common::Logger(p, "ASTTest")
-{
-}
-
-ASTTest::~ASTTest()
+ASTTest::ASTTest( const Utils::Common::ILogger* p )
+: UnitTest( "ASTTest" )
+, Utils::Common::Logger( p, "ASTTest" )
 {
 }
 
@@ -271,7 +267,7 @@ void ASTTest::testForeach()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/AST/ForeachTest.os");
 
@@ -474,7 +470,7 @@ void ASTTest::testTypecastExpression()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/AST/TypecastExpression.os");
 

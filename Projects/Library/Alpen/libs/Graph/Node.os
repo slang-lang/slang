@@ -20,6 +20,7 @@ public object Node {
 	public NodeType type;
 
 	public void Constructor() {
+		edges = new List<Edge>();
 	}
 
 	public string =operator(string) const {

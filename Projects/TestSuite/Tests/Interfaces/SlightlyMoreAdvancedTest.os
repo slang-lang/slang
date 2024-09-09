@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public stable interface IGetBox {
 	public int GetBox() const;
@@ -9,7 +9,7 @@ public stable interface IGetBoxType {
 }
 
 public object Boxhouse implements IGetBox {
-	public int GetBox() const final {
+	public final int GetBox() const {
 		return GetNumber();
 	}
 

@@ -14,20 +14,15 @@ namespace Testing {
 namespace Operator {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Operator"),
-  Utils::Common::Logger(p, "Operator")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p, StringSet libraries )
+: TestFixture( "Operator", std::move( libraries ) )
+, Utils::Common::Logger( p, "Operator" )
 {
 }
 
 void Fixture::setup()
 {
-	OperatorTest* operatorTest = new OperatorTest(this);
-	add(operatorTest);
+	add( new OperatorTest( this ) );
 }
 
 void Fixture::teardown()

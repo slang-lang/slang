@@ -1,10 +1,9 @@
 
-#ifndef ObjectiveScript_Core_Object_h
-#define ObjectiveScript_Core_Object_h
+#ifndef Slang_Core_Core_Object_h
+#define Slang_Core_Core_Object_h
 
 
 // Library includes
-#include <cassert>
 #include <map>
 #include <string>
 
@@ -26,7 +25,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declaration
 class Repository;
@@ -41,7 +40,7 @@ class Object : public MethodScope,
 {
 public:
 	Object();
-	Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value);
+	Object(const std::string& name, std::string filename, const std::string& type, const AtomicValue& value);
 	virtual ~Object();
 
 public:
@@ -74,14 +73,14 @@ public:	// Reference
 
 public: // Symbol
 	Symbol* resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const;
-	ObjectiveScript::MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
+	Slang::MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
 
 public:	// Type
 	bool isInstanceOf(const std::string& type) const;
 
 public:	// Value
 	AtomicValue getValue() const;
-	void setValue(AtomicValue value);
+	void setValue(const AtomicValue& value);
 
 	Object* getThis() const { return mThis; }
 
@@ -113,6 +112,8 @@ public:	// Operators
 	virtual void operator_modulo(const Object *other);
 	virtual void operator_multiply(const Object *other);
 	virtual void operator_plus(const Object *other);
+	virtual void operator_shift_left(const Object *other);
+	virtual void operator_shift_right(const Object *other);
 	virtual void operator_subtract(const Object *other);
 	virtual void operator_unary_decrement();
 	virtual void operator_unary_increment();

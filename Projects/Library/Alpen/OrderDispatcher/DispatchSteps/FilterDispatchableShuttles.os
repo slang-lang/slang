@@ -14,12 +14,12 @@ public object FilterDispatchableShuttles extends FilteringStep implements IDispa
         var filteredShuttles = new List<Shuttle>();
 
         foreach ( Shuttle shuttle : data.shuttles ) {
-            if ( shuttle.modeID == ShuttleMode.AUTOMATIC && shuttle.stateID == ShuttleState.READY ) {
+            if ( shuttle.modeID == ShuttleMode.AUTOMATIC && shuttle.stateID >= ShuttleState.READY ) {
                 filteredShuttles.push_back(shuttle);
             }
         }
 
-        return new DispatchData(cast<Object>(data.orders), cast<Object>(filteredShuttles));
+        return new DispatchData(data.orders, filteredShuttles);
     }
 
     public string getName() const {

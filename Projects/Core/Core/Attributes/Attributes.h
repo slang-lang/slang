@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Attributes_Attributes_h
-#define ObjectiveScript_Attributes_Attributes_h
+#ifndef Slang_Core_Core_Attributes_Attributes_h
+#define Slang_Core_Core_Attributes_Attributes_h
 
 
 // Library includes
@@ -13,14 +13,14 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 class GenericAttributes
 {
 public:
 	GenericAttributes();
-	virtual ~GenericAttributes();
+	virtual ~GenericAttributes() = default;
 
 public:
 	bool isConst() const;
@@ -36,7 +36,7 @@ public:
 	void setMutability(Mutability::E value);
 
 protected:
-	void checkSealState();
+	void checkSealState() const;
 
 protected:
 	bool mIsSealed;
@@ -49,24 +49,13 @@ protected:
 class MethodAttributes : public GenericAttributes
 {
 public:
-	class MethodType
-	{
-	public:
-		enum E {
-			Constructor,
-			Destructor,
-			Function,
-			Method
-		};
-	};
-
-public:
 	MethodAttributes();
 
 public:
-	bool isAbstract() const;
+	bool isAbstractMethod() const;
 	bool isConstMethod() const;
-	bool isFinal() const;
+	bool isFinalMethod() const;
+	bool isNotImplemented() const;
 	bool throws() const;
 
 	Algorithm::E getAlgorithm() const;
@@ -81,15 +70,11 @@ public:
 	Mutability::E getMethodMutability() const;
 	void setMethodMutability(Mutability::E value);
 
-	Virtuality::E getVirtuality() const;
-	void setVirtuality(Virtuality::E value);
-
 protected:
 	Algorithm::E mAlgorithm;
 	CheckedExceptions::E mCheckedExceptions;
 	Mutability::E mMethodMutability;
 	MethodType::E mMethodType;
-	Virtuality::E mVirtuality;
 };
 
 
@@ -110,11 +95,8 @@ public:
 	ObjectAttributes();
 
 public:
-	BluePrintType::E getBluePrintType() const;
-	void setBluePrintType(BluePrintType::E value);
-
-	ImplementationType::E getImplementationType() const;
-	void setImplementationType(ImplementationType::E value);
+	BlueprintType::E getBluePrintType() const;
+	void setBluePrintType(BlueprintType::E value);
 
 	bool isMember() const;
 	void setMember(bool state);
@@ -123,8 +105,7 @@ public:
 	void setSealed(bool state);
 
 protected:
-	BluePrintType::E mBluePrintType;
-	ImplementationType::E mImplementationType;
+	BlueprintType::E mBluePrintType;
 	bool mIsMember;
 };
 

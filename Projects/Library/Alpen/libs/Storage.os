@@ -1,5 +1,6 @@
 
 // library imports
+import libLog.Logger;
 
 // project imports
 import Database;
@@ -21,6 +22,8 @@ public object Storage {
     public void Constructor(ILogger logger) {
         mLogger = new Logger(logger, "Storage");
     }
+
+    public notimplemented Storage Copy() const;
 
     public void Insert(Job job) modify {
         string query = "INSERT INTO jobs (order_id, job_type_id, job_state_id, shuttle_id, level_id, position_id) VALUES (" + job.orderID + ", " + cast<string>( job.typeID ) + ", " + cast<string>( job.stateID ) + ", " + job.shuttleID + ", " + job.position.levelID + ", " + job.position.positionID + ")"
@@ -50,7 +53,7 @@ public object Storage {
 
         Job job;
 
-        if ( mysql_next_row(result) ) {
+        if ( mysql_fetch_row(result) ) {
             job = LoadJobByResult(result);
         }
 
@@ -85,12 +88,12 @@ public object Storage {
 
         Order order;
 
-        while ( mysql_next_row(result) ) {
+        while ( mysql_fetch_row(result) ) {
             if ( !order ) {
                 order = LoadOrderByResult(result);
             }
 
-            int jobID = mysql_get_field_value(result, "job_id");
+            var jobID = cast<int>( mysql_get_field_value(result, "job_id") );
             if ( jobID ) {
                 assert( order );
                 assert( order.jobs );
@@ -125,7 +128,7 @@ public object Storage {
 
         Shuttle shuttle;
 
-        while ( mysql_next_row(result) ) {
+        while ( mysql_fetch_row(result) ) {
             if ( !shuttle ) {
                 shuttle = LoadShuttleByResult(result);
             }

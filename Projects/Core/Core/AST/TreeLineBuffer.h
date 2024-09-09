@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_TreeLineBuffer_h
-#define ObjectiveScript_Core_AST_TreeLineBuffer_h
+#ifndef Slang_Core_Core_AST_TreeLineBuffer_h
+#define Slang_Core_Core_AST_TreeLineBuffer_h
 
 #include <Core/Defines.h>
 
@@ -16,7 +16,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace AST {
 
 
@@ -26,8 +26,8 @@ public:
 	typedef std::map<Common::Position, std::string> Lines;
 
 public:
-	TreeLineBuffer();
-	~TreeLineBuffer();
+	TreeLineBuffer() = default;
+	~TreeLineBuffer() = default;
 
 public:
 	void getLines(Lines& lines);

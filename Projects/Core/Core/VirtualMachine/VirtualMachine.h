@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_VirtualMachine_h
-#define ObjectiveScript_Core_VirtualMachine_VirtualMachine_h
+#ifndef Slang_Core_Core_VirtualMachine_VirtualMachine_h
+#define Slang_Core_Core_VirtualMachine_VirtualMachine_h
 
 
 // Library include
@@ -24,7 +24,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Runtime {
@@ -55,27 +55,29 @@ public:
 	~VirtualMachine();
 
 public:	// Setup
-	void addExtension(AExtension *extension);
-	void addLibraryFolder(const std::string &library);
+	bool addExtension(Extensions::AExtension* extension, const std::string& library = "<internal library>");
+	void addLibraryFolder(const std::string& library);
 	void init();
+	void printExtensions();
+	void printLibraryFolders();
+	void printSpecification( const std::string& specification );
 	Settings& settings();
 
 public:
 	Script* createScriptFromFile(const std::string& filename);
 	Script* createScriptFromString(const std::string& content);
 
-	void run(Script* script, const ParameterList& params = ParameterList(), Runtime::Object* result = NULL);
-	void runScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList(), Runtime::Object* result = NULL);
-	void runScriptFromString(const std::string& content, const ParameterList& params = ParameterList(), Runtime::Object* result = NULL);
+	void run(Script* script, const ParameterList& params = ParameterList(), Runtime::Object* result = nullptr);
+	void runScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList(), Runtime::Object* result = nullptr);
+	void runScriptFromString(const std::string& content, const ParameterList& params = ParameterList(), Runtime::Object* result = nullptr);
 
 private:
 	typedef std::set<Script*> ScriptCollection;
 
 private:
 	Script* createScript(const std::string& content);
-	bool loadExtensions();
+	bool loadExtension( const std::string& extension, const std::string& folder );
 	bool loadLibrary(const std::string& library);
-	void printLibraryFolders();
 
 private:
 #ifdef _WIN32
@@ -83,13 +85,14 @@ private:
 #else
 	Extensions::ExtensionManager mExtensionManager;
 #endif
-	Extensions::ExtensionList mExtensions;
+	Extensions::ExtensionCollection mExtensions;
 	StringSet mImportedLibraries;
 	bool mIsInitialized;
-	StringSet mLibraryFolders;
+	OrderedStringSet mLibraryFolders;
 	std::string mScriptFile;
 	ScriptCollection mScripts;
 	Settings mSettings;
+	StringList mSpecification;
 };
 
 

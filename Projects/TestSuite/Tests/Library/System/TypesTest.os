@@ -1,14 +1,13 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
-import System.Collections.Iterator;
 import System.Types;
 
 public void Main(int argc, string args) {
-	Boolean b = new Boolean(bool 1731389);
-	Double d = new Double(173.1389d);
-	Float f = new Float(173.1389f);
-	Integer i = new Integer(1731389);
-	String s = new String("1731389");
+	Boolean b = new Boolean(bool 238649.21316934d);
+	Double d = new Double(double 238649.21316934d);
+	Float f = new Float(float 238649.21316934d);
+	Integer i = new Integer(int 238649.21316934d);
+	String s = new String(string 238649.21316934d);
 
 	print("b = " + bool b);
 	print("d = " + double d);

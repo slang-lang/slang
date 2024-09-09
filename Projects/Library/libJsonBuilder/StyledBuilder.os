@@ -22,6 +22,28 @@ public object StyledBuilder {
 		mValue += "\"" + key + "\": " + value;
 	}
 
+	public void addElement(string key, double value) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", " + ascii(10);
+		}
+
+		indent();
+
+		mIsFirstElement = false;
+		mValue += "\"" + key + "\": " + value;
+	}
+
+	public void addElement(string key, float value) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", " + ascii(10);
+		}
+
+		indent();
+
+		mIsFirstElement = false;
+		mValue += "\"" + key + "\": " + value;
+	}
+
 	public void addElement(string key, int value) modify {
 		if ( !mIsFirstElement ) {
 			mValue += ", " + ascii(10);
@@ -42,6 +64,33 @@ public object StyledBuilder {
 
 		mIsFirstElement = false;
 		mValue += "\"" + key + "\": \"" + value + "\"";
+	}
+
+	public void addValue(bool value) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
+
+		mIsFirstElement = false;
+		mValue += value;
+	}
+
+	public void addValue(int value) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
+
+		mIsFirstElement = false;
+		mValue += value;
+	}
+
+	public void addValue(string value) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
+
+		mIsFirstElement = false;
+		mValue += "\"" + value + "\"";
 	}
 
 	public void beginArray() modify {

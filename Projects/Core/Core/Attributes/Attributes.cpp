@@ -10,22 +10,18 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 GenericAttributes::GenericAttributes()
 : mIsSealed(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
-  mMemoryLayout(MemoryLayout::Instance),
+  mMemoryLayout(MemoryLayout::Virtual),
   mMutability(Mutability::Modify)
 {
 }
 
-GenericAttributes::~GenericAttributes()
-{
-}
-
-void GenericAttributes::checkSealState()
+void GenericAttributes::checkSealState() const
 {
 	if ( mIsSealed ) {
 		throw Common::Exceptions::Exception("can not update sealed attribute");
@@ -83,8 +79,7 @@ MethodAttributes::MethodAttributes()
 : mAlgorithm(Algorithm::Heuristic),
   mCheckedExceptions(CheckedExceptions::Nothrow),
   mMethodMutability(Mutability::Const),
-  mMethodType(MethodType::Method),
-  mVirtuality(Virtuality::Virtual)
+  mMethodType(MethodType::Method)
 {
 	setMutability(Mutability::Const);
 }
@@ -104,19 +99,14 @@ Mutability::E MethodAttributes::getMethodMutability() const
 	return mMethodMutability;
 }
 
-MethodAttributes::MethodType::E MethodAttributes::getMethodType() const
+MethodType::E MethodAttributes::getMethodType() const
 {
 	return mMethodType;
 }
 
-Virtuality::E MethodAttributes::getVirtuality() const
+bool MethodAttributes::isAbstractMethod() const
 {
-	return mVirtuality;
-}
-
-bool MethodAttributes::isAbstract() const
-{
-	return mVirtuality == Virtuality::Abstract;
+	return mMemoryLayout == MemoryLayout::Abstract;
 }
 
 bool MethodAttributes::isConstMethod() const
@@ -124,9 +114,14 @@ bool MethodAttributes::isConstMethod() const
 	return mMethodMutability == Mutability::Const;
 }
 
-bool MethodAttributes::isFinal() const
+bool MethodAttributes::isFinalMethod() const
 {
-	return mVirtuality == Virtuality::Final;
+	return mMemoryLayout == MemoryLayout::Final;
+}
+
+bool MethodAttributes::isNotImplemented() const
+{
+	return mLanguageFeatureState == LanguageFeatureState::NotImplemented;
 }
 
 void MethodAttributes::setAlgorithm(Algorithm::E value)
@@ -155,13 +150,6 @@ void MethodAttributes::setMethodType(MethodType::E value)
 	mMethodType = value;
 }
 
-void MethodAttributes::setVirtuality(Virtuality::E value)
-{
-	checkSealState();
-
-	mVirtuality = value;
-}
-
 bool MethodAttributes::throws() const
 {
 	return mCheckedExceptions == CheckedExceptions::Throw;
@@ -187,21 +175,15 @@ void NamespaceAttributes::setSealed(bool state)
 
 
 ObjectAttributes::ObjectAttributes()
-: mBluePrintType(BluePrintType::Unknown),
-  mImplementationType(ImplementationType::Unspecified),
+: mBluePrintType(BlueprintType::Unknown),
   mIsMember(false)
 {
 	setMutability(Mutability::Modify);
 }
 
-BluePrintType::E ObjectAttributes::getBluePrintType() const
+BlueprintType::E ObjectAttributes::getBluePrintType() const
 {
 	return mBluePrintType;
-}
-
-ImplementationType::E ObjectAttributes::getImplementationType() const
-{
-	return mImplementationType;
 }
 
 bool ObjectAttributes::isMember() const
@@ -214,16 +196,9 @@ bool ObjectAttributes::isSealed() const
 	return mIsSealed;
 }
 
-void ObjectAttributes::setBluePrintType(ObjectiveScript::BluePrintType::E value)
+void ObjectAttributes::setBluePrintType(Slang::BlueprintType::E value)
 {
 	mBluePrintType = value;
-}
-
-void ObjectAttributes::setImplementationType(ImplementationType::E value)
-{
-	checkSealState();
-
-	mImplementationType = value;
 }
 
 void ObjectAttributes::setMember(bool state)

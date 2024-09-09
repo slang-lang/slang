@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Designtime_Parser_Tokenizer_h
-#define ObjectiveScript_Core_Designtime_Parser_Tokenizer_h
+#ifndef Slang_Core_Core_Designtime_Parser_Tokenizer_h
+#define Slang_Core_Core_Designtime_Parser_Tokenizer_h
 
 
 // Library includes
@@ -14,7 +14,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Common {
@@ -24,7 +24,7 @@ namespace Common {
 class Tokenizer
 {
 public:
-	Tokenizer(const std::string& filename, const std::string& content);
+	Tokenizer(std::string filename, std::string content);
 
 public:
 	void process();
@@ -40,6 +40,7 @@ private:	// Tokenizer
 	void replaceConstDataTypes();
 	void replaceOperators();
 
+	inline bool isAccessMode(const std::string& token) const;
 	inline bool isBoolean(const std::string& token) const;
 	inline bool isDouble(const std::string& token) const;
 	inline bool isFloat(const std::string& token) const;
@@ -48,21 +49,25 @@ private:	// Tokenizer
 	inline bool isKeyword(const std::string& token) const;
 	inline bool isLanguageFeature(const std::string& token) const;
 	inline bool isLiteral(const std::string& token) const;
+	inline bool isMemoryLayout(const std::string& token) const;
 	inline bool isModifier(const std::string& token) const;
+	inline bool isMutability(const std::string& token) const;
 	inline bool isReservedWord(const std::string& token) const;
-	inline bool isType(const std::string& token) const;
 	inline bool isVisibility(const std::string& token) const;
 	inline bool isWhiteSpace(const std::string& token) const;
 
 private:
-	std::string	mContent;
+	StringSet mAccessMode;
+	std::string mContent;
 	std::string mFilename;
-	StringSet mLanguageFeatures;
-	StringSet mKeywords;
-	StringSet mModifiers;
-	StringSet mReservedWords;
+	StringSet mLanguageFeatureState;
+	StringSet mKeyword;
+	StringSet mMemoryLayout;
+	StringSet mModifier;
+	StringSet mMutability;
+	StringSet mReservedWord;
 	TokenList mTokens;
-	StringSet mTypes;
+	StringSet mType;
 };
 
 
@@ -70,3 +75,4 @@ private:
 
 
 #endif
+

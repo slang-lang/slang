@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 // library imports
 import libLog.Logger;
@@ -15,7 +15,7 @@ import OrderDispatcher;
 public void Main(int argc, string args) {
     var params = new ParameterHandler(argc, args);
     if ( params.contains("version") ) {
-        print("Alpen OrderDispatcher Version 0.0.4");
+        print("Alpen OrderDispatcher Version 0.0.6");
         return;
     }
 

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Network_Read_h
-#define ObjectiveScript_Extensions_System_Network_Read_h
+#ifndef Slang_Extensions_System_Network_Read_h
+#define Slang_Extensions_System_Network_Read_h
 
 
 // Library includes
@@ -13,7 +13,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Network {

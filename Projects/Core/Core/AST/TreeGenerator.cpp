@@ -11,13 +11,6 @@
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
-#include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Tools.h>
@@ -31,24 +24,20 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace AST {
 
 
 TreeGenerator::TreeGenerator()
 : mAllowConstModify(false),
   mControlFlow(Runtime::ControlFlow::Normal),
-  mMethod(NULL),
-  mThis(NULL),
-  mStackFrame(NULL)
+  mMethod(nullptr),
+  mThis(nullptr),
+  mStackFrame(nullptr)
 {
 	// initialize virtual machine stuff
 	mRepository = Controller::Instance().repository();
 	mTypeSystem = Controller::Instance().typeSystem();
-}
-
-TreeGenerator::~TreeGenerator()
-{
 }
 
 /*
@@ -59,7 +48,7 @@ void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
 	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = --findNextBalancedCurlyBracket(token, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+	auto bodyEnd = --findNextBalancedCurlyBracket(token, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	while ( token != bodyEnd ) {
 		tokens.push_back((*++token));
@@ -69,18 +58,39 @@ void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 }
 
-void TreeGenerator::deinitialize()
+Node* TreeGenerator::expression(TokenIterator& start)
+{
+	Node* expression = parseCondition(start);
+
+	for ( ; ; ) {
+		Token::Type::E op = start->type();
+		if ( op != Token::Type::AND &&
+			 op != Token::Type::NAND &&
+			 op != Token::Type::NOR &&
+			 op != Token::Type::OR ) {
+			return expression;
+		}
+
+		Token operation = (*start);
+		Node* right = parseCondition(++start);
+		/*std::string type = resolveType(start, expression, operation, right);*/
+
+		expression = new BooleanBinaryExpression(expression, operation, right);
+	}
+}
+
+void TreeGenerator::finalize()
 {
 	if ( !mThrownExceptions.empty() && !mMethod->throws() ) {
 		// this method is not marked as 'throwing', but it throws uncaught exceptions
 		std::string exceptions = "'";
-		for ( std::set<std::string>::const_iterator it = mThrownExceptions.cbegin(); it != mThrownExceptions.cend(); ++it ) {
+		for ( auto it = mThrownExceptions.cbegin(); it != mThrownExceptions.cend(); ++it ) {
 			if ( it != mThrownExceptions.cbegin() ) {
 				exceptions += "', '";
 			}
 			exceptions += (*it);
- 		}
- 		exceptions += "'";
+		}
+		exceptions += "'";
 
 		throw Common::Exceptions::ControlFlowException("'" + mMethod->getFullScopeName() + "' throws " + exceptions + " exception(s) although it is not marked with 'throws'");
 	}
@@ -102,34 +112,13 @@ void TreeGenerator::deinitialize()
 	mStackFrame->popScope();
 	// delete stack frame
 	delete mStackFrame;
-	mStackFrame = NULL;
+	mStackFrame = nullptr;
 
 	// reset reusable members
-	mThis = NULL;
-	mMethod = NULL;
+	mThis = nullptr;
+	mMethod = nullptr;
 	mControlFlow = Runtime::ControlFlow::Normal;
 	mAllowConstModify = false;
-}
-
-Node* TreeGenerator::expression(TokenIterator& start)
-{
-	Node* expression = parseCondition(start);
-
-	for ( ; ; ) {
-		Token::Type::E op = start->type();
-		if ( op != Token::Type::AND &&
-			 op != Token::Type::NAND &&
-			 op != Token::Type::NOR &&
-			 op != Token::Type::OR ) {
-			return expression;
-		}
-
-		Token operation = (*start);
-		Node* right = parseCondition(++start);
-		/*std::string type = resolveType(expression, operation, right);*/
-
-		expression = new BooleanBinaryExpression(expression, operation, right);
-	}
 }
 
 /*
@@ -140,12 +129,12 @@ Statements* TreeGenerator::generate(const TokenList& tokens, bool allowBreakAndC
 	// reset control flow to be able to check for missing control flow statements during switch/case
 	mControlFlow = Runtime::ControlFlow::Normal;
 
-	Statements* statements = NULL;
+	Statements* statements = nullptr;
 
-	pushScope(NULL, allowBreakAndContinue);
+	pushScope(nullptr, allowBreakAndContinue);
 		pushTokens(tokens);
-			TokenIterator start = getTokens().begin();
-			TokenIterator end = getTokens().end();
+			auto start = getTokens().begin();
+			auto end = getTokens().end();
 
 			Common::Position position(start != end ? start->position() : Common::Position());
 
@@ -172,7 +161,7 @@ Statements* TreeGenerator::generateAST(Common::Method* method)
 	// generate AST
 	Statements* statements = generate(method->getTokens());
 
-	deinitialize();
+	finalize();
 
 	return statements;
 }
@@ -180,7 +169,7 @@ Statements* TreeGenerator::generateAST(Common::Method* method)
 MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
 {
 	while ( scope ) {
-		MethodScope* methodScope = dynamic_cast<MethodScope*>(scope->getEnclosingScope());
+		auto* methodScope = dynamic_cast<MethodScope*>(scope->getEnclosingScope());
 		if ( methodScope ) {
 			return methodScope;
 		}
@@ -188,12 +177,12 @@ MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
 		scope = scope->getEnclosingScope();
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 MethodScope* TreeGenerator::getMethodScope(IScope* scope) const
 {
-	MethodScope* result = dynamic_cast<MethodScope*>(scope);
+	auto* result = dynamic_cast<MethodScope*>(scope);
 
 	return result ? result : getEnclosingMethodScope(scope);
 }
@@ -210,8 +199,8 @@ const TokenList& TreeGenerator::getTokens() const
 
 void TreeGenerator::initialize(Common::Method* method)
 {
-	// initialize reuseable members
-	mAllowConstModify = method->getMethodType() == Common::Method::MethodType::Constructor || method->getMethodType() == Common::Method::MethodType::Destructor;
+	// initialize reusable members
+	mAllowConstModify = method->getMethodType() == MethodType::Constructor || method->getMethodType() == MethodType::Destructor;
 	mControlFlow = Runtime::ControlFlow::Normal;
 	mMethod = method;
 	mThis = dynamic_cast<Designtime::BluePrintObject*>(method->getEnclosingScope());
@@ -234,18 +223,17 @@ void TreeGenerator::initialize(Common::Method* method)
 
 	const ParameterList& params = mMethod->provideSignature();
 	// add parameters as locale variables
-	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
-		if ( it->name().empty() ) {
+	for ( const auto& param : params ) {
+		if ( param.name().empty() ) {
 			// skip unnamed parameters
 			continue;
 		}
 
-		Runtime::Object* object = mRepository->createInstance(it->type(), it->name(), it->typeConstraints());
-		object->setIsReference(it->access() == AccessMode::ByReference);
-		object->setMutability(it->mutability());
+		Runtime::Object* object = mRepository->createInstance(param.type(), param.name(), param.typeConstraints());
+		object->setIsReference(param.access() == AccessMode::ByReference);
+		object->setMutability(param.mutability());
 
-		//scope->define(it->name(), object);
-		mStackFrame->pushIdentifier(object, it->name());
+		scope->define(param.name(), object);
 	}
 }
 
@@ -282,11 +270,11 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
 		}
 
-		resolveType(condition, operation, right);
+		resolveType(start, condition, operation, right);
 
 
-		Expression* lhs = dynamic_cast<Expression*>(condition);
-		Expression* rhs = dynamic_cast<Expression*>(right);
+		auto* lhs = dynamic_cast<Expression*>(condition);
+		auto* rhs = dynamic_cast<Expression*>(right);
 
 		// check if we are using a valid type
 		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
@@ -297,7 +285,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 		ParameterList params;
 		params.emplace_back(Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(rhs->getResultType())));
 
-		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(condition);
+		auto* exp = dynamic_cast<SymbolExpression*>(condition);
 
 		if ( exp && blueprint->resolveMethod("operator" + operation.content(), params, false) ) {
 			SymbolExpression* inner = exp;
@@ -325,7 +313,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 
 		// != operator is not defined but rather used as 'not =='
 		if ( op == Token::Type::COMPARE_UNEQUAL || op == Token::Type::COMPARE_UNEQUAL_CONTENT ) {
-			condition = new BooleanUnaryExpression(Token::Type::OPERATOR_NOT, condition, UnaryExpression::ValueType::RValue);
+			condition = new BooleanUnaryExpression(Token(Token::Type::OPERATOR_NOT), condition, UnaryExpression::ValueType::RValue);
 		}
 	}
 }
@@ -340,22 +328,24 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 			 op != Token::Type::BITCOMPLEMENT &&
 			 op != Token::Type::BITOR &&
 			 op != Token::Type::MATH_ADDITION &&
-			 op != Token::Type::MATH_SUBTRACT ) {
+			 op != Token::Type::MATH_SUBTRACT &&
+			 op != Token::Type::OPERATOR_SHIFT_LEFT &&
+			 op != Token::Type::OPERATOR_SHIFT_RIGHT ) {
 			return expression;
 		}
 
 		Token operation = (*start);
 		Node* right = parseFactor(++start);
-		std::string type = resolveType(expression, operation, right);
+		std::string type = resolveType(start, expression, operation, right);
 
 
-		Expression* lhs = dynamic_cast<Expression*>(expression);
-		Expression* rhs = dynamic_cast<Expression*>(right);
+		auto* lhs = dynamic_cast<Expression*>(expression);
+		auto* rhs = dynamic_cast<Expression*>(right);
 
-		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(expression);
+		auto* exp = dynamic_cast<SymbolExpression*>(expression);
 
 		if ( !exp || exp->isAtomicType() ) {
-			expression = new BinaryExpression(expression, operation, right, type);
+			expression = new BinaryExpressionOwner(expression, operation, right, type);
 			continue;
 		}
 
@@ -394,16 +384,16 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 
 		Token operation = (*start);
 		Node* right = parseInfix(++start);
-		std::string type = resolveType(factor, operation, right);
+		std::string type = resolveType(start, factor, operation, right);
 
 
-		Expression* lhs = dynamic_cast<Expression*>(factor);
-		Expression* rhs = dynamic_cast<Expression*>(right);
+		auto* lhs = dynamic_cast<Expression*>(factor);
+		auto* rhs = dynamic_cast<Expression*>(right);
 
-		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(factor);
+		auto* exp = dynamic_cast<SymbolExpression*>(factor);
 
 		if ( !exp || exp->isAtomicType() ) {
-			factor = new BinaryExpression(factor, operation, right, type);
+			factor = new BinaryExpressionOwner(factor, operation, right, type);
 			continue;
 		}
 
@@ -430,7 +420,7 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 
 Node* TreeGenerator::parseInfix(TokenIterator &start)
 {
-	Node* infix = NULL;
+	Node* infix = nullptr;
 	Token::Type::E op = start->type();
 
 	// infix
@@ -439,9 +429,9 @@ Node* TreeGenerator::parseInfix(TokenIterator &start)
 		case Token::Type::MATH_SUBTRACT: {		// infix +/- operators
 			Token operation = (*start);
 
-			Expression* exp = dynamic_cast<Expression*>( parseTerm(++start) );
+			auto* exp = dynamic_cast<Expression*>( parseTerm(++start) );
 
-			resolveType(exp->getResultType(), operation, std::string(__unary__));
+			resolveType(start, exp->getResultType(), operation, std::string(_unary_));
 
 			infix = new UnaryExpression(operation, exp, UnaryExpression::ValueType::RValue);
 		} break;
@@ -510,7 +500,7 @@ Node* TreeGenerator::parsePostfix(TokenIterator& start, Node* baseExp)
 
 Node* TreeGenerator::parseTerm(TokenIterator& start)
 {
-	Node* term = NULL;
+	Node* term = nullptr;
 
 	switch ( start->type() ) {
 		case Token::Type::CONST_BOOLEAN: {
@@ -533,8 +523,7 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 			term = new StringLiteralExpression(Runtime::AtomicValue(start->content()));
 			++start;
 		} break;
-		case Token::Type::IDENTIFIER:
-		case Token::Type::TYPE: {
+		case Token::Type::IDENTIFIER: {
 			term = process_identifier(start, true);
 		} break;
 		case Token::Type::KEYWORD: {
@@ -573,11 +562,11 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 {
 	if ( token == end ) {
 		// empty method provided
-		return NULL;
+		return nullptr;
 	}
 
 	int reachedControlFlowChanges = 0;
-	Statements* statements = new Statements((*token));
+	auto* statements = new Statements((*token));
 
 	while ( (token != end) && (token->type() != Token::Type::ENDOFFILE) ) {
 		if ( reachedControlFlowChanges == 1 ) {
@@ -597,7 +586,7 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 
 	if ( statements->mNodes.empty() ) {
 		delete statements;
-		statements = NULL;
+		statements = nullptr;
 	}
 
 	return statements;
@@ -609,7 +598,7 @@ Node* TreeGenerator::processIsOperator(TokenIterator& start, Node* baseExp)
 
 	SymbolExpression* symbol = resolveWithExceptions(start, getScope());
 
-	DesigntimeSymbolExpression* rhs = dynamic_cast<DesigntimeSymbolExpression*>(symbol);
+	auto* rhs = dynamic_cast<DesigntimeSymbolExpression*>(symbol);
 
 	std::string type = symbol->getResultType();
 	if ( rhs ) {
@@ -644,7 +633,7 @@ Node* TreeGenerator::processPostfixNotOperator(TokenIterator& start, Node* baseE
 
 	++start;
 
-	return new UnaryExpression(Token::Type::OPERATOR_VALIDATE, baseExp, UnaryExpression::ValueType::RValue);
+	return new UnaryExpression(Token(Token::Type::OPERATOR_VALIDATE), baseExp, UnaryExpression::ValueType::RValue);
 }
 
 Node* TreeGenerator::processPostfixObjectOperator(const std::string& objectType, TokenIterator& start, Expression* baseExp)
@@ -654,14 +643,13 @@ Node* TreeGenerator::processPostfixObjectOperator(const std::string& objectType,
 		throw Designtime::Exceptions::SyntaxError("to use operators on literals System." + objectType + " has to be imported", start->position());
 	}
 
-	SymbolExpression* stringExp = NULL;
-	stringExp = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
+	SymbolExpression* stringExp = new DesigntimeSymbolExpression(RESERVED_WORD_CONSTRUCTOR, _void, PrototypeConstraints(), false);
 	stringExp->mSurroundingScope = scope;
 
 	ExpressionList params;
 	params.push_back(baseExp);
 
-	NewExpression* newExp = new NewExpression(objectType, process_method(stringExp, *start, params));
+	auto* newExp = new NewExpression(objectType, process_method(stringExp, *start, params));
 
 	SymbolExpression* symbolExpression = resolve(start, scope, true, Visibility::Public);
 	if ( !symbolExpression ) {
@@ -681,9 +669,8 @@ Node* TreeGenerator::processPostfixRangeOperator(TokenIterator& start, Node* bas
 {
 	++start;
 
-	SymbolExpression* rangeExp = NULL;
-	Expression* lhs = dynamic_cast<Expression*>(baseExp);
-	Expression* rhs = dynamic_cast<Expression*>(expression(start));
+	auto* lhs = dynamic_cast<Expression*>(baseExp);
+	auto* rhs = dynamic_cast<Expression*>(expression(start));
 
 	// validate left expression (has to be integer literal expression)
 	if ( !lhs || lhs->getResultType() != _int ) {
@@ -695,7 +682,7 @@ Node* TreeGenerator::processPostfixRangeOperator(TokenIterator& start, Node* bas
 		throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on right side", start->position());
 	}
 
-	rangeExp = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
+	SymbolExpression* rangeExp = new DesigntimeSymbolExpression(RESERVED_WORD_CONSTRUCTOR, _void, PrototypeConstraints(), false);
 	rangeExp->mSurroundingScope = mRepository->findBluePrintObject(std::string("Range"));
 
 	if ( !rangeExp->mSurroundingScope ) {
@@ -713,7 +700,7 @@ Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* bas
 {
 	++start;
 
-	Expression* infixPostfix = dynamic_cast<Expression*>(baseExp);
+	auto* infixPostfix = dynamic_cast<Expression*>(baseExp);
 	if ( !infixPostfix ) {
 		throw Designtime::Exceptions::SyntaxError("invalid expression type detected!", start->position());
 	}
@@ -765,8 +752,8 @@ Node* TreeGenerator::processTernaryOperator(TokenIterator& start, Node* baseExp)
 	++start;
 
 	Node* condition = baseExp;
-	Node* first = NULL;
-	Node* second = NULL;
+	Node* first = nullptr;
+	Node* second = nullptr;
 
 	// determine the type of the ternary operator
 	if ( start->type() == Token::Type::COLON ) {
@@ -783,7 +770,7 @@ Node* TreeGenerator::processTernaryOperator(TokenIterator& start, Node* baseExp)
 
 	second = expression(start);
 
-	TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
+	auto* ternaryExpression = new TernaryExpression(condition, first, second);
 	if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
 		throw Designtime::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expression don't match", start->position());
 	}
@@ -803,24 +790,54 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
 	++token;
 
 	Node* exp = expression(token);
+	Node* message{ nullptr };
+
+	if ( token->type() == Token::Type::COMMA ) {
+	   ++token;
+
+	   message = expression(token);
+	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return new AssertStatement(start, exp);
+	return new AssertStatement(start, exp, message);
 }
 
 /*
  * syntax:
  * <lvalue> = <rvalue>
  */
-Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
+Node* TreeGenerator::process_assignment(TokenIterator& token)
 {
-	TokenIterator op = token;
+    auto* expr = dynamic_cast<Expression*>( expression( token ) );
+
+    auto* assignment = dynamic_cast<AssignmentExpression*>( expr );
+    if ( assignment ) {
+        auto* lhs = assignment->mLHS;
+        auto* rhs = assignment->mRHS;
+
+        assignment->mLHS = nullptr;
+        assignment->mRHS = nullptr;
+        delete assignment;
+
+        return new AssignmentStatement( (*token), lhs, rhs );
+    }
+
+    return expr;
+}
+
+/*
+ * syntax:
+ * <lvalue> = <rvalue>
+ */
+Expression* TreeGenerator::process_assignment_expression(TokenIterator& token, SymbolExpression* lhs)
+{
+	auto op = token;
 
 	Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
 
-	Expression* rhs = dynamic_cast<Expression*>(expression(++token));
+	auto* rhs = dynamic_cast<Expression*>(expression(++token));
 
 	SymbolExpression* inner = lhs;
 	while ( inner->mSymbolExpression ) {
@@ -843,7 +860,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 		}
 
 		if ( inner->isAtomicType() ) {
-			rhs = new BinaryExpression(new RuntimeSymbolExpression(inner->mName, inner->getResultType(), inner->isConst(), inner->isMember(), inner->isAtomicType()), operation, rhs, resolveType(lhs, operation, rhs));
+			rhs = new BinaryExpressionNoLeftOwner( lhs, operation, rhs, resolveType(token, lhs, operation, rhs) );
 		}
 		else {
 			// check if we are using a valid type
@@ -854,7 +871,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 
 			SymbolExpression* sym = new DesigntimeSymbolExpression(lhs->mName, lhs->getResultType(), PrototypeConstraints(), false);
 			sym->mSurroundingScope = lhs->mSurroundingScope;
-			sym->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), resolveType(lhs, operation, rhs), PrototypeConstraints(), false);
+			sym->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), resolveType(token, lhs, operation, rhs), PrototypeConstraints(), false);
 			sym->mSymbolExpression->mSurroundingScope = blueprint;
 
 			ExpressionList params;
@@ -864,6 +881,9 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 		}
 	}
 
+	if ( lhs->isMember() && mMethod->isConstMethod() ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member symbol '" + lhs->innerName() + "' in const method", op->position());
+	}
 
 	if ( lhs->isConst() && !(mAllowConstModify && lhs->isMember()) ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + lhs->innerName() + "'", op->position());
@@ -876,7 +896,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 */
 
 	if ( lhs->isAtomicType() || inner->getResultType() == rhs->getResultType() ) {
-		return new AssignmentExpression(lhs, rhs, resolveType(lhs, assignment, rhs));
+		return new AssignmentExpression(lhs, rhs, resolveType(token, lhs, assignment, rhs));
 	}
 
 	// check if we are using a valid type
@@ -919,18 +939,16 @@ Statement* TreeGenerator::process_break(TokenIterator& token)
  */
 Expression* TreeGenerator::process_cast(TokenIterator& token)
 {
-	Token start = (*token);
-
 	expect(Token::Type::COMPARE_LESS, token);
 	++token;
 
-	DesigntimeSymbolExpression* typeExpr = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
-	if ( !typeExpr ) {
-		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
+	auto* targetExp = dynamic_cast<DesigntimeSymbolExpression*>(resolve(token, getScope(), false, Visibility::Public));
+	if ( !targetExp ) {
+		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
-	std::string type = typeExpr->getResultType();
-	PrototypeConstraints constraints = typeExpr->mConstraints;
+	std::string type = targetExp->getResultType();
+	PrototypeConstraints constraints = targetExp->mConstraints;
 
 	Common::TypeDeclaration typeName(type, constraints);
 
@@ -942,18 +960,18 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	Node* sourceExpr = expression(token);
+	Node* sourceExp = expression(token);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	resolveType(typeExpr, Token(Token::Type::ASSIGN, "="), sourceExpr);
-	//resolveType(typeExpr, Token(Token::Type::TYPECAST, "from"), sourceExpr);
+	//resolveType( token, targetExp, Token( Token::Type::ASSIGN, "=" ), sourceExp );
+	resolveType(token, targetExp, Token( Token::Type::TYPECAST, "from" ), sourceExp );
 
 	// delete resolved symbol expression as it is not needed any more
-	delete typeExpr;
+	delete targetExp;
 
-	return new TypecastExpression(typeName.mCombinedName, sourceExpr);
+	return new TypecastExpression(typeName.mCombinedName, sourceExp);
 }
 
 /*
@@ -981,9 +999,9 @@ Statement* TreeGenerator::process_continue(TokenIterator& token)
  */
 Expression* TreeGenerator::process_copy(TokenIterator& token)
 {
-	TokenIterator start = token;
+	auto start = token;
 
-	RuntimeSymbolExpression* exp = dynamic_cast<RuntimeSymbolExpression*>(expression(token));
+	auto* exp = dynamic_cast<RuntimeSymbolExpression*>(expression(token));
 	if ( !exp ) {
 		throw Common::Exceptions::InvalidSymbol("invalid runtime symbol detected", start->position());
 	}
@@ -1059,7 +1077,7 @@ Statement* TreeGenerator::process_exit(TokenIterator& token)
 
 Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
 {
-	Expression* expression = NULL;
+	Expression* expression = nullptr;
 
 	std::string keyword = (*token++).content();
 
@@ -1095,9 +1113,9 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	// Declaration parsing
+	// Initialization parsing
 	// {
-	Node* initialization = NULL;
+	Node* initialization = nullptr;
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		initialization = process_statement(token);
 	}
@@ -1107,7 +1125,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	// Condition parsing
 	// {
-	Node* condition = NULL;
+	Node* condition = nullptr;
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		condition = expression(token);
 
@@ -1121,7 +1139,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	// Iteration parsing
 	// {
-	Node* iteration = NULL;
+	Node* iteration = nullptr;
 	if ( token->type() != Token::Type::PARENTHESIS_CLOSE ) {
 		iteration = process_statement(token, true);
 	}
@@ -1130,9 +1148,9 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	// }
 
 	// Body parsing
-	// {
 	Node* loopBody = process_statement(token, true);
-	// }
+
+	popScope();
 
 	popScope();
 
@@ -1159,69 +1177,71 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	expect(Token::Type::COLON, token);
 	++token;
 
-	MethodExpression* getIteratorExpression = NULL;
-	MethodExpression* hasNextExpression = NULL;
-	MethodExpression* nextExpression = NULL;
+	MethodExpression* getIteratorExpression = nullptr;
+	MethodExpression* hasNextExpression = nullptr;
+	MethodExpression* nextExpression = nullptr;
 
-	Expression* collectionExpression = dynamic_cast<Expression*>(parseExpression(token));
-	if ( collectionExpression ) {
-		Designtime::BluePrintObject* collection = mRepository->findBluePrintObject(collectionExpression->getResultType());
-		Designtime::BluePrintObject* iterator = NULL;
+	auto* collectionExpression = dynamic_cast<Expression*>(parseExpression(token));
+	if ( !collectionExpression ) {
+		throw Designtime::Exceptions::SyntaxError("invalid collection expression!", token->position());
+	}
 
-		if ( collection && collection->isOfType("Iterator") ) {
-			// we received an iterator instead of a collection
-			iterator = collection;
-			collection = NULL;
+	Designtime::BluePrintObject* collection = mRepository->findBluePrintObject(collectionExpression->getResultType());
+	Designtime::BluePrintObject* iterator = nullptr;
 
-			getIteratorExpression = dynamic_cast<MethodExpression*>(collectionExpression);
-			if ( !getIteratorExpression ) {
-				throw Designtime::Exceptions::SyntaxError("method expression expected but expression of type " + Expression::ExpressionType::ToString(collectionExpression->getExpressionType()) + " found", token->position());
-			}
+	if ( collection && collection->isOfType("Iterator") ) {
+		// we received an iterator instead of a collection
+		iterator = collection;
+		collection = nullptr;
 
-			collectionExpression = NULL;
-		}
-		else {
-			// check if this expression offers an iterator
-			if ( !collection || !collection->isIterable() ) {
-				throw Designtime::Exceptions::SyntaxError(collectionExpression->getResultType() + " is not iterable", token->position());
-			}
-
-			Common::Method* getIteratorMethod = dynamic_cast<Common::Method*>(collection->resolveMethod("getIterator", ParameterList(), false, Visibility::Public));
-			if ( !getIteratorMethod ) {
-				throw Designtime::Exceptions::SyntaxError(collectionExpression->getResultType() + " has no 'getIterator' method", token->position());
-			}
-
-			// check if iterator is a valid type
-			iterator = mRepository->findBluePrintObject(getIteratorMethod->ReturnType());
-
-			{	// look up "getIterator" method in given collection
-				SymbolExpression* expression = new DesigntimeSymbolExpression(getIteratorMethod->getName(), getIteratorMethod->QualifiedTypename(), PrototypeConstraints(), false);
-				expression->mSurroundingScope = collection;
-
-				getIteratorExpression = process_method(expression, *token, ExpressionList());
-			}
+		getIteratorExpression = dynamic_cast<MethodExpression*>(collectionExpression);
+		if ( !getIteratorExpression ) {
+			throw Designtime::Exceptions::SyntaxError("method expression expected but expression of type " + Expression::ExpressionType::ToString(collectionExpression->getExpressionType()) + " found", token->position());
 		}
 
-		if ( !iterator ) {
-			throw Designtime::Exceptions::SyntaxError("no iterator found", token->position());
+		collectionExpression = nullptr;
+	}
+	else {
+		// check if this expression offers an iterator
+		if ( !collection || !collection->isIterable() ) {
+			throw Designtime::Exceptions::SyntaxError(collectionExpression->getResultType() + " is not iterable", token->position());
 		}
 
-		{	// look up "hasNext" method in given iterator
-			SymbolExpression* expression = new DesigntimeSymbolExpression("hasNext", _bool, PrototypeConstraints(), true);
-			expression->mSurroundingScope = iterator;
-
-			hasNextExpression = process_method(expression, *token, ExpressionList());
+		Common::Method* getIteratorMethod = dynamic_cast<Common::Method*>(collection->resolveMethod("getIterator", ParameterList(), false, Visibility::Public));
+		if ( !getIteratorMethod ) {
+			throw Designtime::Exceptions::SyntaxError(collectionExpression->getResultType() + " has no 'getIterator' method", token->position());
 		}
 
-		{	// look up "next" method in given iterator
-			SymbolExpression* expression = new DesigntimeSymbolExpression("next", typeDeclaration->mType, PrototypeConstraints(), false);
-			expression->mSurroundingScope = iterator;
+		// check if iterator is a valid type
+		iterator = mRepository->findBluePrintObject(getIteratorMethod->ReturnType());
 
-			nextExpression = process_method(expression, *token, ExpressionList());
+		{	// look up "getIterator" method in given collection
+			SymbolExpression* expression = new DesigntimeSymbolExpression(getIteratorMethod->getName(), getIteratorMethod->QualifiedTypename(), PrototypeConstraints(), false);
+			expression->mSurroundingScope = collection;
 
-			// validate result type
-			//resolveType(typeDeclaration->mType, Token(Token::Category::Operator, Token::Type::ASSIGN, "=", token->position()), nextExpression->getResultType());
+			getIteratorExpression = process_method(expression, *token, ExpressionList());
 		}
+	}
+
+	if ( !iterator ) {
+		throw Designtime::Exceptions::SyntaxError("no iterator found", token->position());
+	}
+
+	{	// look up "hasNext" method in given iterator
+		SymbolExpression* expression = new DesigntimeSymbolExpression("hasNext", _bool, PrototypeConstraints(), true);
+		expression->mSurroundingScope = iterator;
+
+		hasNextExpression = process_method(expression, *token, ExpressionList());
+	}
+
+	{	// look up "next" method in given iterator
+		SymbolExpression* expression = new DesigntimeSymbolExpression("next", typeDeclaration->mType, PrototypeConstraints(), false);
+		expression->mSurroundingScope = iterator;
+
+		nextExpression = process_method(expression, *token, ExpressionList());
+
+		// validate result type
+		//resolveType(typeDeclaration->mType, Token(Token::Category::Operator, Token::Type::ASSIGN, "=", token->position()), nextExpression->getResultType());
 	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
@@ -1242,11 +1262,11 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
  */
 Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast)
 {
-	Node* node = NULL;
+	Node* node = nullptr;
 
-	TokenIterator old = token;
+	auto old = token;
 	SymbolExpression* symbol = resolveWithThis(token, getScope());
-	TokenIterator op = token;
+	auto op = token;
 
 	// type cast (followed by expression, identifier, literal, 'copy' or 'new' keyword)
 	if ( allowTypeCast &&
@@ -1282,7 +1302,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
-		node = process_assignment(token, symbol);
+		node = process_assignment_expression(token, symbol);
 	}
 	// method call
 	else if ( op->type() == Token::Type::PARENTHESIS_OPEN ) {
@@ -1296,7 +1316,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT || op->type() == Token::Type::OPERATOR_INCREMENT ) {
 		node = process_incdecrement(token, symbol);
 	}
-	// variable usage
+	// symbol usage
 	else {
 		node = symbol;
 	}
@@ -1327,7 +1347,7 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 
 	Node* ifBlock = process_statement(token);
 
-	Node* elseBlock = NULL;
+	Node* elseBlock = nullptr;
 	if ( token != getTokens().end() &&
 		 token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_ELSE ) {
 		++token;
@@ -1349,7 +1369,7 @@ Expression* TreeGenerator::process_incdecrement(TokenIterator& token, Expression
 	}
 
 
-	SymbolExpression* symbol = dynamic_cast<SymbolExpression*>(lhs);
+	auto* symbol = dynamic_cast<SymbolExpression*>(lhs);
 	if ( !symbol ) {
 		throw Designtime::Exceptions::SyntaxError("invalid expression type detected!", token->position());
 	}
@@ -1370,9 +1390,9 @@ Expression* TreeGenerator::process_incdecrement(TokenIterator& token, Expression
 
 Statement* TreeGenerator::process_keyword(TokenIterator& token)
 {
-	Statement* statement = NULL;
+	Statement* statement = nullptr;
 
-	std::string keyword = (*token++).content();
+	std::string keyword{ (*token++).content() };
 
 	if ( keyword == KEYWORD_ASSERT ) {
 		statement = process_assert(token);
@@ -1434,10 +1454,10 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 {
 	Token start = (*token);
 
-	TokenIterator tmp = token;
+	auto tmp = token;
 
-	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
-	TokenIterator closed = findNextBalancedParenthesis(++opened);
+	auto opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
+	auto closed = findNextBalancedParenthesis(++opened);
 
 	ExpressionList params;
 
@@ -1466,26 +1486,32 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const Token& token, const ExpressionList& expressions)
 {
 	ParameterList params;
-	for ( ExpressionList::const_iterator it = expressions.begin(); it != expressions.end(); ++it ) {
+	for ( auto& expression : expressions ) {
 		params.push_back(Parameter::CreateDesigntime(
 			ANONYMOUS_OBJECT,
-			Common::TypeDeclaration(dynamic_cast<Expression*>((*it))->getResultType(), PrototypeConstraints(), dynamic_cast<Expression*>((*it))->isConst() ? Mutability::Const : Mutability::Modify),
+			Common::TypeDeclaration(dynamic_cast<Expression*>(expression)->getResultType(), PrototypeConstraints(), dynamic_cast<Expression*>(expression)->isConst() ? Mutability::Const : Mutability::Modify),
 			Runtime::AtomicValue(),
 			false,
-			dynamic_cast<Expression*>((*it))->isConst() ? Mutability::Const : Mutability::Modify,
-			dynamic_cast<Expression*>((*it))->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference
+			dynamic_cast<Expression*>(expression)->isConst() ? Mutability::Const : Mutability::Modify,
+			dynamic_cast<Expression*>(expression)->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference
 		));
 	}
 
-	Common::Method* method = dynamic_cast<Common::Method*>(resolveMethod(symbol, params, Visibility::Private));
+	auto* method = dynamic_cast<Common::Method*>(resolveMethod(symbol, params, Visibility::Private));
 	if ( !method ) {
-		throw Common::Exceptions::UnknownIdentifier("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token.position());
+		// provide a list of similar methods, so the user can check if just one of the parameter types is used incorrectly
+		auto methods = provideSimilarMethods( symbol );
+		for ( auto& similarMethod : methods ) {
+			OSinfo( "Found similar method: " + similarMethod->ToString() );
+		}
+
+		throw Common::Exceptions::UnknownIdentifier("method '" + symbol->toString() + "( " + toString(params) + " )' not found", token.position());
 	}
 
 	// validate parameters
 	const ParameterList& expectedParams = method->provideSignature();
-	ParameterList::const_iterator expectedIt = expectedParams.cbegin();
-	ParameterList::const_iterator providedIt = params.cbegin();
+	auto expectedIt = expectedParams.cbegin();
+	auto providedIt = params.cbegin();
 	for ( ; expectedIt != expectedParams.cend(); ++expectedIt ) {
 		if ( providedIt != params.end() ) {
 			// validate constness
@@ -1510,7 +1536,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	}
 
 	// prevent calls to modifiable methods from const methods
-	if ( mMethod->isConstMethod() && mMethod->getEnclosingScope() == method->getEnclosingScope() && !method->isConstMethod() && method->getMethodType() == Common::Method::MethodType::Function ) {
+	if ( mMethod->isConstMethod() && mMethod->getEnclosingScope() == method->getEnclosingScope() && !method->isConstMethod() && method->getMethodType() == MethodType::Method ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", token.position());
 	}
 
@@ -1520,17 +1546,17 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	}
 
 	// prevent calls to non-static methods from static methods
-	if ( mMethod->isStatic() && !method->isStatic() && method->getMethodType() == Common::Method::MethodType::Function ) {
+	if ( mMethod->getEnclosingScope() == method->getEnclosingScope() && mMethod->isStatic() && !method->isStatic() && method->getMethodType() == MethodType::Method ) {
 		throw Common::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + mMethod->getFullScopeName() + "\"", token.position());
 	}
 
 	// evaluate language feature state of the called method
 	switch ( method->getLanguageFeatureState() ) {
-		case LanguageFeatureState::Deprecated: OSinfo("executed method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
-		case LanguageFeatureState::NotImplemented: throw Common::Exceptions::NotImplemented("executed method '" + method->getFullScopeName() + "' is marked as not implemented", token.position()); break;
+		case LanguageFeatureState::Deprecated: OSinfo("executed method '" + method->getFullScopeName() + "' is marked as deprecated in " + token.position().toString()); break;
+		case LanguageFeatureState::NotImplemented: throw Common::Exceptions::MethodNotImplemented("executed method '" + method->getFullScopeName() + "' is marked as not implemented", token.position()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
 		case LanguageFeatureState::Unspecified: throw Common::Exceptions::Exception("unknown language feature state set for executed method '" + method->getFullScopeName() + "'", token.position()); break;
-		case LanguageFeatureState::Unstable: OSwarn("executed method '" + method->getFullScopeName() + "' is marked as unstable"); break;
+		case LanguageFeatureState::Unstable: OSwarn("executed method '" + method->getFullScopeName() + "' is marked as unstable in " + token.position().toString()); break;
 	}
 
 	return new MethodExpression(symbol, expressions, method->QualifiedTypename(), method->isConst(), method->getEnclosingScope() == mMethod->getEnclosingScope());
@@ -1562,7 +1588,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 				typeDeclaration.mConstraints
 			);
 
-			inner->mSymbolExpression = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
+			inner->mSymbolExpression = new DesigntimeSymbolExpression(RESERVED_WORD_CONSTRUCTOR, _void, PrototypeConstraints(), false);
 			inner->mSymbolExpression->mSurroundingScope = mRepository->findBluePrintObject(type);
 
 			if ( !inner->mSymbolExpression->mSurroundingScope ) {
@@ -1610,7 +1636,7 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 	Token start = (*token);
 	mControlFlow = Runtime::ControlFlow::Return;
 
-	Node* exp = NULL;
+	Node* exp = nullptr;
 	std::string returnType = Designtime::VoidObject::TYPENAME;
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
@@ -1641,7 +1667,7 @@ Statements* TreeGenerator::process_scope(TokenIterator& token, bool allowBreakAn
 Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpression* symbol)
 {
 	if ( !symbol ) {
-		throw Common::Exceptions::InvalidSymbol("invalid symbol found: " + token->content(), token->position());
+		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
 	std::string type = symbol->getResultType();
@@ -1674,17 +1700,23 @@ Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpress
 
 Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndContinue)
 {
-	Node* node = NULL;
+	Node* node = nullptr;
 
 	switch ( token->type() ) {
 		case Token::Type::BRACKET_CURLY_OPEN:
 			node = process_scope(token, allowBreakAndContinue);	// this opens a new scope
 			++token;
 			break;
-		case Token::Type::IDENTIFIER:
-		case Token::Type::TYPE:
-			node = process_identifier(token);
-			break;
+		case Token::Type::IDENTIFIER: {
+			auto tmp( token );
+
+			if ( (++tmp)->category() == Token::Category::Assignment ) {
+				node = process_assignment( token );
+			}
+			else {
+				node = process_identifier( token );
+			}
+		} break;
 		case Token::Type::KEYWORD:
 			node = process_keyword(token);
 			break;
@@ -1725,12 +1757,12 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	++token;
 
 	CaseStatements caseStatements;
-	Statements* defaultStatement = NULL;
+	Statements* defaultStatement = nullptr;
 
 	// collect all case-blocks
 	while ( token->type() != Token::Type::BRACKET_CURLY_CLOSE ) {
 		if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_CASE ) {
-			Token start = (*token);
+			Token startToken = (*token);
 
 			// skip case-label
 			++token;
@@ -1742,7 +1774,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 
 			// process case-block tokens
 			caseStatements.push_back(
-				new CaseStatement(start, caseExpression, process_scope(token, true, true))
+				new CaseStatement(startToken, caseExpression, process_scope(token, true, true))
 			);
 		}
 		else if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_DEFAULT ) {
@@ -1768,7 +1800,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	}
 
 	// determine if we are using an enumeration expression
-	Expression* enumExp = dynamic_cast<Expression*>(switchExpression);
+	auto* enumExp = dynamic_cast<Expression*>(switchExpression);
 	if ( enumExp ) {
 		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(enumExp->getResultType());
 		if ( !blueprint ) {
@@ -1806,7 +1838,7 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
 	Token start = (*token);
 	mControlFlow = Runtime::ControlFlow::Throw;
 
-	Node* exp = NULL;
+	Node* exp = nullptr;
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		exp = expression(token);
@@ -1840,23 +1872,23 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	// process try-block
 	Statements* tryBlock = process_scope(token);
 
-	TokenIterator tmp = lookahead(token);
-	TokenIterator localEnd = getTokens().end();
+	auto tmp = lookahead(token);
+	auto localEnd = getTokens().end();
 
 	CatchStatements catchStatements;
-	Statements* finallyBlock = NULL;
+	Statements* finallyBlock = nullptr;
 
 	// collect all catch- and finally-blocks
 	for ( ; ; ) {
 		if ( tmp != localEnd && tmp->content() == KEYWORD_CATCH ) {
-			Token start = (*tmp);
+			Token startToken = (*tmp);
 
 			// skip catch-label
 			++tmp;
 
 			pushScope();	// push a new scope to allow reuse of the same exception instance name
 
-			TypeDeclaration* typeDeclaration = NULL;
+			TypeDeclaration* typeDeclaration = nullptr;
 
 			// parse exception type (if present)
 			if ( tmp->type() == Token::Type::PARENTHESIS_OPEN ) {
@@ -1881,7 +1913,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			// TODO: prevent duplicate catch-blocks
 
 			catchStatements.push_back(
-				new CatchStatement(start, typeDeclaration, process_scope(tmp))
+				new CatchStatement(startToken, typeDeclaration, process_scope(tmp))
 			);
 
 			popScope();		// pop exception instance scope
@@ -1931,9 +1963,9 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 {
 	Token start = (*token);
 
-	DesigntimeSymbolExpression* lhs = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
+	auto* lhs = dynamic_cast<DesigntimeSymbolExpression*>(resolve(token, getScope(), false, Visibility::Public));
 	if ( !lhs ) {
-		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
+		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
 	std::string type = lhs->getResultType();
@@ -1943,7 +1975,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 	// delete resolved symbol expression as it is not needed any more
 	delete lhs;
-	lhs = NULL;
+	lhs = nullptr;
 
 	expect(Token::Type::IDENTIFIER, token);
 
@@ -1964,7 +1996,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	// non-atomic types are references by default
 	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, object->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference);
 
-	Expression* assignmentExp = NULL;
+	Expression* assignmentExp = nullptr;
 
 	if ( token->type() == Token::Type::ASSIGN ) {
 		if ( initialization != Initialization::Allowed ) {
@@ -1972,10 +2004,11 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 			throw Common::Exceptions::NotSupported("initialization is not allowed here", token->position());
 		}
 
-		assignmentExp = process_assignment(
-			token,
-			new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), object->isAtomicType())
-		);
+		Token operation(*token);
+
+		assignmentExp = dynamic_cast<Expression*>( expression( ++token ) );
+
+		resolveType( token, object->QualifiedTypename(), operation, assignmentExp->getResultType() );
 	}
 	else if ( initialization == Initialization::Required ) {
 		// initialization is required (probably because type inference is used) but no initialization sequence found
@@ -2029,7 +2062,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 	expect(Token::Type::ASSIGN, token);
 	++token;
 
-	Expression* rhs = dynamic_cast<Expression*>(expression(token));
+	auto* rhs = dynamic_cast<Expression*>(expression(token));
 
 	if ( mutability == Mutability::Modify && rhs->isInnerConst() && !isAtomicType(rhs->getResultType()) ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("tried to assign const type '" + rhs->getResultType() + "' to non-const symbol '" + name + "'", token->position());
@@ -2081,6 +2114,38 @@ void TreeGenerator::pushScope(IScope* scope, bool allowBreakAndContinue)
 	//mStackFrame->pushStack();
 }
 
+std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* symbol) const
+{
+	if ( !symbol ) {
+		throw Common::Exceptions::InvalidSymbol("invalid symbol provided");
+	}
+
+	std::list<MethodSymbol*> result;
+
+	SymbolExpression* inner = symbol;
+	for ( ; ; ) {
+		if ( inner->mSymbolExpression && inner->mSymbolExpression->mSurroundingScope ) {
+			inner = inner->mSymbolExpression;
+			continue;
+		}
+
+		break;
+	}
+
+	MethodScope* scope = getMethodScope(inner->mSurroundingScope);
+	if ( !scope ) {
+		throw Designtime::Exceptions::DesigntimeException("invalid scope");
+	}
+
+	for ( auto methodIt = scope->beginMethods(); methodIt != scope->endMethods(); ++methodIt ) {
+		if ( (*methodIt)->getName() == symbol->innerName() ) {
+			result.push_back( *methodIt );
+		}
+	}
+
+	return result;
+}
+
 void TreeGenerator::pushTokens(const TokenList& tokens)
 {
 	mStackFrame->pushTokens(tokens);
@@ -2093,14 +2158,14 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	}
 
 	std::string name = token->content();
-	IScope* scope = NULL;
-	SymbolExpression* symbol = NULL;
+	IScope* scope = nullptr;
+	SymbolExpression* symbol = nullptr;
 	std::string type;
 
 	// retrieve symbol for token from base scope
 	Symbol* result = base->resolve(name, onlyCurrentScope, !onlyCurrentScope ? Visibility::Private : visibility);
 	if ( !result ) {
-		return NULL;
+		return nullptr;
 	}
 
 	++token;
@@ -2108,7 +2173,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	// set scope & type according to symbol type
 	switch ( result->getSymbolType() ) {
 		case Symbol::IType::BluePrintObjectSymbol: {
-			Designtime::BluePrintObject* bpo = dynamic_cast<Designtime::BluePrintObject*>(result);
+			auto* bpo = dynamic_cast<Designtime::BluePrintObject*>(result);
 
 			type = bpo->QualifiedTypename();
 
@@ -2130,7 +2195,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			//symbol = new DesigntimeSymbolExpression(name, type, constraints, bpo->isConst(), bpo->isMember(), blueprint->isAtomicType());
 		} break;
 		case Symbol::IType::NamespaceSymbol: {
-			Common::Namespace* space = dynamic_cast<Common::Namespace*>(result);
+			auto* space = dynamic_cast<Common::Namespace*>(result);
 
 			scope = space;
 			type = space->QualifiedTypename();
@@ -2138,7 +2203,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			symbol = new DesigntimeSymbolExpression(name, type, PrototypeConstraints(), true);
 		} break;
 		case Symbol::IType::ObjectSymbol: {
-			Runtime::Object* object = dynamic_cast<Runtime::Object*>(result);
+			auto* object = dynamic_cast<Runtime::Object*>(result);
 
 /*	this does not work because it also is true for valid static fields
 			if ( dynamic_cast<Designtime::BluePrintObject*>(base) && !object->isMember() ) {
@@ -2147,7 +2212,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 */
 
 			// set scope according to result type
-			scope = object->isAtomicType() ? NULL : object->getBluePrint();
+			scope = object->isAtomicType() ? nullptr : object->getBluePrint();
 			type = object->QualifiedTypename();
 
 			symbol = new RuntimeSymbolExpression(name, type, object->isConst(), object->isMember(), object->isAtomicType());
@@ -2175,10 +2240,10 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 		symbol->mSymbolExpression = resolve(++token, scope, true, visibility);
 
 		if ( !symbol->mSymbolExpression ) {
-			// exceptions are not allowed here so we have to return NULL (without leaving memleaks)
+			// exceptions are not allowed here so we have to return nullptr (without leaving memleaks)
 			delete symbol;
 
-			return NULL;
+			return nullptr;
 		}
 	}
 	symbol->mSurroundingScope = base;
@@ -2205,40 +2270,6 @@ SymbolExpression* TreeGenerator::resolveLocal(TokenIterator& token) const
 	}
 
 	return NULL;
-}
-
-SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, IScope* base) const
-{
-	SymbolExpression* exp = resolve(token, base, false, Visibility::Public);
-	if ( !exp ) {
-		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "' found", token->position());
-	}
-
-	return exp;
-}
-
-SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* base) const
-{
-	// try to resolve local symbol
-	SymbolExpression* result = resolveLocal(token);
-	if ( result ) {
-		return result;
-	}
-
-	if ( mThis ) {
-		// every class-method has a "this" local that points to the object's blueprint
-		// resolve symbol by using the "this" identifier (without exceptions so that we can try to resolve another time)
-		SymbolExpression* exp = resolve(token, mThis, true, Visibility::Private);
-		if ( exp ) {
-			// insert "this" symbol as "parent" of our recently resolved symbol
-			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConstMethod(), true, false);
-			symbol->mSymbolExpression = exp;
-
-			return symbol;
-		}
-	}
-
-	return resolveWithExceptions(token, base);
 }
 
 MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const
@@ -2269,9 +2300,9 @@ MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const Param
 	return scope->resolveMethod(inner->mName, params, onlyCurrentScope, visibility);
 }
 
-std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node* right) const
+std::string TreeGenerator::resolveType(TokenIterator& token, Node* left, const Token& operation, Node* right) const
 {
-	Expression* l = dynamic_cast<Expression*>(left);
+	auto* l = dynamic_cast<Expression*>(left);
 	if ( !l ) {
 		throw Designtime::Exceptions::SyntaxError("invalid left expression");
 	}
@@ -2281,7 +2312,7 @@ std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node*
 		leftType = Designtime::Parser::buildRuntimeConstraintTypename(leftType, dynamic_cast<DesigntimeSymbolExpression*>(l)->mConstraints);
 	}
 
-	Expression* r = dynamic_cast<Expression*>(right);
+	auto* r = dynamic_cast<Expression*>(right);
 	if ( !r ) {
 		throw Designtime::Exceptions::SyntaxError("invalid right expression");
 	}
@@ -2291,12 +2322,53 @@ std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node*
 		rightType = Designtime::Parser::buildRuntimeConstraintTypename(rightType, dynamic_cast<DesigntimeSymbolExpression*>(r)->mConstraints);
 	}
 
-	return resolveType(leftType, operation, rightType);
+	return resolveType(token, leftType, operation, rightType);
 }
 
-std::string TreeGenerator::resolveType(const std::string& left, const Token& operation, const std::string& right) const
+std::string TreeGenerator::resolveType(TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const
 {
-	return mTypeSystem->getType(left, operation, right);
+	try {
+		return mTypeSystem->getType(left, operation, right);
+	}
+	catch ( Common::Exceptions::UnknownIdentifier& ) {
+		throw Common::Exceptions::UnknownIdentifier("unknown type '" + left + "' detected during type check", token->position());
+	}
+	catch ( Common::Exceptions::UnknownOperation& ) {
+		throw Common::Exceptions::UnknownOperation("unknown operation " + operation.content() + " detected for type '" + left + "' during type check", token->position());
+	}
+	catch ( Common::Exceptions::TypeMismatch& ) {
+		throw Common::Exceptions::TypeMismatch(left + " " + operation.content() + " " + right, token->position());
+	}
+
+	//return "";	// unreachable code
+}
+
+SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, IScope* base) const
+{
+    SymbolExpression* exp = resolve(token, base, false, Visibility::Public);
+    if ( !exp ) {
+        throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
+    }
+
+    return exp;
+}
+
+SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* base) const
+{
+    if ( mThis ) {
+        // every class-method has a "this" local that points to the object's blueprint
+        // resolve symbol by using the "this" identifier (without exceptions so that we can try to resolve another time)
+        SymbolExpression* exp = resolve(token, mThis, true, Visibility::Private);
+        if ( exp ) {
+            // insert "this" symbol as "parent" of our recently resolved symbol
+            SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConstMethod(), true, false);
+            symbol->mSymbolExpression = exp;
+
+            return symbol;
+        }
+    }
+
+    return resolveWithExceptions(token, base);
 }
 
 

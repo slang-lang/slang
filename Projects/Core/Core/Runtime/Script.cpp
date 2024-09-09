@@ -15,16 +15,8 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
-
-Script::Script()
-{
-}
-
-Script::~Script()
-{
-}
 
 void Script::execute(Common::ThreadId threadId, const std::string& method, const ParameterList& params, Runtime::Object* result)
 {
@@ -33,9 +25,9 @@ void Script::execute(Common::ThreadId threadId, const std::string& method, const
 		throw Common::Exceptions::Exception("could not resolve method '" + method + "(" + toString(params) + ")'");
 	}
 
-	Common::Method* methodSymbol = static_cast<Common::Method*>(symbol);
+	auto* methodSymbol = dynamic_cast<Common::Method*>(symbol);
 
-	Runtime::ControlFlow::E controlflow = Controller::Instance().thread(threadId)->execute(NULL, methodSymbol, params, result);
+	Runtime::ControlFlow::E controlflow = Controller::Instance().thread(threadId)->execute(nullptr, methodSymbol, params, result);
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		Runtime::ExceptionData data = Controller::Instance().thread(threadId)->exception();

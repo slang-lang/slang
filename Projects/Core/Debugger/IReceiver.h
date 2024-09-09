@@ -1,6 +1,6 @@
 
-#ifndef Debugger_IReceiver_h
-#define Debugger_IReceiver_h
+#ifndef Core_Debugger_IReceiver_h
+#define Core_Debugger_IReceiver_h
 
 
 // Library includes
@@ -12,7 +12,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declaration
 class IScope;
@@ -25,7 +25,7 @@ class BreakPoint;
 class IReceiver
 {
 public:
-	virtual ~IReceiver() { }
+	virtual ~IReceiver() = default;
 
 	virtual int notify(IScope* scope, const BreakPoint& breakpoint) = 0;
 	virtual int notifyEnter(IScope* scope, const BreakPoint& breakpoint) = 0;

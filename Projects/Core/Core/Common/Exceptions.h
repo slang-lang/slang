@@ -1,11 +1,12 @@
 
-#ifndef ObjectiveScript_Core_Common_Exceptions_h
-#define ObjectiveScript_Core_Common_Exceptions_h
+#ifndef Slang_Core_Core_Common_Exceptions_h
+#define Slang_Core_Core_Common_Exceptions_h
 
 
 // Library includes
 #include <exception>
 #include <string>
+#include <utility>
 
 // Project includes
 #include "Position.h"
@@ -15,7 +16,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Common {
 namespace Exceptions {
 
@@ -34,16 +35,15 @@ public:
 	}
 	virtual ~Exception() { }
 #else
-	explicit Exception(const std::string& text, const Position& position = Position()) noexcept
-	: mMessage(text),
-	  mPosition(position)
+	explicit Exception(std::string text, Position position = Position()) noexcept
+	: mMessage(std::move(text)),
+	  mPosition(std::move(position))
 	{
 		if ( !mPosition.toString().empty() ) {
 			mMessage += " in " + mPosition.toString();
 		}
 	}
 
-	virtual ~Exception() noexcept { }
 #endif
 
 public:
@@ -115,7 +115,7 @@ class DuplicateIdentifier : public Exception
 {
 public:
 	explicit DuplicateIdentifier(const std::string& text, const Position& position = Position())
-	: Exception("Duplicate identifier: " + text, position)
+	: Exception("Duplicate identifier defined: " + text, position)
 	{ }
 };
 
@@ -129,11 +129,11 @@ public:
 };
 
 
-class NotImplemented : public Exception
+class MethodNotImplemented : public Exception
 {
 public:
-	explicit NotImplemented(const std::string& text, const Position& position = Position())
-	: Exception("Not implemented: " + text, position)
+	explicit MethodNotImplemented(const std::string& text, const Position& position = Position())
+	: Exception("Method not implemented: " + text, position)
 	{ }
 };
 

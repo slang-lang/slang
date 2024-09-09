@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 // library imports
 import libParam.ParameterHandler;
@@ -15,7 +15,7 @@ public void Main(int argc, string args) {
 		var order = new Order();
 
 		if ( params.contains("OrderTypeID") ) {
-			order.orderTypeID = OrderType cast<int>( params.getParameter("OrderTypeID").Value );
+			order.orderTypeID = OrderType cast<int>( params[ "OrderTypeID" ].Value );
 		}
 		else {
 			cout("OrderTypeID: ");
@@ -23,7 +23,7 @@ public void Main(int argc, string args) {
 		}
 
 		if ( params.contains("Priority") ) {
-			order.priority = cast<int>( params.getParameter("Priority").Value );
+			order.priority = cast<int>( params[ "Priority" ].Value );
 		}
 		else {
 			cout("Priority: ");
@@ -31,7 +31,7 @@ public void Main(int argc, string args) {
 		}
 
 		if ( params.contains("Sequence") ) {
-			order.sequence = cast<int>( params.getParameter("Sequence").Value );
+			order.sequence = cast<int>( params[ "Sequence" ].Value );
 		}
 		else {
 			cout("Sequence: ");
@@ -52,6 +52,9 @@ public void Main(int argc, string args) {
 			case OrderType.Transport: {
 				createTransportOrder( getLastInsertId() );
 				break;
+			}
+			default: {
+				throw "unknown OrderTypeID!";
 			}
 		}
 
@@ -129,7 +132,7 @@ private void createTransportOrder(int orderID) const {
 private int getLastInsertId() const {
 	int result = DB.Query( "SELECT LAST_INSERT_ID() AS ID" );
 
-	if ( mysql_next_row(result) ) {
+	if ( mysql_fetch_row(result) ) {
 		return int mysql_get_field_value(result, "ID");
 	}
 

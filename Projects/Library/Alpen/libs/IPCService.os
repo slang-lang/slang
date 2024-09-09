@@ -58,6 +58,17 @@ public object IPCService implements IIPCReceiver, IIPCSender {
 		}
 	}
 
+	public IPCService Copy() const {
+		IPCService result = new IPCService();
+
+		result.mConnectedQueues = mConnectedQueues;
+		result.mProcessName = mProcessName;
+		result.mQueueHandle = mQueueHandle;
+		result.mQueueOwner = false;
+
+		return result;
+	}
+
 	public bool connect(int queueID) modify {
 		if ( mConnectedQueues.contains(queueID) ) {
 			mConnectedQueues.remove(queueID);
@@ -74,7 +85,7 @@ public object IPCService implements IIPCReceiver, IIPCSender {
 			var message = new IPCMessage();
 
 			// unserialize JSON message
-			FromJsonString(message, msg);
+			FromJson(message, msg);
 
 			return message;
 		}

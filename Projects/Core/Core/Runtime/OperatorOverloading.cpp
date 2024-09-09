@@ -21,962 +21,1045 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Runtime {
 
 
-void operator_binary_assign(Object *base, Object *other, const Common::Position& position)
+void operator_binary_assign( Object* lvalue, Object* rvalue )
 {
-	if ( !base || !other ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue || !rvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
-	std::string target = other->QualifiedTypename();
+	std::string source = rvalue->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == ANONYMOUS_OBJECT || source == target ) {
-		// assign directly because our base has not yet been initialized
+	if ( target == ANONYMOUS_OBJECT || source == target ) {
+		// assign directly because our lvalue has not yet been initialized
 		// or no type conversion is necessary
-		base->assign(*other);
+		lvalue->assign( *rvalue );
 	}
-	else if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		tmp.operator_assign(other);
-
-		base->assign(tmp);
+	else if ( target == BoolObject::TYPENAME ) {
+		lvalue->assign( BoolObject( rvalue->getValue().toBool() ) );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		tmp.operator_assign(other);
-
-		base->assign(tmp);
+	else if ( target == DoubleObject::TYPENAME ) {
+		lvalue->assign( DoubleObject( rvalue->getValue().toDouble() ) );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		tmp.operator_assign(other);
-
-		base->assign(tmp);
+	else if ( target == FloatObject::TYPENAME ) {
+		lvalue->assign( FloatObject( rvalue->getValue().toFloat() ) );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		tmp.operator_assign(other);
-
-		base->assign(tmp);
+	else if ( target == IntegerObject::TYPENAME ) {
+		lvalue->assign( IntegerObject( rvalue->getValue().toInt() ) );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		tmp.operator_assign(other);
-
-		base->assign(tmp);
+	else if ( target == StringObject::TYPENAME ) {
+		lvalue->assign( StringObject( rvalue->getValue().toStdString() ) );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		tmp.operator_assign(other);
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 /*
 	// special handling for enumeration values
-	else if ( base->isEnumerationValue() && other->isEnumerationValue() && source == target ) {
-		base->setValue(other->getValue().toInt());
+	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && source == target ) {
+		lvalue->setValue( rvalue->getValue().toInt() );
 	}
 */
 	// special handling for enumeration values
-	else if ( base->isEnumerationValue() && other->QualifiedTypename() == _int ) {
-		base->setValue(other->getValue().toInt());
+	else if ( lvalue->isEnumerationValue() && rvalue->QualifiedTypename() == _int ) {
+		lvalue->setValue( rvalue->getValue().toInt() );
+	}
+	// special handling for enumeration values
+	else if ( lvalue->QualifiedTypename() == _int && rvalue->isEnumerationValue() ) {
+		lvalue->setValue( rvalue->getValue().toInt() );
 	}
 	// no atomic data type, so we have to look if our assign operator has been overwritten
 	else {
-		if ( !other->isValid() ) {	// special handling for null object
-			base->assign(*other);
+		if ( !rvalue->isValid() ) {	// special handling for null object
+			lvalue->assign( *rvalue );
 			return;
 		}
 
-		if ( other->isInstanceOf(base->QualifiedTypename()) ) {
-			base->assign(*other);
+		if ( rvalue->isInstanceOf( lvalue->QualifiedTypename() ) ) {
+			lvalue->assign( *rvalue );
 			return;
 		}
 
 		// invalid binary assignment operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->QualifiedTypename() + ".operator=(" + other->QualifiedTypename() + ")'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->QualifiedTypename() + ".operator=: conversion from " + lvalue->QualifiedTypename() + " to " + rvalue->QualifiedTypename() + " not supported" );
 	}
 }
 
-void operator_binary_bitand(Object *base, Object *other, const Common::Position& position)
+void operator_binary_bitand( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		tmp.operator_bitand(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_bitand( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		tmp.operator_bitand(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_bitand( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		tmp.operator_bitand(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_bitand( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		tmp.operator_bitand(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_bitand( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		tmp.operator_bitand(other);
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_bitand( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		tmp.operator_bitand(other);
+		tmp.operator_bitand( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid binary bitand operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator&()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator&()'" );
 	}
 }
 
-void operator_binary_bitcomplement(Object *base, Object *other, const Common::Position& position)
+void operator_binary_bitcomplement( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		tmp.operator_bitcomplement(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_bitcomplement( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		tmp.operator_bitcomplement(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_bitcomplement( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		tmp.operator_bitcomplement(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_bitcomplement( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		tmp.operator_bitcomplement(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_bitcomplement( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		tmp.operator_bitcomplement(other);
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_bitcomplement( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		tmp.operator_bitcomplement(other);
+		tmp.operator_bitcomplement( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid binary bitcomplement operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator~()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator~()'" );
 	}
 }
 
-void operator_binary_bitor(Object *base, Object *other, const Common::Position& position)
+void operator_binary_bitor( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		tmp.operator_bitor(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_bitor( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		tmp.operator_bitor(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_bitor( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		tmp.operator_bitor(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_bitor( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		tmp.operator_bitor(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_bitor( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		tmp.operator_bitor(other);
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_bitor( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		tmp.operator_bitor(other);
+		tmp.operator_bitor( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid binary bitor operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator|()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator|()'" );
 	}
 }
 
-void operator_binary_divide(Object *base, Object *other, const Common::Position& position)
+void operator_binary_divide( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		tmp.operator_divide(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_divide( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		tmp.operator_divide(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_divide( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		tmp.operator_divide(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_divide( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		tmp.operator_divide(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_divide( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		tmp.operator_divide(other);
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_divide( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		tmp.operator_divide(other);
+		tmp.operator_divide( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid binary division operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator/()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator/()'" );
 	}
 }
 
-bool operator_binary_equal(Object *base, Object *other, const Common::Position& position)
+bool operator_binary_equal( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot compare null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot compare null pointer to object" );
 	}
-	if ( !other ) {
-		throw Runtime::Exceptions::AccessViolation("cannot compare object to null pointer", position);
+	if ( !rvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot compare object to null pointer" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		return tmp.operator_equal(other);
+	if ( target == BoolObject::TYPENAME ) {
+		return BoolObject( lvalue->isValid() ).operator_equal( rvalue );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		return tmp.operator_equal(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		return DoubleObject( lvalue->getValue().toDouble() ).operator_equal( rvalue );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		return tmp.operator_equal(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		return FloatObject( lvalue->getValue().toFloat() ).operator_equal( rvalue );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		return tmp.operator_equal(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		return IntegerObject( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		return tmp.operator_equal(other);
+	else if ( target == StringObject::TYPENAME ) {
+		return StringObject( lvalue->getValue().toStdString() ).operator_equal( rvalue );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		return tmp.operator_equal(other);
+		return tmp.operator_equal( rvalue );
 	}
-	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
-		return base->getValue().toInt() == other->getValue().toInt();
+	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+		return lvalue->getValue().toInt() == rvalue->getValue().toInt();
 	}
 
 	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
+	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
-	if ( base->resolveMethod("operator==", params, false, Visibility::Public) ) {
+	if ( lvalue->resolveMethod( "operator==", params, false, Visibility::Public ) ) {
 		Object tmp;
-		base->execute(&tmp, "operator==", params);
-		return isTrue(tmp);
+		lvalue->execute( &tmp, "operator==", params );
+		return isTrue( tmp );
 	}
 
 	// no equality operator found, so we have to compare our references
-	return base->operator_equal(other);
+	return lvalue->operator_equal( rvalue );
 }
 
-bool operator_binary_greater(Object *base, Object *other, const Common::Position& position)
+bool operator_binary_greater( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		return tmp.operator_greater(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		return tmp.operator_greater( rvalue );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		return tmp.operator_greater(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		return tmp.operator_greater( rvalue );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		return tmp.operator_greater(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		return tmp.operator_greater( rvalue );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		return tmp.operator_greater(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		return tmp.operator_greater( rvalue );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		return tmp.operator_greater(other);
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		return tmp.operator_greater( rvalue );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		return tmp.operator_greater(other);
+		return tmp.operator_greater( rvalue );
 	}
-	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
-		return base->getValue().toInt() > other->getValue().toInt();
+	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+		return lvalue->getValue().toInt() > rvalue->getValue().toInt();
 	}
 
 	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
+	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
-	base->execute(&tmp, "operator>", params);
-	return isTrue(tmp);
+	lvalue->execute( &tmp, "operator>", params );
+	return isTrue( tmp );
 }
 
-bool operator_binary_greater_equal(Object *base, Object *other, const Common::Position& position)
+bool operator_binary_greater_equal( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		return tmp.operator_greater_equal(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		return tmp.operator_greater_equal(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		return tmp.operator_greater_equal(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		return tmp.operator_greater_equal(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		return tmp.operator_greater_equal(other);
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		return tmp.operator_greater_equal(other);
+		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
-		return base->getValue().toInt() >= other->getValue().toInt();
+	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+		return lvalue->getValue().toInt() >= rvalue->getValue().toInt();
 	}
 
 	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
+	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
-	base->execute(&tmp, "operator>=", params);
-	return isTrue(tmp);
+	lvalue->execute( &tmp, "operator>=", params );
+	return isTrue( tmp );
 }
 
-bool operator_binary_less(Object *base, Object *other, const Common::Position& position)
+bool operator_binary_less( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		return tmp.operator_less(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		return tmp.operator_less( rvalue );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		return tmp.operator_less(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		return tmp.operator_less( rvalue );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		return tmp.operator_less(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		return tmp.operator_less( rvalue );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		return tmp.operator_less(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		return tmp.operator_less( rvalue );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		return tmp.operator_less(other);
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		return tmp.operator_less( rvalue );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		return tmp.operator_less(other);
+		return tmp.operator_less( rvalue );
 	}
-	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
-		return base->getValue().toInt() < other->getValue().toInt();
+	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+		return lvalue->getValue().toInt() < rvalue->getValue().toInt();
 	}
 
 	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
+	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
-	base->execute(&tmp, "operator<", params);
-	return isTrue(tmp);
+	lvalue->execute( &tmp, "operator<", params );
+	return isTrue( tmp );
 }
 
-bool operator_binary_less_equal(Object *base, Object *other, const Common::Position& position)
+bool operator_binary_less_equal( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		return tmp.operator_less_equal(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		return tmp.operator_less_equal(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		return tmp.operator_less_equal(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		return tmp.operator_less_equal(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		return tmp.operator_less_equal(other);
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		return tmp.operator_less_equal(other);
+		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
-		return base->getValue().toInt() <= other->getValue().toInt();
+	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+		return lvalue->getValue().toInt() <= rvalue->getValue().toInt();
 	}
 
 	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
+	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
-	base->execute(&tmp, "operator<=", params);
-	return isTrue(tmp);
+	lvalue->execute( &tmp, "operator<=", params );
+	return isTrue( tmp );
 }
 
-void operator_binary_modulo(Object *base, Object *other, const Common::Position& position)
+void operator_binary_modulo( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		tmp.operator_modulo(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_modulo( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		tmp.operator_modulo(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_modulo( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		tmp.operator_modulo(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_modulo( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		tmp.operator_modulo(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_modulo( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		tmp.operator_modulo(other);
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_modulo( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		tmp.operator_modulo(other);
+		tmp.operator_modulo( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid binary modulo operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator%()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator%()'" );
 	}
 }
 
-void operator_binary_multiply(Object *base, Object *other, const Common::Position& position)
+void operator_binary_multiply( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		tmp.operator_multiply(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_multiply( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		tmp.operator_multiply(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_multiply( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		tmp.operator_multiply(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_multiply( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		tmp.operator_multiply(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_multiply( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		tmp.operator_multiply(other);
+	else if (target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_multiply( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if (target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		tmp.operator_multiply(other);
+		tmp.operator_multiply( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid binary multiply operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator*()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator*()'" );
 	}
 }
 
-void operator_binary_plus(Object *base, Object *other, const Common::Position& position)
+void operator_binary_plus( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		tmp.operator_plus(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_plus( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		tmp.operator_plus(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_plus( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		tmp.operator_plus(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_plus( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		tmp.operator_plus(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_plus( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		tmp.operator_plus(other);
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_plus( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		tmp.operator_plus(other);
+		tmp.operator_plus( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid binary addition operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator+()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator+()'" );
 	}
 }
 
-void operator_binary_subtract(Object *base, Object *other, const Common::Position& position)
+void operator_binary_shift_left( Object* lvalue, Object* rvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
-		tmp.operator_subtract(other);
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_shift_left( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		tmp.operator_subtract(other);
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_shift_left( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		tmp.operator_subtract(other);
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_shift_left( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		tmp.operator_subtract(other);
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_shift_left( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		tmp.operator_subtract(other);
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_shift_left( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		tmp.operator_subtract(other);
+		tmp.operator_shift_left( rvalue );
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
+	}
+	else {
+		// invalid left shift operator handling!
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator<<()'" );
+	}
+}
+
+void operator_binary_shift_right( Object* lvalue, Object* rvalue )
+{
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+	}
+
+	std::string target = lvalue->QualifiedTypename();
+
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_shift_right( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else {
+		// invalid right shift operator handling!
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator>>()'" );
+	}
+}
+
+void operator_binary_subtract( Object* lvalue, Object* rvalue )
+{
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+	}
+
+	std::string target = lvalue->QualifiedTypename();
+
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
+		tmp.operator_subtract( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
+		tmp.operator_subtract( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
+		tmp.operator_subtract( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
+		tmp.operator_subtract( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
+		tmp.operator_subtract( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_subtract( rvalue );
+
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid binary subtract operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator-()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator-()'" );
 	}
 }
 
-void operator_unary_decrement(Object *base, const Common::Position& position)
+void operator_unary_decrement (Object* lvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("null pointer access", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
 		tmp.operator_unary_decrement();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_decrement();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_decrement();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_decrement();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_unary_decrement();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_unary_decrement();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid decrement operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator--()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator--()'" );
 	}
 }
 
-void operator_unary_increment(Object *base, const Common::Position& position)
+void operator_unary_increment( Object* lvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("null pointer access", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->isValid() );
 		tmp.operator_unary_increment();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_increment();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_increment();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_increment();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_unary_increment();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_unary_increment();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid increment operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator++()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator++()'" );
 	}
 }
 
-void operator_unary_minus(Object *base, const Common::Position& position)
+void operator_unary_minus( Object* lvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("null pointer access", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->getValue().toBool() );
 		tmp.operator_unary_minus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_minus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_minus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_minus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
+	else if (target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_unary_minus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_unary_minus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid unary minus operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".-operator()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".-operator()'" );
 	}
 }
 
-void operator_unary_plus(Object *base, const Common::Position& position)
+void operator_unary_plus( Object* lvalue )
 {
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("null pointer access", position);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
 	}
 
-	std::string source = base->QualifiedTypename();
+	std::string target = lvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp( lvalue->getValue().toBool() );
 		tmp.operator_unary_plus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
+	else if ( target == DoubleObject::TYPENAME ) {
+		DoubleObject tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_plus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
+	else if ( target == FloatObject::TYPENAME ) {
+		FloatObject tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_plus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
+	else if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_plus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp( lvalue->getValue().toStdString() );
 		tmp.operator_unary_plus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
+	else if ( target == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_unary_plus();
 
-		base->assign(tmp);
+		lvalue->assign( tmp );
 	}
 	else {
 		// invalid unary plus operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".+operator()'");
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".+operator()'" );
 	}
 }
 
-void operator_unary_not(Object *base, const Common::Position& position)
+void operator_unary_not( Object* base )
 {
 	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("null pointer access", position);
+		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
 	}
 
 	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->isValid());
+		BoolObject tmp( base->isValid() );
 
-		*base = BoolObject(!tmp.operator_bool());
+		*base = BoolObject( !tmp.operator_bool() );
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
+		DoubleObject tmp( base->getValue() );
 
-		*base = BoolObject(!tmp.operator_bool());
+		*base = BoolObject( !tmp.operator_bool() );
 	}
 	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
+		FloatObject tmp( base->getValue() );
 
-		*base = BoolObject(!tmp.operator_bool());
+		*base = BoolObject( !tmp.operator_bool() );
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
+		IntegerObject tmp( base->getValue() );
 
-		*base = BoolObject(!tmp.operator_bool());
+		*base = BoolObject( !tmp.operator_bool() );
 	}
 	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
+		StringObject tmp( base->getValue() );
 
-		*base = BoolObject(!tmp.operator_bool());
+		*base = BoolObject( !tmp.operator_bool() );
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 
-		*base = BoolObject(!tmp.operator_bool());
+		*base = BoolObject( !tmp.operator_bool() );
 	}
 	else {
-		*base = BoolObject(!base->isValid());
+		*base = BoolObject( !base->isValid() );
 	}
 }
 
-void operator_unary_validate(Object *base, const Common::Position& position)
+void operator_unary_validate( Object* base )
 {
 	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("null pointer access", position);
+		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
 	}
 
 	if ( !base->isValid() ) {
@@ -987,3 +1070,4 @@ void operator_unary_validate(Object *base, const Common::Position& position)
 
 }
 }
+

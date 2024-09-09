@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public void Main(int argc, string args) {
 	assert( OptionalParameterName(0, false, "foo") );
@@ -16,9 +16,6 @@ private stable interface IIsForInterface {
 }
 
 private object OIsForObject implements IIsForInterface {
-	public void Constructor() {
-	}
-
 	public bool init(int /*param1*/, bool /*param2*/) {
 		return true;
 	}

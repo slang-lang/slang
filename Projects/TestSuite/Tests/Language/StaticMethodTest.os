@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public object TestObject {
 	private int mValue;
@@ -11,7 +11,7 @@ public object TestObject {
 		print("nonstaticPrint: " + mValue);
 	}
 
-	public void staticPrint(bool callNonStatic) static {
+	public static void staticPrint(bool callNonStatic) {
 		if ( callNonStatic ) {
 			nonstaticPrint();
 			return;

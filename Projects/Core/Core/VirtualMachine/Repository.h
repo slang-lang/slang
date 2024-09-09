@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_Repository_h
-#define ObjectiveScript_Core_VirtualMachine_Repository_h
+#ifndef Slang_Core_Core_VirtualMachine_Repository_h
+#define Slang_Core_Core_VirtualMachine_Repository_h
 
 
 // Library includes
@@ -18,11 +18,10 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Designtime {
-	class BluePrintGeneric;
 	class BluePrintObject;
 }
 namespace Runtime {
@@ -44,7 +43,7 @@ public:
 
 public:
 	Repository();
-	~Repository();
+	~Repository() = default;
 
 public:
 	void deinit();
@@ -56,10 +55,10 @@ public:
 public:
 	void addBluePrint(Designtime::BluePrintObject* object);
 
-	Runtime::Object* createInstance(const std::string& type, const std::string& name = std::string(), PrototypeConstraints constraints = PrototypeConstraints(), InitilizationType::E initialize = InitilizationType::None);
+	Runtime::Object* createInstance(const std::string& type, const std::string& name = std::string(), const PrototypeConstraints& constraints = PrototypeConstraints(), InitilizationType::E initialize = InitilizationType::None);
 	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
-	Runtime::Object* createReference(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
-	Runtime::Object* createReference(Designtime::BluePrintObject* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
+	Runtime::Object* createReference(const std::string& type, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize = InitilizationType::None);
+	Runtime::Object* createReference(Designtime::BluePrintObject* blueprint, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize = InitilizationType::None);
 
 	Designtime::BluePrintObject* findBluePrintObject(const std::string& type) const;
 	Designtime::BluePrintObject* findBluePrintObject(const Common::TypeDeclaration& typeDeclaration) const;
@@ -76,8 +75,6 @@ private:
 
 	void initBluePrintObject(Designtime::BluePrintObject* blueprint);
 	void initTypeSystem(Designtime::BluePrintObject* blueprint);
-
-	void initializeObject(Designtime::BluePrintObject* srcObj, Runtime::Object* destObj);
 
 private:
 	BluePrintObjectMap mBluePrintObjects;

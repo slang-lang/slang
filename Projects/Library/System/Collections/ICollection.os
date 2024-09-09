@@ -5,9 +5,9 @@ import IIterable;
 public namespace System.Collections { }
 
 public stable interface ICollection implements IIterable, IReverseIterable {
-    public Object at(int index) const throws;
+    public Object at( int index ) const throws;
     public int size() const;
 
-    public Object operator[](int index) const throws;
+    public Object operator[]( int index ) const throws;
 }
 

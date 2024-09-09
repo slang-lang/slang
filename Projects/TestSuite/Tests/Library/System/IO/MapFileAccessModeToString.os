@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 // NOTE: before using this System.IO.MapFileAccessModeToString has to be made public
 

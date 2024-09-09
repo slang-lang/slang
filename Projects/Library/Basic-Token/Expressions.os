@@ -17,7 +17,7 @@ public enum ExpressionType {
 }
 
 
-public abstract object Expression extends Node {
+public object Expression extends Node {
 	public ExpressionType mExpressionType const;
 
 	public void Constructor(ExpressionType expressionType) {
@@ -26,9 +26,9 @@ public abstract object Expression extends Node {
 		mExpressionType = expressionType;
 	}
 
-	public bool isString() const abstract;
+	public abstract bool isString() const;
 
-	public string toPrettyString() const abstract;
+	public abstract string toPrettyString() const;
 
 	public string toString() const {
 		return "Epression: " + string mExpressionType;

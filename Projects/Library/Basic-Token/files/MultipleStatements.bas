@@ -4,4 +4,3 @@
 40 END : PRINT "This should fail (2)"
 50 PRINT "50"
 60 GOTO 60 : PRINT "This should fail (1)"
-

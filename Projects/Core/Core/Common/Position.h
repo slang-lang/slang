@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Common_Position_h
-#define ObjectiveScript_Core_Common_Position_h
+#ifndef Slang_Core_Core_Common_Position_h
+#define Slang_Core_Core_Common_Position_h
 
 
 // Library includes
@@ -13,14 +13,14 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Common {
 
 
 class Position
 {
 public:
-	Position(const std::string& file = "", unsigned int line = 0, unsigned int column = 0);
+	explicit Position(std::string file = "", unsigned int line = 0, unsigned int column = 0);
 
 public:
 	bool operator==(const Position& other) const;

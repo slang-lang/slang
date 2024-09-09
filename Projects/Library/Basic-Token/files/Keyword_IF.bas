@@ -23,4 +23,3 @@
 430 PRINT "A = B => SUCCESS"
 
 500 REM END
-

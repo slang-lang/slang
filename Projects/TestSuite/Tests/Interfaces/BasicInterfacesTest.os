@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public stable interface IGetBox {
 	public int GetBox() const;

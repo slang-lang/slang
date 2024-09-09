@@ -3,32 +3,35 @@
 #include "PrototypeConstraint.h"
 
 // Library includes
+#include <cstdint>
 
 // Project includes
 #include <Core/Consts.h>
 
+#include <utility>
+
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 PrototypeConstraint::PrototypeConstraint()
-: mIndex((unsigned int)~0)
+: mIndex(SIZE_MAX)
 {
 }
 
-PrototypeConstraint::PrototypeConstraint(unsigned int index, const std::string& designType, const std::string& runType, const std::string& constraint)
-: mConstraint(constraint),
-  mDesignType(designType),
+PrototypeConstraint::PrototypeConstraint(size_t index, std::string designType, std::string runType, std::string constraint)
+: mConstraint(std::move(constraint)),
+  mDesignType(std::move(designType)),
   mIndex(index),
-  mRunType(runType)
+  mRunType(std::move(runType))
 {
 }
 
 bool PrototypeConstraint::operator==(const PrototypeConstraint& other) const
 {
-	return mIndex == other.mIndex && mDesignType == mDesignType /*&& mRunType == other.mRunType*/;
+	return mIndex == other.mIndex && mDesignType == /*other.*/ mDesignType /*&& mRunType == other.mRunType*/;
 }
 
 bool PrototypeConstraint::hasDesigntimeType() const
@@ -45,8 +48,8 @@ bool PrototypeConstraint::hasRuntimeType() const
 bool PrototypeConstraints::operator==(const PrototypeConstraints& other) const
 {
 	if ( this->size() == other.size() ) {
-		PrototypeConstraints::const_iterator thisIt = this->begin();
-		for ( PrototypeConstraints::const_iterator otherIt = other.begin(); otherIt != other.end(); ++otherIt, ++thisIt ) {
+		auto thisIt = this->begin();
+		for ( auto otherIt = other.begin(); otherIt != other.end(); ++otherIt, ++thisIt ) {
 			if ( !((*thisIt) == (*otherIt)) ) {
 				return false;
 			}
@@ -62,8 +65,8 @@ PrototypeConstraints PrototypeConstraints::buildRawConstraints(const PrototypeCo
 {
 	PrototypeConstraints result = other;
 
-	PrototypeConstraints::const_iterator otherIt = other.begin();
-	PrototypeConstraints::const_iterator thisIt = this->begin();
+	auto otherIt = other.begin();
+	auto thisIt = this->begin();
 
 	for ( ; thisIt != this->end(); ++thisIt ) {
 		if ( otherIt == other.end() ) {
@@ -84,7 +87,7 @@ PrototypeConstraints PrototypeConstraints::buildRuntimeConstraints(const Prototy
 	PrototypeConstraints result;
 
 	//PrototypeConstraints::const_iterator otherIt = other.begin();
-	PrototypeConstraints::const_iterator thisIt = this->begin();
+	auto thisIt = this->begin();
 
 	for ( ; thisIt != this->end(); ++thisIt ) {
 		PrototypeConstraint constraint = other.lookupConstraint(thisIt->mDesignType);
@@ -105,12 +108,12 @@ std::string PrototypeConstraints::extractTypes(const PrototypeConstraints& other
 {
 	std::string result;
 
-	for ( PrototypeConstraints::const_iterator it = other.begin(); it != other.end(); ++it ) {
-		if ( result.size() ) {
+	for ( const auto& it : other ) {
+		if ( !result.empty() ) {
 			result += ",";
 		}
 
-		result += lookupType((*it).mDesignType);
+		result += lookupType(it.mDesignType);
 	}
 
 	return "<" + result + ">";
@@ -118,8 +121,8 @@ std::string PrototypeConstraints::extractTypes(const PrototypeConstraints& other
 
 bool PrototypeConstraints::hasDesigntimeTypes() const
 {
-	for ( PrototypeConstraints::const_iterator it = this->begin(); it != this->end(); ++it ) {
-		if ( !(*it).hasDesigntimeType() ) {
+	for ( const auto& it : *this ) {
+		if ( !it.hasDesigntimeType() ) {
 			return false;
 		}
 	}
@@ -129,8 +132,8 @@ bool PrototypeConstraints::hasDesigntimeTypes() const
 
 bool PrototypeConstraints::hasRuntimeTypes() const
 {
-	for ( PrototypeConstraints::const_iterator it = this->begin(); it != this->end(); ++it ) {
-		if ( !(*it).hasRuntimeType() ) {
+	for ( const auto& it : *this ) {
+		if ( !it.hasRuntimeType() ) {
 			return false;
 		}
 	}
@@ -140,9 +143,9 @@ bool PrototypeConstraints::hasRuntimeTypes() const
 
 PrototypeConstraint PrototypeConstraints::lookupConstraint(const std::string &type) const
 {
-	for ( PrototypeConstraints::const_iterator it = this->begin(); it != this->end(); ++it ) {
-		if ( (*it).mDesignType == type ) {
-			return (*it);
+	for ( const auto& it : *this ) {
+		if ( it.mDesignType == type ) {
+			return it;
 		}
 	}
 
@@ -151,9 +154,9 @@ PrototypeConstraint PrototypeConstraints::lookupConstraint(const std::string &ty
 
 const std::string& PrototypeConstraints::lookupType(const std::string& type) const
 {
-	for ( PrototypeConstraints::const_iterator it = this->begin(); it != this->end(); ++it ) {
-		if ( (*it).mDesignType == type ) {
-			return (*it).mRunType;
+	for ( const auto& it : *this ) {
+		if ( it.mDesignType == type ) {
+			return it.mRunType;
 		}
 	}
 

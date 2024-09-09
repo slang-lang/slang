@@ -8,27 +8,19 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
+#include <Core/Designtime/BuildInTypes/EnumerationObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/UserObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
-#include <Core/Designtime/Exceptions.h>
 
 // Namespace declarations
-using namespace ObjectiveScript::Designtime;
+using namespace Slang::Designtime;
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
-
-TypeSystem::TypeSystem()
-{
-}
-
-TypeSystem::~TypeSystem()
-{
-}
 
 void TypeSystem::define(const std::string& left, Token::Type::E operation, const std::string& right, const std::string& result)
 {
@@ -61,7 +53,7 @@ bool TypeSystem::exists(const std::string& left, Token::Type::E operation, const
 		return false;
 	}
 
-	return mTypeMap[left][operation][right] != "";
+	return !mTypeMap[left][operation][right].empty();
 }
 
 void TypeSystem::deinit()
@@ -88,6 +80,7 @@ void TypeSystem::init()
 {
 	initBool();
 	initDouble();
+	initEnumeration();
 	initFloat();
 	initInt();
 	initObject();
@@ -104,6 +97,7 @@ void TypeSystem::initBool()
 	define(BoolObject::TYPENAME, Token::Type::ASSIGN, StringObject::TYPENAME, BoolObject::TYPENAME);
 
 	// arithmetic
+	// no arithmetic or shift operators available for boolean types
 
 	// boolean
 	define(BoolObject::TYPENAME, Token::Type::AND, BoolObject::TYPENAME, BoolObject::TYPENAME);
@@ -134,6 +128,7 @@ void TypeSystem::initBool()
 	// typecasts
 	define(BoolObject::TYPENAME, Token::Type::TYPECAST, BoolObject::TYPENAME, BoolObject::TYPENAME);
 	define(BoolObject::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
+	//define(BoolObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
 	define(BoolObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME, FloatObject::TYPENAME);
 	define(BoolObject::TYPENAME, Token::Type::TYPECAST, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 	define(BoolObject::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME, StringObject::TYPENAME);
@@ -146,7 +141,7 @@ void TypeSystem::initDouble()
 	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME, DoubleObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, IntegerObject::TYPENAME, DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, StringObject::TYPENAME, DoubleObject::TYPENAME);
+	//define(DoubleObject::TYPENAME, Token::Type::ASSIGN, StringObject::TYPENAME, DoubleObject::TYPENAME);
 
 	// arithmetic
 	define(DoubleObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
@@ -161,6 +156,7 @@ void TypeSystem::initDouble()
 	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME, DoubleObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, DoubleObject::TYPENAME);
+	// no shift operators available for double types
 
 	// boolean
 	define(DoubleObject::TYPENAME, Token::Type::AND, BoolObject::TYPENAME, BoolObject::TYPENAME);
@@ -207,13 +203,25 @@ void TypeSystem::initDouble()
 	// typecasts
 	define(DoubleObject::TYPENAME, Token::Type::TYPECAST, BoolObject::TYPENAME, BoolObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
+	//define(DoubleObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME, FloatObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::TYPECAST, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME, StringObject::TYPENAME);
 
 	// unary operations
-	define(DoubleObject::TYPENAME, Token::Type::MATH_ADDITION, __unary__, DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, __unary__, DoubleObject::TYPENAME);
+	define(DoubleObject::TYPENAME, Token::Type::MATH_ADDITION, _unary_, DoubleObject::TYPENAME);
+	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, _unary_, DoubleObject::TYPENAME);
+}
+
+void TypeSystem::initEnumeration()
+{
+	// typecasts
+	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, BoolObject::TYPENAME, BoolObject::TYPENAME);
+	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
+	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
+	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME, FloatObject::TYPENAME);
+	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME, StringObject::TYPENAME);
 }
 
 void TypeSystem::initFloat()
@@ -223,7 +231,7 @@ void TypeSystem::initFloat()
 	define(FloatObject::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::ASSIGN, IntegerObject::TYPENAME, FloatObject::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::ASSIGN, StringObject::TYPENAME, FloatObject::TYPENAME);
+	//define(FloatObject::TYPENAME, Token::Type::ASSIGN, StringObject::TYPENAME, FloatObject::TYPENAME);
 
 	// arithmetic
 	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME, FloatObject::TYPENAME);
@@ -238,6 +246,7 @@ void TypeSystem::initFloat()
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, FloatObject::TYPENAME);
+	// no shift operators available for float types
 
 	// boolean
 	define(FloatObject::TYPENAME, Token::Type::AND, BoolObject::TYPENAME, BoolObject::TYPENAME);
@@ -284,13 +293,14 @@ void TypeSystem::initFloat()
 	// typecasts
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, BoolObject::TYPENAME, BoolObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
+	//define(FloatObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME, StringObject::TYPENAME);
 
 	// unary operations
-	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, __unary__, FloatObject::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, __unary__, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, _unary_, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, _unary_, FloatObject::TYPENAME);
 }
 
 void TypeSystem::initInt()
@@ -300,7 +310,7 @@ void TypeSystem::initInt()
 	define(IntegerObject::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::ASSIGN, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
-	define(IntegerObject::TYPENAME, Token::Type::ASSIGN, StringObject::TYPENAME, IntegerObject::TYPENAME);
+	//define(IntegerObject::TYPENAME, Token::Type::ASSIGN, StringObject::TYPENAME, IntegerObject::TYPENAME);
 
 	// arithmetic
 	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME,  IntegerObject::TYPENAME);
@@ -367,13 +377,14 @@ void TypeSystem::initInt()
 	// typecasts
 	define(IntegerObject::TYPENAME, Token::Type::TYPECAST, BoolObject::TYPENAME, BoolObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME, FloatObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::TYPECAST, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME, StringObject::TYPENAME);
 
 	// unary operations
-	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, __unary__, IntegerObject::TYPENAME);
-	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, __unary__, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, _unary_, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, _unary_, IntegerObject::TYPENAME);
 }
 
 void TypeSystem::initObject()
@@ -437,9 +448,17 @@ void TypeSystem::initString()
 	define(StringObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL, StringObject::TYPENAME, BoolObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::COMPARE_UNEQUAL, StringObject::TYPENAME, BoolObject::TYPENAME);
 
+	// shift
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, BoolObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, DoubleObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, FloatObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, IntegerObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, StringObject::TYPENAME, StringObject::TYPENAME);
+
 	// typecasts
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, BoolObject::TYPENAME, BoolObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
+	//define(StringObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME, FloatObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME, StringObject::TYPENAME);

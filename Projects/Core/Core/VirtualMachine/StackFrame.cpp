@@ -12,10 +12,12 @@
 #include <Tools/Strings.h>
 #include <Utils.h>
 
+#include <utility>
+
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 StackFrame::Scope::Scope(IScope* scope, bool allowDelete, bool allowBreakAndContinue)
@@ -26,16 +28,16 @@ StackFrame::Scope::Scope(IScope* scope, bool allowDelete, bool allowBreakAndCont
 }
 
 
-StackFrame::StackFrame(unsigned long level, IScope* scope, const ParameterList& params)
+StackFrame::StackFrame(unsigned long level, IScope* scope, ParameterList params)
 : mLevel(level),
-  mParameters(params),
+  mParameters(std::move(params)),
   mScope(scope)
 {
 }
 
 StackFrame::~StackFrame()
 {
-	mScope = 0;
+	mScope = nullptr;
 }
 
 bool StackFrame::allowBreakAndContinue() const
@@ -163,7 +165,7 @@ std::string StackFrame::toString() const
 			result += mScope->getFullScopeName();
 			break;
 		case IScope::IType::NamedScope:
-			result += mScope->getFullScopeName() + "(" + ObjectiveScript::toString(mParameters) + ")";
+			result += mScope->getFullScopeName() + "(" + Slang::toString(mParameters) + ")";
 			break;
 		case IScope::IType::SymbolScope:
 			result += mScope->getFullScopeName();

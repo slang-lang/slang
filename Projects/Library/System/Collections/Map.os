@@ -1,6 +1,5 @@
 
 import System.Exception;
-import CollectionItem;
 import ICollection;
 import Iterator;
 import List;
@@ -18,13 +17,21 @@ public object Map<K, V> implements ICollection {
 		clear();
 	}
 
+	public Map<K, V> Copy() const {
+		var result = new Map<K, V>();
+
+		result.mItems = mItems;
+
+		return result;
+	}
+
 	public void clear() modify {
 		mItems.clear();
 	}
 
-	public bool contains(K key) const {
+	public bool contains( K key const ) const {
 		foreach ( Object p : mItems ) {
-			if ( (Pair<K, V> p) == key ) {
+			if ( ( Pair<K, V> p ) == key ) {
 				return true;
 			}
 		}
@@ -40,31 +47,41 @@ public object Map<K, V> implements ICollection {
 		return V mItems.first();
 	}
 
-	public V get(K key) const throws {
+	public V get( K key const ) const throws {
 		foreach ( Object p : mItems ) {
-			if ( (Pair<K, V> p) == key ) {
-				Pair<K, V> pair = Pair<K, V> p;
-				return pair.second;
+			if ( ( Pair<K, V> p ) == key ) {
+				return ( Pair<K, V> p ).second;
 			}
 		}
 
-		throw new Exception("unknown key!");
-		//throw new Exception("unknown key '" + (string key) + "'!");
+		throw new Exception( "unknown key!" );
 	}
 
+///* activate for double linked iterator usage
 	public Iterator<Object> getIterator() const {
-		return new Iterator<Object>(ICollection mItems);
+		return mItems.getIterator();
 	}
 
 	public ReverseIterator<Object> getReverseIterator() const {
-		return new ReverseIterator<Object>(ICollection mItems);
+		return mItems.getReverseIterator();
+	}
+//*/
+
+/* activate for random access iterator usage
+	public Iterator<Object> getIterator() const {
+		return mItems.getIterator();
 	}
 
-	public int indexOf(K key) const throws {
+	public ReverseIterator<Object> getReverseIterator() const {
+		return mItems.getReverseIterator();
+	}
+*/
+
+	public int indexOf( K key ) const throws {
 		int count = 0;
 
 		foreach ( Object p : mItems ) {
-			if ( (Pair<K, V> p) == key ) {
+			if ( ( Pair<K, V> p ) == key ) {
 				return count;
 			}
 		}
@@ -72,34 +89,33 @@ public object Map<K, V> implements ICollection {
 		return -1;
 	}
 
-	public void insert(K k, V v) modify {
-		mItems.push_back(
-			Object new Pair<K, V>(k, v)
-		);
+	public void insert( K k, V v ) modify {
+		mItems.push_back( cast<Object>( new Pair<K, V>( k, v ) ) );
 	}
 
 	public V last() const throws {
 		return V mItems.last();
 	}
 
-	public void put(K key, V value) modify throws {
+	public void put( K key, V value ) modify throws {
 		foreach ( Object p : mItems ) {
-			if ( (Pair<K, V> p) == key ) {
-				Pair<K, V> pair = Pair<K, V> p;
+			if ( ( Pair<K, V> p ) == key ) {
+				var pair = Pair<K, V> p;
 				pair.second = value;
+
 				return;
 			}
 		}
 
-		throw new Exception("unknown key!");
+		throw new Exception( "unknown key!" );
 	}
 
-	public void remove(K key) modify {
+	public void remove( K key ) modify {
 		int index = 0;
 
 		foreach ( Object p : mItems ) {
-			if ( (Pair<K, V> p) == key ) {
-				mItems.erase(index);
+			if ( ( Pair<K, V> p ) == key ) {
+				mItems.erase( index );
 				return;
 			}
 
@@ -111,13 +127,13 @@ public object Map<K, V> implements ICollection {
 		return mItems.size();
 	}
 
-	public V operator[](K key) const throws {
-		return get(key);
+	public V operator[]( K key ) const throws {
+		return get( key );
 	}
 
 	private List<Object> mItems;		// a list of Pair<K, V>
 
 	private Iterator<Object> __iterator;				// this is a hack to automatically initialize a generic type
-	private ReverseIterator<Object> __reverse_iterator;		// this is a hack to automatically initialize a generic type
+	private ReverseIterator<Object> __reverse_iterator;	// this is a hack to automatically initialize a generic type
 }
 

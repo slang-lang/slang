@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public enum Day {
 	Monday = 0,
@@ -7,7 +7,7 @@ public enum Day {
 	Thursday,
 	Friday,
 	Saturday,
-	Sunday;
+	Sunday
 }
 
 public void Main(int argc = 0, string args = "") {

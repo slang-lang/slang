@@ -1,10 +1,11 @@
 
-#ifndef ObjectiveScript_Common_TypeDeclaration_h
-#define ObjectiveScript_Common_TypeDeclaration_h
+#ifndef Slang_Core_Core_Common_TypeDeclaration_h
+#define Slang_Core_Core_Common_TypeDeclaration_h
 
 
 // Library includes
 #include <string>
+#include <utility>
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
@@ -15,7 +16,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Common {
 
 
@@ -30,15 +31,9 @@ public:
 	  mMutability(Mutability::Modify),
 	  mName(type)
 	{ }
-	TypeDeclaration(const TypeDeclaration& other)
-	: mCombinedName(other.mCombinedName),
-	  mConstraints(other.mConstraints),
-	  mMutability(other.mMutability),
-	  mName(other.mName)
-	{ }
-	TypeDeclaration(const std::string& type, const PrototypeConstraints& constraints, Mutability::E mutability = Mutability::Modify)
+	TypeDeclaration(const std::string& type, PrototypeConstraints constraints, Mutability::E mutability = Mutability::Modify)
 	: mCombinedName(type),
-	  mConstraints(constraints),
+	  mConstraints(std::move(constraints)),
 	  mMutability(mutability),
 	  mName(type)
 	{ }

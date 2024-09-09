@@ -1,6 +1,7 @@
 
 // library imports
 import System.Collections.List;
+import System.Collections.Set;
 import libLog.Logger;
 
 // project imports
@@ -16,6 +17,30 @@ import DispatchSteps.SortOrdersByPriority;
 import DispatchSteps.SortShuttlesByBatteryLevel;
 import DispatchSteps.SortShuttlesByDistance;
 
+
+private object Plan const {
+    public int costs const;
+    public List<Order> orders const;
+    public List<Shuttle> shuttles const;
+
+    public void Constructor(List<Order> orders, List<Shuttle> shuttles, int costs) {
+        this.costs = costs;
+        this.orders = orders;
+        this.shuttles = shuttles;
+    }
+
+    public bool operator<(Plan other const) const {
+/*
+        if ( shuttles.size() == other.shuttles.size() ) {
+            return orders.size() > other.orders.size();
+        }
+
+        return shuttles.size() > other.shuttles.size();
+*/
+
+        return costs < other.costs;
+    }
+}
 
 public object OrderDispatcher {
     public void Constructor(ILogger logger, IPCService ipcService) {
@@ -59,7 +84,7 @@ public object OrderDispatcher {
                 break;
             }
 
-            var data = new DispatchData( cast<Object>( mOrders ), cast<Object>( mShuttles) );
+            var data = new DispatchData( mOrders, mShuttles );
             printOrders(data);
             printShuttles(data);
 
@@ -113,7 +138,7 @@ public object OrderDispatcher {
         mOrders.clear();
 
         int result = DB.Query( ORDER_QUERY );
-        while ( mysql_next_row(result) ) {
+        while ( mysql_fetch_row(result) ) {
             mOrders.push_back( mStorage.LoadOrderByID( cast<int>( mysql_get_field_value(result, "order_id") ) ) );
 
             mLogger.info( cast<string>( mOrders.last() ) );
@@ -124,7 +149,7 @@ public object OrderDispatcher {
         mShuttles.clear();
 
         int result = DB.Query( SHUTTLE_QUERY );
-        while ( mysql_next_row(result) ) {
+        while ( mysql_fetch_row(result) ) {
             mShuttles.push_back( mStorage.LoadShuttleByID( cast<int>( mysql_get_field_value(result, "shuttle_id") ) ) );
 
             mLogger.info( cast<string>( mShuttles.last() ) );
@@ -166,6 +191,14 @@ public object OrderDispatcher {
 
     private void notifyShuttleManager(string message) modify {
         mIPCService.send(SHUTTLEMANAGER_QUEUE, message);
+    }
+
+    private void plan() modify {
+        // creates a set of plans that are compared to each other and executes the best plan
+
+        var plans = new Set<Plan>();
+
+
     }
 
     private void printOrders(DispatchData data) modify {

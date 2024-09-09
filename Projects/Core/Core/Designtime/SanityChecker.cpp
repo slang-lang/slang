@@ -11,17 +11,9 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Designtime {
 
-
-SanityChecker::SanityChecker()
-{
-}
-
-SanityChecker::~SanityChecker()
-{
-}
 
 bool SanityChecker::checkBalancedBrackets() const
 {

@@ -1,13 +1,12 @@
 
-#ifndef ObjectiveScript_Core_Core_Common_Method_h
-#define ObjectiveScript_Core_Core_Common_Method_h
+#ifndef Slang_Core_Core_Common_Method_h
+#define Slang_Core_Core_Common_Method_h
 
 
 // Library includes
 #include <map>
 
 // Project includes
-#include <Core/Attributes/Attributes.h>
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Object.h>
 #include <Core/Parameter.h>
@@ -19,7 +18,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace AST {
@@ -39,7 +38,7 @@ class Method : public NamedScope,
 			   public MethodSymbol
 {
 public:
-	Method(IScope* parent, const std::string& name, const TypeDeclaration& type);
+	Method(IScope* parent, const std::string& name, TypeDeclaration type);
 	Method(const Method& other, bool shallowCopy = false);
 	virtual ~Method();
 
@@ -74,7 +73,6 @@ public: // Setup
 	void setTokens(const TokenList& tokens);
 
 public:
-	bool isEmpty() const;
 	bool isExtensionMethod() const;
 	bool isPrototype() const;
 
@@ -88,6 +86,7 @@ protected:
 
 private:
 	bool mAllowDelete;
+	bool mIsInitialized;
 	TypeDeclaration mReturnType;
 	AST::Statements* mRootNode;
 	ParameterList mSignature;

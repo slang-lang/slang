@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Runtime_ExceptionData_h
-#define ObjectiveScript_Runtime_ExceptionData_h
+#ifndef Slang_Core_Core_Runtime_ExceptionData_h
+#define Slang_Core_Core_Runtime_ExceptionData_h
 
 
 // Library includes
@@ -13,7 +13,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Runtime {
 
 // Forward declarations
@@ -23,7 +23,7 @@ class ExceptionData
 {
 public:
 	ExceptionData();
-	ExceptionData(Object* data, const Common::Position& position = Common::Position(), const std::string& stackTrace = "");
+	explicit ExceptionData(Object* data, const Common::Position& position = Common::Position(), const std::string& stackTrace = "");
 
 public:
 	Object* getData() const;

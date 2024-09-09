@@ -10,19 +10,16 @@
 
 
 // Library includes
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <string.h>
 
 #define UnstreamLogMessage(msgstr, ostream_expr) \
-    do {\
-        std::ostringstream _ostr_; \
-        _ostr_ << ostream_expr; \
-        msgstr = _ostr_.str(); \
-    } while (false)
+	std::ostringstream _ostr_; \
+	_ostr_ << ostream_expr; \
+	msgstr = _ostr_.str();
 
 
 // Project includes
@@ -34,70 +31,6 @@
 // Namespace declarations
 
 
-#define debug(ostream_expr) do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogDebug(_msg_, __FILE__, __LINE__); \
-            } \
-        } \
-        while( false )
-
-#define deprecate(ostream_expr) do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogDeprecate(_msg_, __FILE__, __LINE__); \
-            } \
-        } \
-        while( false )
-
-#define error(ostream_expr) do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogError(_msg_, __FILE__, __LINE__); \
-            } \
-        } \
-        while( false )
-
-#define fatal(ostream_expr) do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogFatal(_msg_, __FILE__, __LINE__); \
-            } \
-        } \
-        while( false )
-
-#define info(ostream_expr) do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogInfo(_msg_, __FILE__, __LINE__); \
-            } \
-        } \
-        while( false )
-
-#define method(ostream_expr) do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogMethod(_msg_, __FILE__, __LINE__); \
-            } \
-        } \
-        while( false )
-
-#define warn(ostream_expr) do { \
-            if ( this->getLogger() ) { \
-                std::string _msg_; \
-                UnstreamLogMessage(_msg_, ostream_expr); \
-				this->LogWarn(_msg_, __FILE__, __LINE__); \
-            } \
-        } \
-        while( false )
-
-
 namespace Utils {
 namespace Common {
 
@@ -105,38 +38,35 @@ namespace Common {
 class Logger : public ILogger
 {
 public:
-	Logger(char* logfile);
-	Logger(const ILogger *parent, const std::string& className, const std::string& key = "");
-	virtual ~Logger();
+	virtual ~Logger() = default;
 
 public:
 	const std::string& getClassName() const;
 	IContext* getContext() const;
 	ILogger* getLogger();
 
-	void LogDebug(const std::string& message, char *file, unsigned int line);
-	void LogDeprecate(const std::string& message, char *file, unsigned int line);
-	void LogError(const std::string& message, char *file, unsigned int line);
-	void LogFatal(const std::string& message, char *file, unsigned int line);
-	void LogInfo(const std::string& message, char *file, unsigned int line);
-	void LogMethod(const std::string& message, char *file, unsigned int line);
-	void LogWarn(const std::string& message, char *file, unsigned int line);
+	void LogDebug( const std::string& message, const std::string& file, unsigned int line );
+	void LogDeprecate( const std::string& message, const std::string& file, unsigned int line );
+	void LogError( const std::string& message, const std::string& file, unsigned int line );
+	void LogFatal( const std::string& message, const std::string& file, unsigned int line );
+	void LogInfo( const std::string& message, const std::string& file, unsigned int line );
+	void LogMethod( const std::string& message, const std::string& file, unsigned int line );
+	void LogWarn( const std::string& message, const std::string& file, unsigned int line );
 
-	void setKey(const std::string& key);
-	void setLoudness(int loudness);
+	void setKey( const std::string& key );
+	void setLoudness( int loudness );
 
 protected:
-	IContext* mContext;
+	Logger();
+	Logger( const ILogger* parent, const std::string& className, const std::string& key = "" );
 
-private:
-	std::string getDateTime();
-	void Log(const std::string& loglevel, const std::string& message, char *file, unsigned int line);
+	void Log( const std::string& logLevel, const std::string& message, const std::string& file, unsigned int line );
 
-private:
+protected:
 	std::string mClassName;
+	IContext* mContext;
 	bool mHasParent;
 	std::string mKey;
-	std::string mLogFile;
 	int mLoudness;
 };
 

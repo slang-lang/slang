@@ -3,30 +3,28 @@
 #include "Object.h"
 
 // Library includes
+#include <utility>
 
 // Project includes
 #include <Core/AST/TreeInterpreter.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
-#include <Core/Defines.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
-#include <Utils.h>
-#include "Tools.h"
 
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Runtime {
 
 
 Object::Object()
-: MethodScope(ANONYMOUS_OBJECT, 0),
+: MethodScope(ANONYMOUS_OBJECT, nullptr),
   ObjectSymbol(ANONYMOUS_OBJECT),
-  mBluePrint(0),
+  mBluePrint(nullptr),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
   mIsReference(false),
@@ -37,11 +35,11 @@ Object::Object()
 	mThis = this;
 }
 
-Object::Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
-: MethodScope(name, 0),
+Object::Object(const std::string& name, std::string filename, const std::string& type, const AtomicValue& value)
+: MethodScope(name, nullptr),
   ObjectSymbol(name),
-  mBluePrint(0),
-  mFilename(filename),
+  mBluePrint(nullptr),
+  mFilename(std::move(filename)),
   mIsAtomicType(false),
   mIsReference(false),
   mQualifiedOuterface(type),
@@ -65,7 +63,6 @@ Object& Object::operator= (const Object& other)
 		mBluePrint = other.mBluePrint;
 		mBluePrintType = other.mBluePrintType;
 		mFilename = other.mFilename;
-		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsReference = other.mIsReference;
@@ -95,7 +92,6 @@ void Object::assign(const Object& other)
 		mBluePrint = other.mBluePrint;
 		mBluePrintType = other.mBluePrintType;
 		mFilename = other.mFilename;
-		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mMemoryLayout = other.mMemoryLayout;
@@ -109,7 +105,7 @@ void Object::assign(const Object& other)
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
-		mIsReference = other.mIsReference;	// TODO: this prevents a correct handling
+		mIsReference = other.mIsReference;
 		if ( mIsReference && other.mIsReference ) {
 			assignReference(other.mReference);
 		}
@@ -204,8 +200,8 @@ void Object::defineMember(const std::string& name, Symbol* symbol)
 void Object::defineMethod(const std::string& name, Common::Method* method)
 {
 	// try to override abstract methods a.k.a. implement an interface method
-	Common::Method* old = dynamic_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
-	if ( old && old->isAbstract() ) {
+	auto* old = dynamic_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
+	if ( old && old->isAbstractMethod() ) {
 		Runtime::Object* base = dynamic_cast<Runtime::Object*>(resolve(IDENTIFIER_BASE, true, Visibility::Designtime));
 		base->undefineMethod(old);
 
@@ -245,7 +241,7 @@ ControlFlow::E Object::Destructor()
 
 ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params)
 {
-	Common::Method *method = dynamic_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
+	auto *method = dynamic_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifier("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
@@ -255,22 +251,29 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 
 void Object::garbageCollector()
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		undefine((*it)->getName());
+	for ( auto mMethod : mMethods ) {
+		undefine(mMethod->getName());
 
-		delete (*it);
+		delete mMethod;
 	}
 
 	Symbols tmp = mSymbols;
 
-	for ( Symbols::iterator symIt = tmp.begin(); symIt != tmp.end(); ++symIt) {
-		if ( symIt->first != IDENTIFIER_BASE &&
-			 symIt->first != IDENTIFIER_THIS &&
-			 symIt->second && symIt->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			delete symIt->second;
+	for ( auto& symIt : tmp ) {
+		if ( symIt.first == IDENTIFIER_BASE ) {
+			auto* obj = dynamic_cast<Object*>( symIt.second );
+			if ( obj ) {
+				Controller::Instance().memory()->remove(obj->mReference);
+			}
+		}
+		else if ( symIt.first == IDENTIFIER_THIS ) {
+			// do nothing
+		}
+		else if ( symIt.second && symIt.second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+			delete symIt.second;
 		}
 
-		mSymbols.erase(symIt->first);
+		mSymbols.erase(symIt.first);
 	}
 }
 
@@ -299,13 +302,13 @@ bool Object::isAbstract() const
 		return mThis->isAbstract();
 	}
 
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->isAbstract() ) {
+	for ( auto& mMethod : mMethods ) {
+		if ( mMethod->isAbstractMethod() ) {
 			return true;
 		}
 	}
 
-	return mImplementationType == ImplementationType::Abstract || mBluePrintType == BluePrintType::Interface;
+	return mBluePrintType == BlueprintType::Interface;
 }
 
 bool Object::isAtomicType() const
@@ -315,7 +318,7 @@ bool Object::isAtomicType() const
 
 bool Object::isEnumerationValue() const
 {
-	return mBluePrintType == BluePrintType::Enum;
+	return mBluePrintType == BlueprintType::Enum;
 }
 
 bool Object::isInstanceOf(const std::string& type) const
@@ -328,8 +331,8 @@ bool Object::isInstanceOf(const std::string& type) const
 		return true;
 	}
 
-	for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->second->isInstanceOf(type) ) {
+	for ( const auto& it : mInheritance ) {
+		if ( it.second->isInstanceOf(type) ) {
 			return true;
 		}
 	}
@@ -356,7 +359,7 @@ void Object::operator_assign(const Object *other)
 	ParameterList params;
 	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
+	::Slang::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	if ( value_operator ) {
 		Controller::Instance().thread(0)->execute(other->getThis(), dynamic_cast<Common::Method*>(value_operator), params, this);
 		return;
@@ -440,6 +443,16 @@ void Object::operator_plus(const Object *other)
 	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
+void Object::operator_shift_left(const Object *other)
+{
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+}
+
+void Object::operator_shift_right(const Object *other)
+{
+	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+}
+
 void Object::operator_subtract(const Object *other)
 {
 	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
@@ -495,29 +508,29 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope, Visibili
 	return result;
 }
 
-ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
+Slang::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	if ( mThis != this ) {
 		return mThis->resolveMethod(name, params, onlyCurrentScope, visibility);
 	}
 
 	// (1) look in current scope
-	ObjectiveScript::MethodSymbol *result = MethodScope::resolveMethod(name, params, true, visibility);
+	Slang::MethodSymbol *result = MethodScope::resolveMethod(name, params, true, visibility);
 
 	// (2) check inheritance
 	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
 	Symbol* base = MethodScope::resolve("base", true, Visibility::Designtime);
 	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-		ObjectiveScript::MethodSymbol *tmp = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
-		if ( !result || (tmp && tmp->isFinal()) ) {
+		Slang::MethodSymbol *tmp = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
+		if ( !result || (tmp && tmp->isFinalMethod()) ) {
 			result = tmp;
 		}
 	}
 
 	// (3) if we still haven't found something also look in other scopes
-	if ( !result || !result->isFinal() ) {
+	if ( !result || !result->isFinalMethod() ) {
 		if ( !onlyCurrentScope ) {
-			ObjectiveScript::MethodSymbol *tmp = MethodScope::resolveMethod(name, params, false, visibility);
+			Slang::MethodSymbol *tmp = MethodScope::resolveMethod(name, params, false, visibility);
 
 			if ( tmp ) {
 				result = tmp;
@@ -549,7 +562,7 @@ void Object::setReference(const Reference& reference)
 	mReference = reference;
 }
 
-void Object::setValue(AtomicValue value)
+void Object::setValue(const AtomicValue& value)
 {
 	if ( mThis != this ) {
 		return mThis->setValue(value);
@@ -566,8 +579,10 @@ std::string Object::ToString(unsigned int indent) const
 
 	std::string result;
 	result += ::Utils::Tools::indent(indent);
-	result += Visibility::convert(mVisibility);
-	//result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	result += " " + MemoryLayout::convert(mMemoryLayout);
+	if ( mLanguageFeatureState != LanguageFeatureState::Stable ) {
+		result += Visibility::convert(mVisibility);
+	}
 	result += " " + QualifiedTypename() + " " + getName();
 	result += " " + Mutability::convert(mMutability);
 
@@ -586,18 +601,18 @@ std::string Object::ToString(unsigned int indent) const
 		}
 */
 
-		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-			if ( it->first == IDENTIFIER_THIS || !it->second ) {
+		for ( const auto& mSymbol : mSymbols ) {
+			if ( mSymbol.first == IDENTIFIER_THIS || !mSymbol.second ) {
 				continue;
 			}
 
-			switch ( it->second->getSymbolType() ) {
+			switch ( mSymbol.second->getSymbolType() ) {
 				case Symbol::IType::BluePrintObjectSymbol:
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::NamespaceSymbol:
 					continue;
 				case Symbol::IType::ObjectSymbol:
-					result += it->second->ToString(indent + 1) + "\n";
+					result += mSymbol.second->ToString(indent + 1) + "\n";
 					break;
 			}
 		}

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_TreeVisitor_h
-#define ObjectiveScript_Core_AST_TreeVisitor_h
+#ifndef Slang_Core_Core_AST_TreeVisitor_h
+#define Slang_Core_Core_AST_TreeVisitor_h
 
 
 // Library includes
@@ -16,7 +16,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace AST {
 
 // Forward declarations
@@ -26,8 +26,8 @@ class Statements;
 class TreeVisitor
 {
 public:
-	TreeVisitor();
-	virtual ~TreeVisitor();
+	TreeVisitor() = default;
+	virtual ~TreeVisitor() = default;
 
 protected:
 	virtual void visit(Node* node);
@@ -37,6 +37,7 @@ protected:
 	virtual void visitStatement(Statement* node);
 
 	virtual void visitAssert(AssertStatement* node);
+	virtual void visitAssignment(AssignmentStatement* node);
 	virtual void visitBreak(BreakStatement* node);
 	virtual void visitContinue(ContinueStatement* node);
 	virtual void visitDelete(DeleteStatement* node);

@@ -14,20 +14,15 @@ namespace Testing {
 namespace AST {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("AST"),
-  Utils::Common::Logger(p, "ASTFixture")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger *p, StringSet libraries )
+: TestFixture( "AST", std::move( libraries ) )
+, Utils::Common::Logger( p, "ASTFixture" )
 {
 }
 
 void Fixture::setup()
 {
-	ASTTest* astTest = new ASTTest(this);
-	add(astTest);
+	add( new ASTTest( this ) );
 }
 
 void Fixture::teardown()

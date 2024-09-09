@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY(Configuration)
 
 SET(SOURCES
 	Context.cpp
+	FileLogger.cpp
 	Logger.cpp
 	StdOutLogger.cpp
 )
@@ -11,6 +12,7 @@ SET(SOURCES
 SET(HEADERS
 	Context.h
 	Exceptions.h
+	FileLogger.h
 	Logger.h
 	StdOutLogger.h
 )

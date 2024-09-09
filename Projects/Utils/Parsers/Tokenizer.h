@@ -23,12 +23,12 @@ public:
     static const std::string DELIMITERS;
 
 public:
-    Tokenizer(const std::string& str, const std::string& delimiters = "");
+    Tokenizer(std::string  str, const std::string& delimiters = "");
 
 public:
-    const std::string getRemainingString() const;
-    const std::string getString() const;
-    const std::string getToken() const;
+    std::string getRemainingString() const;
+    std::string getString() const;
+    std::string getToken() const;
 
     bool hasNext();
     bool nextToken(const std::string& delimiters);

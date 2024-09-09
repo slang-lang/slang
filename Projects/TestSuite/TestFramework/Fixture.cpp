@@ -14,20 +14,15 @@ namespace Testing {
 namespace Framework {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Testing"),
-  Utils::Common::Logger(p, "TestFramework")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p, StringSet libraries )
+: TestFixture( "Testing", std::move( libraries ) )
+, Utils::Common::Logger( p, "TestFramework" )
 {
 }
 
 void Fixture::setup()
 {
-	TestFrameworkTest* frameworkTest = new TestFrameworkTest(this);
-	add(frameworkTest);
+	add( new TestFrameworkTest( this ) );
 }
 
 void Fixture::teardown()

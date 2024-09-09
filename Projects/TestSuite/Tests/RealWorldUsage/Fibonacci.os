@@ -1,6 +1,6 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
-// Fazit: recursion is really slow in oscript
+// Fazit: recursion is really slow in slang
 
 public void Main(int argc, string args) {
 	//input to print Fibonacci series upto how many numbers
@@ -20,7 +20,7 @@ public void Main(int argc, string args) {
 	endl();
 } 
 
-// oscript program for Fibonacci number using recursion.
+// slang program for Fibonacci number using recursion.
 private int fibonacciRecusion(int value) {
 	if ( value == 1 || value == 2 ) {
 		return 1;
@@ -29,7 +29,7 @@ private int fibonacciRecusion(int value) {
 	return fibonacciRecusion(value - 1) + fibonacciRecusion(value - 2); //tail recursion
 }
 
-// oscript program for Fibonacci number using Loop.
+// slang program for Fibonacci number using Loop.
 private int fibonacciLoop(int value) {
 	if ( value == 1 || value == 2 ) {
 		return 1;

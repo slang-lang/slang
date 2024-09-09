@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_Memory_h
-#define ObjectiveScript_Core_VirtualMachine_Memory_h
+#ifndef Slang_Core_Core_VirtualMachine_Memory_h
+#define Slang_Core_Core_VirtualMachine_Memory_h
 
 
 // Library includes
@@ -15,7 +15,12 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
+
+// Forward declarations
+namespace Runtime {
+	class Object;
+}
 
 // Forward declarations
 namespace Runtime {
@@ -27,7 +32,7 @@ class Memory
 {
 public:
 	Memory();
-	~Memory();
+	~Memory() = default;
 
 public:
 	void deinit();
@@ -44,7 +49,7 @@ private:
 	class RefCount
 	{
 	public:
-		explicit RefCount(Runtime::Object* object = 0)
+		explicit RefCount(Runtime::Object* object = nullptr)
 		: mCount(0),
 		  mObject(object)
 		{ }

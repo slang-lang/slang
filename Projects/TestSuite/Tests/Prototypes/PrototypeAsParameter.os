@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public object Prototype<T> {
 	private T mValue;
@@ -25,7 +25,7 @@ private bool TestCase1() {
 	return MethodWithPrototypeParameter(proto);
 }
 
-private bool MethodWithPrototypeParameter(Prototype<int> proto ref) {
+private bool MethodWithPrototypeParameter(Prototype<int> proto) {
 	print("proto.getValue() = " + proto.getValue());
 	return proto.getValue() == 173;
 }

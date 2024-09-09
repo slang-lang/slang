@@ -31,6 +31,10 @@ public object OrderID {
         ID = id;
     }
 
+    public OrderID Copy() const {
+        return new OrderID( ID );
+    }
+
     public string =operator(string) const {
         return "OrderID{" + ID + "}";
     }
@@ -54,6 +58,20 @@ public object Order {
         Constructor();
 
         load(dbResult);
+    }
+
+    public Order Copy() const {
+        Order result = new Order();
+
+        result.jobs = jobs;                 // assigns a reference to the original orders job collection
+        result.orderID = orderID;
+        result.orderTypeID = orderTypeID;
+        result.priority = priority;
+        result.sequence = sequence;
+        result.shuttleID = shuttleID;
+        result.stateID = stateID;
+
+        return result;
     }
 
     public bool canProceed() const {

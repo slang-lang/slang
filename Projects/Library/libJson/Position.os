@@ -4,8 +4,7 @@
 // project imports
 
 
-public namespace Json {
-}
+public namespace Json { }
 
 public object Position const {
 	public int mColumn const;

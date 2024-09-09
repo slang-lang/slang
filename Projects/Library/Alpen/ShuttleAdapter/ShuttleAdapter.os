@@ -63,7 +63,7 @@ public object ShuttleAdapter {
 		mLogger.debug("Receiving telegram...");
 
 		try {
-			var file = new System.IO.File("telegram.txt", System.IO.FileAccessMode.ReadWrite);
+			var file = new System.IO.File("telegram.txt", System.IO.File.AccessMode.ReadWrite);
 
 			string telegram;
 			while ( !file.isEOF() ) {

@@ -6,4 +6,3 @@
 60 DIM C = -1
 70 PRINT "C = " + C
 80 REM END
-

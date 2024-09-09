@@ -20,16 +20,16 @@
 #endif
 
 // Namespace declarations
-using namespace ObjectiveScript;
+using namespace Slang;
 
 
 namespace Testing {
 namespace Operator {
 
 
-OperatorTest::OperatorTest(const ::Utils::Common::Logger *p)
-: GenericTest("OperatorTest"),
-  ::Utils::Common::Logger(p, "OperatorTest")
+OperatorTest::OperatorTest( const Utils::Common::ILogger* p )
+: UnitTest( "OperatorTest" ),
+  Utils::Common::Logger( p, "OperatorTest" )
 {
 }
 
@@ -45,12 +45,14 @@ void OperatorTest::process()
 	TEST(testBooleanOverloads_Less);
 	TEST(testBooleanOverloads_Less_Equal);
 	TEST(testBooleanOverloads_Unequal);
+	TEST(testEnumeration);
 	TEST(testIndexOperator);
 	TEST(testInverseOperator);
 	TEST(testIsOperator);
 	TEST(testMathOverloadsWithNumbers);
 	TEST(testMathOverloadsWithObjects);
 	TEST(testRangeOperator);
+	TEST(testShiftOperator);
 	TEST(testUnaryMinus);
 	TEST(testUnaryPlus);
 	TEST(testUnaryValidate);
@@ -204,12 +206,26 @@ void OperatorTest::testBooleanOverloads_Unequal()
 	}
 }
 
+void OperatorTest::testEnumeration()
+{
+    try {
+        VirtualMachine vm;
+        vm.runScriptFromFile("Tests/Operator/Enumeration.os");
+
+        // automatic success
+    }
+    catch ( std::exception& e ) {
+        // exception has been thrown: test failed!
+        TFAIL(e.what());
+    }
+}
+
 void OperatorTest::testIndexOperator()
 {
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/Operator/IndexOperatorTest.os");
 
@@ -291,11 +307,25 @@ void OperatorTest::testRangeOperator()
 	}
 }
 
+void OperatorTest::testShiftOperator()
+{
+	try {
+		VirtualMachine vm;
+		vm.runScriptFromFile("Tests/Operator/ShiftOperator.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
 void OperatorTest::testUnaryMinus()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Operator/UnaryMinus.os"), ObjectiveScript::Common::Exceptions::UnknownOperation);
+		TTHROWS(vm.runScriptFromFile("Tests/Operator/UnaryMinus.os"), Slang::Common::Exceptions::UnknownOperation);
 
 		// automatic success
 	}
@@ -309,7 +339,7 @@ void OperatorTest::testUnaryPlus()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Operator/UnaryPlus.os"), ObjectiveScript::Common::Exceptions::UnknownOperation);
+		TTHROWS(vm.runScriptFromFile("Tests/Operator/UnaryPlus.os"), Slang::Common::Exceptions::UnknownOperation);
 
 		// automatic success
 	}

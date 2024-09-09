@@ -11,30 +11,22 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace AST {
 
-
-TreeVisitor::TreeVisitor()
-{
-}
-
-TreeVisitor::~TreeVisitor()
-{
-}
 
 void TreeVisitor::visit(Node* node)
 {
 	if ( node ) {
 		switch ( node->getNodeType() ) {
 			case Node::NodeType::Expression:
-				visitExpression(static_cast<Expression*>(node));
+				visitExpression(dynamic_cast<Expression*>(node));
 				break;
 			case Node::NodeType::Operator:
-				visitOperator(static_cast<Operator*>(node));
+				visitOperator(dynamic_cast<Operator*>(node));
 				break;
 			case Node::NodeType::Statement:
-				visitStatement(static_cast<Statement*>(node));
+				visitStatement(dynamic_cast<Statement*>(node));
 				break;
 		}
 	}
@@ -43,6 +35,13 @@ void TreeVisitor::visit(Node* node)
 void TreeVisitor::visitAssert(AssertStatement* node)
 {
 	visit(node->mExpression);
+}
+
+void TreeVisitor::visitAssignment(AssignmentStatement* node)
+{
+	visitExpression( dynamic_cast<Expression*>( node->mLeftExpression ) );
+
+	visitExpression( dynamic_cast<Expression*>( node->mRightExpression ) );
 }
 
 void TreeVisitor::visitBreak(BreakStatement*)
@@ -73,32 +72,32 @@ void TreeVisitor::visitExpression(Expression* expression)
 
 	switch ( expression->getExpressionType() ) {
 		case Expression::ExpressionType::AssignmentExpression: {
-			AssignmentExpression* ass = static_cast<AssignmentExpression*>(expression);
+			auto* ass = dynamic_cast<AssignmentExpression*>(expression);
 
 			visit(ass->mLHS);
 			visit(ass->mRHS);
 		} break;
 		case Expression::ExpressionType::BinaryExpression: {
-			BinaryExpression* bin = static_cast<BinaryExpression*>(expression);
+			auto* bin = dynamic_cast<BinaryExpression*>(expression);
 
 			visit(bin->mLHS);
 			visit(bin->mRHS);
 		} break;
 		case Expression::ExpressionType::CopyExpression: {
-			visit(static_cast<CopyExpression*>(expression)->mExpression);
+			visit(dynamic_cast<CopyExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::IsExpression: {
-			IsExpression* is = static_cast<IsExpression*>(expression);
+			auto* is = dynamic_cast<IsExpression*>(expression);
 
 			visit(is->mExpression);
 		} break;
 		case Expression::ExpressionType::NewExpression: {
-			visit(static_cast<NewExpression*>(expression)->mExpression);
+			visit(dynamic_cast<NewExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::LiteralExpression: {
 		} break;
 		case Expression::ExpressionType::MethodExpression: {
-			MethodExpression* method = static_cast<MethodExpression*>(expression);
+			auto* method = dynamic_cast<MethodExpression*>(expression);
 
 			visit(method->mSymbolExpression);
 			for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
@@ -106,33 +105,33 @@ void TreeVisitor::visitExpression(Expression* expression)
 			}
 		} break;
 		case Expression::ExpressionType::ScopeExpression: {
-			ScopeExpression* scope = dynamic_cast<ScopeExpression*>(expression);
+			auto* scope = dynamic_cast<ScopeExpression*>(expression);
 
 			visit(scope->mLHS);
 			visit(scope->mRHS);
 		} break;
 		case Expression::ExpressionType::SymbolExpression: {
-			SymbolExpression* sym = static_cast<SymbolExpression*>(expression);
+			auto* sym = dynamic_cast<SymbolExpression*>(expression);
 
 			visit(sym->mSymbolExpression);
 		} break;
 		case Expression::ExpressionType::TernaryExpression: {
-			TernaryExpression* ter = static_cast<TernaryExpression*>(expression);
+			auto* ter = dynamic_cast<TernaryExpression*>(expression);
 
 			visit(ter->mCondition);
 			visit(ter->mFirst);
 			visit(ter->mSecond);
 		} break;
 		case Expression::ExpressionType::TypecastExpression: {
-			TypecastExpression* type = static_cast<TypecastExpression*>(expression);
+			auto* type = dynamic_cast<TypecastExpression*>(expression);
 
 			visit(type->mExpression);
 		} break;
 		case Expression::ExpressionType::TypeidExpression: {
-			visit(static_cast<TypeidExpression*>(expression)->mExpression);
+			visit(dynamic_cast<TypeidExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::UnaryExpression: {
-			UnaryExpression* un = static_cast<UnaryExpression*>(expression);
+			auto* un = dynamic_cast<UnaryExpression*>(expression);
 
 			visit(un->mExpression);
 		} break;
@@ -141,9 +140,9 @@ void TreeVisitor::visitExpression(Expression* expression)
 
 void TreeVisitor::visitFor(ForStatement* node)
 {
-	visitStatement(static_cast<Statement*>(node->mInitialization));
+	visitStatement(dynamic_cast<Statement*>(node->mInitialization));
 
-	visitStatement(static_cast<Statement*>(node->mIteration));
+	visitStatement(dynamic_cast<Statement*>(node->mIteration));
 
 	visit(node->mStatement);
 }
@@ -188,59 +187,62 @@ void TreeVisitor::visitStatement(Statement *node)
 
 	switch ( node->getStatementType() ) {
 		case Statement::StatementType::AssertStatement:
-			visitAssert(static_cast<AssertStatement*>(node));
+			visitAssert(dynamic_cast<AssertStatement*>(node));
+			break;
+		case Statement::StatementType::AssignmentStatement:
+			visitAssignment(dynamic_cast<AssignmentStatement*>(node));
 			break;
 		case Statement::StatementType::BreakStatement:
-			visitBreak(static_cast<BreakStatement*>(node));
+			visitBreak(dynamic_cast<BreakStatement*>(node));
 			break;
 		case Statement::StatementType::CaseStatement:
 			throw Common::Exceptions::Exception("case statements are handled separately!");
 		case Statement::StatementType::CatchStatement:
 			throw Common::Exceptions::Exception("catch statements are handled separately!");
 		case Statement::StatementType::ContinueStatement:
-			visitContinue(static_cast<ContinueStatement*>(node));
+			visitContinue(dynamic_cast<ContinueStatement*>(node));
 			break;
 		case Statement::StatementType::DeleteStatement:
-			visitDelete(static_cast<DeleteStatement*>(node));
+			visitDelete(dynamic_cast<DeleteStatement*>(node));
 			break;
 		case Statement::StatementType::ExitStatement:
-			visitExit(static_cast<ExitStatement*>(node));
+			visitExit(dynamic_cast<ExitStatement*>(node));
 			break;
 		case Statement::StatementType::ForeachStatement:
-			visitForeach(static_cast<ForeachStatement *>(node));
+			visitForeach(dynamic_cast<ForeachStatement *>(node));
 			break;
 		case Statement::StatementType::ForStatement:
-			visitFor(static_cast<ForStatement*>(node));
+			visitFor(dynamic_cast<ForStatement*>(node));
 			break;
 		case Statement::StatementType::IfStatement:
-			visitIf(static_cast<IfStatement*>(node));
+			visitIf(dynamic_cast<IfStatement*>(node));
 			break;
 		case Statement::StatementType::PrintStatement:
-			visitPrint(static_cast<PrintStatement*>(node));
+			visitPrint(dynamic_cast<PrintStatement*>(node));
 			break;
 		case Statement::StatementType::ReturnStatement:
-			visitReturn(static_cast<ReturnStatement*>(node));
+			visitReturn(dynamic_cast<ReturnStatement*>(node));
 			break;
 		case Statement::StatementType::Statements:
-			visitStatements(static_cast<Statements*>(node));
+			visitStatements(dynamic_cast<Statements*>(node));
 			break;
 		case Statement::StatementType::SwitchStatement:
-			visitSwitch(static_cast<SwitchStatement*>(node));
+			visitSwitch(dynamic_cast<SwitchStatement*>(node));
 			break;
 		case Statement::StatementType::ThrowStatement:
-			visitThrow(static_cast<ThrowStatement*>(node));
+			visitThrow(dynamic_cast<ThrowStatement*>(node));
 			break;
 		case Statement::StatementType::TryStatement:
-			visitTry(static_cast<TryStatement*>(node));
+			visitTry(dynamic_cast<TryStatement*>(node));
 			break;
 		case Statement::StatementType::TypeDeclaration:
-			visitTypeDeclaration(static_cast<TypeDeclaration*>(node));
+			visitTypeDeclaration(dynamic_cast<TypeDeclaration*>(node));
 			break;
 		case Statement::StatementType::TypeInference:
-			visitTypeInference(static_cast<TypeInference*>(node));
+			visitTypeInference(dynamic_cast<TypeInference*>(node));
 			break;
 		case Statement::StatementType::WhileStatement:
-			visitWhile(static_cast<WhileStatement*>(node));
+			visitWhile(dynamic_cast<WhileStatement*>(node));
 			break;
 	}
 }
@@ -250,8 +252,8 @@ void TreeVisitor::visitStatements(Statements* node)
 	Statements* statements = node;
 
 	if ( statements ) {
-		for ( Statements::Nodes::const_iterator it = statements->mNodes.cbegin(); it != statements->mNodes.cend(); ++it ) {
-			visit((*it));
+		for ( auto& mNode : statements->mNodes ) {
+			visit(mNode);
 		}
 	}
 }
@@ -260,10 +262,10 @@ void TreeVisitor::visitSwitch(SwitchStatement* node)
 {
 	visit(node->mExpression);
 
-	for ( CaseStatements::const_iterator it = node->mCaseStatements.cbegin(); it != node->mCaseStatements.cend(); ++it ) {
-		visit((*it)->mCaseExpression);
+	for ( auto& caseStatement : node->mCaseStatements ) {
+		visit(caseStatement->mCaseExpression);
 
-		visit((*it)->mCaseBlock);
+		visit(caseStatement->mCaseBlock);
 	}
 
 	if ( node->mDefaultStatement ) {
@@ -282,11 +284,11 @@ void TreeVisitor::visitTry(TryStatement* node)
 
 	// TODO: handle catch statements correctly
 
-	for ( CatchStatements::const_iterator it = node->mCatchStatements.cbegin(); it != node->mCatchStatements.cend(); ++it ) {
-		if ( (*it)->mTypeDeclaration ) {
+	for ( auto& catchStatement : node->mCatchStatements ) {
+		if ( catchStatement->mTypeDeclaration ) {
 			//visitTypeDeclaration((*it)->mTypeDeclaration);
 
-			visitStatements((*it)->mStatements);
+			visitStatements(catchStatement->mStatements);
 		}
 	}
 
@@ -297,16 +299,14 @@ void TreeVisitor::visitTry(TryStatement* node)
 
 void TreeVisitor::visitTypeDeclaration(TypeDeclaration* node)
 {
-	if ( node->mAssignment ) {
-		visit(node->mAssignment);
+	if ( node->mAssignmentExpression ) {
+		visit(node->mAssignmentExpression);
 	}
 }
 
 void TreeVisitor::visitTypeInference(TypeInference* node)
 {
-	if ( node->mAssignment ) {
-		visit(node->mAssignment);
-	}
+	visitTypeDeclaration( node );
 }
 
 void TreeVisitor::visitWhile(WhileStatement* node)

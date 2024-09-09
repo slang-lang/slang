@@ -6,6 +6,7 @@
 // Library includes
 #include <exception>
 #include <string>
+#include <utility>
 
 // Project includes
 
@@ -22,10 +23,9 @@ namespace Exceptions {
 class Exception : public std::exception
 {
 public:
-	explicit Exception(const std::string& text)
-	: mText(text)
+	explicit Exception(std::string text)
+	: mText(std::move(text))
 	{ }
-	virtual ~Exception() throw() { }
 
 public:
 #ifdef __WIN32
@@ -38,7 +38,7 @@ public:
     // iOS Simulator
 #elif TARGET_OS_IPHONE
     // iOS device
-    const char* what() const throw() {
+    const char* what() const {
         return mText.c_str();
     }
 #elif TARGET_OS_MAC
@@ -50,9 +50,10 @@ public:
     // Unsupported platform
 #endif
 #elif defined __linux
-	virtual const char* what() const throw () {
-		return mText.c_str();
-	}
+    // Other kinds of Mac OS
+    const char* what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_USE_NOEXCEPT {
+        return mText.c_str();
+    }
 #endif
 
 protected:
