@@ -17,6 +17,14 @@ public object String implements IIterable {
 	}
 
 	/*
+	 * bool cast constructor
+	 */
+	public void Constructor( bool value ) {
+		mValue = cast<string>( value );
+		mSize = strlen( mValue );
+	}
+
+	/*
 	 * double cast constructor
 	 */
 	public void Constructor( double value ) {
