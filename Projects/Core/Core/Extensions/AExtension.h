@@ -1,54 +1,57 @@
 
-#ifndef ObjectiveScript_Core_Core_Extensions_AExtension_h
-#define ObjectiveScript_Core_Core_Extensions_AExtension_h
+#ifndef Slang_Core_Core_Extensions_AExtension_h
+#define Slang_Core_Core_Extensions_AExtension_h
 
 
 // Library includes
 #include <list>
 #include <string>
+#include <utility>
 
 // Project includes
 #include "ExtensionMethod.h"
+#include "ExtensionNamespace.h"
 
 // Forward declarations
 
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 class IScope;
 
-}
+namespace Extensions {
 
 class AExtension
 {
 public:
-	AExtension(const std::string& name)
-	: mName(name)
+	AExtension( std::string name, std::string version = "" )
+	: mName( std::move( name ) )
+	, mVersion( std::move( version ) )
 	{ }
-	virtual ~AExtension() { }
+	virtual ~AExtension() = default;
 
 public:
-	virtual void initialize(ObjectiveScript::IScope* scope) = 0;
-	virtual void provideMethods(ObjectiveScript::Extensions::ExtensionMethods& methods) = 0;
+	virtual void initialize( Slang::Extensions::ExtensionNamespace* space ) = 0;
+	virtual void provideMethods( Slang::Extensions::ExtensionMethods& methods ) = 0;
 
 public:
 	const std::string& getName() const {
 		return mName;
 	}
 
-private:
+	const std::string& getVersion() const {
+		return mVersion;
+	}
+
+protected:
 	std::string mName;
+	std::string mVersion;
 };
 
-
-namespace ObjectiveScript {
-namespace Extensions {
-
-
-typedef std::list<AExtension*> ExtensionList;
+typedef std::list<AExtension*> ExtensionCollection;
 
 
 }

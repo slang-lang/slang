@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Common/Logger.h>
-#include <Framework/GenericTest.h>
+#include <Framework/UnitTest.h>
 
 // Forward declarations
 
@@ -18,12 +18,12 @@ namespace Testing {
 namespace Interfaces {
 
 
-class InterfacesTest : public GenericTest,
+class InterfacesTest : public UnitTest,
 					   private Utils::Common::Logger
 {
 public:
-    InterfacesTest(const Utils::Common::ILogger *p);
-    ~InterfacesTest();
+    explicit InterfacesTest( const Utils::Common::ILogger* p );
+    ~InterfacesTest() = default;
 
 public:
     void process();

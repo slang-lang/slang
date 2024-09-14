@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Strings_ToLower_h
-#define ObjectiveScript_Extensions_System_Strings_ToLower_h
+#ifndef Slang_Extensions_System_Strings_ToLower_h
+#define Slang_Extensions_System_Strings_ToLower_h
 
 
 // Library includes
@@ -19,7 +19,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Strings {

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Symbol_h
-#define ObjectiveScript_Core_Symbol_h
+#ifndef Slang_Core_Core_Symbol_h
+#define Slang_Core_Core_Symbol_h
 
 
 // Defines
@@ -20,7 +20,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 class Symbol
@@ -36,16 +36,17 @@ public:
 			ObjectSymbol
 		};
 
-		virtual ~IType() { }
+		virtual ~IType() = default;
 
 		virtual const std::string& QualifiedTypename() const = 0;
 	};
 
 public:
-	Symbol(const std::string& name, IType::E type, Visibility::E visibility = Visibility::Public);
-	virtual ~Symbol();
+	Symbol(std::string name, IType::E type, Visibility::E visibility = Visibility::Public);
+	virtual ~Symbol() = default;
 
 public:
+	bool operator==(const std::string& name) const;
 	bool operator< (const Symbol& other) const;
 	bool operator< (const Symbol* other) const;
 
@@ -77,7 +78,6 @@ public:
 	{
 		mVisibility = Visibility::Private;
 	}
-	virtual ~BlueprintSymbol() { }
 };
 
 class MethodSymbol : public Symbol,
@@ -90,7 +90,6 @@ public:
 	{
 		mVisibility = Visibility::Private;
 	}
-	virtual ~MethodSymbol() { }
 };
 
 class NamespaceSymbol : public Symbol,
@@ -103,7 +102,6 @@ public:
 	{
 		mVisibility = Visibility::Private;
 	}
-	virtual ~NamespaceSymbol() { }
 };
 
 class ObjectSymbol : public Symbol,
@@ -116,7 +114,6 @@ public:
 	{
 		mVisibility = Visibility::Private;
 	}
-	virtual ~ObjectSymbol() { }
 };
 
 

@@ -1,11 +1,11 @@
 
-#ifndef ObjectiveScript_Extensions_System_Sleep_h
-#define ObjectiveScript_Extensions_System_Sleep_h
+#ifndef Slang_Extensions_System_Sleep_h
+#define Slang_Extensions_System_Sleep_h
 
 
 // Library includes
 #ifdef _WIN32
-#	include <stdlib.h>
+#	include <cstdlib>
 #else
 	#include <chrono>
 	#include <thread>
@@ -23,7 +23,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 

@@ -4,6 +4,7 @@
 
 // Library includes
 #include <cassert>
+#include <utility>
 
 // Project includes
 #include <Core/Common/Exceptions.h>
@@ -11,13 +12,11 @@
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Utils.h>
-#include "Tools.h"
 
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 SymbolScope::SymbolScope(IScope *parent)
@@ -39,7 +38,7 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 
 	if ( resolve(name, true, Visibility::Designtime) ) {
 		// duplicate symbol defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
+		throw Common::Exceptions::DuplicateIdentifier(symbol->getName());
 	}
 
 	mSymbols.insert(std::make_pair(name, symbol));
@@ -51,10 +50,10 @@ void SymbolScope::defineExternal(const std::string &name, Symbol *symbol)
 		throw Common::Exceptions::Exception("invalid symbol pointer provided");
 	}
 
-	Symbols::iterator symIt = mExternalSymbols.find(name);
+	auto symIt = mExternalSymbols.find(name);
 	if ( symIt != mExternalSymbols.end() ) {
 		// duplicate symbol defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
+		throw Common::Exceptions::DuplicateIdentifier(symbol->getName());
 	}
 
 	mExternalSymbols.insert(std::make_pair(name, symbol));
@@ -64,17 +63,17 @@ void SymbolScope::deinit()
 {
 	Symbols tmpSymbols = mSymbols;
 
-	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
-		mSymbols.erase(symIt->first);
+	for ( auto& tmpSymbol : tmpSymbols ) {
+		mSymbols.erase(tmpSymbol.first);
 
-		if ( symIt->first == IDENTIFIER_THIS ) {
+		if ( tmpSymbol.first == IDENTIFIER_THIS ) {
 			continue;
 		}
 
-		delete symIt->second;
+		delete tmpSymbol.second;
 	}
 
-	mParent = 0;
+	mParent = nullptr;
 }
 
 IScope* SymbolScope::getEnclosingScope() const
@@ -108,7 +107,7 @@ IScope::IType::E SymbolScope::getScopeType() const
 Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	// look up in local symbols
-	Symbols::const_iterator it = mSymbols.find(name);
+	auto it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		if ( it->second->getVisibility() >= visibility ) {
 			return it->second;
@@ -128,12 +127,12 @@ Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 		return mParent->resolve(name, onlyCurrentScope, visibility);
 	}
 
-	return 0;
+	return nullptr;
 }
 
 void SymbolScope::undefine(const std::string& name)
 {
-	Symbols::iterator it = mSymbols.find(name);
+	auto it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		mSymbols.erase(it);
 		return;
@@ -148,14 +147,10 @@ NamedScope::NamedScope(const std::string& name, IScope* parent)
 	mScopeType = IType::NamedScope;
 }
 
-NamedScope::~NamedScope()
-{
-}
 
-
-MethodScope::MethodScope(const std::string& name, IScope* parent)
+MethodScope::MethodScope(std::string name, IScope* parent)
 : mParent(parent),
-  mScopeName(name),
+  mScopeName(std::move(name)),
   mScopeType(IType::MethodScope)
 {
 }
@@ -183,7 +178,7 @@ void MethodScope::define(const std::string& name, Symbol* symbol)
 
 	if ( mSymbols.find(name) != mSymbols.end() ) {
 		// duplicate symbol defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + name);
+		throw Common::Exceptions::DuplicateIdentifier(name);
 	}
 
 	mSymbols.insert(std::make_pair(name, symbol));
@@ -198,7 +193,7 @@ void MethodScope::defineExternal(const std::string &name, Symbol *symbol)
 	Symbols::const_iterator symIt = mExternalSymbols.find(name);
 	if ( symIt != mExternalSymbols.end() ) {
 		// duplicate symbol defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
+		throw Common::Exceptions::DuplicateIdentifier(symbol->getName());
 	}
 
 	mExternalSymbols.insert(std::make_pair(name, symbol));
@@ -231,24 +226,24 @@ void MethodScope::deinit()
 {
 	MethodCollection tmpMethods = mMethods;
 
-	for ( MethodCollection::iterator methIt = tmpMethods.begin(); methIt != tmpMethods.end(); ++methIt ) {
-		mMethods.erase((*methIt));
-		delete (*methIt);
+	for ( auto tmpMethod : tmpMethods ) {
+		mMethods.erase(tmpMethod);
+		delete tmpMethod;
 	}
 
 	Symbols tmpSymbols = mSymbols;
 
-	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
-		mSymbols.erase(symIt->first);
+	for ( auto& tmpSymbol : tmpSymbols ) {
+		mSymbols.erase(tmpSymbol.first);
 
-		if ( symIt->first == "base" || symIt->first == "this" ) {
+		if ( tmpSymbol.first == IDENTIFIER_BASE || tmpSymbol.first == IDENTIFIER_THIS ) {
 			continue;
 		}
 
-		delete symIt->second;
+		delete tmpSymbol.second;
 	}
 
-	mParent = 0;
+	mParent = nullptr;
 }
 
 MethodScope::MethodCollection::const_iterator MethodScope::endMethods() const
@@ -292,7 +287,7 @@ IScope::IType::E MethodScope::getScopeType() const
 Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	// look up in local symbols
-	Symbols::const_iterator it = mSymbols.find(name);
+	auto it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		if ( it->second->getVisibility() >= visibility ) {
 			return it->second;
@@ -308,10 +303,8 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 	}
 
 	// look up in local methods
-	for ( MethodCollection::const_iterator methodIt = mMethods.begin(); methodIt != mMethods.end(); ++methodIt ) {
-		Common::Method *method = (*methodIt);
-
-		if ( method->getVisibility() >= visibility ) {
+	for ( auto method : mMethods ) {
+			if ( method->getVisibility() >= visibility ) {
 			if ( method->getName() == name ) {
 				return method;
 			}
@@ -319,10 +312,8 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 	}
 
 	// look up in external methods
-	for ( MethodCollection::const_iterator methodIt = mExternalMethods.begin(); methodIt != mExternalMethods.end(); ++methodIt ) {
-		Common::Method *method = (*methodIt);
-
-		if ( method->getVisibility() >= visibility ) {
+	for ( auto method : mExternalMethods ) {
+			if ( method->getVisibility() >= visibility ) {
 			if ( method->getName() == name ) {
 				return method;
 			}
@@ -332,13 +323,12 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 	if ( visibility != Visibility::Designtime ) {
 		Symbol* base = resolve(IDENTIFIER_BASE, true, Visibility::Designtime);
 		if ( base ) {
-			Visibility::E parentVisibility = visibility == Visibility::Private ? Visibility::Protected : visibility;
-			Symbol* result = 0;
+			Symbol* result = nullptr;
 
 			switch ( base->getSymbolType() ) {
-				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolve(name, true, parentVisibility); break;
-				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolve(name, true, parentVisibility); break;
-				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolve(name, true, parentVisibility); break;
+				case Symbol::IType::BluePrintObjectSymbol: result = dynamic_cast<Designtime::BluePrintObject*>(base)->resolve(name, true, visibility); break;
+				case Symbol::IType::NamespaceSymbol: result = dynamic_cast<Common::Namespace*>(base)->resolve(name, true, visibility); break;
+				case Symbol::IType::ObjectSymbol: result = dynamic_cast<Runtime::Object*>(base)->resolve(name, true, visibility); break;
 				default: throw Common::Exceptions::Exception("invalid scope type");
 			}
 
@@ -357,9 +347,15 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
 {
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		Common::Method *method = (*it);
+	for ( auto& method : mMethods ) {
+			if ( method->getVisibility() >= visibility ) {
+			if ( method->getName() == name && method->isSignatureValid(params) ) {
+				return method;
+			}
+		}
+	}
 
+	for ( auto& method : mExternalMethods ) {
 		if ( method->getVisibility() >= visibility ) {
 			if ( method->getName() == name && method->isSignatureValid(params) ) {
 				return method;
@@ -370,12 +366,12 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 	if ( visibility != Visibility::Designtime ) {
 		Symbol* base = resolve(IDENTIFIER_BASE, true, Visibility::Designtime);
 		if ( base ) {
-			MethodSymbol* result = 0;
+			MethodSymbol* result = nullptr;
 
 			switch ( base->getSymbolType() ) {
-				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolveMethod(name, params, true, visibility); break;
-				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolveMethod(name, params, true, visibility); break;
-				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolveMethod(name, params, true, visibility); break;
+				case Symbol::IType::BluePrintObjectSymbol: result = dynamic_cast<Designtime::BluePrintObject*>(base)->resolveMethod(name, params, true, visibility); break;
+				case Symbol::IType::NamespaceSymbol: result = dynamic_cast<Common::Namespace*>(base)->resolveMethod(name, params, true, visibility); break;
+				case Symbol::IType::ObjectSymbol: result = dynamic_cast<Runtime::Object*>(base)->resolveMethod(name, params, true, visibility); break;
 				default: throw Common::Exceptions::Exception("invalid scope type");
 			}
 
@@ -389,12 +385,12 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 		return dynamic_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope, visibility);
 	}
 
-	return 0;
+	return nullptr;
 }
 
 void MethodScope::undefine(const std::string& name)
 {
-	Symbols::iterator it = mSymbols.find(name);
+	auto it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		mSymbols.erase(it);
 		return;
@@ -407,7 +403,7 @@ void MethodScope::undefineMethod(Common::Method* method)
 
 	undefine(method->getName());
 
-	MethodCollection::const_iterator it = mMethods.find(method);
+	auto it = mMethods.find(method);
 	if ( it != mMethods.end() ) {
 		mMethods.erase(it);
 	}

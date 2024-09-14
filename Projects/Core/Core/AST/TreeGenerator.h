@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_TreeGenerator_h
-#define ObjectiveScript_Core_AST_TreeGenerator_h
+#ifndef Slang_Core_Core_AST_TreeGenerator_h
+#define Slang_Core_Core_AST_TreeGenerator_h
 
 
 // Library includes
@@ -19,7 +19,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Common {
@@ -49,7 +49,7 @@ class TreeGenerator
 {
 public:
 	TreeGenerator();
-	~TreeGenerator();
+	~TreeGenerator() = default;
 
 public:
 	Statements* generateAST(Common::Method* method);
@@ -73,7 +73,8 @@ private: // Execution
 	// {
 	Statements* process(TokenIterator& start, TokenIterator end);
 	Statement* process_assert(TokenIterator& token);
-	Expression* process_assignment(TokenIterator& token, SymbolExpression* lhs);
+	Node* process_assignment(TokenIterator& token);
+	Expression* process_assignment_expression(TokenIterator& token, SymbolExpression* lhs);
 	Statement* process_break(TokenIterator& token);
 	Expression* process_cast(TokenIterator& token);
 	Statement* process_continue(TokenIterator& token);
@@ -131,8 +132,8 @@ private: // Execution
 	SymbolExpression* resolveWithExceptions(TokenIterator& token, IScope* base) const;
 	SymbolExpression* resolveWithThis(TokenIterator& token, IScope* base) const;
 	MethodSymbol* resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const;
-	std::string resolveType(Node* left, const Token& operation, Node* right) const;
-	std::string resolveType(const std::string& left, const Token& operation, const std::string& right) const;
+	std::string resolveType(TokenIterator& token, Node* left, const Token& operation, Node* right) const;
+	std::string resolveType(TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const;
 
 	// Scope stack
 	// {
@@ -141,7 +142,7 @@ private: // Execution
 
 	inline IScope* getScope() const;
 	inline void popScope();
-	inline void pushScope(IScope* scope = 0, bool allowBreakAndContinue = false);
+	inline void pushScope(IScope* scope = nullptr, bool allowBreakAndContinue = false);
 	// }
 
 	// Token stack
@@ -151,8 +152,13 @@ private: // Execution
 	inline void pushTokens(const TokenList& tokens);
 	// }
 
+	// Helpers
+	// {
+	std::list<MethodSymbol*> provideSimilarMethods(SymbolExpression* symbol) const;
+	// }
+
 private:	// Initialization
-	void deinitialize();
+	void finalize();
 	void initialize(Common::Method* method);
 
 private:

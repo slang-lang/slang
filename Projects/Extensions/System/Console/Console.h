@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Console_Console_h
-#define ObjectiveScript_Extensions_System_Console_Console_h
+#ifndef Slang_Extensions_System_Console_Console_h
+#define Slang_Extensions_System_Console_Console_h
 
 
 // Library includes
@@ -13,7 +13,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Console {
@@ -23,11 +23,11 @@ class SystemConsoleExtension : public AExtension
 {
 public:
 	SystemConsoleExtension();
-	~SystemConsoleExtension();
+	~SystemConsoleExtension() = default;
 
 public:
-	void initialize(IScope* scope);
-	void provideMethods(ExtensionMethods &methods);
+	void initialize( ExtensionNamespace* scope );
+	void provideMethods( ExtensionMethods& methods );
 };
 
 

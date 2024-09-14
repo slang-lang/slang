@@ -25,22 +25,17 @@
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/BuildInTypes/UserObject.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
-#include <Core/Tools.h>
 #include <Utils.h>
 #include "Controller.h"
 
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 Repository::Repository()
-: mTypeSystem(0)
-{
-}
-
-Repository::~Repository()
+: mTypeSystem(nullptr)
 {
 }
 
@@ -49,7 +44,7 @@ Repository::~Repository()
  */
 void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 {
-	BluePrintObjectMap::iterator it = mBluePrintObjects.find(blueprint->QualifiedTypename());
+	auto it = mBluePrintObjects.find(blueprint->QualifiedTypename());
 	if ( it != mBluePrintObjects.end() ) {
 		throw Common::Exceptions::Exception("duplicate object '" + blueprint->QualifiedTypename() + "' added to repository");
 	}
@@ -106,10 +101,10 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 /*
  * Creates an instance of the given blueprint
  */
-Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
+Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize)
 {
 	// look up type in blueprint objects
-	BluePrintObjectMap::iterator objectIt = mBluePrintObjects.find(type);
+	auto objectIt = mBluePrintObjects.find(type);
 	if ( objectIt != mBluePrintObjects.end() ) {
 		return createInstance(objectIt->second, name, constraints, initialize);
 	}
@@ -145,7 +140,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 
 	if ( blueprint->QualifiedTypename() != constraintType ) {
 		// we have to handle a prototyped blueprint
-		BluePrintObjectMap::iterator it = mBluePrintObjects.find(constraintType);
+		auto it = mBluePrintObjects.find(constraintType);
 		if ( it == mBluePrintObjects.end() ) {
 			// a not yet used prototype has been requested => construct the new type
 			blueprint = createBluePrintFromPrototype(blueprint, constraints);
@@ -161,17 +156,15 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 		if ( object->isAbstract() ) {
 			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + constraintType + "'");
 		}
-
-		// TODO: verify me
-		//Controller::Instance().memory()->newObject(object);
 	}
 
 	if ( Controller::Instance().phase() == Controller::Phase::Preparation ) {
 		switch ( object->getLanguageFeatureState() ) {
 			case LanguageFeatureState::Deprecated: OSwarn("Used type '" + object->QualifiedTypename() + "' is marked as deprecated"); break;
 			case LanguageFeatureState::NotImplemented: OSerror("Used type '" + object->QualifiedTypename() + "' is marked as not implemented"); break;
+			case LanguageFeatureState::Stable: /* this is fine */ break;
+			case LanguageFeatureState::Unspecified: OSerror("Unknown language feature state set for type '" + object->QualifiedTypename() + "'"); break;
 			case LanguageFeatureState::Unstable: OSwarn("Used type '" + object->QualifiedTypename() + "' is marked as unstable"); break;
-			default: break;
 		}
 	}
 
@@ -185,7 +178,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 {
 	assert(blueprint);
 
-	Runtime::Object *object = 0;
+	Runtime::Object *object = nullptr;
 
 	// instantiate atomic types
 	if ( blueprint->QualifiedTypename() == Runtime::BoolObject::TYPENAME ) {
@@ -235,10 +228,10 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 /*
  * Creates an instance of the given blueprint and adds a reference to it to the heap memory
  */
-Runtime::Object* Repository::createReference(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
+Runtime::Object* Repository::createReference(const std::string& type, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize)
 {
 	// look up type in blueprint objects
-	BluePrintObjectMap::iterator objectIt = mBluePrintObjects.find(type);
+	auto objectIt = mBluePrintObjects.find(type);
 	if ( objectIt != mBluePrintObjects.end() ) {
 		return createReference(objectIt->second, name, constraints, initialize);
 	}
@@ -250,7 +243,7 @@ Runtime::Object* Repository::createReference(const std::string& type, const std:
 /*
  * Creates an instance of the given blueprint and adds a reference to it in the heap memory
  */
-Runtime::Object* Repository::createReference(Designtime::BluePrintObject* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
+Runtime::Object* Repository::createReference(Designtime::BluePrintObject* blueprint, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize)
 {
 	Runtime::Object* object = createInstance(blueprint, name, constraints, initialize);
 
@@ -282,31 +275,34 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 
 		if ( !ancestors.empty() ) {
 			// walk through the inheritance and create (and initialize) all base objects
-			for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
-				BluePrintObjectMap::iterator blueIt = mBluePrintObjects.find(ancestorIt->name());
+			for ( const auto& ancestorIt : ancestors ) {
+				auto blueIt = mBluePrintObjects.find(ancestorIt.name());
 
 				if ( blueIt == mBluePrintObjects.end() ) {
-					throw Common::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
+					throw Common::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt.name() + "'");
 				}
 
-				switch ( ancestorIt->ancestorType() ) {
+				switch ( ancestorIt.ancestorType() ) {
 					case Designtime::Ancestor::Type::Extends: {
 						// create base object
-						Runtime::Object *ancestor = createReference(blueIt->second, IDENTIFIER_THIS, ancestorIt->constraints(), InitilizationType::AllowAbstract);
+						Runtime::Object *ancestor = createReference(blueIt->second, IDENTIFIER_THIS, ancestorIt.constraints(), InitilizationType::AllowAbstract);
 						ancestor->setParent(blueprint->getEnclosingScope());
 
 						// define new base
 						object->define(IDENTIFIER_BASE, ancestor);
 
 						// add our newly created ancestor to our inheritance
-						object->addInheritance((*ancestorIt), ancestor);
+						object->addInheritance(ancestorIt, ancestor);
+					} break;
+					case Designtime::Ancestor::Type::Hidden: {
+						// ignore hidden ancestors
 					} break;
 					case Designtime::Ancestor::Type::Implements: {
-						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), InitilizationType::None);
+						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt.constraints(), InitilizationType::None);
 						ancestor->setParent(blueprint->getEnclosingScope());
 
 						// add our newly created ancestor to our inheritance
-						object->addInheritance((*ancestorIt), ancestor);
+						object->addInheritance(ancestorIt, ancestor);
 					} break;
 					case Designtime::Ancestor::Type::Replicates: {
 						// this is empty by intend
@@ -317,8 +313,54 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 			}
 		}
 
-		// initialize the base object
-		initializeObject(blueprint, object);
+		// create and define all symbols based on given blueprint
+		const Symbols& symbols = blueprint->provideSymbols();
+		for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
+			if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+				continue;
+			}
+			if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ) {
+				// skip "base" && "this" symbols
+				continue;
+			}
+
+			auto* blue = dynamic_cast<Designtime::BluePrintObject*>(it->second);
+			if ( blue->isStatic() ) {
+				continue;
+			}
+			if ( blue->getName() == ANONYMOUS_OBJECT ) {
+				// this is a type declaration
+				continue;
+			}
+
+			Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
+			symbol->setBluePrint(blue);
+			symbol->setIsReference(!blue->isEnumeration() && blue->isReference());
+			symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
+			symbol->setMember(blue->isMember());
+			symbol->setMutability(blue->getMutability());
+			symbol->setParent(object);
+			symbol->setValue(blue->getValue());
+			symbol->setVisibility(blue->getVisibility());
+
+			object->defineMember(symbol->getName(), symbol);
+		}
+
+		// create and define all methods based on given blueprint
+		MethodScope::MethodCollection methods = blueprint->provideMethods();
+		for ( auto& method : methods ) {
+			if ( method->isStatic() ) {
+				continue;
+			}
+
+			// create new method and ...
+			auto* newMethod = new Common::Method(object, method->getName(), Common::TypeDeclaration(method->QualifiedTypename()));
+
+			// ... copy its data from our template method
+			*newMethod = *method;
+
+			object->defineMethod(method->getName(), newMethod);
+		}
 	}
 
 	return object;
@@ -332,13 +374,13 @@ void Repository::deinit()
 
 Designtime::BluePrintObject* Repository::findBluePrintObject(const std::string& type) const
 {
-	BluePrintObjectMap::const_iterator it = mBluePrintObjects.find(type);
+	auto it = mBluePrintObjects.find(type);
 
 	if ( it != mBluePrintObjects.end() ) {
 		return it->second;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 Designtime::BluePrintObject* Repository::findBluePrintObject(const Common::TypeDeclaration& typeDeclaration) const
@@ -357,43 +399,43 @@ void Repository::init()
 
 	// add atomic types
 	{	// "bool" type
-		Designtime::BoolObject* obj = new Designtime::BoolObject();
+		auto* obj = new Designtime::BoolObject();
 		addBluePrint(obj);
 
 		scope->define(Designtime::BoolObject::TYPENAME, obj);
 	}
 	{	// "double" type
-		Designtime::DoubleObject* obj = new Designtime::DoubleObject();
+		auto* obj = new Designtime::DoubleObject();
 		addBluePrint(obj);
 
 		scope->define(Designtime::DoubleObject::TYPENAME, obj);
 	}
 	{	// "float" type
-		Designtime::FloatObject* obj = new Designtime::FloatObject();
+		auto* obj = new Designtime::FloatObject();
 		addBluePrint(obj);
 
 		scope->define(Designtime::FloatObject::TYPENAME, obj);
 	}
 	{	// "int" type
-		Designtime::IntegerObject* obj = new Designtime::IntegerObject();
+		auto* obj = new Designtime::IntegerObject();
 		addBluePrint(obj);
 
 		scope->define(Designtime::IntegerObject::TYPENAME, obj);
 	}
 	{	// "string" type
-		Designtime::StringObject* obj = new Designtime::StringObject();
+		auto* obj = new Designtime::StringObject();
 		addBluePrint(obj);
 
 		scope->define(Designtime::StringObject::TYPENAME, obj);
 	}
 	{	// "void" type
-		Designtime::VoidObject* obj = new Designtime::VoidObject();
+		auto* obj = new Designtime::VoidObject();
 		addBluePrint(obj);
 
 		scope->define(Designtime::VoidObject::TYPENAME, obj);
 	}
 	{	// "Object" type
-		Designtime::UserObject* obj = new Designtime::UserObject();
+		auto* obj = new Designtime::UserObject();
 		obj->setIsReference(true);
 		addBluePrint(obj);
 
@@ -402,7 +444,7 @@ void Repository::init()
 
 	// add predefined runtime objects
 	{	// null
-		Runtime::UserObject* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
+		auto* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
 		nullObject->setIsReference(true);
 		nullObject->setMemoryLayout(MemoryLayout::Static);
 		nullObject->setMutability(Mutability::Const);
@@ -419,27 +461,38 @@ void Repository::init()
 void Repository::initializeBlueprints()
 {
 	// prepare inheritance
-	for ( BluePrintObjectMap::iterator blueIt = mBluePrintObjects.begin(); blueIt != mBluePrintObjects.end(); ++blueIt ) {
-		Designtime::BluePrintObject* blueprint = blueIt->second;
+	for ( auto& blueprintIt : mBluePrintObjects) {
+		auto* blueprint = blueprintIt.second;
 
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
-		for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
-			prepareType(Common::TypeDeclaration(ancestorIt->name(), ancestorIt->constraints()));
+		for ( const auto& ancestor : ancestors) {
+			prepareType(Common::TypeDeclaration(ancestor.name(), ancestor.constraints()));
 
-			Designtime::BluePrintObject* base = findBluePrintObject(
-				Designtime::Parser::buildRuntimeConstraintTypename(ancestorIt->name(), ancestorIt->constraints())
+			auto* base = findBluePrintObject(
+				Designtime::Parser::buildRuntimeConstraintTypename(ancestor.name(), ancestor.constraints())
 			);
 
-			switch ( ancestorIt->ancestorType() ) {
+/*
+			for ( const auto& a : base->getInheritance() ) {
+				Designtime::Ancestor ancestor( a.typeDeclaration(), Designtime::Ancestor::Type::Hidden, a.visibility() );
+
+				blueprint->addInheritance( ancestor );
+			}
+*/
+
+			switch ( ancestor.ancestorType() ) {
 				case Designtime::Ancestor::Type::Extends: {
 					blueprint->define(IDENTIFIER_BASE, base);
 				} break;
-				case Designtime::Ancestor::Type::Implements:
+				case Designtime::Ancestor::Type::Hidden: {
+					// ignore hidden ancestors
+				} break;
+				case Designtime::Ancestor::Type::Implements: {
 					// nothing to do here
-					break;
+				} break;
 				case Designtime::Ancestor::Type::Replicates: {
-					blueIt->second = base->replicate(
-						blueprint->QualifiedTypename(), blueprint->Filename(), blueIt->second
+					blueprintIt.second = base->replicate(
+						blueprint->QualifiedTypename(), blueprint->Filename(), blueprintIt.second
 					);
 				} break;
 				case Designtime::Ancestor::Type::Unknown:
@@ -449,63 +502,8 @@ void Repository::initializeBlueprints()
 	}
 
 	// initialize blueprint objects
-	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
-		initBluePrintObject(it->second);
-	}
-}
-
-/*
- * creates and defines all members and methods of an object
- */
-void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::Object* destObj)
-{
-	// create and define all symbols based on given blueprint
-	Symbols symbols = srcObj->provideSymbols();
-	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
-		if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-			continue;
-		}
-		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ) {
-			// skip "base" && "this" symbols
-			continue;
-		}
-
-		Designtime::BluePrintObject* blue = dynamic_cast<Designtime::BluePrintObject*>(it->second);
-		if ( blue->isStatic() ) {
-			continue;
-		}
-		if ( blue->getName() == ANONYMOUS_OBJECT ) {
-			// this is a type declaration
-			continue;
-		}
-
-		Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
-		symbol->setBluePrint(blue);
-		symbol->setIsReference(blue->isEnumeration() ? false : blue->isReference());
-		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
-		symbol->setMember(blue->isMember());
-		symbol->setMutability(blue->getMutability());
-		symbol->setParent(destObj);
-		symbol->setValue(blue->getValue());
-		symbol->setVisibility(blue->getVisibility());
-
-		destObj->defineMember(symbol->getName(), symbol);
-	}
-
-	// create and define all methods based on given blueprint
-	MethodScope::MethodCollection methods = srcObj->provideMethods();
-	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-		if ( (*it)->isStatic() ) {
-			continue;
-		}
-
-		// create new method and ...
-		Common::Method* method = new Common::Method(destObj, (*it)->getName(), Common::TypeDeclaration((*it)->QualifiedTypename()));
-
-		// ... copy its data from our template method
-		*method = *(*it);
-
-		destObj->defineMethod(method->getName(), method);
+	for ( auto& blueprint : mBluePrintObjects) {
+		initBluePrintObject(blueprint.second);
 	}
 }
 
@@ -530,7 +528,7 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 			continue;
 		}
 
-		Designtime::BluePrintObject* member = dynamic_cast<Designtime::BluePrintObject*>(it->second);
+		auto* member = dynamic_cast<Designtime::BluePrintObject*>(it->second);
 
 		Designtime::BluePrintObject* baseType = findBluePrintObject(member->QualifiedTypename());
 		if ( !baseType ) {
@@ -557,9 +555,7 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 
 	// prepare methods
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
-	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-		Common::Method* method = (*it);
-
+	for ( auto method : methods ) {
 		Designtime::BluePrintObject* baseType = findBluePrintObject(method->QualifiedTypename());
 		if ( !baseType ) {
 			throw Common::Exceptions::UnknownIdentifier("unknown type '" + method->QualifiedTypename() + "'!");
@@ -581,6 +577,8 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 			// reset constraints
 			method->setPrototypeConstraints(PrototypeConstraints());
 		}
+
+		method->initialize();
 	}
 
 	if ( !blueprint->isPrepared() ) {
@@ -604,16 +602,34 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	if ( blueprint->isEnumeration() ) {
 		// assignment operator
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-		mTypeSystem->define(_int, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-		mTypeSystem->define(_string, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+		//mTypeSystem->define(_int, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+		//mTypeSystem->define(_string, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+		mTypeSystem->define(_int, Token::Type::ASSIGN, blueprint->QualifiedTypename(), _int);
+		mTypeSystem->define(_string, Token::Type::ASSIGN, blueprint->QualifiedTypename(), _string);
 
-		// comparison operators
+		// comparison operators (enum vs enum)
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,         blueprint->QualifiedTypename(), _bool);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS,          blueprint->QualifiedTypename(), _bool);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS_EQUAL,    blueprint->QualifiedTypename(), _bool);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER,       blueprint->QualifiedTypename(), _bool);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER_EQUAL, blueprint->QualifiedTypename(), _bool);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL,       blueprint->QualifiedTypename(), _bool);
+
+		// comparison operators (enum vs int)
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_EQUAL,         Designtime::IntegerObject::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS,          Designtime::IntegerObject::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS_EQUAL,    Designtime::IntegerObject::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER,       Designtime::IntegerObject::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER_EQUAL, Designtime::IntegerObject::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_UNEQUAL,       Designtime::IntegerObject::TYPENAME, _bool);
+
+		// comparison operators (int vs enum)
+		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_EQUAL,         blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_LESS,          blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_GREATER,       blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       blueprint->QualifiedTypename(), _bool);
 
 		// arithmetic operators
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_ADDITION, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
@@ -622,19 +638,17 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MULTIPLY, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_SUBTRACT, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 
-/*
 		// typecast operator
-		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _int, blueprint->QualifiedTypename());
-		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, _string, blueprint->QualifiedTypename());
-*/
+		mTypeSystem->define(_int, Token::Type::TYPECAST, blueprint->QualifiedTypename(), _int);
+		mTypeSystem->define(_string, Token::Type::TYPECAST, blueprint->QualifiedTypename(), _string);
 
 		return;
 	}
 
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
-	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-		std::string name = (*it)->getName();
-		ParameterList params = (*it)->provideSignature();
+	for ( auto method : methods ) {
+		const std::string& name = method->getName();
+		auto params = method->provideSignature();
 
 		if ( name == "operator=" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, params.front().type(), blueprint->QualifiedTypename());
@@ -649,20 +663,20 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::BITCOMPLEMENT, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator==" && params.size() == 1 ) {
-			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, params.front().type(), (*it)->QualifiedTypename());
-			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL_CONTENT, params.front().type(), (*it)->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, params.front().type(), method->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL_CONTENT, params.front().type(), method->QualifiedTypename());
 		}
 		else if ( name == "operator<" && params.size() == 1 ) {
-			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS, params.front().type(), (*it)->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS, params.front().type(), method->QualifiedTypename());
 		}
 		else if ( name == "operator<=" && params.size() == 1 ) {
-			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS_EQUAL, params.front().type(), (*it)->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS_EQUAL, params.front().type(), method->QualifiedTypename());
 		}
 		else if ( name == "operator>" && params.size() == 1 ) {
-			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER, params.front().type(), (*it)->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER, params.front().type(), method->QualifiedTypename());
 		}
 		else if ( name == "operator>=" && params.size() == 1 ) {
-			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER_EQUAL, params.front().type(), (*it)->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER_EQUAL, params.front().type(), method->QualifiedTypename());
 		}
 		else if ( name == "operator+" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_ADDITION, params.front().type(), blueprint->QualifiedTypename());
@@ -679,15 +693,21 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		else if ( name == "operator-" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_SUBTRACT, params.front().type(), blueprint->QualifiedTypename());
 		}
-		else if ( name == "operator--" && params.size() == 0 ) {
+		else if ( name == "operator--" && params.empty() ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_DECREMENT, _void, blueprint->QualifiedTypename());
 		}
-		else if ( name == "operator++" && params.size() == 0 ) {
+		else if ( name == "operator++" && params.empty() ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_INCREMENT, _void, blueprint->QualifiedTypename());
 		}
+		else if ( name == "operator<<" && params.size() == 1 ) {
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_SHIFT_LEFT, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator>>" && params.size() == 1 ) {
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_SHIFT_RIGHT, params.front().type(), blueprint->QualifiedTypename());
+		}
 		else if ( name == "=operator" && params.size() == 1 ) {
-			mTypeSystem->define((*it)->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), (*it)->QualifiedTypename());
-			mTypeSystem->define((*it)->QualifiedTypename(), Token::Type::TYPECAST, blueprint->QualifiedTypename(), (*it)->QualifiedTypename());
+			mTypeSystem->define(method->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), method->QualifiedTypename());
+			mTypeSystem->define(method->QualifiedTypename(), Token::Type::TYPECAST, blueprint->QualifiedTypename(), method->QualifiedTypename());
 		}
 	}
 
@@ -695,11 +715,13 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,   _object,                        _bool);
 	mTypeSystem->define(_object,                        Token::Type::COMPARE_EQUAL,   blueprint->QualifiedTypename(), _bool);
 
-	// add default assignment entry for type system if it doesn't exist yet
+	// add default assignment entry for type system
 	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN,   blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-	//mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 
-	// add equality operator entries for type system if it doesn't exist yet
+	// add default typecast entry for type system
+	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::TYPECAST, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+
+	// add equality operator entries for type system
 	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,   blueprint->QualifiedTypename(), _bool);
 	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL_CONTENT, blueprint->QualifiedTypename(), _bool);
 
@@ -707,9 +729,9 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	{
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
 
-		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-			mTypeSystem->define(it->name(), Token::Type::ASSIGN,   blueprint->QualifiedTypename(), it->name());
-			mTypeSystem->define(it->name(), Token::Type::TYPECAST, blueprint->QualifiedTypename(), it->name());
+		for ( const auto& ancestor : ancestors ) {
+			mTypeSystem->define(ancestor.name(), Token::Type::ASSIGN,   blueprint->QualifiedTypename(), ancestor.name());
+			mTypeSystem->define(ancestor.name(), Token::Type::TYPECAST, blueprint->QualifiedTypename(), ancestor.name());
 		}
 	}
 }
@@ -727,7 +749,7 @@ void Repository::prepareType(const Common::TypeDeclaration& type)
 
 		if ( !blueprint ) {
 			// pure type not available
-			throw Common::Exceptions::UnknownIdentifier(resolvedType);
+			throw Common::Exceptions::UnknownIdentifier( "pure type '" + resolvedType + "' not available" );
 		}
 
 		// build new prototype from pure type with constraints

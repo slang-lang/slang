@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Tools_h
-#define ObjectiveScript_Core_Tools_h
+#ifndef Slang_Core_Core_Tools_h
+#define Slang_Core_Core_Tools_h
 
 
 // Library includes
@@ -16,7 +16,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Runtime {
@@ -46,3 +46,4 @@ bool isTrue(const Runtime::Object* object);
 
 
 #endif
+

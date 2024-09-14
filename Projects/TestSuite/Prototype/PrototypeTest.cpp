@@ -21,16 +21,16 @@
 #endif
 
 // Namespace declarations
-using namespace ObjectiveScript;
+using namespace Slang;
 
 
 namespace Testing {
 namespace Prototype {
 
 
-PrototypeTest::PrototypeTest(const ::Utils::Common::ILogger *p)
-: GenericTest("PrototypeTest"),
-  ::Utils::Common::Logger(p, "PrototypeTest")
+PrototypeTest::PrototypeTest( const Utils::Common::ILogger* p )
+: UnitTest("PrototypeTest"),
+  Utils::Common::Logger( p, "PrototypeTest" )
 {
 }
 
@@ -62,7 +62,7 @@ void PrototypeTest::testAdvancedPrototypeTest()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/Prototypes/AdvancedPrototypeTest.os");
 
@@ -93,7 +93,7 @@ void PrototypeTest::testBasicPrototypeWithInheritanceConstraint()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/Prototypes/BasicPrototypeWithInheritanceConstraint.os");
 
@@ -124,9 +124,9 @@ void PrototypeTest::testFail_BasicPrototypeWithInheritanceConstraint()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
-		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_BasicPrototypeWithInheritanceConstraint.os"), ObjectiveScript::Common::Exceptions::TypeMismatch);
+		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_BasicPrototypeWithInheritanceConstraint.os"), Slang::Common::Exceptions::TypeMismatch);
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -138,8 +138,8 @@ void PrototypeTest::testFail_PrototypeAssignment()
 {
 	try {
 		VirtualMachine vm;
-		//TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::TypeMismatch);
-		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::UnknownIdentifier);
+		//TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), Slang::Common::Exceptions::TypeMismatch);
+		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), Slang::Common::Exceptions::TypeMismatch);
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -151,7 +151,7 @@ void PrototypeTest::testInheritFromPrototypeTest()
 {
 	try {
 		VirtualMachine vm;
-		//TTHROWS(vm.runScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os"), ObjectiveScript::Common::Exceptions::NotSupported);
+		//TTHROWS(vm.runScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os"), Slang::Common::Exceptions::NotSupported);
 		vm.runScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os");
 	}
 	catch ( std::exception& e ) {

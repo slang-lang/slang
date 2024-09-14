@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="ObjectiveScript"
+	Name="Slang"
 	ProjectGUID="{C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29}"
-	RootNamespace="ObjectiveScript"
+	RootNamespace="Slang"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -1525,7 +1525,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\ObjectiveScript.h"
+				RelativePath=".\Core\Slang.h"
 				>
 			</File>
 			<File

@@ -14,6 +14,24 @@ public void AddElement(string key, bool value) {
 	mValue += "\"" + key + "\": " + value;
 }
 
+public void AddElement(string key, double value) {
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
+
+	mIsFirstElement = false;
+	mValue += "\"" + key + "\": " + value;
+}
+
+public void AddElement(string key, float value) {
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
+
+	mIsFirstElement = false;
+	mValue += "\"" + key + "\": " + value;
+}
+
 public void AddElement(string key, int value) {
 	if ( !mIsFirstElement ) {
 		mValue += ", ";
@@ -32,6 +50,51 @@ public void AddElement(string key, string value) {
 	mValue += "\"" + key + "\": \"" + value + "\"";
 }
 
+public void AddValue(bool value) {
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
+
+	mIsFirstElement = false;
+	mValue += value;
+}
+
+public void AddValue(double value) {
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
+
+	mIsFirstElement = false;
+	mValue += value;
+}
+
+public void AddValue(float value) {
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
+
+	mIsFirstElement = false;
+	mValue += value;
+}
+
+public void AddValue(int value) {
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
+
+	mIsFirstElement = false;
+	mValue += value;
+}
+
+public void AddValue(string value) {
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
+
+	mIsFirstElement = false;
+	mValue += "\"" + value + "\"";
+}
+
 public void AddObject(string value) {
 	if ( !mIsFirstElement ) {
 		mValue += ", ";
@@ -39,6 +102,15 @@ public void AddObject(string value) {
 
 	mIsFirstElement = false;
 	mValue += value;
+}
+
+public void AddObject(string key, string value) {
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
+
+	mIsFirstElement = false;
+	mValue += "\"" + key + "\": " + value;
 }
 
 public void BeginArray() {

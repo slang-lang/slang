@@ -32,7 +32,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Runtime {
 
 
@@ -41,13 +41,40 @@ namespace Runtime {
 		mDebugger->exp; \
 	}
 
+#define tryControl( exp ) \
+		try { \
+			exp; \
+		} \
+		catch ( Runtime::ControlFlow::E &e ) { \
+			mControlFlow = e; \
+			return; \
+		}
+
+#define tryControlReturnNull( exp ) \
+		try { \
+			exp; \
+		} \
+		catch ( Runtime::ControlFlow::E &e ) { \
+			mControlFlow = e; \
+			return nullptr; \
+		}
+
+#define tryEvaluateReturnNull(left, right) \
+		try { \
+			evaluate(left, right); \
+		} \
+		catch ( Runtime::ControlFlow::E &e ) { \
+			mControlFlow = e; \
+			return nullptr; \
+		}
+
 
 Interpreter::Interpreter(Common::ThreadId threadId)
 : mControlFlow(ControlFlow::Normal),
   mOwner(0)
 {
 	// initialize virtual machine stuff
-	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : NULL;
+	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
 	mThread = Controller::Instance().thread(threadId);
@@ -75,13 +102,7 @@ void Interpreter::collectParameterList(TokenIterator& token, ParameterList& para
 		objectList.push_back(Object());
 
 		Object* obj = &objectList.back();
-		try {
-			expression(obj, tmp);
-		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		tryControl( expression(obj, tmp) );
 
 /*
 		// hack to prevent anonymous references to run out of scope, this will most likely produce memory leaks!!!
@@ -140,13 +161,13 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method pointer provided!");
 	}
-	if ( method->isAbstract() ) {
+	if (method->isAbstractMethod() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
 	}
 
 	switch ( method->getLanguageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + method->getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::NotImplemented(method->getFullScopeName()); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + method->getFullScopeName() + "' is marked as not implemented"); throw Slang::Common::Exceptions::MethodNotImplemented(method->getFullScopeName()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
 		case LanguageFeatureState::Unspecified: OSerror("unknown language feature state set for method '" + method->getFullScopeName() + "'"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
@@ -183,7 +204,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 			break;
 		case ControlFlow::ExitProgram:
 		case ControlFlow::Throw:
-			// an ObjectiveScript exception has been thrown or we want to terminate
+			// a Slang exception has been thrown or we want to terminate
 			break;
 	}
 
@@ -331,7 +352,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
 
-	while ( token->type() == Token::Type::IDENTIFIER || token->type() == Token::Type::TYPE ) {
+	while ( token->type() == Token::Type::IDENTIFIER ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
@@ -373,7 +394,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 
 		TokenIterator tmp = token;
 		++tmp;
-		if ( tmp->type() != Token::Type::IDENTIFIER && tmp->type() != Token::Type::TYPE ) {
+		if ( tmp->type() != Token::Type::IDENTIFIER ) {
 			break;
 		}
 
@@ -389,7 +410,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
 
-	while ( token->type() == Token::Type::IDENTIFIER || token->type() == Token::Type::TYPE ) {
+	while ( token->type() == Token::Type::IDENTIFIER ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
@@ -429,7 +450,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 
 		TokenIterator tmp = token;
 		++tmp;
-		if ( tmp->type() != Token::Type::IDENTIFIER && tmp->type() != Token::Type::TYPE ) {
+		if ( tmp->type() != Token::Type::IDENTIFIER ) {
 			break;
 		}
 
@@ -740,7 +761,7 @@ Mutability::E Interpreter::parseMutability(TokenIterator& token)
 {
 	Mutability::E result = Mutability::Modify;
 
-	if ( token->type() == Token::Type::MODIFIER ) {
+	if ( token->type() == Token::Type::MUTABILITY ) {
 		result = Mutability::convert(token->content());
 
 		if ( result != Mutability::Const && result != Mutability::Modify ) {
@@ -782,8 +803,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
-		case Token::Type::IDENTIFIER:
-		case Token::Type::TYPE: {
+		case Token::Type::IDENTIFIER: {
 			// find out if we have to execute a method or simply get a stored variable
 
 			TokenIterator tmpToken = start;
@@ -873,7 +893,6 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 
 		switch ( token->type() ) {
 			case Token::Type::IDENTIFIER:
-			case Token::Type::TYPE:
 				process_identifier(token, result);
 				break;
 			case Token::Type::KEYWORD:
@@ -1500,7 +1519,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	}
 
 	if ( method->isExtensionMethod() ) {
-		mControlFlow = dynamic_cast<ObjectiveScript::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
+		mControlFlow = dynamic_cast<Slang::Extensions::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
 	}
 	else {
 		mControlFlow = execute(method, params, result);
@@ -1561,7 +1580,7 @@ void Interpreter::process_print(TokenIterator& token)
 		return;
 	}
 
-	::Utils::PrinterDriver::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
+	::Utils::Printer::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
@@ -1608,7 +1627,6 @@ void Interpreter::process_statement(TokenIterator& token, Object* result)
 
 	switch ( token->type() ) {
 		case Token::Type::IDENTIFIER:
-		case Token::Type::TYPE:
 			process_identifier(token, result);
 			break;
 		case Token::Type::KEYWORD:
@@ -1972,13 +1990,13 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 
 	std::string name = (token++)->content();
 
-	Mutability::E mutability = parseMutability(token);
+	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
 
 	// not-atomic types are references by default
-	AccessMode::E accessMode = parseAccessMode(token, static_cast<Designtime::BluePrintObject*>(symbol)->isAtomicType());
+	AccessMode::E accessMode = parseAccessMode(token, dynamic_cast<Designtime::BluePrintObject*>(symbol)->isAtomicType());
 
-	Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, constraints);
-	object->setConst(mutability == Mutability::Const);
+	Object* object = mRepository->createInstance(dynamic_cast<Designtime::BluePrintObject*>(symbol), name, constraints);
+	object->setMutability(mutability);
 
 	getScope()->define(name, object);
 
@@ -2006,7 +2024,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 */
 
 			// this separate assignment operation ensures that are type system is not bypassed
-			operator_binary_assign(object, &tmp, token->position());
+			operator_binary_assign(object, &tmp);
 		}
 		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
@@ -2067,7 +2085,7 @@ void Interpreter::process_var(TokenIterator& token, Object* /*result*/)
 
 	std::string name = (token++)->content();
 
-	Mutability::E mutability = parseMutability(token);
+	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
 
 	expect(Token::Type::ASSIGN, token);
 	++token;
@@ -2085,11 +2103,11 @@ void Interpreter::process_var(TokenIterator& token, Object* /*result*/)
 	}
 
 	Object* object = mRepository->createInstance(var.QualifiedTypename(), name, PrototypeConstraints(), Repository::InitilizationType::Final);
-	object->setConst(mutability == Mutability::Const);
+	object->setMutability(mutability);
 
 	getScope()->define(name, object);
 
-	operator_binary_assign(object, &var, token->position());
+	operator_binary_assign(object, &var);
 	// }
 
 	expect(Token::Type::SEMICOLON, token);

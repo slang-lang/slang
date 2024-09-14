@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Network_Accept_h
-#define ObjectiveScript_Extensions_System_Network_Accept_h
+#ifndef Slang_Extensions_System_Network_Accept_h
+#define Slang_Extensions_System_Network_Accept_h
 
 
 // Library includes
@@ -20,7 +20,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Network {
@@ -47,7 +47,7 @@ public:
 
 			int param_sockfd = (*it++).value().toInt();
 
-			int handle = accept(param_sockfd, NULL, NULL);
+			int handle = accept(param_sockfd, nullptr, nullptr);
 
 			*result = Runtime::IntegerObject(handle);
 		}

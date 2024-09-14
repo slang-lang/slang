@@ -17,6 +17,10 @@ public object Position {
         positionID = _positionID;
     }
 
+    public Position Copy() const {
+        return new Position( levelID, positionID );
+    }
+
     public bool operator==(Position other const) const {
         return levelID == other.levelID && positionID == other.positionID;
     }

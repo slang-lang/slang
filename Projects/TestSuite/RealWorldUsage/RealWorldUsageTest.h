@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Common/Logger.h>
-#include <Framework/GenericTest.h>
+#include <Framework/UnitTest.h>
 
 // Forward declarations
 
@@ -18,12 +18,12 @@ namespace Testing {
 namespace RealWorldUsage {
 
 
-class RealWorldUsageTest : public GenericTest,
-				 private Utils::Common::Logger
+class RealWorldUsageTest : public UnitTest,
+				 		   private Utils::Common::Logger
 {
 public:
-	RealWorldUsageTest(const Utils::Common::ILogger *p);
-	virtual ~RealWorldUsageTest() { }
+	explicit RealWorldUsageTest( const Utils::Common::ILogger* p );
+	~RealWorldUsageTest() = default;
 
 public:
 	void process();

@@ -4,60 +4,76 @@ import System.CharacterIterator;
 import System.Collections.List;
 import System.Exception;
 
-// Project imports
 
+public object Parameter const {
+	public string Key const;
+	public string Value const;
 
-public object Parameter {
-/*
- * Public
- */
-
-	public string Key;
-	public string Value;
-
-	public void Constructor(string key, string value) {
+	public void Constructor( string key, string value ) {
 		Key = key;
 		Value = value;
 	}
 
-	public bool operator==(string key) const {
+	public bool operator==( string key ) const {
 		return Key == key;
 	}
 
-	public string =operator(string) const {
+	public string =operator( string ) const {
 		return Value;
 	}
 
 	public string toString() const {
-		return "Key: '" + Key + "', Value: '" + Value + "'";
+		return "Parameter { Key: '" + Key + "', Value: '" + Value + "' }";
 	}
 }
 
-public object ParameterHandler implements IIterable {
-/*
- * Public
- */
 
-	public void Constructor(int argc, string args, bool skipProgramName = true) {
+public object ParameterHandler implements IIterable {
+	/*
+	 * Constructor( int, int, bool )
+	 * argc: number of arguments
+	 * args: argument string
+	 * skipProgramName: skip/use 1st parameter
+	 */
+	public void Constructor( int argc, string args, bool skipProgramName = true ) {
 		mParameters = new List<Parameter>();
 
-		process(args);
+		process( args );
 
-		if ( skipProgramName && mParameters.size() > 0 ) {
+		if ( skipProgramName && !mParameters.empty() ) {
 			argc--;
 			// remove first parameter
-			mParameters.erase(0);
+			mParameters.erase( 0 );
 		}
 
 		// verify that we correctly parsed all arguments
 		assert( argc == mParameters.size() );
 	}
 
-	public Parameter at(int index) const throws {
-		return mParameters.at(index);
+	/*
+	 * Subscript operator which retrieves a parameter using its index as lookup
+	 */
+	public Parameter operator[]( int index ) const throws {
+		return mParameters.at( index );
 	}
 
-	public bool contains(string key) const {
+	/*
+	 * Subscript operator which retrieves a parameter using its key as lookup
+	 */
+	public Parameter operator[]( string key ) const throws {
+		foreach ( Parameter p : mParameters ) {
+			if ( p == key ) {
+				return p;
+			}
+		}
+
+		throw new Exception( "key( '" + key + "' ) not found!" );
+	}
+
+	/*
+	 * returns true if a parameter with the given key exists
+	 */
+	public bool contains( string key ) const {
 		foreach ( Parameter p : mParameters ) {
 			if ( p == key ) {
 				return true;
@@ -67,25 +83,24 @@ public object ParameterHandler implements IIterable {
 		return false;
 	}
 
+	/*
+	 * returns true if no parameter is held at all
+	 */
 	public bool empty() const {
 		return mParameters.empty();
 	}
 
+	/*
+	 * returns an iterator to all the held parameters
+	 */
 	public Iterator<Parameter> getIterator() const {
 		return mParameters.getIterator();
 	}
 
-	public Parameter getParameter(string key) const throws {
-		foreach ( Parameter p : mParameters ) {
-			if ( p == key ) {
-				return p;
-			}
-		}
-
-		throw new Exception("key('" + key + "') not found!");
-	}
-
-	public bool remove(string key) modify throws {
+	/*
+	 * removes a parameter from the container by checking its key
+	 */
+	public bool remove( string key ) modify throws {
 		int idx;
 
 		foreach ( Parameter p : mParameters ) {
@@ -100,34 +115,58 @@ public object ParameterHandler implements IIterable {
 		return false;
 	}
 
+	/*
+	 * removes a parameter from the container by checking its reference
+	 */
+	public bool remove( Parameter param const ) modify throws {
+		int idx;
+
+		foreach ( Parameter p : mParameters ) {
+			if ( p == param ) {
+				mParameters.erase( idx );
+				return true;
+			}
+
+			idx++;
+		}
+
+		return false;
+	}
+
+	/*
+	 * returns the number of held parameters
+	 */
 	public int size() const {
 		return mParameters.size();
 	}
 
-/*
- * Private
- */
-	private void insertParameter(string key, string value) modify {
+	/*
+	 * inserts the parsed parameters
+	 */
+	private void insertParameter( string key, string value ) modify {
 		int startPos;
 
-		if ( substr(key, 0, 1) == "-" ) {
+		if ( substr( key, 0, 1 ) == "-" ) {
 			startPos = 1;
-			if ( substr(key, 0, 2) == "--" ) {
+			if ( substr( key, 0, 2 ) == "--" ) {
 				startPos = 2;
 			}
 		}
 
-		mParameters.push_back(new Parameter(substr(key, startPos), value));
+		mParameters.push_back( new Parameter( substr( key, startPos ), value ) );
 	}
 
-	private void process(string args) modify {
+	/*
+	 * parses all arguments and inserts parameters for them
+	 */
+	private void process( string args ) modify {
 		bool isEscape;
 		bool isString;
 		bool isValue;
 		string key;
 		string param;
 
-		var it = new CharacterIterator(args);
+		var it = new CharacterIterator( args );
 
 		string c;
 		while ( it.hasNext() ) {
@@ -142,9 +181,9 @@ public object ParameterHandler implements IIterable {
 					isEscape = !isEscape;
 					break;
 				}
-				case !isString && (c == " " || c == LINEBREAK): {
+				case !isString && ( c == " " || c == LINEBREAK ): {
 					if ( param || isValue ) {
-						insertParameter(isValue ? key : param, isValue ? param : "");
+						insertParameter( isValue ? key : param, isValue ? param : "" );
 					}
 
 					isEscape = false;
@@ -169,7 +208,7 @@ public object ParameterHandler implements IIterable {
 			}
 		}
 
-		insertParameter(isValue ? key : param, isValue ? param : "");
+		insertParameter( isValue ? key : param, isValue ? param : "" );
 	}
 
 	private List<Parameter> mParameters;

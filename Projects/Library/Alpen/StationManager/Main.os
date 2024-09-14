@@ -1,9 +1,9 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 // library imports
 import libLog.Logger;
 import libLog.StdOutLogger;
-import libParams.ParameterHandler;
+import libParam.ParameterHandler;
 
 // project imports
 import libs.Consts;

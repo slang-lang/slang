@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Interpreter_h
-#define ObjectiveScript_Core_Interpreter_h
+#ifndef Slang_Core_Core_Runtime_Interpreter_h
+#define Slang_Core_Core_Runtime_Interpreter_h
 
 
 // Library includes
@@ -18,7 +18,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Common {
@@ -133,7 +133,7 @@ private: // Execution
 
 private:
 	// prevent usage
-	Interpreter(Common::ThreadId threadId);
+	explicit Interpreter(Common::ThreadId threadId);
 
 private:	// Initialization
 	void deinitialize();

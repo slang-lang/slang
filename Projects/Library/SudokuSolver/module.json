@@ -1,0 +1,16 @@
+{
+  "name": "SudokuSolver",
+  "name_short": "SudokuSolver",
+  "version": "0.1.0",
+  "description": "Script to solve 9x9 sudokus.",
+  "dependencies": [
+    { "module": "Slang", "version_min": "0.7.3" },
+    { "module": "System", "version_min": "0.3.4" },
+    { "module": "libParam", "version_min": "0.2.0" }
+  ],
+  "keywords": [ "application" ],
+  "target": {
+    "directory": "SudokuSolver",
+    "type": "internal"
+  }
+}

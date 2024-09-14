@@ -24,7 +24,7 @@ public object FilterOrdersByPriority extends FilteringStep implements IDispatchS
             filteredOrders.push_back(order);
         }
 
-        return new DispatchData(cast<Object>(filteredOrders), cast<Object>(data.shuttles));
+        return new DispatchData(filteredOrders, data.shuttles);
     }
 
     public string getName() const {

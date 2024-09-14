@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Console_Defines_h
-#define ObjectiveScript_Extensions_System_Console_Defines_h
+#ifndef Slang_Extensions_System_Console_Defines_h
+#define Slang_Extensions_System_Console_Defines_h
 
 
 // Library includes
@@ -12,7 +12,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Console {

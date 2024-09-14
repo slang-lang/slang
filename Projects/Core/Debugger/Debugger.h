@@ -1,6 +1,6 @@
 
-#ifndef Debugger_Debugger_h
-#define Debugger_Debugger_h
+#ifndef Core_Debugger_Debugger_h
+#define Core_Debugger_Debugger_h
 
 
 // Library includes
@@ -16,7 +16,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Core {
 
 // Forward declarations
@@ -75,7 +75,7 @@ private:
 	Debugger();
 	Debugger(const Debugger& );
 	Debugger operator=(const Debugger& );
-	~Debugger();
+	~Debugger() = default;
 
 private:
 	bool mBreakOnExceptionCatch;

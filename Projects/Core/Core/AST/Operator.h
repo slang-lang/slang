@@ -1,12 +1,14 @@
 
-#ifndef ObjectiveScript_Core_AST_Operator_h
-#define ObjectiveScript_Core_AST_Operator_h
+#ifndef Slang_Core_Core_AST_Operator_h
+#define Slang_Core_Core_AST_Operator_h
 
 
 // Library includes
 
 // Project includes
 #include <Core/Designtime/Parser/Token.h>
+
+#include <utility>
 #include "Expression.h"
 #include "Node.h"
 
@@ -15,7 +17,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace AST {
 
 
@@ -31,10 +33,10 @@ public:
 	};
 
 public:
-	explicit Operator(OperatorType::E operatorType, const Token& token)
+	explicit Operator(OperatorType::E operatorType, Token token)
 	: Node(NodeType::Operator),
 	  mOperatorType(operatorType),
-	  mToken(token)
+	  mToken(std::move(token))
 	{ }
 
 	OperatorType::E getOperatorType() const {
@@ -59,7 +61,7 @@ public:
 	  mLeft(left),
 	  mRight(right)
 	{ }
-	virtual ~BinaryOperator() {
+	~BinaryOperator() override {
 		delete mLeft;
 		delete mRight;
 	}
@@ -77,7 +79,7 @@ public:
 	: Operator(OperatorType::UnaryOperator, token),
 	  mExpression(exp)
 	{ }
-	virtual ~UnaryOperator() {
+	~UnaryOperator() override {
 		delete mExpression;
 	}
 
@@ -91,3 +93,4 @@ public:
 }
 
 #endif
+

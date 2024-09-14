@@ -1,6 +1,6 @@
 
-#ifndef Debugger_BreakPoint_h
-#define Debugger_BreakPoint_h
+#ifndef Core_Debugger_BreakPoint_h
+#define Core_Debugger_BreakPoint_h
 
 
 // Library includes
@@ -16,7 +16,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Core {
 
 
@@ -25,7 +25,7 @@ class BreakPoint
 public:
 	BreakPoint();
 	explicit BreakPoint(const Common::Position& position);
-	~BreakPoint();
+	~BreakPoint() = default;
 
 public:
 	const Condition& getCondition() const;

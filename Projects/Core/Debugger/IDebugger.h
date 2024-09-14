@@ -1,6 +1,6 @@
 
-#ifndef Debugger_IDebugger_h
-#define Debugger_IDebugger_h
+#ifndef Core_Debugger_IDebugger_h
+#define Core_Debugger_IDebugger_h
 
 
 // Library includes
@@ -12,7 +12,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 class SymbolScope;
@@ -39,7 +39,7 @@ public:
 	};
 
 public:
-	virtual ~IDebugger() { }
+	virtual ~IDebugger() = default;
 
 	virtual bool addBreakPoint(const BreakPoint& breakpoint) = 0;
 	virtual void clearBreakPoints() = 0;

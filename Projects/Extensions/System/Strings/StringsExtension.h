@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Strings_StringsExtension_h
-#define ObjectiveScript_Extensions_System_Strings_StringsExtension_h
+#ifndef Slang_Extensions_System_Strings_StringsExtension_h
+#define Slang_Extensions_System_Strings_StringsExtension_h
 
 
 // Library includes
@@ -13,7 +13,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Strings {
@@ -23,11 +23,11 @@ class SystemStringsExtension : public AExtension
 {
 public:
 	SystemStringsExtension();
-	~SystemStringsExtension();
+	~SystemStringsExtension() = default;
 
 public:
-	void initialize(IScope* scope);
-	void provideMethods(ExtensionMethods &methods);
+	void initialize( ExtensionNamespace* scope );
+	void provideMethods( ExtensionMethods& methods );
 };
 
 

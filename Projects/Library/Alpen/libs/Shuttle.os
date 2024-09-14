@@ -44,6 +44,10 @@ public object ShuttleID {
         ID = id;
     }
 
+    public ShuttleID Copy() const {
+        return new ShuttleID( ID );
+    }
+
     public string =operator(string) const {
         return "ShuttleID{" + ID + "}";
     }
@@ -72,6 +76,24 @@ public object Shuttle {
         Constructor();
 
         load(dbResult);
+    }
+
+    public Shuttle Copy() const {
+        Shuttle result = new Shuttle();
+
+        result.batteryLevelID = batteryLevelID;
+        result.containerLimit = containerLimit;
+        result.countAssignedOrders = countAssignedOrders;
+        result.levelID = levelID;
+        result.modeID = modeID;
+        result.orders = orders;
+        result.path = path;
+        result.position = copy position;
+        result.shuttleID = shuttleID;
+        result.stateID = stateID;
+        result.typeID = typeID;
+
+        return result;
     }
 
     public bool canAcceptOrder(Order order const) const {
@@ -123,3 +145,4 @@ public object Shuttle {
         typeID = ShuttleType cast<int>( mysql_get_field_value(dbResult, "shuttle_type_id") );
     }
 }
+

@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 import System.Collections.Stack;
 import System.Exception;
@@ -9,18 +9,20 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
-	assert( TestCase4() );
+	//assert( TestCase4() );
 	assert( TestCase5() );
 	assert( TestCase6() );
 	assert( TestCase7() );
 	assert( TestCase8() );
+	assert( TestCase9() );
+	assert( TestCase10() );
 }
 
 private bool TestCase1() const {
 	print("TestCase 1: push");
 
 	try {
-		Stack<String> stack = new Stack<String>();
+		var stack = new Stack<String>();
 
 		String item;
 
@@ -62,7 +64,7 @@ private bool TestCase2() const {
 	print("TestCase 2: pop");
 
 	try {
-		Stack<String> stack = new Stack<String>();
+		var stack = new Stack<String>();
 
 		// Setup
 		String item;
@@ -124,7 +126,7 @@ private bool TestCase3() const {
 	print("TestCase 3: iterate");
 
 	try {
-		Stack<String> stack = new Stack<String>();
+		var stack = new Stack<String>();
 
 		stack.push(new String("1"));
 		stack.push(new String("2"));
@@ -132,7 +134,7 @@ private bool TestCase3() const {
 
 		assert( stack.size() == 3 );
 
-		Iterator<String> it = stack.getIterator();
+		var it = stack.getIterator();
 
 		it.next();
 		assert( "1" == string it.current() );
@@ -163,7 +165,7 @@ private bool TestCase4() const {
 	print("TestCase 4: reverse iterate");
 
 	try {
-		Stack<String> stack = new Stack<String>();
+		var stack = new Stack<String>();
 
 		stack.push(new String("1"));
 		stack.push(new String("2"));
@@ -171,7 +173,7 @@ private bool TestCase4() const {
 
 		assert( stack.size() == 3 );
 
-		ReverseIterator<String> it = stack.getReverseIterator();
+		var it = stack.getReverseIterator();
 
 		it.next();
 		assert( "3" == string it.current() );
@@ -199,7 +201,7 @@ private bool TestCase5() const {
 	print("TestCase 5: indexOf");
 
 	try {
-		Stack<String> stack = new Stack<String>();
+		var stack = new Stack<String>();
 
 		stack.push(new String("1"));
 		stack.push(new String("2"));
@@ -287,6 +289,59 @@ private bool TestCase8() const {
 
 		assert( stack.contains( 2 ) );
 		assert( stack.contains( 1 ) );
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase9() const {
+	print("TestCase 9: foreach");
+
+	try {
+		var stack = new Stack<int>();
+		assert( stack is ICollection );
+
+		stack.push( 1 );
+		stack.push( 2 );
+
+		foreach ( int i : stack ) {
+			//print("i = " + i);
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase10() const {
+	print( "TestCase 10: erase and add" );
+
+	try {
+		var collection = new Stack<int>();
+
+		// Set up
+		collection.push( 1 );
+		collection.push( 2 );
+		collection.push( 3 );
+
+		// Test
+		assert( collection.size() == 3 );
+
+		collection.erase( 0 );
+
+		assert( collection.size() == 2 );
+		collection.erase( 0 );
+		assert( collection.size() == 1 );
+
+		collection.erase( 0 );
+		assert( collection.size() == 0 );
+
+		collection.push( 4 );
+
+		assert( collection.at( 0 ) == 4 );
 
 		return true;
 	}

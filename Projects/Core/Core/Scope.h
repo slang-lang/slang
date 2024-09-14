@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Scope_h
-#define ObjectiveScript_Core_Scope_h
+#ifndef Slang_Core_Core_Scope_h
+#define Slang_Core_Core_Scope_h
 
 
 // Defines
@@ -20,7 +20,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Common {
@@ -35,7 +35,7 @@ public:
 	typedef std::map<std::string, Symbol*> Symbols;
 
 public:
-	explicit SymbolScope(IScope* parent = 0);
+	explicit SymbolScope(IScope* parent = nullptr);
 	virtual ~SymbolScope();
 
 public:	// IScope implementation
@@ -63,8 +63,7 @@ private:
 class NamedScope : public SymbolScope
 {
 public:
-	NamedScope(const std::string& name, IScope* parent = 0);
-	virtual ~NamedScope();
+	explicit NamedScope(const std::string& name, IScope* parent = nullptr);
 };
 
 
@@ -75,7 +74,7 @@ public:
 	typedef std::map<std::string, Symbol*> Symbols;
 
 public:
-	MethodScope(const std::string& name, IScope* parent = 0);
+	explicit MethodScope(std::string name, IScope* parent = nullptr);
 	virtual ~MethodScope();
 
 public:	// IScope implementation

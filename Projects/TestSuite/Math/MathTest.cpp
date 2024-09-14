@@ -15,16 +15,16 @@
 #include <Core/VirtualMachine/VirtualMachine.h>
 
 // Namespace declartations
-using namespace ObjectiveScript;
+using namespace Slang;
 
 
 namespace Testing {
 namespace Math {
 
 
-MathTest::MathTest(const ::Utils::Common::ILogger *p)
-: GenericTest("MathTest"),
-  ::Utils::Common::Logger(p, "MathTest")
+MathTest::MathTest( const Utils::Common::ILogger* p )
+: UnitTest( "MathTest" ),
+  Utils::Common::Logger( p, "MathTest" )
 {
 }
 

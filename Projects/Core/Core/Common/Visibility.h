@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Common_Visibility_h
-#define ObjectiveScript_Common_Visibility_h
+#ifndef Slang_Core_Core_Common_Visibility_h
+#define Slang_Core_Core_Common_Visibility_h
 
 
 // Library includes
@@ -13,7 +13,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 class Visibility

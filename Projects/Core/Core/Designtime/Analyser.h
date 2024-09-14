@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Designtime_Analyser_h
-#define ObjectiveScript_Core_Designtime_Analyser_h
+#ifndef Slang_Core_Core_Designtime_Analyser_h
+#define Slang_Core_Core_Designtime_Analyser_h
 
 
 // Library includes
@@ -17,7 +17,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 class MethodScope;
@@ -30,9 +30,10 @@ class Analyser
 {
 public:
 	explicit Analyser(bool doSanityCheck = true);
-	~Analyser();
+	~Analyser() = default;
 
 public:
+	const StringList& getExtensionReferences() const;
 	const StringList& getLibraryReferences() const;
 
 public:	// Entry points
@@ -51,10 +52,13 @@ private:
 	bool createMemberOrMethod(TokenIterator& token);
 	bool createNamespace(TokenIterator& token);
 
-	bool createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name);
-	bool createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name);
+	bool createMethodStub(TokenIterator& token, Visibility::E visibility, MemoryLayout::E memoryLayout, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name);
+	bool createMemberStub(TokenIterator& token, Visibility::E visibility, MemoryLayout::E memoryLayout, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name);
 
 	bool buildEnum(Designtime::BluePrintObject* symbol, const TokenList& tokens);
+
+	bool isNamespace() const;
+	bool isInterface() const;
 
 private: // type resolution
 	std::string getQualifiedTypename(const std::string& name) const;
@@ -68,6 +72,7 @@ private: // wrapper methods
 
 private:
 	bool mDoSanityCheck;
+	StringList mExtensions;
 	std::string mFilename;
 	StringList mLibraries;
 	bool mProcessingInterface;

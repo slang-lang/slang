@@ -1,7 +1,7 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
-public abstract object AbstractObject {
-	public bool isAbstract() const abstract;
+public object AbstractObject {
+	public abstract bool isAbstract() const;
 }
 
 public object ImplementedObject extends AbstractObject {

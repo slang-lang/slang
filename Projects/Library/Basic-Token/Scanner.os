@@ -8,11 +8,11 @@ import System.IO.File;
 
 
 public object Scanner implements IIterable {
-	public void Constructor(System.IO.File file) {
+	public void Constructor( System.IO.File file ) {
 		if ( file ) {
 			mFile = file;
 
-			readAll(mFile);
+			readAll( mFile );
 		}
 	}
 
@@ -21,14 +21,14 @@ public object Scanner implements IIterable {
 	}
 
 	public CharacterIterator getIterator() const {
-		return new CharacterIterator(mText);
+		return new CharacterIterator( mText );
 	}
 
 	public string getText() const {
 		return mText;
 	}
 
-	private void readAll(System.IO.File file) modify {
+	private void readAll( System.IO.File file ) modify {
 		mText = "";
 
 		while ( !file.isEOF() ) {

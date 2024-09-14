@@ -21,8 +21,9 @@ SET(SOURCES
 SET(HEADERS
 	Consts.h
 	Defines.h
+	MemleakCheck.h
 	Object.h
-	ObjectiveScript.h
+	Slang.h
 	Parameter.h
 	Scope.h
 	Symbol.h

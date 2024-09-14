@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 private object ComplexType {
 	public int mValue = 1;
@@ -17,14 +17,14 @@ private object ComplexType {
 	public ComplexType operator=(Object other const) modify {
 		print("operator=(Object)");
 
-		var ct = ComplexType other;
+		var ct = cast<ComplexType>( other );
 		mValue = ct.mValue;
 
 		return this;
 	}
 
 	public ComplexType operator=(int other) modify {
-		print("operator=(int)");
+		print("operator=(" + other + ")");
 		mValue = other;
 
 		return this;

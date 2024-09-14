@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Common/Logger.h>
-#include <Framework/GenericTest.h>
+#include <Framework/UnitTest.h>
 
 // Forward declarations
 
@@ -18,12 +18,12 @@ namespace Testing {
 namespace Operator {
 
 
-class OperatorTest : public GenericTest,
+class OperatorTest : public UnitTest,
 					 private Utils::Common::Logger
 {
 public:
-	OperatorTest(const Utils::Common::Logger *p);
-	virtual ~OperatorTest() { }
+	explicit OperatorTest( const Utils::Common::ILogger* p );
+	~OperatorTest() = default;
 
 public:
 	void process();
@@ -41,12 +41,14 @@ private:	// Tests
 	void testBooleanOverloads_Less();
 	void testBooleanOverloads_Less_Equal();
 	void testBooleanOverloads_Unequal();
+	void testEnumeration();
 	void testIndexOperator();
 	void testInverseOperator();
 	void testIsOperator();
 	void testMathOverloadsWithNumbers();
 	void testMathOverloadsWithObjects();
 	void testRangeOperator();
+	void testShiftOperator();
 	void testUnaryMinus();
 	void testUnaryPlus();
 	void testUnaryValidate();

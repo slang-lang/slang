@@ -20,20 +20,16 @@
 #endif
 
 // Namespace declarations
-using namespace ObjectiveScript;
+using namespace Slang;
 
 
 namespace Testing {
 namespace Inheritance {
 
 
-InheritanceTest::InheritanceTest(const ::Utils::Common::ILogger *p)
-: GenericTest("InheritanceTest"),
-  ::Utils::Common::Logger(p, "InheritanceTest")
-{
-}
-
-InheritanceTest::~InheritanceTest()
+InheritanceTest::InheritanceTest( const Utils::Common::ILogger* p )
+: UnitTest("InheritanceTest" ),
+  Utils::Common::Logger( p, "InheritanceTest" )
 {
 }
 
@@ -104,7 +100,7 @@ void InheritanceTest::testExceptionDuringDestructorTest()
     try {
         VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
         vm.runScriptFromFile("Tests/Inheritance/ExceptionDuringDestructor.os");
 

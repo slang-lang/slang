@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Reflection_ReflectionExtension_h
-#define ObjectiveScript_Extensions_System_Reflection_ReflectionExtension_h
+#ifndef Slang_Extensions_System_Reflection_ReflectionExtension_h
+#define Slang_Extensions_System_Reflection_ReflectionExtension_h
 
 
 // Library includes
@@ -13,7 +13,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Reflection {
@@ -23,11 +23,11 @@ class SystemReflectionExtension : public AExtension
 {
 public:
 	SystemReflectionExtension();
-	~SystemReflectionExtension();
+	~SystemReflectionExtension() = default;
 
 public:
-	void initialize(IScope* scope);
-	void provideMethods(ExtensionMethods &methods);
+	void initialize( ExtensionNamespace* scope );
+	void provideMethods( ExtensionMethods& methods );
 };
 
 

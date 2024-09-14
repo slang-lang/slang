@@ -5,4 +5,3 @@
 50 PRINT "A > B => FAILED"
 60 END
 70 PRINT "A > B => SUCCESS"
-

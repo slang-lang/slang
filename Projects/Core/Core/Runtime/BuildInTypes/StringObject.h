@@ -13,7 +13,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Runtime {
 
 
@@ -24,20 +24,21 @@ public:
 	static std::string TYPENAME;
 
 public:
-	explicit StringObject(const AtomicValue& value = DEFAULTVALUE);
-	explicit StringObject(const std::string& value);
-	explicit StringObject(const std::string& name, const AtomicValue& value);
-	explicit StringObject(const Object& other);
+    explicit StringObject( const std::string& value = "" );
+	explicit StringObject( const AtomicValue& value );
+	explicit StringObject( const std::string& name, const AtomicValue& value );
+	explicit StringObject( const Object& other );
 
 public:	// Operators
-	void operator_assign(const Object* other);
+	void operator_assign( const Object* other );
 	bool operator_bool() const;
-	bool operator_equal(const Object* other);
-	bool operator_greater(const Object *other);
-	bool operator_greater_equal(const Object *other);
-	bool operator_less(const Object *other);
-	bool operator_less_equal(const Object *other);
-	void operator_plus(const Object* other);
+	bool operator_equal( const Object* other );
+	bool operator_greater( const Object* other );
+	bool operator_greater_equal( const Object* other );
+	bool operator_less( const Object* other );
+	bool operator_less_equal( const Object* other );
+	void operator_plus( const Object* other );
+	void operator_shift_left( const Object* other );
 };
 
 

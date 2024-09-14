@@ -14,12 +14,8 @@
 // Global defines
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
-
-// Boolean values
-static const char* BOOL_FALSE = "false";
-static const char* BOOL_TRUE = "true";
 
 // Predefined identifiers
 static const char* IDENTIFIER_BASE = "base";
@@ -56,22 +52,26 @@ static const char* LANGUAGE_FEATURE_DEPRECATED = "deprecated";
 static const char* LANGUAGE_FEATURE_NONE = "";
 static const char* LANGUAGE_FEATURE_NOTIMPLEMENTED = "notimplemented";
 static const char* LANGUAGE_FEATURE_STABLE = "stable";
+static const char* LANGUAGE_FEATURE_UNSPECIFIED = "";
 static const char* LANGUAGE_FEATURE_UNSTABLE = "unstable";
 
+// Memory layout
+static const char* MEMORY_LAYOUT_ABSTRACT = "abstract";
+static const char* MEMORY_LAYOUT_FINAL = "final";
+static const char* MEMORY_LAYOUT_OVERRIDE = "override";
+static const char* MEMORY_LAYOUT_STATIC = "static";
+static const char* MEMORY_LAYOUT_VIRTUAL = "virtual";
+
 // Modifiers
-static const char* MODIFIER_ABSTRACT = "abstract";
-static const char* MODIFIER_CONST = "const";
-static const char* MODIFIER_CONCRETE = "concrete";		// no reserved word, antonym to "abstract"
-static const char* MODIFIER_FINAL = "final";
 static const char* MODIFIER_HEURISTIC = "heuristic";	// no reserved word, antonym to "recursive"
-static const char* MODIFIER_INSTANCE = "instance";		// no reserved word, antonym to "static"
-static const char* MODIFIER_MODIFY = "modify";
 static const char* MODIFIER_NOTHROW = "nothrow";		// no reserved word, antonym to "throws"
-static const char* MODIFIER_RECURSIVE = "recursive";	// no reserved word
+static const char* MODIFIER_RECURSIVE = "recursive";	// antonym to "heuristic"
 static const char* MODIFIER_SEALED = "sealed";
-static const char* MODIFIER_STATIC = "static";
-static const char* MODIFIER_THROWS = "throws";
-static const char* MODIFIER_VIRTUAL = "virtual";
+static const char* MODIFIER_THROWS = "throws";			// antonym to "nothrow"
+
+// Mutability
+static const char* MUTABILITY_CONST = "const";
+static const char* MUTABILITY_MODIFY = "modify";
 
 // Operators
 static const char* OPERATOR_IS = "is";
@@ -94,10 +94,9 @@ static const char* RESERVED_WORD_SCOPE_OPERATOR = ".";
 
 // System
 static const char* ANONYMOUS_OBJECT = "<anonymous>";
-static const char* CONSTRUCTOR = "Constructor";
-static const char* DESTRUCTOR = "Destructor";
 static const char* NULL_TYPE = "<anonymous>";
-static const char* OBJECTIVESCRIPT_LIBRARY = "OBJECTIVESCRIPT_LIBRARY";
+static const char* SLANG_HOME = "SLANG_HOME";
+static const char* SLANG_LIBRARY = "SLANG_LIBRARY";
 static const char* SYSTEM_LIBRARY = "SYSTEM.OS";
 static const char* UNKNOWN = "unknown";
 
@@ -116,11 +115,13 @@ static const char* _object = "Object";
 static const char* _string = "string";
 static const char* _string_object = "String";
 static const char* _void = "void";
-static const char* __unary__ = "__unary__";			// special type to handle unary type operation checks
+static const char* _unary_ = "__unary__";			// special type to handle unary type operation checks
 
 // Values
+static const char* VALUE_FALSE = "false";
 static const char* VALUE_NONE = "";
 static const char* VALUE_NULL = "null";
+static const char* VALUE_TRUE = "true";
 
 // Visibility
 static const char* PRIVATE = "private";
@@ -128,6 +129,7 @@ static const char* PROTECTED = "protected";
 static const char* PUBLIC = "public";
 
 // Unsorted
+static const char* DEFAULT = "default";
 static const char* EMPTY = "";
 
 

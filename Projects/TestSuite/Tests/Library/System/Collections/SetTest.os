@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 import System.Collections.Set;
 import System.Exception;
@@ -43,13 +43,14 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase3() );
 	assert( TestCase4() );
 	assert( TestCase5() );
+	assert( TestCase6() );
 }
 
 private bool TestCase1() const {
 	print("TestCase 1: Set.insert()");
 
 	try {
-		Set<TestObject> set = new Set<TestObject>();
+		var set = new Set<TestObject>();
 
 		TestObject item;
 
@@ -65,7 +66,7 @@ private bool TestCase1() const {
 
 		TestObject last;
 
-		Iterator<TestObject> it = set.getIterator();
+		var it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -92,7 +93,7 @@ private bool TestCase2() const {
 	print("TestCase 2: Set.erase()");
 
 	try {
-		Set<Integer> set = new Set<Integer>();
+		var set = new Set<Integer>();
 		assert( set is Object );
 
 		int count = 0;
@@ -106,7 +107,7 @@ private bool TestCase2() const {
 
 		//print("before erase: set has " + set.size() + " item(s)");
 
-		Iterator<Integer> it = set.getIterator();
+		var it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -145,7 +146,7 @@ private bool TestCase3() {
 	print("TestCase 3: Set.clear()");
 
 	try {
-		Set<Integer> set = new Set<Integer>();
+		var set = new Set<Integer>();
 		assert( set is Object );
 
 		int count;
@@ -177,7 +178,7 @@ private bool TestCase4() {
 	print("TestCase 4: Set iterate");
 
 	try {
-		Set<Integer> set = new Set<Integer>();
+		var set = new Set<Integer>();
 
 		int count;
 		while ( count < 10 ) {
@@ -189,7 +190,7 @@ private bool TestCase4() {
 		assert( !set.empty() );
 		assert( set.size() == 10 );
 
-		Iterator<Integer> it = set.getIterator();
+		var it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -223,6 +224,32 @@ private bool TestCase5() {
 
 		while ( it.hasNext() ) {
 			assert( (compareValue++) == it.next() );
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase6() {
+	print("TestCase 6: foreach");
+
+	try {
+		var set = new Set<int>();
+		assert( set is ICollection );
+
+		set.insert( 2 );
+		set.insert( 1 );
+		set.insert( 3 );
+
+		assert( set.size() == 3 );
+
+		int compareValue;
+		var it = set.getIterator();
+
+		foreach ( int i : set ) {
+			//print("i = " + i);
 		}
 
 		return true;

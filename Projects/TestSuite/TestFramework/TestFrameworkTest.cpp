@@ -19,9 +19,9 @@ namespace Testing {
 namespace Framework {
 
 
-TestFrameworkTest::TestFrameworkTest(const Utils::Common::ILogger *p)
-: GenericTest("TestFrameworkTest"),
-  Utils::Common::Logger(p, "TestFrameworkTest")
+TestFrameworkTest::TestFrameworkTest( const Utils::Common::ILogger* p )
+: UnitTest( "TestFrameworkTest" ),
+  Utils::Common::Logger( p, "TestFrameworkTest" )
 {
 }
 
@@ -34,7 +34,7 @@ void TestFrameworkTest::dont_throw_std_ex()
 
 void TestFrameworkTest::preventFail(bool t, bool f, bool &result)
 {
-	TestResult mResult;
+	MyUnit::TestResult mResult;
 
 	// reset result to false
 	result = false;

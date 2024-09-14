@@ -1,10 +1,10 @@
 
-#ifndef ObjectiveScript_Extensions_System_GetEnv_h
-#define ObjectiveScript_Extensions_System_GetEnv_h
+#ifndef Slang_Extensions_System_GetEnv_h
+#define Slang_Extensions_System_GetEnv_h
 
 
 // Library includes
-#include <stdlib.h>
+#include <cstdlib>
 
 // Project includes
 #include <Core/Common/Exceptions.h>
@@ -18,7 +18,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 

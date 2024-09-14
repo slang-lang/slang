@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_TypeSystem_h
-#define ObjectiveScript_Core_VirtualMachine_TypeSystem_h
+#ifndef Slang_Core_Core_VirtualMachine_TypeSystem_h
+#define Slang_Core_Core_VirtualMachine_TypeSystem_h
 
 
 // Library includes
@@ -15,17 +15,19 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 class TypeSystem
 {
 private:
-	class Right {
+	class Right
+	{
 	public:
 		bool contains(const std::string& right) const {
 			return mRight.find(right) != mRight.end();
 		}
+
 		void insert(const std::string& right) {
 			mRight.insert(
 				std::make_pair(right, std::string())
@@ -33,7 +35,7 @@ private:
 		}
 
 		std::string& operator[](const std::string& index) {
-			std::map<std::string, std::string>::iterator it = mRight.find(index);
+			auto it = mRight.find(index);
 
 			return it->second;
 		}
@@ -41,11 +43,13 @@ private:
 		std::map</*right*/ std::string, /*result*/std::string> mRight;
 	};
 
-	class Operation {
+	class Operation
+	{
 	public:
 		bool contains(Token::Type::E operation) const {
 			return mOperation.find(operation) != mOperation.end();
 		}
+
 		void insert(Token::Type::E operation) {
 			mOperation.insert(
 				std::make_pair(operation, Right())
@@ -53,7 +57,7 @@ private:
 		}
 
 		Right& operator[](Token::Type::E index) {
-			std::map<Token::Type::E, Right>::iterator it = mOperation.find(index);
+			auto it = mOperation.find(index);
 
 			return it->second;
 		}
@@ -61,11 +65,13 @@ private:
 		std::map</*operation*/ Token::Type::E, /*right*/ Right> mOperation;
 	};
 
-	class TypeMap {
+	class TypeMap
+	{
 	public:
 		bool contains(const std::string& left) const {
 			return mTypes.find(left) != mTypes.end();
 		}
+
 		void insert(const std::string& left) {
 			mTypes.insert(
 				std::make_pair(left, Operation())
@@ -73,7 +79,7 @@ private:
 		}
 
 		Operation& operator[](const std::string& index) {
-			std::map<std::string, Operation>::iterator it = mTypes.find(index);
+			auto it = mTypes.find(index);
 
 			return it->second;
 		}
@@ -82,8 +88,8 @@ private:
 	};
 
 public:
-	TypeSystem();
-	~TypeSystem();
+	TypeSystem() = default;
+	~TypeSystem() = default;
 
 public:
 	void deinit();
@@ -97,6 +103,7 @@ public:
 private:
 	void initBool();
 	void initDouble();
+	void initEnumeration();
 	void initFloat();
 	void initInt();
 	void initObject();
@@ -111,3 +118,4 @@ private:
 
 
 #endif
+

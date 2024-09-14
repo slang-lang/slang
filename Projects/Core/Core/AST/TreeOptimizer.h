@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_TreeOptimizer_h
-#define ObjectiveScript_Core_AST_TreeOptimizer_h
+#ifndef Slang_Core_Core_AST_TreeOptimizer_h
+#define Slang_Core_Core_AST_TreeOptimizer_h
 
 
 // Library includes
@@ -12,7 +12,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 namespace Common {
@@ -30,16 +30,16 @@ namespace AST {
 class TreeOptimizer
 {
 public:
-	TreeOptimizer();
-	~TreeOptimizer();
+	TreeOptimizer() = default;
+	virtual ~TreeOptimizer() = default;
 
 public:
-	void process(MethodScope* base);
+	virtual void process(MethodScope* base);
 
 private:
-	void processBluePrint(Designtime::BluePrintObject* object);
-	void processMethod(Common::Method* method);
-	void processNamespace(Common::Namespace* space);
+	virtual void processBluePrint(Designtime::BluePrintObject* object);
+	virtual void processMethod(Common::Method* method);
+	virtual void processNamespace(Common::Namespace* space);
 };
 
 

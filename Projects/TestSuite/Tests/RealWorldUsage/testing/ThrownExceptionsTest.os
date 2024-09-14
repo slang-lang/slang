@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 public void Main(int argc, string args) {
 	try {
@@ -10,6 +10,7 @@ public void Main(int argc, string args) {
 		catch ( int e ) {
 			print("e = " + e);
 		}
+		//catch ( string e ) { }
 	}
 	catch ( int e ) {
 		print("e = " + e);

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Designtime_Ancestor_h
-#define ObjectiveScript_Designtime_Ancestor_h
+#ifndef Slang_Core_Core_Designtime_Ancestor_h
+#define Slang_Core_Core_Designtime_Ancestor_h
 
 
 // Library includes
@@ -16,7 +16,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Designtime {
 
 
@@ -29,6 +29,7 @@ public:
 		enum E {
 			Unknown = 0,
 			Extends,
+			Hidden,
 			Implements,
 			Replicates
 		};

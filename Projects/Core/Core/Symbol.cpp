@@ -2,6 +2,8 @@
 // Header
 #include "Symbol.h"
 
+#include <utility>
+
 // Library includes
 
 // Project includes
@@ -9,28 +11,29 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
-Symbol::Symbol(const std::string& name, IType::E type, Visibility::E visibility)
-: mName(name),
+Symbol::Symbol(std::string name, IType::E type, Visibility::E visibility)
+: mName(std::move(name)),
   mType(type),
   mVisibility(visibility)
 {
 }
 
-Symbol::~Symbol()
+bool Symbol::operator==(const std::string& name) const
 {
+	return mName == name;
 }
 
 bool Symbol::operator< (const Symbol& other) const
 {
-	return getName() < other.getName();
+	return mName < other.mName;
 }
 
 bool Symbol::operator< (const Symbol* other) const
 {
-	return getName() < other->getName();
+	return mName < other->mName;
 }
 
 const std::string& Symbol::getName() const

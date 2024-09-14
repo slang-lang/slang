@@ -1,5 +1,14 @@
-Package: ObjectiveScript
-Version: 0.6.8
-Maintainer: Michael Adelmann
-Architecture: armhf
-Description: ObjectiveScript interpreter, debugger & package manager
+Source: slang
+Section: unknown
+Priority: optional
+Maintainer: Michael Adelmann <michael.adelmann@gmail.com>
+Build-Depends: debhelper (>=10), libsqlite3-dev
+Standards-Version: 4.0.0
+Homepage: https://slang.ticketsharing.net/
+Package: slang
+Version: 0.8.0
+Architecture: any
+Conficts: oscript
+Provides: slang
+Replaces: oscript
+Description: Is an interpreter, debugger & package manager for the Slang programming language

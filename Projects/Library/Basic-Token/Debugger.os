@@ -15,7 +15,7 @@ public object Debugger extends Interpreter {
 		mBreakpoints = new Set<int>();
 		mParser = new Parser();
 
-		base.Constructor(Object mParser.parseFile(filename));
+		base.Constructor(mParser.parseFile(filename));
 	}
 
 	private void addBreakpoint(int line) modify {
@@ -37,7 +37,7 @@ public object Debugger extends Interpreter {
 		var ci = new CharacterIterator(command);
 
 		try {
-			var stmt = mParser.parseStatement(ci);
+			var stmt = mParser.parseStatement(/*ci*/);
 			if ( stmt ) {
 				int newLine = process(stmt);
 

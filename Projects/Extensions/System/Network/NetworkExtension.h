@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Network_NetworkExtension_h
-#define ObjectiveScript_Extensions_System_Network_NetworkExtension_h
+#ifndef Slang_Extensions_System_Network_NetworkExtension_h
+#define Slang_Extensions_System_Network_NetworkExtension_h
 
 
 // Library includes
@@ -13,7 +13,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Network {
@@ -23,11 +23,11 @@ class SystemNetworkExtension : public AExtension
 {
 public:
 	SystemNetworkExtension();
-	~SystemNetworkExtension();
+	~SystemNetworkExtension() = default;
 
 public:
-	void initialize(IScope* scope);
-	void provideMethods(ExtensionMethods &methods);
+	void initialize( ExtensionNamespace* scope );
+	void provideMethods( ExtensionMethods& methods );
 };
 
 

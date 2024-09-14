@@ -13,32 +13,28 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Console {
 
 
 SystemConsoleExtension::SystemConsoleExtension()
-: AExtension("Console")
+: AExtension( "Console", "0.0.2" )
 {
 }
 
-SystemConsoleExtension::~SystemConsoleExtension()
-{
-}
-
-void SystemConsoleExtension::initialize(ObjectiveScript::IScope* /*scope*/)
+void SystemConsoleExtension::initialize( ExtensionNamespace* /*scope*/ )
 {
 	// nothing to do here
 }
 
-void SystemConsoleExtension::provideMethods(ExtensionMethods &methods)
+void SystemConsoleExtension::provideMethods( ExtensionMethods& methods )
 {
-	methods.push_back(new Cerr());
-	methods.push_back(new Cin());
-	methods.push_back(new Cout());
-	methods.push_back(new Endl());
+	methods.push_back( new Cerr() );
+	methods.push_back( new Cin() );
+	methods.push_back( new Cout() );
+	methods.push_back( new Endl() );
 }
 
 

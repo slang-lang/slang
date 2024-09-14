@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_SystemExtension_h
-#define ObjectiveScript_Extensions_System_SystemExtension_h
+#ifndef Slang_Extensions_System_SystemExtension_h
+#define Slang_Extensions_System_SystemExtension_h
 
 
 // Library includes
@@ -8,8 +8,6 @@
 // Project includes
 #include <Core/Extensions/AExtension.h>
 #include <System/Console/Console.h>
-#include <System/IO/IO.h>
-#include <System/Math/MathExtension.h>
 #ifdef _WIN32
 	// Win32 only
 #else
@@ -18,13 +16,14 @@
 #endif
 #include <System/Reflection/ReflectionExtension.h>
 #include <System/Strings/StringsExtension.h>
+#include <System/Time/TimeExtension.h>
 
 // Forward declarations
 
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 
@@ -36,13 +35,11 @@ public:
 	~SystemExtension();
 
 public:
-	void initialize(IScope* scope);
-	void provideMethods(ExtensionMethods &methods);
+	void initialize( ExtensionNamespace* scope );
+	void provideMethods( ExtensionMethods& methods );
 
 private:
 	Console::SystemConsoleExtension mConsoleExtension;
-	IO::SystemIOExtension mIOExtension;
-	Math::SystemMathExtension mMathExtension;
 #ifdef _WIN32
 	// Win32 only
 #else
@@ -51,6 +48,7 @@ private:
 #endif
 	Reflection::SystemReflectionExtension mReflectionExtension;
 	Strings::SystemStringsExtension mStringsExtension;
+    Time::SystemTimeExtension mTimeExtension;
 };
 
 

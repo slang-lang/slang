@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_PrintVisitor_h
-#define ObjectiveScript_Core_AST_PrintVisitor_h
+#ifndef Slang_Core_Core_AST_PrintVisitor_h
+#define Slang_Core_Core_AST_PrintVisitor_h
 
 
 // Library includes
@@ -14,46 +14,43 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace AST {
 
 // Forward declarations
 class Statement;
 class Statements;
 
-class PrintVisitor : public TreeVisitor
+class PrintVisitor : private TreeVisitor
 {
 public:
 	PrintVisitor();
-	~PrintVisitor();
 
 public:
 	void generate(Statements* root, TreeLineBuffer& output);
 
 private:
-	void visit(Node* node);
+	void visitExpression(Expression* expression) override;
+	void visitOperator(Operator* op) override;
 
-	void visitExpression(Expression* expression);
-	void visitOperator(Operator* op);
-	void visitStatement(Statement* node);
-
-	void visitAssert(AssertStatement* node);
-	void visitBreak(BreakStatement* node);
-	void visitContinue(ContinueStatement* node);
-	void visitDelete(DeleteStatement* node);
-	void visitExit(ExitStatement* node);
-	void visitFor(ForStatement* node);
-	void visitForeach(ForeachStatement *node);
-	void visitIf(IfStatement* node);
-	void visitPrint(PrintStatement* node);
-	void visitReturn(ReturnStatement* node);
-	void visitStatements(Statements* node);
-	void visitSwitch(SwitchStatement* node);
-	void visitThrow(ThrowStatement* node);
-	void visitTry(TryStatement* node);
-	void visitTypeDeclaration(TypeDeclaration* node);
-	void visitTypeInference(TypeInference* node);
-	void visitWhile(WhileStatement* node);
+	void visitAssert(AssertStatement* node) override;
+	void visitAssignment(AssignmentStatement* node) override;
+	void visitBreak(BreakStatement* node) override;
+	void visitContinue(ContinueStatement* node) override;
+	void visitDelete(DeleteStatement* node) override;
+	void visitExit(ExitStatement* node) override;
+	void visitFor(ForStatement* node) override;
+	void visitForeach(ForeachStatement *node) override;
+	void visitIf(IfStatement* node) override;
+	void visitPrint(PrintStatement* node) override;
+	void visitReturn(ReturnStatement* node) override;
+	void visitStatements(Statements* node) override;
+	void visitSwitch(SwitchStatement* node) override;
+	void visitThrow(ThrowStatement* node) override;
+	void visitTry(TryStatement* node) override;
+	void visitTypeDeclaration(TypeDeclaration* node) override;
+	void visitTypeInference(TypeInference* node) override;
+	void visitWhile(WhileStatement* node) override;
 
 private:
 	std::string printExpression(Node* node) const;

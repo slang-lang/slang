@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_StackFrame_h
-#define ObjectiveScript_Core_VirtualMachine_StackFrame_h
+#ifndef Slang_Core_Core_VirtualMachine_StackFrame_h
+#define Slang_Core_Core_VirtualMachine_StackFrame_h
 
 
 // Library includes
@@ -16,7 +16,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 // Forward declarations
 class IScope;
@@ -37,7 +37,7 @@ public:
 	typedef std::list<Scope> Scopes;
 
 public:
-	StackFrame(unsigned long level, IScope* scope, const ParameterList& params);
+	StackFrame(unsigned long level, IScope* scope, ParameterList params);
 	~StackFrame();
 
 public:

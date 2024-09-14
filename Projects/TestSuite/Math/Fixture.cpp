@@ -14,20 +14,15 @@ namespace Testing {
 namespace Math {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Math"),
-  Utils::Common::Logger(p, "Math")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p, StringSet libraries )
+: TestFixture( "Math", std::move( libraries ) )
+, Utils::Common::Logger( p, "Math" )
 {
 }
 
 void Fixture::setup()
 {
-	MathTest* mathTest = new MathTest(this);
-	add(mathTest);
+	add( new MathTest( this ) );
 }
 
 void Fixture::teardown()

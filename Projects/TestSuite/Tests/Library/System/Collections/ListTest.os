@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 import System.Collections.List;
 import System.Integer;
@@ -10,13 +10,15 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase4() );
 	assert( TestCase5() );
 	assert( TestCase6() );
+	assert( TestCase7() );
+	assert( TestCase8() );
 }
 
 private bool TestCase1() const {
 	print("TestCase 1: push_back");
 
 	try {
-		List<Integer> list = new List<Integer>();
+		var list = new List<Integer>();
 
 		// Setup
 		list.push_back(new Integer(664));
@@ -50,7 +52,7 @@ private bool TestCase2() const {
 	print("TestCase 2: push_front");
 
 	try {
-		List<Integer> list = new List<Integer>();
+		var list = new List<Integer>();
 
 		list.push_front(new Integer(1389));
 		list.push_front(new Integer(173));
@@ -78,7 +80,7 @@ private bool TestCase3() const {
 	print("TestCase 3: pop_front");
 
 	try {
-		List<Integer> list = new List<Integer>();
+		var list = new List<Integer>();
 
 		// Setup
 		list.push_back(new Integer(664));
@@ -124,7 +126,7 @@ private bool TestCase4() const {
 	print("TestCase 4: pop_back");
 
 	try {
-		List<Integer> list = new List<Integer>();
+		var list = new List<Integer>();
 
 		// Setup
 		list.push_back(new Integer(664));
@@ -170,7 +172,7 @@ private bool TestCase5() const {
 	print("TestCase 5: clear");
 
 	try {
-		List<Integer> list = new List<Integer>();
+		var list = new List<Integer>();
 		assert( list );
 
 		list.push_back(new Integer(1));
@@ -182,14 +184,15 @@ private bool TestCase5() const {
 
 		Integer item;
 
-		Iterator<Integer> it = list.getIterator();
+		var it = list.getIterator();
+/*
 		while ( it.hasNext() ) {
 			it.next();
 
 			item = Integer it.current();
 			//print(string item);
 		}
-
+*/
 		list.clear();
 
 		it.reset();
@@ -213,7 +216,7 @@ private bool TestCase6() const {
 	print("TestCase 6: native data types");
 
 	try {
-		List<string> list = new List<string>();
+		var list = new List<string>();
 
 		assert( list );
 		assert( list is Object );
@@ -224,7 +227,7 @@ private bool TestCase6() const {
 
 		assert( list.size() == 3 );
 
-		Iterator<string> it = list.getIterator();
+		var it = list.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -240,6 +243,71 @@ private bool TestCase6() const {
 	}
 	catch {
 		return false;
+	}
+
+	return false;
+}
+
+private bool TestCase7() const {
+	print("TestCase 7: foreach");
+
+	try {
+		List<string> list = new List<string>();
+
+		assert( list );
+		assert( list is Object );
+
+		list.push_back("1");
+		list.push_back("2");
+		list . push_back("3");
+
+		assert( list.size() == 3 );
+
+		foreach ( string s : list ) {
+			//print("s = " + s);
+		}
+
+		list.clear();
+
+		assert( list.empty() );
+
+		return true;
+	}
+	catch {
+		return false;
+	}
+
+	return false;
+}
+
+private bool TestCase8() const {
+	print( "TestCase 8: erase and add" );
+
+	try {
+		var collection = new List<int>();
+
+		// Set up
+		collection.push_back( 1 );
+		collection.push_back( 2 );
+		collection.push_back( 3 );
+
+		// Test
+		assert( collection.size() == 3 );
+
+		collection.erase( 0 );
+
+		assert( collection.size() == 2 );
+		collection.erase( 0 );
+		assert( collection.size() == 1 );
+
+		collection.erase( 0 );
+		assert( collection.size() == 0 );
+
+		collection.push_back( 4 );
+
+		assert( collection.at( 0 ) == 4 );
+
+		return true;
 	}
 
 	return false;

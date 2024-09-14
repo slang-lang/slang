@@ -7,39 +7,129 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
+#include <Core/Consts.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
-#include <Utils.h>
+#include "Exceptions.h"
 
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Designtime {
 
 
+BluePrintObject* BluePrintObject::FromParent(BluePrintObject* parent, const std::string& unqualifiedTypename, const std::string& filename)
+{
+	auto* newBluePrint = new BluePrintObject( unqualifiedTypename, filename );
+
+	for ( auto& method : parent->mMethods ) {
+		auto* newMethod = new Common::Method( parent, method->getName(), Common::TypeDeclaration(method->QualifiedTypename()) );
+		*newMethod = *method;
+
+		newBluePrint->defineMethod( method->getName(), newMethod );
+	}
+
+	for ( auto& symbolIt : parent->mSymbols ) {
+		Symbol* symbol = nullptr;
+
+		switch ( symbolIt.second->getSymbolType() ) {
+			case Symbol::IType::BluePrintObjectSymbol:
+			case Symbol::IType::ObjectSymbol:
+				*symbol = *symbolIt.second;
+				break;
+			default:
+				continue;
+		}
+
+		newBluePrint->define( symbolIt.first, symbol );
+	}
+
+	return newBluePrint;
+}
+
+
 BluePrintObject::BluePrintObject()
-: MethodScope(ANONYMOUS_OBJECT, 0),
+: BlueprintSymbol(ANONYMOUS_OBJECT),
+  MethodScope(ANONYMOUS_OBJECT, nullptr),
+  mIsAtomicType(false),
+  mFilename(ANONYMOUS_OBJECT),
   mIsPrepared(false),
-  mIsReference(false)
+  mIsReference(false),
+  mQualifiedTypename(ANONYMOUS_OBJECT),
+  mUnqualifiedTypename(ANONYMOUS_OBJECT)
 {
 	mName = ANONYMOUS_OBJECT;
 	mType = Symbol::IType::BluePrintObjectSymbol;
 }
 
-BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
-: BluePrintGeneric(type, filename),
-  MethodScope(type, 0),
+BluePrintObject::BluePrintObject(const std::string& unqualifiedTypename, const std::string& filename, const std::string& name)
+: BlueprintSymbol(unqualifiedTypename),
+  MethodScope(unqualifiedTypename, nullptr),
+  mIsAtomicType(false),
+  mFilename(filename),
   mIsPrepared(false),
-  mIsReference(false)
+  mIsReference(false),
+  mQualifiedTypename(unqualifiedTypename),
+  mUnqualifiedTypename(unqualifiedTypename)
 {
 	mName = name;
 	mType = Symbol::IType::BluePrintObjectSymbol;
 }
 
-BluePrintObject::~BluePrintObject()
+void BluePrintObject::addInheritance(const Designtime::Ancestor& inheritance)
 {
+	if ( inheritance.name().empty() ) {
+		throw Common::Exceptions::Exception("invalid inheritance added");
+	}
+
+	mInheritance.insert(inheritance);
+}
+
+void BluePrintObject::defineMethod(const std::string& name, Common::Method* method)
+{
+	// try to override abstract methods a.k.a. implement an interface method
+	auto* oldMethod = dynamic_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
+	if ( oldMethod ) {
+		if ( oldMethod->getMemoryLayout() != MemoryLayout::Abstract && oldMethod->getMemoryLayout() != MemoryLayout::Virtual ) {
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is not abstract or marked with " + std::string(Slang::MEMORY_LAYOUT_VIRTUAL ) );
+		}
+		if ( method->getMethodType() == MethodType::Method && method->getMemoryLayout() != MemoryLayout::Abstract && method->getMemoryLayout() != MemoryLayout::Override ) {
+			throw Exceptions::SyntaxError( "Overriding method '" + method->getFullScopeName() + "' is not marked with " + std::string( Slang::MEMORY_LAYOUT_OVERRIDE ) );
+		}
+
+		// compare methods
+		if ( oldMethod->isConst() != method->isConst() ) {
+			throw Exceptions::SyntaxError("Overriding method '" + method->getFullScopeName() + "' has different return value then base method'" );
+		}
+		if ( oldMethod->isConstMethod() != method->isConstMethod() ) {
+			throw Exceptions::SyntaxError("Overriding method '" + method->getFullScopeName() + "' has different mutability then base method" );
+		}
+		if ( oldMethod->isFinalMethod() ) {
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(Slang::MEMORY_LAYOUT_FINAL ) + " and cannot be overwritten" );
+		}
+		if ( oldMethod->isStatic() ) {
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(Slang::MEMORY_LAYOUT_STATIC ) + " and cannot be overwritten" );
+		}
+		if ( oldMethod->QualifiedTypename() != method->QualifiedTypename() ) {
+			throw Exceptions::SyntaxError("Overriding method '" + method->getFullScopeName() + "' has different return value then base method" );
+		}
+
+		// removed old method
+		// {
+		undefineMethod(oldMethod);
+
+		delete oldMethod;
+		// }
+	}
+
+	MethodScope::defineMethod(name, method);
+}
+
+const std::string& BluePrintObject::Filename() const
+{
+	return mFilename;
 }
 
 BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& constraints) const
@@ -61,7 +151,7 @@ BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& cons
 			continue;
 		}
 
-		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(symIt->second);
+		auto* blue = dynamic_cast<Designtime::BluePrintObject*>(symIt->second);
 
 		if ( blue->isPrototype() ) {
 			blue->setPrototypeConstraints(
@@ -69,7 +159,7 @@ BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& cons
 			);
 		}
 		else {
-			std::string type = constraints.lookupType(blue->QualifiedTypename());
+			const std::string& type = constraints.lookupType(blue->QualifiedTypename());
 
 			blue->setPrototypeConstraints(PrototypeConstraints());
 			blue->setQualifiedTypename(type);
@@ -80,14 +170,53 @@ BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& cons
 	// update methods
 	// {
 	MethodScope::MethodCollection methods = prototype->provideMethods();
-	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-		Common::Method* method = (*it);
-
-		method->initialize(constraints);
+	for ( auto& method : methods ) {
+			method->initialize(constraints);
 	}
 	// }
 
 	return prototype;
+}
+
+Ancestors BluePrintObject::getAncestors() const
+{
+	Ancestors ancestors;
+
+	for ( const auto& it : mInheritance ) {
+		if ( it.ancestorType() == Ancestor::Type::Extends ) {
+			ancestors.insert(it);
+		}
+	}
+
+	return ancestors;
+}
+
+Ancestors BluePrintObject::getInheritance() const
+{
+	return mInheritance;
+}
+
+Ancestors BluePrintObject::getImplementations() const
+{
+	Ancestors implementations;
+
+	for ( const auto& it : mInheritance ) {
+		if ( it.ancestorType() == Ancestor::Type::Implements ) {
+			implementations.insert(it);
+		}
+	}
+
+	return implementations;
+}
+
+const PrototypeConstraints& BluePrintObject::getPrototypeConstraints() const
+{
+	return mPrototypeConstraints;
+}
+
+const TokenList& BluePrintObject::getTokens() const
+{
+	return mTokens;
 }
 
 Runtime::AtomicValue BluePrintObject::getValue() const
@@ -98,7 +227,7 @@ Runtime::AtomicValue BluePrintObject::getValue() const
 bool BluePrintObject::hasConstructor() const
 {
 	// return any (private, protected, public) constructor with or without parameters or only default parameters
-	Symbol* constructor = resolve(CONSTRUCTOR, true, Visibility::Private);
+	Symbol* constructor = resolve(RESERVED_WORD_CONSTRUCTOR, true, Visibility::Private);
 	if ( constructor && dynamic_cast<class MethodSymbol*>(constructor) ) {
 		return true;
 	}
@@ -109,12 +238,38 @@ bool BluePrintObject::hasConstructor() const
 bool BluePrintObject::hasDefaultConstructor() const
 {
 	// return any (private, protected, public) constructor that has no parameters or only default parameters
-	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Private) != NULL;
+	return resolveMethod(RESERVED_WORD_CONSTRUCTOR, ParameterList(), true, Visibility::Private) != nullptr;
+}
+
+bool BluePrintObject::inheritsFrom(const std::string& type) const
+{
+	for ( const auto& it : mInheritance ) {
+		if ( it.name() == type ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool BluePrintObject::isAtomicType() const
+{
+	return mIsAtomicType;
+}
+
+bool BluePrintObject::isAbstract() const
+{
+	return mBluePrintType == BlueprintType::Interface || mMemoryLayout == MemoryLayout::Abstract;
 }
 
 bool BluePrintObject::isEnumeration() const
 {
-	return mBluePrintType == BluePrintType::Enum;
+	return mBluePrintType == BlueprintType::Enum;
+}
+
+bool BluePrintObject::isInterface() const
+{
+	return mBluePrintType == BlueprintType::Interface;
 }
 
 bool BluePrintObject::isIterable() const
@@ -125,8 +280,8 @@ bool BluePrintObject::isIterable() const
 	    return true;
 	}
 
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->getName() == "getIterator" && (*it)->isSignatureValid(params) ) {
+	for ( auto& mMethod : mMethods ) {
+		if ( mMethod->getName() == "getIterator" && mMethod->isSignatureValid(params) ) {
 			return true;
 		}
 	}
@@ -148,6 +303,11 @@ bool BluePrintObject::isPrepared() const
 	return mIsPrepared;
 }
 
+bool BluePrintObject::isPrototype() const
+{
+	return !mPrototypeConstraints.empty();
+}
+
 bool BluePrintObject::isReference() const
 {
 	return mIsReference;
@@ -155,12 +315,44 @@ bool BluePrintObject::isReference() const
 
 void BluePrintObject::prepareParents(Repository* repository)
 {
-	Ancestors ancestors = getAncestors();
-	for ( Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-		BluePrintObject* parent = repository->findBluePrintObject(it->typeDeclaration());
+/*
+	// collect all parents
+	// {
+	bool foundNewParents = false;
+	std::set<std::string> tmpAncestors;
+
+	do {
+		foundNewParents = false;
+
+		for ( Ancestors::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+			BluePrintObject* parent = repository->findBluePrintObject(it->typeDeclaration());
+
+			Ancestors tmpInheritance = parent->getInheritance();
+			for ( Ancestors::iterator tmpIt = tmpInheritance.begin(); tmpIt != tmpInheritance.end(); ++tmpIt ) {
+				std::pair<std::set<std::string>::iterator, bool> insert = tmpAncestors.insert( tmpIt->name() );
+
+				if ( insert.second ) {
+					// a new ancestor has been inserted
+					foundNewParents = true;
+
+					mInheritance.insert( *tmpIt );
+				}
+			}
+		}
+	} while ( foundNewParents );
+	// }
+*/
+
+	for ( const auto& it : mInheritance ) {
+		BluePrintObject* parent = repository->findBluePrintObject(it.typeDeclaration());
 
 		if ( !parent ) {
-			throw Common::Exceptions::UnknownIdentifier("Unknown parent identifier '" + it->typeDeclaration().mName + "'");
+			throw Common::Exceptions::UnknownIdentifier("Unknown parent identifier '" + it.typeDeclaration().mName + "'");
+		}
+
+		// detect circular inheritance
+		if ( parent->inheritsFrom(QualifiedTypename()) ) {
+			throw Exceptions::DesigntimeException("Circular inheritance detected for type '" + QualifiedTypename() + "'!");
 		}
 
 		if ( !parent->isPrepared() ) {
@@ -178,9 +370,9 @@ void BluePrintObject::prepareParents(Repository* repository)
 
 		// locally define parent's public and protected methods
 		MethodCollection methods = parent->provideMethods();
-		for ( MethodCollection::const_iterator methIt = methods.begin(); methIt != methods.end(); ++methIt ) {
-			if ( (*methIt)->getVisibility() >= Visibility::Protected ) {
-				defineExternalMethod((*methIt)->QualifiedTypename(), (*methIt));
+		for ( auto& method : methods ) {
+			if ( method->getVisibility() >= Visibility::Protected ) {
+				defineExternalMethod(method->QualifiedTypename(), method);
 			}
 		}
 	}
@@ -198,6 +390,11 @@ Symbols BluePrintObject::provideSymbols() const
 	return mSymbols;
 }
 
+const std::string& BluePrintObject::QualifiedTypename() const
+{
+	return mQualifiedTypename;
+}
+
 BluePrintObject* BluePrintObject::replicate(const std::string& newType, const std::string& filename, BluePrintObject* target) const
 {
 	BluePrintObject* replica = target ? target : new BluePrintObject(newType, filename);
@@ -207,7 +404,6 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 
 	// replicate basic blueprint data
 	replica->setBluePrintType(getBluePrintType());
-	replica->setImplementationType(getImplementationType());
 	replica->setLanguageFeatureState(getLanguageFeatureState());
 	replica->setMember(isMember());
 	replica->setMemoryLayout(getMemoryLayout());
@@ -221,24 +417,24 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 
 	// replicate inheritance
 	Designtime::Ancestors ancestors = getInheritance();
-	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
+	for ( const auto& ancestor : ancestors ) {
 		replica->addInheritance(Designtime::Ancestor(
-			Common::TypeDeclaration((*it).name(), (*it).constraints()),
-			(*it).ancestorType(),
-			(*it).visibility()
+			Common::TypeDeclaration(ancestor.name(), ancestor.constraints()),
+			ancestor.ancestorType(),
+			ancestor.visibility()
 		));
 	}
 
 	// replicate members
-	for ( Symbols::const_iterator symIt = mSymbols.begin(); symIt != mSymbols.end(); ++symIt ) {
-		if ( symIt->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+	for ( const auto& mSymbol : mSymbols ) {
+		if ( mSymbol.second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 			continue;
 		}
 
-		Designtime::BluePrintObject* blue = dynamic_cast<Designtime::BluePrintObject*>(symIt->second);
+		auto* blue = dynamic_cast<Designtime::BluePrintObject*>(mSymbol.second);
 
-		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(blue->QualifiedTypename(), blue->Filename(), blue->getName());
-		member->setBluePrintType(BluePrintType::Enum);
+		auto* member = new Designtime::BluePrintObject(blue->QualifiedTypename(), blue->Filename(), blue->getName());
+		member->setBluePrintType(BlueprintType::Enum);
 		member->setLanguageFeatureState(blue->getLanguageFeatureState());
 		member->setMember(blue->isMember());
 		member->setMemoryLayout(blue->getMemoryLayout());
@@ -253,13 +449,13 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 	}
 
 	// replicate methods
-	for ( MethodScope::MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+	for ( auto& mMethod : mMethods ) {
 		// create new method and ...
-		Common::Method* method = new Common::Method(replica, (*it)->getName(), Common::TypeDeclaration((*it)->QualifiedTypename()));
+		auto* method = new Common::Method(replica, mMethod->getName(), Common::TypeDeclaration(mMethod->QualifiedTypename()));
 		// ... copy its data from our template method
-		*method = *(*it);
+		*method = *mMethod;
 
-		replica->defineMethod((*it)->getName(), method);
+		replica->defineMethod(mMethod->getName(), method);
 	}
 
 	return replica;
@@ -275,7 +471,22 @@ void BluePrintObject::setParent(IScope* parent)
 	mParent = parent;
 }
 
-void BluePrintObject::setValue(Runtime::AtomicValue value)
+void BluePrintObject::setPrototypeConstraints(const PrototypeConstraints& constraints)
+{
+	mPrototypeConstraints = constraints;
+}
+
+void BluePrintObject::setQualifiedTypename(const std::string& name)
+{
+	mQualifiedTypename = name;
+}
+
+void BluePrintObject::setTokens(const TokenList& tokens)
+{
+	mTokens = tokens;
+}
+
+void BluePrintObject::setValue(const Runtime::AtomicValue& value)
 {
 	mValue = value;
 }

@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript
+#!/usr/local/bin/slang
 
 // Library imports
 
@@ -7,17 +7,32 @@ import Array;
 import Object;
 
 public void Main(int argc, string args) {
-	assert(TestCase1());
+	assert( TestCase1() );
 }
 
-bool TestCase1() {
-	var array = new JsonArray("array");
-	print(array.toString());
+private bool TestCase1() {
+	var array = new JsonArray();
 
-	array.addMember(new JsonValue(173));
-	array.addMember(new JsonValue("1389"));
-	print(array.toString());
+	print( array.toString() );
 
-	return bool array;
+	array.addMember( new JsonValue( 173 ) );
+	array.addMember( new JsonValue( "1389" ) );
+	array.addMember( new JsonArray() );
+
+	print( array.toString() );
+
+	foreach ( JsonValue value : array ) {
+		//print( value.toString() );
+	}
+
+	assert( array.isArray() );
+
+	var value const = array[1];
+	//print( array[1].asString() );
+	assert( value.asString() == "1389" );
+
+	print( "cast<string>( array ): " + cast<string>( array ) );
+
+	return true;
 }
 

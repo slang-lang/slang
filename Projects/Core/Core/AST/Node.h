@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_Node_h
-#define ObjectiveScript_Core_AST_Node_h
+#ifndef Slang_Core_Core_AST_Node_h
+#define Slang_Core_Core_AST_Node_h
 
 
 // Library includes
@@ -12,7 +12,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace AST {
 
 
@@ -32,7 +32,7 @@ public:
 	explicit Node(NodeType::E type)
 	: mType(type)
 	{ }
-	virtual ~Node() { }
+	virtual ~Node() = default;
 
 	NodeType::E getNodeType() const {
 		return mType;

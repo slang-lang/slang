@@ -16,20 +16,16 @@
 #include <Core/VirtualMachine/VirtualMachine.h>
 
 // Namespace declarations
-using namespace ObjectiveScript;
+using namespace Slang;
 
 
 namespace Testing {
 namespace Interfaces {
 
 
-InterfacesTest::InterfacesTest(const ::Utils::Common::ILogger *p)
-: GenericTest("InterfacesTest"),
-  ::Utils::Common::Logger(p, "InterfacesTest")
-{
-}
-
-InterfacesTest::~InterfacesTest()
+InterfacesTest::InterfacesTest( const Utils::Common::ILogger* p )
+: UnitTest( "InterfacesTest" ),
+  Utils::Common::Logger( p, "InterfacesTest" )
 {
 }
 

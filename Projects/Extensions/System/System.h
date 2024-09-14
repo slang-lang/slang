@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_System_h
-#define ObjectiveScript_Extensions_System_System_h
+#ifndef Slang_Extensions_System_System_h
+#define Slang_Extensions_System_System_h
 
 
 // Library includes
@@ -8,10 +8,10 @@
 #include <stdexcept>
 #ifdef _WIN32
 #	include <stdio.h>
-#	include <stdlib.h>
+#	include <cstdlib>
 #else
 #	include <termios.h>
-#	include <stdlib.h>
+#	include <cstdlib>
 #endif
 
 // Project includes
@@ -28,7 +28,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 
@@ -70,7 +70,7 @@ public:
 			}
 
 			while ( !feof(pipe.get()) ) {
-				if ( fgets(buffer.data(), 128, pipe.get()) != NULL ) {
+				if ( fgets(buffer.data(), 128, pipe.get()) != nullptr ) {
 					resultStr += buffer.data();
 				}
 			}
@@ -90,7 +90,7 @@ public:
 				char buffer[128];
 
 				while ( !feof(pipe) ) {
-					if ( fgets(buffer, 128, pipe) != NULL ) {
+					if ( fgets(buffer, 128, pipe) != nullptr ) {
 						resultStr += buffer;
 					}
 				}

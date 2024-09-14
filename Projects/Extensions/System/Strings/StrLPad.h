@@ -1,10 +1,10 @@
 
-#ifndef ObjectiveScript_Extensions_System_Strings_StrLPad_h
-#define ObjectiveScript_Extensions_System_Strings_StrLPad_h
+#ifndef Slang_Extensions_System_Strings_StrLPad_h
+#define Slang_Extensions_System_Strings_StrLPad_h
 
 
 // Library includes
-#include <stdlib.h>
+#include <cstdlib>
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
@@ -20,7 +20,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Strings {

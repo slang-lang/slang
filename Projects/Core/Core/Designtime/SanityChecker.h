@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Designtime_SanityChecker_h
-#define ObjectiveScript_Designtime_SanityChecker_h
+#ifndef Slang_Core_Core_Designtime_SanityChecker_h
+#define Slang_Core_Core_Designtime_SanityChecker_h
 
 
 // Library includes
@@ -13,15 +13,15 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Designtime {
 
 
 class SanityChecker
 {
 public:
-	SanityChecker();
-	~SanityChecker();
+	SanityChecker() = default;
+	~SanityChecker() = default;
 
 public:
 	bool process(const TokenList &tokens);

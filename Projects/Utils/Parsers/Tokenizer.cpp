@@ -7,6 +7,8 @@
 // Project includes
 #include <Tools/Strings.h>
 
+#include <utility>
+
 // Namespace declarations
 
 
@@ -16,26 +18,26 @@ namespace Utils {
 const std::string Tokenizer::DELIMITERS(" \t\n\r;");
 
 
-Tokenizer::Tokenizer(const std::string& s, const std::string& delimiters)
+Tokenizer::Tokenizer(std::string s, const std::string& delimiters)
 : mDelimiters( !delimiters.empty() ? delimiters : DELIMITERS ),
   mOffset(0),
-  mString(s),
+  mString(std::move(s)),
   mToken("")
 {
 }
 
-const std::string Tokenizer::getRemainingString() const
+std::string Tokenizer::getRemainingString() const
 {
 	std::string result = Tools::stringTrim(mString.substr(mOffset, mString.length()));
 	return result;
 }
 
-const std::string Tokenizer::getString() const
+std::string Tokenizer::getString() const
 {
 	return mString;
 }
 
-const std::string Tokenizer::getToken() const
+std::string Tokenizer::getToken() const
 {
 	return mToken;
 }

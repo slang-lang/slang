@@ -10,7 +10,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Core {
 
 
@@ -22,10 +22,6 @@ BreakPoint::BreakPoint()
 BreakPoint::BreakPoint(const Common::Position &position)
 : mFilename(position.mFile),
   mLine(position.mLine)
-{
-}
-
-BreakPoint::~BreakPoint()
 {
 }
 

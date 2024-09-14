@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Token_h
-#define ObjectiveScript_Core_Token_h
+#ifndef Slang_Core_Core_Designtime_Parser_Token_h
+#define Slang_Core_Core_Designtime_Parser_Token_h
 
 
 // Library includes
@@ -15,7 +15,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 class Token
@@ -27,7 +27,6 @@ public:
 		enum E {
 			None,
 			Assignment,
-			Attribute,
 			Comparator,
 			Constant,
 			Ignorable,
@@ -43,6 +42,7 @@ public:
 	{
 	public:
 		enum E {
+			ACCESS_MODE,
 			AND,
 			ARRAY_SUBSCRIPT,
 			ASSIGN,
@@ -82,14 +82,16 @@ public:
 			GREATER,
 			IDENTIFIER,
 			KEYWORD,
-			LANGUAGEFEATURE,
+			LANGUAGE_FEATURE_STATE,
 			LESS,
 			MATH_ADDITION,
 			MATH_DIVIDE,
 			MATH_MODULO,
 			MATH_MULTIPLY,
 			MATH_SUBTRACT,
+			MEMORY_LAYOUT,
 			MODIFIER,
+			MUTABILITY,
 			NAND,
 			NIL,
 			NOR,
@@ -99,6 +101,8 @@ public:
 			OPERATOR_NOT,
 			OPERATOR_RANGE,
 			OPERATOR_SCOPE,
+			OPERATOR_SHIFT_LEFT,
+			OPERATOR_SHIFT_RIGHT,
 			OPERATOR_VALIDATE,
 			OR,
 			PARENTHESIS_CLOSE,
@@ -108,7 +112,6 @@ public:
 			RESERVED_WORD,
 			SEMICOLON,
 			TILDE,
-			TYPE,
 			TYPECAST,
 			UNKNOWN,
 			VISIBILITY,
@@ -118,7 +121,7 @@ public:
 
 public:
 	Token();
-	Token(Type::E type, bool isOptional = false);
+	explicit Token(Type::E type, bool isOptional = false);
 	Token(Type::E type, const char* content);
 	Token(Type::E type, const std::string& content);
 	Token(Category::E category, Type::E type, const std::string& content, const Common::Position& pos, bool isOptional = false);

@@ -1,10 +1,10 @@
 
-#ifndef ObjectiveScript_Extensions_System_Strings_StrFind_h
-#define ObjectiveScript_Extensions_System_Strings_StrFind_h
+#ifndef Slang_Extensions_System_Strings_StrFind_h
+#define Slang_Extensions_System_Strings_StrFind_h
 
 
 // Library includes
-#include <stdlib.h>
+#include <cstdlib>
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
@@ -21,7 +21,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Strings {

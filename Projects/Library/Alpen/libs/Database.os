@@ -50,8 +50,8 @@ public namespace DB {
     public int getLastInsertId() const {
         int result = Query( "SELECT LAST_INSERT_ID() AS ID" );
 
-        if ( mysql_next_row(result) ) {
-                return int mysql_get_field_value(result, "ID");
+        if ( mysql_fetch_row(result) ) {
+                return cast<int>( mysql_get_field_value(result, "ID") );
         }
 
         return 0;
@@ -95,3 +95,4 @@ public namespace DB {
     }
 
 }
+

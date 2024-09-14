@@ -14,20 +14,15 @@ namespace Testing {
 namespace Prototype {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Prototype"),
-  Utils::Common::Logger(p, "Prototype")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p, StringSet libraries )
+: TestFixture( "Prototype", std::move( libraries ) )
+, Utils::Common::Logger( p, "Prototype" )
 {
 }
 
 void Fixture::setup()
 {
-	PrototypeTest* prototypeTest = new PrototypeTest(this);
-	add(prototypeTest);
+	add( new PrototypeTest( this ) );
 }
 
 void Fixture::teardown()

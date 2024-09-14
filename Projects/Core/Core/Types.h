@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Types_h
-#define ObjectiveScript_Core_Types_h
+#ifndef Slang_Core_Core_Types_h
+#define Slang_Core_Core_Types_h
 
 // Defines
 #include "Defines.h"
@@ -9,6 +9,7 @@
 #include <list>
 #include <set>
 #include <string>
+#include <unordered_set>
 
 // Project includes
 #include <Core/Runtime/Reference.h>
@@ -19,11 +20,12 @@
 // Namespace declarations
 
 
+typedef std::set<std::string> OrderedStringSet;
 typedef std::list<std::string> StringList;
-typedef std::set<std::string> StringSet;
+typedef std::unordered_set<std::string> StringSet;
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 bool isAtomicType(const std::string& type);
 
@@ -32,10 +34,13 @@ std::string toString(const ParameterList& list);
 std::string toString(const Runtime::ReferencesList& list);
 std::string toString(const StringList& list);
 
+StringSet provideAccessMode();
 StringSet provideAtomicTypes();
 StringSet provideLanguageFeatures();
 StringSet provideKeyWords();
-StringSet provideModifiers();
+StringSet provideMemoryLayout();
+StringSet provideModifier();
+StringSet provideMutability();
 StringSet provideReservedWords();
 
 

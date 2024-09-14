@@ -1,10 +1,10 @@
 
-#ifndef ObjectiveScript_Extensions_System_IsKnownType_h
-#define ObjectiveScript_Extensions_System_IsKnownType_h
+#ifndef Slang_Extensions_System_IsKnownType_h
+#define Slang_Extensions_System_IsKnownType_h
 
 
 // Library includes
-#include <stdlib.h>
+#include <cstdlib>
 
 // Project includes
 #include <Core/Common/Exceptions.h>
@@ -21,7 +21,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 namespace Reflection {
@@ -49,7 +49,7 @@ public:
 
 			std::string param_type = (*it++).value().toStdString();
 
-			*result = Runtime::BoolObject( Controller::Instance().repository()->findBluePrintObject(param_type) != NULL );
+			*result = Runtime::BoolObject( Controller::Instance().repository()->findBluePrintObject(param_type) != nullptr );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

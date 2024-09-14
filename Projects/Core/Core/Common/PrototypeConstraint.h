@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Common_PrototypeConstraint_h
-#define ObjectiveScript_Common_PrototypeConstraint_h
+#ifndef Slang_Core_Core_Common_PrototypeConstraint_h
+#define Slang_Core_Core_Common_PrototypeConstraint_h
 
 
 // Library includes
@@ -14,14 +14,14 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 class PrototypeConstraint
 {
 public:
 	PrototypeConstraint();
-	PrototypeConstraint(unsigned int index, const std::string& designType, const std::string& runType, const std::string& constraint);
+	PrototypeConstraint(size_t index, std::string designType, std::string runType, std::string constraint);
 
 public:
 	bool operator==(const PrototypeConstraint& other) const;
@@ -32,7 +32,7 @@ public:
 public:
 	std::string mConstraint;
 	std::string mDesignType;
-	unsigned int mIndex;
+	size_t mIndex;
 	std::string mRunType;
 };
 

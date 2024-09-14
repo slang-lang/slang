@@ -8,16 +8,15 @@
 // Project includes
 #include <Defines.h>
 #include "Ascii.h"
-#include "AssertMsg.h"
-#include "CreateThread.h"
-#include "GetChar.h"
+#include "Fork.h"
 #include "GetEnv.h"
 #include "PutEnv.h"
 #include "SetEnv.h"
 #include "SetKeyboardBlockingMode.h"
 #include "Sleep.h"
-#include "StdTime.h"
 #include "System.h"
+#include "Wait.h"
+#include "WaitPID.h"
 #include "Write.h"
 #include "WriteLn.h"
 
@@ -31,13 +30,13 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 namespace Extensions {
 namespace System {
 
 
 SystemExtension::SystemExtension()
-: AExtension("System")
+: AExtension( "Slang System", "0.1.3" )
 {
 #ifdef _WIN32
 	// Win32 only
@@ -59,90 +58,85 @@ SystemExtension::~SystemExtension()
 #endif
 }
 
-void SystemExtension::initialize(IScope* scope)
+void SystemExtension::initialize( ExtensionNamespace* scope )
 {
 	// error constants
-	scope->define("EACCES", new Runtime::IntegerObject("EACCES", EACCES));
-	scope->define("EINVAL", new Runtime::IntegerObject("EINVAL", EINVAL));
-	scope->define("EMFILE", new Runtime::IntegerObject("EMFILE", EMFILE));
-	scope->define("ENFILE", new Runtime::IntegerObject("ENFILE", ENFILE));
-	scope->define("ENOMEM", new Runtime::IntegerObject("ENOMEM", ENOMEM));
+	scope->define( "EACCES", new Runtime::IntegerObject( "EACCES", EACCES ) );
+	scope->define( "EINVAL", new Runtime::IntegerObject( "EINVAL", EINVAL ) );
+	scope->define( "EMFILE", new Runtime::IntegerObject( "EMFILE", EMFILE ) );
+	scope->define( "ENFILE", new Runtime::IntegerObject( "ENFILE", ENFILE ) );
+	scope->define( "ENOMEM", new Runtime::IntegerObject( "ENOMEM", ENOMEM ) );
 
 #ifdef _WIN32
 	// Win32 only
 #else
 	// Unix/Linux only
+
+	scope->define( "WNOHANG", new Runtime::IntegerObject( "WNOHANG", WNOHANG ) );
+	scope->define( "WUNTRACED", new Runtime::IntegerObject( "WUNTRACED", WUNTRACED ) );
 #endif
 
 	// Console
-	mConsoleExtension.initialize(scope);
-
-	// IO
-	mIOExtension.initialize(scope);
-
-	// Math
-	mMathExtension.initialize(scope);
+	mConsoleExtension.initialize( scope );
 
 	// Network
 #ifdef _WIN32
 	// Win32 only
 #else
 	// Unix/Linux only
-	mNetworkExtension.initialize(scope);
+	mNetworkExtension.initialize( scope );
 #endif
 
 	// Strings
-	mStringsExtension.initialize(scope);
+	mStringsExtension.initialize( scope );
+
+	// Time
+	mTimeExtension.initialize( scope );
 }
 
-void SystemExtension::provideMethods(ExtensionMethods &methods)
+void SystemExtension::provideMethods( ExtensionMethods& methods )
 {
-	assert(methods.empty());
+	assert( methods.empty() );
 
 	// Generic methods
-	methods.push_back(new Ascii());
-	methods.push_back(new Assert());
-	methods.push_back(new CreateThread());
-	methods.push_back(new GetChar());
-	methods.push_back(new GetEnv());
-	methods.push_back(new PutEnv());
-	methods.push_back(new SetEnv());
-	methods.push_back(new Sleep());
-	methods.push_back(new StdTime());
-	methods.push_back(new SystemExecute());
-	methods.push_back(new Write());
-	methods.push_back(new WriteLn());
+	methods.push_back( new Ascii() );
+	methods.push_back( new GetEnv() );
+	methods.push_back( new PutEnv() );
+	methods.push_back( new SetEnv() );
+	methods.push_back( new Sleep() );
+	methods.push_back( new SystemExecute() );
+	methods.push_back( new Write() );
+	methods.push_back( new WriteLn() );
 
 #ifdef _WIN32
 	// Win32 only methods
 #else
 	// Unix/Linux only methods
-	methods.push_back(new Fork());
-	methods.push_back(new SetKeyboardBlockingMode());
+	methods.push_back( new Fork() );
+	methods.push_back( new SetKeyboardBlockingMode() );
+	methods.push_back( new Wait() );
+	methods.push_back( new WaitPID() );
 #endif
 
 	// Console
-	mConsoleExtension.provideMethods(methods);
-
-	// IO
-	mIOExtension.provideMethods(methods);
-
-	// Math
-	mMathExtension.provideMethods(methods);
+	mConsoleExtension.provideMethods( methods );
 
 	// Network
 #ifdef _WIN32
 	// Win32 only
 #else
 	// Unix/Linux only
-	mNetworkExtension.provideMethods(methods);
+	mNetworkExtension.provideMethods( methods );
 #endif
 
 	// Reflection
-	mReflectionExtension.provideMethods(methods);
+	mReflectionExtension.provideMethods( methods );
 
 	// Strings
-	mStringsExtension.provideMethods(methods);
+	mStringsExtension.provideMethods( methods );
+
+	// Time
+	mTimeExtension.provideMethods( methods );
 }
 
 

@@ -14,20 +14,15 @@ namespace Testing {
 namespace Inheritance {
 
 
-Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Inheritance"),
-  Utils::Common::Logger(p, "Inheritance")
-{
-}
-
-Fixture::~Fixture()
+Fixture::Fixture( const Utils::Common::ILogger* p, StringSet libraries )
+: TestFixture( "Inheritance", std::move( libraries ) )
+, Utils::Common::Logger( p, "Inheritance" )
 {
 }
 
 void Fixture::setup()
 {
-    InheritanceTest* inheritanceTest = new InheritanceTest(this);
-    add(inheritanceTest);
+    add( new InheritanceTest( this ) );
 }
 
 void Fixture::teardown()

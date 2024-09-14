@@ -30,7 +30,7 @@ public object RuntimeException const implements IException {
 
 
 public object Interpreter {
-	public void Constructor(Object lines) {
+	public void Constructor(Map<int, Line> lines) {
 		assert(lines is Map<int, Line>);
 
 		mCurrentLine = FIRST_LINE;

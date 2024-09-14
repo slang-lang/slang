@@ -1,25 +1,26 @@
 
+// Library imports
+
+// Project imports
+
+
 private namespace DB {
-	public int mError = 0;
-	public int mHandle = 0;
 
 	public string Database const = "repository";
 	public string Host const = "127.0.0.1";
-	public string Password const = "";
+	public string Password const = "admin*";
 	public int Port const = 3306;
 	public string User const = "root";
 
-	public bool connect(bool debugprint = false) {
-		mHandle = mysql_init();
+	public int Error = 0;
+	public int Handle = 0;
 
-		if ( debugprint ) {
-			printSettings();
-		}
+	public bool connect() {
+		Handle = mysql_init();
+		Handle = mysql_real_connect( Handle, Host, Port, User, Password, Database );
 
-		mHandle = mysql_real_connect(mHandle, Host, Port, User, Password, Database);
-
-		if ( !mHandle ) {
-			print("failed to initialize MySQL connection!");
+		if ( !Handle ) {
+			print( "failed to initialize MySQL connection!" );
 			return false;
 		}
 
@@ -27,17 +28,9 @@ private namespace DB {
 	}
 
 	public bool disconnect() {
-		mysql_close(mHandle);
+		mysql_close( Handle );
 
 		return true;
-	}
-
-	public void printSettings() const {
-		print("Connection settings:");
-		print("Host = " + Host);
-		print("Port = " + Port);
-		print("User = " + User);
-		print("Database = " + Database);
 	}
 
 }

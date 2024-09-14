@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Attributes_Types_h
-#define ObjectiveScript_Attributes_Types_h
+#ifndef Slang_Core_Core_Attributes_Types_h
+#define Slang_Core_Core_Attributes_Types_h
 
 
 // Library includes
@@ -13,7 +13,7 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
+namespace Slang {
 
 
 class AccessMode
@@ -45,7 +45,7 @@ public:
 };
 
 
-class BluePrintType
+class BlueprintType
 {
 public:
 	enum E {
@@ -74,20 +74,6 @@ public:
 };
 
 
-class ImplementationType
-{
-public:
-	enum E {
-		Unspecified = 0,
-		Abstract,
-		Concrete
-	};
-
-	static E convert(const std::string& v);
-	static std::string convert(E e);
-};
-
-
 class LanguageFeatureState
 {
 public:
@@ -109,14 +95,27 @@ class MemoryLayout
 public:
 	enum E {
 		Unspecified = 0,
-		Instance,
-		Static
+		Abstract,
+		Final,
+		Override,
+		Static,
+		Virtual
 	};
 
 	static E convert(const std::string& v);
 	static std::string convert(E e);
 };
 
+
+class MethodType
+{
+public:
+	enum E {
+		Constructor,
+		Destructor,
+		Method
+	};
+};
 
 class Mutability
 {
@@ -125,21 +124,6 @@ public:
 		Unknown = 0,
 		Const,
 		Modify
-	};
-
-	static E convert(const std::string& v);
-	static std::string convert(E e);
-};
-
-
-class Virtuality
-{
-public:
-	enum E {
-		Unknown = 0,
-		Abstract,
-		Final,
-		Virtual
 	};
 
 	static E convert(const std::string& v);
