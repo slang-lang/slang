@@ -26,9 +26,17 @@ public:
 	TestResult() = default;
 	TestResult( const TestResult& other ) = default;
 
+	TestResult operator=( const TestResult& other ) {
+		Failed  = other.Failed;
+		Run     = other.Run;
+		Skipped = other.Skipped;
+
+		return *this;
+	}
+
 	TestResult operator+( const TestResult& other ) {
-		Failed += other.Failed;
-		Run += other.Run;
+		Failed  += other.Failed;
+		Run     += other.Run;
 		Skipped += other.Skipped;
 
 		return *this;
