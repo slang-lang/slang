@@ -1,2 +1,7 @@
+# IDE stuff
 .idea/
 cmake-build-debug/
+
+# generated stuff
+CMake/Dependencies.cmake
+

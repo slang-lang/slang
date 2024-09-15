@@ -1,0 +1,22 @@
+
+# CURL library includes
+SET( BUILD_CURL_INC "/path/to/your/curl-library/include" )
+SET( BUILD_CURL_LIB "/path/to/your/curl-library/lib" )
+
+# JSON library includes
+SET( BUILD_JSON_INC "/path/to/your/json-library/include" )
+SET( BUILD_JSON_LIB "/path/to/your/json-library/lib" )
+
+
+# Slang library includes needed to build extensions
+SET( BUILD_SLANG_INC "/path/to/your/slang/directory/src/Projects/Core" )
+SET( BUILD_SLANG_LIB "/path/to/your/slang/directory/build/lib" )
+
+# MariaDB library includes
+SET( BUILD_MARIADB_INC "/usr/include/mysql" )
+SET( BUILD_MARIADB_LIB "/usr/lib" )
+
+# MySQL library includes
+SET( BUILD_MYSQL_INC "/usr/include/mysql" )
+SET( BUILD_MYSQL_LIB "/usr/lib" )
+

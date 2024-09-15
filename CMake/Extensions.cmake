@@ -3,3 +3,7 @@
 	add_definitions(-DUSE_SYSTEM_EXTENSION)
 #endif()
 
+#if ( "${USE_LIBC_EXTENSION}" STREQUAL "" OR "${USE_LIBC_EXTENSION}" STREQUAL "1" )
+	add_definitions(-DUSE_LIBC_EXTENSION)
+#endif()
+
