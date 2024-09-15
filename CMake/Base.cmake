@@ -4,7 +4,7 @@ SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)      # library root
 
 SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -Wno-deprecated-copy -Wnon-virtual-dtor -Wno-undef -Wno-type-limits -std=c++14")
 
-if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
+if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug" )
 
     # by default we build debug!
     # MESSAGE("Setting default build to: Debug")
@@ -17,7 +17,7 @@ if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
 
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -g")
 
-elseif( "${BUILD}" MATCHES "Release")
+elseif( "${BUILD}" MATCHES "Release" )
 
     # MESSAGE("Setting default build to: Release")
     SET(CMAKE_BUILD_TYPE "Release")
@@ -37,11 +37,6 @@ endif()
 
 # specify default includes for the project
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-#include_directories(
-#    ${PROJECT_SOURCE_DIR}/Interfaces
-#    ${PROJECT_SOURCE_DIR}/Utils
-#)
 
 # additional definitions
 add_definitions(-DLOG_LEVEL=3)

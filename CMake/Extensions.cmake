@@ -6,4 +6,3 @@
 #if ( "${USE_LIBC_EXTENSION}" STREQUAL "" OR "${USE_LIBC_EXTENSION}" STREQUAL "1" )
 	add_definitions(-DUSE_LIBC_EXTENSION)
 #endif()
-

@@ -19,4 +19,3 @@ SET( BUILD_MARIADB_LIB "/usr/lib" )
 # MySQL library includes
 SET( BUILD_MYSQL_INC "/usr/include/mysql" )
 SET( BUILD_MYSQL_LIB "/usr/lib" )
-
