@@ -77,7 +77,7 @@ public:	// Type
 	bool isInstanceOf(const std::string& type) const;
 
 public:	// Value
-	AtomicValue getValue() const;
+	const AtomicValue& getValue() const;
 	void setValue(const AtomicValue& value);
 
 	Object* getThis() const { return mThis; }

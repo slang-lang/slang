@@ -68,7 +68,7 @@ Parameter::Parameter()
 }
 
 Parameter::Parameter(std::string name, Common::TypeDeclaration type, const Runtime::AtomicValue& value,
-					 bool hasDefaultValue, Mutability::E mutability, AccessMode::E access, Runtime::Reference reference)
+					 bool hasDefaultValue, Mutability::E mutability, AccessMode::E access, const Runtime::Reference& reference)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
   mMutability(mutability),
