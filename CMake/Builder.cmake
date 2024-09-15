@@ -181,7 +181,7 @@ function(_json_check_existence)
     # make sure the appropriate environment variable is set!
     if(NOT JSON_FOUND)
         MESSAGE( STATUS "JSON_FOUND: ${JSON_FOUND}" )
-        MESSAGE( STATUS "BUILD_JSON_INC: ${BUILD_JSON_INC}" )
+        MESSAGE( STATUS "BUILD_JSON_INC: ${JSON_INCLUDE_DIR}" )
 
         _could_not_find_json()
     endif()
@@ -193,7 +193,7 @@ function(_handle_post_json target)
 
     # for a proper library this also setups any required include directories or other compilation options
     _json_check_existence()
-    include_directories(${BUILD_JSON_INC})
+    include_directories(${JSON_INCLUDE_DIR})
     target_link_libraries(${target} jsoncpp)	# using jsoncpp
 
 endfunction()
@@ -202,8 +202,8 @@ endfunction()
 function(_handle_pre_json)
 
     _json_check_existence()
-    include_directories(${BUILD_JSON_INC})
-    link_directories(${BUILD_JSON_LIB})
+    include_directories(${JSON_INCLUDE_DIR})
+    link_directories(${JSON_LIBRARY})
 
 endfunction()
 
