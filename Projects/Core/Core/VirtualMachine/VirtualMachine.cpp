@@ -38,8 +38,8 @@ void read_directory(const std::string& dirname, std::vector<std::string>& files)
 {
     DIR* dirp = opendir(dirname.c_str());
     if ( !dirp ) {
-	// couldn't opern directory
-	return;
+		// couldn't opern directory
+		return;
     }
 
     struct dirent * dp;

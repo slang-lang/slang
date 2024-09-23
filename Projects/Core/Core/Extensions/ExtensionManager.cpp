@@ -64,4 +64,3 @@ dynamic_lib_handle ExtensionManager::load_lib( const std::string& path ) {
 
 }
 }
-

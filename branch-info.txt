@@ -1,1 +1,1 @@
-main development branch
+Feature branch, which tries to implement fast access for local symbols by accessing them via index instead of name

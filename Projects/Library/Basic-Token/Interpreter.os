@@ -140,6 +140,9 @@ public object Interpreter {
 			case StatementType.ReturnStatement: {
 				return processRETURN(ReturnStatement stmt);
 			}
+			default: {
+				throw "invalid statement type";
+			}
 		}
 
 		return 0;

@@ -52,14 +52,14 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_name = (*it++).value().toStdString();
-			std::string param_value = (*it++).value().toStdString();
+			auto param_name = (*it++).value().toStdString();
+			auto param_value = (*it++).value().toStdString();
+
+			auto param_overwrite = (*it++).value().toInt();
 
 #ifdef _WIN32
 			*result = Runtime::IntegerObject(SetEnvironmentVariable(param_name.c_str(), param_value.c_str()));
 #else
-			auto param_overwrite = (*it++).value().toInt();
-
 			*result = Runtime::IntegerObject(setenv(param_name.c_str(), param_value.c_str(), param_overwrite));
 #endif
 		}
