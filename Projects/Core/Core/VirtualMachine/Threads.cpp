@@ -99,7 +99,7 @@ Common::ThreadId Thread::getId() const
 	return mId;
 }
 
-Common::FrameId Thread::getNumFrames() const
+size_t Thread::getNumFrames() const
 {
 	return mStackFrames.size();
 }
@@ -188,7 +188,7 @@ void Threads::deleteThread(Common::ThreadId id)
 	(void)thread;
 }
 
-unsigned int Threads::getNumThreads() const
+size_t Threads::getNumThreads() const
 {
 	return mThreads.size();
 }

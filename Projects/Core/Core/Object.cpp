@@ -68,13 +68,12 @@ Object& Object::operator= (const Object& other)
 		mIsReference = other.mIsReference;
 		mMemoryLayout = other.mMemoryLayout;
 		mParent = other.mParent;
-		mScopeName = other.mScopeName;
-		mScopeType = other.mScopeType;
-		mValue = other.mValue;
-
 		mQualifiedOuterface = other.mQualifiedOuterface;
 		mQualifiedTypename = other.mQualifiedTypename;
+		mScopeName = other.mScopeName;
+		mScopeType = other.mScopeType;
 		mTypename = other.mTypename;
+		mValue = other.mValue;
 
 		setLanguageFeatureState(other.getLanguageFeatureState());
 		setMember(other.isMember());
@@ -84,6 +83,15 @@ Object& Object::operator= (const Object& other)
 	}
 
 	return *this;
+}
+
+void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance)
+{
+	if ( !inheritance ) {
+		throw Common::Exceptions::Exception("invalid inheritance level added!");
+	}
+
+	mInheritance.insert(std::make_pair(ancestor, inheritance));
 }
 
 void Object::assign(const Object& other)
@@ -96,6 +104,7 @@ void Object::assign(const Object& other)
 		mIsAtomicType = other.mIsAtomicType;
 		mMemoryLayout = other.mMemoryLayout;
 		mParent = other.mParent ? other.mParent : mParent;
+		mIsReference = other.mIsReference;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 
@@ -113,15 +122,6 @@ void Object::assign(const Object& other)
 			setValue(other.getValue());
 		}
 	}
-}
-
-void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance)
-{
-	if ( !inheritance ) {
-		throw Common::Exceptions::Exception("invalid inheritance level added!");
-	}
-
-	mInheritance.insert(std::make_pair(ancestor, inheritance));
 }
 
 void Object::assignReference(const Reference& ref)
@@ -287,7 +287,7 @@ const Reference& Object::getReference() const
 	return mReference;
 }
 
-AtomicValue Object::getValue() const
+const AtomicValue& Object::getValue() const
 {
 	if ( mThis != this ) {
 		return mThis->getValue();
