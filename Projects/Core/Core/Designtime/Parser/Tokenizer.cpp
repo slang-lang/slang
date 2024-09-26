@@ -3,13 +3,12 @@
 #include "Tokenizer.h"
 
 // Library includes
+#include <utility>
 
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Tools.h>
 #include <Utils.h>
-
-#include <utility>
 
 // Namespace declarations
 
@@ -24,8 +23,8 @@ const std::string DELIMITERS	= CONTROLCHARS + WHITESPACES;
 
 Tokenizer::Tokenizer(std::string filename, std::string content)
 : mAccessMode( provideAccessMode() ),
-  mContent( std::move(content ) ),
-  mFilename( std::move(filename ) ),
+  mContent( std::move( content ) ),
+  mFilename( std::move( filename ) ),
   mLanguageFeatureState( provideLanguageFeatures() ),
   mKeyword( provideKeyWords() ),
   mMemoryLayout( provideMemoryLayout() ),
@@ -79,13 +78,11 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 		// remove trailing 'f' character
 		content = con.substr(0, con.length() - 1);
 	}
-	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
-/*
 	else if ( isIntegerWithType(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER;
 		// remove trailing 'i' character
 		content = con.substr(0, con.length() - 1);
 	}
-*/
+	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
 	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::LANGUAGE_FEATURE_STATE; }
 	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
@@ -187,7 +184,7 @@ bool Tokenizer::isInteger(const std::string& token) const
 		return false;
 	}
 
-	for ( char c : token ) {
+	for ( const char& c : token ) {
 		switch ( c ) {
 			case '1':
 			case '2':
@@ -210,12 +207,12 @@ bool Tokenizer::isInteger(const std::string& token) const
 
 bool Tokenizer::isIntegerWithType(const std::string& token) const
 {
-	if ( token.empty() ) {
+    if ( token.size() <= 1 ) {
 		return false;
 	}
 
-	for ( char c : token ) {
-		switch ( c ) {
+	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
+		switch ( token[c] ) {
 			case '1':
 			case '2':
 			case '3':
@@ -412,20 +409,20 @@ void Tokenizer::process()
 	Common::Position pos(mFilename, 1, 1);
 
 	while ( offset <= size ) {
-		char thisChar = mContent[offset++];
+		char currentChar{ mContent[offset++] };
 
 		// preprocessor directives as single line comments '#'
-		if ( !isMultiLineComment && !isSingleLineComment && !isString && thisChar == '#' ) {
+		if ( !isMultiLineComment && !isSingleLineComment && !isString && currentChar == '#' ) {
 			isSingleLineComment = true;
 		}
 		// single line comments '//'
-		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '/' ) {
+		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && currentChar == '/' ) {
 			isSingleLineComment = true;
 			// remove last inserted token
 			mTokens.pop_back();
 		}
 		// multi line comments '/*'
-		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '*' ) {
+		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && currentChar == '*' ) {
 			isMultiLineComment = true;
 			// remove last inserted token
 			mTokens.pop_back();
@@ -434,26 +431,26 @@ void Tokenizer::process()
 		if ( !isMultiLineComment && !isSingleLineComment ) {
 			// are we reading a string?
 			if ( isEscapeSequence ) {
-				token += thisChar;
+				token += currentChar;
 
 				isEscapeSequence = false;
-				thisChar = 0;
+				currentChar = 0;
 			}
 			else {
-				if ( thisChar == '"' ) {
+				if ( currentChar == '"' ) {
 					isString = !isString;
 				}
-				else if ( isString && thisChar == '\\' ) {
+				else if ( isString && currentChar == '\\' ) {
 					isEscapeSequence = true;
 				}
 			}
 
-			if ( !isEscapeSequence && thisChar ) {
-				if ( !isString && DELIMITERS.find_first_of(thisChar) != std::string::npos ) {
+			if ( !isEscapeSequence && currentChar ) {
+				if ( !isString && DELIMITERS.find_first_of(currentChar) != std::string::npos ) {
 					if ( !token.empty() ) {
-						if ( thisChar == '"' ) {
-							token += thisChar;
-							thisChar = 0;
+						if ( currentChar == '"' ) {
+							token += currentChar;
+							currentChar = 0;
 						}
 
 						addToken(token, pos);
@@ -461,33 +458,33 @@ void Tokenizer::process()
 						token.clear();
 					}
 
-					if ( thisChar ) {
-						addToken(std::string(1, thisChar), pos);
+					if ( currentChar ) {
+						addToken(std::string(1, currentChar), pos);
 					}
 				}
 				else {
-					token += thisChar;
+					token += currentChar;
 				}
 			}
 		}
 
 		// multi line comments '*/'
-		if ( isMultiLineComment && lastChar == '*' && thisChar == '/' ) {
+		if ( isMultiLineComment && lastChar == '*' && currentChar == '/' ) {
 			isMultiLineComment = false;
 		}
 
 		// counting lines and columns
 		pos.mColumn++;
-		if ( thisChar == '\n' ) {
+		if ( currentChar == '\n' ) {
 			isSingleLineComment = false;
 			pos.mLine++;
 			pos.mColumn = 1;
 
-			thisChar = 0;
+			currentChar = 0;
 		}
 
 		// keep track of our last char (i.e. for escape sequences)
-		lastChar = thisChar;
+		lastChar = currentChar;
 	}
 
 	if ( lastChar != 0 ) {
@@ -498,7 +495,7 @@ void Tokenizer::process()
 
 	mergeAssignments();				// replace assignment tokens with compare tokens (if present)
 	mergeOperators();				// merge '+' '+' into '++'
-	replaceConstDataTypes();			// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
+	replaceConstDataTypes();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
 	replaceOperators();				// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
 }
 
@@ -782,7 +779,7 @@ void Tokenizer::replaceConstDataTypes()
 void Tokenizer::replaceOperators()
 {
 	auto token = mTokens.begin();
-	auto last = mTokens.end();
+	auto last  = mTokens.end();
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {
