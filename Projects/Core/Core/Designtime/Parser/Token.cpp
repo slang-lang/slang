@@ -92,6 +92,11 @@ void Token::setOptional(bool state)
 	mIsOptional = state;
 }
 
+std::string Token::toString() const
+{
+    return "{ Category: " + std::to_string( mCategory ) + "\tType: " + std::to_string( mType ) + ", \tContent: \"" + mContent + "\" }";
+}
+
 Token::Type::E Token::type() const
 {
 	return mType;

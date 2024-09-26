@@ -141,6 +141,8 @@ public:
 	void resetContentTo(const std::string& c);
 	void resetTypeTo(Type::E type);
 
+	std::string toString() const;
+
 protected:
 
 private:

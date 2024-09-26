@@ -25,8 +25,9 @@ namespace Slang {
 namespace Designtime {
 
 
-Analyser::Analyser(bool doSanityCheck)
+Analyser::Analyser(bool doSanityCheck, bool printTokens)
 : mDoSanityCheck(doSanityCheck),
+  mPrintTokens( printTokens ),
   mProcessingInterface(false)
 {
 	mRepository = Controller::Instance().repository();
@@ -645,6 +646,13 @@ TokenList Analyser::generateTokens(const std::string& content)
 {
 	Tokenizer t(mFilename, content);
 	t.process();
+
+	if ( mPrintTokens ) {
+		for( const auto& t : t.tokens() )
+		{
+			std::cout << t.toString() << std::endl;
+		}
+	}
 
 	return t.tokens();
 }
