@@ -1,6 +1,6 @@
 
-#ifndef Core_Designtime_BuildInTypes_IntegerObject_h
-#define Core_Designtime_BuildInTypes_IntegerObject_h
+#ifndef Core_Designtime_BuildInTypes_Int16Type_h
+#define Core_Designtime_BuildInTypes_Int16Type_h
 
 
 // Library includes
@@ -18,14 +18,14 @@ namespace Slang {
 namespace Designtime {
 
 
-class IntegerObject : public BluePrintObject
+class Int16Type : public BluePrintObject
 {
 public:
-	static int32_t DEFAULTVALUE;
+	static int16_t DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
-	IntegerObject();
+	Int16Type();
 
 public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;

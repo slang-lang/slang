@@ -38,11 +38,11 @@ Tokenizer::Tokenizer(std::string filename, std::string content)
 
 void Tokenizer::addToken(const std::string& con, const Common::Position& position)
 {
-	std::string content = TRYMOVE(con);
+	std::string content{ con };
 
-	Token::Category::E category = Token::Category::None;
-	bool isOptional = false;
-	Token::Type::E type = Token::Type::IDENTIFIER;
+	Token::Category::E category{ Token::Category::None };
+	bool isOptional{ false };
+	Token::Type::E type{ Token::Type::IDENTIFIER };
 
 	if ( content == "=" ) { category = Token::Category::Assignment; type = Token::Type::ASSIGN; }
 	else if ( content == "&" ) { category = Token::Category::Operator; type = Token::Type::BITAND; }
@@ -819,4 +819,3 @@ const TokenList& Tokenizer::tokens() const
 
 
 }
-

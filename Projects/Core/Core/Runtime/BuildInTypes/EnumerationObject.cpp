@@ -15,7 +15,7 @@ namespace Slang {
 namespace Runtime {
 
 
-AtomicValue EnumerationObject::DEFAULTVALUE = AtomicValue(0);
+AtomicValue EnumerationObject::DEFAULTVALUE = AtomicValue( static_cast<int64_t>( 0 ) );
 std::string EnumerationObject::TYPENAME = _enum;
 
 

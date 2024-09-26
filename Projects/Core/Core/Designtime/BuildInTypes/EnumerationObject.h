@@ -20,7 +20,7 @@ namespace Designtime {
 class EnumerationObject : public BluePrintObject
 {
 public:
-	static int DEFAULTVALUE;
+	static int32_t DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
