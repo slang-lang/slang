@@ -37,6 +37,7 @@ endif()
 
 # specify default includes for the project
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+SET(EXTERNALS "Externals")
 
 # additional definitions
 add_definitions(-DLOG_LEVEL=3)

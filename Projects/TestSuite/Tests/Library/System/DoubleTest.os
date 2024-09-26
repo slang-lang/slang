@@ -7,6 +7,8 @@ public void Main(int argc = 0, string args = "") modify {
 	//assert( TestCase2() );
 
 	//assert(!"not implemented");
+
+	print( "passed" );
 }
 
 private bool TestCase1() modify {

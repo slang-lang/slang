@@ -156,7 +156,7 @@ void processParameters(int argc, const char* argv[])
 		}
 	}
 
-	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::IntegerObject::TYPENAME, (int)params.size()));
+	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::IntegerObject::TYPENAME, static_cast<int32_t>(params.size())));
 	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringObject::TYPENAME, paramStr));
 }
 
@@ -245,4 +245,3 @@ int main(int argc, const char* argv[])
 
 	return -1;
 }
-
