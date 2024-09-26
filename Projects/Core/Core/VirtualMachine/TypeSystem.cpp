@@ -368,11 +368,25 @@ void TypeSystem::initFloat()
 void TypeSystem::initInt16()
 {
 	// arithmetic
-	define(Int16Type::TYPENAME, Token::Type::MATH_ADDITION, Int16Type::TYPENAME, Int16Type::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::MATH_DIVIDE,   Int16Type::TYPENAME, Int16Type::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::MATH_MODULO,   Int16Type::TYPENAME, Int16Type::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::MATH_MULTIPLY, Int16Type::TYPENAME, Int16Type::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::MATH_SUBTRACT, Int16Type::TYPENAME, Int16Type::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME,   FloatObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_ADDITION, Int16Type::TYPENAME,     Int16Type::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_ADDITION, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_DIVIDE,   FloatObject::TYPENAME,   FloatObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_DIVIDE,   Int16Type::TYPENAME,     Int16Type::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_DIVIDE,   IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_MODULO,   Int16Type::TYPENAME,     Int16Type::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_MODULO,   IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_MULTIPLY, FloatObject::TYPENAME,   FloatObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_MULTIPLY, Int16Type::TYPENAME,     Int16Type::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_MULTIPLY, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME,   FloatObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_SUBTRACT, Int16Type::TYPENAME,     Int16Type::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+
 
 	// assign
 	define(Int16Type::TYPENAME, Token::Type::ASSIGN, Int16Type::TYPENAME,     Int16Type::TYPENAME);
@@ -437,22 +451,22 @@ void TypeSystem::initInt16()
 void TypeSystem::initInt32()
 {
 	// arithmetic
-	//define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME,  IntegerObject::TYPENAME);
-	//define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME,   IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, Int16Type::TYPENAME,     IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
-	//define(IntegerObject::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleObject::TYPENAME,  IntegerObject::TYPENAME);
-	//define(IntegerObject::TYPENAME, Token::Type::MATH_DIVIDE,   FloatObject::TYPENAME,   IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_DIVIDE,   FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_DIVIDE,   Int16Type::TYPENAME,     IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_DIVIDE,   IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_MODULO,   Int16Type::TYPENAME,     IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_MODULO,   IntegerObject::TYPENAME, IntegerObject::TYPENAME);
-	//define(IntegerObject::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleObject::TYPENAME,  IntegerObject::TYPENAME);
-	//define(IntegerObject::TYPENAME, Token::Type::MATH_MULTIPLY, FloatObject::TYPENAME,   IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_MULTIPLY, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_MULTIPLY, Int16Type::TYPENAME,     IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_MULTIPLY, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
-	//define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME,  IntegerObject::TYPENAME);
-	//define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME,   IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, Int16Type::TYPENAME,     IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 
