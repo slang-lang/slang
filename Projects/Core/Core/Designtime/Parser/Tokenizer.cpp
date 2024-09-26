@@ -3,9 +3,11 @@
 #include "Tokenizer.h"
 
 // Library includes
+#include <vector>
 #include <utility>
 
 // Project includes
+#include <Core/Designtime/Exceptions.h>
 #include <Core/Consts.h>
 #include <Core/Tools.h>
 #include <Utils.h>
@@ -495,7 +497,8 @@ void Tokenizer::process()
 
 	mergeAssignments();				// replace assignment tokens with compare tokens (if present)
 	mergeOperators();				// merge '+' '+' into '++'
-	replaceConstDataTypes();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
+	//replaceConstDataTypes();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
+	replaceConstDataTypesPatternMatching();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
 	replaceOperators();				// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
 }
 
@@ -767,6 +770,106 @@ void Tokenizer::replaceConstDataTypes()
 
 				continue;
 			}
+		}
+
+		++token;
+	}
+}
+
+void Tokenizer::replaceConstDataTypesPatternMatching()
+{
+	auto token = mTokens.begin();
+	TokenList::iterator tmp;
+
+	std::vector<TokenList> patterns{
+		// 1 . 2 d
+		TokenList{
+			Token( Token::Type::CONST_INTEGER ),
+			Token( Token::Type::OPERATOR_SCOPE ),
+			Token( Token::Type::CONST_DOUBLE )
+		},
+		// 1 . 2 f
+		TokenList{
+			Token( Token::Type::CONST_INTEGER ),
+			Token( Token::Type::OPERATOR_SCOPE ),
+			Token( Token::Type::CONST_FLOAT )
+		},
+		// 1 . 2 i
+		TokenList{
+			Token( Token::Type::CONST_INTEGER ),
+			Token( Token::Type::OPERATOR_SCOPE ),
+			Token( Token::Type::CONST_INTEGER )
+		},
+		// 1 . (d|f|i)
+		TokenList{
+			Token( Token::Type::CONST_INTEGER ),
+			Token( Token::Type::OPERATOR_SCOPE ),
+			Token( Token::Type::IDENTIFIER )
+		},
+		// 1 (d|f|i)
+		TokenList{
+			Token( Token::Type::CONST_INTEGER ),
+			Token( Token::Type::IDENTIFIER )
+		}
+	};
+
+	while ( token != mTokens.end() ) {
+		int numCombines{ 0 };
+		TokenList::iterator patternIt{ mTokens.end() };
+
+		// search for known patterns
+		for( const TokenList& p : patterns ) {
+			patternIt = std::search( mTokens.begin(), mTokens.end(), p.begin(), p.end(), 
+										[]( const Token& a, const Token& b ) { return a.type() == b.type(); } );
+
+			if ( patternIt != mTokens.end() ) {
+				numCombines = p.size() - 1;
+				break;
+			}
+		}
+
+		if ( patternIt == mTokens.end() ) {
+			// none of our patterns has been found, so we've already merged everything
+			break;
+		}
+
+		// try to combine all operator tokens
+		if ( numCombines > 0 ) {
+			// we found an operator
+			TokenList::iterator opToken = patternIt++;
+
+			while ( numCombines > 0 ) {
+				numCombines--;	// decrement combinations
+
+				if ( patternIt->type() == Token::Type::IDENTIFIER ) {
+					if ( patternIt->content() == "d" ) {
+						patternIt->resetContentTo( "" );
+						opToken->resetTypeTo( Token::Type::CONST_DOUBLE );
+					}
+					else if ( patternIt->content() == "f" ) {
+						patternIt->resetContentTo( "" );
+						opToken->resetTypeTo( Token::Type::CONST_FLOAT );
+					}
+					else if ( patternIt->content() == "i" ) {
+						throw Designtime::Exceptions::SyntaxError( "invalid number format", patternIt->position() );
+					}
+				}
+				else if ( patternIt->type() == Token::Type::CONST_DOUBLE ) {
+					opToken->resetTypeTo( Token::Type::CONST_DOUBLE );
+				}
+				else if ( patternIt->type() == Token::Type::CONST_FLOAT ) {
+					opToken->resetTypeTo( Token::Type::CONST_FLOAT );
+				}
+				else if ( patternIt->type() == Token::Type::CONST_INTEGER ) {
+					throw Designtime::Exceptions::SyntaxError( "invalid number format", patternIt->position() );	
+				}
+
+				opToken->resetContentTo( opToken->content() + patternIt->content() );	// combine token contents
+
+				patternIt = mTokens.erase( patternIt );	// remove the following token
+			}
+
+			continue;
 		}
 
 		++token;

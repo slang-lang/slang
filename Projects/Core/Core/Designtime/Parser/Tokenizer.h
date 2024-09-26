@@ -38,6 +38,7 @@ private:	// Tokenizer
 	void mergeAssignments();
 	void mergeOperators();
 	void replaceConstDataTypes();
+	void replaceConstDataTypesPatternMatching();
 	void replaceOperators();
 
 	inline bool isAccessMode(const std::string& token) const;
