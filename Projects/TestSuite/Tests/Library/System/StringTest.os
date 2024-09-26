@@ -21,6 +21,8 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase16() );
 	assert( TestCase17() );
 	assert( TestCase18() );
+
+	print( "passed" );
 }
 
 private bool TestCase1() const {

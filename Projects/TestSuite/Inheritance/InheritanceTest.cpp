@@ -16,6 +16,7 @@
 
 // Extension includes
 #ifdef USE_SYSTEM_EXTENSION
+#	include <LIBC/Extension.h>
 #	include <System/SystemExtension.h>
 #endif
 
@@ -100,6 +101,7 @@ void InheritanceTest::testExceptionDuringDestructorTest()
     try {
         VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new Slang::Extensions::LIBC::Extension());
 		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
         vm.runScriptFromFile("Tests/Inheritance/ExceptionDuringDestructor.os");

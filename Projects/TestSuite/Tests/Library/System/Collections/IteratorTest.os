@@ -11,6 +11,8 @@ public void Main(int argc = 0, string args = "") const {
 	//assert( TestCase4() );
 	assert( TestCase5() );
 	assert( TestCase6() );
+
+	print( "passed" );
 }
 
 private bool TestCase1() const {
@@ -199,6 +201,9 @@ private bool TestCase6() const {
 	}
 	catch ( IException e ) {
 		print( e.what() );
+	}
+	catch ( string e ) {
+		print( e );
 	}
 
 	return false;

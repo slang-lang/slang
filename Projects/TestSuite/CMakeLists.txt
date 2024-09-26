@@ -32,6 +32,8 @@ SET(DEPENDENCIES
 	Test_Inheritance
 	Test_Extensions
 	Test_AST
+	ExtensionsSystem
+	ExtensionsLIBC
 	CoreVirtualMachine
 	CoreRuntime
 	CoreExtensions
@@ -48,4 +50,3 @@ add_include( Projects/Utils )
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/TestSuite)
 build_app( TestSuite "" )
-

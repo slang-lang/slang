@@ -17,6 +17,7 @@
 
 // Extension includes
 #ifdef USE_SYSTEM_EXTENSION
+#   include <LIBC/Extension.h>
 #	include <System/SystemExtension.h>
 #endif
 
@@ -62,6 +63,7 @@ void PrototypeTest::testAdvancedPrototypeTest()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
+        vm.addExtension(new Slang::Extensions::LIBC::Extension());
 		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/Prototypes/AdvancedPrototypeTest.os");
@@ -93,6 +95,7 @@ void PrototypeTest::testBasicPrototypeWithInheritanceConstraint()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
+        vm.addExtension(new Slang::Extensions::LIBC::Extension());
 		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/Prototypes/BasicPrototypeWithInheritanceConstraint.os");
@@ -124,6 +127,7 @@ void PrototypeTest::testFail_BasicPrototypeWithInheritanceConstraint()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
+        vm.addExtension(new Slang::Extensions::LIBC::Extension());
 		vm.addExtension(new Slang::Extensions::System::SystemExtension());
 #endif
 		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_BasicPrototypeWithInheritanceConstraint.os"), Slang::Common::Exceptions::TypeMismatch);
