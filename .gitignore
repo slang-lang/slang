@@ -1,7 +1,12 @@
 # IDE stuff
-.idea/
-cmake-build-debug/
+.cache
+.idea
+.vscode
+build
+cmake-build-debug
 
 # generated stuff
 CMake/Dependencies.cmake
 
+# internals
+Projects/Library/.gitignore
