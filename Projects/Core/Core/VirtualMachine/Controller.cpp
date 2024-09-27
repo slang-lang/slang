@@ -23,13 +23,6 @@ Controller::Controller()
 {
 }
 
-Controller& Controller::Instance()
-{
-	static Controller instance;
-
-	return instance;
-}
-
 void Controller::deinit()
 {
 	assert(mPhase > Phase::Startup);
