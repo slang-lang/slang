@@ -579,12 +579,13 @@ std::string Object::ToString(unsigned int indent) const
 
 	std::string result;
 	result += ::Utils::Tools::indent(indent);
-	result += " " + MemoryLayout::convert(mMemoryLayout);
+	//result += MemoryLayout::convert(mMemoryLayout) + " ";
 	if ( mLanguageFeatureState != LanguageFeatureState::Stable ) {
-		result += Visibility::convert(mVisibility);
+		result += Visibility::convert(mVisibility) + " ";
 	}
-	result += " " + QualifiedTypename() + " " + getName();
-	result += " " + Mutability::convert(mMutability);
+	result += QualifiedTypename() + " ";
+	result += getName() + " ";
+	result += Mutability::convert(mMutability);
 
 	if ( isAtomicType() ) {
 		result += " = '" + getValue().toStdString() + "'";
@@ -602,7 +603,7 @@ std::string Object::ToString(unsigned int indent) const
 */
 
 		for ( const auto& mSymbol : mSymbols ) {
-			if ( mSymbol.first == IDENTIFIER_THIS || !mSymbol.second ) {
+			if ( mSymbol.first == IDENTIFIER_THIS || mSymbol.second->getName() == IDENTIFIER_THIS || !mSymbol.second ) {
 				continue;
 			}
 

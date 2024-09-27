@@ -241,8 +241,13 @@ int main(int argc, const char* argv[])
 		if ( e == Slang::Runtime::ControlFlow::ExitProgram ) {
 			return 0;
 		}
-
-		OSerror("abnormal program termination!");
+		else if ( e == Slang::Runtime::ControlFlow::Throw ) {
+			OSerror( "Exception thrown in " << Slang::Controller::Instance().thread( 0 )->exception().getPosition().toString() << std::endl
+			         << Slang::Controller::Instance().thread( 0 )->exception().getData()->ToString() );
+		}
+		else {
+			OSerror( "abnormal program termination!" );
+		}
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());

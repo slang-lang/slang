@@ -1141,7 +1141,7 @@ void LocalClient::start()
 
 		Runtime::Object result;
 
-		Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename());
+		auto* script = mVirtualMachine->createScriptFromFile(mSettings->filename());
 		assert(script);
 
 		mVirtualMachine->run(script, mParameters, &result);
@@ -1150,6 +1150,20 @@ void LocalClient::start()
 
 		if ( mSettings->autoStop() ) {
 			mRunning = false;
+		}
+	}
+	catch ( Slang::Runtime::ControlFlow::E &e ) {
+		switch ( e ) {
+			case Slang::Runtime::ControlFlow::ExitProgram:
+				// everything is fine
+				break;
+			case Slang::Runtime::ControlFlow::Throw:
+				writeln( "[Exception thrown in " + Slang::Controller::Instance().thread( 0 )->exception().getPosition().toString() + "\n"
+						+ Slang::Controller::Instance().thread( 0 )->exception().getData()->ToString() + "]" );
+				break;
+			default:
+				writeln( "[abnormal program termination!]" );
+				break;
 		}
 	}
 	catch ( std::exception& e ) {
