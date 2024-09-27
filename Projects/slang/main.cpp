@@ -44,6 +44,7 @@ Utils::Common::StdOutLogger mLogger;
 Slang::ParameterList mParameters;
 bool mPrintDebugInfo = false;
 bool mPrintSpecification = false;
+bool mPrintTokens = false;
 bool mPrintUsage = false;
 bool mPrintVersion = false;
 std::string mRequestedSpecification;
@@ -63,6 +64,7 @@ void printUsage()
 	std::cout << "--skip-sanitycheck         Skips sanity check before parsing" << std::endl;
 	std::cout << "--spec [query]             Print specification, can be followed by an optional query" << std::endl;
 	std::cout << "--syntax <file>            Syntax check only" << std::endl;
+	std::cout << "--tokens                   Print out list of all tokens and halt execution" << std::endl;
 	std::cout << "-v | --verbose             Verbose output" << std::endl;
 	std::cout << "--version                  Version information" << std::endl;
 	std::cout << std::endl;
@@ -131,6 +133,9 @@ void processParameters(int argc, const char* argv[])
 			else if ( Utils::Tools::StringCompare(argv[i], "--syntax") ) {
 				mSyntaxCheck = true;
 			}
+			else if ( Utils::Tools::StringCompare(argv[i], "--tokens") ) {
+				mPrintTokens = true;
+			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") || Utils::Tools::StringCompare(argv[i], "--verbose") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
 
@@ -181,6 +186,7 @@ int main(int argc, const char* argv[])
 	mVirtualMachine.settings().DoCollectErrors = true;
 	mVirtualMachine.settings().DoSanityCheck = mSanityCheck;
 	mVirtualMachine.settings().DoSyntaxCheck = mSyntaxCheck;
+	mVirtualMachine.settings().PrintTokens   = mPrintTokens;
 
 	mVirtualMachine.init();
 
@@ -211,15 +217,17 @@ int main(int argc, const char* argv[])
 	}
 
 	try {
-		Slang::Runtime::Object result;
-
-		Slang::Script* script = mVirtualMachine.createScriptFromFile(mFilename);
+		auto* script = mVirtualMachine.createScriptFromFile(mFilename);
 		assert(script);
 
-		if ( mSyntaxCheck ) {
+		if ( mPrintTokens ) {
+			// we are done after printing our tokens
+		}
+		else if ( mSyntaxCheck ) {
 			std::cout << "Syntax check done, no errors found." << std::endl;
 		}
 		else {
+			Slang::Runtime::Object result;
 			mVirtualMachine.run(script, mParameters, &result);
 
 			if ( result.getValue().type() == Slang::Runtime::AtomicValue::Type::INT ) {
@@ -233,8 +241,13 @@ int main(int argc, const char* argv[])
 		if ( e == Slang::Runtime::ControlFlow::ExitProgram ) {
 			return 0;
 		}
-
-		OSerror("abnormal program termination!");
+		else if ( e == Slang::Runtime::ControlFlow::Throw ) {
+			OSerror( "Exception thrown in " << Slang::Controller::Instance().thread( 0 )->exception().getPosition().toString() << std::endl
+			         << Slang::Controller::Instance().thread( 0 )->exception().getData()->ToString() );
+		}
+		else {
+			OSerror( "abnormal program termination!" );
+		}
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());

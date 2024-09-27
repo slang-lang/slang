@@ -144,7 +144,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 	auto *script = new Script();
 	mScripts.insert(script);
 
-	Designtime::Analyser analyser(mSettings.DoSanityCheck);
+	Designtime::Analyser analyser(mSettings.DoSanityCheck, mSettings.PrintTokens);
 	analyser.processString(content, mScriptFile);
 
 	// load all extension references
@@ -310,7 +310,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 	mLibraryFolders.insert( currentFolder );
 
-	Designtime::Analyser analyser(mSettings.DoSanityCheck);
+	Designtime::Analyser analyser(mSettings.DoSanityCheck, mSettings.PrintTokens);
 	analyser.processFile(library);
 
 	mImportedLibraries.insert(library);
