@@ -24,9 +24,11 @@ public void Main( int argc, string args ) {
 			}
 	
 			var reader = new YamlReader();
-			var data = reader.parse( new Scanner( filename.Key ).getStringIterator( LINEBREAK ) );
+			var data = reader.parse( new Scanner( filename.Key ).getText() );
 	
 			//print( writer.toString( data ) );
+
+			print( "done." );
 		}
 	}
 	catch ( string e ) {
