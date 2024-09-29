@@ -13,8 +13,8 @@ public object JsonArray extends JsonValue implements IIterable {
 	public void Constructor() {
 		base.Constructor();
 
-		mMembers = new Vector<JsonValue>();
-		mType = JsonType.Array;
+		mMembers   = new Vector<JsonValue>();
+		mType      = JsonType.Array;
 		mValueType = JsonValueType.Array;
 	}
 
