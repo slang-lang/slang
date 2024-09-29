@@ -17,20 +17,41 @@ public object YamlReader {
 		// look for "---" to start parsing
 		while ( lines.hasNext() && lines.next() != "---" );
 
+		var result = new YamlNode();
+
 		// do the actual YAML parsing after we found our start token ("---")
 		var count = 0;
 		while ( lines.hasNext() ) {
 			var line = lines.next();
 
-			if ( line && substr( line, 1, 1 ) == "#" ) {
+			// ignore invalid lines
+			if ( ! line )
+				continue;
+
+			// look for document end
+			if ( line == "..." )
+				break;
+
+			// filter out line comments first
+			if ( substr( line, 1, 1 ) == "#" ) {
 				write( "Comment: " );
 				continue;
 			}
 
-			print( cast<string>( count++ ) + ": " + line );
+			int indentation;
+
+			// count indentation
+			while( substr( line, indentation++, 1 ) == " " );
+
+			// demo output
+			print( cast<string>( count++ ) + ": " + substr( line, indentation ) );
+
+			//indentation /= 2;
+
+			//result.add( new YamlNode( substr( line, indentation ) ) );
 		}
 
-		return YamlNode null;
+		return result;
 	}
 }
 
