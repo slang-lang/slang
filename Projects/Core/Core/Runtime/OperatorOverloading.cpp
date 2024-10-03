@@ -10,6 +10,7 @@
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/EnumerationObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/BuildInTypes/UserObject.h>
@@ -31,8 +32,8 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = rvalue->QualifiedTypename();
-	std::string target = lvalue->QualifiedTypename();
+	std::string source{ rvalue->QualifiedTypename() };
+	std::string target{ lvalue->QualifiedTypename() };
 
 	if ( target == ANONYMOUS_OBJECT || source == target ) {
 		// assign directly because our lvalue has not yet been initialized
@@ -47,6 +48,9 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 	}
 	else if ( target == FloatObject::TYPENAME ) {
 		lvalue->assign( FloatObject( rvalue->getValue().toFloat() ) );
+	}
+	else if ( target == Int16Type::TYPENAME ) {
+		lvalue->assign( Int16Type( rvalue->getValue().toInt() ) );
 	}
 	else if ( target == IntegerObject::TYPENAME ) {
 		lvalue->assign( IntegerObject( rvalue->getValue().toInt() ) );
@@ -66,11 +70,11 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 	}
 */
 	// special handling for enumeration values
-	else if ( lvalue->isEnumerationValue() && rvalue->QualifiedTypename() == _int ) {
+	else if ( lvalue->isEnumerationValue() && rvalue->QualifiedTypename() == _int32 ) {
 		lvalue->setValue( rvalue->getValue().toInt() );
 	}
 	// special handling for enumeration values
-	else if ( lvalue->QualifiedTypename() == _int && rvalue->isEnumerationValue() ) {
+	else if ( lvalue->QualifiedTypename() == _int32 && rvalue->isEnumerationValue() ) {
 		lvalue->setValue( rvalue->getValue().toInt() );
 	}
 	// no atomic data type, so we have to look if our assign operator has been overwritten
@@ -86,7 +90,7 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 		}
 
 		// invalid binary assignment operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->QualifiedTypename() + ".operator=: conversion from " + lvalue->QualifiedTypename() + " to " + rvalue->QualifiedTypename() + " not supported" );
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->QualifiedTypename() + ".operator=: conversion from " + rvalue->QualifiedTypename() + " to " + lvalue->QualifiedTypename() + " not supported" );
 	}
 }
 
@@ -1070,4 +1074,3 @@ void operator_unary_validate( Object* base )
 
 }
 }
-

@@ -3,11 +3,17 @@
 // Fazit: recursion is really slow in slang
 
 public void Main(int argc, string args) {
-	//input to print Fibonacci series upto how many numbers
-	cout("Enter number upto which Fibonacci series to print: ");
-	int value = int cin();
+	int value;
 
-	endl();
+	if ( argc == 1 ) {
+		//input to print Fibonacci series upto how many numbers
+		cout("Enter number upto which Fibonacci series to print: ");
+		value = cast<int>( cin() );
+		endl();
+	}
+	else {
+		value = cast<int>( substr( args, strfind( args, LINEBREAK ) ) );
+	}
 
 	cout("Fibonacci series upto " + value +" numbers: ");
 	endl();

@@ -1,6 +1,6 @@
 
 // Header
-#include "IntegerObject.h"
+#include "Int64Type.h"
 
 // Library includes
 
@@ -15,11 +15,11 @@ namespace Slang {
 namespace Designtime {
 
 
-int32_t IntegerObject::DEFAULTVALUE = 0;
-std::string IntegerObject::TYPENAME = _int32;
+int64_t Int64Type::DEFAULTVALUE = 0;
+std::string Int64Type::TYPENAME = _int64;
 
 
-IntegerObject::IntegerObject()
+Int64Type::Int64Type()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 	mIsAtomicType = true;
@@ -27,18 +27,18 @@ IntegerObject::IntegerObject()
 	initialize();
 }
 
-const std::string& IntegerObject::getTypeName() const
+const std::string& Int64Type::getTypeName() const
 {
 	return TYPENAME;
 }
 
-void IntegerObject::initialize()
+void Int64Type::initialize()
 {
 	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_int32))
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_int64))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

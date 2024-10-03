@@ -34,7 +34,7 @@ private bool TestCase2() {
 	float f = 2.1f;
 
 	int result = i + f;
-	print("result = " + result);
+	print("result(" + typeid( result ) + ") = " + result);
 
 	return result == 3;
 }

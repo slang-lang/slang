@@ -515,7 +515,16 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 			++start;
 		} break;
 		case Token::Type::CONST_INTEGER: {
-			term = new IntegerLiteralExpression(Utils::Tools::stringToInt(start->content()));
+		    auto value = Utils::Tools::stringToInt(start->content());
+			/*
+			if( value > -32768 && value < 32,767 )
+			    term = new Int16LiteralExpression(value);
+			else if( value > -2147483648 & value < 2147483647 )
+			    term = new IntegerLiteralExpression(value);
+			else
+			*/
+			    term = new IntegerLiteralExpression(value);  // TODO: replace this with Int64LiteralExpression when available
+
 			++start;
 		} break;
 		case Token::Type::CONST_LITERAL: {
@@ -671,12 +680,12 @@ Node* TreeGenerator::processPostfixRangeOperator(TokenIterator& start, Node* bas
 	auto* rhs = dynamic_cast<Expression*>(expression(start));
 
 	// validate left expression (has to be integer literal expression)
-	if ( !lhs || lhs->getResultType() != _int ) {
+	if ( !lhs || ( lhs->getResultType() != _int16 && lhs->getResultType() != _int32 ) ) {
 		throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on left side", start->position());
 	}
 
 	// validate right expression (has to be integer literal expression)
-	if ( !rhs || rhs->getResultType() != _int ) {
+	if ( !rhs || ( rhs->getResultType() != _int16 && lhs->getResultType() != _int32 ) ) {
 		throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on right side", start->position());
 	}
 
@@ -713,7 +722,10 @@ Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* bas
 	else if ( infixPostfix->getResultType() == _float ) {
 		return processPostfixObjectOperator(std::string(_float_object), start, infixPostfix);
 	}
-	else if ( infixPostfix->getResultType() == _int ) {
+	else if ( infixPostfix->getResultType() == _int16 ) {
+		return processPostfixObjectOperator(std::string(_int_object), start, infixPostfix);
+	}
+	else if ( infixPostfix->getResultType() == _int32 ) {
 		return processPostfixObjectOperator(std::string(_int_object), start, infixPostfix);
 	}
 	else if ( infixPostfix->getResultType() == _string ) {
@@ -945,8 +957,8 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
-	std::string type = targetExp->getResultType();
-	PrototypeConstraints constraints = targetExp->mConstraints;
+	std::string type{ targetExp->getResultType() };
+	PrototypeConstraints constraints{ targetExp->mConstraints };
 
 	Common::TypeDeclaration typeName(type, constraints);
 

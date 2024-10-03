@@ -11,6 +11,7 @@
 #include "DoubleObject.h"
 #include "EnumerationObject.h"
 #include "FloatObject.h"
+#include "Int16Type.h"
 #include "IntegerObject.h"
 #include "UserObject.h"
 #include "VoidObject.h"
@@ -57,6 +58,7 @@ StringObject::StringObject( const Object& other )
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
+         target == Int16Type::TYPENAME ||
          target == IntegerObject::TYPENAME ||
          target == StringObject::TYPENAME ||
          other.isEnumerationValue() ) {
@@ -75,6 +77,7 @@ void StringObject::operator_assign( const Object* other )
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
+         target == Int16Type::TYPENAME ||
          target == IntegerObject::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
@@ -98,6 +101,7 @@ bool StringObject::operator_equal( const Object* other )
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
+         target == Int16Type::TYPENAME ||
          target == IntegerObject::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
@@ -115,6 +119,7 @@ bool StringObject::operator_greater( const Object* other )
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
+         target == Int16Type::TYPENAME ||
          target == IntegerObject::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
@@ -132,6 +137,7 @@ bool StringObject::operator_greater_equal( const Object* other )
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
+         target == Int16Type::TYPENAME ||
          target == IntegerObject::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
@@ -149,6 +155,7 @@ bool StringObject::operator_less( const Object* other )
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
+         target == Int16Type::TYPENAME ||
          target == IntegerObject::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
@@ -166,6 +173,7 @@ bool StringObject::operator_less_equal( const Object* other )
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
+         target == Int16Type::TYPENAME ||
          target == IntegerObject::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
@@ -183,6 +191,7 @@ void StringObject::operator_plus( const Object* other )
 		 target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
+		 target == Int16Type::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == StringObject::TYPENAME ||
 		 other->isEnumerationValue() ) {
@@ -201,6 +210,7 @@ void StringObject::operator_shift_left( const Object* other )
 		 target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
+		 target == Int16Type::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == StringObject::TYPENAME ||
 		 other->isEnumerationValue() ) {

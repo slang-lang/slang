@@ -184,7 +184,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator& token)
 {
 	PrototypeConstraints constraints;
-	
+
 	if ( token->type() != Token::Type::COMPARE_LESS ) {
 		// no '<' token, no constraints
 		return constraints;
@@ -577,11 +577,18 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 			value = Utils::Tools::stringToFloat(sign + token->content());
 			break;
 		case Token::Type::CONST_INTEGER:
-			if ( type != _int ) {
-				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+		    if ( type == _int16 ) {
+			    value = static_cast<int16_t>( Utils::Tools::stringToInt(sign + token->content()) );
 			}
-
-			value = Utils::Tools::stringToInt(sign + token->content());
+			else if ( type == _int32 ) {
+			    value = static_cast<int32_t>( Utils::Tools::stringToInt(sign + token->content()) );
+			}
+			else if ( type == _int64 ) {
+			    value = static_cast<int64_t>( Utils::Tools::stringToInt(sign + token->content()) );
+			}
+			else {
+			    throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+			}
 			break;
 		case Token::Type::CONST_LITERAL:
 			if ( type != _string ) {

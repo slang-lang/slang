@@ -15,6 +15,8 @@ public void Main(int argc = 0, string args = "") {
 	catch ( OutOfBoundsException e ) {
 		print(e.what());
 	}
+
+	print( "passed" );
 }
 
 private void ObjectMethod() {

@@ -9,6 +9,7 @@
 #include <Core/Runtime/BuildInTypes/BoolObject.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
@@ -22,9 +23,7 @@ bool isAtomicType(const std::string& type)
 {
 	static const StringSet& atomicTypes = provideAtomicTypes();
 
-	auto it = atomicTypes.find(type);
-
-	return it != atomicTypes.end();
+	return atomicTypes.find(type) != atomicTypes.end();
 }
 
 StringSet provideAccessMode()
@@ -44,6 +43,8 @@ StringSet provideAtomicTypes()
 	types.insert(Runtime::BoolObject::TYPENAME);
 	types.insert(Runtime::DoubleObject::TYPENAME);
 	types.insert(Runtime::FloatObject::TYPENAME);
+	types.insert(Runtime::Int16Type::TYPENAME);
+	//types.insert(Runtime::Int64Type::TYPENAME);
 	types.insert(Runtime::IntegerObject::TYPENAME);
 	types.insert(Runtime::StringObject::TYPENAME);
 	types.insert(Runtime::VoidObject::TYPENAME);

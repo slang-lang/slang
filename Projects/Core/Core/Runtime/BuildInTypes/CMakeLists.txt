@@ -5,6 +5,7 @@ SET(SOURCES
 	DoubleObject.cpp
 	EnumerationObject.cpp
 	FloatObject.cpp
+	Int16Type.cpp
 	IntegerObject.cpp
 	StringObject.cpp
 	UserObject.cpp
@@ -16,6 +17,7 @@ SET(HEADERS
 	DoubleObject.h
 	EnumerationObject.h
 	FloatObject.h
+	Int16Type.h
 	IntegerObject.h
 	StringObject.h
 	UserObject.h

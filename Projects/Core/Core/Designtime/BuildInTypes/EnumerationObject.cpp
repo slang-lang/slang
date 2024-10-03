@@ -15,8 +15,8 @@ namespace Slang {
 namespace Designtime {
 
 
-int EnumerationObject::DEFAULTVALUE = 0;
-std::string EnumerationObject::TYPENAME = _int;
+int32_t EnumerationObject::DEFAULTVALUE = 0;
+std::string EnumerationObject::TYPENAME = _int32;
 
 
 EnumerationObject::EnumerationObject()
@@ -38,7 +38,7 @@ void EnumerationObject::initialize()
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_int))
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_int32))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

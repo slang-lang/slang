@@ -238,13 +238,24 @@ public:
 };
 
 
+class Int16LiteralExpression : public LiteralExpression
+{
+public:
+	explicit Int16LiteralExpression(const Runtime::AtomicValue& value)
+	: LiteralExpression(value)
+	{
+		mResultType = _int16;
+	}
+};
+
+
 class IntegerLiteralExpression : public LiteralExpression
 {
 public:
 	explicit IntegerLiteralExpression(const Runtime::AtomicValue& value)
 	: LiteralExpression(value)
 	{
-		mResultType = _int;
+		mResultType = _int32;
 	}
 };
 

@@ -59,7 +59,29 @@ AtomicValue::AtomicValue(float val)
 	mValue.float_ = val;
 }
 
+AtomicValue::AtomicValue(int16_t val)
+: mType(Type::INT)
+{
+	mValue.bool_ = false;
+	mValue.double_ = 0.0;
+	mValue.float_ = 0.f;
+	mValue.reference_ = 0;
+
+	mValue.int_ = val;
+}
+
 AtomicValue::AtomicValue(int32_t val)
+: mType(Type::INT)
+{
+	mValue.bool_ = false;
+	mValue.double_ = 0.0;
+	mValue.float_ = 0.f;
+	mValue.reference_ = 0;
+
+	mValue.int_ = val;
+}
+
+AtomicValue::AtomicValue(int64_t val)
 : mType(Type::INT)
 {
 	mValue.bool_ = false;
@@ -122,7 +144,27 @@ AtomicValue& AtomicValue::operator=(float val)
 	return *this;
 }
 
+AtomicValue& AtomicValue::operator=(int16_t val)
+{
+	mStringValue = "";
+
+	mType = Type::INT;
+	mValue.int_ = val;
+
+	return *this;
+}
+
 AtomicValue& AtomicValue::operator=(int32_t val)
+{
+	mStringValue = "";
+
+	mType = Type::INT;
+	mValue.int_ = val;
+
+	return *this;
+}
+
+AtomicValue& AtomicValue::operator=(int64_t val)
 {
 	mStringValue = "";
 
@@ -200,14 +242,14 @@ float AtomicValue::toFloat() const
 	return 0.f;
 }
 
-int AtomicValue::toInt() const
+int64_t AtomicValue::toInt() const
 {
 	switch ( mType ) {
-		case Type::BOOL:        return static_cast<int32_t>( mValue.bool_ );
-		case Type::DOUBLE:      return static_cast<int32_t>( mValue.double_ );
-		case Type::FLOAT:       return static_cast<int32_t>( mValue.float_ );
+		case Type::BOOL:        return static_cast<int64_t>( mValue.bool_ );
+		case Type::DOUBLE:      return static_cast<int64_t>( mValue.double_ );
+		case Type::FLOAT:       return static_cast<int64_t>( mValue.float_ );
 		case Type::INT:         return mValue.int_;
-		case Type::REFERENCE:   return static_cast<int32_t>( mValue.reference_ != 0 );
+		case Type::REFERENCE:   return static_cast<int64_t>( mValue.reference_ != 0 );
 		case Type::STRING:      return Utils::Tools::stringToInt( mStringValue );
         case Type::UNKNOWN:     break;
 	}
