@@ -72,7 +72,7 @@ public string TokenToString(TokenType type) {
 		case TokenType.LPAREN:			{ return "("; }
 		case TokenType.MATH_DIVIDE:		{ return "MATH_DIVIDE"; }
 		case TokenType.MATH_MINUS:		{ return "MATH_MINUS"; }
-		case TokenType.MATH_MULTIPLY:		{ return "MATH_MULITPLY"; }
+		case TokenType.MATH_MULTIPLY:		{ return "MATH_MULTIPLY"; }
 		case TokenType.MATH_PLUS:		{ return "MATH_PLUS"; }
 		case TokenType.OR:			{ return "OR"; }
 		case TokenType.REAL:			{ return "REAL"; }

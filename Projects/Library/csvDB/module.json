@@ -1,7 +1,7 @@
 {
   "name": "csvDB",
   "name_short": "csvDB",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A query language for CSV files",
   "dependencies": [
     { "module": "Slang", "version_min": "0.8.0" },

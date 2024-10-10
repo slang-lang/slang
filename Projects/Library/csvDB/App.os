@@ -34,17 +34,17 @@ public object App
     }
 
     private void executeQuery( string query ) modify {
-        print( "Execute query '" + query + "'" );
+        //print( "Execute query '" + query + "'" );
 
         try {
             var executor = new QueryExecutor();
             executor.exec( query );
         }
         catch ( string e ) {
-            print( "Error: " + e );
+            print( "[Error] " + e );
         }
         catch ( IException e ) {
-            print( "Error: " + e.what() );
+            print( "[Error] " + e.what() );
         }
     }
 

@@ -25,20 +25,16 @@ public object ParseException const implements IException {
 
 public object QueryExecutor
 {
-    public void Constructor() {
-        mTableData = new Map<string, CSVReader>();
-    }
-
     public void exec( string query ) modify throws {
         mTokenizer     = new Tokenizer();
         mTokens        = mTokenizer.parse( query );
         mTokenIterator = mTokens.getIterator();
 
+        /*
         foreach ( Token t :  mTokens ) {
             print( cast<string>( t ) );
         }
-
-        require( TokenType.FROM );
+        */
 
         // data to collect:
         Vector<string> columns = new Vector<string>();
@@ -47,61 +43,91 @@ public object QueryExecutor
         string table;
         Token token;
 
-        token = consume();
-
-        table = token.mValue;
-        //print( "FROM: " + table );
-
         require( TokenType.SELECT );
 
-        while ( (token = consume()) && token.mType == TokenType.IDENTIFIER ) {
-            columns.push_back( token.mValue );
+        while ( (token = peek()) && ( token.mType == TokenType.IDENTIFIER ) || ( token.mType == TokenType.MATH_MULTIPLY ) ) {
+            columns.push_back( consume().mValue );
 
             if ( peek().mType == TokenType.COMMA )
                 consume();
         }
 
         if ( columns.empty() ) {
-            throw "no columns to select specified!";
+            throw "no columns selected!";
         }
 
-        print( toString( token ) );
+        require( TokenType.FROM );
 
-        if ( token && token.mType == TokenType.WHERE ) {
+        table = consume().mValue;
+        if ( strfind( table, ".csv" ) == -1 ) {
+            table += ".csv";
+        }
+
+        if ( (token = peek()) && token.mType == TokenType.WHERE ) {
+            consume();
+            require( TokenType.WHERE );
+
             // TODO: implement where-clause parsing
         }
-        if ( token && token.mType == TokenType.LIMIT ) {
+        if ( (token = peek()) && token.mType == TokenType.LIMIT ) {
+            consume();
             require( TokenType.INTEGER );
 
-            limit = cast<int>( current().mValue );
+            limit = cast<int>( current().mValue ) + 1;  // add 1 for headers
         }
 
         require( TokenType.SEMICOLON );
 
         // execute query
         // load full table data
-        mTableData.insert( table, new CSVReader( table ) );
+        var data   = new CSVReader( table, true );
+        var dataIt = data.getIterator();
 
-        // filter data
-        // IMPLEMENT ME
+        var columnWidth  = new Map<int, int>();
+        var header const = data.header();
+
+        // expland column wildcards and prepare column titles
+        for ( var idx = 0; idx < columns.size(); idx++ ) {
+            var column = columns[ idx ];
+
+            if ( column == "*" ) {
+                columns.erase( idx );
+
+                for ( var i = 0; i < header.size(); i++ ) {
+                    print( i );
+                    columns.insert( idx + i, header[ i ] );
+                }
+
+                continue;
+            }
+
+            write( " | " + column );
+
+            columnWidth.insert( idx, strlen( column ) );
+        }
+
+        writeln( " | ");
 
         // print selected column data
-        foreach ( Pair<string, CSVReader> table : mTableData ) {
-            foreach ( DataEntry row : table.second ) {
-                string result;
+        foreach ( DataEntry row : data ) {
+            string result;
 
-                foreach ( string column : columns ) {
-                    result += " | " + row[ "\"" + column + "\"" ];
-                }
+            foreach ( string column : columns ) {
+                var value = row[ "\"" + column + "\"" ];
 
-                print( result + " | " );
+                // filter data
+                // IMPLEMENT ME
 
-                rowCount++;
+                result += " | " + value;
+            }
 
-                if( limit && rowCount >= limit ) {
-                    // output limit reached
-                    break;
-                }
+            print( result + " | " );
+
+            rowCount++;
+
+            if ( limit && rowCount >= limit ) {
+                // output limit reached
+                break;
             }
         }
     }
@@ -159,7 +185,6 @@ public object QueryExecutor
 // Helpers
 //////////////////////////////////////////////////////////////////////////////
 
-    private Map<string, CSVReader> mTableData;
 	private Iterator<Token> mTokenIterator;
 	private Tokenizer mTokenizer;
 	private List<Token> mTokens;
