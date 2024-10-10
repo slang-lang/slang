@@ -14,6 +14,10 @@ public object DataEntry {
         mEntry = data;
     }
 
+    public int size() const {
+        return mEntry.size();
+    }
+
     public string operator[]( string column ) throws {
         return mEntry.get( column );
     }
@@ -34,4 +38,3 @@ public object DataEntry {
 
     private Map<string, string> mEntry;
 }
-
