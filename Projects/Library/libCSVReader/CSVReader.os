@@ -62,6 +62,10 @@ public object CSVReader implements ICollection, IIterable {
         return parseFile( filename );
     }
 
+    public string =operator( string ) const {
+        return "CSVReader{" + mColumnTitles + "}";
+    }
+
     private bool parseFile( string filename ) modify throws {
         var file = new System.IO.File( filename, System.IO.File.AccessMode.ReadOnly );
 
@@ -100,4 +104,3 @@ public object CSVReader implements ICollection, IIterable {
     private HeaderEntry mHeader;
     private string mFilename;
 }
-
