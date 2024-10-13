@@ -7,11 +7,12 @@ import System.StringIterator;
 import Settings;
 
 
-public object HeaderEntry implements DataEntry {
+public object HeaderEntry implements Row {
     public void Constructor() {
         mColumns = new Vector<string>();
     }
 
+    // TODO: move parsing to CSVReader and re-use StringIterator for every line instead of creating a new instance per line
     public void parse( string line ) modify {
         mColumns.clear();
 
@@ -21,31 +22,35 @@ public object HeaderEntry implements DataEntry {
         }
     }
 
-    public DataEntry produceEntry() const {
-        var entry = new Map<string, string>();
+    public Row produceEntry() const {
+        var entry = new Vector<string>();
 
         foreach ( string column : mColumns ) {
-            entry.insert( column, "" );
+            entry.push_back( column );
         }
 
-        return new DataEntry( entry );
+        return new Row( entry );
     }
 
-    public DataEntry produceEntry( string line ) const {
-        var entry = new Map<string, string>();
+    public Row produceEntry( string line ) const {
+        var entry = new Vector<string>();
 
         int columnIdx;
         var columnIt = new StringIterator( line, Settings.SEPARATOR );
 
         while ( columnIt.hasNext() ) {
-            var column = mColumns.at( columnIdx );
+            var column = mColumns.at( columnIdx );      // TODO: replace this with a simple index
 
-            entry.insert( column, columnIt.next() );
+            entry.push_back( columnIt.next() );
 
             columnIdx++;
         }
 
-        return new DataEntry( entry );
+        return new Row( entry );
+    }
+
+    public override int size() const {
+        return mColumns.size();
     }
 
     public override string operator[]( int index ) throws {
@@ -68,4 +73,3 @@ public object HeaderEntry implements DataEntry {
 
     private Vector<string> mColumns;
 }
-

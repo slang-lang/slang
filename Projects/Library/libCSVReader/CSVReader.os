@@ -1,20 +1,21 @@
 
 // library imports
+import System.CharacterIterator;
 import System.Collections.ICollection;
 import System.Collections.IIterable;
 import System.Collections.Vector;
 import System.IO.File;
 
 // project imports
-import DataEntry;
+import Row;
 import HeaderEntry;
 
 
 public object CSVReader implements ICollection, IIterable {
     public void Constructor( string filename = "", bool columnTitles = false ) {
         mColumnTitles = columnTitles;
-        mData = new Vector<DataEntry>();
-        mHeader = new HeaderEntry();
+        mData         = new Vector<Row>();
+        mHeader       = new HeaderEntry();
 
         if ( filename ) {
             open( filename, columnTitles );
@@ -23,28 +24,24 @@ public object CSVReader implements ICollection, IIterable {
 
     // ICollection interface implementation
     // {
-
-    public DataEntry operator[]( int index ) const {
+    public Row operator[]( int index ) const {
         return mData.at( index );
     }
 
-    public DataEntry at( int index ) const {
+    public Row at( int index ) const {
         return mData.at( index );
     }
 
     public int size() const {
         return mData.size();
     }
-
     // }
 
     // IIterable interface implementation
     // {
-
-    public Iterator<DataEntry> getIterator() const {
+    public Iterator<Row> getIterator() const {
         return mData.getIterator();
     }
-
     // }
 
     public HeaderEntry const header() const {
@@ -63,11 +60,14 @@ public object CSVReader implements ICollection, IIterable {
     }
 
     public string =operator( string ) const {
-        return "CSVReader{" + mColumnTitles + "}";
+        return "CSVReader{" + mData.size() + " rows}";
     }
 
     private bool parseFile( string filename ) modify throws {
         var file = new System.IO.File( filename, System.IO.File.AccessMode.ReadOnly );
+        if ( !file.isOpen() ) {
+            throw "Failed to open file \"" + filename + "\"";
+        }
 
         bool isFirstLine = true;
 
@@ -99,8 +99,40 @@ public object CSVReader implements ICollection, IIterable {
         return true;
     }
 
+    private bool parseString( string content ) modify {
+        var charIt = new CharacterIterator( content );
+        bool isFirstLine = true;
+
+        string char;
+        string line;
+        while ( charIt.hasNext() ) {
+            if ( ( char = charIt.next() ) == LINEBREAK ) {
+                if ( isFirstLine ) {
+                    isFirstLine = false;
+
+                    mHeader.parse( line );
+
+                    if ( !mColumnTitles ) {
+                        mData.push_back( mHeader.produceEntry( line ) );
+                    }
+                }
+                else {
+                    mData.push_back( mHeader.produceEntry( line ) );
+                }
+
+                line = "";
+
+                continue;
+            }
+
+            line += char;
+        }
+
+        return true;
+    }
+
     private bool mColumnTitles;
-    private Vector<DataEntry> mData;
+    private Vector<Row> mData;
     private HeaderEntry mHeader;
     private string mFilename;
 }

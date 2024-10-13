@@ -1,21 +1,25 @@
 
 // library imports
-import System.Collections.Map;
+import System.Collections.Vector;
 
 // project imports
 
 
-public object DataEntry {
+public object Row {
     public void Constructor() {
-        mEntry = new Map<string, string>();
+        mEntry = new Vector<string>();
     }
 
-    public void Constructor( Map<string, string> data ) {
+    public void Constructor( Vector<string> data ) {
         mEntry = data;
     }
 
     public int size() const {
         return mEntry.size();
+    }
+
+    public string operator[]( int index ) throws {
+        return mEntry.at( index );
     }
 
     public string operator[]( string column ) throws {
@@ -25,16 +29,16 @@ public object DataEntry {
     public string =operator( string ) const {
         string result;
 
-        foreach ( Pair<string, string> column : mEntry ) {
+        foreach ( string entry : mEntry ) {
             if ( result ) {
                 result += " | ";
             }
 
-            result += column.second;
+            result += entry;
         }
 
         return result;
     }
 
-    private Map<string, string> mEntry;
+    private Vector<string> mEntry;
 }
