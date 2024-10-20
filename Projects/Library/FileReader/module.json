@@ -1,7 +1,7 @@
 {
   "name": "FileReader",
   "name_short": "FileReader",
-  "version": "1.0.0",
+  "version": "1.0.0a",
   "description": "Script which reads in a complete text file and prints its contents to stdout.",
   "dependencies": [
     { "module": "Slang", "version_min": "0.8.0" },
