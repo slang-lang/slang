@@ -5,31 +5,25 @@ import System.Collections.Vector;
 // project imports
 
 
-public object Row {
+public object Row extends Vector<string> implements IIterable {
     public void Constructor() {
-        mEntry = new Vector<string>();
+        base.Constructor();
     }
 
-    public void Constructor( Vector<string> data ) {
-        mEntry = data;
-    }
+    public int getIdx( string column ) const {
+        for ( var idx = 0; idx < size(); idx++ ) {
+            if ( at( idx ) == column ) {
+                return idx;
+            }
+        }
 
-    public int size() const {
-        return mEntry.size();
-    }
-
-    public string operator[]( int index ) throws {
-        return mEntry.at( index );
-    }
-
-    public string operator[]( string column ) throws {
-        return mEntry.get( column );
+        return -1;
     }
 
     public string =operator( string ) const {
         string result;
 
-        foreach ( string entry : mEntry ) {
+        foreach ( string entry : getIterator() ) {
             if ( result ) {
                 result += " | ";
             }
@@ -39,6 +33,4 @@ public object Row {
 
         return result;
     }
-
-    private Vector<string> mEntry;
 }

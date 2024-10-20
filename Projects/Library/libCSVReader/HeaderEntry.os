@@ -9,10 +9,19 @@ import Settings;
 
 public object HeaderEntry implements Row {
     public void Constructor() {
-        mColumns = new Vector<string>();
+        mColumns = new Row();
     }
 
-    // TODO: move parsing to CSVReader and re-use StringIterator for every line instead of creating a new instance per line
+    public int getIdx( string column ) const {
+        for ( var idx = 0; idx < mColumns.size(); idx++ ) {
+            if ( mColumns[ idx ] == column ) {
+                return idx;
+            }
+        }
+
+        return -1;
+    }
+
     public void parse( string line ) modify {
         mColumns.clear();
 
@@ -23,17 +32,17 @@ public object HeaderEntry implements Row {
     }
 
     public Row produceEntry() const {
-        var entry = new Vector<string>();
+        var row = new Row();
 
-        foreach ( string column : mColumns ) {
-            entry.push_back( column );
+        foreach ( string column : mColumns.getIterator() ) {
+            row.push_back( column );
         }
 
-        return new Row( entry );
+        return row;
     }
 
     public Row produceEntry( string line ) const {
-        var entry = new Vector<string>();
+        var row = new Row();
 
         int columnIdx;
         var columnIt = new StringIterator( line, Settings.SEPARATOR );
@@ -41,12 +50,12 @@ public object HeaderEntry implements Row {
         while ( columnIt.hasNext() ) {
             var column = mColumns.at( columnIdx );      // TODO: replace this with a simple index
 
-            entry.push_back( columnIt.next() );
+            row.push_back( columnIt.next() );
 
             columnIdx++;
         }
 
-        return new Row( entry );
+        return row;
     }
 
     public override int size() const {
@@ -60,7 +69,7 @@ public object HeaderEntry implements Row {
     public override string =operator( string ) const {
         string result;
 
-        foreach ( string column : mColumns ) {
+        foreach ( string column : mColumns.getIterator() ) {
             if ( result ) {
                 result += " | ";
             }
@@ -71,5 +80,5 @@ public object HeaderEntry implements Row {
         return result;
     }
 
-    private Vector<string> mColumns;
+    private Row mColumns;
 }

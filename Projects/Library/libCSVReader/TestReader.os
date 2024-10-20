@@ -28,4 +28,3 @@ public void Main( int argc, string args ) {
 		print( "Exception: " + e.what() );
 	}
 }
-
