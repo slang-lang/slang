@@ -15,6 +15,7 @@ public enum TokenType {
 	ELSE,
 	EOF,
 	EQUAL,
+	EXPLAIN,
 	FALSE,
 	FROM,
 	GREATER,
@@ -57,6 +58,7 @@ public string TokenToString(TokenType type) {
 		case TokenType.ELSE:			{ return "ELSE"; }
 		case TokenType.EOF:			{ return "EOF"; }
 		case TokenType.EQUAL:			{ return "="; }
+		case TokenType.EXPLAIN:			{ return "EXPLAIN"; }
 		case TokenType.FALSE:			{ return "FALSE"; }
 		case TokenType.FROM:			{ return "FROM"; }
 		case TokenType.GREATER:			{ return ">"; }

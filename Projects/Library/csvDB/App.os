@@ -20,7 +20,6 @@ public object App
             var command = cin();
 
             switch ( command ) {
-                case "explain table": { print( "explain table <table>" ); break; }
                 case "h":             { printHelp(); break; }
                 case "help":          { printHelp(); break; }
                 case "load tables":   { loadTables(); break; }
@@ -34,8 +33,6 @@ public object App
     }
 
     private void executeQuery( string query ) modify {
-        //print( "Execute query '" + query + "'" );
-
         try {
             var executor = new QueryExecutor();
             executor.exec( query );
@@ -48,10 +45,18 @@ public object App
         }
     }
 
+    private void explainTable( string table ) modify {
+        table = expandTableName( table );
+
+        var data const = TableData[ table ];
+
+        print( cast<string>( data[ 0 ] ) );
+    }
+
     private void loadTables() modify throws {
         print( "Loading tables..." );
 
-        Tables = new Vector<string>();
+        TableData = new Map<string, CSVReader>();
 
         var tableIt = new String( system( "ls *.csv" ) ).SplitBy( LINEBREAK );
         while( tableIt.hasNext() ) {
@@ -60,30 +65,39 @@ public object App
                 break;
             }
 
-            print( "Table: " + table );
-
-            Tables.push_back( table );
+            try {
+                TableData.insert( table, new CSVReader( table, true ) );
+            }
         }
+
+        showTables();
     }
 
     private void printHelp() const {
-        print( "explain table   reload all CSV tables" );
-        print( "help            this screen" );
-        print( "load tables     reload all CSV tables" );
-        print( "quit            end csvdb session" );
-        print( "show tables     display all known CSV tables" );
+        print( "explain <table>   explain given table" );
+        print( "help              this screen" );
+        print( "load tables       reload all CSV tables" );
+        print( "quit              end csvdb session" );
+        print( "select <columns> from <table> [where <condition>] [limit <limit>]            execute query" );
+        print( "show tables       display all known tables" );
     }
 
     private void showTables() const {
-        foreach ( string table : Tables ) {
-            print( table );
+        foreach ( Pair<string, CSVReader> table : TableData ) {
+            print( "Table: " + table.first );
         }
+    }
+
+    private void useFolder( string folder ) modify {
+        Folder = folder;
+
+        loadTables();
     }
 
     // consts
     private string PROMPT const = "csvdb";
 
     // members
+    private string Folder;
     private Map<string, CSVReader> TableData;
-    private Vector<string> Tables;
 }

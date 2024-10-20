@@ -18,6 +18,7 @@ public object Tokenizer {
 		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "FALSE", Position null ) );
 		RESERVED_WORDS.push_back( new Token( TokenType.BOOLEAN, "TRUE", Position null ) );
 		RESERVED_WORDS.push_back( new Token( TokenType.ELSE, "ELSE", Position null ) );
+		RESERVED_WORDS.push_back( new Token( TokenType.EXPLAIN, "EXPLAIN", Position null ) );
 		RESERVED_WORDS.push_back( new Token( TokenType.FROM, "FROM", Position null ) );
 		RESERVED_WORDS.push_back( new Token( TokenType.IF, "IF", Position null ) );
 		RESERVED_WORDS.push_back( new Token( TokenType.LIMIT, "LIMIT", Position null ) );
