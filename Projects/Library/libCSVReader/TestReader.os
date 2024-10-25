@@ -11,8 +11,8 @@ public void Main( int argc, string args ) {
 
 		var reader = new CSVReader( filename );
 
-		foreach ( DataEntry entry : reader ) {
-			print( cast<string>( entry ) );
+		foreach ( DataEntry row : reader ) {
+			print( cast<string>( row ) );
 		}
 
 		print( cast<string>( reader.header() ) );
@@ -28,4 +28,3 @@ public void Main( int argc, string args ) {
 		print( "Exception: " + e.what() );
 	}
 }
-

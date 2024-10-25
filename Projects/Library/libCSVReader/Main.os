@@ -1,10 +1,7 @@
 #!/usr/local/bin/slang
 
-// Library imports
+import libCSVReader;
 import libParam;
-import System.IO.File;
-
-// Project imports
 
 
 public void Main( int argc, string args ) {
@@ -22,7 +19,11 @@ public void Main( int argc, string args ) {
 				print( filename.Key + ":" );
 			}
 
-			readFile( filename.Key );
+			var reader = new CSVReader( filename.Key );
+
+    		foreach ( DataEntry row : reader ) {
+    			print( cast<string>( row ) );
+    		}
 		}
 	}
 	catch ( string e ) {
@@ -31,10 +32,4 @@ public void Main( int argc, string args ) {
 	catch ( IException e ) {
 		print( "Exception: " + e.what() );
 	}
-}
-
-private void readFile( string filename ) const {
-	var file = new System.IO.File( filename, System.IO.File.AccessMode.ReadOnly );
-
-	print( file.readString( file.getSize() ) );
 }
