@@ -5,7 +5,7 @@
   Password: pinga123 * 
   phone: 3256
   TablesList:
-        -EmployeeTable
-        -SoftwaresList
-        -HardwareList 
+    -EmployeeTable
+    -SoftwaresList
+    -HardwareList 
 ...
