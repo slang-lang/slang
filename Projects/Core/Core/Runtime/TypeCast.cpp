@@ -11,6 +11,7 @@
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>

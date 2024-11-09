@@ -15,7 +15,9 @@
 #include <Core/Runtime/BuildInTypes/BoolObject.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
+//#include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
@@ -794,7 +796,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			++start;
 		} break;
 		case Token::Type::CONST_INTEGER: {
-			Int32Type tmp(Utils::Tools::stringToInt(start->content()));
+			Int64Type tmp(Utils::Tools::stringToInt(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
