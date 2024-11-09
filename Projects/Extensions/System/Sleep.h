@@ -15,7 +15,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 
 // Forward declarations
@@ -32,7 +32,7 @@ class Sleep : public ExtensionMethod
 {
 public:
 	Sleep()
-	: ExtensionMethod(0, "sleep", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "sleep", Designtime::VoidType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("millis", Designtime::Int32Type::TYPENAME));
@@ -57,8 +57,8 @@ public:
 #endif
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

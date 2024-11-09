@@ -7,13 +7,13 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
-#include "BoolObject.h"
-#include "DoubleObject.h"
-#include "EnumerationObject.h"
-#include "FloatObject.h"
+#include "BoolType.h"
+#include "DoubleType.h"
+#include "EnumerationType.h"
+#include "FloatType.h"
 #include "Int16Type.h"
 #include "Int32Type.h"
-#include "StringObject.h"
+#include "StringType.h"
 
 // Namespace declarations
 
@@ -53,14 +53,14 @@ Int64Type::Int64Type( const Object& other )
 
 	const std::string& target = other.QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other.isEnumerationValue() ) {
 		mValue = static_cast<int64_t>( other.getValue().toInt() );
 	}
@@ -78,14 +78,14 @@ void Int64Type::operator_assign( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		mValue = static_cast<int64_t>( other->getValue().toInt() );
 	}
@@ -103,10 +103,10 @@ void Int64Type::operator_bitand( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -122,10 +122,10 @@ void Int64Type::operator_bitor( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -141,14 +141,14 @@ void Int64Type::operator_divide( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		mValue = static_cast<int64_t>( mValue.toInt() ) / static_cast<int64_t>( other->getValue().toInt() );
 		return;
@@ -161,14 +161,14 @@ bool Int64Type::operator_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		return static_cast<int64_t>( mValue.toInt() ) == static_cast<int64_t>( other->getValue().toInt() );
 	}
@@ -180,14 +180,14 @@ bool Int64Type::operator_greater( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		return static_cast<int64_t>( mValue.toInt() ) > static_cast<int64_t>( other->getValue().toInt() );
 	}
@@ -199,14 +199,14 @@ bool Int64Type::operator_greater_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		return static_cast<int64_t>( mValue.toInt() ) >= static_cast<int64_t>( other->getValue().toInt() );
 	}
@@ -218,14 +218,14 @@ bool Int64Type::operator_less( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		return static_cast<int64_t>( mValue.toInt() ) < static_cast<int64_t>( other->getValue().toInt() );
 	}
@@ -237,14 +237,14 @@ bool Int64Type::operator_less_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		return static_cast<int64_t>( mValue.toInt() ) <= static_cast<int64_t>( other->getValue().toInt() );
 	}
@@ -256,14 +256,14 @@ void Int64Type::operator_modulo( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		mValue = static_cast<int64_t>( mValue.toInt() ) % static_cast<int64_t>( other->getValue().toInt() );
 		return;
@@ -276,14 +276,14 @@ void Int64Type::operator_multiply( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		mValue = static_cast<int64_t>( mValue.toInt() ) * static_cast<int64_t>( other->getValue().toInt() );
 		return;
@@ -296,14 +296,14 @@ void Int64Type::operator_plus( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		mValue = static_cast<int64_t>( mValue.toInt() ) + static_cast<int64_t>( other->getValue().toInt() );
 		return;
@@ -316,14 +316,14 @@ void Int64Type::operator_subtract( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
+		 target == EnumerationType::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		mValue = static_cast<int64_t>( mValue.toInt() ) - static_cast<int64_t>( other->getValue().toInt() );
 		return;

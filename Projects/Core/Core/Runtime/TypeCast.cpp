@@ -5,15 +5,15 @@
 // Library includes
 
 // Project includes
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/EnumerationObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/EnumerationType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Utils.h>
 
@@ -35,27 +35,27 @@ void typecast(Object *base, const std::string& targetType)
 		throw Runtime::Exceptions::TypecastException("invalid cast target type");
 	}
 
-	if ( targetType == BoolObject::TYPENAME ) {
-		BoolObject tmp(*base);
+	if ( targetType == BoolType::TYPENAME ) {
+		BoolType tmp(*base);
 
 		base->assign(tmp);
 	}
-	else if ( targetType == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(*base);
+	else if ( targetType == DoubleType::TYPENAME ) {
+		DoubleType tmp(*base);
 
 		base->assign(tmp);
 	}
-	else if ( targetType == EnumerationObject::TYPENAME ) {
+	else if ( targetType == EnumerationType::TYPENAME ) {
 		assert(! "implement me");
 
 /*
-		EnumerationObject tmp(*base);
+		EnumerationType tmp(*base);
 
 		base->assign(tmp);
  */
 	}
-	else if ( targetType == FloatObject::TYPENAME ) {
-		FloatObject tmp(*base);
+	else if ( targetType == FloatType::TYPENAME ) {
+		FloatType tmp(*base);
 
 		base->assign(tmp);
 	}
@@ -69,13 +69,18 @@ void typecast(Object *base, const std::string& targetType)
 
 		base->assign(tmp);
 	}
-	else if ( targetType == StringObject::TYPENAME ) {
-		StringObject tmp(*base);
+	else if ( targetType == Int64Type::TYPENAME ) {
+		Int64Type tmp(*base);
 
 		base->assign(tmp);
 	}
-	else if ( targetType == VoidObject::TYPENAME ) {
-		VoidObject tmp(*base);
+	else if ( targetType == StringType::TYPENAME ) {
+		StringType tmp(*base);
+
+		base->assign(tmp);
+	}
+	else if ( targetType == VoidType::TYPENAME ) {
+		VoidType tmp(*base);
 
 		base->assign(tmp);
 	}

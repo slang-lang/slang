@@ -71,7 +71,7 @@ private:
 private:
 	Designtime::BluePrintObject* createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, PrototypeConstraints constraints);
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
-	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
+	Runtime::Object* createUserType(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
 
 	void initBluePrintObject(Designtime::BluePrintObject* blueprint);
 	void initTypeSystem(Designtime::BluePrintObject* blueprint);

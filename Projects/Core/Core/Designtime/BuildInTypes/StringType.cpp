@@ -1,12 +1,13 @@
 
 // Header
-#include "BoolObject.h"
+#include "StringType.h"
 
 // Library includes
 
 // Project includes
 #include <Core/Common/Method.h>
 #include <Core/Consts.h>
+
 
 // Namespace declarations
 
@@ -15,11 +16,11 @@ namespace Slang {
 namespace Designtime {
 
 
-bool BoolObject::DEFAULTVALUE = false;
-std::string BoolObject::TYPENAME = _bool;
+std::string StringType::DEFAULTVALUE = "";
+std::string StringType::TYPENAME = _string;
 
 
-BoolObject::BoolObject()
+StringType::StringType()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 	mIsAtomicType = true;
@@ -27,18 +28,18 @@ BoolObject::BoolObject()
 	initialize();
 }
 
-const std::string& BoolObject::getTypeName() const
+const std::string& StringType::getTypeName() const
 {
 	return TYPENAME;
 }
 
-void BoolObject::initialize()
+void StringType::initialize()
 {
 	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_bool))
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_string))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

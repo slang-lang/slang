@@ -13,7 +13,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
@@ -447,7 +447,7 @@ void LanguageTest::testParameters()
 
 		ParameterList params;
 		params.push_back(Parameter::CreateRuntime(Runtime::Int32Type::TYPENAME, "2"));
-		params.push_back(Parameter::CreateRuntime(Runtime::StringObject::TYPENAME, ""));
+		params.push_back(Parameter::CreateRuntime(Runtime::StringType::TYPENAME, ""));
 
 		TTHROWS(vm.runScriptFromFile("Tests/Language/ParameterTest.os", params), Common::Exceptions::ConstCorrectnessViolated);
 

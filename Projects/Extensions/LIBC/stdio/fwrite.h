@@ -6,17 +6,17 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/BoolObject.h>
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/BoolType.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -41,7 +41,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::BoolObject::TYPENAME, false));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::BoolType::TYPENAME, false));
 
 		setSignature(params);
 	}
@@ -69,8 +69,8 @@ public:
 			*result = Runtime::Int32Type((int)size);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -89,7 +89,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME, 0.0));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleType::TYPENAME, 0.0));
 
 		setSignature(params);
 	}
@@ -117,8 +117,8 @@ public:
 			*result = Runtime::Int32Type((int)size);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -137,7 +137,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME, 0.f));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatType::TYPENAME, 0.f));
 
 		setSignature(params);
 	}
@@ -165,8 +165,8 @@ public:
 			*result = Runtime::Int32Type((int)size);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -213,8 +213,8 @@ public:
 			*result = Runtime::Int32Type((int)size);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -233,7 +233,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringType::TYPENAME, VALUE_NONE));
 
 		setSignature(params);
 	}
@@ -262,8 +262,8 @@ public:
 			*result = Runtime::Int32Type(static_cast<int>(size));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

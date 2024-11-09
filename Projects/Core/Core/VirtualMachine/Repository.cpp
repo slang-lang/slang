@@ -9,24 +9,24 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Designtime/BluePrintObject.h>
-#include <Core/Designtime/BuildInTypes/BoolObject.h>
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/BoolType.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Designtime/BuildInTypes/Int16Type.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Designtime/BuildInTypes/UserObject.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
+#include <Core/Designtime/BuildInTypes/UserType.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/EnumerationObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/EnumerationType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/UserObject.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
+#include <Core/Runtime/BuildInTypes/UserType.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Utils.h>
 #include "Controller.h"
 
@@ -113,7 +113,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 
 	// workaround for complex member types whose imports have not yet been analysed
 	if ( initialize == InitilizationType::None ) {
-		return new Runtime::UserObject(name, SYSTEM_LIBRARY, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
+		return new Runtime::UserType(name, SYSTEM_LIBRARY, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
 	}
 
 	// no entry found for given type
@@ -183,14 +183,14 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	Runtime::Object *object = nullptr;
 
 	// instantiate atomic types
-	if ( blueprint->QualifiedTypename() == Runtime::BoolObject::TYPENAME ) {
-		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE);
+	if ( blueprint->QualifiedTypename() == Runtime::BoolType::TYPENAME ) {
+		object = new Runtime::BoolType(name, Runtime::BoolType::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::DoubleObject::TYPENAME ) {
-		object = new Runtime::DoubleObject(name, Runtime::DoubleObject::DEFAULTVALUE);
+	else if ( blueprint->QualifiedTypename() == Runtime::DoubleType::TYPENAME ) {
+		object = new Runtime::DoubleType(name, Runtime::DoubleType::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::FloatObject::TYPENAME ) {
-		object = new Runtime::FloatObject(name, Runtime::FloatObject::DEFAULTVALUE);
+	else if ( blueprint->QualifiedTypename() == Runtime::FloatType::TYPENAME ) {
+		object = new Runtime::FloatType(name, Runtime::FloatType::DEFAULTVALUE);
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::Int16Type::TYPENAME ) {
 		object = new Runtime::Int16Type(name, Runtime::Int16Type::DEFAULTVALUE);
@@ -198,18 +198,18 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	else if ( blueprint->QualifiedTypename() == Runtime::Int32Type::TYPENAME ) {
 		object = new Runtime::Int32Type(name, Runtime::Int32Type::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::StringObject::TYPENAME ) {
-		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE);
+	else if ( blueprint->QualifiedTypename() == Runtime::StringType::TYPENAME ) {
+		object = new Runtime::StringType(name, Runtime::StringType::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::VoidObject::TYPENAME ) {
-		object = new Runtime::VoidObject(name);
+	else if ( blueprint->QualifiedTypename() == Runtime::VoidType::TYPENAME ) {
+		object = new Runtime::VoidType(name);
 	}
 	else if ( blueprint->isEnumeration() ) {
-		object = new Runtime::EnumerationObject(name, blueprint->QualifiedTypename(), blueprint->getValue());
+		object = new Runtime::EnumerationType(name, blueprint->QualifiedTypename(), blueprint->getValue());
 	}
 	// instantiate user defined types
 	else {
-		object = createUserObject(name, blueprint, initialize);
+		object = createUserType(name, blueprint, initialize);
 	}
 
 	IScope* parent = blueprint->getEnclosingScope();
@@ -266,12 +266,12 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintObject* bluepr
 /*
  * creates and initializes a user defined object type and initializes its base classes
  */
-Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize)
+Runtime::Object* Repository::createUserType(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize)
 {
 	assert(blueprint);
 
 	// create the base object
-	auto* object = new Runtime::UserObject(name, blueprint->Filename(), Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(), blueprint->getPrototypeConstraints()));
+	auto* object = new Runtime::UserType(name, blueprint->Filename(), Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(), blueprint->getPrototypeConstraints()));
 
 	if ( initialize >= InitilizationType::AllowAbstract ) {
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
@@ -402,22 +402,22 @@ void Repository::init()
 
 	// add atomic types
 	{	// "bool" type
-		auto* obj = new Designtime::BoolObject();
+		auto* obj = new Designtime::BoolType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::BoolObject::TYPENAME, obj);
+		scope->define(Designtime::BoolType::TYPENAME, obj);
 	}
 	{	// "double" type
-		auto* obj = new Designtime::DoubleObject();
+		auto* obj = new Designtime::DoubleType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::DoubleObject::TYPENAME, obj);
+		scope->define(Designtime::DoubleType::TYPENAME, obj);
 	}
 	{	// "float" type
-		auto* obj = new Designtime::FloatObject();
+		auto* obj = new Designtime::FloatType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::FloatObject::TYPENAME, obj);
+		scope->define(Designtime::FloatType::TYPENAME, obj);
 	}
 	{	// "int16" type
 		auto* obj = new Designtime::Int16Type();
@@ -432,28 +432,28 @@ void Repository::init()
 		scope->define(Designtime::Int32Type::TYPENAME, obj);
 	}
 	{	// "string" type
-		auto* obj = new Designtime::StringObject();
+		auto* obj = new Designtime::StringType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::StringObject::TYPENAME, obj);
+		scope->define(Designtime::StringType::TYPENAME, obj);
 	}
 	{	// "void" type
-		auto* obj = new Designtime::VoidObject();
+		auto* obj = new Designtime::VoidType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::VoidObject::TYPENAME, obj);
+		scope->define(Designtime::VoidType::TYPENAME, obj);
 	}
 	{	// "Object" type
-		auto* obj = new Designtime::UserObject();
+		auto* obj = new Designtime::UserType();
 		obj->setIsReference(true);
 		addBluePrint(obj);
 
-		scope->define(Designtime::UserObject::TYPENAME, obj);
+		scope->define(Designtime::UserType::TYPENAME, obj);
 	}
 
 	// add predefined runtime objects
 	{	// null
-		auto* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
+		auto* nullObject = new Runtime::UserType(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
 		nullObject->setIsReference(true);
 		nullObject->setMemoryLayout(MemoryLayout::Static);
 		nullObject->setMutability(Mutability::Const);

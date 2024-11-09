@@ -9,9 +9,9 @@
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -35,8 +35,8 @@ public:
 	: ExtensionMethod( 0, "strcspn", Designtime::Int32Type::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back( Parameter::CreateDesigntime( "dest", Designtime::StringObject::TYPENAME ) );
-		params.push_back( Parameter::CreateDesigntime( "src", Designtime::StringObject::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "dest", Designtime::StringType::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "src", Designtime::StringType::TYPENAME ) );
 
 		setSignature( params );
 	}
@@ -54,8 +54,8 @@ public:
 			*result = Runtime::Int32Type( strcspn( param_dest.c_str(), param_src.c_str() ) );
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringObject( std::string( e.what() ) );
+			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringType( std::string( e.what() ) );
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData( data, token.position() );
 			return Runtime::ControlFlow::Throw;

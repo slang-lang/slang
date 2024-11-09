@@ -1,19 +1,19 @@
 
 // Header
-#include "BoolObject.h"
+#include "BoolType.h"
 
 // Library includes
 
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
-#include "DoubleObject.h"
-#include "EnumerationObject.h"
-#include "FloatObject.h"
+#include "DoubleType.h"
+#include "EnumerationType.h"
+#include "FloatType.h"
 #include "Int16Type.h"
 #include "Int32Type.h"
 #include "Int64Type.h"
-#include "StringObject.h"
+#include "StringType.h"
 
 // Namespace declarations
 
@@ -22,29 +22,29 @@ namespace Slang {
 namespace Runtime {
 
 
-AtomicValue BoolObject::DEFAULTVALUE = AtomicValue( false );
-std::string BoolObject::TYPENAME = _bool;
+AtomicValue BoolType::DEFAULTVALUE = AtomicValue( false );
+std::string BoolType::TYPENAME = _bool;
 
 
-BoolObject::BoolObject( bool value )
+BoolType::BoolType( bool value )
 : Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value ) )
 {
 	mIsAtomicType = true;
 }
 
-BoolObject::BoolObject( const AtomicValue& value )
+BoolType::BoolType( const AtomicValue& value )
 : Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value.toBool() ) )
 {
 	mIsAtomicType = true;
 }
 
-BoolObject::BoolObject( const std::string& name, const AtomicValue& value )
+BoolType::BoolType( const std::string& name, const AtomicValue& value )
 : Object( name, SYSTEM_LIBRARY, TYPENAME, value )
 {
 	mIsAtomicType = true;
 }
 
-BoolObject::BoolObject( const Object& other )
+BoolType::BoolType( const Object& other )
 : Object( other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE )
 {
 	// generic type cast
@@ -53,14 +53,14 @@ BoolObject::BoolObject( const Object& other )
 
 	const std::string& source = other.QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ||
-		 source == DoubleObject::TYPENAME ||
-		 source == EnumerationObject::TYPENAME ||
-		 source == FloatObject::TYPENAME ||
+	if ( source == BoolType::TYPENAME ||
+		 source == DoubleType::TYPENAME ||
+		 source == EnumerationType::TYPENAME ||
+		 source == FloatType::TYPENAME ||
 		 source == Int16Type::TYPENAME ||
 		 source == Int32Type::TYPENAME ||
 		 source == Int64Type::TYPENAME ||
-		 source == StringObject::TYPENAME ||
+		 source == StringType::TYPENAME ||
          other.isEnumerationValue() ) {
 		mValue = other.getValue().toBool();
 	}
@@ -69,23 +69,23 @@ BoolObject::BoolObject( const Object& other )
 	}
 }
 
-bool BoolObject::operator_bool() const
+bool BoolType::operator_bool() const
 {
 	return mValue.toBool();
 }
 
-void BoolObject::operator_assign( const Object* rvalue )
+void BoolType::operator_assign( const Object* rvalue )
 {
 	const std::string& source = rvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ||
-		 source == DoubleObject::TYPENAME ||
-		 source == EnumerationObject::TYPENAME ||
-		 source == FloatObject::TYPENAME ||
+	if ( source == BoolType::TYPENAME ||
+		 source == DoubleType::TYPENAME ||
+		 source == EnumerationType::TYPENAME ||
+		 source == FloatType::TYPENAME ||
 		 source == Int16Type::TYPENAME ||
 		 source == Int32Type::TYPENAME ||
 		 source == Int64Type::TYPENAME ||
-		 source == StringObject::TYPENAME ||
+		 source == StringType::TYPENAME ||
          rvalue->isEnumerationValue() ) {
 		mValue = rvalue->getValue().toBool();
 	}
@@ -94,18 +94,18 @@ void BoolObject::operator_assign( const Object* rvalue )
     }
 }
 
-bool BoolObject::operator_equal( const Object* rvalue )
+bool BoolType::operator_equal( const Object* rvalue )
 {
 	const std::string& source = rvalue->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ||
-		 source == DoubleObject::TYPENAME ||
-		 source == EnumerationObject::TYPENAME ||
-		 source == FloatObject::TYPENAME ||
+	if ( source == BoolType::TYPENAME ||
+		 source == DoubleType::TYPENAME ||
+		 source == EnumerationType::TYPENAME ||
+		 source == FloatType::TYPENAME ||
 		 source == Int16Type::TYPENAME ||
 		 source == Int32Type::TYPENAME ||
 		 source == Int64Type::TYPENAME ||
-		 source == StringObject::TYPENAME ||
+		 source == StringType::TYPENAME ||
          rvalue->isEnumerationValue() ) {
 		return mValue.toBool() == rvalue->getValue().toBool();
 	}
@@ -113,7 +113,7 @@ bool BoolObject::operator_equal( const Object* rvalue )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator==: conversion from " + rvalue->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void BoolObject::operator_unary_not()
+void BoolType::operator_unary_not()
 {
 	mValue = !mValue.toBool();
 }

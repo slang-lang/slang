@@ -8,8 +8,8 @@
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -30,11 +30,11 @@ class STRNCAT : public ExtensionMethod
 {
 public:
 	STRNCAT()
-	: ExtensionMethod( 0, "strncat", Designtime::StringObject::TYPENAME )
+	: ExtensionMethod( 0, "strncat", Designtime::StringType::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back( Parameter::CreateDesigntime( "destination", Designtime::StringObject::TYPENAME ) );
-		params.push_back( Parameter::CreateDesigntime( "source", Designtime::StringObject::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "destination", Designtime::StringType::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "source", Designtime::StringType::TYPENAME ) );
 		params.push_back( Parameter::CreateDesigntime( "num", Designtime::Int32Type::TYPENAME ) );
 
 		setSignature( params );
@@ -51,11 +51,11 @@ public:
 			auto param_source      = (*it++).value().toStdString();
             auto param_num         = (*it++).value().toInt();
 
-			*result = Runtime::StringObject( param_destination + param_source.substr( param_num ) );
+			*result = Runtime::StringType( param_destination + param_source.substr( param_num ) );
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringObject( std::string( e.what() ) );
+			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringType( std::string( e.what() ) );
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData( data, token.position() );
 			return Runtime::ControlFlow::Throw;

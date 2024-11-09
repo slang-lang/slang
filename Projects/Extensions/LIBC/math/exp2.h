@@ -7,11 +7,11 @@
 #include <math.h>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -30,10 +30,10 @@ class EXP2: public ExtensionMethod
 {
 public:
 	EXP2()
-	: ExtensionMethod(0, "exp2", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "exp2", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -48,11 +48,11 @@ public:
 
 			auto param_arg = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(exp2(param_arg));
+			*result = Runtime::DoubleType(exp2(param_arg));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -67,10 +67,10 @@ class EXP2F: public ExtensionMethod
 {
 public:
 	EXP2F()
-	: ExtensionMethod(0, "exp2f", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "exp2f", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -85,11 +85,11 @@ public:
 
 			auto param_arg = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(exp2f(param_arg));
+			*result = Runtime::FloatType(exp2f(param_arg));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

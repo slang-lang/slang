@@ -8,11 +8,11 @@
 #include <cmath>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Tools.h>
 
 // Forward declarations
@@ -30,10 +30,10 @@ class TRUNC: public ExtensionMethod
 {
 public:
 	TRUNC()
-	: ExtensionMethod(0, "trunc", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "trunc", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -49,14 +49,14 @@ public:
 			auto param_arg = (*it++).value().toDouble();
 
 #ifdef _WIN32
-			*result = Runtime::DoubleObject((param_arg > 0) ? floor(param_arg) : ceil(param_arg));
+			*result = Runtime::DoubleType((param_arg > 0) ? floor(param_arg) : ceil(param_arg));
 #else
-			*result = Runtime::DoubleObject(trunc(param_arg));
+			*result = Runtime::DoubleType(trunc(param_arg));
 #endif
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -71,10 +71,10 @@ class TRUNCF: public ExtensionMethod
 {
 public:
 	TRUNCF()
-	: ExtensionMethod(0, "truncf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "truncf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -90,14 +90,14 @@ public:
 			auto param_arg = (*it++).value().toFloat();
 
 #ifdef _WIN32
-			*result = Runtime::FloatObject((param_arg > 0) ? floorf(param_arg) : ceilf(param_arg));
+			*result = Runtime::FloatType((param_arg > 0) ? floorf(param_arg) : ceilf(param_arg));
 #else
-			*result = Runtime::FloatObject(truncf(param_arg));
+			*result = Runtime::FloatType(truncf(param_arg));
 #endif
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

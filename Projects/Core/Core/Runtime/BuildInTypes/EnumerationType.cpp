@@ -1,6 +1,6 @@
 
 // Header
-#include "EnumerationObject.h"
+#include "EnumerationType.h"
 
 // Library includes
 
@@ -15,11 +15,11 @@ namespace Slang {
 namespace Runtime {
 
 
-AtomicValue EnumerationObject::DEFAULTVALUE = AtomicValue( static_cast<int64_t>( 0 ) );
-std::string EnumerationObject::TYPENAME = _enum;
+AtomicValue EnumerationType::DEFAULTVALUE = AtomicValue( static_cast<int64_t>( 0 ) );
+std::string EnumerationType::TYPENAME = _enum;
 
 
-EnumerationObject::EnumerationObject(const std::string& name, const std::string& type, const AtomicValue& value)
+EnumerationType::EnumerationType(const std::string& name, const std::string& type, const AtomicValue& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mBluePrintType = BlueprintType::Enum;
@@ -28,17 +28,17 @@ EnumerationObject::EnumerationObject(const std::string& name, const std::string&
 	mQualifiedTypename = type;
 }
 
-const std::string& EnumerationObject::getTypeName() const
+const std::string& EnumerationType::getTypeName() const
 {
 	return TYPENAME;
 }
 
-bool EnumerationObject::isValid() const
+bool EnumerationType::isValid() const
 {
 	return true;
 }
 
-void EnumerationObject::operator_assign(const Object *other)
+void EnumerationType::operator_assign(const Object *other)
 {
 	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		mValue = other->getValue().toInt();
@@ -47,12 +47,12 @@ void EnumerationObject::operator_assign(const Object *other)
 	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
-bool EnumerationObject::operator_bool() const
+bool EnumerationType::operator_bool() const
 {
 	return mValue.toInt() != 0;
 }
 
-bool EnumerationObject::operator_equal(const Object *other)
+bool EnumerationType::operator_equal(const Object *other)
 {
 	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		return mValue.toInt() == other->getValue().toInt();
@@ -61,7 +61,7 @@ bool EnumerationObject::operator_equal(const Object *other)
 	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
-bool EnumerationObject::operator_greater(const Object *other)
+bool EnumerationType::operator_greater(const Object *other)
 {
 	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		return mValue.toInt() > other->getValue().toInt();
@@ -70,7 +70,7 @@ bool EnumerationObject::operator_greater(const Object *other)
 	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
-bool EnumerationObject::operator_greater_equal(const Object *other)
+bool EnumerationType::operator_greater_equal(const Object *other)
 {
 	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		return mValue.toInt() >= other->getValue().toInt();
@@ -79,7 +79,7 @@ bool EnumerationObject::operator_greater_equal(const Object *other)
 	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
-bool EnumerationObject::operator_less(const Object *other)
+bool EnumerationType::operator_less(const Object *other)
 {
 	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		return mValue.toInt() < other->getValue().toInt();
@@ -88,7 +88,7 @@ bool EnumerationObject::operator_less(const Object *other)
 	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
-bool EnumerationObject::operator_less_equal(const Object *other)
+bool EnumerationType::operator_less_equal(const Object *other)
 {
 	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		return mValue.toInt() <= other->getValue().toInt();

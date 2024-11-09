@@ -12,14 +12,14 @@
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 //#include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
@@ -238,19 +238,19 @@ void Interpreter::expression(Object* result, TokenIterator& start, bool complete
 		// incomplete boolean evaluation (available for && and !& and || operators)
 		if ( !completeEval ) {
 			if ( op == Token::Type::AND && !lvalue) {
-				*result = BoolObject(false);
+				*result = BoolType(false);
 				return;
 			}
 			else if ( op == Token::Type::NAND && !lvalue ) {
-				*result = BoolObject(true);
+				*result = BoolType(true);
 				return;
 			}
 			else if ( op == Token::Type::NOR && lvalue ) {
-				*result = BoolObject(false);
+				*result = BoolType(false);
 				return;
 			}
 			else if ( op == Token::Type::OR && lvalue ) {
-				*result = BoolObject(true);
+				*result = BoolType(true);
 				return;
 			}
 		}
@@ -261,16 +261,16 @@ void Interpreter::expression(Object* result, TokenIterator& start, bool complete
 		parseCondition(&rvalue, start);
 
 		if ( op == Token::Type::AND ) {
-			*result = BoolObject(lvalue && isTrue(rvalue));
+			*result = BoolType(lvalue && isTrue(rvalue));
 		}
 		else if ( op == Token::Type::NAND ) {
-			*result = BoolObject(!lvalue || !isTrue(rvalue));
+			*result = BoolType(!lvalue || !isTrue(rvalue));
 		}
 		else if ( op == Token::Type::NOR ) {
-			*result = BoolObject(!lvalue && !isTrue(rvalue));
+			*result = BoolType(!lvalue && !isTrue(rvalue));
 		}
 		else if ( op == Token::Type::OR ) {
-			*result = BoolObject(lvalue || isTrue(rvalue));
+			*result = BoolType(lvalue || isTrue(rvalue));
 		}
 	}
 }
@@ -562,22 +562,22 @@ void Interpreter::parseCondition(Object *result, TokenIterator& start)
 
 		switch ( op ) {
 			case Token::Type::COMPARE_EQUAL:
-				*result = BoolObject(operator_binary_equal(result, &rvalue));
+				*result = BoolType(operator_binary_equal(result, &rvalue));
 				break;
 			case Token::Type::COMPARE_GREATER:
-				*result = BoolObject(operator_binary_greater(result, &rvalue));
+				*result = BoolType(operator_binary_greater(result, &rvalue));
 				break;
 			case Token::Type::COMPARE_GREATER_EQUAL:
-				*result = BoolObject(operator_binary_greater_equal(result, &rvalue));
+				*result = BoolType(operator_binary_greater_equal(result, &rvalue));
 				break;
 			case Token::Type::COMPARE_LESS:
-				*result = BoolObject(operator_binary_less(result, &rvalue));
+				*result = BoolType(operator_binary_less(result, &rvalue));
 				break;
 			case Token::Type::COMPARE_LESS_EQUAL:
-				*result = BoolObject(operator_binary_less_equal(result, &rvalue));
+				*result = BoolType(operator_binary_less_equal(result, &rvalue));
 				break;
 			case Token::Type::COMPARE_UNEQUAL:
-				*result = BoolObject(!operator_binary_equal(result, &rvalue));
+				*result = BoolType(!operator_binary_equal(result, &rvalue));
 				break;
 			default:
 				break;
@@ -744,8 +744,8 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 				throw Designtime::Exceptions::SyntaxError("invalid symbol type found", start->position());
 			}
 
-			//*result = BoolObject(operator_binary_is(result, compareType));
-			*result = BoolObject(result->QualifiedTypename() == compareType);
+			//*result = BoolType(operator_binary_is(result, compareType));
+			*result = BoolType(result->QualifiedTypename() == compareType);
 		} break;
 		case Token::Type::OPERATOR_NOT: {
 			throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
@@ -781,17 +781,17 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 {
 	switch ( start->type() ) {
 		case Token::Type::CONST_BOOLEAN: {
-			BoolObject tmp(Utils::Tools::stringToBool(start->content()));
+			BoolType tmp(Utils::Tools::stringToBool(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
 		case Token::Type::CONST_DOUBLE: {
-			DoubleObject tmp(Utils::Tools::stringToDouble(start->content()));
+			DoubleType tmp(Utils::Tools::stringToDouble(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
 		case Token::Type::CONST_FLOAT: {
-			FloatObject tmp(Utils::Tools::stringToFloat(start->content()));
+			FloatType tmp(Utils::Tools::stringToFloat(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
@@ -801,7 +801,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			++start;
 		} break;
 		case Token::Type::CONST_LITERAL: {
-			StringObject tmp(start->content());
+			StringType tmp(start->content());
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
@@ -2064,10 +2064,10 @@ void Interpreter::process_typeid(TokenIterator& token, Object* result)
 
 	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::BluePrintObjectSymbol:
-			*result = StringObject(static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename());
+			*result = StringType(static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename());
 			break;
 		case Symbol::IType::ObjectSymbol:
-			*result = StringObject(static_cast<Object*>(symbol)->QualifiedTypename());
+			*result = StringType(static_cast<Object*>(symbol)->QualifiedTypename());
 			break;
 		default:
 			throw Runtime::Exceptions::InvalidSymbol("typeid(): cannot resolve symbol type", token->position());

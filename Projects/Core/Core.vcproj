@@ -307,7 +307,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\BoolType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -327,7 +327,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\BoolObject.cpp"
+				RelativePath=".\Core\BuildInTypes\BoolType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -427,7 +427,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\DoubleObject.cpp"
+				RelativePath=".\Core\BuildInTypes\DoubleType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -447,7 +447,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\DoubleType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -467,7 +467,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\EnumerationObject.cpp"
+				RelativePath=".\Core\BuildInTypes\EnumerationType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -527,7 +527,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\FloatObject.cpp"
+				RelativePath=".\Core\BuildInTypes\FloatType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -547,7 +547,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\FloatType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -923,7 +923,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\StringObject.cpp"
+				RelativePath=".\Core\BuildInTypes\StringType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -943,7 +943,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\StringType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1219,7 +1219,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\UserObject.cpp"
+				RelativePath=".\Core\BuildInTypes\UserType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1239,7 +1239,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\UserType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1299,7 +1299,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\VoidType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1319,7 +1319,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\VoidObject.cpp"
+				RelativePath=".\Core\BuildInTypes\VoidType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1373,11 +1373,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\BoolType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\BoolObject.h"
+				RelativePath=".\Core\BuildInTypes\BoolType.h"
 				>
 			</File>
 			<File
@@ -1413,15 +1413,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\DoubleType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\DoubleObject.h"
+				RelativePath=".\Core\BuildInTypes\DoubleType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\EnumerationObject.h"
+				RelativePath=".\Core\BuildInTypes\EnumerationType.h"
 				>
 			</File>
 			<File
@@ -1457,11 +1457,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\FloatObject.h"
+				RelativePath=".\Core\BuildInTypes\FloatType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\FloatType.h"
 				>
 			</File>
 			<File
@@ -1589,11 +1589,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\StringObject.h"
+				RelativePath=".\Core\BuildInTypes\StringType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\StringType.h"
 				>
 			</File>
 			<File
@@ -1669,11 +1669,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\UserObject.h"
+				RelativePath=".\Core\BuildInTypes\UserType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\UserType.h"
 				>
 			</File>
 			<File
@@ -1689,11 +1689,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\VoidObject.h"
+				RelativePath=".\Core\BuildInTypes\VoidType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\VoidType.h"
 				>
 			</File>
 		</Filter>

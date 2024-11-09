@@ -1,13 +1,12 @@
 
 // Header
-#include "StringObject.h"
+#include "EnumerationType.h"
 
 // Library includes
 
 // Project includes
 #include <Core/Common/Method.h>
 #include <Core/Consts.h>
-
 
 // Namespace declarations
 
@@ -16,11 +15,11 @@ namespace Slang {
 namespace Designtime {
 
 
-std::string StringObject::DEFAULTVALUE = "";
-std::string StringObject::TYPENAME = _string;
+int32_t EnumerationType::DEFAULTVALUE = 0;
+std::string EnumerationType::TYPENAME = _int32;
 
 
-StringObject::StringObject()
+EnumerationType::EnumerationType()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 	mIsAtomicType = true;
@@ -28,18 +27,18 @@ StringObject::StringObject()
 	initialize();
 }
 
-const std::string& StringObject::getTypeName() const
+const std::string& EnumerationType::getTypeName() const
 {
 	return TYPENAME;
 }
 
-void StringObject::initialize()
+void EnumerationType::initialize()
 {
 	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
 		params.push_back(
-			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_string))
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_int32))
 		);
 		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);

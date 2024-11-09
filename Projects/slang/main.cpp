@@ -4,7 +4,7 @@
 // Project includes
 #include <Common/StdOutLogger.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Version.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -162,7 +162,7 @@ void processParameters(int argc, const char* argv[])
 	}
 
 	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::Int32Type::TYPENAME, static_cast<int32_t>(params.size())));
-	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringObject::TYPENAME, paramStr));
+	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringType::TYPENAME, paramStr));
 }
 
 int main(int argc, const char* argv[])

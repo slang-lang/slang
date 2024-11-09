@@ -1,29 +1,29 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	BoolObject.cpp
-	DoubleObject.cpp
-	EnumerationObject.cpp
-	FloatObject.cpp
+	BoolType.cpp
+	DoubleType.cpp
+	EnumerationType.cpp
+	FloatType.cpp
 	Int16Type.cpp
 	Int32Type.cpp
 	Int64Type.cpp
-	StringObject.cpp
-	UserObject.cpp
-	VoidObject.cpp
+	StringType.cpp
+	UserType.cpp
+	VoidType.cpp
 )
 
 SET(HEADERS
-	BoolObject.h
-	DoubleObject.h
-	EnumerationObject.h
-	FloatObject.h
+	BoolType.h
+	DoubleType.h
+	EnumerationType.h
+	FloatType.h
 	Int16Type.h
 	Int32Type.h
 	Int64Type.h
-	StringObject.h
-	UserObject.h
-	VoidObject.h
+	StringType.h
+	UserType.h
+	VoidType.h
 )
 
 SET(DEPENDENCIES

@@ -166,15 +166,15 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Designtime\BuildInTypes\BoolObject.cpp">
+    <ClCompile Include="Core\Designtime\BuildInTypes\BoolType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Designtime\BuildInTypes\DoubleObject.cpp">
+    <ClCompile Include="Core\Designtime\BuildInTypes\DoubleType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Designtime\BuildInTypes\FloatObject.cpp">
+    <ClCompile Include="Core\Designtime\BuildInTypes\FloatType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -182,15 +182,15 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Designtime\BuildInTypes\StringObject.cpp">
+    <ClCompile Include="Core\Designtime\BuildInTypes\StringType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Designtime\BuildInTypes\UserObject.cpp">
+    <ClCompile Include="Core\Designtime\BuildInTypes\UserType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Designtime\BuildInTypes\VoidObject.cpp">
+    <ClCompile Include="Core\Designtime\BuildInTypes\VoidType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -213,19 +213,19 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\BoolObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\BoolType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\DoubleObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\DoubleType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\EnumerationObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\EnumerationType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\FloatObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\FloatType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -233,15 +233,15 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\StringObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\StringType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\UserObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\UserType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\VoidObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\VoidType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -347,13 +347,13 @@
     <ClInclude Include="Core\Designtime\Analyser.h" />
     <ClInclude Include="Core\Designtime\Ancestor.h" />
     <ClInclude Include="Core\Designtime\BluePrintObject.h" />
-    <ClInclude Include="Core\Designtime\BuildInTypes\BoolObject.h" />
-    <ClInclude Include="Core\Designtime\BuildInTypes\DoubleObject.h" />
-    <ClInclude Include="Core\Designtime\BuildInTypes\FloatObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\BoolType.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\DoubleType.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\FloatType.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\Int32Type.h" />
-    <ClInclude Include="Core\Designtime\BuildInTypes\StringObject.h" />
-    <ClInclude Include="Core\Designtime\BuildInTypes\UserObject.h" />
-    <ClInclude Include="Core\Designtime\BuildInTypes\VoidObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\StringType.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\UserType.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\VoidType.h" />
     <ClInclude Include="Core\Designtime\Exceptions.h" />
     <ClInclude Include="Core\Designtime\Parser\Parser.h" />
     <ClInclude Include="Core\Designtime\Parser\Token.h" />
@@ -371,14 +371,14 @@
     <ClInclude Include="Core\Slang.h" />
     <ClInclude Include="Core\Parameter.h" />
     <ClInclude Include="Core\Runtime\AtomicValue.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\BoolObject.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\DoubleObject.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\EnumerationObject.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\FloatObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\BoolType.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\DoubleType.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\EnumerationType.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\FloatType.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\Int32Type.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\StringObject.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\UserObject.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\VoidObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\StringType.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\UserType.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\VoidType.h" />
     <ClInclude Include="Core\Runtime\ControlFlow.h" />
     <ClInclude Include="Core\Runtime\ExceptionData.h" />
     <ClInclude Include="Core\Runtime\Exceptions.h" />
