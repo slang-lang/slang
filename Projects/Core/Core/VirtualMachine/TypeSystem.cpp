@@ -8,7 +8,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/BoolType.h>
 #include <Core/Designtime/BuildInTypes/DoubleType.h>
-#include <Core/Designtime/BuildInTypes/EnumerationObject.h>
+#include <Core/Designtime/BuildInTypes/EnumerationType.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/Int16Type.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
@@ -141,7 +141,7 @@ void TypeSystem::initBool()
 	// typecast
 	define(BoolType::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,   BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME, DoubleType::TYPENAME);
-	//define(BoolType::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
+	//define(BoolType::TYPENAME, Token::Type::TYPECAST, EnumerationType::TYPENAME, EnumerationType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,  FloatObject::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,    Int16Type::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::TYPECAST, Int32Type::TYPENAME,    Int32Type::TYPENAME);
@@ -232,7 +232,7 @@ void TypeSystem::initDouble()
 	// typecast
 	define(DoubleType::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,    BoolType::TYPENAME);
 	define(DoubleType::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,  DoubleType::TYPENAME);
-	//define(DoubleType::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
+	//define(DoubleType::TYPENAME, Token::Type::TYPECAST, EnumerationType::TYPENAME, EnumerationType::TYPENAME);
 	define(DoubleType::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(DoubleType::TYPENAME, Token::Type::TYPECAST, Int32Type::TYPENAME,     Int32Type::TYPENAME);
 	define(DoubleType::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME,  StringObject::TYPENAME);
@@ -245,7 +245,7 @@ void TypeSystem::initDouble()
 void TypeSystem::initEnumeration()
 {
     // assign
-    define(EnumerationObject::TYPENAME, Token::Type::ASSIGN, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
+    define(EnumerationType::TYPENAME, Token::Type::ASSIGN, EnumerationType::TYPENAME, EnumerationType::TYPENAME);
 
     // bit
 	// no bitwise operators available
@@ -254,13 +254,13 @@ void TypeSystem::initEnumeration()
     // no shift operators available
 
 	// typecast
-	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,        BoolType::TYPENAME);
-	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,      DoubleType::TYPENAME);
-	//define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
-	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,       FloatObject::TYPENAME);
-	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,         Int16Type::TYPENAME);
-	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, Int32Type::TYPENAME,         Int32Type::TYPENAME);
-	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME,      StringObject::TYPENAME);
+	define(EnumerationType::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,        BoolType::TYPENAME);
+	define(EnumerationType::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,      DoubleType::TYPENAME);
+	//define(EnumerationType::TYPENAME, Token::Type::TYPECAST, EnumerationType::TYPENAME, EnumerationType::TYPENAME);
+	define(EnumerationType::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,       FloatObject::TYPENAME);
+	define(EnumerationType::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,         Int16Type::TYPENAME);
+	define(EnumerationType::TYPENAME, Token::Type::TYPECAST, Int32Type::TYPENAME,         Int32Type::TYPENAME);
+	define(EnumerationType::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME,      StringObject::TYPENAME);
 
 	// unary
 	// no unary operators available
@@ -354,7 +354,7 @@ void TypeSystem::initFloat()
 	// typecast
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,    BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,  DoubleType::TYPENAME);
-	//define(FloatObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
+	//define(FloatObject::TYPENAME, Token::Type::TYPECAST, EnumerationType::TYPENAME, EnumerationType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,     Int16Type::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, Int32Type::TYPENAME,     Int32Type::TYPENAME);
@@ -437,7 +437,7 @@ void TypeSystem::initInt16()
 	// typecast
 	define(Int16Type::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,        BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,      DoubleType::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::TYPECAST, EnumerationType::TYPENAME, EnumerationType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,       FloatObject::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,         Int16Type::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::TYPECAST, Int32Type::TYPENAME,         Int32Type::TYPENAME);
@@ -540,7 +540,7 @@ void TypeSystem::initInt32()
 	// typecast
 	define(Int32Type::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,        BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,      DoubleType::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::TYPECAST, EnumerationType::TYPENAME, EnumerationType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,       FloatObject::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,         Int16Type::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::TYPECAST, Int32Type::TYPENAME,         Int32Type::TYPENAME);
@@ -642,7 +642,7 @@ void TypeSystem::initString()
 	// typecast
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,    BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,  DoubleType::TYPENAME);
-	//define(StringObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
+	//define(StringObject::TYPENAME, Token::Type::TYPECAST, EnumerationType::TYPENAME, EnumerationType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,     Int16Type::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, Int32Type::TYPENAME,     Int32Type::TYPENAME);

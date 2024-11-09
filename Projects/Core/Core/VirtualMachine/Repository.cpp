@@ -20,7 +20,7 @@
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/EnumerationObject.h>
+#include <Core/Runtime/BuildInTypes/EnumerationType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
@@ -205,7 +205,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		object = new Runtime::VoidObject(name);
 	}
 	else if ( blueprint->isEnumeration() ) {
-		object = new Runtime::EnumerationObject(name, blueprint->QualifiedTypename(), blueprint->getValue());
+		object = new Runtime::EnumerationType(name, blueprint->QualifiedTypename(), blueprint->getValue());
 	}
 	// instantiate user defined types
 	else {

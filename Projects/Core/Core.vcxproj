@@ -221,7 +221,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\EnumerationObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\EnumerationType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -373,7 +373,7 @@
     <ClInclude Include="Core\Runtime\AtomicValue.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\BoolType.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\DoubleType.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\EnumerationObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\EnumerationType.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\FloatObject.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\Int32Type.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\StringObject.h" />

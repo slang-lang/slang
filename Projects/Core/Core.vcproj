@@ -467,7 +467,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\EnumerationObject.cpp"
+				RelativePath=".\Core\BuildInTypes\EnumerationType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1421,7 +1421,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\EnumerationObject.h"
+				RelativePath=".\Core\BuildInTypes\EnumerationType.h"
 				>
 			</File>
 			<File

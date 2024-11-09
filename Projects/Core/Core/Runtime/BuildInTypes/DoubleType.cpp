@@ -8,7 +8,7 @@
 #include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
 #include "BoolType.h"
-#include "EnumerationObject.h"
+#include "EnumerationType.h"
 #include "FloatObject.h"
 #include "Int16Type.h"
 #include "Int32Type.h"
@@ -55,7 +55,7 @@ DoubleType::DoubleType( const Object& other )
 
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+         target == EnumerationType::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
@@ -75,7 +75,7 @@ void DoubleType::operator_assign( const Object* other )
 
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+         target == EnumerationType::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
@@ -99,7 +99,7 @@ void DoubleType::operator_divide( const Object* other )
 
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+         target == EnumerationType::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
@@ -118,7 +118,7 @@ bool DoubleType::operator_equal( const Object* other )
 
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+         target == EnumerationType::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
@@ -136,7 +136,7 @@ bool DoubleType::operator_greater( const Object* other )
 
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+         target == EnumerationType::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
@@ -154,7 +154,7 @@ bool DoubleType::operator_greater_equal( const Object* other )
 
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+         target == EnumerationType::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
@@ -172,7 +172,7 @@ bool DoubleType::operator_less( const Object* other )
 
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+         target == EnumerationType::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
@@ -190,7 +190,7 @@ bool DoubleType::operator_less_equal( const Object* other )
 
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+         target == EnumerationType::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
@@ -208,7 +208,7 @@ void DoubleType::operator_multiply( const Object* other )
 
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+         target == EnumerationType::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
@@ -227,7 +227,7 @@ void DoubleType::operator_plus( const Object* other )
 
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+         target == EnumerationType::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
@@ -246,7 +246,7 @@ void DoubleType::operator_subtract( const Object* other )
 
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
-         target == EnumerationObject::TYPENAME ||
+         target == EnumerationType::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||

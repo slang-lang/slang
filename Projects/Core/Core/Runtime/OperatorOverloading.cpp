@@ -8,7 +8,7 @@
 #include <Core/Common/Method.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/EnumerationObject.h>
+#include <Core/Runtime/BuildInTypes/EnumerationType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>

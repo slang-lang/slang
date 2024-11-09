@@ -7,7 +7,7 @@
 // Project includes
 #include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/EnumerationObject.h>
+#include <Core/Runtime/BuildInTypes/EnumerationType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
@@ -45,11 +45,11 @@ void typecast(Object *base, const std::string& targetType)
 
 		base->assign(tmp);
 	}
-	else if ( targetType == EnumerationObject::TYPENAME ) {
+	else if ( targetType == EnumerationType::TYPENAME ) {
 		assert(! "implement me");
 
 /*
-		EnumerationObject tmp(*base);
+		EnumerationType tmp(*base);
 
 		base->assign(tmp);
  */

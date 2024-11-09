@@ -1,6 +1,6 @@
 
 // Header
-#include "EnumerationObject.h"
+#include "EnumerationType.h"
 
 // Library includes
 
@@ -15,11 +15,11 @@ namespace Slang {
 namespace Designtime {
 
 
-int32_t EnumerationObject::DEFAULTVALUE = 0;
-std::string EnumerationObject::TYPENAME = _int32;
+int32_t EnumerationType::DEFAULTVALUE = 0;
+std::string EnumerationType::TYPENAME = _int32;
 
 
-EnumerationObject::EnumerationObject()
+EnumerationType::EnumerationType()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 	mIsAtomicType = true;
@@ -27,12 +27,12 @@ EnumerationObject::EnumerationObject()
 	initialize();
 }
 
-const std::string& EnumerationObject::getTypeName() const
+const std::string& EnumerationType::getTypeName() const
 {
 	return TYPENAME;
 }
 
-void EnumerationObject::initialize()
+void EnumerationType::initialize()
 {
 	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
