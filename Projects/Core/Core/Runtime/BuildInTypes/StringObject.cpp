@@ -13,6 +13,7 @@
 #include "FloatObject.h"
 #include "Int16Type.h"
 #include "Int32Type.h"
+#include "Int64Type.h"
 #include "UserObject.h"
 #include "VoidObject.h"
 
@@ -60,6 +61,7 @@ StringObject::StringObject( const Object& other )
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
+         target == Int64Type::TYPENAME ||
          target == StringObject::TYPENAME ||
          other.isEnumerationValue() ) {
 		mValue = other.getValue().toStdString();
@@ -79,6 +81,7 @@ void StringObject::operator_assign( const Object* other )
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
+         target == Int64Type::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = other->getValue().toStdString();
@@ -103,6 +106,7 @@ bool StringObject::operator_equal( const Object* other )
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
+         target == Int64Type::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toStdString() == other->getValue().toStdString();
@@ -121,6 +125,7 @@ bool StringObject::operator_greater( const Object* other )
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
+         target == Int64Type::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toStdString() > other->getValue().toStdString();
@@ -139,6 +144,7 @@ bool StringObject::operator_greater_equal( const Object* other )
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
+         target == Int64Type::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toStdString() >= other->getValue().toStdString();
@@ -157,6 +163,7 @@ bool StringObject::operator_less( const Object* other )
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
+         target == Int64Type::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toStdString() < other->getValue().toStdString();
@@ -175,6 +182,7 @@ bool StringObject::operator_less_equal( const Object* other )
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
+         target == Int64Type::TYPENAME ||
          target == StringObject::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toStdString() <= other->getValue().toStdString();
@@ -193,6 +201,7 @@ void StringObject::operator_plus( const Object* other )
 		 target == FloatObject::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
+		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		mValue = mValue.toStdString() + other->getValue().toStdString();
@@ -212,6 +221,7 @@ void StringObject::operator_shift_left( const Object* other )
 		 target == FloatObject::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
+		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		mValue = mValue.toStdString() + other->getValue().toStdString();

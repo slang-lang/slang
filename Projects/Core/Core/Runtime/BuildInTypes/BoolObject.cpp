@@ -10,7 +10,9 @@
 #include "DoubleObject.h"
 #include "EnumerationObject.h"
 #include "FloatObject.h"
+#include "Int16Type.h"
 #include "Int32Type.h"
+#include "Int64Type.h"
 #include "StringObject.h"
 
 // Namespace declarations
@@ -49,14 +51,16 @@ BoolObject::BoolObject( const Object& other )
 
 	mIsAtomicType = true;
 
-	const std::string& target = other.QualifiedTypename();
+	const std::string& source = other.QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == EnumerationObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == Int32Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+	if ( source == BoolObject::TYPENAME ||
+		 source == DoubleObject::TYPENAME ||
+		 source == EnumerationObject::TYPENAME ||
+		 source == FloatObject::TYPENAME ||
+		 source == Int16Type::TYPENAME ||
+		 source == Int32Type::TYPENAME ||
+		 source == Int64Type::TYPENAME ||
+		 source == StringObject::TYPENAME ||
          other.isEnumerationValue() ) {
 		mValue = other.getValue().toBool();
 	}
@@ -78,11 +82,12 @@ void BoolObject::operator_assign( const Object* rvalue )
 		 source == DoubleObject::TYPENAME ||
 		 source == EnumerationObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
+		 source == Int16Type::TYPENAME ||
 		 source == Int32Type::TYPENAME ||
+		 source == Int64Type::TYPENAME ||
 		 source == StringObject::TYPENAME ||
          rvalue->isEnumerationValue() ) {
 		mValue = rvalue->getValue().toBool();
-		return;
 	}
     else {
         mValue = rvalue->isValid();
@@ -97,7 +102,9 @@ bool BoolObject::operator_equal( const Object* rvalue )
 		 source == DoubleObject::TYPENAME ||
 		 source == EnumerationObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
+		 source == Int16Type::TYPENAME ||
 		 source == Int32Type::TYPENAME ||
+		 source == Int64Type::TYPENAME ||
 		 source == StringObject::TYPENAME ||
          rvalue->isEnumerationValue() ) {
 		return mValue.toBool() == rvalue->getValue().toBool();
