@@ -3,6 +3,7 @@
 #include "Tokenizer.h"
 
 // Library includes
+#include <algorithm>
 #include <vector>
 #include <utility>
 
