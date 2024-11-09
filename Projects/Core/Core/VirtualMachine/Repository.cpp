@@ -15,7 +15,7 @@
 #include <Core/Designtime/BuildInTypes/Int16Type.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
-#include <Core/Designtime/BuildInTypes/UserObject.h>
+#include <Core/Designtime/BuildInTypes/UserType.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
@@ -25,7 +25,7 @@
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/BuildInTypes/UserObject.h>
+#include <Core/Runtime/BuildInTypes/UserType.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Utils.h>
 #include "Controller.h"
@@ -113,7 +113,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 
 	// workaround for complex member types whose imports have not yet been analysed
 	if ( initialize == InitilizationType::None ) {
-		return new Runtime::UserObject(name, SYSTEM_LIBRARY, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
+		return new Runtime::UserType(name, SYSTEM_LIBRARY, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
 	}
 
 	// no entry found for given type
@@ -209,7 +209,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	}
 	// instantiate user defined types
 	else {
-		object = createUserObject(name, blueprint, initialize);
+		object = createUserType(name, blueprint, initialize);
 	}
 
 	IScope* parent = blueprint->getEnclosingScope();
@@ -266,12 +266,12 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintObject* bluepr
 /*
  * creates and initializes a user defined object type and initializes its base classes
  */
-Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize)
+Runtime::Object* Repository::createUserType(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize)
 {
 	assert(blueprint);
 
 	// create the base object
-	auto* object = new Runtime::UserObject(name, blueprint->Filename(), Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(), blueprint->getPrototypeConstraints()));
+	auto* object = new Runtime::UserType(name, blueprint->Filename(), Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(), blueprint->getPrototypeConstraints()));
 
 	if ( initialize >= InitilizationType::AllowAbstract ) {
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
@@ -444,16 +444,16 @@ void Repository::init()
 		scope->define(Designtime::VoidObject::TYPENAME, obj);
 	}
 	{	// "Object" type
-		auto* obj = new Designtime::UserObject();
+		auto* obj = new Designtime::UserType();
 		obj->setIsReference(true);
 		addBluePrint(obj);
 
-		scope->define(Designtime::UserObject::TYPENAME, obj);
+		scope->define(Designtime::UserType::TYPENAME, obj);
 	}
 
 	// add predefined runtime objects
 	{	// null
-		auto* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
+		auto* nullObject = new Runtime::UserType(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
 		nullObject->setIsReference(true);
 		nullObject->setMemoryLayout(MemoryLayout::Static);
 		nullObject->setMutability(Mutability::Const);

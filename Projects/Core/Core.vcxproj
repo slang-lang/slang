@@ -186,7 +186,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Designtime\BuildInTypes\UserObject.cpp">
+    <ClCompile Include="Core\Designtime\BuildInTypes\UserType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -237,7 +237,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\UserObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\UserType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -352,7 +352,7 @@
     <ClInclude Include="Core\Designtime\BuildInTypes\FloatType.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\Int32Type.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\StringType.h" />
-    <ClInclude Include="Core\Designtime\BuildInTypes\UserObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\UserType.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\VoidObject.h" />
     <ClInclude Include="Core\Designtime\Exceptions.h" />
     <ClInclude Include="Core\Designtime\Parser\Parser.h" />
@@ -377,7 +377,7 @@
     <ClInclude Include="Core\Runtime\BuildInTypes\FloatType.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\Int32Type.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\StringType.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\UserObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\UserType.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\VoidObject.h" />
     <ClInclude Include="Core\Runtime\ControlFlow.h" />
     <ClInclude Include="Core\Runtime\ExceptionData.h" />

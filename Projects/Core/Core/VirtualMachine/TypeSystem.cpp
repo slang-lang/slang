@@ -13,7 +13,7 @@
 #include <Core/Designtime/BuildInTypes/Int16Type.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
-#include <Core/Designtime/BuildInTypes/UserObject.h>
+#include <Core/Designtime/BuildInTypes/UserType.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 
 // Namespace declarations
@@ -557,20 +557,20 @@ void TypeSystem::initObject()
 	// no arithmetic operator available
 
 	// assign
-	define(UserObject::TYPENAME, Token::Type::ASSIGN, UserObject::TYPENAME, UserObject::TYPENAME);
+	define(UserType::TYPENAME, Token::Type::ASSIGN, UserType::TYPENAME, UserType::TYPENAME);
 
 	// bit
 	// no bitwise operators available
 
 	// comparison
-	define(UserObject::TYPENAME, Token::Type::COMPARE_EQUAL,   UserObject::TYPENAME, UserObject::TYPENAME);
-	define(UserObject::TYPENAME, Token::Type::COMPARE_UNEQUAL, UserObject::TYPENAME, UserObject::TYPENAME);
+	define(UserType::TYPENAME, Token::Type::COMPARE_EQUAL,   UserType::TYPENAME, UserType::TYPENAME);
+	define(UserType::TYPENAME, Token::Type::COMPARE_UNEQUAL, UserType::TYPENAME, UserType::TYPENAME);
 
 	// shift
 	// no shift operator available
 
 	// typecast
-	define(UserObject::TYPENAME, Token::Type::TYPECAST, UserObject::TYPENAME, UserObject::TYPENAME);
+	define(UserType::TYPENAME, Token::Type::TYPECAST, UserType::TYPENAME, UserType::TYPENAME);
 
 	// unary operations
 	// no unary operator available

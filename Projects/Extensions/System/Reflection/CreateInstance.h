@@ -9,10 +9,10 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
-#include <Core/Designtime/BuildInTypes/UserObject.h>
+#include <Core/Designtime/BuildInTypes/UserType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/BuildInTypes/UserObject.h>
+#include <Core/Runtime/BuildInTypes/UserType.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -31,7 +31,7 @@ class CreateInstance : public ExtensionMethod
 {
 public:
 	CreateInstance()
-	: ExtensionMethod(0, "createInstance", Designtime::UserObject::TYPENAME)
+	: ExtensionMethod(0, "createInstance", Designtime::UserType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("type", Designtime::StringType::TYPENAME));

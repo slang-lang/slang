@@ -1219,7 +1219,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\UserObject.cpp"
+				RelativePath=".\Core\BuildInTypes\UserType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1239,7 +1239,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\UserType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1669,11 +1669,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\UserObject.h"
+				RelativePath=".\Core\BuildInTypes\UserType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\UserType.h"
 				>
 			</File>
 			<File
