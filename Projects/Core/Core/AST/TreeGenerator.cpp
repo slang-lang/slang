@@ -8,7 +8,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/OperatorOverloading.h>
@@ -96,7 +96,7 @@ void TreeGenerator::finalize()
 	}
 
 	// verify return statement existence
-	if ( mMethod->QualifiedTypename() != Designtime::VoidObject::TYPENAME
+	if ( mMethod->QualifiedTypename() != Designtime::VoidType::TYPENAME
 		 && (mControlFlow != Runtime::ControlFlow::Return && mControlFlow != Runtime::ControlFlow::Throw) ) {
 		Token last;
 		if ( !mMethod->getTokens().empty() ) {
@@ -1645,7 +1645,7 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 	mControlFlow = Runtime::ControlFlow::Return;
 
 	Node* exp = nullptr;
-	std::string returnType = Designtime::VoidObject::TYPENAME;
+	std::string returnType = Designtime::VoidType::TYPENAME;
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		exp = expression(token);

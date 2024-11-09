@@ -8,7 +8,7 @@
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include "Defines.h"
@@ -28,7 +28,7 @@ class SRAND: public ExtensionMethod
 {
 public:
     SRAND()
-    : ExtensionMethod(0, "srand", Designtime::VoidObject::TYPENAME)
+    : ExtensionMethod(0, "srand", Designtime::VoidType::TYPENAME)
     {
         ParameterList params;
         params.push_back(Parameter::CreateDesigntime("seed", Designtime::Int32Type::TYPENAME));

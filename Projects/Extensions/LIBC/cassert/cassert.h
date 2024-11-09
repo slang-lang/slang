@@ -8,7 +8,7 @@
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/StringType.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -29,7 +29,7 @@ class CASSERT : public ExtensionMethod
 {
 public:
     CASSERT()
-    : ExtensionMethod(0, "assert", Designtime::VoidObject::TYPENAME)
+    : ExtensionMethod(0, "assert", Designtime::VoidType::TYPENAME)
     {
         ParameterList params;
         params.push_back(Parameter::CreateDesigntime("condition", Common::TypeDeclaration(_any)));

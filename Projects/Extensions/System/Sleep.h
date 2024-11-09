@@ -32,7 +32,7 @@ class Sleep : public ExtensionMethod
 {
 public:
 	Sleep()
-	: ExtensionMethod(0, "sleep", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "sleep", Designtime::VoidType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("millis", Designtime::Int32Type::TYPENAME));

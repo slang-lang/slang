@@ -13,7 +13,7 @@
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 
 // Namespace declaration
 
@@ -48,7 +48,7 @@ StringSet provideAtomicTypes()
 	types.insert(Runtime::Int32Type::TYPENAME);
 	types.insert(Runtime::Int64Type::TYPENAME);
 	types.insert(Runtime::StringType::TYPENAME);
-	types.insert(Runtime::VoidObject::TYPENAME);
+	types.insert(Runtime::VoidType::TYPENAME);
 
 	return types;
 }

@@ -8,7 +8,7 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 
@@ -26,7 +26,7 @@ class Write : public ExtensionMethod
 {
 public:
 	Write()
-	: ExtensionMethod(0, "write", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "write", Designtime::VoidType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("text", Designtime::StringType::TYPENAME));

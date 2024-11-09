@@ -1299,7 +1299,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\VoidType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1319,7 +1319,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\VoidObject.cpp"
+				RelativePath=".\Core\BuildInTypes\VoidType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1689,11 +1689,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\VoidObject.h"
+				RelativePath=".\Core\BuildInTypes\VoidType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\VoidType.h"
 				>
 			</File>
 		</Filter>

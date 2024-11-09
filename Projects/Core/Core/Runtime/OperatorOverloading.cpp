@@ -14,7 +14,7 @@
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/BuildInTypes/UserType.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/Tools.h>
@@ -58,8 +58,8 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 	else if ( target == StringType::TYPENAME ) {
 		lvalue->assign( StringType( rvalue->getValue().toStdString() ) );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 
 		lvalue->assign( tmp );
 	}
@@ -132,8 +132,8 @@ void operator_binary_bitand( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
@@ -182,8 +182,8 @@ void operator_binary_bitcomplement( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
@@ -232,8 +232,8 @@ void operator_binary_bitor( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
@@ -282,8 +282,8 @@ void operator_binary_divide( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
@@ -320,8 +320,8 @@ bool operator_binary_equal( Object* lvalue, Object* rvalue )
 	else if ( target == StringType::TYPENAME ) {
 		return StringType( lvalue->getValue().toStdString() ).operator_equal( rvalue );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		return tmp.operator_equal( rvalue );
 	}
 	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
@@ -369,8 +369,8 @@ bool operator_binary_greater( Object* lvalue, Object* rvalue )
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		return tmp.operator_greater( rvalue );
 	}
 	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
@@ -413,8 +413,8 @@ bool operator_binary_greater_equal( Object* lvalue, Object* rvalue )
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		return tmp.operator_greater_equal( rvalue );
 	}
 	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
@@ -457,8 +457,8 @@ bool operator_binary_less( Object* lvalue, Object* rvalue )
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		return tmp.operator_less( rvalue );
 	}
 	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
@@ -501,8 +501,8 @@ bool operator_binary_less_equal( Object* lvalue, Object* rvalue )
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		return tmp.operator_less_equal( rvalue );
 	}
 	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
@@ -555,8 +555,8 @@ void operator_binary_modulo( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
@@ -605,8 +605,8 @@ void operator_binary_multiply( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if (target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if (target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
@@ -655,8 +655,8 @@ void operator_binary_plus( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
@@ -705,8 +705,8 @@ void operator_binary_shift_left( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_shift_left( rvalue );
 
 		lvalue->assign( tmp );
@@ -755,8 +755,8 @@ void operator_binary_shift_right( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_shift_right( rvalue );
 
 		lvalue->assign( tmp );
@@ -805,8 +805,8 @@ void operator_binary_subtract( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
@@ -855,8 +855,8 @@ void operator_unary_decrement (Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
@@ -905,8 +905,8 @@ void operator_unary_increment( Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
@@ -955,8 +955,8 @@ void operator_unary_minus( Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
@@ -1005,8 +1005,8 @@ void operator_unary_plus( Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
@@ -1050,8 +1050,8 @@ void operator_unary_not( Object* base )
 
 		*base = BoolType( !tmp.operator_bool() );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( source == VoidType::TYPENAME ) {
+		VoidType tmp;
 
 		*base = BoolType( !tmp.operator_bool() );
 	}

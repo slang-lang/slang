@@ -15,7 +15,7 @@
 #include "Int32Type.h"
 #include "Int64Type.h"
 #include "UserType.h"
-#include "VoidObject.h"
+#include "VoidType.h"
 
 // Namespace declarations
 

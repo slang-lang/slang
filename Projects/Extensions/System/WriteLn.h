@@ -8,7 +8,7 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 
@@ -26,7 +26,7 @@ class WriteLn : public ExtensionMethod
 {
 public:
 	WriteLn()
-	: ExtensionMethod(0, "writeln", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "writeln", Designtime::VoidType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("text", Designtime::StringType::TYPENAME, Runtime::AtomicValue(std::string(VALUE_NONE)), true));

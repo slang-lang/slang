@@ -14,7 +14,7 @@
 #endif
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
@@ -38,7 +38,7 @@ class TMPFILE : public ExtensionMethod
 {
 public:
 	TMPFILE()
-	: ExtensionMethod(0, "tmpfile", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "tmpfile", Designtime::VoidType::TYPENAME)
 	{
 		ParameterList params;
 

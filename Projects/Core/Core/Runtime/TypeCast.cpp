@@ -13,7 +13,7 @@
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Utils.h>
 
@@ -74,8 +74,8 @@ void typecast(Object *base, const std::string& targetType)
 
 		base->assign(tmp);
 	}
-	else if ( targetType == VoidObject::TYPENAME ) {
-		VoidObject tmp(*base);
+	else if ( targetType == VoidType::TYPENAME ) {
+		VoidType tmp(*base);
 
 		base->assign(tmp);
 	}

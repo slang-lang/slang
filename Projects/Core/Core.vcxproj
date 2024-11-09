@@ -190,7 +190,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Designtime\BuildInTypes\VoidObject.cpp">
+    <ClCompile Include="Core\Designtime\BuildInTypes\VoidType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -241,7 +241,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\VoidObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\VoidType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -353,7 +353,7 @@
     <ClInclude Include="Core\Designtime\BuildInTypes\Int32Type.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\StringType.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\UserType.h" />
-    <ClInclude Include="Core\Designtime\BuildInTypes\VoidObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\VoidType.h" />
     <ClInclude Include="Core\Designtime\Exceptions.h" />
     <ClInclude Include="Core\Designtime\Parser\Parser.h" />
     <ClInclude Include="Core\Designtime\Parser\Token.h" />
@@ -378,7 +378,7 @@
     <ClInclude Include="Core\Runtime\BuildInTypes\Int32Type.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\StringType.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\UserType.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\VoidObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\VoidType.h" />
     <ClInclude Include="Core\Runtime\ControlFlow.h" />
     <ClInclude Include="Core\Runtime\ExceptionData.h" />
     <ClInclude Include="Core\Runtime\Exceptions.h" />

@@ -16,7 +16,7 @@
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Designtime/BuildInTypes/UserType.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
@@ -26,7 +26,7 @@
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/BuildInTypes/UserType.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Utils.h>
 #include "Controller.h"
 
@@ -201,8 +201,8 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	else if ( blueprint->QualifiedTypename() == Runtime::StringType::TYPENAME ) {
 		object = new Runtime::StringType(name, Runtime::StringType::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::VoidObject::TYPENAME ) {
-		object = new Runtime::VoidObject(name);
+	else if ( blueprint->QualifiedTypename() == Runtime::VoidType::TYPENAME ) {
+		object = new Runtime::VoidType(name);
 	}
 	else if ( blueprint->isEnumeration() ) {
 		object = new Runtime::EnumerationType(name, blueprint->QualifiedTypename(), blueprint->getValue());
@@ -438,10 +438,10 @@ void Repository::init()
 		scope->define(Designtime::StringType::TYPENAME, obj);
 	}
 	{	// "void" type
-		auto* obj = new Designtime::VoidObject();
+		auto* obj = new Designtime::VoidType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::VoidObject::TYPENAME, obj);
+		scope->define(Designtime::VoidType::TYPENAME, obj);
 	}
 	{	// "Object" type
 		auto* obj = new Designtime::UserType();

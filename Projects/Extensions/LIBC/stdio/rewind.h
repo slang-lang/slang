@@ -15,7 +15,7 @@
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
@@ -38,7 +38,7 @@ class REWIND : public ExtensionMethod
 {
 public:
 	REWIND()
-	: ExtensionMethod( 0, "rewind", Designtime::VoidObject::TYPENAME )
+	: ExtensionMethod( 0, "rewind", Designtime::VoidType::TYPENAME )
 	{
 		ParameterList params;
 		params.push_back( Parameter::CreateDesigntime( "stream", Designtime::Int32Type::TYPENAME ) );

@@ -37,7 +37,7 @@ class PERROR : public ExtensionMethod
 {
 public:
 	PERROR()
-	: ExtensionMethod(0, "perror", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "perror", Designtime::VoidType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("s", Designtime::StringType::TYPENAME));
