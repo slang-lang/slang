@@ -7,7 +7,7 @@
 #include <cassert>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
@@ -35,7 +35,7 @@ public:
 		ParameterList params;
 		params.push_back( Parameter::CreateDesigntime( "destination", Designtime::StringObject::TYPENAME ) );
 		params.push_back( Parameter::CreateDesigntime( "source", Designtime::StringObject::TYPENAME ) );
-		params.push_back( Parameter::CreateDesigntime( "num", Designtime::IntegerObject::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "num", Designtime::Int32Type::TYPENAME ) );
 
 		setSignature( params );
 	}

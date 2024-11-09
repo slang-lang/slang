@@ -29,11 +29,11 @@ class Listen : public ExtensionMethod
 {
 public:
 	Listen()
-	: ExtensionMethod(0, "listen", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "listen", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("backlog_queue_size", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::Int32Type::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("backlog_queue_size", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -50,7 +50,7 @@ public:
 
 			int handle = listen(param_sockfd, param_backlog_queue_size);
 
-			*result = Runtime::IntegerObject(handle);
+			*result = Runtime::Int32Type(handle);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

@@ -29,7 +29,7 @@ class Fork : public ExtensionMethod
 {
 public:
 	Fork()
-	: ExtensionMethod(0, "fork", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "fork", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
 
@@ -40,7 +40,7 @@ public:
 	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
 	{
 		try {
-			*result = Runtime::IntegerObject(fork());
+			*result = Runtime::Int32Type(fork());
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

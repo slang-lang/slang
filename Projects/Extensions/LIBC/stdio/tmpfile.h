@@ -16,7 +16,7 @@
 // Project includes
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -59,7 +59,7 @@ public:
 				stdio_t::FileHandles.insert(std::make_pair(result_handle, fileHandle));
 			}
 
-            *result = Runtime::IntegerObject( result_handle );
+            *result = Runtime::Int32Type( result_handle );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

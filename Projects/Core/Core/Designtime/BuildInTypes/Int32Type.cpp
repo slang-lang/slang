@@ -1,6 +1,6 @@
 
 // Header
-#include "IntegerObject.h"
+#include "Int32Type.h"
 
 // Library includes
 
@@ -15,11 +15,11 @@ namespace Slang {
 namespace Designtime {
 
 
-int32_t IntegerObject::DEFAULTVALUE = 0;
-std::string IntegerObject::TYPENAME = _int32;
+int32_t Int32Type::DEFAULTVALUE = 0;
+std::string Int32Type::TYPENAME = _int32;
 
 
-IntegerObject::IntegerObject()
+Int32Type::Int32Type()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 	mIsAtomicType = true;
@@ -27,12 +27,12 @@ IntegerObject::IntegerObject()
 	initialize();
 }
 
-const std::string& IntegerObject::getTypeName() const
+const std::string& Int32Type::getTypeName() const
 {
 	return TYPENAME;
 }
 
-void IntegerObject::initialize()
+void Int32Type::initialize()
 {
 	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{

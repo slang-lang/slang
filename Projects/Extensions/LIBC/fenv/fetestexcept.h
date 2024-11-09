@@ -8,9 +8,9 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -30,10 +30,10 @@ class FETESTEXCEPT: public ExtensionMethod
 {
 public:
     FETESTEXCEPT()
-    : ExtensionMethod(0, "fetestexcept", Designtime::IntegerObject::TYPENAME)
+    : ExtensionMethod(0, "fetestexcept", Designtime::Int32Type::TYPENAME)
     {
         ParameterList params;
-        params.push_back(Parameter::CreateDesigntime("excepts", Common::TypeDeclaration(Designtime::IntegerObject::TYPENAME)));
+        params.push_back(Parameter::CreateDesigntime("excepts", Common::TypeDeclaration(Designtime::Int32Type::TYPENAME)));
 
         setSignature(params);
     }
@@ -47,7 +47,7 @@ public:
 
             auto param_excepts = (*it++).value().toInt();
 
-            *result = Runtime::IntegerObject(fetestexcept(param_excepts));
+            *result = Runtime::Int32Type(fetestexcept(param_excepts));
         }
         catch ( std::exception& e ) {
             Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

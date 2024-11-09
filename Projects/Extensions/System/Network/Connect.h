@@ -30,10 +30,10 @@ class Connect : public ExtensionMethod
 {
 public:
 	Connect()
-	: ExtensionMethod(0, "connect", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "connect", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::Int32Type::TYPENAME));
 		params.push_back(Parameter::CreateDesigntime("sockaddr", Common::TypeDeclaration("ISocketAddress")));
 
 		setSignature(params);
@@ -51,7 +51,7 @@ public:
 
 			int handle = evaluate(param_sockfd, param_addr);
 
-			*result = Runtime::IntegerObject(handle);
+			*result = Runtime::Int32Type(handle);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -82,7 +82,7 @@ private:
 		}
 
 		struct sockaddr_in serv_addr;
-		sa_family_t addr_family = (sa_family_t)static_cast<Runtime::IntegerObject*>(familySymbol)->getValue().toInt();
+		sa_family_t addr_family = (sa_family_t)static_cast<Runtime::Int32Type*>(familySymbol)->getValue().toInt();
 
 		// set sa_family
 		switch ( addr_family ) {
@@ -105,7 +105,7 @@ private:
 		inet_pton(serv_addr.sin_family, static_cast<Runtime::StringObject*>(addressSymbol)->getValue().toStdString().c_str(), &serv_addr.sin_addr);
 
 		// set sa_port
-		serv_addr.sin_port = (in_port_t)static_cast<Runtime::IntegerObject*>(portSymbol)->getValue().toInt();
+		serv_addr.sin_port = (in_port_t)static_cast<Runtime::Int32Type*>(portSymbol)->getValue().toInt();
 #endif
 
 		return connect(param_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));

@@ -3,7 +3,7 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Version.h>
@@ -161,7 +161,7 @@ void processParameters(int argc, const char* argv[])
 		}
 	}
 
-	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::IntegerObject::TYPENAME, static_cast<int32_t>(params.size())));
+	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::Int32Type::TYPENAME, static_cast<int32_t>(params.size())));
 	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringObject::TYPENAME, paramStr));
 }
 

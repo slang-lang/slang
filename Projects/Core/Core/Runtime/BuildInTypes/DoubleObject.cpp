@@ -10,7 +10,7 @@
 #include "BoolObject.h"
 #include "EnumerationObject.h"
 #include "FloatObject.h"
-#include "IntegerObject.h"
+#include "Int32Type.h"
 #include "StringObject.h"
 
 // Namespace declarations
@@ -55,7 +55,7 @@ DoubleObject::DoubleObject( const Object& other )
 		target == BoolObject::TYPENAME ||
 		target == EnumerationObject::TYPENAME ||
 		target == FloatObject::TYPENAME ||
-		target == IntegerObject::TYPENAME ||
+		target == Int32Type::TYPENAME ||
 		target == StringObject::TYPENAME ||
         other.isEnumerationValue() ) {
 		mValue = other.getValue().toDouble();
@@ -73,7 +73,7 @@ void DoubleObject::operator_assign( const Object* other )
 		 target == BoolObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
+		 target == Int32Type::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = other->getValue().toDouble();
 		return;
@@ -94,7 +94,7 @@ void DoubleObject::operator_divide( const Object* other )
 	if ( target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
+		 target == Int32Type::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = mValue.toDouble() / other->getValue().toDouble();
 		return;
@@ -110,7 +110,7 @@ bool DoubleObject::operator_equal( const Object* other )
 	if ( target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
+		 target == Int32Type::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toDouble() == other->getValue().toDouble();
 	}
@@ -125,7 +125,7 @@ bool DoubleObject::operator_greater( const Object* other )
 	if ( target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
+		 target == Int32Type::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toDouble() > other->getValue().toDouble();
 	}
@@ -140,7 +140,7 @@ bool DoubleObject::operator_greater_equal( const Object* other )
 	if ( target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
+		 target == Int32Type::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toDouble() >= other->getValue().toDouble();
 	}
@@ -155,7 +155,7 @@ bool DoubleObject::operator_less( const Object* other )
 	if ( target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
+		 target == Int32Type::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toDouble() < other->getValue().toDouble();
 	}
@@ -170,7 +170,7 @@ bool DoubleObject::operator_less_equal( const Object* other )
 	if ( target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
+		 target == Int32Type::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toDouble() <= other->getValue().toDouble();
 	}
@@ -185,7 +185,7 @@ void DoubleObject::operator_multiply( const Object* other )
 	if ( target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
+		 target == Int32Type::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = mValue.toDouble() * other->getValue().toDouble();
 		return;
@@ -201,7 +201,7 @@ void DoubleObject::operator_plus( const Object* other )
 	if ( target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
+		 target == Int32Type::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = mValue.toDouble() + other->getValue().toDouble();
 		return;
@@ -217,7 +217,7 @@ void DoubleObject::operator_subtract( const Object* other )
 	if ( target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
+		 target == Int32Type::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = mValue.toDouble() - other->getValue().toDouble();
 		return;

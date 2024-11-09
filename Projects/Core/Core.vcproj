@@ -587,7 +587,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				RelativePath=".\Core\BuildInObjects\Int32Type.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -607,7 +607,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\Int32Type.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -627,7 +627,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				RelativePath=".\Core\BuildInObjects\Int32Type.cpp"
 				>
 			</File>
 			<File
@@ -1473,15 +1473,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\Int32Type.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				RelativePath=".\Core\BuildInObjects\Int32Type.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\Int32Type.h"
 				>
 			</File>
 			<File

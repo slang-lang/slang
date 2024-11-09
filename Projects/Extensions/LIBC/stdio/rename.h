@@ -16,7 +16,7 @@
 // Project includes
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -38,7 +38,7 @@ class RENAME : public ExtensionMethod
 {
 public:
 	RENAME()
-	: ExtensionMethod(0, "rename", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "rename", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("old_filename", Designtime::StringObject::TYPENAME, 0));
@@ -57,7 +57,7 @@ public:
             auto param_old_filename = (*it++).value().toStdString();
             auto param_new_filename = (*it++).value().toStdString();
 
-            *result = Runtime::IntegerObject( rename( param_old_filename.c_str(), param_new_filename.c_str() ) );
+            *result = Runtime::Int32Type( rename( param_old_filename.c_str(), param_new_filename.c_str() ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

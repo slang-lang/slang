@@ -14,9 +14,9 @@
 #endif
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -38,12 +38,12 @@ class FSEEK : public ExtensionMethod
 {
 public:
 	FSEEK()
-	: ExtensionMethod( 0, "fseek", Designtime::IntegerObject::TYPENAME )
+	: ExtensionMethod( 0, "fseek", Designtime::Int32Type::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back( Parameter::CreateDesigntime( "stream", Designtime::IntegerObject::TYPENAME ) );
-		params.push_back( Parameter::CreateDesigntime( "offset", Designtime::IntegerObject::TYPENAME ) );
-		params.push_back( Parameter::CreateDesigntime( "origin", Designtime::IntegerObject::TYPENAME, Runtime::AtomicValue( SEEK_SET ), true ) );
+		params.push_back( Parameter::CreateDesigntime( "stream", Designtime::Int32Type::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "offset", Designtime::Int32Type::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "origin", Designtime::Int32Type::TYPENAME, Runtime::AtomicValue( SEEK_SET ), true ) );
 
 		setSignature( params );
 	}
@@ -68,7 +68,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException( "error while seeking file" );
 			}
 
-			*result = Runtime::IntegerObject( static_cast<int32_t>( size ) );
+			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );

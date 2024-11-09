@@ -32,7 +32,7 @@ public:
 	: ExtensionMethod( 0, "setlocale", Designtime::StringObject::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back( Parameter::CreateDesigntime( "category", Designtime::IntegerObject::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "category", Designtime::Int32Type::TYPENAME ) );
 		params.push_back( Parameter::CreateDesigntime( "locale", Designtime::StringObject::TYPENAME ) );
 
 		setSignature( params );

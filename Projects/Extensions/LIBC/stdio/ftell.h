@@ -14,9 +14,9 @@
 #endif
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -38,10 +38,10 @@ class FTELL : public ExtensionMethod
 {
 public:
 	FTELL()
-	: ExtensionMethod(0, "ftell", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "ftell", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("stream", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("stream", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -64,7 +64,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while telling file");
 			}
 
-			*result = Runtime::IntegerObject((int)size);
+			*result = Runtime::Int32Type((int)size);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

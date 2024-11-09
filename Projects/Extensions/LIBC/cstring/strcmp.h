@@ -8,9 +8,9 @@
 #include <cstring>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/Exceptions.h>
@@ -32,7 +32,7 @@ class STRCMP : public ExtensionMethod
 {
 public:
 	STRCMP()
-	: ExtensionMethod( 0, "strcmp", Designtime::IntegerObject::TYPENAME )
+	: ExtensionMethod( 0, "strcmp", Designtime::Int32Type::TYPENAME )
 	{
 		ParameterList params;
 		params.push_back( Parameter::CreateDesigntime( "str1", Designtime::StringObject::TYPENAME ) );
@@ -51,7 +51,7 @@ public:
 			auto param_str1 = (*it++).value().toStdString();
 			auto param_str2 = (*it++).value().toStdString();
 
-			*result = Runtime::IntegerObject( strcmp( param_str1.c_str(), param_str2.c_str() ) );
+			*result = Runtime::Int32Type( strcmp( param_str1.c_str(), param_str2.c_str() ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );

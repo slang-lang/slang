@@ -6,9 +6,9 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -30,10 +30,10 @@ class FCLOSE : public ExtensionMethod
 {
 public:
 	FCLOSE()
-	: ExtensionMethod(0, "fclose", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "fclose", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -56,7 +56,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
-			*result = Runtime::IntegerObject(fileResult);
+			*result = Runtime::Int32Type(fileResult);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

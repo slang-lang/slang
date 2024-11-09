@@ -10,7 +10,7 @@
 #include "DoubleObject.h"
 #include "EnumerationObject.h"
 #include "FloatObject.h"
-#include "IntegerObject.h"
+#include "Int32Type.h"
 #include "StringObject.h"
 
 // Namespace declarations
@@ -55,7 +55,7 @@ BoolObject::BoolObject( const Object& other )
 		 target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
+		 target == Int32Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
          other.isEnumerationValue() ) {
 		mValue = other.getValue().toBool();
@@ -78,7 +78,7 @@ void BoolObject::operator_assign( const Object* rvalue )
 		 source == DoubleObject::TYPENAME ||
 		 source == EnumerationObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
-		 source == IntegerObject::TYPENAME ||
+		 source == Int32Type::TYPENAME ||
 		 source == StringObject::TYPENAME ||
          rvalue->isEnumerationValue() ) {
 		mValue = rvalue->getValue().toBool();
@@ -97,7 +97,7 @@ bool BoolObject::operator_equal( const Object* rvalue )
 		 source == DoubleObject::TYPENAME ||
 		 source == EnumerationObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
-		 source == IntegerObject::TYPENAME ||
+		 source == Int32Type::TYPENAME ||
 		 source == StringObject::TYPENAME ||
          rvalue->isEnumerationValue() ) {
 		return mValue.toBool() == rvalue->getValue().toBool();

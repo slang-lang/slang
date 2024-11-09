@@ -7,7 +7,7 @@
 #include <math.h>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
@@ -31,7 +31,7 @@ public:
     : ExtensionMethod(0, "srand", Designtime::VoidObject::TYPENAME)
     {
         ParameterList params;
-        params.push_back(Parameter::CreateDesigntime("seed", Designtime::IntegerObject::TYPENAME));
+        params.push_back(Parameter::CreateDesigntime("seed", Designtime::Int32Type::TYPENAME));
 
         setSignature(params);
     }

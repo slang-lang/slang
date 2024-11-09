@@ -16,7 +16,7 @@
 // Project includes
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -38,7 +38,7 @@ class REMOVE : public ExtensionMethod
 {
 public:
 	REMOVE()
-	: ExtensionMethod(0, "remove", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "remove", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("pathname", Designtime::StringObject::TYPENAME, 0));
@@ -55,7 +55,7 @@ public:
 
             auto param_pathname = (*it++).value().toStdString();
 
-            *result = Runtime::IntegerObject( remove( param_pathname.c_str() ) );
+            *result = Runtime::Int32Type( remove( param_pathname.c_str() ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

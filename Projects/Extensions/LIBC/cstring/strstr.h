@@ -7,10 +7,10 @@
 #include <stdlib.h>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -34,7 +34,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back( Parameter::CreateDesigntime( "str", Designtime::StringObject::TYPENAME, 0 ) );
-		params.push_back( Parameter::CreateDesigntime( "substr", Designtime::IntegerObject::TYPENAME, 0 ) );
+		params.push_back( Parameter::CreateDesigntime( "substr", Designtime::Int32Type::TYPENAME, 0 ) );
 
 		setSignature( params );
 	}

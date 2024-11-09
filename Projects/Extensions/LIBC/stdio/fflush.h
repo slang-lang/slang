@@ -8,10 +8,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -33,10 +33,10 @@ class FFLUSH : public ExtensionMethod
 {
 public:
 	FFLUSH()
-	: ExtensionMethod( 0, "fflush", Designtime::IntegerObject::TYPENAME )
+	: ExtensionMethod( 0, "fflush", Designtime::Int32Type::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back( Parameter::CreateDesigntime("stream", Designtime::IntegerObject::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime("stream", Designtime::Int32Type::TYPENAME ) );
 
 		setSignature( params );
 	}
@@ -57,7 +57,7 @@ public:
 
 			auto value = fflush( stdio_t::FileHandles[ param_handle ] );
 
-			*result = Runtime::IntegerObject( value );
+			*result = Runtime::Int32Type( value );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

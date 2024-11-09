@@ -17,7 +17,7 @@
 #include <Core/Runtime/BuildInTypes/BoolObject.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
@@ -123,7 +123,7 @@ bool LocalClient::addLiteralSymbol(const std::string& name, const std::string& v
 				symbol = new Runtime::FloatObject(token.content());
 				break;
 			case Token::Type::CONST_INTEGER:
-				symbol = new Runtime::IntegerObject(token.content());
+				symbol = new Runtime::Int32Type(token.content());
 				break;
 			case Token::Type::CONST_LITERAL:
 				symbol = new Runtime::StringObject(token.content());
@@ -783,7 +783,7 @@ void LocalClient::prepare(const StringList& tokens)
 	}
 
 	mParameters.clear();
-	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::IntegerObject::TYPENAME, (int)tokens.size()));
+	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::Int32Type::TYPENAME, (int)tokens.size()));
 	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringObject::TYPENAME, paramStr));
 }
 

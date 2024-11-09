@@ -14,9 +14,9 @@
 #endif
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -38,10 +38,10 @@ class PUTS : public ExtensionMethod
 {
 public:
 	PUTS()
-	: ExtensionMethod(0, "puts", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "puts", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("str", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("str", Designtime::Int32Type::TYPENAME, 0));
 
 		setSignature(params);
 	}
@@ -55,7 +55,7 @@ public:
 
             auto param_str = (*it++).value().toStdString();
 
-            *result = Runtime::IntegerObject( puts( param_str.c_str() ) );
+            *result = Runtime::Int32Type( puts( param_str.c_str() ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

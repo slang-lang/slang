@@ -27,7 +27,7 @@ class PutEnv : public ExtensionMethod
 {
 public:
 	PutEnv()
-	: ExtensionMethod(0, "putenv", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "putenv", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("envvar", Designtime::StringObject::TYPENAME));
@@ -45,7 +45,7 @@ public:
 
 			std::string param_name = (*it++).value().toStdString();
 
-			*result = Runtime::IntegerObject(putenv(const_cast<char*>(param_name.c_str())));
+			*result = Runtime::Int32Type(putenv(const_cast<char*>(param_name.c_str())));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

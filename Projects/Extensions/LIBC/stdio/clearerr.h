@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
@@ -30,10 +30,10 @@ class CLEARERR : public ExtensionMethod
 {
 public:
 	CLEARERR()
-	: ExtensionMethod(0, "clearerr", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "clearerr", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("stream", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("stream", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}

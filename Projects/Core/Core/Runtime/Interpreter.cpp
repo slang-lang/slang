@@ -15,7 +15,7 @@
 #include <Core/Runtime/BuildInTypes/BoolObject.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
@@ -794,7 +794,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			++start;
 		} break;
 		case Token::Type::CONST_INTEGER: {
-			IntegerObject tmp(Utils::Tools::stringToInt(start->content()));
+			Int32Type tmp(Utils::Tools::stringToInt(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
@@ -1046,7 +1046,7 @@ void Interpreter::process_exit(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	Object* data = mRepository->createInstance(IntegerObject::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
+	Object* data = mRepository->createInstance(Int32Type::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
 	try {
 		expression(data, token);
 	}

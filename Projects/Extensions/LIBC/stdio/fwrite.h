@@ -9,13 +9,13 @@
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/BoolObject.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -37,10 +37,10 @@ class FWRITEB : public ExtensionMethod
 {
 public:
 	FWRITEB()
-	: ExtensionMethod(0, "fwriteb", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "fwriteb", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::BoolObject::TYPENAME, false));
 
 		setSignature(params);
@@ -66,7 +66,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
 
-			*result = Runtime::IntegerObject((int)size);
+			*result = Runtime::Int32Type((int)size);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -85,10 +85,10 @@ class FWRITED : public ExtensionMethod
 {
 public:
 	FWRITED()
-	: ExtensionMethod(0, "fwrited", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "fwrited", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME, 0.0));
 
 		setSignature(params);
@@ -114,7 +114,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
 
-			*result = Runtime::IntegerObject((int)size);
+			*result = Runtime::Int32Type((int)size);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -133,10 +133,10 @@ class FWRITEF : public ExtensionMethod
 {
 public:
 	FWRITEF()
-	: ExtensionMethod(0, "fwritef", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "fwritef", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME, 0.f));
 
 		setSignature(params);
@@ -162,7 +162,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
 
-			*result = Runtime::IntegerObject((int)size);
+			*result = Runtime::Int32Type((int)size);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -181,11 +181,11 @@ class FWRITEI : public ExtensionMethod
 {
 public:
 	FWRITEI()
-	: ExtensionMethod(0, "fwritei", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "fwritei", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::Int32Type::TYPENAME, 0));
 
 		setSignature(params);
 	}
@@ -210,7 +210,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
 
-			*result = Runtime::IntegerObject((int)size);
+			*result = Runtime::Int32Type((int)size);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -229,10 +229,10 @@ class FWRITES : public ExtensionMethod
 {
 public:
 	FWRITES()
-	: ExtensionMethod(0, "fwrites", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "fwrites", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 		setSignature(params);
@@ -259,7 +259,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
 
-			*result = Runtime::IntegerObject(static_cast<int>(size));
+			*result = Runtime::Int32Type(static_cast<int>(size));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

@@ -6,8 +6,8 @@ SET(SOURCES
 	EnumerationObject.cpp
 	FloatObject.cpp
 	Int16Type.cpp
+	Int32Type.cpp
 	Int64Type.cpp
-	IntegerObject.cpp
 	StringObject.cpp
 	UserObject.cpp
 	VoidObject.cpp
@@ -19,8 +19,8 @@ SET(HEADERS
 	EnumerationObject.h
 	FloatObject.h
 	Int16Type.h
+	Int32Type.h
 	Int64Type.h
-	IntegerObject.h
 	StringObject.h
 	UserObject.h
 	VoidObject.h

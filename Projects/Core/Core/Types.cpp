@@ -10,7 +10,7 @@
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
 
@@ -45,7 +45,7 @@ StringSet provideAtomicTypes()
 	types.insert(Runtime::FloatObject::TYPENAME);
 	types.insert(Runtime::Int16Type::TYPENAME);
 	//types.insert(Runtime::Int64Type::TYPENAME);
-	types.insert(Runtime::IntegerObject::TYPENAME);
+	types.insert(Runtime::Int32Type::TYPENAME);
 	types.insert(Runtime::StringObject::TYPENAME);
 	types.insert(Runtime::VoidObject::TYPENAME);
 

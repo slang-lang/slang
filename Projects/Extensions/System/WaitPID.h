@@ -30,11 +30,11 @@ class WaitPID : public ExtensionMethod
 {
 public:
 	WaitPID()
-	: ExtensionMethod( 0, "waitpid", Designtime::IntegerObject::TYPENAME )
+	: ExtensionMethod( 0, "waitpid", Designtime::Int32Type::TYPENAME )
 	{
 		ParameterList params;
-        params.push_back( Parameter::CreateDesigntime( "pid", Designtime::IntegerObject::TYPENAME ) );
-        params.push_back( Parameter::CreateDesigntime( "options", Designtime::IntegerObject::TYPENAME ) );
+        params.push_back( Parameter::CreateDesigntime( "pid", Designtime::Int32Type::TYPENAME ) );
+        params.push_back( Parameter::CreateDesigntime( "options", Designtime::Int32Type::TYPENAME ) );
 
 		setSignature(params);
 	}
@@ -53,7 +53,7 @@ public:
             int status;
             param_pid = waitpid( param_pid, &status, param_options );
 
-            *result = Runtime::IntegerObject( status );
+            *result = Runtime::Int32Type( status );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
