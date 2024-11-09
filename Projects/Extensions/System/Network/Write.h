@@ -48,7 +48,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			*result = Runtime::Int32Type((int)size);
+			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -92,7 +92,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			*result = Runtime::Int32Type((int)size);
+			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -136,7 +136,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			*result = Runtime::Int32Type((int)size);
+			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -180,7 +180,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			*result = Runtime::Int32Type((int)size);
+			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -230,7 +230,7 @@ public:
 				count++;
 			}
 
-			*result = Runtime::Int32Type((int)size);
+			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

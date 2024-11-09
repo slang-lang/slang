@@ -7,7 +7,6 @@
 #include <cstdlib>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>

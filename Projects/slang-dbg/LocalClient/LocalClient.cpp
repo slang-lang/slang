@@ -18,6 +18,7 @@
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
@@ -123,7 +124,7 @@ bool LocalClient::addLiteralSymbol(const std::string& name, const std::string& v
 				symbol = new Runtime::FloatObject(token.content());
 				break;
 			case Token::Type::CONST_INTEGER:
-				symbol = new Runtime::Int32Type(token.content());
+				symbol = new Runtime::Int64Type(token.content());
 				break;
 			case Token::Type::CONST_LITERAL:
 				symbol = new Runtime::StringObject(token.content());
@@ -772,7 +773,7 @@ StringList LocalClient::parseCommands(const std::string& commands) const
 	return params;
 }
 
-void LocalClient::prepare(const StringList& tokens)
+void LocalClient::prepare( const StringList& tokens )
 {
 	std::string paramStr = mSettings->filename();
 
@@ -783,8 +784,8 @@ void LocalClient::prepare(const StringList& tokens)
 	}
 
 	mParameters.clear();
-	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::Int32Type::TYPENAME, (int)tokens.size()));
-	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringObject::TYPENAME, paramStr));
+	mParameters.push_back( Slang::Parameter::CreateRuntime( Slang::Runtime::Int32Type::TYPENAME, static_cast<int32_t>( tokens.size() ) ) );
+	mParameters.push_back( Slang::Parameter::CreateRuntime( Slang::Runtime::StringObject::TYPENAME, paramStr ) );
 }
 
 void LocalClient::printBreakPoints()
