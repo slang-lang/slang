@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/BoolObject.h>
+#include <Core/Designtime/BuildInTypes/BoolType.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>

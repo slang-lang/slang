@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/BoolObject.h>
+#include <Core/Designtime/BuildInTypes/BoolType.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>

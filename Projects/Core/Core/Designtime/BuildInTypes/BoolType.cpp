@@ -1,6 +1,6 @@
 
 // Header
-#include "BoolObject.h"
+#include "BoolType.h"
 
 // Library includes
 
