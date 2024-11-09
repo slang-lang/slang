@@ -23,7 +23,7 @@ class ReadBool : public ExtensionMethod
 {
 public:
 	ReadBool()
-	: ExtensionMethod(0, "readb", Designtime::BoolObject::TYPENAME)
+	: ExtensionMethod(0, "readb", Designtime::BoolType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
@@ -47,7 +47,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while reading handle");
 			}
 
-			*result = Runtime::BoolObject(value);
+			*result = Runtime::BoolType(value);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

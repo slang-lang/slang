@@ -1,6 +1,6 @@
 
-#ifndef Core_Designtime_BuildInTypes_BoolObject_h
-#define Core_Designtime_BuildInTypes_BoolObject_h
+#ifndef Core_Designtime_BuildInTypes_BoolType_h
+#define Core_Designtime_BuildInTypes_BoolType_h
 
 
 // Library includes
@@ -17,14 +17,14 @@ namespace Slang {
 namespace Designtime {
 
 
-class BoolObject : public BluePrintObject
+class BoolType : public BluePrintObject
 {
 public:
 	static bool DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
-	BoolObject();
+	BoolType();
 
 public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;

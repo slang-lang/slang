@@ -18,7 +18,7 @@
 #include <Core/Designtime/BuildInTypes/UserObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/EnumerationObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
@@ -183,8 +183,8 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	Runtime::Object *object = nullptr;
 
 	// instantiate atomic types
-	if ( blueprint->QualifiedTypename() == Runtime::BoolObject::TYPENAME ) {
-		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE);
+	if ( blueprint->QualifiedTypename() == Runtime::BoolType::TYPENAME ) {
+		object = new Runtime::BoolType(name, Runtime::BoolType::DEFAULTVALUE);
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::DoubleObject::TYPENAME ) {
 		object = new Runtime::DoubleObject(name, Runtime::DoubleObject::DEFAULTVALUE);
@@ -402,10 +402,10 @@ void Repository::init()
 
 	// add atomic types
 	{	// "bool" type
-		auto* obj = new Designtime::BoolObject();
+		auto* obj = new Designtime::BoolType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::BoolObject::TYPENAME, obj);
+		scope->define(Designtime::BoolType::TYPENAME, obj);
 	}
 	{	// "double" type
 		auto* obj = new Designtime::DoubleObject();

@@ -7,7 +7,7 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
-#include "BoolObject.h"
+#include "BoolType.h"
 #include "EnumerationObject.h"
 #include "FloatObject.h"
 #include "Int16Type.h"
@@ -53,7 +53,7 @@ DoubleObject::DoubleObject( const Object& other )
 
 	const std::string& target = other.QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -73,7 +73,7 @@ void DoubleObject::operator_assign( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -97,7 +97,7 @@ void DoubleObject::operator_divide( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -116,7 +116,7 @@ bool DoubleObject::operator_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -134,7 +134,7 @@ bool DoubleObject::operator_greater( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -152,7 +152,7 @@ bool DoubleObject::operator_greater_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -170,7 +170,7 @@ bool DoubleObject::operator_less( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -188,7 +188,7 @@ bool DoubleObject::operator_less_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -206,7 +206,7 @@ void DoubleObject::operator_multiply( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -225,7 +225,7 @@ void DoubleObject::operator_plus( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -244,7 +244,7 @@ void DoubleObject::operator_subtract( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||

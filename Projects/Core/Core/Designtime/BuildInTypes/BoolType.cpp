@@ -15,11 +15,11 @@ namespace Slang {
 namespace Designtime {
 
 
-bool BoolObject::DEFAULTVALUE = false;
-std::string BoolObject::TYPENAME = _bool;
+bool BoolType::DEFAULTVALUE = false;
+std::string BoolType::TYPENAME = _bool;
 
 
-BoolObject::BoolObject()
+BoolType::BoolType()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 	mIsAtomicType = true;
@@ -27,12 +27,12 @@ BoolObject::BoolObject()
 	initialize();
 }
 
-const std::string& BoolObject::getTypeName() const
+const std::string& BoolType::getTypeName() const
 {
 	return TYPENAME;
 }
 
-void BoolObject::initialize()
+void BoolType::initialize()
 {
 	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{

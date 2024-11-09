@@ -7,7 +7,7 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
-#include "BoolObject.h"
+#include "BoolType.h"
 #include "DoubleObject.h"
 #include "EnumerationObject.h"
 #include "Int16Type.h"
@@ -53,7 +53,7 @@ FloatObject::FloatObject( const Object& other )
 
 	const std::string& target = other.QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -73,7 +73,7 @@ void FloatObject::operator_assign( const Object* other  )
 {
 	const std::string& target = other->QualifiedTypename();
 
-    if ( target == BoolObject::TYPENAME ||
+    if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||

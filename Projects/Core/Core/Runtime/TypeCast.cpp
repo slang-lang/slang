@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/EnumerationObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
@@ -35,8 +35,8 @@ void typecast(Object *base, const std::string& targetType)
 		throw Runtime::Exceptions::TypecastException("invalid cast target type");
 	}
 
-	if ( targetType == BoolObject::TYPENAME ) {
-		BoolObject tmp(*base);
+	if ( targetType == BoolType::TYPENAME ) {
+		BoolType tmp(*base);
 
 		base->assign(tmp);
 	}

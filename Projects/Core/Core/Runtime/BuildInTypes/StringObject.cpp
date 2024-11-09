@@ -7,7 +7,7 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
-#include "BoolObject.h"
+#include "BoolType.h"
 #include "DoubleObject.h"
 #include "EnumerationObject.h"
 #include "FloatObject.h"
@@ -55,7 +55,7 @@ StringObject::StringObject( const Object& other )
 
 	const std::string& target = other.QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -75,7 +75,7 @@ void StringObject::operator_assign( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -100,7 +100,7 @@ bool StringObject::operator_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -119,7 +119,7 @@ bool StringObject::operator_greater( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -138,7 +138,7 @@ bool StringObject::operator_greater_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -157,7 +157,7 @@ bool StringObject::operator_less( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -176,7 +176,7 @@ bool StringObject::operator_less_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
          target == DoubleObject::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
@@ -195,7 +195,7 @@ void StringObject::operator_plus( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
@@ -215,7 +215,7 @@ void StringObject::operator_shift_left( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == BoolType::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||

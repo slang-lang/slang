@@ -27,7 +27,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::BoolObject::TYPENAME, false));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::BoolType::TYPENAME, false));
 
 		setSignature(params);
 	}

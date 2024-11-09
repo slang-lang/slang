@@ -11,7 +11,7 @@
 #include <Core/Designtime/BuildInTypes/BoolType.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -31,7 +31,7 @@ class IsKnownType : public ExtensionMethod
 {
 public:
 	IsKnownType()
-	: ExtensionMethod(0, "isKnownType", Designtime::BoolObject::TYPENAME)
+	: ExtensionMethod(0, "isKnownType", Designtime::BoolType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("type", Designtime::StringObject::TYPENAME));
@@ -49,7 +49,7 @@ public:
 
 			std::string param_type = (*it++).value().toStdString();
 
-			*result = Runtime::BoolObject( Controller::Instance().repository()->findBluePrintObject(param_type) != nullptr );
+			*result = Runtime::BoolType( Controller::Instance().repository()->findBluePrintObject(param_type) != nullptr );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

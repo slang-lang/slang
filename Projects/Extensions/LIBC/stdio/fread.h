@@ -13,7 +13,7 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
@@ -38,7 +38,7 @@ class FREADB : public ExtensionMethod
 {
 public:
 	FREADB()
-	: ExtensionMethod(0, "freadb", Designtime::BoolObject::TYPENAME)
+	: ExtensionMethod(0, "freadb", Designtime::BoolType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
@@ -66,7 +66,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
 
-			*result = Runtime::BoolObject(value);
+			*result = Runtime::BoolType(value);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

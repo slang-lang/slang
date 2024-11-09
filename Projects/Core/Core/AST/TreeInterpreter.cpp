@@ -10,7 +10,7 @@
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 //#include <Core/Runtime/BuildInTypes/Int16Type.h>
@@ -175,19 +175,19 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 
 	// incomplete boolean evaluation
 	if ( exp->mOperation.type() == Token::Type::AND && !leftResult ) {
-		*result = Runtime::BoolObject(false);
+		*result = Runtime::BoolType(false);
 		return;
 	}
 	else if ( exp->mOperation.type() == Token::Type::NAND && !leftResult ) {
-		*result = Runtime::BoolObject(true);
+		*result = Runtime::BoolType(true);
 		return;
 	}
 	else if ( exp->mOperation.type() == Token::Type::NOR && leftResult ) {
-		*result = Runtime::BoolObject(false);
+		*result = Runtime::BoolType(false);
 		return;
 	}
 	else if ( exp->mOperation.type() == Token::Type::OR && leftResult ) {
-		*result = Runtime::BoolObject(true);
+		*result = Runtime::BoolType(true);
 		return;
 	}
 
@@ -199,20 +199,20 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 	switch ( exp->mOperation.type() ) {
 		// boolean expressions
 		// {
-		case Token::Type::AND:  *result = Runtime::BoolObject(leftResult && isTrue(right)); break;
-		case Token::Type::NAND: *result = Runtime::BoolObject(!leftResult && !isTrue(right)); break;
-		case Token::Type::NOR:  *result = Runtime::BoolObject(!leftResult || !isTrue(right)); break;
-		case Token::Type::OR:   *result = Runtime::BoolObject(leftResult || isTrue(right)); break;
+		case Token::Type::AND:  *result = Runtime::BoolType(leftResult && isTrue(right)); break;
+		case Token::Type::NAND: *result = Runtime::BoolType(!leftResult && !isTrue(right)); break;
+		case Token::Type::NOR:  *result = Runtime::BoolType(!leftResult || !isTrue(right)); break;
+		case Token::Type::OR:   *result = Runtime::BoolType(leftResult || isTrue(right)); break;
 		// }
 
 		// comparison expressions
 		// {
-		case Token::Type::COMPARE_EQUAL:         *result = Runtime::BoolObject(operator_binary_equal(&left, &right)); break;
-		case Token::Type::COMPARE_GREATER:       *result = Runtime::BoolObject(operator_binary_greater(&left, &right)); break;
-		case Token::Type::COMPARE_GREATER_EQUAL: *result = Runtime::BoolObject(operator_binary_greater_equal(&left, &right)); break;
-		case Token::Type::COMPARE_LESS:          *result = Runtime::BoolObject(operator_binary_less(&left, &right)); break;
-		case Token::Type::COMPARE_LESS_EQUAL:    *result = Runtime::BoolObject(operator_binary_less_equal(&left, &right)); break;
-		case Token::Type::COMPARE_UNEQUAL:       *result = Runtime::BoolObject(!operator_binary_equal(&left, &right)); break;
+		case Token::Type::COMPARE_EQUAL:         *result = Runtime::BoolType(operator_binary_equal(&left, &right)); break;
+		case Token::Type::COMPARE_GREATER:       *result = Runtime::BoolType(operator_binary_greater(&left, &right)); break;
+		case Token::Type::COMPARE_GREATER_EQUAL: *result = Runtime::BoolType(operator_binary_greater_equal(&left, &right)); break;
+		case Token::Type::COMPARE_LESS:          *result = Runtime::BoolType(operator_binary_less(&left, &right)); break;
+		case Token::Type::COMPARE_LESS_EQUAL:    *result = Runtime::BoolType(operator_binary_less_equal(&left, &right)); break;
+		case Token::Type::COMPARE_UNEQUAL:       *result = Runtime::BoolType(!operator_binary_equal(&left, &right)); break;
 		// }
 
 		// default handling
@@ -237,13 +237,13 @@ void TreeInterpreter::evaluateIsExpression(IsExpression* exp, Runtime::Object* r
 
 	evaluate(exp->mExpression, &tmp);
 
-	*result = Runtime::BoolObject(tmp.isInstanceOf(exp->mMatchType));
+	*result = Runtime::BoolType(tmp.isInstanceOf(exp->mMatchType));
 }
 
 void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* result)
 {
 	switch ( exp->mValue.type() ) {
-		case Runtime::AtomicValue::Type::BOOL:      *result = Runtime::BoolObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::BOOL:      *result = Runtime::BoolType(exp->mValue); break;
 		case Runtime::AtomicValue::Type::DOUBLE:    *result = Runtime::DoubleObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::FLOAT:     *result = Runtime::FloatObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::INT:       *result = Runtime::Int64Type(exp->mValue); break;

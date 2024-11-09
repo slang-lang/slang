@@ -166,7 +166,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Designtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Designtime\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Designtime\BuildInTypes\BoolObject.cpp">
+    <ClCompile Include="Core\Designtime\BuildInTypes\BoolType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -213,7 +213,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\BoolObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\BoolType.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -347,7 +347,7 @@
     <ClInclude Include="Core\Designtime\Analyser.h" />
     <ClInclude Include="Core\Designtime\Ancestor.h" />
     <ClInclude Include="Core\Designtime\BluePrintObject.h" />
-    <ClInclude Include="Core\Designtime\BuildInTypes\BoolObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\BoolType.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\DoubleObject.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\FloatObject.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\Int32Type.h" />
@@ -371,7 +371,7 @@
     <ClInclude Include="Core\Slang.h" />
     <ClInclude Include="Core\Parameter.h" />
     <ClInclude Include="Core\Runtime\AtomicValue.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\BoolObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\BoolType.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\DoubleObject.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\EnumerationObject.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\FloatObject.h" />
