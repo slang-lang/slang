@@ -16,7 +16,7 @@
 //#include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
@@ -248,7 +248,7 @@ void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* r
 		case Runtime::AtomicValue::Type::FLOAT:     *result = Runtime::FloatType(exp->mValue); break;
 		case Runtime::AtomicValue::Type::INT:       *result = Runtime::Int64Type(exp->mValue); break;
 		case Runtime::AtomicValue::Type::REFERENCE: *result = *mMemory->get(Runtime::Reference(exp->mValue.toReference())); break;
-		case Runtime::AtomicValue::Type::STRING:    *result = Runtime::StringObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::STRING:    *result = Runtime::StringType(exp->mValue); break;
 		case Runtime::AtomicValue::Type::UNKNOWN:    throw Common::Exceptions::NotSupported("UNKNOWN type");
 	}
 }
@@ -275,7 +275,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		methodSymbol = resolveMethod(getEnclosingMethodScope(scope), exp->mSymbolExpression, params, Visibility::Private);
 	}
 	if ( !methodSymbol ) {
-		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
 		data->setValue( std::string("NullPointerException: ") + exp->mSymbolExpression->toString() );
 
 		mThread->exception() = Runtime::ExceptionData(data);
@@ -354,7 +354,7 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 	// resolve current symbol name
 	Symbol* lvalue = scope->resolve(exp->mName, false, Visibility::Designtime);
 	if ( !lvalue ) {
-		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
 		data->setValue( std::string("NullPointerException: ") + exp->toString() );
 
 		mThread->exception() = Runtime::ExceptionData(data);
@@ -430,7 +430,7 @@ void TreeInterpreter::evaluateTypeidExpression(TypeidExpression* exp, Runtime::O
 
 	evaluate(exp->mExpression, &tmp);
 
-	Runtime::StringObject type(Runtime::AtomicValue(tmp.QualifiedTypename()));
+	Runtime::StringType type(Runtime::AtomicValue(tmp.QualifiedTypename()));
 	Runtime::operator_binary_assign(result, &type);
 }
 

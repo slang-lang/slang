@@ -8,7 +8,7 @@ SET(SOURCES
 	Int16Type.cpp
 	Int32Type.cpp
 	Int64Type.cpp
-	StringObject.cpp
+	StringType.cpp
 	UserObject.cpp
 	VoidObject.cpp
 )
@@ -21,7 +21,7 @@ SET(HEADERS
 	Int16Type.h
 	Int32Type.h
 	Int64Type.h
-	StringObject.h
+	StringType.h
 	UserObject.h
 	VoidObject.h
 )

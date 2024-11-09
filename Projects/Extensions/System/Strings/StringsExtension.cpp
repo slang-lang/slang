@@ -41,7 +41,7 @@ void SystemStringsExtension::initialize( ExtensionNamespace* scope )
 		std::ostringstream character;
 		character << '\r' << '\n';
 
-		scope->define( "LINEBREAK", new Runtime::StringObject( character.str() ) );
+		scope->define( "LINEBREAK", new Runtime::StringType( character.str() ) );
 	}
 #else
 	// Unix/Linux only
@@ -50,7 +50,7 @@ void SystemStringsExtension::initialize( ExtensionNamespace* scope )
 		std::ostringstream character;
 		character << '\n';
 
-		scope->define( "LINEBREAK", new Runtime::StringObject( character.str() ) );
+		scope->define( "LINEBREAK", new Runtime::StringType( character.str() ) );
 	}
 #endif
 
@@ -58,25 +58,25 @@ void SystemStringsExtension::initialize( ExtensionNamespace* scope )
 		std::ostringstream character;
 		character << '\0';
 
-		scope->define( "NUL", new Runtime::StringObject( character.str() ) );
+		scope->define( "NUL", new Runtime::StringType( character.str() ) );
 	}
 	{	// LINEBREAK_DOS (system specific)
 		std::ostringstream character;
 		character << '\r' << '\n';
 
-		scope->define( "LINEBREAK_DOS", new Runtime::StringObject( character.str() ) );
+		scope->define( "LINEBREAK_DOS", new Runtime::StringType( character.str() ) );
 	}
 	{	// LINEBREAK_UNIX (system specific)
 		std::ostringstream character;
 		character << '\n';
 
-		scope->define( "LINEBREAK_UNIX", new Runtime::StringObject( character.str() ) );
+		scope->define( "LINEBREAK_UNIX", new Runtime::StringType( character.str() ) );
 	}
 	{	// TABULATOR
 		std::ostringstream character;
 		character << '\t';
 
-		scope->define( "TABULATOR", new Runtime::StringObject( character.str() ) );
+		scope->define( "TABULATOR", new Runtime::StringType( character.str() ) );
 	}
 }
 

@@ -13,7 +13,7 @@
 #include "Int16Type.h"
 #include "Int32Type.h"
 #include "Int64Type.h"
-#include "StringObject.h"
+#include "StringType.h"
 
 // Namespace declarations
 
@@ -60,7 +60,7 @@ BoolType::BoolType( const Object& other )
 		 source == Int16Type::TYPENAME ||
 		 source == Int32Type::TYPENAME ||
 		 source == Int64Type::TYPENAME ||
-		 source == StringObject::TYPENAME ||
+		 source == StringType::TYPENAME ||
          other.isEnumerationValue() ) {
 		mValue = other.getValue().toBool();
 	}
@@ -85,7 +85,7 @@ void BoolType::operator_assign( const Object* rvalue )
 		 source == Int16Type::TYPENAME ||
 		 source == Int32Type::TYPENAME ||
 		 source == Int64Type::TYPENAME ||
-		 source == StringObject::TYPENAME ||
+		 source == StringType::TYPENAME ||
          rvalue->isEnumerationValue() ) {
 		mValue = rvalue->getValue().toBool();
 	}
@@ -105,7 +105,7 @@ bool BoolType::operator_equal( const Object* rvalue )
 		 source == Int16Type::TYPENAME ||
 		 source == Int32Type::TYPENAME ||
 		 source == Int64Type::TYPENAME ||
-		 source == StringObject::TYPENAME ||
+		 source == StringType::TYPENAME ||
          rvalue->isEnumerationValue() ) {
 		return mValue.toBool() == rvalue->getValue().toBool();
 	}

@@ -1,6 +1,6 @@
 
 // Header
-#include "StringObject.h"
+#include "StringType.h"
 
 // Library includes
 
@@ -24,29 +24,29 @@ namespace Slang {
 namespace Runtime {
 
 
-AtomicValue StringObject::DEFAULTVALUE = AtomicValue( std::string( "" ) );
-std::string StringObject::TYPENAME = _string;
+AtomicValue StringType::DEFAULTVALUE = AtomicValue( std::string( "" ) );
+std::string StringType::TYPENAME = _string;
 
 
-StringObject::StringObject( const AtomicValue& value )
+StringType::StringType( const AtomicValue& value )
 : Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value.toStdString() ) )
 {
 	mIsAtomicType = true;
 }
 
-StringObject::StringObject(  const std::string& value)
+StringType::StringType(  const std::string& value)
 : Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value ) )
 {
 	mIsAtomicType = true;
 }
 
-StringObject::StringObject( const std::string& name, const AtomicValue& value )
+StringType::StringType( const std::string& name, const AtomicValue& value )
 : Object( name, SYSTEM_LIBRARY, TYPENAME, value )
 {
 	mIsAtomicType = true;
 }
 
-StringObject::StringObject( const Object& other )
+StringType::StringType( const Object& other )
 : Object( other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE )
 {
 	// generic type cast
@@ -62,7 +62,7 @@ StringObject::StringObject( const Object& other )
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
-         target == StringObject::TYPENAME ||
+         target == StringType::TYPENAME ||
          other.isEnumerationValue() ) {
 		mValue = other.getValue().toStdString();
 	}
@@ -71,7 +71,7 @@ StringObject::StringObject( const Object& other )
 	}
 }
 
-void StringObject::operator_assign( const Object* other )
+void StringType::operator_assign( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -82,7 +82,7 @@ void StringObject::operator_assign( const Object* other )
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
-         target == StringObject::TYPENAME ||
+         target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = other->getValue().toStdString();
 	}
@@ -91,12 +91,12 @@ void StringObject::operator_assign( const Object* other )
     }
 }
 
-bool StringObject::operator_bool() const
+bool StringType::operator_bool() const
 {
 	return mValue.toBool();
 }
 
-bool StringObject::operator_equal( const Object* other )
+bool StringType::operator_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -107,7 +107,7 @@ bool StringObject::operator_equal( const Object* other )
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
-         target == StringObject::TYPENAME ||
+         target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toStdString() == other->getValue().toStdString();
 	}
@@ -115,7 +115,7 @@ bool StringObject::operator_equal( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool StringObject::operator_greater( const Object* other )
+bool StringType::operator_greater( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -126,7 +126,7 @@ bool StringObject::operator_greater( const Object* other )
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
-         target == StringObject::TYPENAME ||
+         target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toStdString() > other->getValue().toStdString();
 	}
@@ -134,7 +134,7 @@ bool StringObject::operator_greater( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool StringObject::operator_greater_equal( const Object* other )
+bool StringType::operator_greater_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -145,7 +145,7 @@ bool StringObject::operator_greater_equal( const Object* other )
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
-         target == StringObject::TYPENAME ||
+         target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toStdString() >= other->getValue().toStdString();
 	}
@@ -153,7 +153,7 @@ bool StringObject::operator_greater_equal( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool StringObject::operator_less( const Object* other )
+bool StringType::operator_less( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -164,7 +164,7 @@ bool StringObject::operator_less( const Object* other )
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
-         target == StringObject::TYPENAME ||
+         target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toStdString() < other->getValue().toStdString();
 	}
@@ -172,7 +172,7 @@ bool StringObject::operator_less( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool StringObject::operator_less_equal( const Object* other )
+bool StringType::operator_less_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -183,7 +183,7 @@ bool StringObject::operator_less_equal( const Object* other )
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
-         target == StringObject::TYPENAME ||
+         target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		return mValue.toStdString() <= other->getValue().toStdString();
 	}
@@ -191,7 +191,7 @@ bool StringObject::operator_less_equal( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void StringObject::operator_plus( const Object* other )
+void StringType::operator_plus( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -202,7 +202,7 @@ void StringObject::operator_plus( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		mValue = mValue.toStdString() + other->getValue().toStdString();
 		return;
@@ -211,7 +211,7 @@ void StringObject::operator_plus( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void StringObject::operator_shift_left( const Object* other )
+void StringType::operator_shift_left( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -222,7 +222,7 @@ void StringObject::operator_shift_left( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
 		 other->isEnumerationValue() ) {
 		mValue = mValue.toStdString() + other->getValue().toStdString();
 		return;

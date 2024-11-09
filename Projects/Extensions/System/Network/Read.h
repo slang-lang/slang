@@ -50,8 +50,8 @@ public:
 			*result = Runtime::BoolType(value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -93,8 +93,8 @@ public:
 			*result = Runtime::DoubleType(value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -136,8 +136,8 @@ public:
 			*result = Runtime::FloatType(value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -179,8 +179,8 @@ public:
 			*result = Runtime::Int32Type(value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -195,7 +195,7 @@ class ReadString : public ExtensionMethod
 {
 public:
 	ReadString()
-	: ExtensionMethod(0, "reads", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "reads", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
@@ -234,11 +234,11 @@ public:
 				}
 			}
 
-			*result = Runtime::StringObject(value);
+			*result = Runtime::StringType(value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

@@ -1,6 +1,6 @@
 
 // Header
-#include "StringObject.h"
+#include "StringType.h"
 
 // Library includes
 
@@ -16,11 +16,11 @@ namespace Slang {
 namespace Designtime {
 
 
-std::string StringObject::DEFAULTVALUE = "";
-std::string StringObject::TYPENAME = _string;
+std::string StringType::DEFAULTVALUE = "";
+std::string StringType::TYPENAME = _string;
 
 
-StringObject::StringObject()
+StringType::StringType()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 	mIsAtomicType = true;
@@ -28,12 +28,12 @@ StringObject::StringObject()
 	initialize();
 }
 
-const std::string& StringObject::getTypeName() const
+const std::string& StringType::getTypeName() const
 {
 	return TYPENAME;
 }
 
-void StringObject::initialize()
+void StringType::initialize()
 {
 	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{

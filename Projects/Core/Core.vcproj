@@ -923,7 +923,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\StringObject.cpp"
+				RelativePath=".\Core\BuildInTypes\StringType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -943,7 +943,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\StringType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1589,11 +1589,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\StringObject.h"
+				RelativePath=".\Core\BuildInTypes\StringType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\StringType.h"
 				>
 			</File>
 			<File

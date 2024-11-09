@@ -19,7 +19,7 @@
 #include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -127,7 +127,7 @@ bool LocalClient::addLiteralSymbol(const std::string& name, const std::string& v
 				symbol = new Runtime::Int64Type(token.content());
 				break;
 			case Token::Type::CONST_LITERAL:
-				symbol = new Runtime::StringObject(token.content());
+				symbol = new Runtime::StringType(token.content());
 				break;
 			default:
 				break;
@@ -785,7 +785,7 @@ void LocalClient::prepare( const StringList& tokens )
 
 	mParameters.clear();
 	mParameters.push_back( Slang::Parameter::CreateRuntime( Slang::Runtime::Int32Type::TYPENAME, static_cast<int32_t>( tokens.size() ) ) );
-	mParameters.push_back( Slang::Parameter::CreateRuntime( Slang::Runtime::StringObject::TYPENAME, paramStr ) );
+	mParameters.push_back( Slang::Parameter::CreateRuntime( Slang::Runtime::StringType::TYPENAME, paramStr ) );
 }
 
 void LocalClient::printBreakPoints()

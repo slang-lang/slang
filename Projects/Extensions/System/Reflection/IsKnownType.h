@@ -9,10 +9,10 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/BoolType.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -34,7 +34,7 @@ public:
 	: ExtensionMethod(0, "isKnownType", Designtime::BoolType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("type", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("type", Designtime::StringType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -52,8 +52,8 @@ public:
 			*result = Runtime::BoolType( Controller::Instance().repository()->findBluePrintObject(param_type) != nullptr );
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

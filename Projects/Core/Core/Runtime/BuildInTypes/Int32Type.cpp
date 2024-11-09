@@ -13,7 +13,7 @@
 #include "FloatType.h"
 #include "Int16Type.h"
 #include "Int64Type.h"
-#include "StringObject.h"
+#include "StringType.h"
 
 // Namespace declarations
 
@@ -60,7 +60,7 @@ Int32Type::Int32Type( const Object& other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other.isEnumerationValue() ) {
 		mValue = static_cast<int32_t>( other.getValue().toInt() );
 	}
@@ -85,7 +85,7 @@ void Int32Type::operator_assign( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = static_cast<int32_t>( other->getValue().toInt() );
 	}
@@ -148,7 +148,7 @@ void Int32Type::operator_divide( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = static_cast<int32_t>( mValue.toInt() ) / static_cast<int32_t>( other->getValue().toInt() );
 		return;
@@ -168,7 +168,7 @@ bool Int32Type::operator_equal( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		return static_cast<int32_t>( mValue.toInt() ) == static_cast<int32_t>( other->getValue().toInt() );
 	}
@@ -187,7 +187,7 @@ bool Int32Type::operator_greater( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		return static_cast<int32_t>( mValue.toInt() ) > static_cast<int32_t>( other->getValue().toInt() );
 	}
@@ -206,7 +206,7 @@ bool Int32Type::operator_greater_equal( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		return static_cast<int32_t>( mValue.toInt() ) >= static_cast<int32_t>( other->getValue().toInt() );
 	}
@@ -225,7 +225,7 @@ bool Int32Type::operator_less( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		return static_cast<int32_t>( mValue.toInt() ) < static_cast<int32_t>( other->getValue().toInt() );
 	}
@@ -244,7 +244,7 @@ bool Int32Type::operator_less_equal( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		return static_cast<int32_t>( mValue.toInt() ) <= static_cast<int32_t>( other->getValue().toInt() );
 	}
@@ -263,7 +263,7 @@ void Int32Type::operator_modulo( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = static_cast<int32_t>( mValue.toInt() ) % static_cast<int32_t>( other->getValue().toInt() );
 		return;
@@ -283,7 +283,7 @@ void Int32Type::operator_multiply( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = static_cast<int32_t>( mValue.toInt() ) * static_cast<int32_t>( other->getValue().toInt() );
 		return;
@@ -303,7 +303,7 @@ void Int32Type::operator_plus( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = static_cast<int32_t>( mValue.toInt() ) + static_cast<int32_t>( other->getValue().toInt() );
 		return;
@@ -323,7 +323,7 @@ void Int32Type::operator_subtract( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-		 target == StringObject::TYPENAME ||
+		 target == StringType::TYPENAME ||
          other->isEnumerationValue() ) {
 		mValue = static_cast<int32_t>( mValue.toInt() ) - static_cast<int32_t>( other->getValue().toInt() );
 		return;

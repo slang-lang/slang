@@ -13,7 +13,7 @@
 #include "Int16Type.h"
 #include "Int32Type.h"
 #include "Int64Type.h"
-#include "StringObject.h"
+#include "StringType.h"
 
 // Namespace declarations
 
@@ -60,7 +60,7 @@ DoubleType::DoubleType( const Object& other )
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
-         target == StringObject::TYPENAME ||
+         target == StringType::TYPENAME ||
         other.isEnumerationValue() ) {
 		mValue = other.getValue().toDouble();
 	}

@@ -53,8 +53,8 @@ public:
 			*result = Runtime::DoubleType(pow(param_base, param_exponent));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -92,8 +92,8 @@ public:
 			*result = Runtime::FloatType(powf(param_base, param_exponent));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

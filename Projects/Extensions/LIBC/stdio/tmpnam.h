@@ -14,9 +14,9 @@
 #endif
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -37,7 +37,7 @@ class TMPNAM : public ExtensionMethod
 {
 public:
 	TMPNAM()
-	: ExtensionMethod(0, "tmpnam", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "tmpnam", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
 
@@ -50,14 +50,14 @@ public:
 
 		try {
 #ifdef __APPLE__
-			*result = Runtime::StringObject( std::to_string( mkstemp( nullptr ) ) );  // tmpnam is deprecated
+			*result = Runtime::StringType( std::to_string( mkstemp( nullptr ) ) );  // tmpnam is deprecated
 #else
-			*result = Runtime::StringObject( std::string( tmpnam( nullptr ) ) );
+			*result = Runtime::StringType( std::string( tmpnam( nullptr ) ) );
 #endif
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

@@ -14,7 +14,7 @@
 #include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Designtime/BuildInTypes/Int16Type.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Designtime/BuildInTypes/UserObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Parser/Parser.h>
@@ -24,7 +24,7 @@
 #include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/BuildInTypes/UserObject.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Utils.h>
@@ -198,8 +198,8 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	else if ( blueprint->QualifiedTypename() == Runtime::Int32Type::TYPENAME ) {
 		object = new Runtime::Int32Type(name, Runtime::Int32Type::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::StringObject::TYPENAME ) {
-		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE);
+	else if ( blueprint->QualifiedTypename() == Runtime::StringType::TYPENAME ) {
+		object = new Runtime::StringType(name, Runtime::StringType::DEFAULTVALUE);
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::VoidObject::TYPENAME ) {
 		object = new Runtime::VoidObject(name);
@@ -432,10 +432,10 @@ void Repository::init()
 		scope->define(Designtime::Int32Type::TYPENAME, obj);
 	}
 	{	// "string" type
-		auto* obj = new Designtime::StringObject();
+		auto* obj = new Designtime::StringType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::StringObject::TYPENAME, obj);
+		scope->define(Designtime::StringType::TYPENAME, obj);
 	}
 	{	// "void" type
 		auto* obj = new Designtime::VoidObject();

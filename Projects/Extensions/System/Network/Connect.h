@@ -54,8 +54,8 @@ public:
 			*result = Runtime::Int32Type(handle);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -102,7 +102,7 @@ private:
 #ifdef _MSC_VER
 #else
 		// set sa_address
-		inet_pton(serv_addr.sin_family, static_cast<Runtime::StringObject*>(addressSymbol)->getValue().toStdString().c_str(), &serv_addr.sin_addr);
+		inet_pton(serv_addr.sin_family, static_cast<Runtime::StringType*>(addressSymbol)->getValue().toStdString().c_str(), &serv_addr.sin_addr);
 
 		// set sa_port
 		serv_addr.sin_port = (in_port_t)static_cast<Runtime::Int32Type*>(portSymbol)->getValue().toInt();

@@ -8,7 +8,7 @@
 // Project includes
 #include <Common/Settings.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
@@ -203,7 +203,7 @@ void RemoteClient::Initialize(const VSCodeDebug::Request& request)
 
 	mParameters.clear();
 	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::Int32Type::TYPENAME, 1));
-	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringObject::TYPENAME, paramStr));
+	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringType::TYPENAME, paramStr));
 
 	VSCodeDebug::Response response(request);
 	response.success = true;

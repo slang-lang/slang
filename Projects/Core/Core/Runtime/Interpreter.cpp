@@ -18,7 +18,7 @@
 //#include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
@@ -801,7 +801,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			++start;
 		} break;
 		case Token::Type::CONST_LITERAL: {
-			StringObject tmp(start->content());
+			StringType tmp(start->content());
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
@@ -2064,10 +2064,10 @@ void Interpreter::process_typeid(TokenIterator& token, Object* result)
 
 	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::BluePrintObjectSymbol:
-			*result = StringObject(static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename());
+			*result = StringType(static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename());
 			break;
 		case Symbol::IType::ObjectSymbol:
-			*result = StringObject(static_cast<Object*>(symbol)->QualifiedTypename());
+			*result = StringType(static_cast<Object*>(symbol)->QualifiedTypename());
 			break;
 		default:
 			throw Runtime::Exceptions::InvalidSymbol("typeid(): cannot resolve symbol type", token->position());
