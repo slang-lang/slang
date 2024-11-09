@@ -8,7 +8,7 @@
 #include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
 #include "BoolType.h"
-#include "DoubleObject.h"
+#include "DoubleType.h"
 #include "EnumerationObject.h"
 #include "FloatObject.h"
 #include "Int16Type.h"
@@ -56,7 +56,7 @@ StringObject::StringObject( const Object& other )
 	const std::string& target = other.QualifiedTypename();
 
 	if ( target == BoolType::TYPENAME ||
-         target == DoubleObject::TYPENAME ||
+         target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -76,7 +76,7 @@ void StringObject::operator_assign( const Object* other )
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolType::TYPENAME ||
-         target == DoubleObject::TYPENAME ||
+         target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -101,7 +101,7 @@ bool StringObject::operator_equal( const Object* other )
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolType::TYPENAME ||
-         target == DoubleObject::TYPENAME ||
+         target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -120,7 +120,7 @@ bool StringObject::operator_greater( const Object* other )
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolType::TYPENAME ||
-         target == DoubleObject::TYPENAME ||
+         target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -139,7 +139,7 @@ bool StringObject::operator_greater_equal( const Object* other )
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolType::TYPENAME ||
-         target == DoubleObject::TYPENAME ||
+         target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -158,7 +158,7 @@ bool StringObject::operator_less( const Object* other )
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolType::TYPENAME ||
-         target == DoubleObject::TYPENAME ||
+         target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -177,7 +177,7 @@ bool StringObject::operator_less_equal( const Object* other )
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolType::TYPENAME ||
-         target == DoubleObject::TYPENAME ||
+         target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -196,7 +196,7 @@ void StringObject::operator_plus( const Object* other )
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolType::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
@@ -216,7 +216,7 @@ void StringObject::operator_shift_left( const Object* other )
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == BoolType::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
+		 target == DoubleType::TYPENAME ||
 		 target == EnumerationObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == Int16Type::TYPENAME ||

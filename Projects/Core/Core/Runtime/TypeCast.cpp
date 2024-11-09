@@ -6,7 +6,7 @@
 
 // Project includes
 #include <Core/Runtime/BuildInTypes/BoolType.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/EnumerationObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
@@ -40,8 +40,8 @@ void typecast(Object *base, const std::string& targetType)
 
 		base->assign(tmp);
 	}
-	else if ( targetType == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(*base);
+	else if ( targetType == DoubleType::TYPENAME ) {
+		DoubleType tmp(*base);
 
 		base->assign(tmp);
 	}

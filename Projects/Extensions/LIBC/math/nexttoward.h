@@ -8,10 +8,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
@@ -32,11 +32,11 @@ class NEXTTOWARD: public ExtensionMethod
 {
 public:
 	NEXTTOWARD()
-	: ExtensionMethod(0, "nexttoward", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "nexttoward", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("from", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("to", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("from", Common::TypeDeclaration(Designtime::DoubleType::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("to", Common::TypeDeclaration(Designtime::DoubleType::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -52,7 +52,7 @@ public:
 			auto param_from = (*it++).value().toDouble();
 			auto param_to   = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(nexttoward(param_from, param_to));
+			*result = Runtime::DoubleType(nexttoward(param_from, param_to));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

@@ -8,10 +8,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
@@ -32,11 +32,11 @@ class REMAINDER: public ExtensionMethod
 {
 public:
 	REMAINDER()
-	: ExtensionMethod(0, "remainder", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "remainder", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::DoubleType::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::DoubleType::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -52,7 +52,7 @@ public:
 			auto param_x = (*it++).value().toDouble();
 			auto param_y = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(remainder(param_x, param_y));
+			*result = Runtime::DoubleType(remainder(param_x, param_y));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

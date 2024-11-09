@@ -8,11 +8,11 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
@@ -33,7 +33,7 @@ class MathNAN: public ExtensionMethod
 {
 public:
 	MathNAN()
-	: ExtensionMethod(0, "nan", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "nan", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::StringObject::TYPENAME)));
@@ -51,7 +51,7 @@ public:
 
 			auto param_arg = (*it++).value().toStdString();
 
-			*result = Runtime::DoubleObject(nan(param_arg.c_str()));
+			*result = Runtime::DoubleType(nan(param_arg.c_str()));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

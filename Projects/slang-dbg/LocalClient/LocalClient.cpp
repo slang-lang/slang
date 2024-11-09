@@ -15,7 +15,7 @@
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
@@ -118,7 +118,7 @@ bool LocalClient::addLiteralSymbol(const std::string& name, const std::string& v
 				symbol = new Runtime::BoolType(token.content());
 				break;
 			case Token::Type::CONST_DOUBLE:
-				symbol = new Runtime::DoubleObject(token.content());
+				symbol = new Runtime::DoubleType(token.content());
 				break;
 			case Token::Type::CONST_FLOAT:
 				symbol = new Runtime::FloatObject(token.content());

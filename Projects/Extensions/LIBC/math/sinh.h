@@ -8,11 +8,11 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
@@ -33,7 +33,7 @@ class SINH: public ExtensionMethod
 {
 public:
 	SINH()
-	: ExtensionMethod(0, "sinh", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "sinh", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::StringObject::TYPENAME)));
@@ -51,7 +51,7 @@ public:
 
 			auto param_arg = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(sinh(param_arg));
+			*result = Runtime::DoubleType(sinh(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

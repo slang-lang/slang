@@ -13,7 +13,7 @@
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 //#include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
@@ -786,7 +786,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			++start;
 		} break;
 		case Token::Type::CONST_DOUBLE: {
-			DoubleObject tmp(Utils::Tools::stringToDouble(start->content()));
+			DoubleType tmp(Utils::Tools::stringToDouble(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;

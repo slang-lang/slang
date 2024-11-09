@@ -7,7 +7,7 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
-#include "DoubleObject.h"
+#include "DoubleType.h"
 #include "EnumerationObject.h"
 #include "FloatObject.h"
 #include "Int16Type.h"
@@ -54,7 +54,7 @@ BoolType::BoolType( const Object& other )
 	const std::string& source = other.QualifiedTypename();
 
 	if ( source == BoolType::TYPENAME ||
-		 source == DoubleObject::TYPENAME ||
+		 source == DoubleType::TYPENAME ||
 		 source == EnumerationObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == Int16Type::TYPENAME ||
@@ -79,7 +79,7 @@ void BoolType::operator_assign( const Object* rvalue )
 	const std::string& source = rvalue->QualifiedTypename();
 
 	if ( source == BoolType::TYPENAME ||
-		 source == DoubleObject::TYPENAME ||
+		 source == DoubleType::TYPENAME ||
 		 source == EnumerationObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == Int16Type::TYPENAME ||
@@ -99,7 +99,7 @@ bool BoolType::operator_equal( const Object* rvalue )
 	const std::string& source = rvalue->QualifiedTypename();
 
 	if ( source == BoolType::TYPENAME ||
-		 source == DoubleObject::TYPENAME ||
+		 source == DoubleType::TYPENAME ||
 		 source == EnumerationObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == Int16Type::TYPENAME ||

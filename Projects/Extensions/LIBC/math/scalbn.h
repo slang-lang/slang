@@ -7,10 +7,10 @@
 #include <math.h>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -30,11 +30,11 @@ class SCALBN: public ExtensionMethod
 {
 public:
 	SCALBN()
-	: ExtensionMethod(0, "scalbn", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "scalbn", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("exp", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleType::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("exp", Designtime::DoubleType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -50,7 +50,7 @@ public:
 			auto param_arg = (*it++).value().toDouble();
 			auto param_exp = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(scalbn(param_arg, param_exp));
+			*result = Runtime::DoubleType(scalbn(param_arg, param_exp));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

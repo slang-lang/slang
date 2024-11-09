@@ -427,7 +427,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\DoubleObject.cpp"
+				RelativePath=".\Core\BuildInTypes\DoubleType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -447,7 +447,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\DoubleType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1413,11 +1413,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\DoubleType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\DoubleObject.h"
+				RelativePath=".\Core\BuildInTypes\DoubleType.h"
 				>
 			</File>
 			<File

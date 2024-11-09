@@ -1,6 +1,6 @@
 
 // Header
-#include "DoubleObject.h"
+#include "DoubleType.h"
 
 // Library includes
 
@@ -16,11 +16,11 @@ namespace Slang {
 namespace Designtime {
 
 
-double DoubleObject::DEFAULTVALUE = 0.0;
-std::string DoubleObject::TYPENAME = _double;
+double DoubleType::DEFAULTVALUE = 0.0;
+std::string DoubleType::TYPENAME = _double;
 
 
-DoubleObject::DoubleObject()
+DoubleType::DoubleType()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 	mIsAtomicType = true;
@@ -28,12 +28,12 @@ DoubleObject::DoubleObject()
 	initialize();
 }
 
-const std::string& DoubleObject::getTypeName() const
+const std::string& DoubleType::getTypeName() const
 {
 	return TYPENAME;
 }
 
-void DoubleObject::initialize()
+void DoubleType::initialize()
 {
 	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{

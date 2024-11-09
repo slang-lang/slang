@@ -66,7 +66,7 @@ class ReadDouble : public ExtensionMethod
 {
 public:
 	ReadDouble()
-	: ExtensionMethod(0, "readd", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "readd", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
@@ -90,7 +90,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while reading handle");
 			}
 
-			*result = Runtime::DoubleObject(value);
+			*result = Runtime::DoubleType(value);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

@@ -11,7 +11,7 @@
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 //#include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
@@ -244,7 +244,7 @@ void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* r
 {
 	switch ( exp->mValue.type() ) {
 		case Runtime::AtomicValue::Type::BOOL:      *result = Runtime::BoolType(exp->mValue); break;
-		case Runtime::AtomicValue::Type::DOUBLE:    *result = Runtime::DoubleObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::DOUBLE:    *result = Runtime::DoubleType(exp->mValue); break;
 		case Runtime::AtomicValue::Type::FLOAT:     *result = Runtime::FloatObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::INT:       *result = Runtime::Int64Type(exp->mValue); break;
 		case Runtime::AtomicValue::Type::REFERENCE: *result = *mMemory->get(Runtime::Reference(exp->mValue.toReference())); break;

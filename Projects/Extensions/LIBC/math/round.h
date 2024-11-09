@@ -8,10 +8,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Tools.h>
 
@@ -30,10 +30,10 @@ class ROUND: public ExtensionMethod
 {
 public:
 	ROUND()
-	: ExtensionMethod(0, "round", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "round", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -49,9 +49,9 @@ public:
 			auto param_arg = (*it++).value().toDouble();
 
 #ifdef _WIN32
-			*result = Runtime::DoubleObject(floor(param_arg + 0.5));
+			*result = Runtime::DoubleType(floor(param_arg + 0.5));
 #else
-			*result = Runtime::DoubleObject(round(param_arg));
+			*result = Runtime::DoubleType(round(param_arg));
 #endif
 		}
 		catch ( std::exception& e ) {

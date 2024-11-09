@@ -8,7 +8,7 @@
 #include <Core/Consts.h>
 #include <Core/Runtime/Exceptions.h>
 #include "BoolType.h"
-#include "DoubleObject.h"
+#include "DoubleType.h"
 #include "EnumerationObject.h"
 #include "Int16Type.h"
 #include "Int32Type.h"
@@ -54,7 +54,7 @@ FloatObject::FloatObject( const Object& other )
 	const std::string& target = other.QualifiedTypename();
 
 	if ( target == BoolType::TYPENAME ||
-         target == DoubleObject::TYPENAME ||
+         target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -74,7 +74,7 @@ void FloatObject::operator_assign( const Object* other  )
 	const std::string& target = other->QualifiedTypename();
 
     if ( target == BoolType::TYPENAME ||
-         target == DoubleObject::TYPENAME ||
+         target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -98,7 +98,7 @@ void FloatObject::operator_divide( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -116,7 +116,7 @@ bool FloatObject::operator_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -133,7 +133,7 @@ bool FloatObject::operator_greater( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -150,7 +150,7 @@ bool FloatObject::operator_greater_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -167,7 +167,7 @@ bool FloatObject::operator_less( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -184,7 +184,7 @@ bool FloatObject::operator_less_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -201,7 +201,7 @@ void FloatObject::operator_multiply( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -219,7 +219,7 @@ void FloatObject::operator_plus( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||
@@ -237,7 +237,7 @@ void FloatObject::operator_subtract( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == DoubleType::TYPENAME ||
          target == EnumerationObject::TYPENAME ||
          target == FloatObject::TYPENAME ||
          target == Int16Type::TYPENAME ||

@@ -7,7 +7,7 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
@@ -42,7 +42,7 @@ StringSet provideAtomicTypes()
 	static StringSet types;
 
 	types.insert(Runtime::BoolType::TYPENAME);
-	types.insert(Runtime::DoubleObject::TYPENAME);
+	types.insert(Runtime::DoubleType::TYPENAME);
 	types.insert(Runtime::FloatObject::TYPENAME);
 	types.insert(Runtime::Int16Type::TYPENAME);
 	types.insert(Runtime::Int32Type::TYPENAME);

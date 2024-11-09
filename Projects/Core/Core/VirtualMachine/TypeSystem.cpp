@@ -7,7 +7,7 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/BoolType.h>
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
 #include <Core/Designtime/BuildInTypes/EnumerationObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/Int16Type.h>
@@ -96,7 +96,7 @@ void TypeSystem::initBool()
 
 	// assign
 	define(BoolType::TYPENAME, Token::Type::ASSIGN, BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(BoolType::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(BoolType::TYPENAME, Token::Type::ASSIGN, DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::ASSIGN, Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::ASSIGN, Int32Type::TYPENAME,     BoolType::TYPENAME);
@@ -107,25 +107,25 @@ void TypeSystem::initBool()
 
 	// boolean
 	define(BoolType::TYPENAME, Token::Type::AND,  BoolType::TYPENAME,   BoolType::TYPENAME);
-	define(BoolType::TYPENAME, Token::Type::AND,  DoubleObject::TYPENAME, BoolType::TYPENAME);
+	define(BoolType::TYPENAME, Token::Type::AND,  DoubleType::TYPENAME, BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::AND,  FloatObject::TYPENAME,  BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::AND,  Int16Type::TYPENAME,    BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::AND,  Int32Type::TYPENAME,    BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::AND,  StringObject::TYPENAME, BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::NAND, BoolType::TYPENAME,   BoolType::TYPENAME);
-	define(BoolType::TYPENAME, Token::Type::NAND, DoubleObject::TYPENAME, BoolType::TYPENAME);
+	define(BoolType::TYPENAME, Token::Type::NAND, DoubleType::TYPENAME, BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::NAND, FloatObject::TYPENAME,  BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::NAND, Int16Type::TYPENAME,    BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::NAND, Int32Type::TYPENAME,    BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::NAND, StringObject::TYPENAME, BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::NOR,  BoolType::TYPENAME,   BoolType::TYPENAME);
-	define(BoolType::TYPENAME, Token::Type::NOR,  DoubleObject::TYPENAME, BoolType::TYPENAME);
+	define(BoolType::TYPENAME, Token::Type::NOR,  DoubleType::TYPENAME, BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::NOR,  FloatObject::TYPENAME,  BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::NOR,  Int16Type::TYPENAME,    BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::NOR,  Int32Type::TYPENAME,    BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::NOR,  StringObject::TYPENAME, BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::OR,   BoolType::TYPENAME,   BoolType::TYPENAME);
-	define(BoolType::TYPENAME, Token::Type::OR,   DoubleObject::TYPENAME, BoolType::TYPENAME);
+	define(BoolType::TYPENAME, Token::Type::OR,   DoubleType::TYPENAME, BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::OR,   FloatObject::TYPENAME,  BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::OR,   Int16Type::TYPENAME,    BoolType::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::OR,   Int32Type::TYPENAME,    BoolType::TYPENAME);
@@ -140,7 +140,7 @@ void TypeSystem::initBool()
 
 	// typecast
 	define(BoolType::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,   BoolType::TYPENAME);
-	define(BoolType::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
+	define(BoolType::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME, DoubleType::TYPENAME);
 	//define(BoolType::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,  FloatObject::TYPENAME);
 	define(BoolType::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,    Int16Type::TYPENAME);
@@ -151,95 +151,95 @@ void TypeSystem::initBool()
 void TypeSystem::initDouble()
 {
 	// arithmetic
-	define(DoubleObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME,  DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_ADDITION, Int32Type::TYPENAME,    DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleObject::TYPENAME, DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_DIVIDE,   FloatObject::TYPENAME,  DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_DIVIDE,   Int32Type::TYPENAME,    DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_MULTIPLY, FloatObject::TYPENAME,  DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_MULTIPLY, Int32Type::TYPENAME,    DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME,  DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, Int32Type::TYPENAME,    DoubleObject::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_ADDITION, DoubleType::TYPENAME, DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME,  DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_ADDITION, Int32Type::TYPENAME,    DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleType::TYPENAME, DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_DIVIDE,   FloatObject::TYPENAME,  DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_DIVIDE,   Int32Type::TYPENAME,    DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleType::TYPENAME, DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_MULTIPLY, FloatObject::TYPENAME,  DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_MULTIPLY, Int32Type::TYPENAME,    DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleType::TYPENAME, DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME,  DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_SUBTRACT, Int32Type::TYPENAME,    DoubleType::TYPENAME);
 
 	// assign
-	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, BoolType::TYPENAME,   DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME,  DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, Int16Type::TYPENAME,    DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, Int32Type::TYPENAME,    DoubleObject::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::ASSIGN, BoolType::TYPENAME,   DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::ASSIGN, DoubleType::TYPENAME, DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME,  DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::ASSIGN, Int16Type::TYPENAME,    DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::ASSIGN, Int32Type::TYPENAME,    DoubleType::TYPENAME);
 
 	// bit
 	// no bitwise operators available
 
 	// boolean
-	define(DoubleObject::TYPENAME, Token::Type::AND,  BoolType::TYPENAME,   BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::AND,  DoubleObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::AND,  FloatObject::TYPENAME,  BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::AND,  Int16Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::AND,  Int32Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::AND,  StringObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NAND, BoolType::TYPENAME,   BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NAND, DoubleObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NAND, FloatObject::TYPENAME,  BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NAND, Int16Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NAND, Int32Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NAND, StringObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NOR,  BoolType::TYPENAME,   BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NOR,  DoubleObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NOR,  FloatObject::TYPENAME,  BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NOR,  Int16Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NOR,  Int32Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::NOR,  StringObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::OR,   BoolType::TYPENAME,   BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::OR,   DoubleObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::OR,   FloatObject::TYPENAME,  BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::OR,   Int16Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::OR,   Int32Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::OR,   StringObject::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::AND,  BoolType::TYPENAME,   BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::AND,  DoubleType::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::AND,  FloatObject::TYPENAME,  BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::AND,  Int16Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::AND,  Int32Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::AND,  StringObject::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NAND, BoolType::TYPENAME,   BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NAND, DoubleType::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NAND, FloatObject::TYPENAME,  BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NAND, Int16Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NAND, Int32Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NAND, StringObject::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NOR,  BoolType::TYPENAME,   BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NOR,  DoubleType::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NOR,  FloatObject::TYPENAME,  BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NOR,  Int16Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NOR,  Int32Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::NOR,  StringObject::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::OR,   BoolType::TYPENAME,   BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::OR,   DoubleType::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::OR,   FloatObject::TYPENAME,  BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::OR,   Int16Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::OR,   Int32Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::OR,   StringObject::TYPENAME, BoolType::TYPENAME);
 
 	// comparison
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_EQUAL,         DoubleObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_EQUAL,         FloatObject::TYPENAME,  BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_EQUAL,         Int16Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_EQUAL,         Int32Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_GREATER,       DoubleObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_GREATER,       FloatObject::TYPENAME,  BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_GREATER,       Int16Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_GREATER,       Int32Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, DoubleObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, FloatObject::TYPENAME,  BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, Int16Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, Int32Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_LESS,          DoubleObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_LESS,          FloatObject::TYPENAME,  BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_LESS,          Int16Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_LESS,          Int32Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    DoubleObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    FloatObject::TYPENAME,  BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    Int16Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    Int32Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       DoubleObject::TYPENAME, BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       FloatObject::TYPENAME,  BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       Int16Type::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       Int32Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_EQUAL,         DoubleType::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_EQUAL,         FloatObject::TYPENAME,  BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_EQUAL,         Int16Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_EQUAL,         Int32Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_GREATER,       DoubleType::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_GREATER,       FloatObject::TYPENAME,  BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_GREATER,       Int16Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_GREATER,       Int32Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, DoubleType::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, FloatObject::TYPENAME,  BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, Int16Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, Int32Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_LESS,          DoubleType::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_LESS,          FloatObject::TYPENAME,  BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_LESS,          Int16Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_LESS,          Int32Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    DoubleType::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    FloatObject::TYPENAME,  BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    Int16Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    Int32Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_UNEQUAL,       DoubleType::TYPENAME, BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_UNEQUAL,       FloatObject::TYPENAME,  BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_UNEQUAL,       Int16Type::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::COMPARE_UNEQUAL,       Int32Type::TYPENAME,    BoolType::TYPENAME);
 
 	// shift
 	// no shift operators available
 
 	// typecast
-	define(DoubleObject::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
-	//define(DoubleObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,   FloatObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::TYPECAST, Int32Type::TYPENAME,     Int32Type::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME,  StringObject::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,    BoolType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,  DoubleType::TYPENAME);
+	//define(DoubleType::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,   FloatObject::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::TYPECAST, Int32Type::TYPENAME,     Int32Type::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::TYPECAST, StringObject::TYPENAME,  StringObject::TYPENAME);
 
 	// unary
-	define(DoubleObject::TYPENAME, Token::Type::MATH_ADDITION, _unary_, DoubleObject::TYPENAME);
-	define(DoubleObject::TYPENAME, Token::Type::MATH_SUBTRACT, _unary_, DoubleObject::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_ADDITION, _unary_, DoubleType::TYPENAME);
+	define(DoubleType::TYPENAME, Token::Type::MATH_SUBTRACT, _unary_, DoubleType::TYPENAME);
 }
 
 void TypeSystem::initEnumeration()
@@ -255,7 +255,7 @@ void TypeSystem::initEnumeration()
 
 	// typecast
 	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,        BoolType::TYPENAME);
-	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME,      DoubleObject::TYPENAME);
+	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,      DoubleType::TYPENAME);
 	//define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
 	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,       FloatObject::TYPENAME);
 	define(EnumerationObject::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,         Int16Type::TYPENAME);
@@ -270,25 +270,25 @@ void TypeSystem::initFloat()
 {
 	// assign
 	define(FloatObject::TYPENAME, Token::Type::ASSIGN, BoolType::TYPENAME,    FloatObject::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME,  FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::ASSIGN, DoubleType::TYPENAME,  FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::ASSIGN, Int16Type::TYPENAME,     FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::ASSIGN, Int32Type::TYPENAME,     FloatObject::TYPENAME);
 
 	// arithmetic
-	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME,  FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleType::TYPENAME,  FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, Int16Type::TYPENAME,     FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, Int32Type::TYPENAME,     FloatObject::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleObject::TYPENAME,  FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleType::TYPENAME,  FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_DIVIDE,   FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_DIVIDE,   Int16Type::TYPENAME,     FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_DIVIDE,   Int32Type::TYPENAME,     FloatObject::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleObject::TYPENAME,  FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleType::TYPENAME,  FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_MULTIPLY, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_MULTIPLY, Int16Type::TYPENAME,     FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_MULTIPLY, Int32Type::TYPENAME,     FloatObject::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME,  FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleType::TYPENAME,  FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, Int16Type::TYPENAME,     FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, Int32Type::TYPENAME,     FloatObject::TYPENAME);
@@ -298,52 +298,52 @@ void TypeSystem::initFloat()
 
 	// boolean
 	define(FloatObject::TYPENAME, Token::Type::AND,  BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::AND,  DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::AND,  DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::AND,  FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::AND,  Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::AND,  Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::AND,  StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::NAND, BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::NAND, DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::NAND, DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::NAND, FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::NAND, Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::NAND, Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::NAND, StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::NOR,  BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::NOR,  DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::NOR,  DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::NOR,  FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::NOR,  Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::NOR,  Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::NOR,  StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::OR,   BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::OR,   DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::OR,   DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::OR,   FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::OR,   Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::OR,   Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::OR,   StringObject::TYPENAME,  BoolType::TYPENAME);
 
 	// comparison
-	define(FloatObject::TYPENAME, Token::Type::COMPARE_EQUAL,         DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::COMPARE_EQUAL,         DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_EQUAL,         FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_EQUAL,         Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_EQUAL,         Int32Type::TYPENAME,     BoolType::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::COMPARE_GREATER,       DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::COMPARE_GREATER,       DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_GREATER,       FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_GREATER,       Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_GREATER,       Int32Type::TYPENAME,     BoolType::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, Int32Type::TYPENAME,     BoolType::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::COMPARE_LESS,          DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::COMPARE_LESS,          DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_LESS,          FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_LESS,          Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_LESS,          Int32Type::TYPENAME,     BoolType::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    Int32Type::TYPENAME,     BoolType::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       Int32Type::TYPENAME,     BoolType::TYPENAME);
@@ -353,7 +353,7 @@ void TypeSystem::initFloat()
 
 	// typecast
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(FloatObject::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,  DoubleType::TYPENAME);
 	//define(FloatObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,     Int16Type::TYPENAME);
@@ -368,21 +368,21 @@ void TypeSystem::initFloat()
 void TypeSystem::initInt16()
 {
 	// arithmetic
-	define(Int16Type::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_ADDITION, DoubleType::TYPENAME,  DoubleType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_ADDITION, Int16Type::TYPENAME,     Int16Type::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_ADDITION, Int32Type::TYPENAME,     Int32Type::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleType::TYPENAME,  DoubleType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_DIVIDE,   FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_DIVIDE,   Int16Type::TYPENAME,     Int16Type::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_DIVIDE,   Int32Type::TYPENAME,     Int32Type::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_MODULO,   Int16Type::TYPENAME,     Int16Type::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_MODULO,   Int32Type::TYPENAME,     Int32Type::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleType::TYPENAME,  DoubleType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_MULTIPLY, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_MULTIPLY, Int16Type::TYPENAME,     Int16Type::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_MULTIPLY, Int32Type::TYPENAME,     Int32Type::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleType::TYPENAME,  DoubleType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_SUBTRACT, Int16Type::TYPENAME,     Int16Type::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::MATH_SUBTRACT, Int32Type::TYPENAME,     Int32Type::TYPENAME);
@@ -399,25 +399,25 @@ void TypeSystem::initInt16()
 
 	// boolean
 	define(Int16Type::TYPENAME, Token::Type::AND,  BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::AND,  DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::AND,  DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::AND,  FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::AND,  Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::AND,  Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::AND,  StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::NAND, BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::NAND, DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::NAND, DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::NAND, FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::NAND, Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::NAND, Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::NAND, StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::NOR,  BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::NOR,  DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::NOR,  DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::NOR,  FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::NOR,  Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::NOR,  Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::NOR,  StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::OR,   BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::OR,   DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::OR,   DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::OR,   FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::OR,   Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::OR,   Int32Type::TYPENAME,     BoolType::TYPENAME);
@@ -436,7 +436,7 @@ void TypeSystem::initInt16()
 
 	// typecast
 	define(Int16Type::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,        BoolType::TYPENAME);
-	define(Int16Type::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME,      DoubleObject::TYPENAME);
+	define(Int16Type::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,      DoubleType::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,       FloatObject::TYPENAME);
 	define(Int16Type::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,         Int16Type::TYPENAME);
@@ -451,28 +451,28 @@ void TypeSystem::initInt16()
 void TypeSystem::initInt32()
 {
 	// arithmetic
-	define(Int32Type::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::MATH_ADDITION, DoubleType::TYPENAME,  DoubleType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_ADDITION, Int16Type::TYPENAME,     Int32Type::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_ADDITION, Int32Type::TYPENAME,     Int32Type::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleType::TYPENAME,  DoubleType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_DIVIDE,   FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_DIVIDE,   Int16Type::TYPENAME,     Int32Type::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_DIVIDE,   Int32Type::TYPENAME,     Int32Type::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_MODULO,   Int16Type::TYPENAME,     Int32Type::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_MODULO,   Int32Type::TYPENAME,     Int32Type::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleType::TYPENAME,  DoubleType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_MULTIPLY, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_MULTIPLY, Int16Type::TYPENAME,     Int32Type::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_MULTIPLY, Int32Type::TYPENAME,     Int32Type::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleType::TYPENAME,  DoubleType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_SUBTRACT, Int16Type::TYPENAME,     Int32Type::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::MATH_SUBTRACT, Int32Type::TYPENAME,     Int32Type::TYPENAME);
 
 	// assign
 	define(Int32Type::TYPENAME, Token::Type::ASSIGN, BoolType::TYPENAME,   Int32Type::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME, Int32Type::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::ASSIGN, DoubleType::TYPENAME, Int32Type::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME,  Int32Type::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::ASSIGN, Int16Type::TYPENAME,    Int32Type::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::ASSIGN, Int32Type::TYPENAME,    Int32Type::TYPENAME);
@@ -484,52 +484,52 @@ void TypeSystem::initInt32()
 
 	// boolean
 	define(Int32Type::TYPENAME, Token::Type::AND,  BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::AND,  DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::AND,  DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::AND,  FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::AND,  Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::AND,  Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::AND,  StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::NAND, BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::NAND, DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::NAND, DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::NAND, FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::NAND, Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::NAND, Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::NAND, StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::NOR,  BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::NOR,  DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::NOR,  DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::NOR,  FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::NOR,  Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::NOR,  Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::NOR,  StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::OR,   BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::OR,   DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::OR,   DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::OR,   FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::OR,   Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::OR,   Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::OR,   StringObject::TYPENAME,  BoolType::TYPENAME);
 
 	// comparison
-	define(Int32Type::TYPENAME, Token::Type::COMPARE_EQUAL,         DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::COMPARE_EQUAL,         DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_EQUAL,         FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_EQUAL,         Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_EQUAL,         Int32Type::TYPENAME,     BoolType::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::COMPARE_GREATER,       DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::COMPARE_GREATER,       DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_GREATER,       FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_GREATER,       Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_GREATER,       Int32Type::TYPENAME,     BoolType::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, Int32Type::TYPENAME,     BoolType::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::COMPARE_LESS,          DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::COMPARE_LESS,          DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_LESS,          FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_LESS,          Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_LESS,          Int32Type::TYPENAME,     BoolType::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    Int32Type::TYPENAME,     BoolType::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::COMPARE_UNEQUAL,       DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::COMPARE_UNEQUAL,       DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_UNEQUAL,       FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_UNEQUAL,       Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::COMPARE_UNEQUAL,       Int32Type::TYPENAME,     BoolType::TYPENAME);
@@ -539,7 +539,7 @@ void TypeSystem::initInt32()
 
 	// typecast
 	define(Int32Type::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,        BoolType::TYPENAME);
-	define(Int32Type::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME,      DoubleObject::TYPENAME);
+	define(Int32Type::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,      DoubleType::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,       FloatObject::TYPENAME);
 	define(Int32Type::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,         Int16Type::TYPENAME);
@@ -580,7 +580,7 @@ void TypeSystem::initString()
 {
 	// arithmetic
 	define(StringObject::TYPENAME, Token::Type::MATH_ADDITION, BoolType::TYPENAME,    StringObject::TYPENAME);
-	define(StringObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME,  StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleType::TYPENAME,  StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME,   StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::MATH_ADDITION, Int16Type::TYPENAME,     StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::MATH_ADDITION, Int32Type::TYPENAME,     StringObject::TYPENAME);
@@ -588,7 +588,7 @@ void TypeSystem::initString()
 
 	// assign
 	define(StringObject::TYPENAME, Token::Type::ASSIGN, BoolType::TYPENAME,    StringObject::TYPENAME);
-	define(StringObject::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME,  StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::ASSIGN, DoubleType::TYPENAME,  StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME,   StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::ASSIGN, Int16Type::TYPENAME,     StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::ASSIGN, Int32Type::TYPENAME,     StringObject::TYPENAME);
@@ -599,25 +599,25 @@ void TypeSystem::initString()
 
 	// boolean
 	define(StringObject::TYPENAME, Token::Type::AND,  BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(StringObject::TYPENAME, Token::Type::AND,  DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::AND,  DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::AND,  FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::AND,  Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::AND,  Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::AND,  StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::NAND, BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(StringObject::TYPENAME, Token::Type::NAND, DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::NAND, DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::NAND, FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::NAND, Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::NAND, Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::NAND, StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::NOR,  BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(StringObject::TYPENAME, Token::Type::NOR,  DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::NOR,  DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::NOR,  FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::NOR,  Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::NOR,  Int32Type::TYPENAME,     BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::NOR,  StringObject::TYPENAME,  BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::OR,   BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(StringObject::TYPENAME, Token::Type::OR,   DoubleObject::TYPENAME,  BoolType::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OR,   DoubleType::TYPENAME,  BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::OR,   FloatObject::TYPENAME,   BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::OR,   Int16Type::TYPENAME,     BoolType::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::OR,   Int32Type::TYPENAME,     BoolType::TYPENAME);
@@ -633,7 +633,7 @@ void TypeSystem::initString()
 
 	// shift
 	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, BoolType::TYPENAME,    StringObject::TYPENAME);
-	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, DoubleObject::TYPENAME,  StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, DoubleType::TYPENAME,  StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, FloatObject::TYPENAME,   StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, Int16Type::TYPENAME,     StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::OPERATOR_SHIFT_LEFT, Int32Type::TYPENAME,     StringObject::TYPENAME);
@@ -641,7 +641,7 @@ void TypeSystem::initString()
 
 	// typecast
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, BoolType::TYPENAME,    BoolType::TYPENAME);
-	define(StringObject::TYPENAME, Token::Type::TYPECAST, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::TYPECAST, DoubleType::TYPENAME,  DoubleType::TYPENAME);
 	//define(StringObject::TYPENAME, Token::Type::TYPECAST, EnumerationObject::TYPENAME, EnumerationObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, FloatObject::TYPENAME,   FloatObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::TYPECAST, Int16Type::TYPENAME,     Int16Type::TYPENAME);

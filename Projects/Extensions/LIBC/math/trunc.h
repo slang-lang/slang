@@ -8,10 +8,10 @@
 #include <cmath>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Tools.h>
 
@@ -30,10 +30,10 @@ class TRUNC: public ExtensionMethod
 {
 public:
 	TRUNC()
-	: ExtensionMethod(0, "trunc", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "trunc", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::DoubleType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -49,9 +49,9 @@ public:
 			auto param_arg = (*it++).value().toDouble();
 
 #ifdef _WIN32
-			*result = Runtime::DoubleObject((param_arg > 0) ? floor(param_arg) : ceil(param_arg));
+			*result = Runtime::DoubleType((param_arg > 0) ? floor(param_arg) : ceil(param_arg));
 #else
-			*result = Runtime::DoubleObject(trunc(param_arg));
+			*result = Runtime::DoubleType(trunc(param_arg));
 #endif
 		}
 		catch ( std::exception& e ) {
