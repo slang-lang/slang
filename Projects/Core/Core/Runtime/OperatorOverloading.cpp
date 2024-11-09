@@ -12,6 +12,7 @@
 #include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/BuildInTypes/UserType.h>
 #include <Core/Runtime/BuildInTypes/VoidType.h>
@@ -54,6 +55,9 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 	}
 	else if ( target == Int32Type::TYPENAME ) {
 		lvalue->assign( Int32Type( rvalue->getValue().toInt() ) );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		lvalue->assign( Int64Type( rvalue->getValue().toInt() ) );
 	}
 	else if ( target == StringType::TYPENAME ) {
 		lvalue->assign( StringType( rvalue->getValue().toStdString() ) );
@@ -270,8 +274,20 @@ void operator_binary_divide( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_divide( rvalue );
+
+		lvalue->assign( tmp );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_divide( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
@@ -314,8 +330,14 @@ bool operator_binary_equal( Object* lvalue, Object* rvalue )
 	else if ( target == FloatType::TYPENAME ) {
 		return FloatType( lvalue->getValue().toFloat() ).operator_equal( rvalue );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		return Int16Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		return Int32Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		return Int64Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
 	else if ( target == StringType::TYPENAME ) {
 		return StringType( lvalue->getValue().toStdString() ).operator_equal( rvalue );
@@ -361,8 +383,16 @@ bool operator_binary_greater( Object* lvalue, Object* rvalue )
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater( rvalue );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_greater( rvalue );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_greater( rvalue );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater( rvalue );
 	}
 	else if ( target == StringType::TYPENAME ) {
@@ -405,8 +435,16 @@ bool operator_binary_greater_equal( Object* lvalue, Object* rvalue )
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater_equal( rvalue );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_greater_equal( rvalue );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_greater_equal( rvalue );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater_equal( rvalue );
 	}
 	else if ( target == StringType::TYPENAME ) {
@@ -449,8 +487,16 @@ bool operator_binary_less( Object* lvalue, Object* rvalue )
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less( rvalue );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_less( rvalue );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_less( rvalue );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less( rvalue );
 	}
 	else if ( target == StringType::TYPENAME ) {
@@ -493,8 +539,16 @@ bool operator_binary_less_equal( Object* lvalue, Object* rvalue )
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less_equal( rvalue );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_less_equal( rvalue );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_less_equal( rvalue );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less_equal( rvalue );
 	}
 	else if ( target == StringType::TYPENAME ) {
@@ -543,8 +597,20 @@ void operator_binary_modulo( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_modulo( rvalue );
+
+		lvalue->assign( tmp );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_modulo( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
@@ -593,8 +659,20 @@ void operator_binary_multiply( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_multiply( rvalue );
+
+		lvalue->assign( tmp );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_multiply( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
@@ -643,8 +721,20 @@ void operator_binary_plus( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_plus( rvalue );
+
+		lvalue->assign( tmp );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_plus( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
@@ -793,8 +883,20 @@ void operator_binary_subtract( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_subtract( rvalue );
+
+		lvalue->assign( tmp );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_subtract( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
@@ -843,8 +945,20 @@ void operator_unary_decrement (Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_decrement();
+
+		lvalue->assign( tmp );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_decrement();
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
@@ -893,8 +1007,20 @@ void operator_unary_increment( Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_increment();
+
+		lvalue->assign( tmp );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_increment();
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
@@ -943,8 +1069,20 @@ void operator_unary_minus( Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_minus();
+
+		lvalue->assign( tmp );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_minus();
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
@@ -993,8 +1131,20 @@ void operator_unary_plus( Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_plus();
+
+		lvalue->assign( tmp );
+	}
 	else if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_plus();
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
@@ -1040,8 +1190,18 @@ void operator_unary_not( Object* base )
 
 		*base = BoolType( !tmp.operator_bool() );
 	}
+	else if ( source == Int16Type::TYPENAME ) {
+		Int16Type tmp( base->getValue() );
+
+		*base = BoolType( !tmp.operator_bool() );
+	}
 	else if ( source == Int32Type::TYPENAME ) {
 		Int32Type tmp( base->getValue() );
+
+		*base = BoolType( !tmp.operator_bool() );
+	}
+	else if ( source == Int64Type::TYPENAME ) {
+		Int64Type tmp( base->getValue() );
 
 		*base = BoolType( !tmp.operator_bool() );
 	}

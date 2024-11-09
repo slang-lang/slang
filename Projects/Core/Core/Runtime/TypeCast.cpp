@@ -69,6 +69,11 @@ void typecast(Object *base, const std::string& targetType)
 
 		base->assign(tmp);
 	}
+	else if ( targetType == Int64Type::TYPENAME ) {
+		Int64Type tmp(*base);
+
+		base->assign(tmp);
+	}
 	else if ( targetType == StringType::TYPENAME ) {
 		StringType tmp(*base);
 
