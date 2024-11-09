@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include "abs.h"
 #include "acos.h"
 #include "acosh.h"
@@ -75,17 +75,17 @@ math_t::math_t()
 void math_t::initialize( ExtensionNamespace* scope )
 {
 	// constants
-	scope->define( "FP_NORMAL",    new Runtime::FloatObject(  "FP_NORMAL",    FP_NORMAL ) );
-	scope->define( "FP_SUBNORMAL", new Runtime::FloatObject(  "FP_SUBNORMAL", FP_SUBNORMAL ) );
-	scope->define( "FP_ZERO",      new Runtime::FloatObject(  "FP_ZERO",      FP_ZERO ) );
-	scope->define( "FP_INFINITE",  new Runtime::FloatObject(  "FP_INFINITE",  FP_INFINITE ) );
-	scope->define( "FP_NAN",       new Runtime::FloatObject(  "FP_NAN",       FP_NAN ) );
+	scope->define( "FP_NORMAL",    new Runtime::FloatType(  "FP_NORMAL",    FP_NORMAL ) );
+	scope->define( "FP_SUBNORMAL", new Runtime::FloatType(  "FP_SUBNORMAL", FP_SUBNORMAL ) );
+	scope->define( "FP_ZERO",      new Runtime::FloatType(  "FP_ZERO",      FP_ZERO ) );
+	scope->define( "FP_INFINITE",  new Runtime::FloatType(  "FP_INFINITE",  FP_INFINITE ) );
+	scope->define( "FP_NAN",       new Runtime::FloatType(  "FP_NAN",       FP_NAN ) );
 
 	//scope->define( "FP_FAST_FMA",  new Runtime::DoubleType( "FP_FAST_FMA",  FP_FAST_FMA ) );
-	//scope->define( "FP_FAST_FMAF", new Runtime::FloatObject(  "FP_FAST_FMAF", FP_FAST_FMAF ) );
+	//scope->define( "FP_FAST_FMAF", new Runtime::FloatType(  "FP_FAST_FMAF", FP_FAST_FMAF ) );
 
 	scope->define( "HUGE_VAL",     new Runtime::DoubleType( "HUGE_VAL",     HUGE_VAL ) );
-	scope->define( "HUGE_VALF",    new Runtime::FloatObject(  "HUGE_VALF",    HUGE_VALF ) );
+	scope->define( "HUGE_VALF",    new Runtime::FloatType(  "HUGE_VALF",    HUGE_VALF ) );
 
 	scope->define( "INFINITY",     new Runtime::DoubleType( "INFINITY",     INFINITY ) );
 	scope->define( "NAN",          new Runtime::DoubleType( "NAN",          NAN ) );

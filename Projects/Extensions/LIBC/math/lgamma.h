@@ -8,10 +8,10 @@
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/DoubleType.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -67,10 +67,10 @@ class LGAMMAF: public ExtensionMethod
 {
 public:
 	LGAMMAF()
-	: ExtensionMethod(0, "lgammaf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "lgammaf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatType::TYPENAME));
 
 		setSignature(params);
 	}

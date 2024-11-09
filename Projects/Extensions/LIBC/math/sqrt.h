@@ -9,10 +9,10 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/DoubleType.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -69,10 +69,10 @@ class SQRTFloat: public ExtensionMethod
 {
 public:
 	SQRTFloat()
-	: ExtensionMethod(0, "sqrt", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "sqrt", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -87,7 +87,7 @@ public:
 
 			auto param_arg = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(sqrt(param_arg));
+			*result = Runtime::FloatType(sqrt(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -106,10 +106,10 @@ class SQRTF: public ExtensionMethod
 {
 public:
 	SQRTF()
-	: ExtensionMethod(0, "sqrtf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "sqrtf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::FloatType::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -124,7 +124,7 @@ public:
 
 			auto param_arg = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(sqrtf(param_arg));
+			*result = Runtime::FloatType(sqrtf(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

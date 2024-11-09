@@ -9,11 +9,11 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/DoubleType.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -70,7 +70,7 @@ class LOGBF: public ExtensionMethod
 {
 public:
 	LOGBF()
-	: ExtensionMethod(0, "logbf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "logbf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::StringObject::TYPENAME)));
@@ -88,7 +88,7 @@ public:
 
 			auto param_arg = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(logbf(param_arg));
+			*result = Runtime::FloatType(logbf(param_arg));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

@@ -9,7 +9,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include "DoubleType.h"
 #include "EnumerationType.h"
-#include "FloatObject.h"
+#include "FloatType.h"
 #include "Int16Type.h"
 #include "Int32Type.h"
 #include "Int64Type.h"
@@ -56,7 +56,7 @@ BoolType::BoolType( const Object& other )
 	if ( source == BoolType::TYPENAME ||
 		 source == DoubleType::TYPENAME ||
 		 source == EnumerationType::TYPENAME ||
-		 source == FloatObject::TYPENAME ||
+		 source == FloatType::TYPENAME ||
 		 source == Int16Type::TYPENAME ||
 		 source == Int32Type::TYPENAME ||
 		 source == Int64Type::TYPENAME ||
@@ -81,7 +81,7 @@ void BoolType::operator_assign( const Object* rvalue )
 	if ( source == BoolType::TYPENAME ||
 		 source == DoubleType::TYPENAME ||
 		 source == EnumerationType::TYPENAME ||
-		 source == FloatObject::TYPENAME ||
+		 source == FloatType::TYPENAME ||
 		 source == Int16Type::TYPENAME ||
 		 source == Int32Type::TYPENAME ||
 		 source == Int64Type::TYPENAME ||
@@ -101,7 +101,7 @@ bool BoolType::operator_equal( const Object* rvalue )
 	if ( source == BoolType::TYPENAME ||
 		 source == DoubleType::TYPENAME ||
 		 source == EnumerationType::TYPENAME ||
-		 source == FloatObject::TYPENAME ||
+		 source == FloatType::TYPENAME ||
 		 source == Int16Type::TYPENAME ||
 		 source == Int32Type::TYPENAME ||
 		 source == Int64Type::TYPENAME ||

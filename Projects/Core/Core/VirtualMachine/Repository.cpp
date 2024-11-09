@@ -11,7 +11,7 @@
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/BuildInTypes/BoolType.h>
 #include <Core/Designtime/BuildInTypes/DoubleType.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Designtime/BuildInTypes/Int16Type.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
@@ -21,7 +21,7 @@
 #include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/EnumerationType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
@@ -189,8 +189,8 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	else if ( blueprint->QualifiedTypename() == Runtime::DoubleType::TYPENAME ) {
 		object = new Runtime::DoubleType(name, Runtime::DoubleType::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::FloatObject::TYPENAME ) {
-		object = new Runtime::FloatObject(name, Runtime::FloatObject::DEFAULTVALUE);
+	else if ( blueprint->QualifiedTypename() == Runtime::FloatType::TYPENAME ) {
+		object = new Runtime::FloatType(name, Runtime::FloatType::DEFAULTVALUE);
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::Int16Type::TYPENAME ) {
 		object = new Runtime::Int16Type(name, Runtime::Int16Type::DEFAULTVALUE);
@@ -414,10 +414,10 @@ void Repository::init()
 		scope->define(Designtime::DoubleType::TYPENAME, obj);
 	}
 	{	// "float" type
-		auto* obj = new Designtime::FloatObject();
+		auto* obj = new Designtime::FloatType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::FloatObject::TYPENAME, obj);
+		scope->define(Designtime::FloatType::TYPENAME, obj);
 	}
 	{	// "int16" type
 		auto* obj = new Designtime::Int16Type();

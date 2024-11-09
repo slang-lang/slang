@@ -10,7 +10,7 @@
 #include "BoolType.h"
 #include "DoubleType.h"
 #include "EnumerationType.h"
-#include "FloatObject.h"
+#include "FloatType.h"
 #include "Int32Type.h"
 #include "Int64Type.h"
 #include "StringObject.h"
@@ -56,7 +56,7 @@ Int16Type::Int16Type( const Object& other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -81,7 +81,7 @@ void Int16Type::operator_assign( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -106,7 +106,7 @@ void Int16Type::operator_bitand( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -125,7 +125,7 @@ void Int16Type::operator_bitor( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -144,7 +144,7 @@ void Int16Type::operator_divide( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -164,7 +164,7 @@ bool Int16Type::operator_equal( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -183,7 +183,7 @@ bool Int16Type::operator_greater( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -202,7 +202,7 @@ bool Int16Type::operator_greater_equal( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -221,7 +221,7 @@ bool Int16Type::operator_less( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -240,7 +240,7 @@ bool Int16Type::operator_less_equal( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -259,7 +259,7 @@ void Int16Type::operator_modulo( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -279,7 +279,7 @@ void Int16Type::operator_multiply( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -299,7 +299,7 @@ void Int16Type::operator_plus( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
@@ -319,7 +319,7 @@ void Int16Type::operator_subtract( const Object* other )
 	if ( target == BoolType::TYPENAME ||
 		 target == DoubleType::TYPENAME ||
 		 target == EnumerationType::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+		 target == FloatType::TYPENAME ||
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||

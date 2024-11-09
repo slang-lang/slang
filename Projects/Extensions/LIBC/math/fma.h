@@ -9,10 +9,10 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/DoubleType.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -73,12 +73,12 @@ class FMAF: public ExtensionMethod
 {
 public:
 	FMAF()
-	: ExtensionMethod(0, "fmaf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "fmaf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("z", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::FloatType::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::FloatType::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("z", Common::TypeDeclaration(Designtime::FloatType::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -95,7 +95,7 @@ public:
 			auto param_y = (*it++).value().toFloat();
 			auto param_z = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(fmaf(param_x, param_y, param_z));
+			*result = Runtime::FloatType(fmaf(param_x, param_y, param_z));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

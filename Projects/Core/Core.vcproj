@@ -527,7 +527,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\FloatObject.cpp"
+				RelativePath=".\Core\BuildInTypes\FloatType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -547,7 +547,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\FloatType.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1457,11 +1457,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInTypes\FloatObject.h"
+				RelativePath=".\Core\BuildInTypes\FloatType.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\FloatType.h"
 				>
 			</File>
 			<File

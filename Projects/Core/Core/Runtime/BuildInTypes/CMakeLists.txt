@@ -4,7 +4,7 @@ SET(SOURCES
 	BoolType.cpp
 	DoubleType.cpp
 	EnumerationType.cpp
-	FloatObject.cpp
+	FloatType.cpp
 	Int16Type.cpp
 	Int32Type.cpp
 	Int64Type.cpp
@@ -17,7 +17,7 @@ SET(HEADERS
 	BoolType.h
 	DoubleType.h
 	EnumerationType.h
-	FloatObject.h
+	FloatType.h
 	Int16Type.h
 	Int32Type.h
 	Int64Type.h

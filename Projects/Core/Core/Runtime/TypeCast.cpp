@@ -8,7 +8,7 @@
 #include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/EnumerationType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
@@ -54,8 +54,8 @@ void typecast(Object *base, const std::string& targetType)
 		base->assign(tmp);
  */
 	}
-	else if ( targetType == FloatObject::TYPENAME ) {
-		FloatObject tmp(*base);
+	else if ( targetType == FloatType::TYPENAME ) {
+		FloatType tmp(*base);
 
 		base->assign(tmp);
 	}

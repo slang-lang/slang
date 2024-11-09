@@ -9,10 +9,10 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/DoubleType.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -71,11 +71,11 @@ class NEXTAFTERF: public ExtensionMethod
 {
 public:
 	NEXTAFTERF()
-	: ExtensionMethod(0, "nextafterf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "nextafterf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("from", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("to", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("from", Common::TypeDeclaration(Designtime::FloatType::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("to", Common::TypeDeclaration(Designtime::FloatType::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -91,7 +91,7 @@ public:
 			auto param_from = (*it++).value().toFloat();
 			auto param_to   = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(nextafterf(param_from, param_to));
+			*result = Runtime::FloatType(nextafterf(param_from, param_to));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

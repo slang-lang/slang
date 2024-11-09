@@ -14,7 +14,7 @@
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 //#include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
@@ -791,7 +791,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			++start;
 		} break;
 		case Token::Type::CONST_FLOAT: {
-			FloatObject tmp(Utils::Tools::stringToFloat(start->content()));
+			FloatType tmp(Utils::Tools::stringToFloat(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;

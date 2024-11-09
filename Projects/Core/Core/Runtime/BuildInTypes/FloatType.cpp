@@ -1,6 +1,6 @@
 
 // Header
-#include "FloatObject.h"
+#include "FloatType.h"
 
 // Library includes
 
@@ -22,29 +22,29 @@ namespace Slang {
 namespace Runtime {
 
 
-AtomicValue FloatObject::DEFAULTVALUE = AtomicValue( 0.0f );
-std::string FloatObject::TYPENAME = _float;
+AtomicValue FloatType::DEFAULTVALUE = AtomicValue( 0.0f );
+std::string FloatType::TYPENAME = _float;
 
 
-FloatObject::FloatObject( float value )
+FloatType::FloatType( float value )
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value ) )
 {
     mIsAtomicType = true;
 }
 
-FloatObject::FloatObject( const AtomicValue& value )
+FloatType::FloatType( const AtomicValue& value )
 : Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value.toFloat() ) )
 {
 	mIsAtomicType = true;
 }
 
-FloatObject::FloatObject( const std::string& name, const AtomicValue& value )
+FloatType::FloatType( const std::string& name, const AtomicValue& value )
 : Object( name, SYSTEM_LIBRARY, TYPENAME, value )
 {
 	mIsAtomicType = true;
 }
 
-FloatObject::FloatObject( const Object& other )
+FloatType::FloatType( const Object& other )
 : Object( other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE )
 {
 	// generic type cast
@@ -56,7 +56,7 @@ FloatObject::FloatObject( const Object& other )
 	if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
          target == EnumerationType::TYPENAME ||
-         target == FloatObject::TYPENAME ||
+         target == FloatType::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
@@ -69,14 +69,14 @@ FloatObject::FloatObject( const Object& other )
 	}
 }
 
-void FloatObject::operator_assign( const Object* other  )
+void FloatType::operator_assign( const Object* other  )
 {
 	const std::string& target = other->QualifiedTypename();
 
     if ( target == BoolType::TYPENAME ||
          target == DoubleType::TYPENAME ||
          target == EnumerationType::TYPENAME ||
-         target == FloatObject::TYPENAME ||
+         target == FloatType::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
@@ -89,18 +89,18 @@ void FloatObject::operator_assign( const Object* other  )
     }
 }
 
-bool FloatObject::operator_bool() const
+bool FloatType::operator_bool() const
 {
 	return mValue.toBool();
 }
 
-void FloatObject::operator_divide( const Object* other )
+void FloatType::operator_divide( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == DoubleType::TYPENAME ||
          target == EnumerationType::TYPENAME ||
-         target == FloatObject::TYPENAME ||
+         target == FloatType::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
@@ -112,13 +112,13 @@ void FloatObject::operator_divide( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool FloatObject::operator_equal( const Object* other )
+bool FloatType::operator_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == DoubleType::TYPENAME ||
          target == EnumerationType::TYPENAME ||
-         target == FloatObject::TYPENAME ||
+         target == FloatType::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
@@ -129,13 +129,13 @@ bool FloatObject::operator_equal( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool FloatObject::operator_greater( const Object* other )
+bool FloatType::operator_greater( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == DoubleType::TYPENAME ||
          target == EnumerationType::TYPENAME ||
-         target == FloatObject::TYPENAME ||
+         target == FloatType::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
@@ -146,13 +146,13 @@ bool FloatObject::operator_greater( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool FloatObject::operator_greater_equal( const Object* other )
+bool FloatType::operator_greater_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == DoubleType::TYPENAME ||
          target == EnumerationType::TYPENAME ||
-         target == FloatObject::TYPENAME ||
+         target == FloatType::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
@@ -163,13 +163,13 @@ bool FloatObject::operator_greater_equal( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool FloatObject::operator_less( const Object* other )
+bool FloatType::operator_less( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == DoubleType::TYPENAME ||
          target == EnumerationType::TYPENAME ||
-         target == FloatObject::TYPENAME ||
+         target == FloatType::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
@@ -180,13 +180,13 @@ bool FloatObject::operator_less( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool FloatObject::operator_less_equal( const Object* other )
+bool FloatType::operator_less_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == DoubleType::TYPENAME ||
          target == EnumerationType::TYPENAME ||
-         target == FloatObject::TYPENAME ||
+         target == FloatType::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
@@ -197,13 +197,13 @@ bool FloatObject::operator_less_equal( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void FloatObject::operator_multiply( const Object* other )
+void FloatType::operator_multiply( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == DoubleType::TYPENAME ||
          target == EnumerationType::TYPENAME ||
-         target == FloatObject::TYPENAME ||
+         target == FloatType::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
@@ -215,13 +215,13 @@ void FloatObject::operator_multiply( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void FloatObject::operator_plus( const Object* other )
+void FloatType::operator_plus( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == DoubleType::TYPENAME ||
          target == EnumerationType::TYPENAME ||
-         target == FloatObject::TYPENAME ||
+         target == FloatType::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
@@ -233,13 +233,13 @@ void FloatObject::operator_plus( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void FloatObject::operator_subtract( const Object* other )
+void FloatType::operator_subtract( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
 	if ( target == DoubleType::TYPENAME ||
          target == EnumerationType::TYPENAME ||
-         target == FloatObject::TYPENAME ||
+         target == FloatType::TYPENAME ||
          target == Int16Type::TYPENAME ||
          target == Int32Type::TYPENAME ||
          target == Int64Type::TYPENAME ||
@@ -251,22 +251,22 @@ void FloatObject::operator_subtract( const Object* other )
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void FloatObject::operator_unary_decrement()
+void FloatType::operator_unary_decrement()
 {
 	mValue = mValue.toFloat() - 1.f;
 }
 
-void FloatObject::operator_unary_increment()
+void FloatType::operator_unary_increment()
 {
 	mValue = mValue.toFloat() + 1.f;
 }
 
-void FloatObject::operator_unary_minus()
+void FloatType::operator_unary_minus()
 {
 	mValue = mValue.toFloat() * -1.f;
 }
 
-void FloatObject::operator_unary_not()
+void FloatType::operator_unary_not()
 {
 	mValue = static_cast<float>( !mValue.toFloat() );
 }

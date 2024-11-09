@@ -8,10 +8,10 @@
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/DoubleType.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -69,11 +69,11 @@ class POWF: public ExtensionMethod
 {
 public:
 	POWF()
-	: ExtensionMethod(0, "powf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "powf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("base", Designtime::FloatObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("exponent", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("base", Designtime::FloatType::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("exponent", Designtime::FloatType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -89,7 +89,7 @@ public:
 			auto param_base     = (*it++).value().toFloat();
 			auto param_exponent = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(powf(param_base, param_exponent));
+			*result = Runtime::FloatType(powf(param_base, param_exponent));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

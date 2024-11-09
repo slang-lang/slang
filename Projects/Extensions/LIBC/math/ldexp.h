@@ -8,10 +8,10 @@
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/DoubleType.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -69,11 +69,11 @@ class LDEXPF: public ExtensionMethod
 {
 public:
 	LDEXPF()
-	: ExtensionMethod(0, "ldexpf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "ldexpf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("exp", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatType::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("exp", Designtime::FloatType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -89,7 +89,7 @@ public:
 			auto param_arg = (*it++).value().toFloat();
 			auto param_exp = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(ldexpf(param_arg, param_exp));
+			*result = Runtime::FloatType(ldexpf(param_arg, param_exp));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

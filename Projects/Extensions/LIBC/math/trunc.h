@@ -9,10 +9,10 @@
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/DoubleType.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Tools.h>
 
 // Forward declarations
@@ -71,10 +71,10 @@ class TRUNCF: public ExtensionMethod
 {
 public:
 	TRUNCF()
-	: ExtensionMethod(0, "truncf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "truncf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("arg", Designtime::FloatType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -90,9 +90,9 @@ public:
 			auto param_arg = (*it++).value().toFloat();
 
 #ifdef _WIN32
-			*result = Runtime::FloatObject((param_arg > 0) ? floorf(param_arg) : ceilf(param_arg));
+			*result = Runtime::FloatType((param_arg > 0) ? floorf(param_arg) : ceilf(param_arg));
 #else
-			*result = Runtime::FloatObject(truncf(param_arg));
+			*result = Runtime::FloatType(truncf(param_arg));
 #endif
 		}
 		catch ( std::exception& e ) {

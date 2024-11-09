@@ -9,11 +9,11 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/DoubleType.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
@@ -71,10 +71,10 @@ class ABSFloat: public ExtensionMethod
 {
 public:
     ABSFloat()
-    : ExtensionMethod(0, "abs", Designtime::FloatObject::TYPENAME)
+    : ExtensionMethod(0, "abs", Designtime::FloatType::TYPENAME)
     {
         ParameterList params;
-        params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
+        params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::FloatType::TYPENAME)));
 
         setSignature(params);
     }
@@ -89,7 +89,7 @@ public:
 
             auto param_arg = (*it++).value().toFloat();
 
-            *result = Runtime::FloatObject(std::abs(param_arg));
+            *result = Runtime::FloatType(std::abs(param_arg));
         }
         catch ( std::exception& e ) {
             Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

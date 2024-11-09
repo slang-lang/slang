@@ -1,6 +1,6 @@
 
 // Header
-#include "FloatObject.h"
+#include "FloatType.h"
 
 // Library includes
 
@@ -16,11 +16,11 @@ namespace Slang {
 namespace Designtime {
 
 
-float FloatObject::DEFAULTVALUE = 0.f;
-std::string FloatObject::TYPENAME = _float;
+float FloatType::DEFAULTVALUE = 0.f;
+std::string FloatType::TYPENAME = _float;
 
 
-FloatObject::FloatObject()
+FloatType::FloatType()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 	mIsAtomicType = true;
@@ -28,12 +28,12 @@ FloatObject::FloatObject()
 	initialize();
 }
 
-const std::string& FloatObject::getTypeName() const
+const std::string& FloatType::getTypeName() const
 {
 	return TYPENAME;
 }
 
-void FloatObject::initialize()
+void FloatType::initialize()
 {
 	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{

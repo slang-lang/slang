@@ -109,7 +109,7 @@ class ReadFloat : public ExtensionMethod
 {
 public:
 	ReadFloat()
-	: ExtensionMethod(0, "readf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "readf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
@@ -133,7 +133,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while reading handle");
 			}
 
-			*result = Runtime::FloatObject(value);
+			*result = Runtime::FloatType(value);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
