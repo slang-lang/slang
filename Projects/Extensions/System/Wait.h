@@ -30,7 +30,7 @@ class Wait : public ExtensionMethod
 {
 public:
 	Wait()
-	: ExtensionMethod(0, "wait", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "wait", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
 
@@ -41,7 +41,7 @@ public:
 	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
 	{
 		try {
-			*result = Runtime::IntegerObject( wait( NULL ) );
+			*result = Runtime::Int32Type( wait( NULL ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

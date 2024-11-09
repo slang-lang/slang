@@ -13,7 +13,7 @@
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/Int16Type.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/UserObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
@@ -23,7 +23,7 @@
 #include <Core/Runtime/BuildInTypes/EnumerationObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/BuildInTypes/UserObject.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
@@ -195,8 +195,8 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	else if ( blueprint->QualifiedTypename() == Runtime::Int16Type::TYPENAME ) {
 		object = new Runtime::Int16Type(name, Runtime::Int16Type::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::IntegerObject::TYPENAME ) {
-		object = new Runtime::IntegerObject(name, Runtime::IntegerObject::DEFAULTVALUE);
+	else if ( blueprint->QualifiedTypename() == Runtime::Int32Type::TYPENAME ) {
+		object = new Runtime::Int32Type(name, Runtime::Int32Type::DEFAULTVALUE);
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::StringObject::TYPENAME ) {
 		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE);
@@ -426,10 +426,10 @@ void Repository::init()
 		scope->define(Designtime::Int16Type::TYPENAME, obj);
 	}
 	{	// "int32" type
-		auto* obj = new Designtime::IntegerObject();
+		auto* obj = new Designtime::Int32Type();
 		addBluePrint(obj);
 
-		scope->define(Designtime::IntegerObject::TYPENAME, obj);
+		scope->define(Designtime::Int32Type::TYPENAME, obj);
 	}
 	{	// "string" type
 		auto* obj = new Designtime::StringObject();
@@ -625,20 +625,20 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL,       blueprint->QualifiedTypename(), _bool);
 
 		// comparison operators (enum vs int)
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_EQUAL,         Designtime::IntegerObject::TYPENAME, _bool);
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS,          Designtime::IntegerObject::TYPENAME, _bool);
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS_EQUAL,    Designtime::IntegerObject::TYPENAME, _bool);
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER,       Designtime::IntegerObject::TYPENAME, _bool);
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER_EQUAL, Designtime::IntegerObject::TYPENAME, _bool);
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_UNEQUAL,       Designtime::IntegerObject::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_EQUAL,         Designtime::Int32Type::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS,          Designtime::Int32Type::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS_EQUAL,    Designtime::Int32Type::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER,       Designtime::Int32Type::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER_EQUAL, Designtime::Int32Type::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_UNEQUAL,       Designtime::Int32Type::TYPENAME, _bool);
 
 		// comparison operators (int vs enum)
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_EQUAL,         blueprint->QualifiedTypename(), _bool);
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_LESS,          blueprint->QualifiedTypename(), _bool);
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    blueprint->QualifiedTypename(), _bool);
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_GREATER,       blueprint->QualifiedTypename(), _bool);
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, blueprint->QualifiedTypename(), _bool);
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_EQUAL,         blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_LESS,          blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_GREATER,       blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_UNEQUAL,       blueprint->QualifiedTypename(), _bool);
 
 		// arithmetic operators
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_ADDITION, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());

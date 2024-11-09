@@ -7,7 +7,7 @@
 #include <cstdlib>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
@@ -34,7 +34,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME, 0));
-		params.push_back(Parameter::CreateDesigntime("length", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("length", Designtime::Int32Type::TYPENAME, 0));
 		params.push_back(Parameter::CreateDesigntime("pattern", Designtime::StringObject::TYPENAME, 0));
 
 		setSignature(params);

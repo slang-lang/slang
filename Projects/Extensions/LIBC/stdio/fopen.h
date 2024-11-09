@@ -6,11 +6,11 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -31,7 +31,7 @@ class FOPEN : public ExtensionMethod
 {
 public:
 	FOPEN()
-	: ExtensionMethod(0, "fopen", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "fopen", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("filename", Designtime::StringObject::TYPENAME));
@@ -59,7 +59,7 @@ public:
 				stdio_t::FileHandles.insert(std::make_pair(result_handle, fileHandle));
 			}
 
-			*result = Runtime::IntegerObject(result_handle);
+			*result = Runtime::Int32Type(result_handle);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

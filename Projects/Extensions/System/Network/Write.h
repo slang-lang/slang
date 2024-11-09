@@ -23,10 +23,10 @@ class WriteBool : public ExtensionMethod
 {
 public:
 	WriteBool()
-	: ExtensionMethod(0, "writeb", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "writeb", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::BoolObject::TYPENAME, false));
 
 		setSignature(params);
@@ -48,7 +48,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			*result = Runtime::IntegerObject((int)size);
+			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -67,10 +67,10 @@ class WriteDouble : public ExtensionMethod
 {
 public:
 	WriteDouble()
-	: ExtensionMethod(0, "writed", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "writed", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME, 0.0));
 
 		setSignature(params);
@@ -92,7 +92,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			*result = Runtime::IntegerObject((int)size);
+			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -111,10 +111,10 @@ class WriteFloat : public ExtensionMethod
 {
 public:
 	WriteFloat()
-	: ExtensionMethod(0, "writef", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "writef", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME, 0.f));
 
 		setSignature(params);
@@ -136,7 +136,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			*result = Runtime::IntegerObject((int)size);
+			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -155,11 +155,11 @@ class WriteInt : public ExtensionMethod
 {
 public:
 	WriteInt()
-	: ExtensionMethod(0, "writei", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "writei", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::Int32Type::TYPENAME, 0));
 
 		setSignature(params);
 	}
@@ -180,7 +180,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			*result = Runtime::IntegerObject((int)size);
+			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -199,10 +199,10 @@ class WriteString : public ExtensionMethod
 {
 public:
 	WriteString()
-	: ExtensionMethod(0, "writes", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "writes", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME, 0));
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 		setSignature(params);
@@ -230,7 +230,7 @@ public:
 				count++;
 			}
 
-			*result = Runtime::IntegerObject((int)size);
+			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

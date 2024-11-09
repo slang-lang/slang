@@ -10,11 +10,11 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -108,10 +108,10 @@ class ABSInt: public ExtensionMethod
 {
 public:
     ABSInt()
-    : ExtensionMethod(0, "abs", Designtime::IntegerObject::TYPENAME)
+    : ExtensionMethod(0, "abs", Designtime::Int32Type::TYPENAME)
     {
         ParameterList params;
-        params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::IntegerObject::TYPENAME)));
+        params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::Int32Type::TYPENAME)));
 
         setSignature(params);
     }
@@ -126,7 +126,7 @@ public:
 
             auto param_arg = (*it++).value().toInt();
 
-            result->assign(Runtime::IntegerObject(std::abs(param_arg)));
+            result->assign(Runtime::Int32Type(std::abs(param_arg)));
         }
         catch ( std::exception& e ) {
             Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);

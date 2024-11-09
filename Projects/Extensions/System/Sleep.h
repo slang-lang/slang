@@ -13,7 +13,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
@@ -35,7 +35,7 @@ public:
 	: ExtensionMethod(0, "sleep", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("millis", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("millis", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}

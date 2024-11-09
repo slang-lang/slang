@@ -26,7 +26,7 @@ public:
 	: ExtensionMethod(0, "readb", Designtime::BoolObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -69,7 +69,7 @@ public:
 	: ExtensionMethod(0, "readd", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -112,7 +112,7 @@ public:
 	: ExtensionMethod(0, "readf", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -152,10 +152,10 @@ class ReadInt : public ExtensionMethod
 {
 public:
 	ReadInt()
-	: ExtensionMethod(0, "readi", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "readi", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -176,7 +176,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while reading handle");
 			}
 
-			*result = Runtime::IntegerObject(value);
+			*result = Runtime::Int32Type(value);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -198,8 +198,8 @@ public:
 	: ExtensionMethod(0, "reads", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("length", Designtime::IntegerObject::TYPENAME, 1, true));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("length", Designtime::Int32Type::TYPENAME, 1, true));
 
 		setSignature(params);
 	}

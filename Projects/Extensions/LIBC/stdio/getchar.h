@@ -14,9 +14,9 @@
 #endif
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -38,7 +38,7 @@ class GETCHAR : public ExtensionMethod
 {
 public:
 	GETCHAR()
-	: ExtensionMethod(0, "getchar", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "getchar", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
 
@@ -50,7 +50,7 @@ public:
 		ParameterList list = mergeParameters(params);
 
 		try {
-		    *result = Runtime::IntegerObject( getchar() );
+		    *result = Runtime::Int32Type( getchar() );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

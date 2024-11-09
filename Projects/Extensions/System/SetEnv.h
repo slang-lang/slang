@@ -14,7 +14,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
@@ -34,12 +34,12 @@ class SetEnv : public ExtensionMethod
 {
 public:
 	SetEnv()
-	: ExtensionMethod(0, "setenv", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "setenv", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("name", Designtime::StringObject::TYPENAME));
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("overwrite", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("overwrite", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -56,11 +56,11 @@ public:
 			std::string param_value = (*it++).value().toStdString();
 
 #ifdef _WIN32
-			*result = Runtime::IntegerObject(SetEnvironmentVariable(param_name.c_str(), param_value.c_str()));
+			*result = Runtime::Int32Type(SetEnvironmentVariable(param_name.c_str(), param_value.c_str()));
 #else
 			auto param_overwrite = (*it++).value().toInt();
 
-			*result = Runtime::IntegerObject(setenv(param_name.c_str(), param_value.c_str(), param_overwrite));
+			*result = Runtime::Int32Type(setenv(param_name.c_str(), param_value.c_str(), param_overwrite));
 #endif
 		}
 		catch ( std::exception& e ) {

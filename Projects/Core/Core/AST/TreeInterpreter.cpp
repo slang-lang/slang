@@ -13,7 +13,9 @@
 #include <Core/Runtime/BuildInTypes/BoolObject.h>
 #include <Core/Runtime/BuildInTypes/DoubleObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+//#include <Core/Runtime/BuildInTypes/Int16Type.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
@@ -244,7 +246,7 @@ void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* r
 		case Runtime::AtomicValue::Type::BOOL:      *result = Runtime::BoolObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::DOUBLE:    *result = Runtime::DoubleObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::FLOAT:     *result = Runtime::FloatObject(exp->mValue); break;
-		case Runtime::AtomicValue::Type::INT:       *result = Runtime::IntegerObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::INT:       *result = Runtime::Int64Type(exp->mValue); break;
 		case Runtime::AtomicValue::Type::REFERENCE: *result = *mMemory->get(Runtime::Reference(exp->mValue.toReference())); break;
 		case Runtime::AtomicValue::Type::STRING:    *result = Runtime::StringObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::UNKNOWN:    throw Common::Exceptions::NotSupported("UNKNOWN type");
@@ -918,7 +920,7 @@ void TreeInterpreter::visitDelete(DeleteStatement* node)
 
 void TreeInterpreter::visitExit(ExitStatement* node)
 {
-	Runtime::Object* data = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
+	Runtime::Object* data = mRepository->createInstance(Runtime::Int32Type::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
 	tryControl(evaluate(node->mExpression, data));
 
 	mThread->exception(data, node->token().position());

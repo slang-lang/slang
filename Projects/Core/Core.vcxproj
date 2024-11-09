@@ -178,7 +178,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Designtime\BuildInTypes\IntegerObject.cpp">
+    <ClCompile Include="Core\Designtime\BuildInTypes\Int32Type.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Core\Designtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -229,7 +229,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Core\Runtime\BuildInTypes\IntegerObject.cpp">
+    <ClCompile Include="Core\Runtime\BuildInTypes\Int32Type.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Runtime\BuildInTypes\</ObjectFileName>
     </ClCompile>
@@ -350,7 +350,7 @@
     <ClInclude Include="Core\Designtime\BuildInTypes\BoolObject.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\DoubleObject.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\FloatObject.h" />
-    <ClInclude Include="Core\Designtime\BuildInTypes\IntegerObject.h" />
+    <ClInclude Include="Core\Designtime\BuildInTypes\Int32Type.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\StringObject.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\UserObject.h" />
     <ClInclude Include="Core\Designtime\BuildInTypes\VoidObject.h" />
@@ -375,7 +375,7 @@
     <ClInclude Include="Core\Runtime\BuildInTypes\DoubleObject.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\EnumerationObject.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\FloatObject.h" />
-    <ClInclude Include="Core\Runtime\BuildInTypes\IntegerObject.h" />
+    <ClInclude Include="Core\Runtime\BuildInTypes\Int32Type.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\StringObject.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\UserObject.h" />
     <ClInclude Include="Core\Runtime\BuildInTypes\VoidObject.h" />

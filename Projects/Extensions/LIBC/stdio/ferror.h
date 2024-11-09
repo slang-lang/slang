@@ -14,10 +14,10 @@
 #endif
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -39,10 +39,10 @@ class FERROR : public ExtensionMethod
 {
 public:
 	FERROR()
-	: ExtensionMethod(0, "ferror", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "ferror", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("stream", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("stream", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -60,7 +60,7 @@ public:
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
-			*result = Runtime::IntegerObject( ferror( stdio_t::FileHandles[ param_stream ] ) );
+			*result = Runtime::Int32Type( ferror( stdio_t::FileHandles[ param_stream ] ) );
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

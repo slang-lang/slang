@@ -327,14 +327,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
+				RelativePath=".\Core\BuildInTypes\BoolObject.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -342,7 +342,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -427,14 +427,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.cpp"
+				RelativePath=".\Core\BuildInTypes\DoubleObject.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -442,7 +442,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -467,14 +467,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\EnumerationObject.cpp"
+				RelativePath=".\Core\BuildInTypes\EnumerationObject.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -482,7 +482,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -527,14 +527,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
+				RelativePath=".\Core\BuildInTypes\FloatObject.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -542,7 +542,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -587,14 +587,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				RelativePath=".\Core\BuildInTypes\Int32Type.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -602,12 +602,12 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\Int32Type.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -627,7 +627,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				RelativePath=".\Core\BuildInTypes\Int32Type.cpp"
 				>
 			</File>
 			<File
@@ -923,14 +923,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
+				RelativePath=".\Core\BuildInTypes\StringObject.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -938,7 +938,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1219,14 +1219,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
+				RelativePath=".\Core\BuildInTypes\UserObject.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1234,7 +1234,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1319,14 +1319,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.cpp"
+				RelativePath=".\Core\BuildInTypes\VoidObject.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1334,7 +1334,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\BuildInObjects\"
+						ObjectFile="$(IntDir)\BuildInTypes\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -1377,7 +1377,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.h"
+				RelativePath=".\Core\BuildInTypes\BoolObject.h"
 				>
 			</File>
 			<File
@@ -1417,11 +1417,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
+				RelativePath=".\Core\BuildInTypes\DoubleObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\EnumerationObject.h"
+				RelativePath=".\Core\BuildInTypes\EnumerationObject.h"
 				>
 			</File>
 			<File
@@ -1457,7 +1457,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\FloatObject.h"
+				RelativePath=".\Core\BuildInTypes\FloatObject.h"
 				>
 			</File>
 			<File
@@ -1473,15 +1473,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\Int32Type.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				RelativePath=".\Core\BuildInTypes\Int32Type.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\Int32Type.h"
 				>
 			</File>
 			<File
@@ -1589,7 +1589,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\StringObject.h"
+				RelativePath=".\Core\BuildInTypes\StringObject.h"
 				>
 			</File>
 			<File
@@ -1669,7 +1669,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.h"
+				RelativePath=".\Core\BuildInTypes\UserObject.h"
 				>
 			</File>
 			<File
@@ -1689,7 +1689,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.h"
+				RelativePath=".\Core\BuildInTypes\VoidObject.h"
 				>
 			</File>
 			<File

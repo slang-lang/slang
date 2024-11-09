@@ -10,7 +10,8 @@
 #include <Core/Runtime/BuildInTypes/EnumerationObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
@@ -63,8 +64,8 @@ void typecast(Object *base, const std::string& targetType)
 
 		base->assign(tmp);
 	}
-	else if ( targetType == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(*base);
+	else if ( targetType == Int32Type::TYPENAME ) {
+		Int32Type tmp(*base);
 
 		base->assign(tmp);
 	}

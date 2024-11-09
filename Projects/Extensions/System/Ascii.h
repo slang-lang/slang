@@ -7,10 +7,10 @@
 #include <cstdlib>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -32,7 +32,7 @@ public:
 	: ExtensionMethod(0, "ascii", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}

@@ -7,9 +7,9 @@
 #include <math.h>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -30,7 +30,7 @@ class RAND: public ExtensionMethod
 {
 public:
     RAND()
-    : ExtensionMethod(0, "rand", Designtime::IntegerObject::TYPENAME)
+    : ExtensionMethod(0, "rand", Designtime::Int32Type::TYPENAME)
     {
         ParameterList params;
 
@@ -41,7 +41,7 @@ public:
     Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
     {
         try {
-            *result = Runtime::IntegerObject(rand());
+            *result = Runtime::Int32Type(rand());
         }
         catch ( std::exception& e ) {
             Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

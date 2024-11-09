@@ -1,6 +1,6 @@
 
 // Header
-#include "Int16Type.h"
+#include "Int64Type.h"
 
 // Library includes
 
@@ -11,8 +11,8 @@
 #include "DoubleObject.h"
 #include "EnumerationObject.h"
 #include "FloatObject.h"
+#include "Int16Type.h"
 #include "Int32Type.h"
-#include "Int64Type.h"
 #include "StringObject.h"
 
 // Namespace declarations
@@ -22,29 +22,29 @@ namespace Slang {
 namespace Runtime {
 
 
-AtomicValue Int16Type::DEFAULTVALUE = AtomicValue( static_cast<int16_t>( 0 ) );
-std::string Int16Type::TYPENAME = _int16;
+AtomicValue Int64Type::DEFAULTVALUE = AtomicValue( static_cast<int64_t>( 0 ) );
+std::string Int64Type::TYPENAME = _int32;
 
 
-Int16Type::Int16Type( int16_t value )
+Int64Type::Int64Type( int64_t value )
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value ) )
 {
 	mIsAtomicType = true;
 }
 
-Int16Type::Int16Type( const AtomicValue& value )
-: Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( static_cast<int16_t>( value.toInt() ) ) )
+Int64Type::Int64Type( const AtomicValue& value )
+: Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value.toInt() ) )
 {
 	mIsAtomicType = true;
 }
 
-Int16Type::Int16Type( const std::string& name, const AtomicValue& value )
+Int64Type::Int64Type( const std::string& name, const AtomicValue& value )
 : Object( name, SYSTEM_LIBRARY, TYPENAME, value )
 {
 	mIsAtomicType = true;
 }
 
-Int16Type::Int16Type( const Object& other )
+Int64Type::Int64Type( const Object& other )
 : Object( other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE )
 {
 	// generic type cast
@@ -61,20 +61,20 @@ Int16Type::Int16Type( const Object& other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other.isEnumerationValue() ) {
-        mValue = static_cast<int16_t>( other.getValue().toInt() );
+		 other.isEnumerationValue() ) {
+		mValue = static_cast<int64_t>( other.getValue().toInt() );
 	}
 	else {
 		Object::operator_assign( &other );
 	}
 }
 
-const std::string& Int16Type::getTypeName() const
+const std::string& Int64Type::getTypeName() const
 {
 	return TYPENAME;
 }
 
-void Int16Type::operator_assign( const Object* other )
+void Int64Type::operator_assign( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -86,20 +86,20 @@ void Int16Type::operator_assign( const Object* other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
-		mValue = static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		mValue = static_cast<int64_t>( other->getValue().toInt() );
 	}
 	else {
 		Object::operator_assign( other );
 	}
 }
 
-bool Int16Type::operator_bool() const
+bool Int64Type::operator_bool() const
 {
 	return mValue.toBool();
 }
 
-void Int16Type::operator_bitand( const Object* other )
+void Int64Type::operator_bitand( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -110,15 +110,15 @@ void Int16Type::operator_bitand( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-         other->isEnumerationValue() ) {
-		mValue = static_cast<int16_t>( mValue.toInt() ) & static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		mValue = static_cast<int64_t>( mValue.toInt() ) & static_cast<int64_t>( other->getValue().toInt() );
 		return;
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void Int16Type::operator_bitor( const Object* other )
+void Int64Type::operator_bitor( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -129,15 +129,15 @@ void Int16Type::operator_bitor( const Object* other )
 		 target == Int16Type::TYPENAME ||
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
-         other->isEnumerationValue() ) {
-		mValue = static_cast<int16_t>( mValue.toInt() ) | static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		mValue = static_cast<int64_t>( mValue.toInt() ) | static_cast<int64_t>( other->getValue().toInt() );
 		return;
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void Int16Type::operator_divide( const Object* other )
+void Int64Type::operator_divide( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -149,15 +149,15 @@ void Int16Type::operator_divide( const Object* other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
-		mValue = static_cast<int16_t>( mValue.toInt() ) / static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		mValue = static_cast<int64_t>( mValue.toInt() ) / static_cast<int64_t>( other->getValue().toInt() );
 		return;
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool Int16Type::operator_equal( const Object* other )
+bool Int64Type::operator_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -169,14 +169,14 @@ bool Int16Type::operator_equal( const Object* other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
-		return static_cast<int16_t>( mValue.toInt() ) == static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		return static_cast<int64_t>( mValue.toInt() ) == static_cast<int64_t>( other->getValue().toInt() );
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool Int16Type::operator_greater( const Object* other )
+bool Int64Type::operator_greater( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -188,14 +188,14 @@ bool Int16Type::operator_greater( const Object* other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
-		return static_cast<int16_t>( mValue.toInt() ) > static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		return static_cast<int64_t>( mValue.toInt() ) > static_cast<int64_t>( other->getValue().toInt() );
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool Int16Type::operator_greater_equal( const Object* other )
+bool Int64Type::operator_greater_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -207,14 +207,14 @@ bool Int16Type::operator_greater_equal( const Object* other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
-		return static_cast<int16_t>( mValue.toInt() ) >= static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		return static_cast<int64_t>( mValue.toInt() ) >= static_cast<int64_t>( other->getValue().toInt() );
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool Int16Type::operator_less( const Object* other )
+bool Int64Type::operator_less( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -226,14 +226,14 @@ bool Int16Type::operator_less( const Object* other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
-		return static_cast<int16_t>( mValue.toInt() ) < static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		return static_cast<int64_t>( mValue.toInt() ) < static_cast<int64_t>( other->getValue().toInt() );
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-bool Int16Type::operator_less_equal( const Object* other )
+bool Int64Type::operator_less_equal( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -245,14 +245,14 @@ bool Int16Type::operator_less_equal( const Object* other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
-		return static_cast<int16_t>( mValue.toInt() ) <= static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		return static_cast<int64_t>( mValue.toInt() ) <= static_cast<int64_t>( other->getValue().toInt() );
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void Int16Type::operator_modulo( const Object* other )
+void Int64Type::operator_modulo( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -264,15 +264,15 @@ void Int16Type::operator_modulo( const Object* other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
-		mValue = static_cast<int16_t>( mValue.toInt() ) % static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		mValue = static_cast<int64_t>( mValue.toInt() ) % static_cast<int64_t>( other->getValue().toInt() );
 		return;
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void Int16Type::operator_multiply( const Object* other )
+void Int64Type::operator_multiply( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -284,15 +284,15 @@ void Int16Type::operator_multiply( const Object* other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
-		mValue = static_cast<int16_t>( mValue.toInt() ) * static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		mValue = static_cast<int64_t>( mValue.toInt() ) * static_cast<int64_t>( other->getValue().toInt() );
 		return;
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void Int16Type::operator_plus( const Object* other )
+void Int64Type::operator_plus( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -304,15 +304,15 @@ void Int16Type::operator_plus( const Object* other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
-		mValue = static_cast<int16_t>( mValue.toInt() ) + static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		mValue = static_cast<int64_t>( mValue.toInt() ) + static_cast<int64_t>( other->getValue().toInt() );
 		return;
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void Int16Type::operator_subtract( const Object* other )
+void Int64Type::operator_subtract( const Object* other )
 {
 	const std::string& target = other->QualifiedTypename();
 
@@ -324,32 +324,32 @@ void Int16Type::operator_subtract( const Object* other )
 		 target == Int32Type::TYPENAME ||
 		 target == Int64Type::TYPENAME ||
 		 target == StringObject::TYPENAME ||
-         other->isEnumerationValue() ) {
-		mValue = static_cast<int16_t>( mValue.toInt() ) - static_cast<int16_t>( other->getValue().toInt() );
+		 other->isEnumerationValue() ) {
+		mValue = static_cast<int64_t>( mValue.toInt() ) - static_cast<int64_t>( other->getValue().toInt() );
 		return;
 	}
 
 	throw Runtime::Exceptions::InvalidOperation( QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported" );
 }
 
-void Int16Type::operator_unary_decrement()
+void Int64Type::operator_unary_decrement()
 {
-	mValue = static_cast<int16_t>( mValue.toInt() ) - 1;
+	mValue = static_cast<int64_t>( mValue.toInt() ) - 1;
 }
 
-void Int16Type::operator_unary_increment()
+void Int64Type::operator_unary_increment()
 {
-	mValue = static_cast<int16_t>( mValue.toInt() ) + 1;
+	mValue = static_cast<int64_t>( mValue.toInt() ) + 1;
 }
 
-void Int16Type::operator_unary_minus()
+void Int64Type::operator_unary_minus()
 {
-	mValue = static_cast<int16_t>( mValue.toInt() ) * -1;
+	mValue = static_cast<int64_t>( mValue.toInt() ) * -1;
 }
 
-void Int16Type::operator_unary_not()
+void Int64Type::operator_unary_not()
 {
-	mValue = static_cast<int16_t>( !mValue.toBool() );
+	mValue = static_cast<int64_t>( !mValue.toBool() );
 }
 
 

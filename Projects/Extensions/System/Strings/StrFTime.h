@@ -10,9 +10,9 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 
@@ -35,7 +35,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back( Parameter::CreateDesigntime( "format", Designtime::StringObject::TYPENAME, 0 ) );
-        params.push_back( Parameter::CreateDesigntime( "time", Designtime::IntegerObject::TYPENAME, 0, true ) );
+        params.push_back( Parameter::CreateDesigntime( "time", Designtime::Int32Type::TYPENAME, 0, true ) );
 
 		setSignature( params );
 	}

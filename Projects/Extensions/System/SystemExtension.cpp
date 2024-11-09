@@ -61,19 +61,19 @@ SystemExtension::~SystemExtension()
 void SystemExtension::initialize( ExtensionNamespace* scope )
 {
 	// error constants
-	scope->define( "EACCES", new Runtime::IntegerObject( "EACCES", EACCES ) );
-	scope->define( "EINVAL", new Runtime::IntegerObject( "EINVAL", EINVAL ) );
-	scope->define( "EMFILE", new Runtime::IntegerObject( "EMFILE", EMFILE ) );
-	scope->define( "ENFILE", new Runtime::IntegerObject( "ENFILE", ENFILE ) );
-	scope->define( "ENOMEM", new Runtime::IntegerObject( "ENOMEM", ENOMEM ) );
+	scope->define( "EACCES", new Runtime::Int32Type( "EACCES", EACCES ) );
+	scope->define( "EINVAL", new Runtime::Int32Type( "EINVAL", EINVAL ) );
+	scope->define( "EMFILE", new Runtime::Int32Type( "EMFILE", EMFILE ) );
+	scope->define( "ENFILE", new Runtime::Int32Type( "ENFILE", ENFILE ) );
+	scope->define( "ENOMEM", new Runtime::Int32Type( "ENOMEM", ENOMEM ) );
 
 #ifdef _WIN32
 	// Win32 only
 #else
 	// Unix/Linux only
 
-	scope->define( "WNOHANG", new Runtime::IntegerObject( "WNOHANG", WNOHANG ) );
-	scope->define( "WUNTRACED", new Runtime::IntegerObject( "WUNTRACED", WUNTRACED ) );
+	scope->define( "WNOHANG", new Runtime::Int32Type( "WNOHANG", WNOHANG ) );
+	scope->define( "WUNTRACED", new Runtime::Int32Type( "WUNTRACED", WUNTRACED ) );
 #endif
 
 	// Console

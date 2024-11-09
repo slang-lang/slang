@@ -11,7 +11,7 @@
 #include <Core/Runtime/BuildInTypes/EnumerationObject.h>
 #include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/BuildInTypes/UserObject.h>
 #include <Core/Runtime/BuildInTypes/VoidObject.h>
@@ -52,8 +52,8 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 	else if ( target == Int16Type::TYPENAME ) {
 		lvalue->assign( Int16Type( rvalue->getValue().toInt() ) );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		lvalue->assign( IntegerObject( rvalue->getValue().toInt() ) );
+	else if ( target == Int32Type::TYPENAME ) {
+		lvalue->assign( Int32Type( rvalue->getValue().toInt() ) );
 	}
 	else if ( target == StringObject::TYPENAME ) {
 		lvalue->assign( StringObject( rvalue->getValue().toStdString() ) );
@@ -120,8 +120,8 @@ void operator_binary_bitand( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
@@ -170,8 +170,8 @@ void operator_binary_bitcomplement( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
@@ -220,8 +220,8 @@ void operator_binary_bitor( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
@@ -270,8 +270,8 @@ void operator_binary_divide( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
@@ -314,8 +314,8 @@ bool operator_binary_equal( Object* lvalue, Object* rvalue )
 	else if ( target == FloatObject::TYPENAME ) {
 		return FloatObject( lvalue->getValue().toFloat() ).operator_equal( rvalue );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		return IntegerObject( lvalue->getValue().toInt() ).operator_equal( rvalue );
+	else if ( target == Int32Type::TYPENAME ) {
+		return Int32Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
 	else if ( target == StringObject::TYPENAME ) {
 		return StringObject( lvalue->getValue().toStdString() ).operator_equal( rvalue );
@@ -361,8 +361,8 @@ bool operator_binary_greater( Object* lvalue, Object* rvalue )
 		FloatObject tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater( rvalue );
 	}
 	else if ( target == StringObject::TYPENAME ) {
@@ -405,8 +405,8 @@ bool operator_binary_greater_equal( Object* lvalue, Object* rvalue )
 		FloatObject tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater_equal( rvalue );
 	}
 	else if ( target == StringObject::TYPENAME ) {
@@ -449,8 +449,8 @@ bool operator_binary_less( Object* lvalue, Object* rvalue )
 		FloatObject tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less( rvalue );
 	}
 	else if ( target == StringObject::TYPENAME ) {
@@ -493,8 +493,8 @@ bool operator_binary_less_equal( Object* lvalue, Object* rvalue )
 		FloatObject tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less_equal( rvalue );
 	}
 	else if ( target == StringObject::TYPENAME ) {
@@ -543,8 +543,8 @@ void operator_binary_modulo( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
@@ -593,8 +593,8 @@ void operator_binary_multiply( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
@@ -643,8 +643,8 @@ void operator_binary_plus( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
@@ -693,8 +693,8 @@ void operator_binary_shift_left( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_shift_left( rvalue );
 
 		lvalue->assign( tmp );
@@ -743,8 +743,8 @@ void operator_binary_shift_right( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_shift_right( rvalue );
 
 		lvalue->assign( tmp );
@@ -793,8 +793,8 @@ void operator_binary_subtract( Object* lvalue, Object* rvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
@@ -843,8 +843,8 @@ void operator_unary_decrement (Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
@@ -893,8 +893,8 @@ void operator_unary_increment( Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
@@ -943,8 +943,8 @@ void operator_unary_minus( Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
@@ -993,8 +993,8 @@ void operator_unary_plus( Object* lvalue )
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
@@ -1040,8 +1040,8 @@ void operator_unary_not( Object* base )
 
 		*base = BoolObject( !tmp.operator_bool() );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( base->getValue() );
+	else if ( source == Int32Type::TYPENAME ) {
+		Int32Type tmp( base->getValue() );
 
 		*base = BoolObject( !tmp.operator_bool() );
 	}

@@ -54,19 +54,19 @@ stdio_t::stdio_t()
 void stdio_t::initialize( ExtensionNamespace* scope )
 {
 	// constants
-	scope->define( "BUFSIZ",       new Runtime::IntegerObject( "BUFSIZ",       BUFSIZ ) );
-	scope->define( "EOF",          new Runtime::IntegerObject( "EOF",          EOF ) );
-	scope->define( "FILENAME_MAX", new Runtime::IntegerObject( "FILENAME_MAX", FILENAME_MAX ) );
-	scope->define( "FOPEN_MAX",    new Runtime::IntegerObject( "FOPEN_MAX",    FOPEN_MAX ) );
-	scope->define( "TMP_MAX",      new Runtime::IntegerObject( "TMP_MAX",      TMP_MAX ) );
+	scope->define( "BUFSIZ",       new Runtime::Int32Type( "BUFSIZ",       BUFSIZ ) );
+	scope->define( "EOF",          new Runtime::Int32Type( "EOF",          EOF ) );
+	scope->define( "FILENAME_MAX", new Runtime::Int32Type( "FILENAME_MAX", FILENAME_MAX ) );
+	scope->define( "FOPEN_MAX",    new Runtime::Int32Type( "FOPEN_MAX",    FOPEN_MAX ) );
+	scope->define( "TMP_MAX",      new Runtime::Int32Type( "TMP_MAX",      TMP_MAX ) );
 
-	scope->define( "STDIN",  new Runtime::IntegerObject( "STDIN",  STDIN ) );
-	scope->define( "STDOUT", new Runtime::IntegerObject( "STDOUT", STDOUT ) );
-	scope->define( "STDERR", new Runtime::IntegerObject( "STDERR", STDERR ) );
+	scope->define( "STDIN",  new Runtime::Int32Type( "STDIN",  STDIN ) );
+	scope->define( "STDOUT", new Runtime::Int32Type( "STDOUT", STDOUT ) );
+	scope->define( "STDERR", new Runtime::Int32Type( "STDERR", STDERR ) );
 
-	scope->define( "SEEK_SET", new Runtime::IntegerObject( "SEEK_SET", SEEK_SET ) );
-	scope->define( "SEEK_CUR", new Runtime::IntegerObject( "SEEK_CUR", SEEK_CUR ) );
-	scope->define( "SEEK_END", new Runtime::IntegerObject( "SEEK_END", SEEK_END ) );
+	scope->define( "SEEK_SET", new Runtime::Int32Type( "SEEK_SET", SEEK_SET ) );
+	scope->define( "SEEK_CUR", new Runtime::Int32Type( "SEEK_CUR", SEEK_CUR ) );
+	scope->define( "SEEK_END", new Runtime::Int32Type( "SEEK_END", SEEK_END ) );
 
 	// nothing to do here
 	FileHandles[ 0 ]      = nullptr;
