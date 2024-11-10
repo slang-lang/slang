@@ -6,7 +6,7 @@ Build-Depends: debhelper (>=10), libsqlite3-dev
 Standards-Version: 4.0.0
 Homepage: https://slang.ticketsharing.net/
 Package: slang
-Version: 0.8.0
+Version: 0.8.2
 Architecture: any
 Conficts: oscript
 Provides: slang
