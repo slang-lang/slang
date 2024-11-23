@@ -35,7 +35,7 @@ Parameter Parameter::CreateDesigntime(const std::string& name,
 
 Parameter Parameter::CreateRuntime(const std::string& type,
 								   const Runtime::AtomicValue& value,
-								   Runtime::Reference reference)
+								   const Runtime::Reference& reference)
 {
 	if ( reference.isValid() ) {
 		return Parameter(
@@ -68,7 +68,7 @@ Parameter::Parameter()
 }
 
 Parameter::Parameter(std::string name, Common::TypeDeclaration type, const Runtime::AtomicValue& value,
-					 bool hasDefaultValue, Mutability::E mutability, AccessMode::E access, Runtime::Reference reference)
+					 bool hasDefaultValue, Mutability::E mutability, AccessMode::E access, const Runtime::Reference& reference)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
   mMutability(mutability),
