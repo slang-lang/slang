@@ -5,11 +5,13 @@
 // Project imports
 import Reader;
 
+
 public void Main(int argc, string args) {
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
 	assert( TestCase4() );
+	assert( TestCase5() );
 }
 
 private bool TestCase1() {
@@ -89,6 +91,28 @@ private bool TestCase4() {
 
 	try {
 		var str = "{ \"key\": \"string \\\"escape\\\" string\" }";
+		print( str );
+
+		var reader = new JsonReader();
+		var value = reader.parse( str );
+		assert( value );
+
+		print( value.toString() );
+
+		return true;
+	}
+	catch ( IException e ) {
+		print( "Exception: " + e.what() );
+	}
+
+	return false;
+}
+
+private bool TestCase5() {
+	print( "TestCase 5: null values" );
+
+	try {
+		var str = "{ \"key\": null }";
 		print( str );
 
 		var reader = new JsonReader();

@@ -126,7 +126,7 @@ public object JsonReader {
                 break;
             }
             case TokenType.NULL: {
-                value = new JsonValue( "null" );
+                value = new JsonValue();
                 t.next();
                 break;
             }

@@ -111,6 +111,10 @@ public object JsonValue {
 	}
 
 	public string asString() const {
+		if ( mValueType == JsonValueType.Null ) {
+			return "null";
+		}
+
 		if ( mValueType != JsonValueType.Array && mValueType != JsonValueType.Object ) {
 			return cast<string>( mValue );
 		}

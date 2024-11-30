@@ -35,7 +35,7 @@ public string TokenToString( TokenType type ) {
 		case TokenType.CURLY_BRACKET_OPEN:	{ return "{"; }
 		case TokenType.FALSE:			{ return "FALSE"; }
 		case TokenType.IDENTIFIER:		{ return "IDENTIFIER"; }
-		case TokenType.NULL:			{ return "NULL"; }
+		case TokenType.NULL:			{ return "null"; }
 		case TokenType.NUMBER:			{ return "NUMBER"; }
 		case TokenType.STRING:			{ return "STRING"; }
 		case TokenType.TRUE:			{ return "TRUE"; }

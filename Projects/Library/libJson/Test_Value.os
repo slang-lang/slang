@@ -9,6 +9,7 @@ import Value;
 public void Main(int argc, string args) {
 	assert( TestCase1() );
 	assert( TestCase2() );
+	assert( TestCase3() );
 }
 
 private bool TestCase1() {
@@ -27,5 +28,14 @@ private bool TestCase2() {
 	print( value.toString() );
 
 	return bool value;
+}
+
+private bool TestCase3() {
+	print( "Test Case 3: JsonValue is null" );
+
+	var value = new JsonValue();
+	print( value.toString() );
+
+	return bool value.isNull();
 }
 
