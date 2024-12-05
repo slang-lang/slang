@@ -107,6 +107,7 @@ private:
 	void initFloat();
 	void initInt16();
 	void initInt32();
+	void initInt64();
 	void initObject();
 	void initString();
 

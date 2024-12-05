@@ -14,6 +14,7 @@
 #include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Designtime/BuildInTypes/Int16Type.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
+#include <Core/Designtime/BuildInTypes/Int64Type.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Designtime/BuildInTypes/UserType.h>
 #include <Core/Designtime/BuildInTypes/VoidType.h>
@@ -24,6 +25,7 @@
 #include <Core/Runtime/BuildInTypes/FloatType.h>
 #include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/BuildInTypes/UserType.h>
 #include <Core/Runtime/BuildInTypes/VoidType.h>
@@ -197,6 +199,9 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::Int32Type::TYPENAME ) {
 		object = new Runtime::Int32Type(name, Runtime::Int32Type::DEFAULTVALUE);
+	}
+	else if ( blueprint->QualifiedTypename() == Runtime::Int64Type::TYPENAME ) {
+		object = new Runtime::Int64Type(name, Runtime::Int64Type::DEFAULTVALUE);
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::StringType::TYPENAME ) {
 		object = new Runtime::StringType(name, Runtime::StringType::DEFAULTVALUE);
@@ -430,6 +435,12 @@ void Repository::init()
 		addBluePrint(obj);
 
 		scope->define(Designtime::Int32Type::TYPENAME, obj);
+	}
+	{	// "int64" type
+		auto* obj = new Designtime::Int64Type();
+		addBluePrint(obj);
+
+		scope->define(Designtime::Int64Type::TYPENAME, obj);
 	}
 	{	// "string" type
 		auto* obj = new Designtime::StringType();
