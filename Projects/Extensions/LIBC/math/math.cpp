@@ -169,7 +169,7 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new NEXTTOWARDF() );
     methods.push_back( new POW() );
     methods.push_back( new POWF() );
-    methods.push_back( new REMAINDER() );
+    methods.push_back( new POWL() );
     methods.push_back( new REMAINDERF() );
     methods.push_back( new RINT() );
     methods.push_back( new RINTF() );
@@ -199,3 +199,4 @@ void math_t::provideMethods( ExtensionMethods& methods )
 }
 }
 }
+
