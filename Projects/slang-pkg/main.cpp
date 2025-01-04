@@ -1339,27 +1339,6 @@ size_t upload( const std::string& filename, const std::string& url, const std::s
         fseek(file, 0, SEEK_SET);
         curl_easy_setopt( curl, CURLOPT_INFILESIZE_LARGE, static_cast<curl_off_t>( file_size ) );
 
-        // Initialize a curl_httppost object for the form
-        struct curl_httppost* formpost = nullptr;
-        {
-            struct curl_httppost* lastptr  = nullptr;
-
-            // Add the file to the form
-            curl_formadd(&formpost, &lastptr,
-                            CURLFORM_COPYNAME, "file",        // Form field name
-                            CURLFORM_COPYCONTENTS, filename.c_str(), // Path to the file
-                            CURLFORM_END);
-
-            // Add any additional form fields (optional)
-            curl_formadd(&formpost, &lastptr,
-                            CURLFORM_COPYNAME, "type", // Another field
-                            CURLFORM_COPYCONTENTS, contentType.c_str(), // Field content
-                            CURLFORM_END);
-
-            // Set the form for the POST request
-            curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
-        }
-
         {   // set MIME for uploaded file
             auto* form = curl_mime_init(curl);
 
@@ -1381,7 +1360,6 @@ size_t upload( const std::string& filename, const std::string& url, const std::s
 
         // Clean up
         curl_easy_cleanup(curl);
-        curl_formfree(formpost);
     }
 
     fclose(file);
