@@ -62,6 +62,7 @@ enum e_Action {
 	List,
 	None,
 	Purge,
+	Push,
 	Remove,
 	Restrict,
 	Search,
@@ -71,13 +72,14 @@ enum e_Action {
 };
 
 
-static const std::string CACHE_MODULES = "/cache/modules/";
-static const std::string CACHE_REPOSITORIES = "/cache/repositories/";
+static const std::string CACHE_MODULES = "cache/modules/";
+static const std::string CACHE_REPOSITORIES = "cache/repositories/";
 static const std::string CONFIG_FILE = ".odepend/config.json";
 static const std::string CONFIG_FOLDER = ".odepend/";
 static const std::string FILE_VERSION_SEPARATOR = "_";
-static const std::string MODULES = "/modules/";
+static const std::string MODULES = "modules/";
 static const std::string TMP = "/tmp/";
+static const std::string UPLOAD_PATH = "upload/";
 static const char VERSION_SEPARATOR = ':';
 
 
@@ -109,6 +111,7 @@ void printUsage();
 void printVersion();
 void processParameters(int argc, const char* argv[]);
 void purge(const StringList& params);
+size_t push(const StringList& params);
 void readJsonFile(const std::string& filename, Json::Value& result);
 void remove(const StringList& params);
 void removeRestriction(const std::string& module);
@@ -117,6 +120,7 @@ void search(const StringList& params);
 void storeConfig();
 void writeJsonFile(const std::string& filename, Json::Value& result);
 void update();
+size_t upload( const std::string& filename, const std::string& url, const std::string& contentType );
 void upgrade(const StringList& params);
 
 
@@ -154,11 +158,11 @@ void addRestriction(const StringList& params)
 
 	collectLocalModuleData();
 
-	Json::Value& restrictions = mConfig["restrictions"];
+	auto& restrictions = mConfig["restrictions"];
 
 	auto paramIt = params.begin();
 
-	std::string module = (*paramIt);
+	auto module = (*paramIt);
 
 	restrictions.removeMember(module);
 
@@ -253,9 +257,10 @@ void collectLocalModuleData()
 	while ( dirEntry ) {
 		if ( dirEntry->d_type == DT_DIR ) {
 			std::string entry(dirEntry->d_name);
+
 			if ( entry != "." && entry != ".." ) {
-				std::string filename = "module.json";
-				std::string path = base + entry + "/";
+				auto filename = "module.json";
+				auto path     = base + entry + "/";
 
 				if ( ::Utils::Tools::Files::exists(path + filename) ) {
 					mLocalRepository.addModule(
@@ -317,22 +322,20 @@ void create(const StringList& params)
 	}
 
 	// TODO: module name is not allowed to end with '/'
-	std::string path = params.front();
+	std::string path     = params.front();
 	std::string filename = "module.json";
 
-	Module module = collectModuleData(path, filename);
-
-	std::string moduleName = module.mShortName;
+	auto module = collectModuleData(path, filename);
 
 	{	// create version specific module information ("<module>_<version>.json")
-		std::cout << "Creating module information \"" << moduleName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".json\"" << std::endl;
+		std::cout << "Creating module information \"" << module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".json\"" << std::endl;
 
-		execute("cp " + path + "/" + filename + " " + moduleName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".json");
+		execute("cp " + path + "/" + filename + " " + module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".json");
 	}
 	{	// create package ("<module>_<version>.tar.gz")
-		std::cout << "Creating module package \"" << moduleName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz\"" << std::endl;
+		std::cout << "Creating module package \"" << module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz\"" << std::endl;
 
-		execute("tar -cjf " + moduleName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz " + path);
+		execute("tar -cjf " + module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz " + path);
 	}
 }
 
@@ -365,10 +368,10 @@ void createLocalLibrary()
 	if ( !Utils::Tools::Files::exists(mCurrentFolder + CONFIG_FILE) ) {
 		Json::Value repository;
 		repository[ "name" ] = "main";
-		repository[ "url" ] = "https://slang-lang.org/repo/stable";
+		repository[ "url" ]  = "https://slang-lang.org/repo/stable";
 
 		Json::Value config;
-		config[ "repository" ] = repository;
+		config[ "repository" ]   = repository;
 		config[ "restrictions" ] = Json::Value();
 
 		writeJsonFile(mCurrentFolder + CONFIG_FILE, config);
@@ -396,14 +399,14 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 	/* init the curl session */
 	curl_handle = curl_easy_init();
 
-	/* set URL to get here */
-	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
+	/* disable progress meter, set to 0L to enable and disable debug output */
+	curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
 
 	/* Switch on full protocol/debug output while testing */
 	curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 0L);
 
-	/* disable progress meter, set to 0L to enable and disable debug output */
-	curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
+	/* set URL to get here */
+	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
 
 	/* send all data to this function  */
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
@@ -502,12 +505,12 @@ void info( const StringList& params )
         }
 
         if ( !found ) {	// lookup module in remote repository
-            std::string path = mBaseFolder + CACHE_MODULES;
-            std::string filename = moduleName + ".json";
-            std::string module_config = path + filename;
-            std::string url = mRemoteRepository.getURL() + MODULES + moduleName + FILE_VERSION_SEPARATOR + moduleVersion + ".json";
+            auto path          = mBaseFolder + CACHE_MODULES;
+            auto filename      = moduleName + ".json";
+            auto module_config = path + filename;
+            auto url           = mRemoteRepository.getURL() + MODULES + moduleName + FILE_VERSION_SEPARATOR + moduleVersion + ".json";
 
-            bool result = download( url, module_config );
+            auto result = download( url, module_config );
             if ( result ) {
                 Module tmpModule = collectModuleData( path, filename );
                 if ( tmpModule.isValid() ) {
@@ -722,7 +725,7 @@ void installModule(const std::string& repo, const std::string& module)
 	}
 	else if ( type == "internal" ) {
 		// target is located on our own server
-		url = repo + MODULES + config["name_short"].asString() + FILE_VERSION_SEPARATOR + config["version"].asString() + ".tar.gz";
+		url = repo + MODULES + config["name_short"].asString() + "/" + config["version"].asString() + "/module.tar.gz";
 	}
 	else {
 		std::cout << "!!! invalid target type specified" << std::endl;
@@ -849,6 +852,7 @@ void printUsage()
 	std::cout << "install                    Install new module" << std::endl;
 	std::cout << "list                       List all installed modules" << std::endl;
 	std::cout << "purge                      Remove an installed module and all of its configuration" << std::endl;
+	std::cout << "push                       Push module(s) to repository server" << std::endl;
 	std::cout << "remove                     Remove an installed module" << std::endl;
 	std::cout << "restrict                   Add version restriction for module" << std::endl;
 	std::cout << "search                     Search for a module" << std::endl;
@@ -891,6 +895,9 @@ void processParameters(int argc, const char* argv[])
 		}
 		else if ( Utils::Tools::StringCompare(arg1, "purge") ) {
 			mAction = Purge;
+		}
+		else if ( Utils::Tools::StringCompare(arg1, "push") ) {
+			mAction = Push;
 		}
 		else if ( Utils::Tools::StringCompare(arg1, "remove") ) {
 			mAction = Remove;
@@ -938,7 +945,7 @@ void prepareModuleInstallation(const std::string& repo, const Module& installMod
 	std::string path = mBaseFolder + CACHE_MODULES;
 	std::string filename = installModule.mShortName + ".json";
 	std::string module_config = path + filename;
-	std::string url = repo + MODULES + installModule.mShortName + (installModule.mVersion.isValid() ? FILE_VERSION_SEPARATOR + installModule.mVersion.toString() + ".json" : ".json");
+	std::string url = repo + MODULES + installModule.mShortName + "/" + installModule.mVersion.toString() + "/module.json";
 
 	bool result = download(url, module_config);
 	if ( !result ) {
@@ -1025,6 +1032,55 @@ void purge(const StringList& params)
 
 	// (3) store configuration
 	storeConfig();
+}
+
+/*
+ * Push packages to HTTP repository server
+ */
+size_t push(const StringList& params)
+{
+    // (0) make sure that the module is prepared for upload
+    // (1) check if files "<module>_<version>.json", "<module>_<version>.tar.gz" are present
+    // (2) upload "<module>_<version>.json", "<module>_<version>.tar.gz" into "upload" folder of the repository server
+    // (3) clean up module files after uploading
+
+    if ( params.empty() ) {
+        std::cout << "!!! Invalid number of parameters" << std::endl;
+        return 1;
+    }
+
+    for ( const auto& param : params )
+    {
+        // TODO: module name is not allowed to end with '/'
+        std::string path     = param;
+        std::string filename = "module.json";
+
+        create( StringList{ path } );
+
+        auto module = collectModuleData(path, filename);
+
+        size_t result{ 0 };
+        result = upload( module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".json",   mRemoteRepository.getURL() + UPLOAD_PATH, "application/json" );
+        if ( result ) {
+            std::cerr << "Error " << result << " while uploading module to repository '" << mRemoteRepository.getURL() << "'" << std::endl;
+        }
+        else {
+            result = upload( module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz", mRemoteRepository.getURL() + UPLOAD_PATH, "application/tar+gzip" );
+            if ( result ) {
+                std::cerr << "Error " << result << " while uploading module to repository '" << mRemoteRepository.getURL() << "'" << std::endl;
+            }
+        }
+
+        if ( !result ) {
+            std::cout << "Successfully uploaded module '" << param << "' to repository '" << mRemoteRepository.getURL() << "'" << std::endl;
+        }
+
+        // cleanup artifacts
+        execute("rm " + module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".json");
+        execute("rm " + module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz");
+    }
+
+    return 0;
 }
 
 void readJsonFile(const std::string& filename, Json::Value& result)
@@ -1194,7 +1250,7 @@ void update()
 
 	std::cout << "Updating repository \"" << mRemoteRepository.getName() << "\"..." << std::endl;
 
-	std::string url = mRemoteRepository.getURL() + "index.json";
+	std::string url = mRemoteRepository.getURL() + "modules/index.json";
 	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
 	bool result = download(url, filename, false);
@@ -1209,48 +1265,127 @@ void update()
 
 void upgrade(const StringList& params)
 {
-	// (1) retrieve outdated modules
-	// (2) list all found modules
-	// (3) install new modules if any are available
+    // (1) retrieve outdated modules
+    // (2) list all found modules
+    // (3) install new modules if any are available
 
-	collectLocalModuleData();
-	if ( !prepareRemoteRepository() ) {
-		update();
-	}
+    collectLocalModuleData();
+    if ( !prepareRemoteRepository() ) {
+        update();
+    }
 
-	Modules outdatedModules;
-	checkOutdatedModules(outdatedModules);
+    Modules outdatedModules;
+    checkOutdatedModules(outdatedModules);
 
-	if ( outdatedModules.empty() ) {
-		std::cout << "No outdated modules found." << std::endl;
-	}
-	else {
-		std::cout << "Need to upgrade " << outdatedModules.size() << " module(s)..." << std::endl;
+    if ( outdatedModules.empty() ) {
+        std::cout << "No outdated modules found." << std::endl;
+    }
+    else {
+        // find out if the user wants to upgrade some of our outdated modules
+        Modules upgradeModules;
+        for ( const auto& outdatedModule : outdatedModules ) {
+            // if params contains values upgrade only the modules that are set in mParameters
+            if ( params.empty() || contains(params, outdatedModule.mShortName)) {
+                // add outdated module name to global parameters
+                upgradeModules.insert(outdatedModule);
+            }
+        }
+        std::cout << std::endl;
 
-		// replace current parameters with outdated modules to install
-		mParameters.clear();
+        if ( upgradeModules.empty() ) {
+            // no modules added to upgrade
+            std::cout << "No upgradeable module selected." << std::endl;
+            return;
+        }
 
-		std::cout << "New module(s): ";
-		for ( const auto& outdatedModule : outdatedModules ) {
-			std::cout << outdatedModule.mShortName << "(" << outdatedModule.mVersion.toString() << ")" << " ";
+        std::cout << "Need to upgrade " << upgradeModules.size() << " module(s)..." << std::endl;
 
-			// if params contains values upgrade only the modules that are set in mParameters
-			if ( params.empty() || contains(params, outdatedModule.mShortName)) {
-				// add outdated module name to global parameters
-				mParameters.push_back(outdatedModule.toVersionString());
-			}
-		}
-		std::cout << std::endl;
+        for ( const auto& outdatedModule : upgradeModules ) {
+            std::cout << outdatedModule.mShortName << "(" << outdatedModule.mVersion.toString() << ")" << std::endl;
 
-		if ( mParameters.empty() ) {
-			// no modules added to upgrade
-			std::cout << "No upgradeable module selected." << std::endl;
-			return;
-		}
+            // install new versions of the selected outdated modules
+            install( StringList{ outdatedModule.mShortName } );
+        }
+    }
+}
 
-		// install new versions of the selected outdated modules
-		install(mParameters);
-	}
+size_t upload( const std::string& filename, const std::string& url, const std::string& contentType )
+{
+    // Initialize libcurl
+    CURL* curl;
+    CURLcode res;
+
+    // Open the file
+    auto* file = fopen( filename.c_str(), "rb" );
+    if ( !file ) {
+        std::cerr << "Failed to open file <" << filename << ">" << std::endl;
+        return 1;
+    }
+
+    // Initialize a CURL session
+    curl = curl_easy_init();
+    if ( curl ) {
+        // set curl options
+        curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);  // disable progress meter, set to 0L to enable and disable debug output
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+        curl_easy_setopt(curl, CURLOPT_READDATA, file);
+        curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);     // Switch on full protocol/debug output while testing
+
+        // Set the file size (optional but recommended)
+        fseek(file, 0, SEEK_END);
+        long file_size = ftell(file);
+        fseek(file, 0, SEEK_SET);
+        curl_easy_setopt( curl, CURLOPT_INFILESIZE_LARGE, static_cast<curl_off_t>( file_size ) );
+
+        // Initialize a curl_httppost object for the form
+        struct curl_httppost* formpost = nullptr;
+        {
+            struct curl_httppost* lastptr  = nullptr;
+
+            // Add the file to the form
+            curl_formadd(&formpost, &lastptr,
+                            CURLFORM_COPYNAME, "file",        // Form field name
+                            CURLFORM_COPYCONTENTS, filename.c_str(), // Path to the file
+                            CURLFORM_END);
+
+            // Add any additional form fields (optional)
+            curl_formadd(&formpost, &lastptr,
+                            CURLFORM_COPYNAME, "type", // Another field
+                            CURLFORM_COPYCONTENTS, contentType.c_str(), // Field content
+                            CURLFORM_END);
+
+            // Set the form for the POST request
+            curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
+        }
+
+        {   // set MIME for uploaded file
+            auto* form = curl_mime_init(curl);
+
+            // Fill in the file upload field
+            auto* field = curl_mime_addpart(form);
+            curl_mime_name(field, "file");
+            curl_mime_filedata(field, filename.c_str());
+            curl_mime_type(field, contentType.c_str());
+
+            curl_easy_setopt(curl, CURLOPT_MIMEPOST, form);
+        }
+
+        // Perform the file upload
+        res = curl_easy_perform(curl);
+
+        if (res != CURLE_OK) {
+            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+        }
+
+        // Clean up
+        curl_easy_cleanup(curl);
+        curl_formfree(formpost);
+    }
+
+    fclose(file);
+    return 0;
 }
 
 int main(int argc, const char* argv[])
@@ -1266,20 +1401,21 @@ int main(int argc, const char* argv[])
 	init();
 
 	switch ( mAction ) {
-		case Create: create(mParameters); break;
+		case Create:             create(mParameters); break;
 		case CreateLocalLibrary: createLocalLibrary(); init(); break;
-		case Help: printUsage(); break;
-		case Info: info(mParameters); break;
-		case Install: install(mParameters); break;
-		case List: list(); break;
-		case None: break;
-		case Purge: purge(mParameters); break;
-		case Remove: remove(mParameters); break;
-		case Restrict: addRestriction(mParameters); break;
-		case Search: search(mParameters); break;
-		case Update: update(); break;
-		case Upgrade: upgrade(mParameters); break;
-		case Version: printVersion(); break;
+		case Help:               printUsage(); break;
+		case Info:               info(mParameters); break;
+		case Install:            install(mParameters); break;
+		case List:               list(); break;
+		case None:               /* nothing to do here*/ break;
+		case Purge:              purge(mParameters); break;
+		case Push:               push(mParameters); break;
+		case Remove:             remove(mParameters); break;
+		case Restrict:           addRestriction(mParameters); break;
+		case Search:             search(mParameters); break;
+		case Update:             update(); break;
+		case Upgrade:            upgrade(mParameters); break;
+		case Version:            printVersion(); break;
 	}
 
 	cleanCache();

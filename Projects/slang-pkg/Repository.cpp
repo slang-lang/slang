@@ -31,8 +31,8 @@ void Repository::addModule(const Module& module)
 
 bool Repository::contains(const Module& module) const
 {
-	for ( const auto& mModule : mModules ) {
-		if ( mModule.mShortName == module.mShortName ) {
+	for ( const auto& m : mModules ) {
+		if ( m.mShortName == module.mShortName ) {
 			return true;
 		}
 	}
@@ -42,9 +42,9 @@ bool Repository::contains(const Module& module) const
 
 bool Repository::getModule(const std::string& shortName, Module& module) const
 {
-	for ( const auto& mModule : mModules ) {
-		if ( mModule.mShortName == shortName ) {
-			module = mModule;
+	for ( const auto& m : mModules ) {
+		if ( m.mShortName == shortName ) {
+			module = m;
 			return true;
 		}
 	}
@@ -73,12 +73,12 @@ bool Repository::processIndex(const Json::Value& value)
 		return false;
 	}
 
-	Json::Value modules = value["modules"];
+	auto modules = value["modules"];
 
 	for ( const auto& module : modules ) {
-		std::string name_short = module["name"].asString();
-		std::string source = module.isMember("source") ? module["source"].asString() : mURL;
-		std::string version = module["version"].asString();
+		auto name_short = module["name"].asString();
+		auto source     = module.isMember("source") ? module["source"].asString() : mURL;
+		auto version    = module["version"].asString();
 
 		mModules.insert( Module(name_short, version, source) );
 	}

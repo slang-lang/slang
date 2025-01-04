@@ -70,10 +70,10 @@ bool Module::loadFromJson( const Json::Value& value )
 		auto dependencies = value[ DEPENDENCIES ];
 
 		for ( const auto& dependency : dependencies ) {
-			std::string moduleName = dependency[ MODULE ].asString();
-			std::string source = dependency.isMember( SOURCE ) ? dependency[ SOURCE ].asString() : "";
-			std::string version_max = dependency.isMember( VERSION_MAX ) ? dependency[ VERSION_MAX ].asString() : "";
-			std::string version_min = dependency.isMember( VERSION_MIN ) ? dependency[ VERSION_MIN ].asString() : "";
+			auto moduleName  = dependency[ MODULE ].asString();
+			auto source      = dependency.isMember( SOURCE )      ? dependency[ SOURCE ].asString() : "";
+			auto version_max = dependency.isMember( VERSION_MAX ) ? dependency[ VERSION_MAX ].asString() : "";
+			auto version_min = dependency.isMember( VERSION_MIN ) ? dependency[ VERSION_MIN ].asString() : "";
 
 			mDependencies.insert(
 				Dependency(moduleName, version_min, version_max, source)
@@ -113,4 +113,3 @@ std::string Module::toVersionString() const
 {
 	return mShortName + ":" + mVersion.toString();
 }
-
