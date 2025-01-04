@@ -72,12 +72,12 @@ enum e_Action {
 };
 
 
-static const std::string CACHE_MODULES = "/cache/modules/";
-static const std::string CACHE_REPOSITORIES = "/cache/repositories/";
+static const std::string CACHE_MODULES = "cache/modules/";
+static const std::string CACHE_REPOSITORIES = "cache/repositories/";
 static const std::string CONFIG_FILE = ".odepend/config.json";
 static const std::string CONFIG_FOLDER = ".odepend/";
 static const std::string FILE_VERSION_SEPARATOR = "_";
-static const std::string MODULES = "/modules/";
+static const std::string MODULES = "modules/";
 static const std::string TMP = "/tmp/";
 static const std::string UPLOAD_PATH = "upload/";
 static const char VERSION_SEPARATOR = ':';
@@ -399,14 +399,14 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 	/* init the curl session */
 	curl_handle = curl_easy_init();
 
-	/* set URL to get here */
-	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
+	/* disable progress meter, set to 0L to enable and disable debug output */
+	curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
 
 	/* Switch on full protocol/debug output while testing */
 	curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 0L);
 
-	/* disable progress meter, set to 0L to enable and disable debug output */
-	curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
+	/* set URL to get here */
+	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
 
 	/* send all data to this function  */
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
@@ -725,7 +725,7 @@ void installModule(const std::string& repo, const std::string& module)
 	}
 	else if ( type == "internal" ) {
 		// target is located on our own server
-		url = repo + MODULES + config["name_short"].asString() + FILE_VERSION_SEPARATOR + config["version"].asString() + ".tar.gz";
+		url = repo + MODULES + config["name_short"].asString() + "/" + config["version"].asString() + "/module.tar.gz";
 	}
 	else {
 		std::cout << "!!! invalid target type specified" << std::endl;
@@ -945,7 +945,7 @@ void prepareModuleInstallation(const std::string& repo, const Module& installMod
 	std::string path = mBaseFolder + CACHE_MODULES;
 	std::string filename = installModule.mShortName + ".json";
 	std::string module_config = path + filename;
-	std::string url = repo + MODULES + installModule.mShortName + (installModule.mVersion.isValid() ? FILE_VERSION_SEPARATOR + installModule.mVersion.toString() + ".json" : ".json");
+	std::string url = repo + MODULES + installModule.mShortName + "/" + installModule.mVersion.toString() + "/module.json";
 
 	bool result = download(url, module_config);
 	if ( !result ) {
@@ -1250,7 +1250,7 @@ void update()
 
 	std::cout << "Updating repository \"" << mRemoteRepository.getName() << "\"..." << std::endl;
 
-	std::string url = mRemoteRepository.getURL() + "index.json";
+	std::string url = mRemoteRepository.getURL() + "modules/index.json";
 	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
 	bool result = download(url, filename, false);
@@ -1261,6 +1261,52 @@ void update()
 		std::cout << "!!! Error while updating index for " << mRemoteRepository.getURL() << std::endl;
 		exit( ERROR_INDEX_UPDATE );
 	}
+}
+
+void upgrade(const StringList& params)
+{
+    // (1) retrieve outdated modules
+    // (2) list all found modules
+    // (3) install new modules if any are available
+
+    collectLocalModuleData();
+    if ( !prepareRemoteRepository() ) {
+        update();
+    }
+
+    Modules outdatedModules;
+    checkOutdatedModules(outdatedModules);
+
+    if ( outdatedModules.empty() ) {
+        std::cout << "No outdated modules found." << std::endl;
+    }
+    else {
+        // find out if the user wants to upgrade some of our outdated modules
+        Modules upgradeModules;
+        for ( const auto& outdatedModule : outdatedModules ) {
+            // if params contains values upgrade only the modules that are set in mParameters
+            if ( params.empty() || contains(params, outdatedModule.mShortName)) {
+                // add outdated module name to global parameters
+                upgradeModules.insert(outdatedModule);
+            }
+        }
+        std::cout << std::endl;
+
+        if ( upgradeModules.empty() ) {
+            // no modules added to upgrade
+            std::cout << "No upgradeable module selected." << std::endl;
+            return;
+        }
+
+        std::cout << "Need to upgrade " << upgradeModules.size() << " module(s)..." << std::endl;
+
+        for ( const auto& outdatedModule : upgradeModules ) {
+            std::cout << outdatedModule.mShortName << "(" << outdatedModule.mVersion.toString() << ")" << std::endl;
+
+            // install new versions of the selected outdated modules
+            install( StringList{ outdatedModule.mShortName } );
+        }
+    }
 }
 
 size_t upload( const std::string& filename, const std::string& url, const std::string& contentType )
@@ -1340,52 +1386,6 @@ size_t upload( const std::string& filename, const std::string& url, const std::s
 
     fclose(file);
     return 0;
-}
-
-void upgrade(const StringList& params)
-{
-	// (1) retrieve outdated modules
-	// (2) list all found modules
-	// (3) install new modules if any are available
-
-	collectLocalModuleData();
-	if ( !prepareRemoteRepository() ) {
-		update();
-	}
-
-	Modules outdatedModules;
-	checkOutdatedModules(outdatedModules);
-
-	if ( outdatedModules.empty() ) {
-		std::cout << "No outdated modules found." << std::endl;
-	}
-	else {
-		std::cout << "Need to upgrade " << outdatedModules.size() << " module(s)..." << std::endl;
-
-		// replace current parameters with outdated modules to install
-		mParameters.clear();
-
-		std::cout << "New module(s): ";
-		for ( const auto& outdatedModule : outdatedModules ) {
-			std::cout << outdatedModule.mShortName << "(" << outdatedModule.mVersion.toString() << ")" << " ";
-
-			// if params contains values upgrade only the modules that are set in mParameters
-			if ( params.empty() || contains(params, outdatedModule.mShortName)) {
-				// add outdated module name to global parameters
-				mParameters.push_back(outdatedModule.toVersionString());
-			}
-		}
-		std::cout << std::endl;
-
-		if ( mParameters.empty() ) {
-			// no modules added to upgrade
-			std::cout << "No upgradeable module selected." << std::endl;
-			return;
-		}
-
-		// install new versions of the selected outdated modules
-		install(mParameters);
-	}
 }
 
 int main(int argc, const char* argv[])
