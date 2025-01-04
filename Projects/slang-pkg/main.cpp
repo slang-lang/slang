@@ -78,6 +78,8 @@ static const std::string CONFIG_FILE = ".odepend/config.json";
 static const std::string CONFIG_FOLDER = ".odepend/";
 static const std::string FILE_VERSION_SEPARATOR = "_";
 static const std::string MODULES = "modules/";
+static const std::string REMOTE_REPOSITORY_NAME = "main";
+static const std::string REMOTE_REPOSITORY_URL = "https://slang-lang.org/repository/stable";
 static const std::string TMP = "/tmp/";
 static const std::string UPLOAD_PATH = "upload/";
 static const char VERSION_SEPARATOR = ':';
@@ -367,8 +369,8 @@ void createLocalLibrary()
 
 	if ( !Utils::Tools::Files::exists(mCurrentFolder + CONFIG_FILE) ) {
 		Json::Value repository;
-		repository[ "name" ] = "main";
-		repository[ "url" ]  = "https://slang-lang.org/repo/stable";
+		repository[ "name" ] = REMOTE_REPOSITORY_NAME;
+		repository[ "url" ]  = REMOTE_REPOSITORY_URL;
 
 		Json::Value config;
 		config[ "repository" ]   = repository;
