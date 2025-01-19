@@ -93,6 +93,13 @@ private object SemVer const {
 	}
 
 	/*
+	 * equality operator
+	 */
+	public bool operator==( SemVer other const ) const {
+		return Major == other.Major && Minor == other.Minor && Bugfix == other.Bugfix && Label == other.Label;
+	}
+
+	/*
 	 * string cast operator
 	 */
 	public string =operator( string ) const {

@@ -8,6 +8,7 @@ public void Main( int argc = 0, string args = "" ) {
     assert( TestCase2() );
     assert( TestCase3() );
     assert( TestCase4() );
+    assert( TestCase5() );
 }
 
 private bool TestCase1() {
@@ -67,3 +68,15 @@ private bool TestCase4() {
 
     return true;
 }
+
+private bool TestCase5() {
+    print( "TestCase 5: equality operator" );
+
+    var ver123 = new SemVer( 1, 2, 3 );
+    assert( cast<string>( ver123 ) == "1.2.3" );
+    assert( cast<string>( ver123 ) != "1.2.4" );
+    assert( ver123 == SemVer.FromString( "1.2.3" ) );
+
+    return true;
+}
+
