@@ -85,7 +85,6 @@ static const std::string UPLOAD_PATH = "upload/";
 static const char VERSION_SEPARATOR = ':';
 
 
-void addRestriction( const StringList& params );
 void checkOutdatedModules( Modules& outdatedModules );
 bool checkRestrictions( const Module& module );
 void cleanCache();
@@ -109,9 +108,10 @@ void loadConfig();
 void loadRestrictions();
 void prepareModuleInstallation( const std::string& repo, const Module& installModule );
 bool prepareRemoteRepository();
-void printUsage();
+void printUsage( const StringList& params );
 void printVersion();
 void processParameters( int argc, const char* argv[] );
+void processRestrictions( const StringList& params );
 void purge( const StringList& params );
 size_t push( const StringList& params );
 void readJsonFile( const std::string& filename, Json::Value& result );
@@ -144,53 +144,8 @@ bool mSkipDependencies = false;
 
 static size_t write_data( void *ptr, size_t size, size_t nmemb, void *stream )
 {
-	size_t written = fwrite( ptr, size, nmemb, ( FILE * )stream );
+	size_t written = fwrite( ptr, size, nmemb, (FILE*)stream );
 	return written;
-}
-
-void addRestriction( const StringList& params )
-{
-	// ( 1 ) check if the requested module is actually installed
-	// ( 2 ) add a version restriction for the given module
-
-	if ( params.size() != 3 && params.size() != 5 ) {
-		std::cout << "!!! Invalid number of parameters: " << params.size() << std::endl;
-		return;
-	}
-
-	collectLocalModuleData();
-
-	auto& restrictions = mConfig[ "restrictions" ];
-
-	auto paramIt = params.begin();
-
-	auto module = ( *paramIt );
-
-	restrictions.removeMember( module );
-
-	Json::Value value;
-	while ( paramIt != params.end() ) {
-		++paramIt;
-
-		if ( ( *paramIt ) == "max" ) {
-			++paramIt;
-
-			SemanticVersionNumber version( ( *paramIt ) );
-
-			value[ "version_max" ] = version.toString();
-		}
-		else if ( ( *paramIt ) == "min" ) {
-			++paramIt;
-
-			SemanticVersionNumber version( ( *paramIt ) );
-
-			value[ "version_min" ] = version.toString();
-		}
-	}
-
-	restrictions[ module ] = value;
-
-	storeConfig();
 }
 
 void checkOutdatedModules( Modules& outdatedModules )
@@ -822,7 +777,7 @@ void loadRestrictions()
 	// add hardcoded max restriction for Slang version ( this can be overwritten by the real restriction config )
 	mLocalRestrictions.insert(
 		Restriction( PRODUCT_NAME, "", PRODUCT_VERSION )
-	 );
+	);
 
 	// load restrictions from config
 	Json::Value restrictions = mConfig[ "restrictions" ];
@@ -840,16 +795,183 @@ void loadRestrictions()
 
 		mLocalRestrictions.insert(
 			Restriction( restrictionName, versionMin, versionMax )
-		 );
+		);
 	}
 }
 
-void printUsage()
+void prepareModuleInstallation( const std::string& repo, const Module& installModule )
 {
+#ifdef SLANG_DEBUG
+	std::cout << "Preparing module \"" << installModule.mShortName << "( " << installModule.mVersion.toString() << " )\" from \"" << repo << "\"..." << std::endl;
+#endif
+
+	// ( 1 ) download module information from repository
+	// ( 2 ) collect dependencies from module information
+	// ( 3 ) check dependencies against local repository and download module information for missing modules
+
+	std::string path          = mBaseFolder + CACHE_MODULES;
+	std::string filename      = installModule.mShortName + ".json";
+	std::string module_config = path + filename;
+	std::string url           = repo + MODULES + installModule.mShortName + "/" + installModule.mVersion.toString() + "/module.json";
+
+	bool result = download( url, module_config );
+	if ( !result ) {
+		std::cout << "!!! Download of module information for \"" << installModule.mShortName << "\" failed" << std::endl;
+		return;
+	}
+
+	if ( mSkipDependencies ) {
+		// skipping dependencies as requested
+		return;
+	}
+
+	Module module = collectModuleData( path, filename );
+
+	// check module architecture
+	if ( !module.mArchitecture.empty() ) {
+	    if ( module.mArchitecture != mArchitecture ) {
+	        std::cout << "ERROR: module architecture " << module.mArchitecture << " does not match system architecture!" << std::endl;
+	        exit( ERROR_ARCHITECTURE );
+	    }
+	}
+
+	Modules local = mLocalRepository.getModules();
+	for ( const auto& mDependencie : module.mDependencies ) {
+		bool found = false;
+
+		// look up dependency in already installed modules
+		for ( const auto& localIt : local ) {
+			if ( localIt.mShortName == mDependencie.mModule ) {
+				found = true;
+				break;
+			}
+		}
+
+		if ( !found ) {
+			// dependent module is not yet installed
+			std::cout << "Need to install dependent module \"" << mDependencie.mModule << "\"" << std::endl;
+
+			Module dependent( mDependencie.mModule, mDependencie.mMinVersion, mDependencie.mSource );
+
+			mMissingDependencies.addModule( dependent );
+
+			prepareModuleInstallation( repo, dependent );
+		}
+	}
+}
+
+bool prepareRemoteRepository()
+{
+	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
+
+	// check if filename exists
+	if ( !::Utils::Tools::Files::exists( filename ) ) {
+		// no configuration file exists
+		std::cout << "!!! File \"" + filename + "\" not found" << std::endl;
+		return false;
+	}
+
+	Json::Value config;
+	readJsonFile( filename, config );
+
+	// process Json::Value in Repository
+	mRemoteRepository.processIndex( config );
+
+	return true;
+}
+
+void printUsage( const StringList& params )
+{
+    if ( !params.empty() ) {
+        auto param = params.front();
+
+        if ( param == "create" ) {
+            std::cout << "Usage: slang-pkg create <module>" << std::endl;
+            std::cout << std::endl;
+            std::cout << "[Deprecated] Provide a single directory name to create a module from it. A module.json is required in this directory." << std::endl;
+        }
+        else if ( param == "help" ) {
+            std::cout << "Usage: slang-pkg help [<command>]" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Prints out the usage/info for a given command." << std::endl;
+        }
+        else if ( param == "info" ) {
+            std::cout << "Usage: slang-pkg info <module> [<module> ...]" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Retrieves information of given module[s]." << std::endl;
+        }
+        else if ( param == "install" ) {
+            std::cout << "Usage: slang-pkg install <module> [<module> ...]" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Downloads and installs given module[s] from remote repository into library folder." << std::endl;
+        }
+        else if ( param == "list" ) {
+            std::cout << "Usage: slang-pkg list" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Lists installed modules (including version number)." << std::endl;
+        }
+        else if ( param == "purge" ) {
+            std::cout << "Usage: slang-pkg purge <module> [<module> ...]" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Deletes installed module[s] and removes restrictions." << std::endl;
+        }
+        else if ( param == "push" ) {
+            std::cout << "Usage: slang-pkg push <module> [<module> ...]" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Creates a module and pushes it to the configured repository server." << std::endl;
+        }
+        else if ( param == "remove" ) {
+            std::cout << "Usage: slang-pkg remove <module> [<module> ...]" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Deletes installed module[s] without removing restrictions." << std::endl;
+        }
+        else if ( param == "restrict" ) {
+            std::cout << "Usage: slang-pkg restrict <module> [ [<version_min>]:[<version_max>] ]" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Adds or removes a restriction for a given module." << std::endl;
+            std::cout << std::endl;
+            std::cout << "Example to add a minimum version restriction without setting a maximum version:" << std::endl;
+            std::cout << "    slang-pkg restrict System 0.1.0:" << std::endl;
+        }
+        else if ( param == "search" ) {
+            std::cout << "Usage: slang-pkg search <text>" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Searches the module cache for the given parameter." << std::endl;
+        }
+        else if ( param == "update" ) {
+            std::cout << "Usage: slang-pkg update" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Updates the module cache from the configured remote repository." << std::endl;
+        }
+        else if ( param == "upgrade" ) {
+            std::cout << "Usage: slang-pkg upgrade <module> [<module> ...]" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Upgrades outdated modules according to the currently set restrictions. Upgrades only the provided modules or, if no parameter is provided, upgrades all outdated modules." << std::endl;
+        }
+        else if ( param == "--locallibrary" ) {
+            std::cout << "Usage: slang-pkg --locallibrary" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Creates a library folder in the current folder which is used to install and update modules from a remote repository." << std::endl;
+        }
+        else if ( param == "--skip-dependencies" ) {
+            std::cout << "Usage: slang-pkg --skip-dependencies <command>" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Flag to indicate if dependencies should be ignored while installing or removing/purging modules." << std::endl;
+        }
+        else if ( param == "--version" ) {
+            std::cout << "Usage: slang-pkg --version" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Prints the version number of slang-pkg." << std::endl;
+        }
+
+        std::cout << std::endl;
+        return;
+    }
+
 	std::cout << "Usage: slang-pkg [ args... ]" << std::endl;
 	std::cout << std::endl;
 	std::cout << "create                     Create a new module from a given directory" << std::endl;
-	std::cout << "help                       This help" << std::endl;
+	std::cout << "help                       Print command usage info" << std::endl;
 	std::cout << "info                       Print information about requested module" << std::endl;
 	std::cout << "install                    Install new module" << std::endl;
 	std::cout << "list                       List all installed modules" << std::endl;
@@ -934,85 +1056,42 @@ void processParameters( int argc, const char* argv[] )
 	}
 }
 
-void prepareModuleInstallation( const std::string& repo, const Module& installModule )
+void processRestrictions( const StringList& params )
 {
-#ifdef SLANG_DEBUG
-	std::cout << "Preparing module \"" << installModule.mShortName << "( " << installModule.mVersion.toString() << " )\" from \"" << repo << "\"..." << std::endl;
-#endif
+    // ( 1 ) check if the requested module is actually installed
+	// ( 2 ) add a version restriction for the given module
 
-	// ( 1 ) download module information from repository
-	// ( 2 ) collect dependencies from module information
-	// ( 3 ) check dependencies against local repository and download module information for missing modules
-
-	std::string path = mBaseFolder + CACHE_MODULES;
-	std::string filename = installModule.mShortName + ".json";
-	std::string module_config = path + filename;
-	std::string url = repo + MODULES + installModule.mShortName + "/" + installModule.mVersion.toString() + "/module.json";
-
-	bool result = download( url, module_config );
-	if ( !result ) {
-		std::cout << "!!! Download of module information for \"" << installModule.mShortName << "\" failed" << std::endl;
+	if ( params.empty() ) {
+		std::cout << "!!! Invalid number of parameters: " << params.size() << std::endl;
 		return;
 	}
 
-	if ( mSkipDependencies ) {
-		// skipping dependencies as requested
-		return;
+	collectLocalModuleData();
+
+	auto& restrictions = mConfig[ "restrictions" ];
+	auto paramIt       = params.begin();
+	auto module        = ( *paramIt );
+
+	// reset restrictions for module
+	restrictions.removeMember( module );
+
+	// add new restrictions
+	Json::Value value;
+
+	if ( params.size() == 2 ) {
+		++paramIt;
+
+		std::string maxVersion;
+		std::string minVersion;
+		Utils::Tools::splitBy( *paramIt, VERSION_SEPARATOR, minVersion, maxVersion );
+
+		if ( !minVersion.empty() ) value[ "version_min" ] = SemanticVersionNumber( minVersion ).toString();
+		if ( !maxVersion.empty() ) value[ "version_max" ] = SemanticVersionNumber( maxVersion ).toString();
+
+		restrictions[ module ] = value;
 	}
 
-	Module module = collectModuleData( path, filename );
-
-	// check module architecture
-	if ( !module.mArchitecture.empty() ) {
-	    if ( module.mArchitecture != mArchitecture ) {
-	        std::cout << "ERROR: module architecture " << module.mArchitecture << " does not match system architecture!" << std::endl;
-	        exit( ERROR_ARCHITECTURE );
-	    }
-	}
-
-	Modules local = mLocalRepository.getModules();
-	for ( const auto& mDependencie : module.mDependencies ) {
-		bool found = false;
-
-		// look up dependency in already installed modules
-		for ( const auto& localIt : local ) {
-			if ( localIt.mShortName == mDependencie.mModule ) {
-				found = true;
-				break;
-			}
-		}
-
-		if ( !found ) {
-			// dependent module is not yet installed
-			std::cout << "Need to install dependent module \"" << mDependencie.mModule << "\"" << std::endl;
-
-			Module dependent( mDependencie.mModule, mDependencie.mMinVersion, mDependencie.mSource );
-
-			mMissingDependencies.addModule( dependent );
-
-			prepareModuleInstallation( repo, dependent );
-		}
-	}
-}
-
-bool prepareRemoteRepository()
-{
-	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
-
-	// check if filename exists
-	if ( !::Utils::Tools::Files::exists( filename ) ) {
-		// no configuration file exists
-		std::cout << "!!! File \"" + filename + "\" not found" << std::endl;
-		return false;
-	}
-
-	Json::Value config;
-	readJsonFile( filename, config );
-
-	// process Json::Value in Repository
-	mRemoteRepository.processIndex( config );
-
-	return true;
+	storeConfig();
 }
 
 void purge( const StringList& params )
@@ -1383,7 +1462,7 @@ int main( int argc, const char* argv[] )
 	switch ( mAction ) {
 		case Create:             create( mParameters ); break;
 		case CreateLocalLibrary: createLocalLibrary(); init(); break;
-		case Help:               printUsage(); break;
+		case Help:               printUsage( mParameters ); break;
 		case Info:               info( mParameters ); break;
 		case Install:            install( mParameters ); break;
 		case List:               list(); break;
@@ -1391,7 +1470,7 @@ int main( int argc, const char* argv[] )
 		case Purge:              purge( mParameters ); break;
 		case Push:               push( mParameters ); break;
 		case Remove:             remove( mParameters ); break;
-		case Restrict:           addRestriction( mParameters ); break;
+		case Restrict:           processRestrictions( mParameters ); break;
 		case Search:             search( mParameters ); break;
 		case Update:             update(); break;
 		case Upgrade:            upgrade( mParameters ); break;
