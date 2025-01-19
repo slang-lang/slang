@@ -9,11 +9,20 @@ import QueryExecutor;
 
 public object App
 {
-    public void Constructor() {
+    public void Constructor( ParameterHandler params ) {
         loadTables();
+
+        Params     = params;
+        SilentMode = params.size();
     }
 
     public void Run() modify {
+        if ( Params.size() ) {
+           executeQuery( Params[ 0 ].Key );
+
+           return;
+        }
+
         while ( true ) {
             write( PROMPT << "> " );
 
@@ -54,7 +63,9 @@ public object App
     }
 
     private void loadTables() modify throws {
-        print( "Loading tables..." );
+        if( !SilentMode ) {
+            print( "Loading tables..." );
+        }
 
         TableData = new Map<string, CSVReader>();
 
@@ -99,5 +110,7 @@ public object App
 
     // members
     private string Folder;
+    private ParameterHandler Params;
+    private bool SilentMode;
     private Map<string, CSVReader> TableData;
 }

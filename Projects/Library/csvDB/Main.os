@@ -17,13 +17,12 @@ public int Main( int argc, string args )
         printHelp();
         return 0;
     }
-
-    if ( params.contains( "version" ) ) {
+    else if ( params.contains( "version" ) ) {
         printVersion();
         return 0;
     }
 
-    ( new App() ).Run();
+    ( new App( params ) ).Run();
 
     return 0;
 }
@@ -37,3 +36,4 @@ private void printVersion()
 {
     print( APPNAME + " v" + VERSION );
 }
+
