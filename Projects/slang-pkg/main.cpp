@@ -140,6 +140,7 @@ Repository mMissingDependencies( "missing" );
 StringList mParameters;
 Repository mRemoteRepository;
 bool mSkipDependencies = false;
+bool mVerbose = false;
 
 
 static size_t write_data( void *ptr, size_t size, size_t nmemb, void *stream )
@@ -205,7 +206,7 @@ void collectLocalModuleData()
 
 	DIR* dir = opendir( base.c_str() );
 	if ( !dir ) {
-		std::cout << "!!! Error while accessing modules directory" << std::endl;
+		std::cerr << "!!! Error while accessing modules directory" << std::endl;
 		exit( ERROR_MODULE_DIRECTORY );
 	}
 
@@ -244,7 +245,7 @@ Module collectModuleData( const std::string& path, const std::string& filename )
 
 	Module module;
 	if ( !module.loadFromJson( config ) ) {
-		std::cout << "!!! Invalid module data in file '" << filename << "'" << std::endl;
+		std::cerr << "!!! Invalid module data in file '" << filename << "'" << std::endl;
 		return module;
 	}
 
@@ -274,7 +275,7 @@ void create( const StringList& params )
 	// ( 2 ) create "<module>_<version>.json", "<module>_<version>.tar.gz"
 
 	if ( params.empty() || params.size() != 1 ) {
-		std::cout << "!!! Invalid number of parameters" << std::endl;
+		std::cerr << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
 
@@ -395,7 +396,7 @@ bool download( const std::string& url, const std::string& target, bool allowClea
 
 void execute( const std::string& command )
 {
-	int result = system( command.c_str() );
+	auto result = system( command.c_str() );
 	( void )result;
 }
 
@@ -419,7 +420,7 @@ void info( const StringList& params )
 	// ( 3 ) print module information for requested module
 
 	if ( params.empty() /*|| params.size() != 1*/ ) {
-		std::cout << "!!! Invalid number of parameters" << std::endl;
+		std::cerr << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
 
@@ -498,7 +499,7 @@ void info( const StringList& params )
             }
         }
         else {
-            std::cout << "!!! Requested module \"" << moduleName << "\" not found" << std::endl;
+            std::cerr << "!!! Requested module \"" << moduleName << "\" not found" << std::endl;
         }
 	}
 }
@@ -508,7 +509,7 @@ void init()
     struct utsname name{};
 
     if ( uname( &name ) == -1 ) {
-        std::cout << "Cannot get system name!" << std::endl;
+        std::cerr << "!!! Cannot get system name" << std::endl;
         exit( ERROR_SYSTEM );
     }
 
@@ -566,7 +567,7 @@ void install( const StringList& params )
 	// ( 4 ) install requested modules
 
 	if ( params.empty() ) {
-		std::cout << "!!! Invalid number of parameters" << std::endl;
+		std::cerr << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
 
@@ -657,7 +658,7 @@ void installModule( const std::string& repo, const std::string& module )
 	std::string module_config = mBaseFolder + CACHE_MODULES + module + ".json";
 
 	if ( !Utils::Tools::Files::exists( module_config ) ) {
-		std::cout << "!!! Module information missing for module \"" << module << "\"" << std::endl;
+		std::cerr << "!!! Module information missing for module \"" << module << "\"" << std::endl;
 		return;
 	}
 
@@ -665,11 +666,11 @@ void installModule( const std::string& repo, const std::string& module )
 	readJsonFile( module_config, config );
 
 	if ( !config.isMember( "target" ) ) {
-		std::cout << "!!! No target entry found in module information" << std::endl;
+		std::cerr << "!!! No target entry found in module information" << std::endl;
 		return;
 	}
 	if ( !config[ "target" ].isMember( "type" ) ) {
-		std::cout << "!!! No type entry found in target module information" << std::endl;
+		std::cerr << "!!! No type entry found in target module information" << std::endl;
 		return;
 	}
 
@@ -685,7 +686,7 @@ void installModule( const std::string& repo, const std::string& module )
 		url = repo + MODULES + config[ "name_short" ].asString() + "/" + config[ "version" ].asString() + "/module.tar.gz";
 	}
 	else {
-		std::cout << "!!! invalid target type specified" << std::endl;
+		std::cerr << "!!! invalid target type specified" << std::endl;
 		return;
 	}
 
@@ -693,7 +694,7 @@ void installModule( const std::string& repo, const std::string& module )
 
 	bool result = download( url, module_archive );
 	if ( !result ) {
-		std::cout << "!!! Failed to download target" << std::endl;
+		std::cerr << "!!! Failed to download target" << std::endl;
 		return;
 	}
 
@@ -737,7 +738,7 @@ void loadConfig()
 		// repository name
 		// {
 		if ( !entry.isMember( "name" ) ) {
-			std::cout << "!!! Invalid repository name" << std::endl;
+			std::cerr << "!!! Invalid repository name" << std::endl;
 			return;
 		}
 
@@ -747,7 +748,7 @@ void loadConfig()
 		// repository URL
 		// {
 		if ( !entry.isMember( "url" ) ) {
-			std::cout << "!!! Invalid repository url" << std::endl;
+			std::cerr << "!!! Invalid repository url" << std::endl;
 			return;
 		}
 
@@ -816,7 +817,7 @@ void prepareModuleInstallation( const std::string& repo, const Module& installMo
 
 	bool result = download( url, module_config );
 	if ( !result ) {
-		std::cout << "!!! Download of module information for \"" << installModule.mShortName << "\" failed" << std::endl;
+		std::cerr << "!!! Download of module information for \"" << installModule.mShortName << "\" failed" << std::endl;
 		return;
 	}
 
@@ -830,7 +831,7 @@ void prepareModuleInstallation( const std::string& repo, const Module& installMo
 	// check module architecture
 	if ( !module.mArchitecture.empty() ) {
 	    if ( module.mArchitecture != mArchitecture ) {
-	        std::cout << "ERROR: module architecture " << module.mArchitecture << " does not match system architecture!" << std::endl;
+	        std::cerr << "!!! module architecture " << module.mArchitecture << " does not match system architecture" << std::endl;
 	        exit( ERROR_ARCHITECTURE );
 	    }
 	}
@@ -867,7 +868,7 @@ bool prepareRemoteRepository()
 	// check if filename exists
 	if ( !::Utils::Tools::Files::exists( filename ) ) {
 		// no configuration file exists
-		std::cout << "!!! File \"" + filename + "\" not found" << std::endl;
+		std::cerr << "!!! File \"" + filename + "\" not found" << std::endl;
 		return false;
 	}
 
@@ -958,10 +959,18 @@ void printUsage( const StringList& params )
             std::cout << std::endl;
             std::cout << "Flag to indicate if dependencies should be ignored while installing or removing/purging modules." << std::endl;
         }
+        else if ( param == "--verbose" ) {
+            std::cout << "Usage: slang-pkg <command> --verbose" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Activates verbose output of given command, if supported." << std::endl;
+        }
         else if ( param == "--version" ) {
             std::cout << "Usage: slang-pkg --version" << std::endl;
             std::cout << std::endl;
             std::cout << "Prints the version number of slang-pkg." << std::endl;
+        }
+        else {
+            std::cerr << "!!! Unknown command '" << param << "' provided" << std::endl;
         }
 
         std::cout << std::endl;
@@ -984,6 +993,7 @@ void printUsage( const StringList& params )
 	std::cout << "upgrade                    Upgrade outdated modules" << std::endl;
 	std::cout << "--locallibrary             Use current directory as library" << std::endl;
 	std::cout << "--skip-dependencies        Skip dependencies while installing or removing modules" << std::endl;
+	std::cout << "--verbose                  Verbose output" << std::endl;
 	std::cout << "--version                  Version information" << std::endl;
 	std::cout << std::endl;
 }
@@ -992,7 +1002,7 @@ void printVersion()
 {
 	std::cout << PRODUCT_NAME << " Dependency Manager " << PRODUCT_VERSION << " ( cli ) " << mArchitecture << std::endl;
 	std::cout << COPYRIGHT << std::endl;
-	std::cout << "" << std::endl;
+	std::cout << std::endl;
 }
 
 void processParameters( int argc, const char* argv[] )
@@ -1050,6 +1060,9 @@ void processParameters( int argc, const char* argv[] )
 		if ( Utils::Tools::StringCompare( argv[ i ], "--skip-dependencies" ) ) {
 			mSkipDependencies = true;
 		}
+		else if ( Utils::Tools::StringCompare( argv[ i ], "--verbose" ) ) {
+			mVerbose = true;
+		}
 		else {
 			mParameters.push_back( std::string( argv[ i ] ) );
 		}
@@ -1062,7 +1075,7 @@ void processRestrictions( const StringList& params )
 	// ( 2 ) add a version restriction for the given module
 
 	if ( params.empty() ) {
-		std::cout << "!!! Invalid number of parameters: " << params.size() << std::endl;
+		std::cerr << "!!! Invalid number of parameters: " << params.size() << std::endl;
 		return;
 	}
 
@@ -1101,7 +1114,7 @@ void purge( const StringList& params )
 	// ( 3 ) store configuration
 
 	if ( mParameters.empty() ) {
-		std::cout << "!!! Invalid number of parameters" << std::endl;
+		std::cerr << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
 
@@ -1126,7 +1139,7 @@ size_t push( const StringList& params )
     // ( 3 ) clean up module files after uploading
 
     if ( params.empty() ) {
-        std::cout << "!!! Invalid number of parameters" << std::endl;
+        std::cerr << "!!! Invalid number of parameters" << std::endl;
         return 1;
     }
 
@@ -1143,12 +1156,12 @@ size_t push( const StringList& params )
         size_t result{ 0 };
         result = upload( module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".json",   mRemoteRepository.getURL() + UPLOAD_PATH, "application/json" );
         if ( result ) {
-            std::cerr << "Error " << result << " while uploading module to repository '" << mRemoteRepository.getURL() << "'" << std::endl;
+            std::cerr << "!!! Error " << result << " while uploading module to repository '" << mRemoteRepository.getURL() << "'" << std::endl;
         }
         else {
             result = upload( module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz", mRemoteRepository.getURL() + UPLOAD_PATH, "application/tar+gzip" );
             if ( result ) {
-                std::cerr << "Error " << result << " while uploading module to repository '" << mRemoteRepository.getURL() << "'" << std::endl;
+                std::cerr << "!!! Error " << result << " while uploading module to repository '" << mRemoteRepository.getURL() << "'" << std::endl;
             }
         }
 
@@ -1183,7 +1196,7 @@ void remove( const StringList& params )
 	// ( 2 ) remove them by deleting their complete directory
 
 	if ( mParameters.empty() ) {
-		std::cout << "!!! Invalid number of parameters" << std::endl;
+		std::cerr << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
 
@@ -1205,7 +1218,7 @@ void remove( const StringList& params )
 		}
 
 		if ( !found ) {
-			std::cout << "!!! Module \"" << param << "\" cannot be removed because it is not installed" << std::endl;
+			std::cerr << "!!! Module \"" << param << "\" cannot be removed because it is not installed" << std::endl;
 		}
 	}
 }
@@ -1222,7 +1235,7 @@ void removeRestriction( const StringList& params )
 	// ( 2 ) remove them by deleting their complete directory
 
 	if ( mParameters.empty() ) {
-		std::cout << "!!! Invalid number of parameters" << std::endl;
+		std::cerr << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
 
@@ -1241,7 +1254,7 @@ void search( const StringList& params )
 	// check if filename exists
 	if ( !::Utils::Tools::Files::exists( filename ) ) {
 		// no configuration file exists
-		std::cout << "!!! File \"" + filename + "\" not found" << std::endl;
+		std::cerr << "!!! File \"" + filename + "\" not found" << std::endl;
 		return;
 	}
 
@@ -1249,7 +1262,7 @@ void search( const StringList& params )
 	readJsonFile( filename, config );
 
 	if ( !config.isMember( "modules" ) ) {
-		std::cout << "!!! Invalid cache file structure: \"modules\" missing" << std::endl;
+		std::cerr << "!!! Invalid cache file structure: \"modules\" missing" << std::endl;
 		return;
 	}
 
@@ -1259,7 +1272,7 @@ void search( const StringList& params )
 
 	for ( const auto& member : config[ "modules" ] ) {
 		if ( !member.isMember( "name" ) ) {
-			std::cout << "!!! Invalid cache file structure: \"name\" missing" << std::endl;
+			std::cerr << "!!! Invalid cache file structure: \"name\" missing" << std::endl;
 			return;
 		}
 
@@ -1339,7 +1352,7 @@ void update()
 		std::cout << "Updated index for \"" << mRemoteRepository.getURL() << "\"" << std::endl;
 	}
 	else {
-		std::cout << "!!! Error while updating index for " << mRemoteRepository.getURL() << std::endl;
+		std::cerr << "!!! Error while updating index for " << mRemoteRepository.getURL() << std::endl;
 		exit( ERROR_INDEX_UPDATE );
 	}
 }
@@ -1399,7 +1412,7 @@ size_t upload( const std::string& filename, const std::string& url, const std::s
     // Open the file
     auto* file = fopen( filename.c_str(), "rb" );
     if ( !file ) {
-        std::cerr << "Failed to open file <" << filename << ">" << std::endl;
+        std::cerr << "!!! Failed to open file <" << filename << ">" << std::endl;
         return 1;
     }
 
@@ -1412,7 +1425,7 @@ size_t upload( const std::string& filename, const std::string& url, const std::s
         curl_easy_setopt( curl, CURLOPT_READDATA, file );
         curl_easy_setopt( curl, CURLOPT_UPLOAD, 1L );
         curl_easy_setopt( curl, CURLOPT_URL, url.c_str() );
-        curl_easy_setopt( curl, CURLOPT_VERBOSE, 0L );     // Switch on full protocol/debug output while testing
+        curl_easy_setopt( curl, CURLOPT_VERBOSE, static_cast<long>( mVerbose ) );     // Switch on full protocol/debug output while testing
 
         // Set the file size ( optional but recommended )
         fseek( file, 0, SEEK_END );
@@ -1436,7 +1449,7 @@ size_t upload( const std::string& filename, const std::string& url, const std::s
         res = curl_easy_perform( curl );
 
         if ( res != CURLE_OK ) {
-            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror( res ) << std::endl;
+            std::cerr << "!!! curl_easy_perform() failed: " << curl_easy_strerror( res ) << std::endl;
         }
 
         // Clean up
