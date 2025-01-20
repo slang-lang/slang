@@ -1,5 +1,5 @@
 {
-  "name": "Slang YAML library ",
+  "name": "Slang YAML library",
   "name_short": "libYAML",
   "version": "0.0.1",
   "description": "The Slang YAML library provides a way to serialize YAML documents.",

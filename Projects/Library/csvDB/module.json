@@ -1,5 +1,5 @@
 {
-  "name": "csvDB",
+  "name": "CSV file query language",
   "name_short": "csvDB",
   "version": "0.0.4",
   "description": "A query language for CSV files",
