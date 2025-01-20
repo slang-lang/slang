@@ -436,8 +436,8 @@ void info( const StringList& params )
 		return;
 	}
 
-	for ( auto it = params.cbegin(); it != params.cend(); ++it ) {
-		if ( it != params.cbegin() ) {
+	for ( auto paramIt = params.cbegin(); paramIt != params.cend(); ++paramIt ) {
+		if ( paramIt != params.cbegin() ) {
 			std::cout << std::endl;
 		}
 
@@ -446,12 +446,10 @@ void info( const StringList& params )
             update();
         }
 
-        bool found = false;
-
         std::string moduleName;
         std::string moduleVersion;
 
-        Utils::Tools::splitBy( ( *it ), VERSION_SEPARATOR, moduleName, moduleVersion );
+        Utils::Tools::splitBy( ( *paramIt ), VERSION_SEPARATOR, moduleName, moduleVersion );
 
         if ( moduleVersion.empty() ) {
             Module tmpModule;
@@ -461,11 +459,13 @@ void info( const StringList& params )
             }
         }
 
+        bool found{ false };
         Module infoModule;
 
         {	// look up module in local repository
-            Modules local = mLocalRepository.getModules();
-            for ( const auto& localIt : local ) {
+            auto localModules = mLocalRepository.getModules();
+
+            for ( const auto& localIt : localModules ) {
                 if ( localIt.mShortName == moduleName && localIt.mVersion == moduleVersion ) {
                     found = true;
 
@@ -482,7 +482,7 @@ void info( const StringList& params )
 
             auto result = download( url, moduleConfig );
             if ( result ) {
-                Module tmpModule = collectModuleData( path, filename );
+                auto tmpModule = collectModuleData( path, filename );
                 if ( tmpModule.isValid() ) {
                     found = true;
 
@@ -732,7 +732,7 @@ void list()
 	auto local = mLocalRepository.getModules();
 
 	for ( const auto& localIt : local ) {
-		std::cout << localIt.mShortName << VERSION_SEPARATOR << localIt.mVersion.toString() << " - " << localIt.mDescription << std::endl;
+		std::cout << localIt.mShortName << VERSION_SEPARATOR << localIt.mVersion.toString() << " - " << localIt.mLongName << std::endl;
 	}
 
 	std::cout << local.size() << " module(s) installed." << std::endl;
