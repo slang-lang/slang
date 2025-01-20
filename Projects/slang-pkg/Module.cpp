@@ -32,8 +32,8 @@ Module::Module()
 
 Module::Module( std::string name_short, const std::string& version, std::string source )
 : mActionNeeded( Action::None ),
-  mShortName( std::move(name_short ) ),
-  mSource( std::move(source ) ),
+  mShortName( name_short ),
+  mSource( source ),
   mVersion( version )
 {
 }
@@ -55,28 +55,28 @@ bool Module::isValid() const
 
 bool Module::loadFromJson( const Json::Value& value )
 {
-	if ( value.size() <= 0 ) {
+	if ( value.empty() ) {
 		return false;
 	}
 
 	mArchitecture = value.isMember( ARCHITECTURE ) ? value[ ARCHITECTURE ].asString() : "";
-	mDescription = value[ DESCRIPTION ].asString();
-	mLongName = value[ NAME ].asString();
-	mShortName = value[ SHORTNAME ].asString();
-	mSource = value.isMember( SOURCE ) ? value[ SOURCE ].asString() : "";
-	mVersion = value[ VERSION ].asString();
+	mDescription  = value[ DESCRIPTION ].asString();
+	mLongName     = value[ NAME ].asString();
+	mShortName    = value[ SHORTNAME ].asString();
+	mSource       = value.isMember( SOURCE ) ? value[ SOURCE ].asString() : "";
+	mVersion      = value[ VERSION ].asString();
 
 	if ( value.isMember( DEPENDENCIES ) ) {
 		auto dependencies = value[ DEPENDENCIES ];
 
 		for ( const auto& dependency : dependencies ) {
 			auto moduleName  = dependency[ MODULE ].asString();
-			auto source      = dependency.isMember( SOURCE )      ? dependency[ SOURCE ].asString() : "";
+			auto source      = dependency.isMember( SOURCE )      ? dependency[ SOURCE ].asString()      : "";
 			auto version_max = dependency.isMember( VERSION_MAX ) ? dependency[ VERSION_MAX ].asString() : "";
 			auto version_min = dependency.isMember( VERSION_MIN ) ? dependency[ VERSION_MIN ].asString() : "";
 
 			mDependencies.insert(
-				Dependency(moduleName, version_min, version_max, source)
+				Dependency( moduleName, version_min, version_max, source )
 			);
 		}
 	}

@@ -21,9 +21,9 @@ public:
 	~Repository() = default;
 
 public:
-	void addModule(const Module& module);
-	bool contains(const Module& module) const;
-	bool getModule(const std::string& shortName, Module& module) const;
+	void addModule( const Module& module );
+	bool contains( const Module& module ) const;
+	bool getModule( const std::string& shortName, Module& module ) const;
 
 public:
 	const Modules& getModules() const;
@@ -31,9 +31,9 @@ public:
 	const std::string& getName() const;
 
 	const std::string& getURL() const;
-	void setURL(const std::string& url);
+	void setURL( const std::string& url );
 
-	bool processIndex(const Json::Value& value);
+	bool processIndex( const Json::Value& value );
 
 private:
 	Modules mModules;

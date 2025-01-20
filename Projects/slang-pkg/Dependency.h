@@ -18,15 +18,15 @@
 class Dependency
 {
 public:
-	Dependency(std::string module, std::string version_min, std::string version_max, std::string source)
-	: mMaxVersion(std::move(version_max)),
-	  mMinVersion(std::move(version_min)),
-	  mModule(std::move(module)),
-	  mSource(std::move(source))
+	Dependency( std::string module, std::string version_min, std::string version_max, std::string source )
+	: mMaxVersion( version_max ),
+	  mMinVersion( version_min ),
+	  mModule( module ),
+	  mSource( source )
 	{ }
 
 public:
-	bool operator<(const Dependency& other) const {
+	bool operator<( const Dependency& other ) const {
 		return mModule < other.mModule;
 	}
 

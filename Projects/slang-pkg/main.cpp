@@ -202,15 +202,27 @@ void collectLocalModuleData()
 {
 	// iterate over all directories in the modules directory and collect all "module.json" files
 
-	std::string base = mLibraryFolder;
+	auto base = mLibraryFolder;
 
-	DIR* dir = opendir( base.c_str() );
+	auto* dir = opendir( base.c_str() );
 	if ( !dir ) {
 		std::cerr << "!!! Error while accessing modules directory" << std::endl;
 		exit( ERROR_MODULE_DIRECTORY );
 	}
 
- 	struct dirent* dirEntry = readdir( dir );
+	struct dirent* dirEntry = readdir( dir );
+
+	// add Slang version as virtually installed module to force correct dependencies
+	// {
+	Module slang;
+	slang.mArchitecture = mArchitecture;
+	slang.mDescription  = "Virtual module to prevent installation of modules that are not compatible with your version of the Slang interpreter";
+	slang.mLongName     = PRODUCT_DESCRIPTION;
+	slang.mShortName    = PRODUCT_NAME;
+	slang.mVersion      = PRODUCT_VERSION;
+
+	mLocalRepository.addModule( slang );
+	// }
 
 	while ( dirEntry ) {
 		if ( dirEntry->d_type == DT_DIR ) {
@@ -223,7 +235,7 @@ void collectLocalModuleData()
 				if ( ::Utils::Tools::Files::exists( path + filename ) ) {
 					mLocalRepository.addModule(
 						collectModuleData( path, filename )
-					 );
+					);
 				}
 			}
 		}
@@ -463,12 +475,12 @@ void info( const StringList& params )
         }
 
         if ( !found ) {	// lookup module in remote repository
-            auto path          = mBaseFolder + CACHE_MODULES;
-            auto filename      = moduleName + ".json";
-            auto module_config = path + filename;
-            auto url           = mRemoteRepository.getURL() + MODULES + moduleName + FILE_VERSION_SEPARATOR + moduleVersion + ".json";
+            auto path         = mBaseFolder + CACHE_MODULES;
+            auto filename     = moduleName + ".json";
+            auto moduleConfig = path + filename;
+            auto url          = mRemoteRepository.getURL() + MODULES + moduleName + FILE_VERSION_SEPARATOR + moduleVersion + ".json";
 
-            auto result = download( url, module_config );
+            auto result = download( url, moduleConfig );
             if ( result ) {
                 Module tmpModule = collectModuleData( path, filename );
                 if ( tmpModule.isValid() ) {
@@ -480,7 +492,7 @@ void info( const StringList& params )
         }
 
         if ( found ) {	// print out module information if found
-            std::cout << infoModule.mShortName << "( " << infoModule.mVersion.toString() << " ): " << infoModule.mLongName << std::endl;
+            std::cout << infoModule.mShortName << VERSION_SEPARATOR << infoModule.mVersion.toString() << " - " << infoModule.mLongName << std::endl;
             std::cout << infoModule.mDescription << std::endl;
             std::cout << std::endl;
             std::cout << "Dependencies:" << std::endl;
@@ -591,7 +603,7 @@ void install( const StringList& params )
 			Module tmpModule;
 
 			if ( mRemoteRepository.getModule( moduleName, tmpModule ) ) {
-				source = tmpModule.mSource;
+				source  = tmpModule.mSource;
 				version = tmpModule.mVersion.toString();
 			}
 		}
@@ -655,15 +667,15 @@ void installModule( const std::string& repo, const std::string& module )
 {
 	std::cout << "Installing module \"" << module << "\" from \"" << repo << "\"..." << std::endl;
 
-	std::string module_config = mBaseFolder + CACHE_MODULES + module + ".json";
+	auto moduleConfig = mBaseFolder + CACHE_MODULES + module + ".json";
 
-	if ( !Utils::Tools::Files::exists( module_config ) ) {
+	if ( !Utils::Tools::Files::exists( moduleConfig ) ) {
 		std::cerr << "!!! Module information missing for module \"" << module << "\"" << std::endl;
 		return;
 	}
 
 	Json::Value config;
-	readJsonFile( module_config, config );
+	readJsonFile( moduleConfig, config );
 
 	if ( !config.isMember( "target" ) ) {
 		std::cerr << "!!! No target entry found in module information" << std::endl;
@@ -690,9 +702,9 @@ void installModule( const std::string& repo, const std::string& module )
 		return;
 	}
 
-	std::string module_archive = mBaseFolder + CACHE_MODULES + module + FILE_VERSION_SEPARATOR + config[ "version" ].asString() + ".tar.gz";
+	auto module_archive = mBaseFolder + CACHE_MODULES + module + FILE_VERSION_SEPARATOR + config[ "version" ].asString() + ".tar.gz";
 
-	bool result = download( url, module_archive );
+	auto result = download( url, module_archive );
 	if ( !result ) {
 		std::cerr << "!!! Failed to download target" << std::endl;
 		return;
@@ -704,7 +716,7 @@ void installModule( const std::string& repo, const std::string& module )
 	Module tmpModule = collectModuleData( mBaseFolder + CACHE_MODULES, module + ".json" );
 
 	// copy module config to "<module>/module.json"
-	execute( "cp " + module_config + " " + mLibraryFolder + tmpModule.mTargetDirectory + "/module.json" );
+	execute( "cp " + moduleConfig + " " + mLibraryFolder + tmpModule.mTargetDirectory + "/module.json" );
 */
 }
 
@@ -717,23 +729,21 @@ void list()
 {
 	collectLocalModuleData();
 
-	Modules local = mLocalRepository.getModules();
-
-	std::cout << local.size() << " module( s ) installed." << std::endl;
+	auto local = mLocalRepository.getModules();
 
 	for ( const auto& localIt : local ) {
-		std::cout << localIt.mShortName << "( " << localIt.mVersion.toString() << " ): " << localIt.mLongName << std::endl;
+		std::cout << localIt.mShortName << VERSION_SEPARATOR << localIt.mVersion.toString() << " - " << localIt.mDescription << std::endl;
 	}
+
+	std::cout << local.size() << " module(s) installed." << std::endl;
 }
 
 void loadConfig()
 {
-	std::string filename = mLibraryFolder + CONFIG_FILE;
-
-	readJsonFile( filename, mConfig );
+	readJsonFile( mLibraryFolder + CONFIG_FILE, mConfig );
 
 	if ( mConfig.isMember( "repository" ) ) {
-		Json::Value entry = mConfig[ "repository" ];
+		auto entry = mConfig[ "repository" ];
 
 		// repository name
 		// {
@@ -742,7 +752,7 @@ void loadConfig()
 			return;
 		}
 
-		std::string name = entry[ "name" ].asString();
+		auto name = entry[ "name" ].asString();
 		// }
 
 		// repository URL
@@ -752,7 +762,7 @@ void loadConfig()
 			return;
 		}
 
-		std::string url = entry[ "url" ].asString();
+		auto url = entry[ "url" ].asString();
 
 		// make sure the URL ends with a slash
 		if ( url[ url.size() - 1 ] != '/' ) {
@@ -803,19 +813,19 @@ void loadRestrictions()
 void prepareModuleInstallation( const std::string& repo, const Module& installModule )
 {
 #ifdef SLANG_DEBUG
-	std::cout << "Preparing module \"" << installModule.mShortName << "( " << installModule.mVersion.toString() << " )\" from \"" << repo << "\"..." << std::endl;
+	std::cout << "Preparing module \"" << installModule.mShortName << " (" << installModule.mVersion.toString() << ")\" from \"" << repo << "\"..." << std::endl;
 #endif
 
 	// ( 1 ) download module information from repository
 	// ( 2 ) collect dependencies from module information
 	// ( 3 ) check dependencies against local repository and download module information for missing modules
 
-	std::string path          = mBaseFolder + CACHE_MODULES;
-	std::string filename      = installModule.mShortName + ".json";
-	std::string module_config = path + filename;
-	std::string url           = repo + MODULES + installModule.mShortName + "/" + installModule.mVersion.toString() + "/module.json";
+	auto path         = mBaseFolder + CACHE_MODULES;
+	auto filename     = installModule.mShortName + ".json";
+	auto moduleConfig = path + filename;
+	auto url          = repo + MODULES + installModule.mShortName + "/" + installModule.mVersion.toString() + "/module.json";
 
-	bool result = download( url, module_config );
+	bool result = download( url, moduleConfig );
 	if ( !result ) {
 		std::cerr << "!!! Download of module information for \"" << installModule.mShortName << "\" failed" << std::endl;
 		return;
@@ -826,7 +836,7 @@ void prepareModuleInstallation( const std::string& repo, const Module& installMo
 		return;
 	}
 
-	Module module = collectModuleData( path, filename );
+	auto module = collectModuleData( path, filename );
 
 	// check module architecture
 	if ( !module.mArchitecture.empty() ) {
@@ -837,12 +847,12 @@ void prepareModuleInstallation( const std::string& repo, const Module& installMo
 	}
 
 	Modules local = mLocalRepository.getModules();
-	for ( const auto& mDependencie : module.mDependencies ) {
+	for ( const auto& dependency : module.mDependencies ) {
 		bool found = false;
 
 		// look up dependency in already installed modules
 		for ( const auto& localIt : local ) {
-			if ( localIt.mShortName == mDependencie.mModule ) {
+			if ( localIt.mShortName == dependency.mModule ) {
 				found = true;
 				break;
 			}
@@ -850,9 +860,9 @@ void prepareModuleInstallation( const std::string& repo, const Module& installMo
 
 		if ( !found ) {
 			// dependent module is not yet installed
-			std::cout << "Need to install dependent module \"" << mDependencie.mModule << "\"" << std::endl;
+			std::cout << "Need to install dependent module \"" << dependency.mModule << "\"" << std::endl;
 
-			Module dependent( mDependencie.mModule, mDependencie.mMinVersion, mDependencie.mSource );
+			Module dependent( dependency.mModule, dependency.mMinVersion, dependency.mSource );
 
 			mMissingDependencies.addModule( dependent );
 
@@ -985,7 +995,7 @@ void printUsage( const StringList& params )
 	std::cout << "install                    Install new module" << std::endl;
 	std::cout << "list                       List all installed modules" << std::endl;
 	std::cout << "purge                      Remove an installed module and all of its configuration" << std::endl;
-	std::cout << "push                       Push module( s ) to repository server" << std::endl;
+	std::cout << "push                       Push module(s) to repository server" << std::endl;
 	std::cout << "remove                     Remove an installed module" << std::endl;
 	std::cout << "restrict                   Add version restriction for module" << std::endl;
 	std::cout << "search                     Search for a module" << std::endl;
@@ -1153,13 +1163,22 @@ size_t push( const StringList& params )
 
         auto module = collectModuleData( path, filename );
 
-        size_t result{ 0 };
-        result = upload( module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".json",   mRemoteRepository.getURL() + UPLOAD_PATH, "application/json" );
+        auto result = upload(
+            module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".json",
+            mRemoteRepository.getURL() + UPLOAD_PATH,
+            "application/json"
+        );
+
         if ( result ) {
             std::cerr << "!!! Error " << result << " while uploading module to repository '" << mRemoteRepository.getURL() << "'" << std::endl;
         }
         else {
-            result = upload( module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz", mRemoteRepository.getURL() + UPLOAD_PATH, "application/tar+gzip" );
+            result = upload(
+                module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz",
+                mRemoteRepository.getURL() + UPLOAD_PATH,
+                "application/tar+gzip"
+            );
+
             if ( result ) {
                 std::cerr << "!!! Error " << result << " while uploading module to repository '" << mRemoteRepository.getURL() << "'" << std::endl;
             }
@@ -1202,7 +1221,7 @@ void remove( const StringList& params )
 
 	collectLocalModuleData();
 
-	Modules local = mLocalRepository.getModules();
+	auto local = mLocalRepository.getModules();
 
 	for ( const auto& param : params ) {
 		bool found = false;
@@ -1249,7 +1268,7 @@ void search( const StringList& params )
 	// ( 1 ) load cached repositories from disk
 	// ( 2 ) substr-search through all entries for given params
 
-	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
+	auto filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
 	// check if filename exists
 	if ( !::Utils::Tools::Files::exists( filename ) ) {
@@ -1276,33 +1295,34 @@ void search( const StringList& params )
 			return;
 		}
 
-		std::string description = member.isMember( "description" ) ? member[ "description" ].asString() : "";
-		std::string name = member[ "name" ].asString();
-		std::string version = member.isMember( "version" ) ? member[ "version" ].asString() : "";
+		auto description = member.isMember( "description" ) ? member[ "description" ].asString() : "";
+		auto longName    = member[ "name_full" ].asString();
+		auto shortName   = member[ "name" ].asString();
+		auto version     = member[ "version" ].asString();
 
-        if ( member.isMember( "keywords" ) ) {
-            auto oldSize = result.size();
+		if ( member.isMember( "keywords" ) ) {
+			auto oldSize = result.size();
 
-            for ( const auto& keyword : member[ "keywords" ] ) {
-                if ( findCaseInsensitive( keyword.asString(), lookup ) != std::string::npos ) {
-                    result.push_back( name + "( " + version + " )" + description );
-                    break;  // one result here is enough
-                }
-            }
+			for ( const auto& keyword : member[ "keywords" ] ) {
+				if ( findCaseInsensitive( keyword.asString(), lookup ) != std::string::npos ) {
+					result.push_back( shortName + VERSION_SEPARATOR + version + " - " + longName );
+					break;  // one result here is enough
+				}
+			}
 
-            if ( oldSize != result.size() ) {
-                // we obviously have found something
-                continue;
-            }
-        }
+			if ( oldSize != result.size() ) {
+				// we obviously have found something
+				continue;
+			}
+		}
 
-		if ( findCaseInsensitive( name, lookup ) != std::string::npos ) {
-			result.push_back( name + "( " + version + " )" + description );
+		if ( findCaseInsensitive( shortName, lookup ) != std::string::npos ) {
+			result.push_back( shortName + VERSION_SEPARATOR + version + " - " + longName );
 			continue;
 		}
 
 		if ( findCaseInsensitive( description, lookup ) != std::string::npos ) {
-			result.push_back( name + "( " + version + " )" + description );
+			result.push_back( shortName + VERSION_SEPARATOR + version + " - " + longName );
 			continue;
 		}
 	}
@@ -1314,15 +1334,15 @@ void search( const StringList& params )
 		for ( const auto& resultIt : result ) {
 			std::cout << resultIt << std::endl;
 		}
+
+		std::cout << result.size() << " result(s) found." << std::endl;
 	}
 }
 
 void storeConfig()
 {
 	// write json config to file
-	std::string filename = mLibraryFolder + CONFIG_FILE;
-
-	writeJsonFile( filename, mConfig );
+	writeJsonFile( mLibraryFolder + CONFIG_FILE, mConfig );
 }
 
 void writeJsonFile( const std::string& filename, Json::Value& result )
@@ -1392,7 +1412,7 @@ void upgrade( const StringList& params )
             return;
         }
 
-        std::cout << "Need to upgrade " << upgradeModules.size() << " module( s )..." << std::endl;
+        std::cout << "Need to upgrade " << upgradeModules.size() << " module(s)..." << std::endl;
 
         for ( const auto& outdatedModule : upgradeModules ) {
             std::cout << outdatedModule.mShortName << "( " << outdatedModule.mVersion.toString() << " )" << std::endl;

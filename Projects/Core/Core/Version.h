@@ -13,8 +13,9 @@
 
 
 static const char* COPYRIGHT = "Copyright (c) 2014-2025 Michael Adelmann";
+static const char* PRODUCT_DESCRIPTION = "Slang interpreter, debugger and package manager";
 static const char* PRODUCT_NAME = "Slang";
-static const char* PRODUCT_VERSION = "0.9.0";
+static const char* PRODUCT_VERSION = "0.9.1";
 
 
 #endif
