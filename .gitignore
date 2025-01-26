@@ -9,7 +9,3 @@ cmake-build-debug
 CMake/Dependencies.cmake
 make-package.cfg
 
-# internals
-Projects/Library/.gitignore
-Projects/Library/.odepend
-

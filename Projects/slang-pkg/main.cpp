@@ -305,7 +305,7 @@ void create( const StringList& params )
 	{	// create package ( "<module>_<version>.tar.gz" )
 		std::cout << "Creating module package \"" << module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz\"" << std::endl;
 
-		execute( "tar -cjf " + module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz " + path );
+		execute( "tar --exclude-vcs -cjf " + module.mShortName + FILE_VERSION_SEPARATOR + module.mVersion.toString() + ".tar.gz " + path );
 	}
 }
 
@@ -1155,7 +1155,6 @@ size_t push( const StringList& params )
 
     for ( const auto& param : params )
     {
-        // TODO: module name is not allowed to end with '/'
         std::string path     = param;
         std::string filename = "module.json";
 
