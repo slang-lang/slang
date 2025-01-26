@@ -73,10 +73,14 @@ private bool TestCase5() {
     print( "TestCase 5: equality operator" );
 
     var ver123 = new SemVer( 1, 2, 3 );
+    var ver123alpha = new SemVer( 1, 2, 3, "alpha" );
+    var ver123alpha100 = new SemVer( 1, 2, 3, "alpha", "100" );
+
     assert( cast<string>( ver123 ) == "1.2.3" );
     assert( cast<string>( ver123 ) != "1.2.4" );
     assert( ver123 == SemVer.FromString( "1.2.3" ) );
+    assert( ver123alpha < ver123 );
+    assert( ver123alpha < ver123alpha100 );
 
     return true;
 }
-
