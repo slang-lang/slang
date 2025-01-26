@@ -11,4 +11,5 @@ make-package.cfg
 
 # internals
 Projects/Library/.gitignore
+Projects/Library/.odepend
 

@@ -92,18 +92,6 @@ void SemanticVersionNumber::parse( std::string version )
 	std::string minor;
 	std::string tmp;
 
-	/*
-	Utils::Tools::splitBy( version, '.', major, version );
-	Utils::Tools::splitBy( version, '.', minor, version );
-	Utils::Tools::splitBy( version, '-', bugfix, tmp );
-	if ( tmp.empty() ) {
-		// no label separator found, try with build metadata separator
-		Utils::Tools::splitBy( version, '-', version, label );
-	}
-
-	Utils::Tools::splitBy( version, '+', label, buildMetadata );
-	*/
-
 	// example: 1.2.3-alpha+001
 	// 1 . 2.3-alpha+001
 	Utils::Tools::splitBy( version, '.', major, version );
