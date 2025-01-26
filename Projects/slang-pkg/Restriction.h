@@ -9,7 +9,7 @@
 #include <utility>
 
 // Project includes
-#include "Version.h"
+#include <SemVer/Version.h>
 
 // Forward declarations
 

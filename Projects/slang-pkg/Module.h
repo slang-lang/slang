@@ -8,8 +8,8 @@
 #include <string>
 
 // Project includes
+#include <SemVer/Version.h>
 #include "Dependency.h"
-#include "Version.h"
 
 // Forward declarations
 namespace Json {

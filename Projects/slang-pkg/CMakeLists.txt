@@ -4,7 +4,6 @@ SET(SOURCES
 	main.cpp
 	Module.cpp
 	Repository.cpp
-	Version.cpp
 )
 
 SET(HEADERS
@@ -13,7 +12,6 @@ SET(HEADERS
 	Module.h
 	Repository.h
 	Restriction.h
-	Version.h
 )
 
 SET(DEPENDENCIES
@@ -32,4 +30,3 @@ add_include(Projects/Utils)
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/slang-pkg)
 build_app(slang-pkg "${MODULES}")
-

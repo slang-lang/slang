@@ -21,6 +21,7 @@
 #include <Math/Fixture.h>
 #include <Operator/Fixture.h>
 #include <Prototype/Fixture.h>
+#include <Utils/Fixture.h>
 
 // Namespace declarations
 
@@ -171,6 +172,9 @@ int main(int argc, const char* argv[])
 
 		Testing::Prototype::Fixture prototype( mLogger, mLibraryFolders );
 		mFixtures.push_back( &prototype );
+
+		Testing::UtilsTest::Fixture utils( mLogger, mLibraryFolders );
+		mFixtures.push_back( &utils );
 
 		MyUnit::TestResult result;
 
