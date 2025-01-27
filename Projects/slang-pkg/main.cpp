@@ -325,14 +325,16 @@ void createLocalLibrary()
 
 	if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_FILE ) ) {
 		Json::Value repository;
-		repository[ "name" ]          = REMOTE_REPOSITORY_NAME;
-		repository[ "url" ]           = REMOTE_REPOSITORY_URL;
-		repository[ "authorization" ] = "";   // user needs to fill in his authorization token here
+		repository[ "authentication" ] = "Bearer";    // user needs to fill in his preferred method of authentication (Basic|Bearer)
+		repository[ "authorization" ]  = "";          // user needs to fill in his authorization token here
+		repository[ "name" ]           = REMOTE_REPOSITORY_NAME;
+		repository[ "url" ]            = REMOTE_REPOSITORY_URL;
 
 		Json::Value config;
 		config[ "repository" ]   = repository;
 		config[ "restrictions" ] = Json::Value();
 
+		// write json config to file
 		writeJsonFile( mCurrentFolder + CONFIG_FILE, config );
 	}
 }
