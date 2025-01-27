@@ -1455,26 +1455,15 @@ size_t upload( const std::string& filename, const std::string& url, const std::s
     if ( curl ) {
         {   // authorization
             switch ( mRemoteRepository.getAuthentication() ) {
-                case Repository::Authentication::Basic:
+                case Repository::Authentication::Basic: {
                     curl_easy_setopt( curl, CURLOPT_USERPWD, mRemoteRepository.getAuthorization().c_str() );
-                    break;
-                case Repository::Authentication::Bearer:
+                } break;
+                case Repository::Authentication::Bearer: {
                     std::string authorization = "Authorization: Bearer " + mRemoteRepository.getAuthorization();
 
                     headers = curl_slist_append( headers, authorization.c_str() );
-                    break;
+                } break;
             }
-
-            /*
-            if ( mLocalRepository.getAuthentication() == Repository::Authentication::Basic ) {
-                curl_easy_setopt( curl, CURLOPT_USERPWD, mConfig[ "repository" ][ "authorization" ].asCString() );
-            }
-            else {
-                std::string authorization = "Authorization: Bearer " + mConfig[ "repository" ][ "authorization" ].asString();
-
-                headers = curl_slist_append( headers, authorization.c_str() );
-            }
-            */
         }
         {   // set curl options
             curl_easy_setopt( curl, CURLOPT_HTTPHEADER, headers );
