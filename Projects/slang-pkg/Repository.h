@@ -17,6 +17,17 @@
 class Repository
 {
 public:
+
+	class Authentication
+	{
+	public:
+		enum E {
+			Basic,
+			Bearer
+		};
+	};
+
+public:
 	explicit Repository( std::string name = "" );
 	~Repository() = default;
 
@@ -25,17 +36,42 @@ public:
 	bool contains( const Module& module ) const;
 	bool getModule( const std::string& shortName, Module& module ) const;
 
-public:
-	const Modules& getModules() const;
-
-	const std::string& getName() const;
-
-	const std::string& getURL() const;
-	void setURL( const std::string& url );
-
 	bool processIndex( const Json::Value& value );
 
+public:
+
+	Authentication::E getAuthentication() const {
+		return mAuthentication;
+	}
+	void setAuthentication( Authentication::E authentication ) {
+		mAuthentication = authentication;
+	}
+
+	const std::string& getAuthorization() const {
+		return mAuthorization;
+	}
+	void setAuthorization( const std::string& authorization ) {
+		mAuthorization = authorization;
+	}
+
+	const Modules& getModules() const {
+		return mModules;
+	}
+
+	const std::string& getName() const {
+		return mName;
+	}
+
+	const std::string& getURL() const {
+		return mURL;
+	}
+	void setURL( const std::string& url ) {
+		mURL = url;
+	}
+
 private:
+	Authentication::E mAuthentication;
+	std::string mAuthorization;
 	Modules mModules;
 	std::string mName;
 	std::string mURL;

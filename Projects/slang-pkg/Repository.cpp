@@ -52,21 +52,6 @@ bool Repository::getModule( const std::string& shortName, Module& module ) const
 	return false;
 }
 
-const Modules& Repository::getModules() const
-{
-	return mModules;
-}
-
-const std::string& Repository::getName() const
-{
-	return mName;
-}
-
-const std::string& Repository::getURL() const
-{
-	return mURL;
-}
-
 bool Repository::processIndex( const Json::Value& value )
 {
 	if ( !value.isMember( "modules" ) ) {
@@ -84,9 +69,4 @@ bool Repository::processIndex( const Json::Value& value )
 	}
 
 	return true;
-}
-
-void Repository::setURL( const std::string& url )
-{
-	mURL = url;
 }
