@@ -7,6 +7,7 @@ SET(SOURCES
 )
 
 SET(HEADERS
+	Consts.h
 	Defines.h
 	Dependency.h
 	Module.h

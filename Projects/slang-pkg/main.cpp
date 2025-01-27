@@ -24,9 +24,10 @@
 #include <Core/Version.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
+#include <Types.h>
 #include <Utils.h>
+#include "Consts.h"
 #include "Defines.h"
-#include "Errors.h"
 #include "Repository.h"
 #include "Restriction.h"
 
@@ -70,19 +71,6 @@ enum e_Action {
 	Upgrade,
 	Version
 };
-
-
-static const std::string CACHE_MODULES = "cache/modules/";
-static const std::string CACHE_REPOSITORIES = "cache/repositories/";
-static const std::string CONFIG_FILE = ".odepend/config.json";
-static const std::string CONFIG_FOLDER = ".odepend/";
-static const std::string FILE_VERSION_SEPARATOR = "_";
-static const std::string MODULES = "modules/";
-static const std::string REMOTE_REPOSITORY_NAME = "main";
-static const std::string REMOTE_REPOSITORY_URL = "https://slang-lang.org/repository/stable";
-static const std::string TMP = "/tmp/";
-static const std::string UPLOAD_PATH = "upload/";
-static const char VERSION_SEPARATOR = ':';
 
 
 void checkOutdatedModules( Modules& outdatedModules );
@@ -155,13 +143,13 @@ void checkOutdatedModules( Modules& outdatedModules )
 	// find all folders in local <repo> folder and compare their corresponding <repo>/<module>/module.json [ version ] field
 	// with the version in the index.json file
 
-	Modules local = mLocalRepository.getModules();
-	Modules remote = mRemoteRepository.getModules();
+	auto local  = mLocalRepository.getModules();
+	auto remote = mRemoteRepository.getModules();
 
-	for ( const auto& localIt : local ) {
-		for ( const auto& remoteIt : remote ) {
-			if ( localIt.mShortName == remoteIt.mShortName && localIt.mVersion < remoteIt.mVersion ) {
-				outdatedModules.insert( remoteIt );
+	for ( const auto& localModule : local ) {
+		for ( const auto& remoteModule : remote ) {
+			if ( localModule.mShortName == remoteModule.mShortName && localModule.mVersion < remoteModule.mVersion ) {
+				outdatedModules.insert( remoteModule );
 			}
 		}
 	}
@@ -337,8 +325,9 @@ void createLocalLibrary()
 
 	if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_FILE ) ) {
 		Json::Value repository;
-		repository[ "name" ] = REMOTE_REPOSITORY_NAME;
-		repository[ "url" ]  = REMOTE_REPOSITORY_URL;
+		repository[ "name" ]          = REMOTE_REPOSITORY_NAME;
+		repository[ "url" ]           = REMOTE_REPOSITORY_URL;
+		repository[ "authorization" ] = "";   // user needs to fill in his authorization token here
 
 		Json::Value config;
 		config[ "repository" ]   = repository;
@@ -373,7 +362,7 @@ bool download( const std::string& url, const std::string& target, bool allowClea
 	curl_easy_setopt( curl_handle, CURLOPT_NOPROGRESS, 1L );
 
 	/* Switch on full protocol/debug output while testing */
-	curl_easy_setopt( curl_handle, CURLOPT_VERBOSE, 0L );
+	curl_easy_setopt( curl_handle, CURLOPT_VERBOSE, mVerbose );
 
 	/* set URL to get here */
 	curl_easy_setopt( curl_handle, CURLOPT_URL, url.c_str() );
@@ -533,7 +522,7 @@ void init()
 	{	// set library home path
 		const char* homepath = getenv( Slang::SLANG_LIBRARY );
 		if ( homepath ) {
-			std::string path = std::string( homepath );
+			auto path = std::string( homepath );
 
 			// only read first entry
 			if ( !path.empty() ) {
@@ -558,7 +547,7 @@ void init()
 		mCurrentFolder = std::string( currentPath ) + "/";
 
 		if ( isLocalLibrary() ) {
-			mBaseFolder = mCurrentFolder + CONFIG_FOLDER;
+			mBaseFolder    = mCurrentFolder + CONFIG_FOLDER;
 			mLibraryFolder = mCurrentFolder;
 		}
 	}
@@ -743,7 +732,30 @@ void loadConfig()
 	readJsonFile( mLibraryFolder + CONFIG_FILE, mConfig );
 
 	if ( mConfig.isMember( "repository" ) ) {
-		auto entry = mConfig[ "repository" ];
+		auto& entry = mConfig[ "repository" ];
+
+		// authentication
+		// {
+		if ( !entry.isMember( "authentication" ) ) {
+			// if no authentication key is present, silently create one
+			entry[ "authentication" ] = Json::Value();
+		}
+
+		auto authentication = Repository::Authentication::Bearer;
+		if ( entry[ "authentication" ].asString() == "Basic" ) {
+			authentication = Repository::Authentication::Basic;
+		}
+		// }
+
+		// authorization
+		// {
+		if ( !entry.isMember( "authorization" ) ) {
+			// if no authorization key is present, silently create one
+			entry[ "authorization" ] = Json::Value();
+		}
+
+		auto authorization = entry[ "authorization" ].asString();
+		// }
 
 		// repository name
 		// {
@@ -771,13 +783,11 @@ void loadConfig()
 		// }
 
 		Repository repository( name );
+		repository.setAuthentication( authentication );
+		repository.setAuthorization( authorization );
 		repository.setURL( url );
 
 		mRemoteRepository = repository;
-	}
-
-	if ( !mConfig.isMember( "restrictions" ) ) {
-		mConfig[ "restrictions" ] = Json::Value();
 	}
 
 	loadRestrictions();
@@ -785,13 +795,17 @@ void loadConfig()
 
 void loadRestrictions()
 {
+    if ( !mConfig.isMember( "restrictions" ) ) {
+		mConfig[ "restrictions" ] = Json::Value();
+	}
+
 	// add hardcoded max restriction for Slang version ( this can be overwritten by the real restriction config )
 	mLocalRestrictions.insert(
 		Restriction( PRODUCT_NAME, "", PRODUCT_VERSION )
 	);
 
 	// load restrictions from config
-	Json::Value restrictions = mConfig[ "restrictions" ];
+	auto restrictions = mConfig[ "restrictions" ];
 	for ( const auto& restrictionName : restrictions.getMemberNames() ) {
         auto restriction = restrictions[ restrictionName ];
 
@@ -873,7 +887,7 @@ void prepareModuleInstallation( const std::string& repo, const Module& installMo
 
 bool prepareRemoteRepository()
 {
-	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
+	auto filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
 	// check if filename exists
 	if ( !::Utils::Tools::Files::exists( filename ) ) {
@@ -1359,12 +1373,12 @@ void writeJsonFile( const std::string& filename, Json::Value& result )
 
 void update()
 {
-	// download <URL>/<branch>/index.json
+	// download <URL>/modules/index.json
 
 	std::cout << "Updating repository \"" << mRemoteRepository.getName() << "\"..." << std::endl;
 
-	std::string url = mRemoteRepository.getURL() + "modules/index.json";
 	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
+	std::string url      = mRemoteRepository.getURL() + "/modules/index.json";
 
 	bool result = download( url, filename, false );
 	if ( result ) {
@@ -1424,10 +1438,6 @@ void upgrade( const StringList& params )
 
 size_t upload( const std::string& filename, const std::string& url, const std::string& contentType )
 {
-    // Initialize libcurl
-    CURL* curl;
-    CURLcode res;
-
     // Open the file
     auto* file = fopen( filename.c_str(), "rb" );
     if ( !file ) {
@@ -1435,27 +1445,55 @@ size_t upload( const std::string& filename, const std::string& url, const std::s
         return 1;
     }
 
-    // Initialize a CURL session
-    curl = curl_easy_init();
+    // Initialize libcurl
+    CURL* curl = curl_easy_init();
+    CURLcode result;
+    struct curl_slist *headers = NULL;
+
     if ( curl ) {
-        // set curl options
-        curl_easy_setopt( curl, CURLOPT_NOPROGRESS, 1L );  // disable progress meter, set to 0L to enable and disable debug output
-        curl_easy_setopt( curl, CURLOPT_POST, 1L );
-        curl_easy_setopt( curl, CURLOPT_READDATA, file );
-        curl_easy_setopt( curl, CURLOPT_UPLOAD, 1L );
-        curl_easy_setopt( curl, CURLOPT_URL, url.c_str() );
-        curl_easy_setopt( curl, CURLOPT_VERBOSE, static_cast<long>( mVerbose ) );     // Switch on full protocol/debug output while testing
+        {   // authorization
+            switch ( mRemoteRepository.getAuthentication() ) {
+                case Repository::Authentication::Basic:
+                    curl_easy_setopt( curl, CURLOPT_USERPWD, mRemoteRepository.getAuthorization().c_str() );
+                    break;
+                case Repository::Authentication::Bearer:
+                    std::string authorization = "Authorization: Bearer " + mRemoteRepository.getAuthorization();
 
-        // Set the file size ( optional but recommended )
-        fseek( file, 0, SEEK_END );
-        long file_size = ftell( file );
-        fseek( file, 0, SEEK_SET );
-        curl_easy_setopt( curl, CURLOPT_INFILESIZE_LARGE, static_cast<curl_off_t>( file_size ) );
+                    headers = curl_slist_append( headers, authorization.c_str() );
+                    break;
+            }
 
+            /*
+            if ( mLocalRepository.getAuthentication() == Repository::Authentication::Basic ) {
+                curl_easy_setopt( curl, CURLOPT_USERPWD, mConfig[ "repository" ][ "authorization" ].asCString() );
+            }
+            else {
+                std::string authorization = "Authorization: Bearer " + mConfig[ "repository" ][ "authorization" ].asString();
+
+                headers = curl_slist_append( headers, authorization.c_str() );
+            }
+            */
+        }
+        {   // set curl options
+            curl_easy_setopt( curl, CURLOPT_HTTPHEADER, headers );
+            curl_easy_setopt( curl, CURLOPT_NOPROGRESS, 1L );  // disable progress meter, set to 0L to enable and disable debug output
+            curl_easy_setopt( curl, CURLOPT_POST, 1L );
+            curl_easy_setopt( curl, CURLOPT_READDATA, file );
+            curl_easy_setopt( curl, CURLOPT_UPLOAD, 1L );
+            curl_easy_setopt( curl, CURLOPT_URL, url.c_str() );
+            curl_easy_setopt( curl, CURLOPT_VERBOSE, static_cast<long>( mVerbose ) );     // Switch on full protocol/debug output while testing
+        }
+        {   // set the file size
+            fseek( file, 0, SEEK_END );
+            long file_size = ftell( file );
+            fseek( file, 0, SEEK_SET );
+
+            curl_easy_setopt( curl, CURLOPT_INFILESIZE_LARGE, static_cast<curl_off_t>( file_size ) );
+        }
         {   // set MIME for uploaded file
             auto* form = curl_mime_init( curl );
 
-            // Fill in the file upload field
+            // fill in the file upload field
             auto* field = curl_mime_addpart( form );
             curl_mime_name( field, "file" );
             curl_mime_filedata( field, filename.c_str() );
@@ -1464,14 +1502,15 @@ size_t upload( const std::string& filename, const std::string& url, const std::s
             curl_easy_setopt( curl, CURLOPT_MIMEPOST, form );
         }
 
-        // Perform the file upload
-        res = curl_easy_perform( curl );
+        // perform the file upload
+        result = curl_easy_perform( curl );
 
-        if ( res != CURLE_OK ) {
-            std::cerr << "!!! curl_easy_perform() failed: " << curl_easy_strerror( res ) << std::endl;
+        if ( result != CURLE_OK ) {
+            std::cerr << "!!! curl_easy_perform() failed: " << curl_easy_strerror( result ) << std::endl;
         }
 
         // Clean up
+        curl_slist_free_all( headers );
         curl_easy_cleanup( curl );
     }
 
