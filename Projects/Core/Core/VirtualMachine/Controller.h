@@ -23,8 +23,7 @@ namespace Common {
 	class Namespace;
 }
 
-//class __attribute__((visibility("default"))) Controller
-class Controller
+class __attribute__((visibility("default"))) Controller
 {
 public:
 	static Controller& Instance() {
