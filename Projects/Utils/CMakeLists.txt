@@ -11,6 +11,7 @@ SET(SOURCES
 )
 
 SET(HEADERS
+	Types.h
 	Utils.h
 )
 
