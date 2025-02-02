@@ -22,6 +22,7 @@ public:
 	{
 	public:
 		enum E {
+			None,
 			Basic,
 			Bearer
 		};

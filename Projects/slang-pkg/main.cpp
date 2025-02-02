@@ -316,35 +316,35 @@ void createBasicFolderStructure()
 
 void createLocalLibrary()
 {
-	std::cout << "Preparing current directory for slang-pkg..." << std::endl;
+    std::cout << "Preparing current directory for slang-pkg..." << std::endl;
 
-	if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_FOLDER ) ) {
-		// create folder for library config
-		execute( "mkdir " + mCurrentFolder + CONFIG_FOLDER );
-	}
+    if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_FOLDER ) ) {
+       	// create folder for library config
+       	execute( "mkdir " + mCurrentFolder + CONFIG_FOLDER );
+    }
 
-	if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_FILE ) ) {
-		Json::Value repository;
-		repository[ "authentication" ] = "Bearer";    // user needs to fill in his preferred method of authentication (Basic|Bearer)
-		repository[ "authorization" ]  = "";          // user needs to fill in his authorization token here
-		repository[ "name" ]           = REMOTE_REPOSITORY_NAME;
-		repository[ "url" ]            = REMOTE_REPOSITORY_URL;
+    if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_FILE ) ) {
+       	Json::Value repository;
+        repository[ "authentication" ] = "Bearer";    // user needs to fill in his preferred method of authentication (Basic|Bearer)
+       	repository[ "authorization" ]  = "<get-your-token-from-https://modules.slang-lang.org";   // user needs to fill in his authorization token here
+       	repository[ "name" ]           = REMOTE_REPOSITORY_NAME;
+       	repository[ "url" ]            = REMOTE_REPOSITORY_URL;
 
-		Json::Value config;
-		config[ "repository" ]   = repository;
-		config[ "restrictions" ] = Json::Value();
+       	Json::Value config;
+       	config[ "repository" ]   = repository;
+       	config[ "restrictions" ] = Json::Value();
 
-		// write json config to file
-		writeJsonFile( mCurrentFolder + CONFIG_FILE, config );
-	}
+       	// write json config to file
+       	writeJsonFile( mCurrentFolder + CONFIG_FILE, config );
+    }
 }
 
 void deinit()
 {
-	// put de-initialization stuff here
+    // put de-initialization stuff here
 
-	// clean up curl library
-	curl_global_cleanup();
+    // clean up curl library
+    curl_global_cleanup();
 }
 
 bool download( const std::string& url, const std::string& target, bool allowCleanup )
@@ -743,9 +743,13 @@ void loadConfig()
 			entry[ "authentication" ] = Json::Value();
 		}
 
-		auto authentication = Repository::Authentication::Bearer;
+		auto authentication = Repository::Authentication::None;   // default
+
 		if ( entry[ "authentication" ].asString() == "Basic" ) {
-			authentication = Repository::Authentication::Basic;
+			authentication = Repository::Authentication::Basic;   // not yet implemented on server, so don't use it yet
+		}
+		else if ( entry[ "authentication" ].asString() == "Bearer" ) {
+			authentication = Repository::Authentication::Bearer;   // preferred way of authentication
 		}
 		// }
 
@@ -1455,11 +1459,14 @@ size_t upload( const std::string& filename, const std::string& url, const std::s
     if ( curl ) {
         {   // authorization
             switch ( mRemoteRepository.getAuthentication() ) {
+                case Repository::Authentication::None: {
+                    // No authentication selected
+                } break;
                 case Repository::Authentication::Basic: {
                     curl_easy_setopt( curl, CURLOPT_USERPWD, mRemoteRepository.getAuthorization().c_str() );
                 } break;
                 case Repository::Authentication::Bearer: {
-                    std::string authorization = "Authorization: Bearer " + mRemoteRepository.getAuthorization();
+                    std::string authorization{ "Authorization: Bearer " + mRemoteRepository.getAuthorization() };
 
                     headers = curl_slist_append( headers, authorization.c_str() );
                 } break;
