@@ -190,9 +190,9 @@ int main(int argc, const char* argv[])
 
 	mVirtualMachine.init();
 
-    for ( const auto& library : mLibraryFolders ) {
-        mVirtualMachine.addLibraryFolder( library );
-    }
+	for ( const auto& library : mLibraryFolders ) {
+		mVirtualMachine.addLibraryFolder( library );
+	}
 
 	if ( mPrintDebugInfo ) {
 		mVirtualMachine.printLibraryFolders();

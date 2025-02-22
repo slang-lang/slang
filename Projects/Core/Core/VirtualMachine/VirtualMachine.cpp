@@ -362,7 +362,7 @@ void VirtualMachine::printExtensions()
 
 void VirtualMachine::printLibraryFolders()
 {
-   std::cout << "Libraries:" << std::endl;
+	std::cout << "Libraries:" << std::endl;
 
 	for ( const auto& libraryFolder : mLibraryFolders ) {
 		std::cout << libraryFolder << std::endl;
@@ -372,29 +372,29 @@ void VirtualMachine::printLibraryFolders()
 void VirtualMachine::printSpecification( const std::string& specification )
 {
 	if ( specification.empty() ) {
-        for ( const auto& str : mSpecification ) {
-            std::cout << str << std::endl;
-        }
+		for ( const auto& str : mSpecification ) {
+			std::cout << str << std::endl;
+		}
 
-        return;
-    }
+		return;
+	}
 
-    int32_t found{ 0 };
-    for ( const auto& str : mSpecification ) {
-        if ( str.find( specification ) != std::string::npos ) {
+	int32_t found{ 0 };
+	for ( const auto& str : mSpecification ) {
+		if ( str.find( specification ) != std::string::npos ) {
             std::cout << str << std::endl;
 
             found++;
-        }
-    }
+		}
+	}
 
-    if ( found ) {
-        //std::cout << std::endl;
-        //std::cout << "found " << found << " occurrence(s) of " << specification << std::endl;
-    }
-    else {
-        std::cout << "no result found for '" << specification << "'" << std::endl;
-    }
+	if ( found ) {
+		//std::cout << std::endl;
+		//std::cout << "found " << found << " occurrence(s) of " << specification << std::endl;
+	}
+	else {
+		std::cout << "no result found for '" << specification << "'" << std::endl;
+	}
 }
 
 void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::Object* result)
