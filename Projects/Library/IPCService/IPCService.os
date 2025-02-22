@@ -5,14 +5,16 @@ import Message;
 
 public interface IIPCReceiver
 {
-	public IPCMessage receive() modify;
+	public IPCMessage receive( bool waitForMessage = false ) modify;
 }
+
 
 public interface IIPCSender
 {
-	public void send( IPCMessage ) modify;
-	public void send( string receiver, string message ) modify;
+	public void send( int queueID, IPCMessage message ) modify;
+	public void send( int queueID, string message ) modify;
 }
+
 
 public object IPCService implements IIPCReceiver, IIPCSender
 {

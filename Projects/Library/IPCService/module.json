@@ -4,8 +4,9 @@
   "version": "0.1.0",
   "description": "Library for convenience access to a UNIX system V message queue",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.7.3" },
+    { "module": "Slang", "version_min": "0.8.0" },
     { "module": "System", "version_min": "0.3.4" },
+    { "module": "libLog", "version_min": "0.3.2" },
     { "module": "libMsgQueue", "version_min": "0.1.0" }
   ],
   "target": {
