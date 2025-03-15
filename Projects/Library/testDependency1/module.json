@@ -1,0 +1,13 @@
+{
+  "name": "TEST - Dependency 1",
+  "name_short": "testDependency1",
+  "version": "0.0.1",
+  "description": "This is a virtual module to test the dependency resolution.",
+  "dependencies": [
+	  { "module": "Slang", "version_min": "0.7.0", "version_max": "1.0.0" }
+  ],
+  "target": {
+    "directory": "testDependency1",
+    "type": "internal"
+  }
+}
