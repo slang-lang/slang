@@ -84,7 +84,7 @@ void createBasicFolderStructure();
 void createLocalLibrary();
 void deinit();
 bool download( const std::string& url, const std::string& target, bool allowCleanup = true );
-void execute( const std::string& command );
+void execute( const std::string& command, bool debug = false );
 size_t findCaseInsensitive( std::string data, std::string toSearch, size_t pos = 0 );
 void info( const StringList& params );
 void init();
@@ -237,21 +237,21 @@ void collectLocalModuleData()
 Module collectModuleData( const std::string& path, const std::string& filename )
 {
 #ifdef SLANG_DEBUG
-	std::cout << "Collecting module data from \"" << path << "\"" << std::endl;
+    std::cout << "Collecting module data from \"" << path << "\"" << std::endl;
 #endif
 
-	Json::Value config;
-	readJsonFile( path + "/" + filename, config );
+    Json::Value config;
+    readJsonFile( path + "/" + filename, config );
 
-	Module module;
-	if ( !module.loadFromJson( config ) ) {
-		std::cerr << "!!! Invalid module data in file '" << filename << "'" << std::endl;
-		return module;
-	}
+    Module module;
+    if ( !module.loadFromJson( config ) ) {
+        std::cerr << "!!! Invalid module data in file '" << filename << "'" << std::endl;
+        return module;
+    }
 
-	module.mInstalledDirectory = path;
+    module.mTarget.Directory = path;
 
-	return module;
+    return module;
 }
 
 bool contains( const StringList& list, const std::string& value )
@@ -318,24 +318,105 @@ void createLocalLibrary()
 {
     std::cout << "Preparing current directory for slang-pkg..." << std::endl;
 
+    // .slang folder for repository cache etc.
     if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_FOLDER ) ) {
-       	// create folder for library config
-       	execute( "mkdir " + mCurrentFolder + CONFIG_FOLDER );
+        // create folder for library config
+        execute( "mkdir " + mCurrentFolder + CONFIG_FOLDER );
+    }
+
+    // .slang/apps/ folder to copy symlinks to
+    if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_APPS ) ) {
+        // create folder for library config
+        execute( "mkdir " + mCurrentFolder + CONFIG_APPS );
+    }
+
+    // .slang/cache/ folder to copy symlinks to
+    if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_APPS ) ) {
+        // create folder for library config
+        execute( "mkdir " + mCurrentFolder + CONFIG_APPS );
+    }
+
+    // .slang/scripts/ folder to copy symlinks to
+    if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_SCRIPTS ) ) {
+        // create folder for library config
+        execute( "mkdir " + mCurrentFolder + CONFIG_SCRIPTS );
+
+		// addLink.sh
+		{
+			std::string addLink = R"(#!/bin/bash
+
+a="$1"            # Directory you want to remove (e.g. /opt/mytool)
+b=".slang/apps"   # Where symlinks live (e.g. /usr/local/bin)
+
+# Resolve absolute path of a and b (in case it’s a relative path)
+#a=$(realpath "$a")
+a=$(readlink -f "$a")
+#b=$(realpath "$b")
+b=$(readlink -f "$b")
+
+echo "Installing symlink $a -> $b"
+#ln -sf "$a" "$b"
+ln -s "$a" "$b"     # fail if a link already exists
+			)";
+
+			std::ofstream script( mCurrentFolder + CONFIG_SCRIPTS + "addLink.sh" );
+			script << addLink;
+			script.close();
+
+			execute( "chmod +x " + mCurrentFolder + CONFIG_SCRIPTS + "addLink.sh" );
+		}
+
+		// removeLinks.sh
+		{
+			std::string removeLinks = R"(#!/bin/bash
+
+a=".slang/apps"   # Where symlinks live (e.g. /usr/local/bin)
+b="$1"            # Directory you want to remove (e.g. /opt/mytool)
+
+# Resolve absolute path of a and b (in case it’s a relative path)
+#a=$(realpath "$a")
+a=$(readlink -f "$a")
+#b=$(realpath "$b")
+b=$(readlink -f "$b")
+
+if [ ! -d "$a" ] || [ ! -d "$b" ]; then
+    echo "Usage: $0 <link_dir> <target_dir>"
+    echo "Both arguments must be directories."
+    exit 1
+fi
+
+#echo "Scanning for symlinks in '$a' pointing to anywhere inside '$b'..."
+
+find "$a" -type l | while read -r link; do
+    target=$(realpath "$link" 2>/dev/null)
+    if [ -n "$target" ] && [[ "$target" == "$b"* ]]; then
+        echo "Removing symlink $link -> $target"
+        rm "${link}"
+    fi
+done
+			)";
+
+			std::ofstream script( mCurrentFolder + CONFIG_SCRIPTS + "removeLinks.sh" );
+			script << removeLinks;
+			script.close();
+
+			execute( "chmod +x " + mCurrentFolder + CONFIG_SCRIPTS + "removeLinks.sh" );
+		}
     }
 
     if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_FILE ) ) {
-       	Json::Value repository;
+        Json::Value repository;
         repository[ "authentication" ] = "Bearer";    // user needs to fill in his preferred method of authentication (Basic|Bearer)
-       	repository[ "authorization" ]  = "<get-your-token-from-https://modules.slang-lang.org";   // user needs to fill in his authorization token here
-       	repository[ "name" ]           = REMOTE_REPOSITORY_NAME;
-       	repository[ "url" ]            = REMOTE_REPOSITORY_URL;
+        repository[ "authorization" ]  = "<get-your-token-from-https://modules.slang-lang.org>";   // user needs to fill in his authorization token here
+        repository[ "name" ]           = REMOTE_REPOSITORY_NAME;
+        repository[ "url" ]            = REMOTE_REPOSITORY_URL;
 
-       	Json::Value config;
-       	config[ "repository" ]   = repository;
-       	config[ "restrictions" ] = Json::Value();
+        Json::Value config;
+        config[ "repository" ]   = repository;
+        config[ "restrictions" ] = Json::Value();
 
-       	// write json config to file
-       	writeJsonFile( mCurrentFolder + CONFIG_FILE, config );
+        // write json config to file
+        writeJsonFile( mCurrentFolder + CONFIG_FILE, config );
     }
 }
 
@@ -397,8 +478,12 @@ bool download( const std::string& url, const std::string& target, bool allowClea
 	return result;
 }
 
-void execute( const std::string& command )
+void execute( const std::string& command, bool debug )
 {
+	if ( debug ) {
+		std::cout << command << std::endl;
+	}
+
 	auto result = system( command.c_str() );
 	( void )result;
 }
@@ -493,10 +578,10 @@ void info( const StringList& params )
             }
             else {
                 for ( const auto& dependency : infoModule.mDependencies ) {
-                    std::cout << dependency.mModule << "\t\t";
-                    std::cout << "min: " << ( dependency.mMinVersion.empty() ? "<not set>" : dependency.mMinVersion );
-                    std::cout << "\t\tmax: " << ( dependency.mMaxVersion.empty() ? "<not set>" : dependency.mMaxVersion );
-                    std::cout << "\t\tsource: " << ( dependency.mSource.empty() ? "<not set>" : dependency.mSource );
+                    std::cout << dependency.Module << "\t\t";
+                    std::cout << "min: " << ( dependency.MinVersion.empty() ? "<not set>" : dependency.MinVersion );
+                    std::cout << "\t\tmax: " << ( dependency.MaxVersion.empty() ? "<not set>" : dependency.MaxVersion );
+                    std::cout << "\t\tsource: " << ( dependency.Source.empty() ? "<not set>" : dependency.Source );
                     std::cout << std::endl;
                 }
             }
@@ -638,7 +723,8 @@ void install( const StringList& params )
 	}
 
 	if ( allowInstall ) {
-		Modules missing = mMissingDependencies.getModules();
+		auto missing = mMissingDependencies.getModules();
+
 		for ( const auto& moduleIt : missing ) {
 			Module tmp;
 
@@ -664,6 +750,8 @@ void installModule( const std::string& repo, const std::string& module )
 		std::cerr << "!!! Module information missing for module \"" << module << "\"" << std::endl;
 		return;
 	}
+
+	auto tmpModule = collectModuleData( mBaseFolder + CACHE_MODULES, module + ".json" );
 
 	Json::Value config;
 	readJsonFile( moduleConfig, config );
@@ -703,12 +791,9 @@ void installModule( const std::string& repo, const std::string& module )
 
 	execute( "tar xf " + module_archive + " -C " + mLibraryFolder );
 
-/*
-	Module tmpModule = collectModuleData( mBaseFolder + CACHE_MODULES, module + ".json" );
-
-	// copy module config to "<module>/module.json"
-	execute( "cp " + moduleConfig + " " + mLibraryFolder + tmpModule.mTargetDirectory + "/module.json" );
-*/
+	for ( const std::string& file : tmpModule.mTarget.InstalledFiles ) {
+		execute( CONFIG_SCRIPTS + "addLink.sh \"" + module + "/" + file + "\"" );
+	}
 }
 
 bool isLocalLibrary()
@@ -872,7 +957,7 @@ void prepareModuleInstallation( const std::string& repo, const Module& installMo
 
 		// look up dependency in already installed modules
 		for ( const auto& localIt : local ) {
-			if ( localIt.mShortName == dependency.mModule ) {
+			if ( localIt.mShortName == dependency.Module ) {
 				found = true;
 				break;
 			}
@@ -880,9 +965,9 @@ void prepareModuleInstallation( const std::string& repo, const Module& installMo
 
 		if ( !found ) {
 			// dependent module is not yet installed
-			std::cout << "Need to install dependent module \"" << dependency.mModule << "\"" << std::endl;
+			std::cout << "Need to install dependent module \"" << dependency.Module << "\"" << std::endl;
 
-			Module dependent( dependency.mModule, dependency.mMinVersion, dependency.mSource );
+			Module dependent( dependency.Module, dependency.MinVersion, dependency.Source );
 
 			mMissingDependencies.addModule( dependent );
 
@@ -1249,9 +1334,10 @@ void remove( const StringList& params )
 			if ( localIt.mShortName == param ) {
 				found = true;
 
-				std::cout << "Removing module \"" << localIt.mShortName << "\" from \"" << localIt.mInstalledDirectory << "\"..." << std::endl;
+				std::cout << "Removing module \"" << localIt.mShortName << "\" from \"" << localIt.mTarget.Directory << "\"..." << std::endl;
 
-				execute( "rm -r " + localIt.mInstalledDirectory );
+				execute( CONFIG_SCRIPTS + "removeLinks.sh \"" + localIt.mShortName + "\"" );
+				execute( "rm -r " + localIt.mTarget.Directory );
 			}
 		}
 

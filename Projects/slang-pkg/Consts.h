@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <string>
 
 // Project includes
 
@@ -15,8 +16,10 @@
 // Constants
 static const std::string CACHE_MODULES          = "cache/modules/";
 static const std::string CACHE_REPOSITORIES     = "cache/repositories/";
+static const std::string CONFIG_APPS            = ".slang/apps/";
 static const std::string CONFIG_FILE            = ".slang/config.json";
 static const std::string CONFIG_FOLDER          = ".slang/";
+static const std::string CONFIG_SCRIPTS         = ".slang/scripts/";
 static const std::string FILE_VERSION_SEPARATOR = "_";
 static const std::string MODULES                = "modules/";
 static const std::string REMOTE_REPOSITORY_NAME = "main";

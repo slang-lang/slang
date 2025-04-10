@@ -18,23 +18,23 @@
 class Dependency
 {
 public:
-	Dependency( std::string module, std::string version_min, std::string version_max, std::string source )
-	: mMaxVersion( version_max ),
-	  mMinVersion( version_min ),
-	  mModule( module ),
-	  mSource( source )
+	Dependency( std::string module, std::string minVersion, std::string maxVersion, std::string source )
+	: MaxVersion( maxVersion ),
+	  MinVersion( minVersion ),
+	  Module( module ),
+	  Source( source )
 	{ }
 
 public:
 	bool operator<( const Dependency& other ) const {
-		return mModule < other.mModule;
+		return Module < other.Module;
 	}
 
 public:
-	std::string mMaxVersion;
-	std::string mMinVersion;
-	std::string mModule;
-	std::string mSource;
+	std::string MaxVersion;
+	std::string MinVersion;
+	std::string Module;
+	std::string Source;
 };
 
 typedef std::set<Dependency> Dependencies;
