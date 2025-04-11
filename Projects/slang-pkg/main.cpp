@@ -341,9 +341,9 @@ void createLocalLibrary()
         // create folder for library config
         execute( "mkdir " + mCurrentFolder + CONFIG_SCRIPTS );
 
-		// addLink.sh
-		{
-			std::string addLink = R"(#!/bin/bash
+        // addLink.sh
+        {
+            std::string addLink = R"(#!/bin/bash
 
 a="$1"            # Directory you want to remove (e.g. /opt/mytool)
 b=".slang/apps"   # Where symlinks live (e.g. /usr/local/bin)
@@ -357,18 +357,18 @@ b=$(readlink -f "$b")
 echo "Installing symlink $a -> $b"
 #ln -sf "$a" "$b"
 ln -s "$a" "$b"     # fail if a link already exists
-			)";
+            )";
 
-			std::ofstream script( mCurrentFolder + CONFIG_SCRIPTS + "addLink.sh" );
-			script << addLink;
-			script.close();
+            std::ofstream script( mCurrentFolder + CONFIG_SCRIPTS + "addLink.sh" );
+            script << addLink;
+            script.close();
 
-			execute( "chmod +x " + mCurrentFolder + CONFIG_SCRIPTS + "addLink.sh" );
-		}
+            execute( "chmod +x " + mCurrentFolder + CONFIG_SCRIPTS + "addLink.sh" );
+        }
 
-		// removeLinks.sh
-		{
-			std::string removeLinks = R"(#!/bin/bash
+        // removeLinks.sh
+        {
+            std::string removeLinks = R"(#!/bin/bash
 
 a=".slang/apps"   # Where symlinks live (e.g. /usr/local/bin)
 b="$1"            # Directory you want to remove (e.g. /opt/mytool)
@@ -394,14 +394,14 @@ find "$a" -type l | while read -r link; do
         rm "${link}"
     fi
 done
-			)";
+            )";
 
-			std::ofstream script( mCurrentFolder + CONFIG_SCRIPTS + "removeLinks.sh" );
-			script << removeLinks;
-			script.close();
+            std::ofstream script( mCurrentFolder + CONFIG_SCRIPTS + "removeLinks.sh" );
+            script << removeLinks;
+            script.close();
 
-			execute( "chmod +x " + mCurrentFolder + CONFIG_SCRIPTS + "removeLinks.sh" );
-		}
+            execute( "chmod +x " + mCurrentFolder + CONFIG_SCRIPTS + "removeLinks.sh" );
+        }
     }
 
     if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_FILE ) ) {
