@@ -14,6 +14,7 @@ static const std::string ARCHITECTURE = "architecture";
 static const std::string DEPENDENCIES = "dependencies";
 static const std::string DESCRIPTION = "description";
 static const std::string DIRECTORY = "directory";
+static const std::string INSTALL = "install";
 static const std::string KEYWORDS = "keywords";
 static const std::string MODULE = "module";
 static const std::string NAME = "name";
@@ -55,31 +56,31 @@ bool Module::isValid() const
 
 bool Module::loadFromJson( const Json::Value& value )
 {
-	if ( value.empty() ) {
-		return false;
-	}
+    if ( value.empty() ) {
+        return false;
+    }
 
-	mArchitecture = value.isMember( ARCHITECTURE ) ? value[ ARCHITECTURE ].asString() : "";
-	mDescription  = value[ DESCRIPTION ].asString();
-	mLongName     = value[ NAME ].asString();
-	mShortName    = value[ SHORTNAME ].asString();
-	mSource       = value.isMember( SOURCE ) ? value[ SOURCE ].asString() : "";
-	mVersion      = value[ VERSION ].asString();
+    mArchitecture = value.isMember( ARCHITECTURE ) ? value[ ARCHITECTURE ].asString() : "";
+    mDescription  = value[ DESCRIPTION ].asString();
+    mLongName     = value[ NAME ].asString();
+    mShortName    = value[ SHORTNAME ].asString();
+    mSource       = value.isMember( SOURCE ) ? value[ SOURCE ].asString() : "";
+    mVersion      = value[ VERSION ].asString();
 
-	if ( value.isMember( DEPENDENCIES ) ) {
-		auto dependencies = value[ DEPENDENCIES ];
+    if ( value.isMember( DEPENDENCIES ) ) {
+        auto dependencies = value[ DEPENDENCIES ];
 
-		for ( const auto& dependency : dependencies ) {
-			auto moduleName  = dependency[ MODULE ].asString();
-			auto source      = dependency.isMember( SOURCE )      ? dependency[ SOURCE ].asString()      : "";
-			auto version_max = dependency.isMember( VERSION_MAX ) ? dependency[ VERSION_MAX ].asString() : "";
-			auto version_min = dependency.isMember( VERSION_MIN ) ? dependency[ VERSION_MIN ].asString() : "";
+        for ( const auto& dependency : dependencies ) {
+            auto moduleName  = dependency[ MODULE ].asString();
+            auto source      = dependency.isMember( SOURCE )      ? dependency[ SOURCE ].asString()      : "";
+            auto version_max = dependency.isMember( VERSION_MAX ) ? dependency[ VERSION_MAX ].asString() : "";
+            auto version_min = dependency.isMember( VERSION_MIN ) ? dependency[ VERSION_MIN ].asString() : "";
 
-			mDependencies.insert(
-				Dependency( moduleName, version_min, version_max, source )
-			);
-		}
-	}
+            mDependencies.insert(
+                Dependency( moduleName, version_min, version_max, source )
+            );
+        }
+    }
 
     if ( value.isMember( KEYWORDS ) ) {
         auto keywords = value[ KEYWORDS ];
@@ -89,27 +90,36 @@ bool Module::loadFromJson( const Json::Value& value )
         }
     }
 
-	// short name is the default value for the target directory
-	mTargetDirectory = value[ SHORTNAME ].asString();
+    // short name is the default value for the target directory
+    mTarget.Directory = value[ SHORTNAME ].asString();
 
-	if ( value.isMember( TARGET ) ) {
-	    const auto& target = value[ TARGET ];
+    if ( value.isMember( TARGET ) ) {
+        const auto& target = value[ TARGET ];
 
-		// override directory if present
-		if ( target.isMember( DIRECTORY ) ) {
-			mTargetDirectory = target[ DIRECTORY ].asString();
-		}
+        // override directory if present
+        if ( target.isMember( DIRECTORY ) ) {
+            mTarget.Directory = target[ DIRECTORY ].asString();
+        }
 
-		// URL
-		if ( target.isMember( URL ) ) {
-			mURL = target[ URL ].asString();
-		}
-	}
+        if ( target.isMember( INSTALL ) ) {
+            auto files = target[ INSTALL ];
 
-	return true;
+            for ( const auto& word : files ) {
+                mTarget.InstalledFiles.insert( word.asString() );
+            }
+        }
+
+        // URL
+        if ( target.isMember( URL ) ) {
+            mTarget.Internal = false;
+            mTarget.URL      = target[ URL ].asString();
+        }
+    }
+
+    return true;
 }
 
 std::string Module::toVersionString() const
 {
-	return mShortName + ":" + mVersion.toString();
+    return mShortName + ":" + mVersion.toString();
 }
