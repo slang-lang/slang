@@ -4,14 +4,14 @@
   "version": "1.0.2-alpha",
   "description": "Script which reads in a complete text file and prints its contents to stdout.",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.9.2a" },
+    { "module": "Slang", "version_min": "0.9.2-alpha" },
     { "module": "System", "version_min": "0.4.7" },
     { "module": "libParam", "version_min": "0.2.9" }
   ],
-  "keywords": [ "cat" ],
+  "keywords": ["cat"],
   "target": {
     "directory": "FileReader",
-    "install": [ "FileReader.os" ],
+    "install": ["FileReader.os"],
     "type": "internal"
   }
 }
