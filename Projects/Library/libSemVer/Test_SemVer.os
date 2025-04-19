@@ -9,6 +9,7 @@ public void Main( int argc = 0, string args = "" ) {
     assert( TestCase3() );
     assert( TestCase4() );
     assert( TestCase5() );
+    assert( TestCase6() );
 }
 
 private bool TestCase1() {
@@ -81,6 +82,20 @@ private bool TestCase5() {
     assert( ver123 == SemVer.FromString( "1.2.3" ) );
     assert( ver123alpha < ver123 );
     assert( ver123alpha < ver123alpha100 );
+
+    return true;
+}
+
+private bool TestCase6() {
+    print( "TestCase 6: 9 vs 10" );
+
+    var ver109 = new SemVer( 1, 0, 9 );
+    var ver1010 = new SemVer( 1, 0, 10 );
+
+    assert( cast<string>( ver109 ) == "1.0.9" );
+    assert( cast<string>( ver1010 ) == "1.0.10" );
+    assert( ver109 == SemVer.FromString( "1.0.9" ) );
+    assert( ver109 < ver1010 );
 
     return true;
 }
