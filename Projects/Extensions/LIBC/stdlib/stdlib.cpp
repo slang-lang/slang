@@ -35,7 +35,7 @@ void stdlib_t::provideMethods( ExtensionMethods& methods )
 {
     methods.push_back( new ABSDouble() );
     methods.push_back( new ABSFloat() );
-    methods.push_back( new ABSInt() );
+    // methods.push_back( new ABSInt() );
     methods.push_back( new RAND() );
     methods.push_back( new SRAND() );
 }

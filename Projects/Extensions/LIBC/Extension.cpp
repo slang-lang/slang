@@ -30,7 +30,7 @@ namespace LIBC {
 
 
 Extension::Extension()
-: AExtension( "LIBC", "0.0.2" )
+: AExtension( "LIBC", "0.1.0" )
 {
 }
 
