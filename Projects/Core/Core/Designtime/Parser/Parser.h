@@ -54,8 +54,8 @@ public:
 	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
 	static MemoryLayout::E parseMemoryLayout(TokenIterator& token, MemoryLayout::E defaultValue = MemoryLayout::Virtual);
 	static Mutability::E parseMutability(TokenIterator& token, Mutability::E defaultValue = Mutability::Modify);
-	static ParameterList parseParameters(TokenIterator &token, IScope* scope = 0);
-	static Common::TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope = 0);
+	static ParameterList parseParameters(TokenIterator &token, IScope* scope = nullptr);
+	static Common::TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope = nullptr);
 	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token, const std::string& type);
 	static Visibility::E parseVisibility(TokenIterator& token, Visibility::E defaultValue = Visibility::Private);
 };

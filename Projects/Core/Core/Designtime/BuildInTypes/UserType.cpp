@@ -33,7 +33,7 @@ const std::string& UserType::getTypeName() const
 
 void UserType::initialize()
 {
-	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
+	auto* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		constructor->setVisibility(Visibility::Public);
 	}

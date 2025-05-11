@@ -62,7 +62,7 @@ public:
     // Unsupported platform
 #endif
 #elif defined __linux
-	virtual const char* what() const noexcept {
+	const char* what() const noexcept override {
 		return mMessage.c_str();
 	}
 #endif

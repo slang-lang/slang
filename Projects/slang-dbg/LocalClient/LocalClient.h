@@ -77,10 +77,10 @@ private:	// Configuration
 	void saveConfig();
 
 private:	// Scopes
-	MethodScope* getEnclosingMethodScope(IScope* scope) const;
-	Common::Namespace* getEnclosingNamespace(IScope* scope) const;
-	Runtime::Object* getEnclosingObject(IScope* scope) const;
-	Common::Method* getMethodFromScope(IScope *scope) const;
+	static MethodScope* getEnclosingMethodScope(IScope* scope) ;
+	static Common::Namespace* getEnclosingNamespace(IScope* scope) ;
+	static Runtime::Object* getEnclosingObject(IScope* scope) ;
+	static Common::Method* getMethodFromScope(IScope *scope) ;
 
 private:	// Watches
 	bool addWatch(const StringList &tokens);
@@ -97,7 +97,7 @@ private:
 	std::string executeCommand(const StringList &tokens);
 	void frameDown();
 	void frameUp();
-	StringList parseCommands(const std::string& commands) const;
+	static StringList parseCommands(const std::string& commands) ;
 	void prepare(const StringList& tokens);
 	void printHelp();
 	void printBreakPoints();
@@ -106,12 +106,12 @@ private:
 	void printSymbol(const StringList& tokens);
 	void printThreads();
 	void printWatches();
-	std::string read();
+	static std::string read();
 	void toggleAutoList();
 	void toggleAutoStart();
 	void toggleAutoStop();
-	void write(const std::string& text);
-	void writeln(const std::string& text);
+	static void write(const std::string& text);
+	static void writeln(const std::string& text);
 
 private:
 	Core::BreakPoint mBreakpoint;

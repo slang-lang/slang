@@ -19,10 +19,10 @@ class Dependency
 {
 public:
 	Dependency( std::string module, std::string minVersion, std::string maxVersion, std::string source )
-	: MaxVersion( maxVersion ),
-	  MinVersion( minVersion ),
-	  Module( module ),
-	  Source( source )
+	: MaxVersion( std::move( maxVersion ) ),
+	  MinVersion( std::move( minVersion ) ),
+	  Module( std::move( module ) ),
+	  Source( std::move( source ) )
 	{ }
 
 public:

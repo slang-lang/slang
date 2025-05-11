@@ -30,7 +30,7 @@ public:
 	~TreeLineBuffer() = default;
 
 public:
-	void getLines(Lines& lines);
+	void getLines(Lines& lines) const;
 
 	void append(const std::string& content);
 	void clear();

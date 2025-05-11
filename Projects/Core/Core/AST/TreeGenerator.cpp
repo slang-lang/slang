@@ -60,7 +60,7 @@ void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 
 Node* TreeGenerator::expression(TokenIterator& start)
 {
-	Node* expression = parseCondition(start);
+	auto* expression = parseCondition(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -166,7 +166,7 @@ Statements* TreeGenerator::generateAST(Common::Method* method)
 	return statements;
 }
 
-MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
+MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope)
 {
 	while ( scope ) {
 		auto* methodScope = dynamic_cast<MethodScope*>(scope->getEnclosingScope());
@@ -180,7 +180,7 @@ MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
 	return nullptr;
 }
 
-MethodScope* TreeGenerator::getMethodScope(IScope* scope) const
+MethodScope* TreeGenerator::getMethodScope(IScope* scope)
 {
 	auto* result = dynamic_cast<MethodScope*>(scope);
 
@@ -238,7 +238,7 @@ void TreeGenerator::initialize(Common::Method* method)
 
 Node* TreeGenerator::parseCondition(TokenIterator& start)
 {
-	Node* condition = parseExpression(start);
+	auto* condition = parseExpression(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -319,7 +319,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 
 Node* TreeGenerator::parseExpression(TokenIterator& start)
 {
-	Node* expression = parseFactor(start);
+	auto* expression = parseFactor(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -371,7 +371,7 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 
 Node* TreeGenerator::parseFactor(TokenIterator &start)
 {
-	Node* factor = parseInfix(start);
+	auto* factor = parseInfix(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -2119,7 +2119,7 @@ void TreeGenerator::pushScope(IScope* scope, bool allowBreakAndContinue)
 	mStackFrame->pushScope(scope, allowDelete, allowBreakAndContinue || mStackFrame->allowBreakAndContinue());
 }
 
-std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* symbol) const
+std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* symbol)
 {
 	if ( !symbol ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol provided");
@@ -2256,7 +2256,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	return symbol;
 }
 
-MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const
+MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility)
 {
 	if ( !symbol ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol provided");

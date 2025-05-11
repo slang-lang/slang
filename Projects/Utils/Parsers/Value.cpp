@@ -89,7 +89,7 @@ void Value::size(size_t size)
 
 bool Value::isValid() const
 {
-	return ( mValue.length() > 0 );
+	return !mValue.empty();
 }
 
 bool Value::ofType(const std::string& type) const

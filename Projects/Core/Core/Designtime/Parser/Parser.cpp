@@ -221,9 +221,7 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 
 		// prepare next iteration
 		constraint = "";
-		designType = "";
 		++index;
-		runType = "";
 
 		if ( token->type() == Token::Type::COMMA ) {
 			++token;
@@ -268,7 +266,6 @@ PrototypeConstraints Parser::collectRuntimePrototypeConstraints(TokenIterator& t
 		constraint = "";
 		designType = "";
 		++index;
-		runType = "";
 
 		if ( token->type() == Token::Type::COMMA ) {
 			++token;
@@ -328,9 +325,9 @@ bool Parser::isEnumDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
-	tokens.push_back(Token(Token::Type::VISIBILITY, true));
-	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_ENUM)));
-	tokens.push_back(Token(Token::Type::IDENTIFIER));
+	tokens.emplace_back( Token::Type::VISIBILITY, true );
+	tokens.emplace_back( Token::Type::RESERVED_WORD, std::string( RESERVED_WORD_ENUM ) );
+	tokens.emplace_back( Token::Type::IDENTIFIER );
 
 	return checkSyntax(token, tokens);
 }
@@ -358,8 +355,8 @@ bool Parser::isLibraryReference(TokenIterator token)
 {
 	TokenList tokens;
 
-	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_IMPORT)));
-	tokens.push_back(Token(Token::Type::IDENTIFIER));
+	tokens.emplace_back( Token::Type::RESERVED_WORD, std::string( RESERVED_WORD_IMPORT ) );
+	tokens.emplace_back( Token::Type::IDENTIFIER );
 
 	return checkSyntax(token, tokens);
 }
@@ -577,17 +574,17 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 			value = Utils::Tools::stringToFloat(sign + token->content());
 			break;
 		case Token::Type::CONST_INTEGER:
-		    if ( type == _int16 ) {
-			    value = static_cast<int16_t>( Utils::Tools::stringToInt(sign + token->content()) );
+			if ( type == _int16 ) {
+				value = static_cast<int16_t>( Utils::Tools::stringToInt(sign + token->content()) );
 			}
 			else if ( type == _int32 ) {
-			    value = static_cast<int32_t>( Utils::Tools::stringToInt(sign + token->content()) );
+				value = static_cast<int32_t>( Utils::Tools::stringToInt(sign + token->content()) );
 			}
 			else if ( type == _int64 ) {
-			    value = static_cast<int64_t>( Utils::Tools::stringToInt(sign + token->content()) );
+				value = static_cast<int64_t>( Utils::Tools::stringToInt(sign + token->content()) );
 			}
 			else {
-			    throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
+				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
 			}
 			break;
 		case Token::Type::CONST_LITERAL:

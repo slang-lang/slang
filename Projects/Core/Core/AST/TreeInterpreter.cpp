@@ -314,7 +314,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	ParameterList params;
 
 	for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
-		objectList.emplace_back(Runtime::Object());
+		objectList.emplace_back();
 
 		Runtime::Object* param = &objectList.back();
 

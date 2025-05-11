@@ -23,7 +23,7 @@ public:
     static const std::string DELIMITERS;
 
 public:
-    Tokenizer(std::string  str, const std::string& delimiters = "");
+    explicit Tokenizer(std::string  str, const std::string& delimiters = "");
 
 public:
     std::string getRemainingString() const;

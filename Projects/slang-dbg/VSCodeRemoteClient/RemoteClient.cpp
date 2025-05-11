@@ -29,7 +29,7 @@ RemoteClient::RemoteClient()
 : mContinue(false),
   mRunning(true),
   mScope(nullptr),
-  mVirtualMachine(0)
+  mVirtualMachine(nullptr)
 {
 	mDebugger = &Core::Debugger::Instance();
 }
