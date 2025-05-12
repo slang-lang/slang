@@ -1,11 +1,11 @@
 {
   "name": "JsonReader",
   "name_short": "JsonReader",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0",
   "description": "Script which reads in a JSON encoded text file and pretty prints its contents to stdout.",
   "dependencies": [
     { "module": "FileReader", "version_min": "1.0.2-alpha" },
-    { "module": "Slang", "version_min": "0.9.3-alpha" },
+    { "module": "Slang", "version_min": "0.9.3" },
     { "module": "System", "version_min": "0.4.7" },
     { "module": "libJson", "version_min": "0.4.4" },
     { "module": "libParam", "version_min": "0.2.9" }
