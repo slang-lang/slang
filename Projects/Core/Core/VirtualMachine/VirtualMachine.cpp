@@ -36,23 +36,23 @@ namespace Slang {
 #else
 void read_directory(const std::string& dirname, std::vector<std::string>& files)
 {
-    DIR* dirp = opendir(dirname.c_str());
-    if ( !dirp ) {
-	// couldn't opern directory
-	return;
-    }
+	DIR* dirp = opendir(dirname.c_str());
+	if ( !dirp ) {
+		// couldn't opern directory
+		return;
+	}
 
-    struct dirent * dp;
+	struct dirent * dp;
 
-    while ( (dp = readdir(dirp)) != nullptr ) {
-        std::string file(dp->d_name);
+	while ( (dp = readdir(dirp)) != nullptr ) {
+		std::string file(dp->d_name);
 
-        if ( file != "." && file != ".." ) {
-		files.push_back(dirname + "/" + file);
-        }
-    }
+		if ( file != "." && file != ".." ) {
+			files.push_back(dirname + "/" + file);
+		}
+	}
 
-    closedir(dirp);
+	closedir(dirp);
 }
 #endif
 
