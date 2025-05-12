@@ -25,6 +25,11 @@ Memory::Memory()
 {
 }
 
+Memory::~Memory()
+{
+	deinit();
+}
+
 void Memory::add(const Runtime::Reference& ref)
 {
 	if ( !ref.isValid() ) {

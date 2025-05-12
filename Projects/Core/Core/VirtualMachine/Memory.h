@@ -27,7 +27,7 @@ class Memory
 {
 public:
 	Memory();
-	~Memory() = default;
+	~Memory();
 
 public:
 	void deinit();
