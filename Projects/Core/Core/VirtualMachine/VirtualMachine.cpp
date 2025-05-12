@@ -36,23 +36,23 @@ namespace Slang {
 #else
 void read_directory(const std::string& dirname, std::vector<std::string>& files)
 {
-    DIR* dirp = opendir(dirname.c_str());
-    if ( !dirp ) {
-	// couldn't opern directory
-	return;
-    }
+	DIR* dirp = opendir(dirname.c_str());
+	if ( !dirp ) {
+		// couldn't opern directory
+		return;
+	}
 
-    struct dirent * dp;
+	struct dirent * dp;
 
-    while ( (dp = readdir(dirp)) != nullptr ) {
-        std::string file(dp->d_name);
+	while ( (dp = readdir(dirp)) != nullptr ) {
+		std::string file(dp->d_name);
 
-        if ( file != "." && file != ".." ) {
-		files.push_back(dirname + "/" + file);
-        }
-    }
+		if ( file != "." && file != ".." ) {
+			files.push_back(dirname + "/" + file);
+		}
+	}
 
-    closedir(dirp);
+	closedir(dirp);
 }
 #endif
 
@@ -444,13 +444,26 @@ VirtualMachine::Settings& VirtualMachine::settings()
 
 namespace {
 	std::string buildFilename( const std::string& folder, const std::string& filename ) {
-		std::string file = Utils::Tools::Files::BuildLibraryPath( folder, filename );
+		// (1) look for a ".slang" file (new standard)
+		auto file = Utils::Tools::Files::BuildPath( folder, filename ) + ".slang";
 		if ( Utils::Tools::Files::exists( file ) ) {
 			return file;
 		}
 
-		return Utils::Tools::Files::BuildLibraryPath( folder, filename + std::string( "/All" ) );
+		// (2) look for a ".os" file (deprecated)
+		file = Utils::Tools::Files::BuildPath( folder, filename ) + ".os";
+		if ( Utils::Tools::Files::exists( file ) ) {
+			return file;
+		}
 
+		// (3) look for an "All.slang" file (new standard)
+		file = Utils::Tools::Files::BuildPath( folder, filename + std::string( "/All" ) ) + ".slang";
+		if ( Utils::Tools::Files::exists( file ) ) {
+			return file;
+		}
+
+		// (4) look for an "All.os" file as a last resort (deprecated)
+		return Utils::Tools::Files::BuildPath( folder, filename + std::string( "/All" ) ) + ".os";
 	}
 }
 

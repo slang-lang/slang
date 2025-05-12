@@ -1,13 +1,13 @@
 " Vim syntax file
 " Language:	Slang
 " Maintainer:	Michael Adelmann <michael.adelmann@gmail.com>
-" Last Change:	2020-06-13
-" Filenames:	*.os
-" $Id: os.vim,v 1.0 2014/05/03 21:20:02 vimboss Exp $
+" Last Change:	2025-05-12
+" Filenames:	*.slang
+" $Id: slang.vim,v 1.0 2014/05/03 21:20:02 vimboss Exp $
 "
 " REFERENCES:
 " [1] The Slang Programming Language Specification
-" (https://slang.ticketsharing.net)
+" (https://www.slang-lang.org)
 
 if exists("b:current_syntax")
     finish
@@ -146,7 +146,7 @@ hi def link csXmlCommentLeader		Comment
 hi def link csXmlComment		Comment
 hi def link csXmlTag			Statement
 
-let b:current_syntax = "os"
+let b:current_syntax = "slang"
 
 let &cpo = s:cs_cpo_save
 unlet s:cs_cpo_save
