@@ -19,16 +19,6 @@ Printer::Printer()
 {
 }
 
-void Printer::activateFileAndLinePrinting(bool state)
-{
-	PrintFileAndLine = state;
-}
-
-void Printer::activatePrinter(bool state)
-{
-	ActivatePrinter = state;
-}
-
 void Printer::print(const std::string& text, const std::string& file, unsigned int line) const
 {
 	if ( !ActivatePrinter ) {

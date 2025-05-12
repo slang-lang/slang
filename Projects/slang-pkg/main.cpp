@@ -280,8 +280,8 @@ void create( const StringList& params )
 	}
 
 	// TODO: module name is not allowed to end with '/'
-	std::string path     = params.front();
-	std::string filename = "module.json";
+	const std::string& path     = params.front();
+	const std::string& filename = "module.json";
 
 	auto module = collectModuleData( path, filename );
 
@@ -999,7 +999,7 @@ bool prepareRemoteRepository()
 void printUsage( const StringList& params )
 {
     if ( !params.empty() ) {
-        auto param = params.front();
+        const auto& param = params.front();
 
         if ( param == "create" ) {
             std::cout << "Usage: slang-pkg create <module>" << std::endl;
@@ -1179,7 +1179,7 @@ void processParameters( int argc, const char* argv[] )
 			mVerbose = true;
 		}
 		else {
-			mParameters.push_back( std::string( argv[ i ] ) );
+			mParameters.emplace_back( argv[ i ] );
 		}
 	}
 }
@@ -1540,7 +1540,7 @@ size_t upload( const std::string& filename, const std::string& url, const std::s
     // Initialize libcurl
     CURL* curl = curl_easy_init();
     CURLcode result;
-    struct curl_slist *headers = NULL;
+    struct curl_slist *headers = nullptr;
 
     if ( curl ) {
         {   // authorization

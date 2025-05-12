@@ -131,14 +131,14 @@ private: // Execution
 	SymbolExpression* resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope, Visibility::E visibility) const;
 	SymbolExpression* resolveWithExceptions(TokenIterator& token, IScope* base) const;
 	SymbolExpression* resolveWithThis(TokenIterator& token, IScope* base) const;
-	MethodSymbol* resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const;
+	static MethodSymbol* resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) ;
 	std::string resolveType(TokenIterator& token, Node* left, const Token& operation, Node* right) const;
 	std::string resolveType(TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const;
 
 	// Scope stack
 	// {
-	MethodScope* getEnclosingMethodScope(IScope* scope) const;
-	MethodScope* getMethodScope(IScope* scope) const;
+	static MethodScope* getEnclosingMethodScope(IScope* scope) ;
+	static MethodScope* getMethodScope(IScope* scope) ;
 
 	inline IScope* getScope() const;
 	inline void popScope();
@@ -154,7 +154,7 @@ private: // Execution
 
 	// Helpers
 	// {
-	std::list<MethodSymbol*> provideSimilarMethods(SymbolExpression* symbol) const;
+	static std::list<MethodSymbol*> provideSimilarMethods(SymbolExpression* symbol) ;
 	// }
 
 private:	// Initialization

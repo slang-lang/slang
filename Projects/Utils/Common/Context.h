@@ -31,10 +31,10 @@ class FileContext : public IContext
 {
 public:
 	explicit FileContext( const std::string& file );
-	~FileContext();
+	~FileContext() override;
 
 public:
-	void write( const std::string& msg );
+	void write( const std::string& msg ) override;
 
 private:
 	std::ofstream mLogFile;
@@ -44,7 +44,7 @@ private:
 class StdOutContext : public IContext
 {
 public:
-	void write( const std::string& msg );
+	void write( const std::string& msg ) override;
 };
 
 

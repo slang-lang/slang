@@ -111,7 +111,7 @@ bool LocalClient::addLiteralSymbol(const std::string& name, const std::string& v
 
 	TokenList list = t.tokens();
 	if ( list.size() > 1 ) {
-		Token token = list.front();
+		const auto& token = list.front();
 
 		switch ( token.type() ) {
 			case Token::Type::CONST_BOOLEAN:
@@ -194,7 +194,7 @@ int LocalClient::exec()
 			run(StringList());
 		}
 
-		handleBreakpoint(0, Core::Debugger::immediateBreakPoint);
+		handleBreakpoint(nullptr, Core::Debugger::immediateBreakPoint);
 	}
 
 	// unregister SIGINT handler
@@ -343,7 +343,7 @@ void LocalClient::executeMethod(const StringList &tokens)
 	ParameterList params;
 
 	for ( ; it != tokens.end(); ++it ) {
-		std::string sym = (*it);
+		const auto& sym = (*it);
 
 		if ( addLiteralSymbol(sym, sym) ) {
 			auto* object = dynamic_cast<Runtime::Object*>(getCachedSymbol(sym));
@@ -450,7 +450,7 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 	return nullptr;
 }
 
-Common::Method* LocalClient::getMethodFromScope(IScope *scope) const
+Common::Method* LocalClient::getMethodFromScope(IScope *scope)
 {
 	while ( scope ) {
 		if ( scope->getScopeType() == IScope::IType::NamedScope ) {
@@ -466,7 +466,7 @@ Common::Method* LocalClient::getMethodFromScope(IScope *scope) const
 	return nullptr;
 }
 
-MethodScope* LocalClient::getEnclosingMethodScope(IScope* scope) const
+MethodScope* LocalClient::getEnclosingMethodScope(IScope* scope)
 {
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
@@ -481,7 +481,7 @@ MethodScope* LocalClient::getEnclosingMethodScope(IScope* scope) const
 	return nullptr;
 }
 
-Common::Namespace* LocalClient::getEnclosingNamespace(IScope* scope) const
+Common::Namespace* LocalClient::getEnclosingNamespace(IScope* scope)
 {
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
@@ -499,7 +499,7 @@ Common::Namespace* LocalClient::getEnclosingNamespace(IScope* scope) const
 	return nullptr;
 }
 
-Runtime::Object* LocalClient::getEnclosingObject(IScope* scope) const
+Runtime::Object* LocalClient::getEnclosingObject(IScope* scope)
 {
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
@@ -525,7 +525,7 @@ Symbol* LocalClient::getSymbol(std::string name) const
 
 	do {
 		if ( !scope ) {
-			return 0;
+			return nullptr;
 		}
 
 		Utils::Tools::split(name, parent, child);
@@ -741,7 +741,7 @@ int LocalClient::notifyExit(IScope* scope, const Core::BreakPoint& breakpoint)
     return handleBreakpoint(scope, breakpoint);
 }
 
-StringList LocalClient::parseCommands(const std::string& commands) const
+StringList LocalClient::parseCommands(const std::string& commands)
 {
 	StringList params;
 
@@ -1176,7 +1176,7 @@ void LocalClient::stop()
 {
 	if ( mVirtualMachine ) {
 		delete mVirtualMachine;
-		mVirtualMachine = 0;
+		mVirtualMachine = nullptr;
 	}
 
 	mBreakpoint = Core::BreakPoint();

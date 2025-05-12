@@ -123,8 +123,8 @@ public:
 	Token();
 	explicit Token(Type::E type, bool isOptional = false);
 	Token(Type::E type, const char* content);
-	Token(Type::E type, const std::string& content);
-	Token(Category::E category, Type::E type, const std::string& content, const Common::Position& pos, bool isOptional = false);
+	Token(Type::E type, std::string content);
+	Token(Category::E category, Type::E type, std::string content, Common::Position pos, bool isOptional = false);
 
 public:
 	Category::E category() const;

@@ -13,8 +13,8 @@ namespace Utils {
 namespace Common {
 
 
-FileLogger::FileLogger( const std::string& logfile )
-: mLogFile( logfile )
+FileLogger::FileLogger( std::string logfile )
+: mLogFile( std::move( logfile ) )
 {
 	mContext = new FileContext( mLogFile );
 }

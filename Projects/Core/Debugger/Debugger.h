@@ -75,7 +75,7 @@ private:
 	Debugger();
 	Debugger(const Debugger& );
 	Debugger operator=(const Debugger& );
-	~Debugger() = default;
+	~Debugger() override = default;
 
 private:
 	bool mBreakOnExceptionCatch;

@@ -86,9 +86,9 @@ void StringType::operator_assign( const Object* other )
          other->isEnumerationValue() ) {
 		mValue = other->getValue().toStdString();
 	}
-    else {
-        Object::operator_assign( other );
-    }
+	else {
+		Object::operator_assign( other );
+	}
 }
 
 bool StringType::operator_bool() const

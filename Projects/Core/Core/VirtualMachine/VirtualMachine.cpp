@@ -181,7 +181,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 	AST::Generator generator(mSettings.DoCollectErrors);
 	generator.process(globalScope);
 
-	int errors = generator.hasErrors();
+	auto errors = generator.hasErrors();
 	if ( errors ) {
 		throw Common::Exceptions::Exception(Utils::Tools::toString(errors) + " error(s) during AST generation detected!");
 	}
@@ -422,14 +422,14 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 
 void VirtualMachine::runScriptFromFile(const std::string &filename, const Slang::ParameterList &params, Slang::Runtime::Object *result)
 {
-	Script* script = createScriptFromFile(filename);
+	auto* script = createScriptFromFile(filename);
 
 	run(script, params, result);
 }
 
 void VirtualMachine::runScriptFromString(const std::string &content, const Slang::ParameterList &params, Slang::Runtime::Object *result)
 {
-	Script* script = createScriptFromString(content);
+	auto* script = createScriptFromString(content);
 
 	run(script, params, result);
 }

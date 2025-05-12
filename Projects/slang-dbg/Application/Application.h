@@ -28,8 +28,8 @@ public:
 	int exec();
 
 private:
-	void printUsage();
-	void printVersion();
+	static void printUsage();
+	static void printVersion();
 	void processParameters(int argc, const char* argv[]);
 
 private:

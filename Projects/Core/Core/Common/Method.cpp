@@ -314,9 +314,9 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 			++paramIt;
 		}
 
-		result.push_back(Parameter(
+		result.emplace_back(
 			sigIt->name(), TypeDeclaration(sigIt->type(), PrototypeConstraints(), sigIt->mutability()), value, sigIt->hasDefaultValue(), sigIt->mutability(), sigIt->access(), ref
-		));
+		);
 	}
 
 	return result;

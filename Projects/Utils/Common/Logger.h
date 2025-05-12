@@ -58,7 +58,7 @@ public:
 
 protected:
 	Logger();
-	Logger( const ILogger* parent, const std::string& className, const std::string& key = "" );
+	Logger( const ILogger* parent, const std::string& className, std::string key = "" );
 
 	void Log( const std::string& logLevel, const std::string& message, const std::string& file, unsigned int line );
 

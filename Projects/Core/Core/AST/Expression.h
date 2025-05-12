@@ -125,7 +125,7 @@ public:
 	};
 
 public:
-	explicit BinaryExpression(Node* lhs, const Token& operation, Node* rhs, const std::string& resultType)
+	explicit BinaryExpression(Node* lhs, Token operation, Node* rhs, const std::string& resultType)
 	: Expression(ExpressionType::BinaryExpression),
 	  mLHS(lhs),
 	  mOperation(std::move(operation)),
@@ -406,7 +406,7 @@ public:
 	}
 
 	std::string toString() const {
-		std::string result = mName;
+		auto result = mName;
 
 		if ( mSymbolExpression ) {
 			result += "." + mSymbolExpression->toString();
@@ -678,7 +678,7 @@ public:
 	};
 
 public:
-	explicit UnaryExpression(const Token& operation, Node* exp, ValueType::E valueType)
+	explicit UnaryExpression(Token operation, Node* exp, ValueType::E valueType)
 	: Expression(ExpressionType::UnaryExpression),
 	  mExpression(exp),
 	  mOperation(std::move(operation)),

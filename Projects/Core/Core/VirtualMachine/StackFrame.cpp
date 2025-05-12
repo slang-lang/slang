@@ -72,9 +72,7 @@ void StackFrame::popTokens()
 
 void StackFrame::pushScope(IScope* scope, bool allowDelete, bool allowBreakAndContinue)
 {
-	mScopeStack.push_back(
-		Scope(scope, allowDelete, allowBreakAndContinue)
-	);
+	mScopeStack.emplace_back( scope, allowDelete, allowBreakAndContinue );
 }
 
 void StackFrame::pushTokens(const TokenList& tokens)

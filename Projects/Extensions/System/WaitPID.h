@@ -51,7 +51,7 @@ public:
             auto param_options = (*it++).value().toInt();
 
             int status;
-            param_pid = waitpid( param_pid, &status, param_options );
+            /*param_pid =*/ waitpid( param_pid, &status, param_options );
 
             *result = Runtime::Int32Type( status );
 		}

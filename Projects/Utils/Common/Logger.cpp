@@ -23,17 +23,17 @@ Logger::Logger()
 {
 }
 
-Logger::Logger( const ILogger* parent, const std::string& className, const std::string& key )
+Logger::Logger( const ILogger* parent, const std::string& className, std::string key )
 : mContext( nullptr ),
   mHasParent( false ),
-  mKey( key ),
+  mKey(std::move( key )),
   mLoudness( LoudnessMethod )
 {
 	if ( parent ) {
 		mContext = parent->getContext();
 		mHasParent = true;
 
-		if ( parent->getClassName().length() > 0 ) {
+		if ( !parent->getClassName().empty() ) {
 			mClassName = parent->getClassName() + "::";
 		}
 	}

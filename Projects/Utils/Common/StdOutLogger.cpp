@@ -30,7 +30,7 @@ StdOutLogger::StdOutLogger( const ILogger* parent, const std::string& className,
 		mContext = parent->getContext();
 		mHasParent = true;
 
-		if ( parent->getClassName().length() > 0 ) {
+		if ( !parent->getClassName().empty() ) {
 			mClassName = parent->getClassName() + "::";
 		}
 	}

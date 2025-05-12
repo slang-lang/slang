@@ -342,7 +342,7 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 		return mParent->resolve(name, onlyCurrentScope, visibility);
 	}
 
-	return 0;
+	return nullptr;
 }
 
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const

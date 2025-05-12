@@ -32,7 +32,7 @@ Value LineParser::parse(const std::string& line)
 	std::string value;
 
 	while ( t.hasNext() ) {
-		if ( value.length() > 0 ) {
+		if ( !value.empty() ) {
 			value += " ";
 		}
 

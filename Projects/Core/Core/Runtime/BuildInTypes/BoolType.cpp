@@ -89,9 +89,9 @@ void BoolType::operator_assign( const Object* rvalue )
          rvalue->isEnumerationValue() ) {
 		mValue = rvalue->getValue().toBool();
 	}
-    else {
-        mValue = rvalue->isValid();
-    }
+	else {
+		mValue = rvalue->isValid();
+	}
 }
 
 bool BoolType::operator_equal( const Object* rvalue )

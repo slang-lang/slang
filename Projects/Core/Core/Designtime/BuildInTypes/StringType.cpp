@@ -35,7 +35,7 @@ const std::string& StringType::getTypeName() const
 
 void StringType::initialize()
 {
-	Common::Method* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
+	auto* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
 		params.push_back(

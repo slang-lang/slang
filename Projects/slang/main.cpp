@@ -155,7 +155,7 @@ void processParameters(int argc, const char* argv[])
 			}
 		}
 		else {
-			params.push_back(argv[i]);
+			params.emplace_back( argv[i] );
 			paramStr += "\n";
 			paramStr += argv[i];
 		}

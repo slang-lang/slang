@@ -4,18 +4,17 @@
 
 // Library includes
 #include <fstream>
-#include <iostream>
 #include <utility>
 #include <json/json.h>
 
 // Project includes
-#include <Tools/Files.h>
 
 // Namespace declarations
 
 
 Repository::Repository( std::string name )
-: mName( name )
+: mAuthentication( Authentication::None ),
+  mName( std::move(name) )
 {
 }
 

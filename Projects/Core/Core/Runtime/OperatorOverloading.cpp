@@ -33,8 +33,8 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source{ rvalue->QualifiedTypename() };
-	std::string target{ lvalue->QualifiedTypename() };
+	const auto& source{ rvalue->QualifiedTypename() };
+	const auto& target{ lvalue->QualifiedTypename() };
 
 	if ( target == ANONYMOUS_OBJECT || source == target ) {
 		// assign directly because our lvalue has not yet been initialized
@@ -204,7 +204,7 @@ void operator_binary_bitor( Object* lvalue, Object* rvalue )
 		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string target = lvalue->QualifiedTypename();
+	const auto& target = lvalue->QualifiedTypename();
 
 	if ( target == BoolType::TYPENAME ) {
 		BoolType tmp( lvalue->isValid() );

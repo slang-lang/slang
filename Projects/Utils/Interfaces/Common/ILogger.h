@@ -26,13 +26,13 @@ public:
 	virtual ~ILogger() = default;
 
 public:
-	static const int LoudnessMute = -1;
-	static const int LoudnessError = 0;
-	static const int LoudnessWarning = 1;
-	static const int LoudnessInfo = 2;
-	static const int LoudnessMethod = 3;
-	static const int LoudnessDeprecated = 4;
-	static const int LoudnessDebug = 5;
+	static constexpr int LoudnessMute = -1;
+	static constexpr int LoudnessError = 0;
+	static constexpr int LoudnessWarning = 1;
+	static constexpr int LoudnessInfo = 2;
+	static constexpr int LoudnessMethod = 3;
+	static constexpr int LoudnessDeprecated = 4;
+	static constexpr int LoudnessDebug = 5;
 
 public:
 	virtual const std::string& getClassName() const = 0;
