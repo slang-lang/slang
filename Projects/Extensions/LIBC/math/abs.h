@@ -165,7 +165,7 @@ public:
 
 			auto param_n = (*it++).value().toInt();
 
-			*result = Runtime::Int64Type(static_cast<int64_t>( fabsf( param_n ) ) );
+			*result = Runtime::Int64Type( labs( param_n ) );
 		}
 		catch ( std::exception& e ) {
 			auto *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME);
