@@ -24,3 +24,4 @@ find "$a" -type l | while read -r link; do
         rm "${link}"
     fi
 done
+
