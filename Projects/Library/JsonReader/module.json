@@ -1,7 +1,7 @@
 {
   "name": "JsonReader",
   "name_short": "JsonReader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Script which reads in a JSON encoded text file and pretty prints its contents to stdout.",
   "dependencies": [
     { "module": "FileReader", "version_min": "1.0.2-alpha" },
@@ -13,7 +13,7 @@
   "keywords": ["cat", "json"],
   "target": {
     "directory": "JsonReader",
-    "install": ["JsonReader.os"],
+    "install": ["JsonReader.slang"],
     "type": "internal"
   }
 }
