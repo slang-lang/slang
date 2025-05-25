@@ -19,7 +19,15 @@ static const std::string CACHE_REPOSITORIES     = "cache/repositories/";
 static const std::string CONFIG_APPS            = ".slang/apps/";
 static const std::string CONFIG_FILE            = ".slang/config.json";
 static const std::string CONFIG_FOLDER          = ".slang/";
-static const std::string CONFIG_SCRIPTS         = ".slang/scripts/";
+#ifdef __APPLE__
+static const std::string CONFIG_SCRIPTS         = "/usr/lib/slang";
+#endif
+#ifdef __linux__
+static const std::string CONFIG_SCRIPTS         = "/usr/lib/slang";
+#endif
+#ifdef _WIN32
+static const std::string CONFIG_SCRIPTS         = "";
+#endif
 static const std::string FILE_VERSION_SEPARATOR = "_";
 static const std::string MODULES                = "modules/";
 static const std::string REMOTE_REPOSITORY_NAME = "main";
