@@ -1,14 +1,14 @@
 #!/bin/bash
 
-source /usr/lib/slang/scripts/realpath.sh
+source /usr/lib/slang/readlink.sh
 
-a="$1"            # Directory you want to remove (e.g. /opt/mytool)
-b=".slang/apps"   # Where symlinks live (e.g. /usr/local/bin)
+a="$1"   # Source of symlink (e.g. Library/JsonReader/JsonReader.slang)
+b="$2"   # Where symlinks live (e.g. Library/.slang/apps/JsonReader.slang)
 
 # Resolve absolute path of a and b (in case it’s a relative path)
-a=$(realpath "$a")
-b=$(realpath "$b")
+a=$(readlink "$a")
+b=$(readlink "$b")
 
 echo "Installing symlink $a -> $b"
-ln -sf "$a" "$b"
+ln -sf "$a" "$b"    # override existing symlinks
 #ln -s "$a" "$b"     # fail if a link already exists

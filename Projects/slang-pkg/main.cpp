@@ -336,74 +336,6 @@ void createLocalLibrary()
         execute( "mkdir " + mCurrentFolder + CONFIG_APPS );
     }
 
-    // .slang/scripts/ folder to copy symlinks to
-    if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_SCRIPTS ) ) {
-        // create folder for library config
-        execute( "mkdir " + mCurrentFolder + CONFIG_SCRIPTS );
-
-        // addLink.sh
-        {
-            std::string addLink = R"(#!/bin/bash
-
-a="$1"            # Directory you want to remove (e.g. /opt/mytool)
-b=".slang/apps"   # Where symlinks live (e.g. /usr/local/bin)
-
-# Resolve absolute path of a and b (in case it’s a relative path)
-#a=$(realpath "$a")
-a=$(readlink -f "$a")
-#b=$(realpath "$b")
-b=$(readlink -f "$b")
-
-echo "Installing symlink $a -> $b"
-#ln -sf "$a" "$b"
-ln -s "$a" "$b"     # fail if a link already exists
-            )";
-
-            std::ofstream script( mCurrentFolder + CONFIG_SCRIPTS + "addLink.sh" );
-            script << addLink;
-            script.close();
-
-            execute( "chmod +x " + mCurrentFolder + CONFIG_SCRIPTS + "addLink.sh" );
-        }
-
-        // removeLinks.sh
-        {
-            std::string removeLinks = R"(#!/bin/bash
-
-a=".slang/apps"   # Where symlinks live (e.g. /usr/local/bin)
-b="$1"            # Directory you want to remove (e.g. /opt/mytool)
-
-# Resolve absolute path of a and b (in case it’s a relative path)
-#a=$(realpath "$a")
-a=$(readlink -f "$a")
-#b=$(realpath "$b")
-b=$(readlink -f "$b")
-
-if [ ! -d "$a" ] || [ ! -d "$b" ]; then
-    echo "Usage: $0 <link_dir> <target_dir>"
-    echo "Both arguments must be directories."
-    exit 1
-fi
-
-#echo "Scanning for symlinks in '$a' pointing to anywhere inside '$b'..."
-
-find "$a" -type l | while read -r link; do
-    target=$(realpath "$link" 2>/dev/null)
-    if [ -n "$target" ] && [[ "$target" == "$b"* ]]; then
-        echo "Removing symlink $link -> $target"
-        rm "${link}"
-    fi
-done
-            )";
-
-            std::ofstream script( mCurrentFolder + CONFIG_SCRIPTS + "removeLinks.sh" );
-            script << removeLinks;
-            script.close();
-
-            execute( "chmod +x " + mCurrentFolder + CONFIG_SCRIPTS + "removeLinks.sh" );
-        }
-    }
-
     if ( !Utils::Tools::Files::exists( mCurrentFolder + CONFIG_FILE ) ) {
         Json::Value repository;
         repository[ "authentication" ] = "Bearer";    // user needs to fill in his preferred method of authentication (Basic|Bearer)
@@ -792,7 +724,7 @@ void installModule( const std::string& repo, const std::string& module )
 	execute( "tar xf " + module_archive + " -C " + mLibraryFolder );
 
 	for ( const std::string& file : tmpModule.mTarget.InstalledFiles ) {
-		execute( CONFIG_SCRIPTS + "addLink.sh \"" + module + "/" + file + "\"" );
+		execute( CONFIG_SCRIPTS + "/addLink.sh \"" + mLibraryFolder + "/" + module + "/" + file + "\" \"" + mLibraryFolder + "/" + CONFIG_APPS + "\"" );
 	}
 }
 
@@ -1336,7 +1268,7 @@ void remove( const StringList& params )
 
 				std::cout << "Removing module \"" << localIt.mShortName << "\" from \"" << localIt.mTarget.Directory << "\"..." << std::endl;
 
-				execute( CONFIG_SCRIPTS + "removeLinks.sh \"" + localIt.mShortName + "\"" );
+				execute( CONFIG_SCRIPTS + "/removeLinks.sh \"" + mLibraryFolder + "/" + CONFIG_APPS + "\" \"" + mLibraryFolder + "/" + localIt.mShortName + "\"" );
 				execute( "rm -r " + localIt.mTarget.Directory );
 			}
 		}
