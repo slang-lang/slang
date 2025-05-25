@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source /usr/lib/slang/scripts/realpath.sh
+
 a=".slang/apps"   # Where symlinks live (e.g. /usr/local/bin)
 b="$1"            # Directory you want to remove (e.g. /opt/mytool)
 
@@ -24,4 +26,3 @@ find "$a" -type l | while read -r link; do
         rm "${link}"
     fi
 done
-
