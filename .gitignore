@@ -6,6 +6,7 @@ build
 cmake-build-debug
 
 # generated stuff
+bundle/man/*.gz
 CMake/Dependencies.cmake
 make-package.cfg
 

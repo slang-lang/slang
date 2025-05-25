@@ -1,0 +1,4 @@
+slang.egg-info/
+slang/__pycache__/
+data/mo/
+debian/slang.1

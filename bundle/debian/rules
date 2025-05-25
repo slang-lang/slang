@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+#export DH_VERBOSE = 1
+export PYBUILD_DISABLE=test
+export PYBUILD_NAME=slang
+export PYBUILD_INSTALL_ARGS_python3=--install-scripts=/usr/games/
+
+%:
+	dh $@ --buildsystem=pybuild
+
+override_dh_auto_build:
+	help2man -N -s 1 -n "a simple GTK based GOG Linux client" bin/slang > debian/slang.1
+	dh_auto_build
