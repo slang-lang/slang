@@ -40,29 +40,29 @@ public:
 	bool useDebugger() const;
 
 public:	// IDebugger implementation
-	bool addBreakPoint(const BreakPoint& breakpoint);
-	void clearBreakPoints();
-	bool removeBreakPoint(const BreakPoint& breakpoint);
+	bool addBreakPoint(const BreakPoint& breakpoint) override;
+	void clearBreakPoints() override;
+	bool removeBreakPoint(const BreakPoint& breakpoint) override;
 
-	void breakOnExceptionCatch(bool state);
-	void breakOnExceptionThrow(bool state);
+	void breakOnExceptionCatch(bool state) override;
+	void breakOnExceptionThrow(bool state) override;
 
 	const BreakPointCollection& getBreakPoints() const;
-	bool isBreakPoint(const BreakPoint& breakpoint) const;
+	bool isBreakPoint(const BreakPoint& breakpoint) const override;
 
-	NextAction::E nextAction() const;
+	NextAction::E nextAction() const override;
 
-	void notify(IScope* scope, const Token& token = Token());
-	void notifyEnter(IScope* scope, const Token& token = Token());
-	void notifyExceptionCatch(IScope* scope, const Token& token = Token());
-	void notifyExceptionThrow(IScope* scope, const Token& token = Token());
-	void notifyExit(IScope* scope, const Token& token = Token());
+	void notify(IScope* scope, const Token& token = Token()) override;
+	void notifyEnter(IScope* scope, const Token& token = Token()) override;
+	void notifyExceptionCatch(IScope* scope, const Token& token = Token()) override;
+	void notifyExceptionThrow(IScope* scope, const Token& token = Token()) override;
+	void notifyExit(IScope* scope, const Token& token = Token()) override;
 
-	void resume();
-	void resumeWithoutBreaks();
-	void stepInto();
-	void stepOut();
-	void stepOver();
+	void resume() override;
+	void resumeWithoutBreaks() override;
+	void stepInto() override;
+	void stepOut() override;
+	void stepOver() override;
 
 public:
 	bool registerReceiver(Core::IReceiver* receiver);
