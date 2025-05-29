@@ -6,5 +6,23 @@
 //#define SLANG_DEBUG
 
 
-#endif
+enum e_Action {
+	Create,
+	CreateLocalLibrary,
+	Help,
+	Info,
+	Install,
+	List,
+	None,
+	Purge,
+	Push,
+	Remove,
+	Restrict,
+	Search,
+	Update,
+	Upgrade,
+	Version
+};
 
+
+#endif
