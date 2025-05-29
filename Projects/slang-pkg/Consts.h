@@ -14,27 +14,27 @@
 
 
 // Constants
-static const std::string CACHE_MODULES          = "cache/modules/";
-static const std::string CACHE_REPOSITORIES     = "cache/repositories/";
-static const std::string CONFIG_APPS            = ".slang/apps/";
-static const std::string CONFIG_FILE            = ".slang/config.json";
-static const std::string CONFIG_FOLDER          = ".slang/";
+static const std::string CONFIG_APPS               = ".slang/apps/";
+static const std::string CONFIG_CACHE_MODULES      = ".slang/cache/modules/";
+static const std::string CONFIG_CACHE_REPOSITORIES = ".slang/cache/repositories/";
+static const std::string CONFIG_FILE               = ".slang/config.json";
+static const std::string CONFIG_FOLDER             = ".slang/";
 #ifdef __APPLE__
-static const std::string CONFIG_SCRIPTS         = "/usr/lib/slang";
+static const std::string CONFIG_SCRIPTS            = "/usr/lib/slang";
 #endif
 #ifdef __linux__
-static const std::string CONFIG_SCRIPTS         = "/usr/lib/slang";
+static const std::string CONFIG_SCRIPTS            = "/usr/lib/slang";
 #endif
 #ifdef _WIN32
-static const std::string CONFIG_SCRIPTS         = "";
+static const std::string CONFIG_SCRIPTS            = "";
 #endif
-static const std::string FILE_VERSION_SEPARATOR = "_";
-static const std::string MODULES                = "modules/";
-static const std::string REMOTE_REPOSITORY_NAME = "main";
-static const std::string REMOTE_REPOSITORY_URL  = "https://slang-lang.org/repository/stable";
-static const std::string TMP                    = "/tmp/";
-static const std::string UPLOAD_PATH            = "upload/";
-static const char VERSION_SEPARATOR             = ':';
+static const std::string FILE_VERSION_SEPARATOR    = "_";
+static const std::string MODULES                   = "modules/";
+static const std::string REMOTE_REPOSITORY_NAME    = "main";
+static const std::string REMOTE_REPOSITORY_URL     = "https://slang-lang.org/repository/stable";
+static const std::string TMP                       = "/tmp/";
+static const std::string UPLOAD_PATH               = "upload/";
+static const char VERSION_SEPARATOR                = ':';
 
 
 // Error codes
