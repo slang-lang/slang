@@ -13,6 +13,7 @@ SET(HEADERS
 	Module.h
 	Repository.h
 	Restriction.h
+	Settings.h
 )
 
 SET(DEPENDENCIES
