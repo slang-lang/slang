@@ -20,13 +20,6 @@
 class Settings
 {
 public:
-    Settings()
-    : Action{ None },
-      SkipDependencies{ false },
-      Verbose{ false }
-    { }
-
-public:
     e_Action Action{ None };
     std::string Architecture;
     Json::Value Config;
