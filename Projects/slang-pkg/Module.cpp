@@ -33,8 +33,8 @@ Module::Module()
 
 Module::Module( std::string name_short, const std::string& version, std::string source )
 : mActionNeeded( Action::None ),
-  mShortName(std::move( name_short )),
-  mSource( std::move(source) ),
+  mShortName( std::move( name_short ) ),
+  mSource( std::move( source ) ),
   mVersion( version )
 {
 }
