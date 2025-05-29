@@ -116,7 +116,6 @@ void upgrade( const StringList& params );
 
 e_Action mAction = None;
 std::string mArchitecture;
-std::string mBaseFolder;
 Json::Value mConfig;
 std::string mCurrentFolder;
 StringList mDownloadedFiles;
@@ -190,9 +189,7 @@ void collectLocalModuleData()
 {
 	// iterate over all directories in the modules directory and collect all "module.json" files
 
-	auto base = mLibraryFolder;
-
-	auto* dir = opendir( base.c_str() );
+	auto* dir = opendir( mLibraryFolder.c_str() );
 	if ( !dir ) {
 		std::cerr << "!!! Error while accessing modules directory" << std::endl;
 		exit( ERROR_MODULE_DIRECTORY );
@@ -218,7 +215,7 @@ void collectLocalModuleData()
 
 			if ( entry != "." && entry != ".." ) {
 				auto filename = "module.json";
-				auto path     = base + entry + "/";
+				auto path     = mLibraryFolder + entry + "/";
 
 				if ( ::Utils::Tools::Files::exists( path + filename ) ) {
 					mLocalRepository.addModule(
@@ -302,13 +299,13 @@ void createBasicFolderStructure()
 	std::string path;
 
 	// create "<base>/cache/modules" folder
-	path = mBaseFolder + CACHE_MODULES;
+	path = mLibraryFolder + CONFIG_CACHE_MODULES;
 	if ( !Utils::Tools::Files::exists( path ) ) {
 		execute( "mkdir -p " + path );
 	}
 
 	// create "<base>/cache/repositories" folder
-	path = mBaseFolder + CACHE_REPOSITORIES;
+	path = mLibraryFolder + CONFIG_CACHE_REPOSITORIES;
 	if ( !Utils::Tools::Files::exists( path ) ) {
 		execute( "mkdir -p " + path );
 	}
@@ -483,7 +480,7 @@ void info( const StringList& params )
         }
 
         if ( !found ) {	// lookup module in remote repository
-            auto path         = mBaseFolder + CACHE_MODULES;
+            auto path         = mLibraryFolder + CONFIG_CACHE_MODULES;
             auto filename     = moduleName + ".json";
             auto moduleConfig = path + filename;
             auto url          = mRemoteRepository.getURL() + MODULES + moduleName + FILE_VERSION_SEPARATOR + moduleVersion + ".json";
@@ -535,9 +532,6 @@ void init()
 
     mArchitecture = name.machine;
 
-	// put initialization stuff here
-	mBaseFolder = TMP;
-
 	{	// set library home path
 		const char* homepath = getenv( Slang::SLANG_LIBRARY );
 		if ( homepath ) {
@@ -566,7 +560,6 @@ void init()
 		mCurrentFolder = std::string( currentPath ) + "/";
 
 		if ( isLocalLibrary() ) {
-			mBaseFolder    = mCurrentFolder + CONFIG_FOLDER;
 			mLibraryFolder = mCurrentFolder;
 		}
 	}
@@ -676,14 +669,14 @@ void installModule( const std::string& repo, const std::string& module )
 {
 	std::cout << "Installing module \"" << module << "\" from \"" << repo << "\"..." << std::endl;
 
-	auto moduleConfig = mBaseFolder + CACHE_MODULES + module + ".json";
+	auto moduleConfig = mLibraryFolder + CONFIG_CACHE_MODULES + module + ".json";
 
 	if ( !Utils::Tools::Files::exists( moduleConfig ) ) {
 		std::cerr << "!!! Module information missing for module \"" << module << "\"" << std::endl;
 		return;
 	}
 
-	auto tmpModule = collectModuleData( mBaseFolder + CACHE_MODULES, module + ".json" );
+	auto tmpModule = collectModuleData( mLibraryFolder + CONFIG_CACHE_MODULES, module + ".json" );
 
 	Json::Value config;
 	readJsonFile( moduleConfig, config );
@@ -713,7 +706,7 @@ void installModule( const std::string& repo, const std::string& module )
 		return;
 	}
 
-	auto module_archive = mBaseFolder + CACHE_MODULES + module + FILE_VERSION_SEPARATOR + config[ "version" ].asString() + ".tar.gz";
+	auto module_archive = mLibraryFolder + CONFIG_CACHE_MODULES + module + FILE_VERSION_SEPARATOR + config[ "version" ].asString() + ".tar.gz";
 
 	auto result = download( url, module_archive );
 	if ( !result ) {
@@ -857,7 +850,7 @@ void prepareModuleInstallation( const std::string& repo, const Module& installMo
 	// ( 2 ) collect dependencies from module information
 	// ( 3 ) check dependencies against local repository and download module information for missing modules
 
-	auto path         = mBaseFolder + CACHE_MODULES;
+	auto path         = mLibraryFolder + CONFIG_CACHE_MODULES;
 	auto filename     = installModule.mShortName + ".json";
 	auto moduleConfig = path + filename;
 	auto url          = repo + MODULES + installModule.mShortName + "/" + installModule.mVersion.toString() + "/module.json";
@@ -910,7 +903,7 @@ void prepareModuleInstallation( const std::string& repo, const Module& installMo
 
 bool prepareRemoteRepository()
 {
-	auto filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
+	auto filename = mLibraryFolder + CONFIG_CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
 	// check if filename exists
 	if ( !::Utils::Tools::Files::exists( filename ) ) {
@@ -1305,7 +1298,7 @@ void search( const StringList& params )
 	// ( 1 ) load cached repositories from disk
 	// ( 2 ) substr-search through all entries for given params
 
-	auto filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
+	auto filename = mLibraryFolder + CONFIG_CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
 	// check if filename exists
 	if ( !::Utils::Tools::Files::exists( filename ) ) {
@@ -1401,7 +1394,7 @@ void update()
 
 	std::cout << "Updating repository \"" << mRemoteRepository.getName() << "\"..." << std::endl;
 
-	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
+	std::string filename = mLibraryFolder + CONFIG_CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 	std::string url      = mRemoteRepository.getURL() + "/modules/index.json";
 
 	bool result = download( url, filename, false );
