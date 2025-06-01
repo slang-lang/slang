@@ -37,6 +37,26 @@ static const std::string UPLOAD_PATH               = "upload/";
 static const char VERSION_SEPARATOR                = ':';
 
 
+// Actions
+enum e_Action {
+	Create,
+	CreateLocalLibrary,
+	Help,
+	Info,
+	Install,
+	List,
+	None,
+	Purge,
+	Push,
+	Remove,
+	Restrict,
+	Search,
+	Update,
+	Upgrade,
+	Version
+};
+
+
 // Error codes
 static const int32_t OKAY = 0;
 static const int32_t ERROR_SYSTEM = 1;

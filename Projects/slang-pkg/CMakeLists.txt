@@ -1,22 +1,18 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
+ADD_SUBDIRECTORY(Application)
+ADD_SUBDIRECTORY(Common)
+
 SET(SOURCES
 	main.cpp
-	Module.cpp
-	Repository.cpp
 )
 
 SET(HEADERS
-	Consts.h
-	Defines.h
-	Dependency.h
-	Module.h
-	Repository.h
-	Restriction.h
-	Settings.h
 )
 
 SET(DEPENDENCIES
+	PackageCommon
+	PackageApplication
 	Core
 	Utils
 )

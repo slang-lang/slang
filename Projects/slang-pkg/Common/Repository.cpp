@@ -14,7 +14,7 @@
 
 Repository::Repository( std::string name )
 : mAuthentication( Authentication::None ),
-  mName( std::move(name) )
+  mName( std::move( name ) )
 {
 }
 

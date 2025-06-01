@@ -1,6 +1,6 @@
 
-#ifndef Slang_slang_pkg_Settings_h
-#define Slang_slang_pkg_Settings_h
+#ifndef Slang_slang_pkg_Application_Settings_h
+#define Slang_slang_pkg_Application_Settings_h
 
 
 // Library includes
@@ -8,9 +8,9 @@
 #include <json/json.h>
 
 // Project includes
+#include <Common/Consts.h>
+#include <Common/Restriction.h>
 #include <Utils.h>
-#include "Defines.h"
-#include "Restriction.h"
 
 // Forward declarations
 
