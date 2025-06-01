@@ -144,10 +144,10 @@ function(_curl_check_existence)
 endfunction()
 
 
-function(_handle_post_curl target)
+function(_handle_post_curl TARGET)
 
     _curl_check_existence()
-    target_link_libraries(${target} curl)
+    target_link_libraries(${TARGET} curl)
 
 endfunction()
 
@@ -181,7 +181,7 @@ function(_json_check_existence)
     # make sure the appropriate environment variable is set!
     if(NOT JSON_FOUND)
         MESSAGE( STATUS "JSON_FOUND: ${JSON_FOUND}" )
-        MESSAGE( STATUS "BUILD_JSON_INC: ${JSON_INCLUDE_DIR}" )
+        MESSAGE( STATUS "JSON_INCLUDE_DIR: ${JSON_INCLUDE_DIR}" )
 
         _could_not_find_json()
     endif()
@@ -189,12 +189,11 @@ function(_json_check_existence)
 endfunction()
 
 
-function(_handle_post_json target)
+function(_handle_post_json TARGET)
 
     # for a proper library this also setups any required include directories or other compilation options
     _json_check_existence()
-    include_directories(${JSON_INCLUDE_DIR})
-    target_link_libraries(${target} jsoncpp)	# using jsoncpp
+    target_link_libraries(${TARGET} jsoncpp)	# using jsoncpp
 
 endfunction()
 
@@ -203,7 +202,6 @@ function(_handle_pre_json)
 
     _json_check_existence()
     include_directories(${JSON_INCLUDE_DIR})
-    link_directories(${JSON_LIBRARY})
 
 endfunction()
 
@@ -226,18 +224,19 @@ function(_mysql_check_existence)
 
 endfunction()
 
-function(_handle_post_mysql target)
+
+function(_handle_post_mysql TARGET)
 
     _mysql_check_existence()
-    target_link_libraries(${target} mysqlclient)
+    target_link_libraries(${TARGET} mysqlclient)
 
 endfunction()
+
 
 function(_handle_pre_mysql)
 
     _mysql_check_existence()
     include_directories(${BUILD_MYSQL_INC})
-    link_directories(${BUILD_MYSQL_LIB})
 
 endfunction()
 
