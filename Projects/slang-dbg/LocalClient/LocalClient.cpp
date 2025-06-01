@@ -40,7 +40,7 @@ namespace Slang {
 /*
 * SIGINT handler: sets debugger to immediately break on next command
 */
-void handleSIGINT(int signal)
+void handleSIGINT( int signal )
 {
 	std::cout << "Caught signal SIGINT " << signal << std::endl;
 
@@ -50,13 +50,13 @@ void handleSIGINT(int signal)
 
 
 LocalClient::LocalClient()
-: mContinue(false),
-  mCurrentFrameId(0),
-  mCurrentThreadId(0),
-  mDebugger(nullptr),
-  mRunning(true),
-  mScope(nullptr),
-  mVirtualMachine(nullptr)
+: mContinue( false ),
+  mCurrentFrameId( 0 ),
+  mCurrentThreadId( 0 ),
+  mDebugger( nullptr ),
+  mRunning( true ),
+  mScope( nullptr ),
+  mVirtualMachine( nullptr )
 {
 	mDebugger = &Slang::Core::Debugger::Instance();
 }
@@ -68,99 +68,99 @@ LocalClient::~LocalClient()
 	mDebugger = nullptr;
 }
 
-bool LocalClient::addBreakPoint(const StringList& tokens)
+bool LocalClient::addBreakPoint( const StringList& tokens )
 {
-	if ( tokens.size() != 3 && tokens.size() != 6 ) {
-		writeln("invalid number of arguments!");
+	if (  tokens.size() != 3 && tokens.size() != 6  ) {
+		writeln( "invalid number of arguments!" );
 		return false;
 	}
 
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	std::string file = Utils::Tools::Files::GetFullname((*it++));
-	unsigned int line = (unsigned int)Utils::Tools::stringToInt((*it++));
+	std::string file = Utils::Tools::Files::GetFullname( ( *it++ ) );
+	unsigned int line = ( unsigned int )Utils::Tools::stringToInt( ( *it++ ) );
 
-	Core::BreakPoint breakpoint(Common::Position(file, line));
+	Core::BreakPoint breakpoint( Common::Position( file, line ) );
 
-	if ( tokens.size() == 6 ) {
-		std::string left = (*it++);
-		std::string op = (*it++);
-		std::string right = (*it++);
+	if (  tokens.size() == 6  ) {
+		std::string left = ( *it++ );
+		std::string op = ( *it++ );
+		std::string right = ( *it++ );
 
-		breakpoint.setCondition(
-			Core::Condition(left, op, right)
-		);
+		breakpoint.setCondition( 
+			Core::Condition( left, op, right )
+		 );
 	}
 
-	return mDebugger->addBreakPoint(breakpoint);
+	return mDebugger->addBreakPoint( breakpoint );
 }
 
-bool LocalClient::addLiteralSymbol(const std::string& name, const std::string& value)
+bool LocalClient::addLiteralSymbol( const std::string& name, const std::string& value )
 {
-	auto it = mSymbolCollection.find(name);
-	if ( it != mSymbolCollection.end() ) {
+	auto it = mSymbolCollection.find( name );
+	if (  it != mSymbolCollection.end()  ) {
 		// symbol already cached
 		return true;
 	}
 
-	Tokenizer t("", value);
+	Tokenizer t( "", value );
 	t.process();
 
 	Symbol* symbol = nullptr;
 
 	TokenList list = t.tokens();
-	if ( list.size() > 1 ) {
+	if (  list.size() > 1  ) {
 		const auto& token = list.front();
 
-		switch ( token.type() ) {
+		switch (  token.type()  ) {
 			case Token::Type::CONST_BOOLEAN:
-				symbol = new Runtime::BoolType(token.content());
+				symbol = new Runtime::BoolType( token.content() );
 				break;
 			case Token::Type::CONST_DOUBLE:
-				symbol = new Runtime::DoubleType(token.content());
+				symbol = new Runtime::DoubleType( token.content() );
 				break;
 			case Token::Type::CONST_FLOAT:
-				symbol = new Runtime::FloatType(token.content());
+				symbol = new Runtime::FloatType( token.content() );
 				break;
 			case Token::Type::CONST_INTEGER:
-				symbol = new Runtime::Int64Type(token.content());
+				symbol = new Runtime::Int64Type( token.content() );
 				break;
 			case Token::Type::CONST_LITERAL:
-				symbol = new Runtime::StringType(token.content());
+				symbol = new Runtime::StringType( token.content() );
 				break;
 			default:
 				break;
 		}
 	}
 
-	if ( !symbol ) {
+	if (  !symbol  ) {
 		return false;
 	}
 
-	mSymbolCollection.insert(std::make_pair(name, symbol));
+	mSymbolCollection.insert( std::make_pair( name, symbol ) );
 
 	return true;
 }
 
-bool LocalClient::addWatch(const StringList& tokens)
+bool LocalClient::addWatch( const StringList& tokens )
 {
-	if ( tokens.size() != 2 ) {
-		writeln("invalid number of arguments!");
+	if (  tokens.size() != 2  ) {
+		writeln( "invalid number of arguments!" );
 		return false;
 	}
 
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	mWatches.insert(Watch((*it)));
+	mWatches.insert( Watch( ( *it ) ) );
 
 	return true;
 }
 
 void LocalClient::clearSymbolCache()
 {
-	for ( auto& it : mSymbolCollection ) {
+	for (  auto& it : mSymbolCollection  ) {
 		delete it.second;
 	}
 	mSymbolCollection.clear();
@@ -174,8 +174,8 @@ void LocalClient::continueExecution()
 int LocalClient::exec()
 {
 	// initial checks
-	assert(mDebugger);
-	assert(!mVirtualMachine);
+	assert( mDebugger );
+	assert( !mVirtualMachine );
 
 	// store previous autostart value
 	bool autostart = mSettings->autoStart();
@@ -183,152 +183,152 @@ int LocalClient::exec()
 	loadConfig();
 
 	// set autostart even though disabled by configuration
-	mSettings->autoStart(autostart || mSettings->autoStart());
+	mSettings->autoStart( autostart || mSettings->autoStart() );
 
 	// register SIGINT handle
-	signal(SIGINT, handleSIGINT);
+	signal( SIGINT, handleSIGINT );
 
 	// start program execution
-	while ( mRunning ) {
-		if ( mSettings->autoStart() ) {
-			run(StringList());
+	while (  mRunning  ) {
+		if (  mSettings->autoStart()  ) {
+			run( StringList() );
 		}
 
-		handleBreakpoint(nullptr, Core::Debugger::immediateBreakPoint);
+		handleBreakpoint( nullptr, Core::Debugger::immediateBreakPoint );
 	}
 
 	// unregister SIGINT handler
-	signal(SIGINT, nullptr);
+	signal( SIGINT, nullptr );
 
 	// program execution is done
 	return 0;
 }
 
-std::string LocalClient::executeCommand(const StringList &tokens)
+std::string LocalClient::executeCommand( const StringList &tokens )
 {
 	auto it = tokens.begin();
 
-	if ( it != tokens.end() ) {
-		std::string cmd = (*it++);
+	if (  it != tokens.end()  ) {
+		std::string cmd = ( *it++ );
 
-		if ( cmd == "autolist" ) {
+		if (  cmd == "autolist"  ) {
 			toggleAutoList();
 		}
-		else if ( cmd == "autostart" ) {
+		else if (  cmd == "autostart"  ) {
 			toggleAutoStart();
 		}
-		else if ( cmd == "autostop" ) {
+		else if (  cmd == "autostop"  ) {
 			toggleAutoStop();
 		}
-		else if ( cmd == "autowatch" ) {
+		else if (  cmd == "autowatch"  ) {
 			toggleAutoWatch();
 		}
-		else if ( cmd == "backtrace" || cmd == "bt" ) {
+		else if (  cmd == "backtrace" || cmd == "bt"  ) {
 			printStackTrace();
 		}
-		else if ( cmd == "break" || cmd == "b" ) {
-			addBreakPoint(tokens);
+		else if (  cmd == "break" || cmd == "b"  ) {
+			addBreakPoint( tokens );
 		}
-		else if ( cmd == "breakpoints" ) {
+		else if (  cmd == "breakpoints"  ) {
 			printBreakPoints();
 		}
-		else if ( cmd == "continue" || cmd == "c" ) {
+		else if (  cmd == "continue" || cmd == "c"  ) {
 			mDebugger->resume();
 			continueExecution();
 		}
-		else if ( cmd == "delete" || cmd == "d" ) {
-			removeBreakPoint(tokens);
+		else if (  cmd == "delete" || cmd == "d"  ) {
+			removeBreakPoint( tokens );
 		}
-		else if ( cmd == "down" ) {
+		else if (  cmd == "down"  ) {
 			frameDown();
 		}
-		else if ( cmd == "execute" || cmd == "e" ) {
-			executeMethod(tokens);
+		else if (  cmd == "execute" || cmd == "e"  ) {
+			executeMethod( tokens );
 		}
-		else if ( cmd == "frame" || cmd == "f" ) {
-			setCurrentFrame(tokens);
+		else if (  cmd == "frame" || cmd == "f"  ) {
+			setCurrentFrame( tokens );
 		}
-		else if ( cmd == "help" ) {
+		else if (  cmd == "help"  ) {
 			printHelp();
 		}
-		else if ( cmd == "ignore" ) {
+		else if (  cmd == "ignore"  ) {
 			mDebugger->resumeWithoutBreaks();
 			continueExecution();
 		}
-		else if ( cmd == "into" || cmd == "i" ) {
+		else if (  cmd == "into" || cmd == "i"  ) {
 			mDebugger->stepInto();
 			continueExecution();
 		}
-		else if ( cmd == "list" || cmd == "l" ) {
-			printScope(mScope);
+		else if (  cmd == "list" || cmd == "l"  ) {
+			printScope( mScope );
 		}
-		else if ( cmd == "load" ) {
+		else if (  cmd == "load"  ) {
 			loadConfig();
 		}
-		else if ( cmd == "modify" || cmd == "m" ) {
-			modifySymbol(tokens);
+		else if (  cmd == "modify" || cmd == "m"  ) {
+			modifySymbol( tokens );
 		}
-		else if ( cmd == "next" || cmd == "n" ) {
+		else if (  cmd == "next" || cmd == "n"  ) {
 			mDebugger->stepOver();
 			continueExecution();
 		}
-		else if ( cmd == "out" || cmd == "o" ) {
+		else if (  cmd == "out" || cmd == "o"  ) {
 			mDebugger->stepOut();
 			continueExecution();
 		}
-		else if ( cmd == "print" || cmd == "p" ) {
-			printSymbol(tokens);
+		else if (  cmd == "print" || cmd == "p"  ) {
+			printSymbol( tokens );
 		}
-		else if ( cmd == "quit" || cmd == "q" ) {
+		else if (  cmd == "quit" || cmd == "q"  ) {
 			mRunning = false;
 
-			if ( mScope ) {
+			if (  mScope  ) {
 				// hack to exit debugger during an active debugging session
 				throw Runtime::ControlFlow::ExitProgram;
 			}
 		}
-		else if ( cmd == "run" || cmd == "r" ) {
-			if ( mScope ) {
+		else if (  cmd == "run" || cmd == "r"  ) {
+			if (  mScope  ) {
 				mDebugger->resume();
 				continueExecution();
 			}
 			else {
-				run(tokens);
+				run( tokens );
 			}
 		}
-		else if ( cmd == "store" ) {
+		else if (  cmd == "store"  ) {
 			saveConfig();
 		}
-		else if ( cmd == "thread" || cmd == "t" ) {
-			setCurrentThread(tokens);
+		else if (  cmd == "thread" || cmd == "t"  ) {
+			setCurrentThread( tokens );
 		}
-		else if ( cmd == "threads" ) {
+		else if (  cmd == "threads"  ) {
 			printThreads();
 		}
-		else if ( cmd == "unwatch" ) {
-			removeWatch(tokens);
+		else if (  cmd == "unwatch"  ) {
+			removeWatch( tokens );
 		}
-		else if ( cmd == "up" ) {
+		else if (  cmd == "up"  ) {
 			frameUp();
 		}
-		else if ( cmd == "watch" || cmd == "w" ) {
-			addWatch(tokens);
+		else if (  cmd == "watch" || cmd == "w"  ) {
+			addWatch( tokens );
 		}
-		else if ( cmd == "watches" ) {
+		else if (  cmd == "watches"  ) {
 			printWatches();
 		}
 		else {
-			writeln("unknown command '" + cmd + "'");
+			writeln( "unknown command '" + cmd + "'" );
 		}
 	}
 
 	return "";
 }
 
-void LocalClient::executeMethod(const StringList &tokens)
+void LocalClient::executeMethod( const StringList &tokens )
 {
-	if ( !mScope ) {
-		writeln("no scope available!");
+	if (  !mScope  ) {
+		writeln( "no scope available!" );
 		return;
 	}
 
@@ -336,83 +336,83 @@ void LocalClient::executeMethod(const StringList &tokens)
 
 	auto it = tokens.begin();
 	++it;	// skip first token
-	if ( it != tokens.end() ) {
-		name = (*it++);
+	if (  it != tokens.end()  ) {
+		name = ( *it++ );
 	}
 
 	ParameterList params;
 
-	for ( ; it != tokens.end(); ++it ) {
-		const auto& sym = (*it);
+	for (  ; it != tokens.end(); ++it  ) {
+		const auto& sym = ( *it );
 
-		if ( addLiteralSymbol(sym, sym) ) {
-			auto* object = dynamic_cast<Runtime::Object*>(getCachedSymbol(sym));
+		if (  addLiteralSymbol( sym, sym )  ) {
+			auto* object = dynamic_cast<Runtime::Object*>( getCachedSymbol( sym ) );
 
-			if ( object ) {
-				params.push_back(Parameter::CreateRuntime(object->QualifiedTypename(), object->getValue()));
+			if (  object  ) {
+				params.push_back( Parameter::CreateRuntime( object->QualifiedTypename(), object->getValue() ) );
 			}
 		}
 	}
 
-	MethodSymbol* symbol = getMethod(name, params);
-	if ( !symbol ) {
-		writeln("could not resolve symbol '" + name + "' with parameters (" + toString(params) + ")!");
+	MethodSymbol* symbol = getMethod( name, params );
+	if (  !symbol  ) {
+		writeln( "could not resolve symbol '" + name + "' with parameters ( " + toString( params ) + " )!" );
 		return;
 	}
 
-	if ( symbol->getSymbolType() != Symbol::IType::MethodSymbol ) {
-		writeln("could not execute non-method symbol '" + name + "'!");
+	if (  symbol->getSymbolType() != Symbol::IType::MethodSymbol  ) {
+		writeln( "could not execute non-method symbol '" + name + "'!" );
 		return;
 	}
 
-	auto* method = dynamic_cast<Common::Method*>(symbol);
+	auto* method = dynamic_cast<Common::Method*>( symbol );
 	try {
 		Runtime::Object result;
 
-		Controller::Instance().thread(mCurrentThreadId)->execute(nullptr, method, params, &result);
+		Controller::Instance().thread( mCurrentThreadId )->execute( nullptr, method, params, &result );
 
-		writeln("returned " + result.ToString());
+		writeln( "returned " + result.ToString() );
 	}
-	catch ( std::exception &e ) {
-		writeln(e.what());
+	catch (  std::exception &e  ) {
+		writeln( e.what() );
 	}
-	catch ( ... ) {
-		writeln("unknown exception occured");
+	catch (  ...  ) {
+		writeln( "unknown exception occured" );
 	}
 }
 
 void LocalClient::frameDown()
 {
-	if ( mCurrentFrameId >= Controller::Instance().thread(mCurrentThreadId)->getNumFrames() ) {
+	if (  mCurrentFrameId >= Controller::Instance().thread( mCurrentThreadId )->getNumFrames()  ) {
 		return;
 	}
 
 	// update current frame id
 	++mCurrentFrameId;
 
-	writeln( "Frame: " + Utils::Tools::toString( mCurrentFrameId ) );
+	writeln(  "Frame: " + Utils::Tools::toString(  mCurrentFrameId  )  );
 
-	setCurrentFrame( mCurrentFrameId );
+	setCurrentFrame(  mCurrentFrameId  );
 }
 
 void LocalClient::frameUp()
 {
-	if ( mCurrentFrameId <= 0 ) {
+	if (  mCurrentFrameId <= 0  ) {
 		return;
 	}
 
 	// update current frame id
 	--mCurrentFrameId;
 
-	writeln( "Frame: " + Utils::Tools::toString( mCurrentFrameId ) );
+	writeln(  "Frame: " + Utils::Tools::toString(  mCurrentFrameId  )  );
 
-	setCurrentFrame( mCurrentFrameId );
+	setCurrentFrame(  mCurrentFrameId  );
 }
 
-Symbol* LocalClient::getCachedSymbol(const std::string& name) const
+Symbol* LocalClient::getCachedSymbol( const std::string& name ) const
 {
-	for ( const auto& it : mSymbolCollection ) {
-		if ( it.first == name ) {
+	for (  const auto& it : mSymbolCollection  ) {
+		if (  it.first == name  ) {
 			return it.second;
 		}
 	}
@@ -420,42 +420,42 @@ Symbol* LocalClient::getCachedSymbol(const std::string& name) const
 	return nullptr;
 }
 
-MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& params) const
+MethodSymbol* LocalClient::getMethod( std::string name, const ParameterList& params ) const
 {
-	if ( !mScope ) {
+	if (  !mScope  ) {
 		return nullptr;
 	}
 
 	std::string child;
 	std::string parent;
-	MethodScope* scope = getEnclosingMethodScope(mScope);
+	MethodScope* scope = getEnclosingMethodScope( mScope );
 
 	do {
-		if ( !scope ) {
+		if (  !scope  ) {
 			return nullptr;
 		}
 
-		Utils::Tools::split(name, parent, child);
+		Utils::Tools::split( name, parent, child );
 
-		if ( !parent.empty() && !child.empty() ) {
-			scope = dynamic_cast<Slang::Runtime::Object*>(scope->resolve(parent, false));
+		if (  !parent.empty() && !child.empty()  ) {
+			scope = dynamic_cast<Slang::Runtime::Object*>( scope->resolve( parent, false ) );
 		}
 		else {
-			return scope->resolveMethod(parent, params, false);
+			return scope->resolveMethod( parent, params, false );
 		}
 
 		name = child;
-	} while ( !name.empty() );
+	} while (  !name.empty()  );
 
 	return nullptr;
 }
 
-Common::Method* LocalClient::getMethodFromScope(IScope *scope)
+Common::Method* LocalClient::getMethodFromScope( IScope *scope )
 {
-	while ( scope ) {
-		if ( scope->getScopeType() == IScope::IType::NamedScope ) {
-			auto* result = dynamic_cast<Common::Method*>(scope);
-			if ( result ) {
+	while (  scope  ) {
+		if (  scope->getScopeType() == IScope::IType::NamedScope  ) {
+			auto* result = dynamic_cast<Common::Method*>( scope );
+			if (  result  ) {
 				return result;
 			}
 		}
@@ -466,13 +466,13 @@ Common::Method* LocalClient::getMethodFromScope(IScope *scope)
 	return nullptr;
 }
 
-MethodScope* LocalClient::getEnclosingMethodScope(IScope* scope)
+MethodScope* LocalClient::getEnclosingMethodScope( IScope* scope )
 {
-	while ( scope ) {
+	while (  scope  ) {
 		IScope* parent = scope->getEnclosingScope();
 
-		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
-			return dynamic_cast<MethodScope*>(parent);
+		if (  parent && parent->getScopeType() == IScope::IType::NamedScope  ) {
+			return dynamic_cast<MethodScope*>( parent );
 		}
 
 		scope = parent;
@@ -481,14 +481,14 @@ MethodScope* LocalClient::getEnclosingMethodScope(IScope* scope)
 	return nullptr;
 }
 
-Common::Namespace* LocalClient::getEnclosingNamespace(IScope* scope)
+Common::Namespace* LocalClient::getEnclosingNamespace( IScope* scope )
 {
-	while ( scope ) {
+	while (  scope  ) {
 		IScope* parent = scope->getEnclosingScope();
 
-		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			auto* result = dynamic_cast<Common::Namespace*>(parent);
-			if ( result ) {
+		if (  parent && parent->getScopeType() == IScope::IType::MethodScope  ) {
+			auto* result = dynamic_cast<Common::Namespace*>( parent );
+			if (  result  ) {
 				return result;
 			}
 		}
@@ -499,14 +499,14 @@ Common::Namespace* LocalClient::getEnclosingNamespace(IScope* scope)
 	return nullptr;
 }
 
-Runtime::Object* LocalClient::getEnclosingObject(IScope* scope)
+Runtime::Object* LocalClient::getEnclosingObject( IScope* scope )
 {
-	while ( scope ) {
+	while (  scope  ) {
 		IScope* parent = scope->getEnclosingScope();
 
-		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			auto* result = dynamic_cast<Runtime::Object*>(parent);
-			if ( result ) {
+		if (  parent && parent->getScopeType() == IScope::IType::MethodScope  ) {
+			auto* result = dynamic_cast<Runtime::Object*>( parent );
+			if (  result  ) {
 				return result;
 			}
 		}
@@ -517,33 +517,33 @@ Runtime::Object* LocalClient::getEnclosingObject(IScope* scope)
 	return nullptr;
 }
 
-Symbol* LocalClient::getSymbol(std::string name) const
+Symbol* LocalClient::getSymbol( std::string name ) const
 {
 	std::string child;
 	std::string parent;
 	IScope* scope = mScope;
 
 	do {
-		if ( !scope ) {
+		if (  !scope  ) {
 			return nullptr;
 		}
 
-		Utils::Tools::split(name, parent, child);
+		Utils::Tools::split( name, parent, child );
 
-		if ( !parent.empty() && !child.empty() ) {
-			scope = dynamic_cast<Slang::Runtime::Object*>(scope->resolve(parent, false, Visibility::Private));
+		if (  !parent.empty() && !child.empty()  ) {
+			scope = dynamic_cast<Slang::Runtime::Object*>( scope->resolve( parent, false, Visibility::Private ) );
 		}
 		else {
-			return scope->resolve(parent, false, Visibility::Private);
+			return scope->resolve( parent, false, Visibility::Private );
 		}
 
 		name = child;
-	} while ( !name.empty() );
+	} while (  !name.empty()  );
 
 	return nullptr;
 }
 
-int LocalClient::handleBreakpoint(IScope* scope, const Core::BreakPoint& breakpoint)
+int LocalClient::handleBreakpoint( IScope* scope, const Core::BreakPoint& breakpoint )
 {
     mContinue = false;
     mScope = scope;
@@ -551,25 +551,25 @@ int LocalClient::handleBreakpoint(IScope* scope, const Core::BreakPoint& breakpo
     mBreakpoint = breakpoint;
 
     // automatically print scope
-    if ( mSettings->autoList() ) {
-        printScope(mScope);
+    if (  mSettings->autoList()  ) {
+        printScope( mScope );
     }
 
     // automatically update watches
-    if ( mSettings->autoWatch() && mScope ) {
+    if (  mSettings->autoWatch() && mScope  ) {
         refreshWatches();
     }
 
-    while ( mRunning && !mContinue ) {
-        if ( !mSettings->remoteClient() ) {			// only print prompt for local clients
-            write(mSettings->prompt());
+    while (  mRunning && !mContinue  ) {
+        if (  !mSettings->remoteClient()  ) {			// only print prompt for local clients
+            write( mSettings->prompt() );
         }
 
         std::string command = read();				// read command from local or remote terminal
 
-        executeCommand(
-            parseCommands(command)
-        );
+        executeCommand( 
+            parseCommands( command )
+         );
     }
 
     mScope = nullptr;
@@ -581,76 +581,76 @@ void LocalClient::loadConfig()
 {
 	std::string filename = mSettings->filename() + ".dbg";
 
-	if ( !::Utils::Tools::Files::exists(filename) ) {
+	if (  !::Utils::Tools::Files::exists( filename )  ) {
 		// no configuration file exists
 		return;
 	}
 
-	writeln("Loading configuration...");
+	writeln( "Loading configuration..." );
 
 	// reset current configuration
 	mDebugger->clearBreakPoints();
 	mWatches.clear();
 
 	std::fstream stream;
-	stream.open(filename.c_str(), std::ios::in);	// open for reading
-	std::string data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());	// read stream
+	stream.open( filename.c_str(), std::ios::in );	// open for reading
+	std::string data( ( std::istreambuf_iterator<char>( stream ) ), std::istreambuf_iterator<char>() );	// read stream
 	stream.close();
 
     Json::Value config;
 
     Json::Reader reader;
-    reader.parse( data, config );
+    reader.parse(  data, config  );
 
-	// (1) slang-dbg config
-	if ( config.isMember("autolist") ) {
-		mSettings->autoList(config["autolist"].asBool());
+	// ( 1 ) slang-dbg config
+	if (  config.isMember( "autolist" )  ) {
+		mSettings->autoList( config["autolist"].asBool() );
 	}
-	if ( config.isMember("autostart") ) {
-		mSettings->autoStart(config["autostart"].asBool());
+	if (  config.isMember( "autostart" )  ) {
+		mSettings->autoStart( config["autostart"].asBool() );
 	}
-	if ( config.isMember("autostop") ) {
-		mSettings->autoStop(config["autostop"].asBool());
+	if (  config.isMember( "autostop" )  ) {
+		mSettings->autoStop( config["autostop"].asBool() );
 	}
-	if ( config.isMember("autowatch") ) {
-		mSettings->autoWatch(config["autowatch"].asBool());
+	if (  config.isMember( "autowatch" )  ) {
+		mSettings->autoWatch( config["autowatch"].asBool() );
 	}
-	if ( config.isMember("breakonexceptioncatch") ) {
-		mSettings->breakOnExceptionCatch(config["breakonexceptioncatch"].asBool());
+	if (  config.isMember( "breakonexceptioncatch" )  ) {
+		mSettings->breakOnExceptionCatch( config["breakonexceptioncatch"].asBool() );
 	}
-	if ( config.isMember("breakonexceptionthrow") ) {
-		mSettings->breakOnExceptionThrow(config["breakonexceptionthrow"].asBool());
+	if (  config.isMember( "breakonexceptionthrow" )  ) {
+		mSettings->breakOnExceptionThrow( config["breakonexceptionthrow"].asBool() );
 	}
 
-	// (2) breakpoints
-	if ( config.isMember("breakpoints") ) {
+	// ( 2 ) breakpoints
+	if (  config.isMember( "breakpoints" )  ) {
 		// parse breakpoints
-		for ( const auto& breakpoint : config["breakpoints"] ) {
+		for (  const auto& breakpoint : config["breakpoints"]  ) {
 			std::string command = "breakpoint " + breakpoint.asString();
 
-			addBreakPoint(
-				parseCommands(command)
-			);
+			addBreakPoint( 
+				parseCommands( command )
+			 );
 		}
 	}
 
-	// (3) watches
-	if ( config.isMember("watches") ) {
+	// ( 3 ) watches
+	if (  config.isMember( "watches" )  ) {
 		// parse watches
-		for ( const auto& watch : config["watches"] ) {
+		for (  const auto& watch : config["watches"]  ) {
 			std::string command = "watch " + watch.asString();
 
-			addWatch(
-				parseCommands(command)
-			);
+			addWatch( 
+				parseCommands( command )
+			 );
 		}
 	}
 }
 
-bool LocalClient::modifySymbol(const StringList& tokens)
+bool LocalClient::modifySymbol( const StringList& tokens )
 {
-	if ( tokens.size() != 3 ) {
-		writeln("invalid number of arguments!");
+	if (  tokens.size() != 3  ) {
+		writeln( "invalid number of arguments!" );
 		return false;
 	}
 
@@ -658,90 +658,90 @@ bool LocalClient::modifySymbol(const StringList& tokens)
 
 	auto it = tokens.begin();
 	++it;	// skip first token
-	if ( it != tokens.end() ) {
-		name = (*it++);
+	if (  it != tokens.end()  ) {
+		name = ( *it++ );
 	}
 
-	Symbol* symbol = getSymbol(name);
-	if ( !symbol ) {
-		writeln("could not resolve symbol '" + name + "'!");
+	Symbol* symbol = getSymbol( name );
+	if (  !symbol  ) {
+		writeln( "could not resolve symbol '" + name + "'!" );
 		return false;
 	}
 
-	auto* object = dynamic_cast<Runtime::Object*>(symbol);
-	if ( !object ) {
-		writeln("'" + name + "' is not a variable");
+	auto* object = dynamic_cast<Runtime::Object*>( symbol );
+	if (  !object  ) {
+		writeln( "'" + name + "' is not a variable" );
 		return false;
 	}
 
-	if ( !object->isAtomicType() ) {
-		writeln("can not modify complex type '" + object->QualifiedTypename() + "' ");
+	if (  !object->isAtomicType()  ) {
+		writeln( "can not modify complex type '" + object->QualifiedTypename() + "' " );
 		return false;
 	}
 
-	object->setValue(Runtime::AtomicValue((*it)));
+	object->setValue( Runtime::AtomicValue( ( *it ) ) );
 	return true;
 }
 
-int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
+int LocalClient::notify( IScope* scope, const Core::BreakPoint& breakpoint )
 {
-    writeln("[Breakpoint " + breakpoint.toString() + " reached]");
+    writeln( "[Breakpoint " + breakpoint.toString() + " reached]" );
 
     // Condition check
     const auto& condition = breakpoint.getCondition();
-    Symbol* lhs = getSymbol(condition.lhs());
-    Symbol* rhs = getSymbol(condition.rhs());
+    Symbol* lhs = getSymbol( condition.lhs() );
+    Symbol* rhs = getSymbol( condition.rhs() );
 
-    if ( !condition.lhs().empty() && !lhs ) {
-        if ( addLiteralSymbol(condition.lhs(), condition.lhs()) ) {
-            lhs = getCachedSymbol(condition.lhs());
+    if (  !condition.lhs().empty() && !lhs  ) {
+        if (  addLiteralSymbol( condition.lhs(), condition.lhs() )  ) {
+            lhs = getCachedSymbol( condition.lhs() );
         }
     }
-    if ( !condition.rhs().empty() && !rhs ) {
-        if ( addLiteralSymbol(condition.rhs(), condition.rhs()) ) {
-            rhs = getCachedSymbol(condition.rhs());
+    if (  !condition.rhs().empty() && !rhs  ) {
+        if (  addLiteralSymbol( condition.rhs(), condition.rhs() )  ) {
+            rhs = getCachedSymbol( condition.rhs() );
         }
     }
 
-    if ( condition.isValid() && !condition.evaluate(lhs, rhs) ) {
+    if (  condition.isValid() && !condition.evaluate( lhs, rhs )  ) {
         mContinue = true;
         return 0;
     }
 
-    mSettings->autoStop(false);
+    mSettings->autoStop( false );
 
-    return handleBreakpoint(scope, breakpoint);
+    return handleBreakpoint( scope, breakpoint );
 }
 
-int LocalClient::notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint)
+int LocalClient::notifyEnter( IScope* scope, const Core::BreakPoint& breakpoint )
 {
-    writeln("[Stepping into " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
+    writeln( "[Stepping into " + Controller::Instance().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
 
-    return handleBreakpoint(scope, breakpoint);
+    return handleBreakpoint( scope, breakpoint );
 }
 
-int LocalClient::notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint)
+int LocalClient::notifyExceptionCatch( IScope *scope, const Core::BreakPoint &breakpoint )
 {
-	writeln("[Caught exception in " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
+	writeln( "[Caught exception in " + Controller::Instance().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
 
-	return handleBreakpoint(scope, breakpoint);
+	return handleBreakpoint( scope, breakpoint );
 }
 
-int LocalClient::notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint)
+int LocalClient::notifyExceptionThrow( IScope *scope, const Core::BreakPoint &breakpoint )
 {
-	writeln("[Exception has been thrown in " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
+	writeln( "[Exception has been thrown in " + Controller::Instance().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
 
-	return handleBreakpoint(scope, breakpoint);
+	return handleBreakpoint( scope, breakpoint );
 }
 
-int LocalClient::notifyExit(IScope* scope, const Core::BreakPoint& breakpoint)
+int LocalClient::notifyExit( IScope* scope, const Core::BreakPoint& breakpoint )
 {
-    writeln("[Stepping out of " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
+    writeln( "[Stepping out of " + Controller::Instance().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
 
-    return handleBreakpoint(scope, breakpoint);
+    return handleBreakpoint( scope, breakpoint );
 }
 
-StringList LocalClient::parseCommands(const std::string& commands)
+StringList LocalClient::parseCommands( const std::string& commands )
 {
 	StringList params;
 
@@ -749,12 +749,12 @@ StringList LocalClient::parseCommands(const std::string& commands)
 	unsigned count = 0;
 	std::string token;
 
-	while ( count < commands.size() ) {
+	while (  count < commands.size()  ) {
 		char c = commands[count];
 
-		if ( c == ' ' ) {
-			if ( !token.empty() ) {
-				params.push_back(token);
+		if (  c == ' '  ) {
+			if (  !token.empty()  ) {
+				params.push_back( token );
 			}
 			token = "";
 		}
@@ -766,37 +766,37 @@ StringList LocalClient::parseCommands(const std::string& commands)
 	}
 
 	// add last token
-	if ( !token.empty() ) {
-		params.push_back(token);
+	if (  !token.empty()  ) {
+		params.push_back( token );
 	}
 
 	return params;
 }
 
-void LocalClient::prepare( const StringList& tokens )
+void LocalClient::prepare(  const StringList& tokens  )
 {
 	std::string paramStr = mSettings->filename();
 
 	auto it = tokens.begin();
 	++it;	// skip first token
-	while ( it != tokens.end() ) {
-		paramStr += "\n" + (*it++);
+	while (  it != tokens.end()  ) {
+		paramStr += "\n" + ( *it++ );
 	}
 
 	mParameters.clear();
-	mParameters.push_back( Slang::Parameter::CreateRuntime( Slang::Runtime::Int32Type::TYPENAME, static_cast<int32_t>( tokens.size() ) ) );
-	mParameters.push_back( Slang::Parameter::CreateRuntime( Slang::Runtime::StringType::TYPENAME, paramStr ) );
+	mParameters.push_back(  Slang::Parameter::CreateRuntime(  Slang::Runtime::Int32Type::TYPENAME, static_cast<int32_t>(  tokens.size()  )  )  );
+	mParameters.push_back(  Slang::Parameter::CreateRuntime(  Slang::Runtime::StringType::TYPENAME, paramStr  )  );
 }
 
 void LocalClient::printBreakPoints()
 {
 	Core::BreakPointCollection list = mDebugger->getBreakPoints();
 
-	writeln("BreakPoints:");
+	writeln( "BreakPoints:" );
 
 	int idx = 1;
-	for ( const auto& it : list ) {
-		writeln(Utils::Tools::toString(idx) + ": " + it.toString());
+	for (  const auto& it : list  ) {
+		writeln( Utils::Tools::toString( idx ) + ": " + it.toString() );
 
 		idx++;
 	}
@@ -804,54 +804,54 @@ void LocalClient::printBreakPoints()
 
 void LocalClient::printHelp()
 {
-	writeln("Generic commands:");
+	writeln( "Generic commands:" );
 
-	writeln("\tautolist      automatically list source code after reaching breakpoint");
-	writeln("\tautostart     automatically run program after startup");
-	writeln("\tautowatch     automatically show watches after reaching breakpoint");
-	writeln("\tbreak (b)     add breakpoint");
-	writeln("\tbreakpoints   print all breakpoints");
-	writeln("\tdelete (d)    delete breakpoint");
-	writeln("\thelp          print this help message");
-	writeln("\tload          load configuration");
-	writeln("\tquit (q)      quit slang-dbg");
-	writeln("\trun (r)       run or resume program");
-	writeln("\tstore         store configuration");
-	writeln("\tunwatch       remove symbol watch");
-	writeln("\twatch (w)     add symbol watch");
-	writeln("\twatches       print all watched symbols");
+	writeln( "\tautolist      automatically list source code after reaching breakpoint" );
+	writeln( "\tautostart     automatically run program after startup" );
+	writeln( "\tautowatch     automatically show watches after reaching breakpoint" );
+	writeln( "\tbreak ( b )     add breakpoint" );
+	writeln( "\tbreakpoints   print all breakpoints" );
+	writeln( "\tdelete ( d )    delete breakpoint" );
+	writeln( "\thelp          print this help message" );
+	writeln( "\tload          load configuration" );
+	writeln( "\tquit ( q )      quit slang-dbg" );
+	writeln( "\trun ( r )       run or resume program" );
+	writeln( "\tstore         store configuration" );
+	writeln( "\tunwatch       remove symbol watch" );
+	writeln( "\twatch ( w )     add symbol watch" );
+	writeln( "\twatches       print all watched symbols" );
 
-	if ( mScope ) {
-		writeln("Debugging commands:");
-		writeln("\tbacktrace (bt)   print stack trace");
-		writeln("\tcontinue (c)     continue program execution");
-		writeln("\tdown             step down one frame");
-		writeln("\texecute (e)      execute program function");
-		writeln("\tframe (f)        select frame");
-		writeln("\tignore           ignore all breakpoints and continue program execution");
-		writeln("\tinto (i)         break on next function call");
-		writeln("\tlist (l)         print current method");
-		writeln("\tmodify (m)       modify (atomic) symbol");
-		writeln("\tnext (n)         step over");
-		writeln("\tout (o)          break on next function exit");
-		writeln("\tprint (p)        print symbol");
-		writeln("\tthread (t)       select thread");
-		writeln("\tthreads          list current threads");
-		writeln("\tup               step up one frame");
+	if (  mScope  ) {
+		writeln( "Debugging commands:" );
+		writeln( "\tbacktrace ( bt )   print stack trace" );
+		writeln( "\tcontinue ( c )     continue program execution" );
+		writeln( "\tdown             step down one frame" );
+		writeln( "\texecute ( e )      execute program function" );
+		writeln( "\tframe ( f )        select frame" );
+		writeln( "\tignore           ignore all breakpoints and continue program execution" );
+		writeln( "\tinto ( i )         break on next function call" );
+		writeln( "\tlist ( l )         print current method" );
+		writeln( "\tmodify ( m )       modify ( atomic ) symbol" );
+		writeln( "\tnext ( n )         step over" );
+		writeln( "\tout ( o )          break on next function exit" );
+		writeln( "\tprint ( p )        print symbol" );
+		writeln( "\tthread ( t )       select thread" );
+		writeln( "\tthreads          list current threads" );
+		writeln( "\tup               step up one frame" );
 	}
 }
 
-void LocalClient::printScope(IScope* scope)
+void LocalClient::printScope( IScope* scope )
 {
-	auto* method = getMethodFromScope(scope);
-	if ( !method ) {
+	auto* method = getMethodFromScope( scope );
+	if (  !method  ) {
 		return;
 	}
 
     auto currentLine = mBreakpoint.getLine() - 1;
     auto filename = method->getRootNode()->token().position().mFile;
 
-    std::ifstream file( filename );
+    std::ifstream file(  filename  );
 
     // print 10 lines before and 10 lines after the current line
     auto startLine = currentLine > 10 ? currentLine - 10 : 0;
@@ -859,9 +859,9 @@ void LocalClient::printScope(IScope* scope)
 
     unsigned long curLine = 0;
     std::string line;
-    while ( curLine <= endLine && std::getline( file, line ) ) {
-        if ( curLine >= startLine && curLine <= endLine ) {
-            if ( curLine == currentLine ) {
+    while (  curLine <= endLine && std::getline(  file, line  )  ) {
+        if (  curLine >= startLine && curLine <= endLine  ) {
+            if (  curLine == currentLine  ) {
                 std::cout << curLine << ": > ";
             }
             else {
@@ -877,42 +877,42 @@ void LocalClient::printScope(IScope* scope)
 
 void LocalClient::printStackTrace()
 {
-	if ( !mVirtualMachine ) {
+	if (  !mVirtualMachine  ) {
 		return;
 	}
 
 	Controller::Instance().threads()->print();
 }
 
-void LocalClient::printSymbol(const StringList& tokens)
+void LocalClient::printSymbol( const StringList& tokens )
 {
 	std::string name;
 
 	auto it = tokens.begin();
 	++it;	// skip first token
-	if ( it != tokens.end() ) {
-		name = (*it);
+	if (  it != tokens.end()  ) {
+		name = ( *it );
 	}
 
-	Symbol* symbol = getSymbol(name);
-	if ( !symbol ) {
-		writeln("could not resolve symbol '" + name + "'!");
+	Symbol* symbol = getSymbol( name );
+	if (  !symbol  ) {
+		writeln( "could not resolve symbol '" + name + "'!" );
 		return;
 	}
 
-	writeln(symbol->ToString());
+	writeln( symbol->ToString() );
 }
 
 void LocalClient::printThreads()
 {
-	writeln("Threads:");
+	writeln( "Threads:" );
 
 	Controller::Instance().threads()->print();
 }
 
 void LocalClient::printWatches()
 {
-	writeln("Watches:");
+	writeln( "Watches:" );
 
 	refreshWatches();
 }
@@ -921,7 +921,7 @@ std::string LocalClient::read()
 {
 	std::string result;
 
-	getline(std::cin >> std::ws, result);
+	getline( std::cin >> std::ws, result );
 	std::cin.clear();
 
 	return result;
@@ -929,36 +929,36 @@ std::string LocalClient::read()
 
 void LocalClient::refreshWatches()
 {
-	for ( const auto& watch : mWatches ) {
+	for (  const auto& watch : mWatches  ) {
 		std::string value = "<not accessible>";
 
-		Symbol* symbol = getSymbol(watch.symbol());
-		if ( symbol ) {
+		Symbol* symbol = getSymbol( watch.symbol() );
+		if (  symbol  ) {
 			value = symbol->ToString();
 		}
 
-		writeln("[Watch] " + watch.symbol() + ": " + value);
+		writeln( "[Watch] " + watch.symbol() + ": " + value );
 	}
 }
 
-bool LocalClient::removeBreakPoint(const StringList& tokens)
+bool LocalClient::removeBreakPoint( const StringList& tokens )
 {
-	if ( tokens.size() != 2 ) {
-		writeln("invalid number of arguments!");
+	if (  tokens.size() != 2  ) {
+		writeln( "invalid number of arguments!" );
 		return false;
 	}
 
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	int idx = ::Utils::Tools::stringToInt((*it));
+	int idx = ::Utils::Tools::stringToInt( ( *it ) );
 
 	Core::BreakPointCollection points = mDebugger->getBreakPoints();
 
 	int count = 1;
-	for ( auto breakIt = points.begin(); breakIt != points.end(); ++breakIt, ++count ) {
-		if ( count == idx ) {
-			mDebugger->removeBreakPoint((*breakIt));
+	for (  auto breakIt = points.begin(); breakIt != points.end(); ++breakIt, ++count  ) {
+		if (  count == idx  ) {
+			mDebugger->removeBreakPoint( ( *breakIt ) );
 			return true;
 		}
 	}
@@ -966,28 +966,28 @@ bool LocalClient::removeBreakPoint(const StringList& tokens)
 	return false;
 }
 
-bool LocalClient::removeWatch(const StringList& tokens)
+bool LocalClient::removeWatch( const StringList& tokens )
 {
-	if ( tokens.size() != 2 ) {
-		writeln("invalid number of arguments!");
+	if (  tokens.size() != 2  ) {
+		writeln( "invalid number of arguments!" );
 		return false;
 	}
 
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	auto watchIt = mWatches.find(Watch((*it)));
-	if ( watchIt != mWatches.end() ) {
-		mWatches.erase(watchIt);
+	auto watchIt = mWatches.find( Watch( ( *it ) ) );
+	if (  watchIt != mWatches.end()  ) {
+		mWatches.erase( watchIt );
 		return true;
 	}
 
 	return false;
 }
 
-void LocalClient::run(const StringList& tokens)
+void LocalClient::run( const StringList& tokens )
 {
-	prepare(tokens);
+	prepare( tokens );
 
 	start();
 
@@ -996,11 +996,11 @@ void LocalClient::run(const StringList& tokens)
 
 void LocalClient::saveConfig()
 {
-	writeln("Storing configuration...");
+	writeln( "Storing configuration..." );
 
 	Json::Value config;
 
-	// (1) slang-dbg config
+	// ( 1 ) slang-dbg config
 	config[ "autolist" ] = mSettings->autoList();
 	config[ "autostart" ] = mSettings->autoStart();
 	config[ "autostop" ] = mSettings->autoStop();
@@ -1008,38 +1008,38 @@ void LocalClient::saveConfig()
 	config[ "breakonexceptioncatch" ] = mSettings->breakOnExceptionCatch();
 	config[ "breakonexceptionthrow" ] = mSettings->breakOnExceptionThrow();
 
-	// (2) write breakpoints to config
+	// ( 2 ) write breakpoints to config
 	Json::Value breakpoints;
 	Core::BreakPointCollection breakpointList = mDebugger->getBreakPoints();
-	for ( const auto& it : breakpointList) {
-		breakpoints.append( it.toConfigString() );
+	for (  const auto& it : breakpointList ) {
+		breakpoints.append(  it.toConfigString()  );
 	}
 	config[ "breakpoints" ] = breakpoints;
 
-	// (3) write watches to config
+	// ( 3 ) write watches to config
 	Json::Value watches;
-	for ( const auto& watch : mWatches ) {
-		watches.append( watch.symbol() );
+	for (  const auto& watch : mWatches  ) {
+		watches.append(  watch.symbol()  );
 	}
 	config[ "watches" ] = watches;
 
 	// serialize config to string
 	Json::StyledWriter writer;
-	std::string data = writer.write( config );
+	std::string data = writer.write(  config  );
 
 	std::string filename = mSettings->filename() + ".dbg";
 
 	// write config string to file
 	std::fstream stream;
-	stream.open(filename.c_str(), std::ios::out);    // open file for writing
-	stream.write(data.c_str(), data.size());
+	stream.open( filename.c_str(), std::ios::out );    // open file for writing
+	stream.write( data.c_str(), data.size() );
 	stream.close();
 }
 
-void LocalClient::setCurrentFrame(Common::FrameId frameId)
+void LocalClient::setCurrentFrame( Common::FrameId frameId )
 {
-	if ( frameId >= Controller::Instance().thread(mCurrentThreadId)->getNumFrames() ) {
-		writeln("invalid frame selected!");
+	if (  frameId >= Controller::Instance().thread( mCurrentThreadId )->getNumFrames()  ) {
+		writeln( "invalid frame selected!" );
 		return;
 	}
 
@@ -1047,36 +1047,36 @@ void LocalClient::setCurrentFrame(Common::FrameId frameId)
 	mCurrentFrameId = frameId;
 
 	// update current stack/scope
-	mScope = Controller::Instance().thread(mCurrentThreadId)->frame(mCurrentFrameId)->getScope();
+	mScope = Controller::Instance().thread( mCurrentThreadId )->frame( mCurrentFrameId )->getScope();
 
 	// automatically print scope
-	if ( mSettings->autoList() ) {
-		printScope(mScope);
+	if (  mSettings->autoList()  ) {
+		printScope( mScope );
 	}
 
 	// automatically update watches
-	if ( mSettings->autoWatch() && mScope ) {
+	if (  mSettings->autoWatch() && mScope  ) {
 		refreshWatches();
 	}
 }
 
-void LocalClient::setCurrentFrame(const StringList& tokens)
+void LocalClient::setCurrentFrame( const StringList& tokens )
 {
-	if ( tokens.size() != 2 ) {
-		writeln("invalid number of arguments!");
+	if (  tokens.size() != 2  ) {
+		writeln( "invalid number of arguments!" );
 		return;
 	}
 
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	setCurrentFrame((Common::FrameId)::Utils::Tools::stringToInt((*it++)));
+	setCurrentFrame( ( Common::FrameId )::Utils::Tools::stringToInt( ( *it++ ) ) );
 }
 
-void LocalClient::setCurrentThread(Common::ThreadId threadId)
+void LocalClient::setCurrentThread( Common::ThreadId threadId )
 {
-	if ( threadId >= Controller::Instance().threads()->getNumThreads() ) {
-		writeln("invalid thread selected!");
+	if (  threadId >= Controller::Instance().threads()->getNumThreads()  ) {
+		writeln( "invalid thread selected!" );
 		return;
 	}
 
@@ -1087,20 +1087,20 @@ void LocalClient::setCurrentThread(Common::ThreadId threadId)
 	printStackTrace();
 
 	// reset current frame to newest in thread
-	setCurrentFrame(Controller::Instance().thread(mCurrentThreadId)->getNumFrames() - 1);
+	setCurrentFrame( Controller::Instance().thread( mCurrentThreadId )->getNumFrames() - 1 );
 }
 
-void LocalClient::setCurrentThread(const StringList& tokens)
+void LocalClient::setCurrentThread( const StringList& tokens )
 {
-	if ( tokens.size() != 2 ) {
-		writeln("invalid number of arguments!");
+	if (  tokens.size() != 2  ) {
+		writeln( "invalid number of arguments!" );
 		return;
 	}
 
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	setCurrentThread((Common::FrameId)::Utils::Tools::stringToInt((*it++)));
+	setCurrentThread( ( Common::FrameId )::Utils::Tools::stringToInt( ( *it++ ) ) );
 }
 
 void LocalClient::shutdown()
@@ -1109,7 +1109,7 @@ void LocalClient::shutdown()
 
 	mContinue = false;
 	mDebugger->clearBreakPoints();
-	mDebugger->unregisterReceiver(this);
+	mDebugger->unregisterReceiver( this );
 	mRunning = false;
 	mScope = nullptr;
 	mWatches.clear();
@@ -1121,60 +1121,60 @@ void LocalClient::start()
 {
 	stop();
 
-	mDebugger->breakOnExceptionCatch(mSettings->breakOnExceptionCatch());
-	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
+	mDebugger->breakOnExceptionCatch( mSettings->breakOnExceptionCatch() );
+	mDebugger->breakOnExceptionThrow( mSettings->breakOnExceptionThrow() );
 	mDebugger->init();
     mDebugger->stepInto();      // automatically stop before executing the first line
 
 	mVirtualMachine = new VirtualMachine();
-	for ( const auto& it : mSettings->libraryFolders() ) {
-		mVirtualMachine->addLibraryFolder(it);
+	for (  const auto& it : mSettings->libraryFolders()  ) {
+		mVirtualMachine->addLibraryFolder( it );
 	}
 
 	// add extensions
 #ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine->addExtension(new Slang::Extensions::System::SystemExtension());
-	mVirtualMachine->addExtension(new Slang::Extensions::LIBC::Extension());
+	mVirtualMachine->addExtension( new Slang::Extensions::System::SystemExtension() );
+	mVirtualMachine->addExtension( new Slang::Extensions::LIBC::Extension() );
 #endif
 
 	try {
-		writeln("[Starting program: " + mSettings->filename() + "]");
+		writeln( "[Starting program: " + mSettings->filename() + "]" );
 
 		Runtime::Object result;
 
-		auto* script = mVirtualMachine->createScriptFromFile(mSettings->filename());
-		assert(script);
+		auto* script = mVirtualMachine->createScriptFromFile( mSettings->filename() );
+		assert( script );
 
-		mVirtualMachine->run(script, mParameters, &result);
+		mVirtualMachine->run( script, mParameters, &result );
 
-		writeln("[Process finished" + (result.getValue().type() == Runtime::AtomicValue::Type::UNKNOWN ? "" : " with exit code " + result.getValue().toStdString()) + "]");
+		writeln( "[Process finished" + ( result.getValue().type() == Runtime::AtomicValue::Type::UNKNOWN ? "" : " with exit code " + result.getValue().toStdString() ) + "]" );
 
-		if ( mSettings->autoStop() ) {
+		if (  mSettings->autoStop()  ) {
 			mRunning = false;
 		}
 	}
-	catch ( Slang::Runtime::ControlFlow::E &e ) {
-		switch ( e ) {
+	catch (  Slang::Runtime::ControlFlow::E &e  ) {
+		switch (  e  ) {
 			case Slang::Runtime::ControlFlow::ExitProgram:
 				// everything is fine
 				break;
 			case Slang::Runtime::ControlFlow::Throw:
-				writeln( "[Exception thrown in " + Slang::Controller::Instance().thread( 0 )->exception().getPosition().toString() + "\n"
-						+ Slang::Controller::Instance().thread( 0 )->exception().getData()->ToString() + "]" );
+				writeln(  "[Exception thrown in " + Slang::Controller::Instance().thread(  0  )->exception().getPosition().toString() + "\n"
+						+ Slang::Controller::Instance().thread(  0  )->exception().getData()->ToString() + "]"  );
 				break;
 			default:
-				writeln( "[abnormal program termination!]" );
+				writeln(  "[abnormal program termination!]"  );
 				break;
 		}
 	}
-	catch ( std::exception& e ) {
-		writeln(e.what());
+	catch (  std::exception& e  ) {
+		writeln( e.what() );
 	}
 }
 
 void LocalClient::stop()
 {
-	if ( mVirtualMachine ) {
+	if (  mVirtualMachine  ) {
 		delete mVirtualMachine;
 		mVirtualMachine = nullptr;
 	}
@@ -1184,62 +1184,62 @@ void LocalClient::stop()
 
 void LocalClient::toggleAutoList()
 {
-	mSettings->autoList(!mSettings->autoList());
+	mSettings->autoList( !mSettings->autoList() );
 
-	write("AutoList is ");
-	if ( mSettings->autoList() ) {
-		writeln("on");
+	write( "AutoList is " );
+	if (  mSettings->autoList()  ) {
+		writeln( "on" );
 	}
 	else {
-		writeln("off");
+		writeln( "off" );
 	}
 }
 
 void LocalClient::toggleAutoStart()
 {
-	mSettings->autoStart(!mSettings->autoStart());
+	mSettings->autoStart( !mSettings->autoStart() );
 
-	write("AutoStart is ");
-	if ( mSettings->autoStart() ) {
-		writeln("on");
+	write( "AutoStart is " );
+	if (  mSettings->autoStart()  ) {
+		writeln( "on" );
 	}
 	else {
-		writeln("off");
+		writeln( "off" );
 	}
 }
 
 void LocalClient::toggleAutoStop()
 {
-	mSettings->autoStop(!mSettings->autoStop());
+	mSettings->autoStop( !mSettings->autoStop() );
 
-	write("AutoStop is ");
-	if ( mSettings->autoStop() ) {
-		writeln("on");
+	write( "AutoStop is " );
+	if (  mSettings->autoStop()  ) {
+		writeln( "on" );
 	}
 	else {
-		writeln("off");
+		writeln( "off" );
 	}
 }
 
 void LocalClient::toggleAutoWatch()
 {
-	mSettings->autoWatch(!mSettings->autoWatch());
+	mSettings->autoWatch( !mSettings->autoWatch() );
 
-	write("AutoWatch is ");
-	if ( mSettings->autoWatch() ) {
-		writeln("on");
+	write( "AutoWatch is " );
+	if (  mSettings->autoWatch()  ) {
+		writeln( "on" );
 	}
 	else {
-		writeln("off");
+		writeln( "off" );
 	}
 }
 
-void LocalClient::write(const std::string& text)
+void LocalClient::write( const std::string& text )
 {
 	std::cout << text;
 }
 
-void LocalClient::writeln(const std::string& text)
+void LocalClient::writeln( const std::string& text )
 {
 	std::cout << text << std::endl;
 }

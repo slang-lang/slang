@@ -21,7 +21,7 @@ class Watch
 {
 public:
 	Watch() = default;
-	explicit Watch(std::string symbol);
+	explicit Watch( std::string symbol );
 	~Watch() = default;
 
 public:
@@ -30,11 +30,11 @@ public:
 	std::string toString() const;
 
 	const std::string& value() const;
-	void value(const std::string& v);
+	void value( const std::string& v );
 
 public:
-	bool operator<(const Watch& other) const;
-	bool operator==(const Watch& other) const;
+	bool operator<( const Watch& other ) const;
+	bool operator==( const Watch& other ) const;
 
 private:
 	std::string mSymbol;
@@ -48,4 +48,4 @@ typedef std::set<Watch> WatchCollection;
 }
 
 
-#endif
+#endif Slang_slang_dbg_Backend_Watch_h

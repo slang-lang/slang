@@ -24,13 +24,14 @@ public:
 	~Application();
 
 public:
-	void init(int argc, const char* argv[]);
+	void init( int argc, const char* argv[] );
 	int exec();
 
 private:
 	static void printUsage();
 	static void printVersion();
-	void processParameters(int argc, const char* argv[]);
+
+	void processParameters( int argc, const char* argv[] );
 
 private:
 	AClient* mClient;

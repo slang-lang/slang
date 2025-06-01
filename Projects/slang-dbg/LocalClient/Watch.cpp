@@ -14,8 +14,8 @@
 namespace Slang {
 
 
-Watch::Watch(std::string symbol)
-: mSymbol(std::move(symbol))
+Watch::Watch( std::string symbol )
+: mSymbol( std::move( symbol ) )
 {
 }
 
@@ -34,17 +34,17 @@ const std::string& Watch::value() const
 	return mValue;
 }
 
-void Watch::value(const std::string& v)
+void Watch::value( const std::string& v )
 {
 	mValue = v;
 }
 
-bool Watch::operator<(const Watch& other) const
+bool Watch::operator<( const Watch& other ) const
 {
 	return mSymbol < other.mSymbol;
 }
 
-bool Watch::operator==(const Watch& other) const
+bool Watch::operator==( const Watch& other ) const
 {
 	return mSymbol == other.mSymbol;
 }
