@@ -27,7 +27,7 @@
 	#include <iostream>
 	#include <crtdbg.h>
 	#ifdef _DEBUG
-	#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+	#define DEBUG_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ )
 	#define new DEBUG_NEW
 	#endif
 	// Memory leak check - End
@@ -38,18 +38,22 @@
 #endif
 
 
-std::string mFilename;
-StringSet mLibraryFolders;
-Utils::Common::StdOutLogger mLogger;
-Slang::ParameterList mParameters;
-bool mPrintDebugInfo = false;
-bool mPrintSpecification = false;
-bool mPrintTokens = false;
-bool mPrintUsage = false;
-bool mPrintVersion = false;
-std::string mRequestedSpecification;
-bool mSanityCheck = true;
-bool mSyntaxCheck = false;
+namespace {
+
+	std::string mFilename;
+	StringSet mLibraryFolders;
+	Utils::Common::StdOutLogger mLogger;
+	Slang::ParameterList mParameters;
+	bool mPrintDebugInfo = false;
+	bool mPrintSpecification = false;
+	bool mPrintTokens = false;
+	bool mPrintUsage = false;
+	bool mPrintVersion = false;
+	std::string mRequestedSpecification;
+	bool mSanityCheck = true;
+	bool mSyntaxCheck = false;
+
+}
 
 
 void printUsage()
@@ -77,7 +81,7 @@ void printVersion()
 	std::cout << std::endl;
 }
 
-void processParameters(int argc, const char* argv[])
+void processParameters( int argc, const char* argv[] )
 {
 	StringList params;
 	std::string paramStr;
@@ -86,68 +90,68 @@ void processParameters(int argc, const char* argv[])
 
 	for ( int i = 1; i < argc; i++ ) {
 		if ( !scriptParams ) {
-			if ( Utils::Tools::StringCompare(argv[i], "--debug") ) {
+			if ( Utils::Tools::StringCompare( argv[i], "--debug" ) ) {
 				mPrintDebugInfo = true;
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-f") || Utils::Tools::StringCompare(argv[i], "--file") ) {
+			else if ( Utils::Tools::StringCompare( argv[i], "-f" ) || Utils::Tools::StringCompare( argv[i], "--file" ) ) {
 				if ( argc <= ++i ) {
 					std::cout << "invalid number of parameters provided!" << std::endl;
 
-					exit(-1);
+					exit( -1 );
 				}
 
 				mFilename = argv[i];
-				params.push_back(mFilename);
+				params.push_back( mFilename );
 				paramStr += mFilename;
 
 				// all parameters that follow are designated for our script
 				scriptParams = true;
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
+			else if ( Utils::Tools::StringCompare( argv[i], "-h" ) || Utils::Tools::StringCompare( argv[i], "--help" ) ) {
 				mPrintUsage = true;
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-l") || Utils::Tools::StringCompare(argv[i], "--library") ) {
+			else if ( Utils::Tools::StringCompare( argv[i], "-l" ) || Utils::Tools::StringCompare( argv[i], "--library" ) ) {
 				if ( argc <= ++i ) {
 					std::cout << "invalid number of parameters provided!" << std::endl;
 
-					exit(-1);
+					exit( -1 );
 				}
 
-				mLibraryFolders.insert(argv[i]);
+				mLibraryFolders.insert( argv[i] );
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-q") || Utils::Tools::StringCompare(argv[i], "--quiet") ) {
-				mLogger.setLoudness(Utils::Common::ILogger::LoudnessMute);
+			else if ( Utils::Tools::StringCompare( argv[i], "-q" ) || Utils::Tools::StringCompare( argv[i], "--quiet" ) ) {
+				mLogger.setLoudness( Utils::Common::ILogger::LoudnessMute );
 
 				Utils::Printer::Instance()->ActivatePrinter = false;
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "--skip-sanitycheck") ) {
+			else if ( Utils::Tools::StringCompare( argv[i], "--skip-sanitycheck" ) ) {
 				mSanityCheck = false;
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "--spec") ) {
+			else if ( Utils::Tools::StringCompare( argv[i], "--spec" ) ) {
 				mPrintSpecification = true;
 
 				if ( argc > ++i ) {
 					mRequestedSpecification = argv[i];
 				}
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "--syntax") ) {
+			else if ( Utils::Tools::StringCompare( argv[i], "--syntax" ) ) {
 				mSyntaxCheck = true;
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "--tokens") ) {
+			else if ( Utils::Tools::StringCompare( argv[i], "--tokens" ) ) {
 				mPrintTokens = true;
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-v") || Utils::Tools::StringCompare(argv[i], "--verbose") ) {
-				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
+			else if ( Utils::Tools::StringCompare( argv[i], "-v" ) || Utils::Tools::StringCompare( argv[i], "--verbose" ) ) {
+				mLogger.setLoudness( Utils::Common::ILogger::LoudnessInfo );
 
 				Utils::Printer::Instance()->ActivatePrinter = true;
 				Utils::Printer::Instance()->PrintFileAndLine = true;
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "--version") ) {
+			else if ( Utils::Tools::StringCompare( argv[i], "--version" ) ) {
 				mPrintVersion = true;
 			}
 			else if ( mFilename.empty() ){
 				mFilename = argv[i];
-				params.push_back(mFilename);
+				params.push_back( mFilename );
 				paramStr += mFilename;
 
 				// all parameters that follow are designated for our script
@@ -161,11 +165,11 @@ void processParameters(int argc, const char* argv[])
 		}
 	}
 
-	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::Int32Type::TYPENAME, static_cast<int32_t>(params.size())));
-	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringType::TYPENAME, paramStr));
+	mParameters.push_back( Slang::Parameter::CreateRuntime( Slang::Runtime::Int32Type::TYPENAME, static_cast<int32_t>( params.size() ) ) );
+	mParameters.push_back( Slang::Parameter::CreateRuntime( Slang::Runtime::StringType::TYPENAME, paramStr ) );
 }
 
-int main(int argc, const char* argv[])
+int main( int argc, const char* argv[] )
 {
 #ifdef _WIN32
 	// Memory leak detection
@@ -173,14 +177,14 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	processParameters(argc, argv);
+	processParameters( argc, argv );
 
 	Slang::VirtualMachine mVirtualMachine;
 
 	// add extensions
 #ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine.addExtension(new Slang::Extensions::System::SystemExtension());
-	mVirtualMachine.addExtension(new Slang::Extensions::LIBC::Extension());
+	mVirtualMachine.addExtension( new Slang::Extensions::System::SystemExtension() );
+	mVirtualMachine.addExtension( new Slang::Extensions::LIBC::Extension() );
 #endif
 
 	mVirtualMachine.settings().DoCollectErrors = true;
@@ -217,8 +221,8 @@ int main(int argc, const char* argv[])
 	}
 
 	try {
-		auto* script = mVirtualMachine.createScriptFromFile(mFilename);
-		assert(script);
+		auto* script = mVirtualMachine.createScriptFromFile( mFilename );
+		assert( script );
 
 		if ( mPrintTokens ) {
 			// we are done after printing our tokens
@@ -228,7 +232,7 @@ int main(int argc, const char* argv[])
 		}
 		else {
 			Slang::Runtime::Object result;
-			mVirtualMachine.run(script, mParameters, &result);
+			mVirtualMachine.run( script, mParameters, &result );
 
 			if ( result.getValue().type() == Slang::Runtime::AtomicValue::Type::INT ) {
 				return result.getValue().toInt();
@@ -250,7 +254,7 @@ int main(int argc, const char* argv[])
 		}
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
-		OSerror(e.what());
+		OSerror( e.what() );
 	}
 	catch ( ... ) {	// catch everything
 		std::cout << "uncaught exception detected!" << std::endl;

@@ -303,7 +303,7 @@ void Application::printUsage( const StringList& params )
 
 void Application::printVersion()
 {
-    std::cout << PRODUCT_NAME << " Dependency Manager " << PRODUCT_VERSION << " ( cli ) " << mSettings.Architecture << std::endl;
+    std::cout << PRODUCT_NAME << " Dependency Manager " << PRODUCT_VERSION << " (cli) " << mSettings.Architecture << std::endl;
 	std::cout << COPYRIGHT << std::endl;
 	std::cout << std::endl;
 }
