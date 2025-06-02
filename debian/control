@@ -7,14 +7,14 @@ Standards-Version: 4.6.2
 Rules-Requires-Root: no
 Vcs-Git: https://github.com/slang-lang/slang-meta.git
 Vcs-Browser: https://github.com/slang-lang/slang
-Homepage: https://slang-lang.github.io/slang/
+Homepage: https://www.slang-lang.org/
 
 Package: slang
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-         jsoncpp-dev,
-         libcurl4-openssl-dev (>= 1:0.1.0) | libcurl4
+         libjsoncpp-dev (>= 1.8.0),
+         libcurl4-openssl-dev (>= 1:8.0.0) | libcurl4-gnutls-dev (>= 1:8.0.0) | libcurl4
 Description: Slang interpreter, debugger and package manager
  Slang is a modular scripting language with first-class support for GTK
  integration, web views, and packaging. This package includes the core
