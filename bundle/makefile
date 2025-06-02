@@ -9,6 +9,6 @@ clean:
 	rm slang_*.tar.xz
 
 package:
-	dpkg-buildpackage -us -uc
+	dpkg-buildpackage -us -uc -nc
 
-.PHONY: clean compile
+.PHONY: clean package
