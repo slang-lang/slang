@@ -7,10 +7,10 @@ cmake-build-debug
 
 # generated stuff
 bundle/man/*.gz
-debian/.debhelper
-debian/debhelper-build-stamp
-debian/files
-debian/slang/DEBIAN
-debian/slang/usr
+bundle/debian/.debhelper
+bundle/debian/debhelper-build-stamp
+bundle/debian/files
+bundle/debian/slang/DEBIAN
+bundle/debian/slang/usr
 CMake/Dependencies.cmake
 make-package.cfg
