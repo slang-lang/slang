@@ -1,5 +1,5 @@
 Source: slang
-Section: applications
+Section: devel
 Priority: optional
 Maintainer: Michael Adelmann <madelmann@github.com>
 Build-Depends: debhelper-compat (= 12)
@@ -15,8 +15,9 @@ Depends: ${shlibs:Depends},
          ${misc:Depends},
          libjsoncpp-dev (>= 1.8.0),
          libcurl4-openssl-dev (>= 1:8.0.0) | libcurl4-gnutls-dev (>= 1:8.0.0) | libcurl4
-Description: Slang interpreter, debugger and package manager
- Slang is a modular scripting language with first-class support for GTK
- integration, web views, and packaging. This package includes the core
- interpreter, a CLI debugger, and a package manager for distributing
- .slang and .os scripts.
+Description: A statically typed scripting language with contract enforcement
+ The Slang programming language is a scripting language with a C++-like
+ syntax and strong static typing. It emphasizes design by contract and
+ const-correctness.
+ This package includes the core interpreter, a CLI debugger, and a package
+ manager for distributing .slang and .os scripts.

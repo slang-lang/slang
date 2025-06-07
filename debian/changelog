@@ -2,4 +2,4 @@ slang (0.9.3) noble; urgency=medium
 
   * Refactored debian package structure
 
- -- Michael Adelmann <madelmann@github.com>  Tue, 25 May 2025 19:14:00 +0100
+ -- Michael Adelmann <madelmann@github.com>  Sun, 25 May 2025 19:14:00 +0100
