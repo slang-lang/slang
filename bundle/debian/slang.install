@@ -1,0 +1,6 @@
+bin/slang             usr/bin
+bin/slang-dbg         usr/bin
+bin/slang-pkg         usr/bin
+bin/webscript         usr/bin
+scripts/*             usr/lib/slang/
+share/completions/*   usr/share/bash-completion/completions/slang/

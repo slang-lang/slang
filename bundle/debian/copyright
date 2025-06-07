@@ -5,7 +5,8 @@ Source: https://github.com/sharkwouter/minigalaxy
 
 Files: *
 Copyright: 2014-2025 Michael Adelmann <madelmann@github.com>
-License: LGPL-2.1
+License: LGPL-2.1+
+ License reference: /usr/share/common-licenses/LGPL-2.1
 
 License: GNU LESSER GENERAL PUBLIC LICENSE
                        Version 2.1, February 1999
