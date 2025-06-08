@@ -2,6 +2,7 @@
 set -e
 
 if [ "$1" = "purge" ]; then
-    echo "Purging /var/lib/slang/Library..."
-    rm -rf /var/lib/slang/Library
+    echo "Purging /var/lib/slang/library..."
+    rm -rf /var/lib/slang/library
 fi
+

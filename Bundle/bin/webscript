@@ -1,7 +1,7 @@
 #!/bin/bash
 
 COMMAND="slang"
-LIBRARY="/var/lib/slang/Library"
+LIBRARY="/var/lib/slang/library"
 USER=$(whoami)
 
 if [ "${USER}" == "www-data" ]; then
