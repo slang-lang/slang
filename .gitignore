@@ -10,7 +10,6 @@ Bundle/man/*.gz
 Bundle/debian/.debhelper
 Bundle/debian/debhelper-build-stamp
 Bundle/debian/files
-Bundle/debian/slang/DEBIAN
-Bundle/debian/slang/usr
+Bundle/debian/slang
 CMake/Dependencies.cmake
 make-package.cfg

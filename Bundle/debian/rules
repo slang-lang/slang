@@ -2,3 +2,7 @@
 
 %:
 	dh $@
+
+override_dh_auto_build:
+	# Skip building — already done elsewhere
+	echo "Skipping build"
