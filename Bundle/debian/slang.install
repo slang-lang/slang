@@ -1,6 +1,8 @@
-bin/slang             usr/bin
-bin/slang-dbg         usr/bin
-bin/slang-pkg         usr/bin
-bin/webscript         usr/bin
-scripts/*             usr/lib/slang/
-share/completions/*   usr/share/bash-completion/completions/slang/
+bin/slang               usr/bin
+bin/slang-dbg           usr/bin
+bin/slang-pkg           usr/bin
+bin/webscript           usr/bin
+debian/slang.sh         etc/profile.d/
+scripts/*               usr/lib/slang/
+share/bash_completion/* usr/share/bash-completion/
+share/vim/*             usr/share/vim/addons/syntax/

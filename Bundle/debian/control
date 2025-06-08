@@ -15,7 +15,7 @@ Depends: ${shlibs:Depends},
          ${misc:Depends},
          libjsoncpp-dev (>= 1.8.0),
          libcurl4-openssl-dev (>= 1:8.0.0) | libcurl4-gnutls-dev (>= 1:8.0.0) | libcurl4
-Description: A statically typed scripting language with contract enforcement
+Description: Statically typed scripting language with contract enforcement
  The Slang programming language is a scripting language with a C++-like
  syntax and strong static typing. It emphasizes design by contract and
  const-correctness.
