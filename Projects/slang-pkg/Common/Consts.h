@@ -20,10 +20,10 @@ static const std::string CONFIG_CACHE_REPOSITORIES = ".slang/cache/repositories/
 static const std::string CONFIG_FILE               = ".slang/config.json";
 static const std::string CONFIG_FOLDER             = ".slang/";
 #ifdef __APPLE__
-static const std::string CONFIG_SCRIPTS            = "/usr/lib/slang";
+static const std::string CONFIG_SCRIPTS            = "/var/lib/slang/scripts/";
 #endif
 #ifdef __linux__
-static const std::string CONFIG_SCRIPTS            = "/usr/lib/slang";
+static const std::string CONFIG_SCRIPTS            = "/var/lib/slang/scripts/";
 #endif
 #ifdef _WIN32
 static const std::string CONFIG_SCRIPTS            = "";

@@ -234,18 +234,18 @@ Script* VirtualMachine::createScriptFromString(const std::string& content)
 
 void VirtualMachine::init()
 {
-	OSdebug("initializing virtual machine...");
+	OSdebug( "initializing virtual machine..." );
 
-	auto* homepath = getenv(SLANG_LIBRARY);
+	auto* homepath = getenv( SLANG_LIBRARY );
 	if ( homepath ) {
-		std::string path(homepath);
+		std::string path( homepath );
 
 		while ( !path.empty() ) {
 			std::string left;
 			std::string right;
 
-			Utils::Tools::splitBy(path, ':', left, right);
-			addLibraryFolder(left);
+			Utils::Tools::splitBy( path, ':', left, right );
+			addLibraryFolder( left );
 
 			path = right;
 		}
@@ -255,14 +255,14 @@ void VirtualMachine::init()
 #ifdef _WIN32
 		// Extension loading is not supported under Windows
 #else
-		OSdebug("loading extensions...");
+		OSdebug( "loading extensions..." );
 
 		std::vector<std::string> sharedLibraries;
-		read_directory(SHARED_LIBRARY_DIRECTORY, sharedLibraries);
+		read_directory( SHARED_EXTENSION_DIRECTORY, sharedLibraries );
 
 		// load installed shared libraries
 		for ( const std::string& library : sharedLibraries ) {
-			addExtension( mExtensionManager.load(library), library );
+			addExtension( mExtensionManager.load( library ), library );
 		}
 #endif
 	}

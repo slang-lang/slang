@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /usr/lib/slang/readlink.sh
+source /var/lib/slang/scripts/readlink.sh
 
 a="$1"   # Source of symlink (e.g. Library/JsonReader/JsonReader.slang)
 b="$2"   # Where symlinks live (e.g. Library/.slang/apps/JsonReader.slang)
@@ -12,3 +12,4 @@ b=$(readlink "$b")
 echo "Installing symlink $a -> $b"
 ln -sf "$a" "$b"    # override existing symlinks
 #ln -s "$a" "$b"     # fail if a link already exists
+

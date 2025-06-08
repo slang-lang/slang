@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /usr/lib/slang/readlink.sh
+source /var/lib/slang/scripts/readlink.sh
 
 a="$1"   # Where symlinks live (e.g. /usr/local/bin)
 b="$2"   # Directory you want to remove (e.g. /opt/mytool)
@@ -24,3 +24,4 @@ find "$a" -type l | while read -r link; do
         rm "${link}"
     fi
 done
+
