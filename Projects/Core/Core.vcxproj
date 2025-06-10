@@ -366,7 +366,7 @@
     <ClInclude Include="Core\Interfaces\IScope.h" />
     <ClInclude Include="Core\MemleakCheck.h" />
     <ClInclude Include="Core\Object.h" />
-    <ClInclude Include="Core\ObjectiveScript.h" />
+    <ClInclude Include="Core\Slang.h" />
     <ClInclude Include="Core\Runtime\Interpreter.h" />
     <ClInclude Include="Core\Slang.h" />
     <ClInclude Include="Core\Parameter.h" />
