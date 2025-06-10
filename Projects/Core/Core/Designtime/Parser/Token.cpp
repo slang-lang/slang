@@ -35,19 +35,19 @@ Token::Token(Type::E type, const char* content)
 {
 }
 
-Token::Token(Type::E type, const std::string& content)
+Token::Token(Type::E type, std::string content)
 : mCategory(Category::None),
-  mContent(content),
+  mContent(std::move(content)),
   mIsOptional(false),
   mType(type)
 {
 }
 
-Token::Token(Category::E category, Type::E type, const std::string& content, const Common::Position& pos, bool isOptional)
+Token::Token(Category::E category, Type::E type, std::string content, Common::Position pos, bool isOptional)
 : mCategory(category),
-  mContent(content),
+  mContent(std::move(content)),
   mIsOptional(isOptional),
-  mPosition(pos),
+  mPosition(std::move(pos)),
   mType(type)
 {
 }
@@ -90,6 +90,11 @@ void Token::resetTypeTo(Type::E type)
 void Token::setOptional(bool state)
 {
 	mIsOptional = state;
+}
+
+std::string Token::toString() const
+{
+    return "{ Category: " + std::to_string( mCategory ) + "\tType: " + std::to_string( mType ) + ", \tContent: \"" + mContent + "\" }";
 }
 
 Token::Type::E Token::type() const

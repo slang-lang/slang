@@ -1,0 +1,10 @@
+
+/*
+Extension SystemV-MQ:
+---
+private static int msgctl( int handle ) modify
+private static int msgget( int id, bool create = 0 ) modify
+private static int msgget( string name, bool create = 0 ) modify
+private static string msgrcv( int handle, bool wait = 0 ) modify
+private static int msgsnd( int handle, string message ) modify
+*/

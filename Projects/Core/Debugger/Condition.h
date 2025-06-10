@@ -54,7 +54,7 @@ public:
 	Type::E type() const;
 
 private:
-	Type::E ConditionFromString(const std::string& type) const;
+	static Type::E ConditionFromString(const std::string& type) ;
 
 private:
 	std::string mLeft;

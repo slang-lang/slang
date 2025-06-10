@@ -1,4 +1,3 @@
-
 // Header
 #include "Files.h"
 
@@ -24,14 +23,20 @@ namespace Files {
 
 bool exists(const std::string& filename)
 {
-	std::ifstream file( filename.c_str() );
+#if defined(__cplusplus) && __cplusplus >= 201703L
+    // Use modern std::filesystem if available (C++17 and later)
+    try {
+        return std::filesystem::exists( filename );
+    }
+    catch ( const std::filesystem::filesystem_error& ) {
+        return false;
+    }
+#else
+    // Fallback to traditional file check for older C++ versions
+    std::ifstream file( filename );
 
-	return file.good();
-}
-
-std::string BuildLibraryPath(const std::string& baseFolder, const std::string& library, const std::string& extension)
-{
-	return BuildPath(baseFolder, library) + extension;
+    return file.is_open() && file.good();
+#endif
 }
 
 std::string BuildPath(const std::string& baseFolder, const std::string& filename)
@@ -51,65 +56,44 @@ std::string BuildPath(const std::string& baseFolder, const std::string& filename
 
 std::string ExtractFileExt(const std::string& filename)
 {
-	std::string tmp = filename.substr(filename.find_last_of('.') + 1);
+    if ( filename.empty() ) {
+        return "";
+    }
 
-	if ( tmp == filename ) {
-		return "";
-	}
+    auto separatorPos = filename.find_last_of( '.' );
+    if ( separatorPos == std::string::npos ) {
+        return "";
+    }
 
-	return tmp;
+    return filename.substr( separatorPos + 1 );
 }
 
 std::string ExtractFilename(const std::string& filename)
 {
-	if ( filename.empty() ) {
-		return filename;
-	}
+    if ( filename.empty() ) {
+        return filename;
+    }
 
-	unsigned long d = filename.length();
-	while ( (filename[d] != '\\' && d > 0) && ( filename[d] != '/' && d > 0) ) {
-		d--;
-	}
+    auto lastSeparatorPos = filename.find_last_of(  "\\/" );
+    if ( lastSeparatorPos == std::string::npos ) {
+        return filename;
+    }
 
-	if ( d == 0 ) {
-		return filename;
-	}
-
-	d++;
-	//int len = filename.length() - d;
-
-	std::string result;
-
-	for ( unsigned long i = d; i < filename.length(); i += 1 ) {
-		result += filename[i];
-	}
-
-	return result;
+    return filename.substr( lastSeparatorPos + 1 );
 }
 
 std::string ExtractPathname(const std::string& pathname)
 {
-	if ( pathname.empty() ) {
-		return pathname;
-	}
+    if ( pathname.empty() ) {
+        return pathname;
+    }
 
-	unsigned long d = pathname.length();
-	while ( (pathname[d] != '\\' && pathname[d] != '/') && d > 0 ) {
-		d--;
-	}
+    auto lastSeparatorPos = pathname.find_last_of( "\\/" );
+    if ( lastSeparatorPos == std::string::npos ) {
+        return pathname;
+    }
 
-	if ( d == 0 ) {
-		return pathname;
-	}
-
-	d++;	// to get the (back)slash
-	std::string result;
-
-	for ( unsigned int i = 0; i < d; i += 1 ) {
-		result += pathname[i];
-	}
-
-	return result;
+    return pathname.substr( 0, lastSeparatorPos + 1 );
 }
 
 std::string GetFullname(const std::string& filename)
@@ -135,130 +119,38 @@ std::string GetFullname(const std::string& filename)
 
 std::string RemoveFileExt(const std::string& filename)
 {
-	if ( filename.empty() ) {
-		return std::string();
-	}
+    if ( filename.empty() ) {
+        return "";
+    }
 
-	std::string ext = ExtractFileExt(filename);
-	if ( ext.empty() ) {
-	    return filename;
-	}
+    auto fileExtension = ExtractFileExt( filename );
+    if ( fileExtension.empty() ) {
+        return filename;
+    }
 
-    std::string buffer = filename;
-	buffer.resize(filename.length() - ext.length() - 1);
-
-    return buffer;
+    return filename.substr( 0, filename.length() - fileExtension.length() - 1 );
 }
-    
+
 #ifdef _MSC_VER
 #include <io.h>
 #else
 #include <glob.h>
-    
+
 	std::vector<std::string> globVector(const std::string& pattern)
 	{
 		glob_t glob_result;
-        glob(pattern.c_str(), GLOB_TILDE, nullptr, &glob_result);
+		glob(pattern.c_str(), GLOB_TILDE, nullptr, &glob_result);
 
 		std::vector<std::string> files;
 		for ( unsigned int i = 0; i < glob_result.gl_pathc; ++i ) {
 			files.emplace_back(glob_result.gl_pathv[i]);
 		}
-        
+
 		globfree(&glob_result);
 		return files;
 	}
 
 #endif
-
-
-FileBrowser::FileBrowser(const std::string& path, const std::string& ext, bool findFolders)
-{
-	find(path, ext, findFolders);
-}
-
-std::string FileBrowser::activeFile()
-{
-	if ( mFiles.empty() || mFileIndex < 0 || mFileIndex > (int)mFiles.size() - 1 ) {
-		return "";
-	}
-
-	return mFiles[mFileIndex];
-}
-
-void FileBrowser::find(const std::string& path, const std::string& ext, bool findFolders)
-{
-	reset();
-
-#ifdef _MSC_VER
-	struct _finddata_t file;
-	long hFile;
-
-	if ( findFolders ) {
-		file.attrib &= _A_SUBDIR;
-	}
-
-	std::string findStr = path + "/*";
-	if ( !ext.empty() ) {
-		findStr += "." + ext;
-	}
-
-	/* Find first file in current directory */
-	hFile = _findfirst(std::string(findStr).c_str(), &file);
-	if ( hFile == -1L ) {
-		hFile = _findfirst(std::string(findStr).c_str(), &file);
-
-		if ( hFile == -1L ) {
-			return;
-		}
-	}
-
-	if ( _stricmp(file.name, ".") != 0 && _stricmp(file.name, "..") != 0 ) 
-		mFiles.push_back(file.name);
-
-	/* Find the rest of the files */
-	while ( _findnext( hFile, &file ) == 0 ) {
-		if ( _stricmp(file.name, ".") != 0 && _stricmp(file.name, "..") != 0 ) 
-			mFiles.push_back(file.name);
-	}
-
-	_findclose( hFile );
-
-#else
-	mFiles = globVector(path + "/*" + ext);
-    (void)findFolders;
-#endif
-
-	mFileIndex = -1;
-}
-
-std::string FileBrowser::nextFile()
-{
-	if ( mFileIndex > (int)mFiles.size() - 1 ) {
-		mFileIndex = -1;
-	}
-
-	mFileIndex++;
-
-	return activeFile();
-}
-
-std::string FileBrowser::previousFile()
-{
-	if ( mFileIndex < 0 ) {
-		mFileIndex = (int)mFiles.size();
-	}
-
-	mFileIndex--;
-
-	return activeFile();
-}
-
-void FileBrowser::reset()
-{
-	mFiles.clear();
-	mFileIndex = -1;
-}
 
 
 }

@@ -37,7 +37,7 @@ public:
 
 public:
 	Ancestor();
-	Ancestor(const Common::TypeDeclaration& typeDeclaration, Type::E ancestorType, Visibility::E visibility);
+	Ancestor(Common::TypeDeclaration typeDeclaration, Type::E ancestorType, Visibility::E visibility);
 
 public:
 	bool operator<(const Ancestor& other) const;

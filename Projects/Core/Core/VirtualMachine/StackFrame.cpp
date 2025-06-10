@@ -79,7 +79,7 @@ assert(0);
 
 	if ( index >= mCurrentStack.size() ) {
 		OSerror("peek with invalid index: " + std::to_string(index) + " vs " + std::to_string(mCurrentStack.size()));
-		throw NULL;
+		throw nullptr;
 	}
 
 	return mCurrentStack[index].mItem;
@@ -114,9 +114,7 @@ void StackFrame::popTokens()
 
 void StackFrame::pushScope(IScope* scope, bool allowDelete, bool allowBreakAndContinue)
 {
-	mScopeStack.push_back(
-		Scope(scope, allowDelete, allowBreakAndContinue)
-	);
+	mScopeStack.emplace_back( scope, allowDelete, allowBreakAndContinue );
 }
 
 size_t StackFrame::pushIdentifier(IScope* symbol, const std::string& name)

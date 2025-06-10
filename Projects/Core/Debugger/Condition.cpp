@@ -37,7 +37,7 @@ Condition::Condition(std::string lhs, const std::string& type, std::string rhs)
 	mType = ConditionFromString(type);
 }
 
-Condition::Type::E Condition::ConditionFromString(const std::string& type) const
+Condition::Type::E Condition::ConditionFromString(const std::string& type)
 {
 	if ( type == "==" ) return Type::Equals;
 	else if ( type == ">" ) return Type::Greater;

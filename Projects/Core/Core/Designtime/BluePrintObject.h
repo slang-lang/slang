@@ -41,18 +41,18 @@ public:
 
 public:
 	BluePrintObject();
-	BluePrintObject(const std::string& unqualifiedTypename, const std::string& filename, const std::string& name = ANONYMOUS_OBJECT);
+	BluePrintObject(const std::string& unqualifiedTypename, std::string filename, const std::string& name = ANONYMOUS_OBJECT);
 	BluePrintObject(const BluePrintObject& other) = default;
-	~BluePrintObject() = default;
+	~BluePrintObject() override = default;
 
 public:
 	const std::string& Filename() const;
-	const std::string& QualifiedTypename() const;
+	const std::string& QualifiedTypename() const override;
 
 	void setQualifiedTypename(const std::string& name);
 
 public:	// MethodScope
-	void defineMethod(const std::string& name, Common::Method* method);
+	void defineMethod(const std::string& name, Common::Method* method) override;
 
 public:
 	// Inheritance
@@ -95,7 +95,7 @@ public:
 	Runtime::AtomicValue getValue() const;
 	void setValue(const Runtime::AtomicValue& value);
 
-	std::string ToString(unsigned int indent) const;
+	std::string ToString(unsigned int indent) const override;
 
 public:
 	BluePrintObject* fromPrototype(const PrototypeConstraints& constraints) const;

@@ -2,7 +2,7 @@
 // Library imports
 
 // Project imports
-import LibLog;
+import Logger;
 
 
 public object StdOutLogger extends Logger {

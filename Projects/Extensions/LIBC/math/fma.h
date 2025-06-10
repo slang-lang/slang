@@ -8,12 +8,12 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -32,12 +32,12 @@ class FMA: public ExtensionMethod
 {
 public:
 	FMA()
-	: ExtensionMethod(0, "fma", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "fma", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("z", Common::TypeDeclaration(Designtime::DoubleObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::DoubleType::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::DoubleType::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("z", Common::TypeDeclaration(Designtime::DoubleType::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -54,11 +54,11 @@ public:
 			auto param_y = (*it++).value().toDouble();
 			auto param_z = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(fma(param_x, param_y, param_z));
+			*result = Runtime::DoubleType(fma(param_x, param_y, param_z));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -73,12 +73,12 @@ class FMAF: public ExtensionMethod
 {
 public:
 	FMAF()
-	: ExtensionMethod(0, "fmaf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "fmaf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
-		params.push_back(Parameter::CreateDesigntime("z", Common::TypeDeclaration(Designtime::FloatObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("x", Common::TypeDeclaration(Designtime::FloatType::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("y", Common::TypeDeclaration(Designtime::FloatType::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("z", Common::TypeDeclaration(Designtime::FloatType::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -95,11 +95,11 @@ public:
 			auto param_y = (*it++).value().toFloat();
 			auto param_z = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(fmaf(param_x, param_y, param_z));
+			*result = Runtime::FloatType(fmaf(param_x, param_y, param_z));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception(data, token.position());
 			return Runtime::ControlFlow::Throw;

@@ -21,7 +21,7 @@ class StdOutLogger : public Logger
 public:
 	StdOutLogger();
 	StdOutLogger( const ILogger* parent, const std::string& className, const std::string& key = "" );
-	~StdOutLogger();
+	~StdOutLogger() override;
 };
 
 

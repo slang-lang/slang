@@ -3,13 +3,14 @@
 #include "Tokenizer.h"
 
 // Library includes
+#include <algorithm>
+#include <vector>
+#include <utility>
 
 // Project includes
+#include <Core/Designtime/Exceptions.h>
 #include <Core/Consts.h>
 #include <Core/Tools.h>
-#include <Utils.h>
-
-#include <utility>
 
 // Namespace declarations
 
@@ -24,8 +25,8 @@ const std::string DELIMITERS	= CONTROLCHARS + WHITESPACES;
 
 Tokenizer::Tokenizer(std::string filename, std::string content)
 : mAccessMode( provideAccessMode() ),
-  mContent( std::move(content ) ),
-  mFilename( std::move(filename ) ),
+  mContent( std::move( content ) ),
+  mFilename( std::move( filename ) ),
   mLanguageFeatureState( provideLanguageFeatures() ),
   mKeyword( provideKeyWords() ),
   mMemoryLayout( provideMemoryLayout() ),
@@ -38,11 +39,11 @@ Tokenizer::Tokenizer(std::string filename, std::string content)
 
 void Tokenizer::addToken(const std::string& con, const Common::Position& position)
 {
-	std::string content = TRYMOVE(con);
+	std::string content{ con };
 
-	Token::Category::E category = Token::Category::None;
-	bool isOptional = false;
-	Token::Type::E type = Token::Type::IDENTIFIER;
+	Token::Category::E category{ Token::Category::None };
+	bool isOptional{ false };
+	Token::Type::E type{ Token::Type::IDENTIFIER };
 
 	if ( content == "=" ) { category = Token::Category::Assignment; type = Token::Type::ASSIGN; }
 	else if ( content == "&" ) { category = Token::Category::Operator; type = Token::Type::BITAND; }
@@ -79,13 +80,11 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 		// remove trailing 'f' character
 		content = con.substr(0, con.length() - 1);
 	}
-	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
-/*
 	else if ( isIntegerWithType(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER;
 		// remove trailing 'i' character
 		content = con.substr(0, con.length() - 1);
 	}
-*/
+	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
 	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::LANGUAGE_FEATURE_STATE; }
 	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
@@ -99,9 +98,7 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( isVisibility(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::VISIBILITY; }
 	else if ( isWhiteSpace(content) ) { return; }
 
-	mTokens.push_back(
-		Token(category, type, content, position, isOptional)
-	);
+	mTokens.emplace_back( category, type, content, position, isOptional );
 }
 
 void Tokenizer::addToken(const Token& token)
@@ -112,7 +109,7 @@ void Tokenizer::addToken(const Token& token)
 	}
 
 	// only add valid tokens to our token list
-	mTokens.push_back(token);
+	mTokens.push_back( token );
 }
 
 bool Tokenizer::isAccessMode(const std::string& token) const
@@ -120,12 +117,12 @@ bool Tokenizer::isAccessMode(const std::string& token) const
 	return mAccessMode.find(token) != mAccessMode.end();
 }
 
-bool Tokenizer::isBoolean(const std::string& token) const
+bool Tokenizer::isBoolean(const std::string& token)
 {
 	return (token == VALUE_FALSE || token == VALUE_TRUE );
 }
 
-bool Tokenizer::isDouble(const std::string& token) const
+bool Tokenizer::isDouble(const std::string& token)
 {
 	if ( token.size() <= 1 ) {
 		return false;
@@ -153,7 +150,7 @@ bool Tokenizer::isDouble(const std::string& token) const
 	return token[token.size() - 1] == 'd';
 }
 
-bool Tokenizer::isFloat(const std::string& token) const
+bool Tokenizer::isFloat(const std::string& token)
 {
 	if ( token.size() <= 1 ) {
 		return false;
@@ -181,13 +178,13 @@ bool Tokenizer::isFloat(const std::string& token) const
 	return token[token.size() - 1] == 'f';
 }
 
-bool Tokenizer::isInteger(const std::string& token) const
+bool Tokenizer::isInteger(const std::string& token)
 {
 	if ( token.empty() ) {
 		return false;
 	}
 
-	for ( char c : token ) {
+	for ( const char& c : token ) {
 		switch ( c ) {
 			case '1':
 			case '2':
@@ -208,14 +205,14 @@ bool Tokenizer::isInteger(const std::string& token) const
 	return true;
 }
 
-bool Tokenizer::isIntegerWithType(const std::string& token) const
+bool Tokenizer::isIntegerWithType(const std::string& token)
 {
-	if ( token.empty() ) {
+    if ( token.size() <= 1 ) {
 		return false;
 	}
 
-	for ( char c : token ) {
-		switch ( c ) {
+	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
+		switch ( token[c] ) {
 			case '1':
 			case '2':
 			case '3':
@@ -246,13 +243,13 @@ bool Tokenizer::isLanguageFeature(const std::string& token) const
 	return mLanguageFeatureState.find(token) != mLanguageFeatureState.end();
 }
 
-bool Tokenizer::isLiteral(const std::string& token) const
+bool Tokenizer::isLiteral(const std::string& token)
 {
+	static const char DOUBLE_QUOTE = '"';
+
+	// Check if string is enclosed in double quotes (represents a string literal)
 	if ( token.size() > 1 ) {
-		// double quoted literals
-		if ( (token.at(0) == '"' && token.at(token.size() - 1) == '"')) {
-			return true;
-		}
+		return token.front() == DOUBLE_QUOTE && token.back() == DOUBLE_QUOTE;
 	}
 
 	return false;
@@ -278,14 +275,14 @@ bool Tokenizer::isReservedWord(const std::string& token) const
 	return mReservedWord.find(token) != mReservedWord.end();
 }
 
-bool Tokenizer::isVisibility(const std::string& token) const
+bool Tokenizer::isVisibility(const std::string& token)
 {
 	return token == PRIVATE || token == PROTECTED || token == PUBLIC;
 }
 
-bool Tokenizer::isWhiteSpace(const std::string& token) const
+bool Tokenizer::isWhiteSpace(const std::string& token)
 {
-	return (WHITESPACES.find_first_of(token) != std::string::npos);
+	return WHITESPACES.find_first_of(token) != std::string::npos;
 }
 
 /*
@@ -311,7 +308,7 @@ void Tokenizer::mergeOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add AND instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::AND, "&&", token->position()));
+			tmp.emplace_back( Token::Category::Operator, Token::Type::AND, "&&", token->position() );
 		}
 		else if ( (lastType == Token::Type::BITOR) && (activeType == Token::Type::BITOR) ) {
 			// || or
@@ -319,7 +316,7 @@ void Tokenizer::mergeOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add OR instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::OR, "||", token->position()));
+			tmp.emplace_back( Token::Category::Operator, Token::Type::OR, "||", token->position() );
 		}
 		else if ( (lastType == Token::Type::OPERATOR_NOT) && (activeType == Token::Type::BITAND) ) {
 			// !& negative and
@@ -327,7 +324,7 @@ void Tokenizer::mergeOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add OR instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::NAND, "!&", token->position()));
+			tmp.emplace_back( Token::Category::Operator, Token::Type::NAND, "!&", token->position() );
 		}
 		else if ( (lastType == Token::Type::OPERATOR_NOT) && (activeType == Token::Type::BITOR) ) {
 			// !| negative or
@@ -335,7 +332,7 @@ void Tokenizer::mergeOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add OR instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::NOR, "!|", token->position()));
+			tmp.emplace_back( Token::Category::Operator, Token::Type::NOR, "!|", token->position() );
 		}
 		else if ( (lastType == Token::Type::OPERATOR_SCOPE) && (activeType == Token::Type::OPERATOR_SCOPE) ) {
 			// .. range operator
@@ -343,7 +340,7 @@ void Tokenizer::mergeOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add OR instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_RANGE, "..", token->position()));
+			tmp.emplace_back( Token::Category::Operator, Token::Type::OPERATOR_RANGE, "..", token->position() );
 		}
 		else if ( (lastType == Token::Type::MATH_SUBTRACT) && (activeType == Token::Type::MATH_SUBTRACT) ) {
 			// --
@@ -351,7 +348,7 @@ void Tokenizer::mergeOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add OR instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_DECREMENT, "--", token->position()));
+			tmp.emplace_back( Token::Category::Operator, Token::Type::OPERATOR_DECREMENT, "--", token->position() );
 		}
 		else if ( (lastType == Token::Type::MATH_ADDITION) && (activeType == Token::Type::MATH_ADDITION) ) {
 			// ++
@@ -359,7 +356,7 @@ void Tokenizer::mergeOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add AND instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_INCREMENT, "++", token->position()));
+			tmp.emplace_back( Token::Category::Operator, Token::Type::OPERATOR_INCREMENT, "++", token->position() );
 		}
 		else if ( (lastType == Token::Type::COMPARE_LESS) && (activeType == Token::Type::COMPARE_LESS) ) {
 			// <<
@@ -367,7 +364,7 @@ void Tokenizer::mergeOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add AND instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_SHIFT_LEFT, "<<", token->position()));
+			tmp.emplace_back( Token::Category::Operator, Token::Type::OPERATOR_SHIFT_LEFT, "<<", token->position() );
 		}
 		else if ( (lastType == Token::Type::COMPARE_GREATER) && (activeType == Token::Type::COMPARE_GREATER) ) {
 			// >>
@@ -375,7 +372,7 @@ void Tokenizer::mergeOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add AND instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_SHIFT_RIGHT, ">>", token->position()));
+			tmp.emplace_back( Token::Category::Operator, Token::Type::OPERATOR_SHIFT_RIGHT, ">>", token->position() );
 		}
 		else if ( (lastType == Token::Type::BRACKET_OPEN) && (activeType == Token::Type::BRACKET_CLOSE) ) {
 			// && and
@@ -383,7 +380,7 @@ void Tokenizer::mergeOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add AND instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::ARRAY_SUBSCRIPT, "[]", token->position()));
+			tmp.emplace_back( Token::Category::Operator, Token::Type::ARRAY_SUBSCRIPT, "[]", token->position() );
 		}
 
 		if ( !changed ) {
@@ -412,20 +409,20 @@ void Tokenizer::process()
 	Common::Position pos(mFilename, 1, 1);
 
 	while ( offset <= size ) {
-		char thisChar = mContent[offset++];
+		char currentChar{ mContent[offset++] };
 
 		// preprocessor directives as single line comments '#'
-		if ( !isMultiLineComment && !isSingleLineComment && !isString && thisChar == '#' ) {
+		if ( !isMultiLineComment && !isSingleLineComment && !isString && currentChar == '#' ) {
 			isSingleLineComment = true;
 		}
 		// single line comments '//'
-		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '/' ) {
+		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && currentChar == '/' ) {
 			isSingleLineComment = true;
 			// remove last inserted token
 			mTokens.pop_back();
 		}
 		// multi line comments '/*'
-		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '*' ) {
+		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && currentChar == '*' ) {
 			isMultiLineComment = true;
 			// remove last inserted token
 			mTokens.pop_back();
@@ -434,26 +431,26 @@ void Tokenizer::process()
 		if ( !isMultiLineComment && !isSingleLineComment ) {
 			// are we reading a string?
 			if ( isEscapeSequence ) {
-				token += thisChar;
+				token += currentChar;
 
 				isEscapeSequence = false;
-				thisChar = 0;
+				currentChar = 0;
 			}
 			else {
-				if ( thisChar == '"' ) {
+				if ( currentChar == '"' ) {
 					isString = !isString;
 				}
-				else if ( isString && thisChar == '\\' ) {
+				else if ( isString && currentChar == '\\' ) {
 					isEscapeSequence = true;
 				}
 			}
 
-			if ( !isEscapeSequence && thisChar ) {
-				if ( !isString && DELIMITERS.find_first_of(thisChar) != std::string::npos ) {
+			if ( !isEscapeSequence && currentChar ) {
+				if ( !isString && DELIMITERS.find_first_of(currentChar) != std::string::npos ) {
 					if ( !token.empty() ) {
-						if ( thisChar == '"' ) {
-							token += thisChar;
-							thisChar = 0;
+						if ( currentChar == '"' ) {
+							token += currentChar;
+							currentChar = 0;
 						}
 
 						addToken(token, pos);
@@ -461,33 +458,33 @@ void Tokenizer::process()
 						token.clear();
 					}
 
-					if ( thisChar ) {
-						addToken(std::string(1, thisChar), pos);
+					if ( currentChar ) {
+						addToken(std::string(1, currentChar), pos);
 					}
 				}
 				else {
-					token += thisChar;
+					token += currentChar;
 				}
 			}
 		}
 
 		// multi line comments '*/'
-		if ( isMultiLineComment && lastChar == '*' && thisChar == '/' ) {
+		if ( isMultiLineComment && lastChar == '*' && currentChar == '/' ) {
 			isMultiLineComment = false;
 		}
 
 		// counting lines and columns
 		pos.mColumn++;
-		if ( thisChar == '\n' ) {
+		if ( currentChar == '\n' ) {
 			isSingleLineComment = false;
 			pos.mLine++;
 			pos.mColumn = 1;
 
-			thisChar = 0;
+			currentChar = 0;
 		}
 
 		// keep track of our last char (i.e. for escape sequences)
-		lastChar = thisChar;
+		lastChar = currentChar;
 	}
 
 	if ( lastChar != 0 ) {
@@ -498,7 +495,8 @@ void Tokenizer::process()
 
 	mergeAssignments();				// replace assignment tokens with compare tokens (if present)
 	mergeOperators();				// merge '+' '+' into '++'
-	replaceConstDataTypes();			// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
+	//replaceConstDataTypes();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
+	replaceConstDataTypesPatternMatching();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
 	replaceOperators();				// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
 }
 
@@ -522,7 +520,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_EQUAL instead
-			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_EQUAL, "==", token->position()));
+			tmp.emplace_back( Token::Category::Comparator, Token::Type::COMPARE_EQUAL, "==", token->position() );
 		}
 		else if ( (lastType == Token::Type::COMPARE_EQUAL) && (currentType == Token::Type::ASSIGN) ) {
 			// ===
@@ -530,7 +528,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_EQUAL instead
-			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_EQUAL_CONTENT, "===", token->position()));
+			tmp.emplace_back( Token::Category::Comparator, Token::Type::COMPARE_EQUAL_CONTENT, "===", token->position() );
 		}
 		else if ( (lastType == Token::Type::COMPARE_UNEQUAL) && (currentType == Token::Type::ASSIGN) ) {
 			// !==
@@ -538,7 +536,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_EQUAL instead
-			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_UNEQUAL_CONTENT, "!==", token->position()));
+			tmp.emplace_back( Token::Category::Comparator, Token::Type::COMPARE_UNEQUAL_CONTENT, "!==", token->position() );
 		}
 		else if ( (lastType == Token::Type::BITAND) && (currentType == Token::Type::ASSIGN) ) {
 			// &=
@@ -546,7 +544,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_ADD instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITAND, "&=", token->position()));
+			tmp.emplace_back( Token::Category::Assignment, Token::Type::ASSIGN_BITAND, "&=", token->position() );
 		}
 		else if ( (lastType == Token::Type::BITCOMPLEMENT) && (currentType == Token::Type::ASSIGN) ) {
 			// ~=
@@ -554,7 +552,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_BITCOMPLEMENT instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITCOMPLEMENT, "~=", token->position()));
+			tmp.emplace_back( Token::Category::Assignment, Token::Type::ASSIGN_BITCOMPLEMENT, "~=", token->position() );
 		}
 		else if ( (lastType == Token::Type::BITOR) && (currentType == Token::Type::ASSIGN) ) {
 			// |=
@@ -562,7 +560,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_ADD instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITOR, "|=", token->position()));
+			tmp.emplace_back( Token::Category::Assignment, Token::Type::ASSIGN_BITOR, "|=", token->position() );
 		}
 		else if ( (lastType == Token::Type::OPERATOR_NOT) && (currentType == Token::Type::ASSIGN) ) {
 			// !=
@@ -570,7 +568,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_ADD instead
-			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_UNEQUAL, "!=", token->position()));
+			tmp.emplace_back( Token::Category::Comparator, Token::Type::COMPARE_UNEQUAL, "!=", token->position() );
 		}
 		else if ( (lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER) && (currentType == Token::Type::ASSIGN) ) {
 			// >=
@@ -578,7 +576,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_GREATER_EQUAL instead
-			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_GREATER_EQUAL, ">=", token->position()));
+			tmp.emplace_back( Token::Category::Comparator, Token::Type::COMPARE_GREATER_EQUAL, ">=", token->position() );
 		}
 		else if ( (lastType == Token::Type::LESS || lastType == Token::Type::COMPARE_LESS) && (currentType == Token::Type::ASSIGN) ) {
 			// <=
@@ -586,7 +584,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_LESS_EQUAL instead
-			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_LESS_EQUAL, "<=", token->position()));
+			tmp.emplace_back( Token::Category::Comparator, Token::Type::COMPARE_LESS_EQUAL, "<=", token->position() );
 		}
 		else if ( (lastType == Token::Type::MATH_ADDITION) && (currentType == Token::Type::ASSIGN) ) {
 			// +=
@@ -594,7 +592,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_ADD instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_ADDITION, "+=", token->position()));
+			tmp.emplace_back( Token::Category::Assignment, Token::Type::ASSIGN_ADDITION, "+=", token->position() );
 		}
 		else if ( (lastType == Token::Type::MATH_DIVIDE) && (currentType == Token::Type::ASSIGN) ) {
 			// /=
@@ -602,7 +600,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_DIVIDE instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_DIVIDE, "/=", token->position()));
+			tmp.emplace_back( Token::Category::Assignment, Token::Type::ASSIGN_DIVIDE, "/=", token->position() );
 		}
 		else if ( (lastType == Token::Type::MATH_MODULO) && (currentType == Token::Type::ASSIGN) ) {
 			// %=
@@ -610,7 +608,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_MULTI instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_MODULO, "*=", token->position()));
+			tmp.emplace_back( Token::Category::Assignment, Token::Type::ASSIGN_MODULO, "*=", token->position() );
 		}
 		else if ( (lastType == Token::Type::MATH_MULTIPLY) && (currentType == Token::Type::ASSIGN) ) {
 			// *=
@@ -618,7 +616,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_MULTI instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_MULTIPLY, "*=", token->position()));
+			tmp.emplace_back( Token::Category::Assignment, Token::Type::ASSIGN_MULTIPLY, "*=", token->position() );
 		}
 		else if ( (lastType == Token::Type::MATH_SUBTRACT) && (currentType == Token::Type::ASSIGN) ) {
 			// -=
@@ -626,7 +624,7 @@ void Tokenizer::mergeAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_SUBTRACT instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_SUBTRACT, "-=", token->position()));
+			tmp.emplace_back( Token::Category::Assignment, Token::Type::ASSIGN_SUBTRACT, "-=", token->position() );
 		}
 
 		if ( !changed ) {
@@ -756,7 +754,7 @@ void Tokenizer::replaceConstDataTypes()
 
 			if ( numCombines > 0 ) {
 				// we found an operator
-				TokenList::iterator opToken = token;
+				auto opToken = token;
 				++token;	// advance to next token
 
 				while ( numCombines > 0 ) {
@@ -776,13 +774,112 @@ void Tokenizer::replaceConstDataTypes()
 	}
 }
 
+void Tokenizer::replaceConstDataTypesPatternMatching()
+{
+	auto token = mTokens.begin();
+
+	std::vector<TokenList> patterns{
+		// 1 . 2 d
+		TokenList{
+			Token( Token::Type::CONST_INTEGER ),
+			Token( Token::Type::OPERATOR_SCOPE ),
+			Token( Token::Type::CONST_DOUBLE )
+		},
+		// 1 . 2 f
+		TokenList{
+			Token( Token::Type::CONST_INTEGER ),
+			Token( Token::Type::OPERATOR_SCOPE ),
+			Token( Token::Type::CONST_FLOAT )
+		},
+		// 1 . 2 i
+		TokenList{
+			Token( Token::Type::CONST_INTEGER ),
+			Token( Token::Type::OPERATOR_SCOPE ),
+			Token( Token::Type::CONST_INTEGER )
+		},
+		// 1 . (d|f|i)
+		TokenList{
+			Token( Token::Type::CONST_INTEGER ),
+			Token( Token::Type::OPERATOR_SCOPE ),
+			Token( Token::Type::IDENTIFIER )
+		},
+		// 1 (d|f|i)
+		TokenList{
+			Token( Token::Type::CONST_INTEGER ),
+			Token( Token::Type::IDENTIFIER )
+		}
+	};
+
+	while ( token != mTokens.end() ) {
+		int numCombines{ 0 };
+		auto patternIt{ mTokens.end() };
+
+		// search for known patterns
+		for( const TokenList& p : patterns ) {
+			patternIt = std::search( mTokens.begin(), mTokens.end(), p.begin(), p.end(), 
+										[]( const Token& a, const Token& b ) { return a.type() == b.type(); } );
+
+			if ( patternIt != mTokens.end() ) {
+				numCombines = p.size() - 1;
+				break;
+			}
+		}
+
+		if ( patternIt == mTokens.end() ) {
+			// none of our patterns has been found, so we've already merged everything
+			break;
+		}
+
+		// try to combine all operator tokens
+		if ( numCombines > 0 ) {
+			// we found an operator
+			auto opToken = patternIt++;
+
+			while ( numCombines > 0 ) {
+				numCombines--;	// decrement combinations
+
+				if ( patternIt->type() == Token::Type::IDENTIFIER ) {
+					if ( patternIt->content() == "d" ) {
+						patternIt->resetContentTo( "" );
+						opToken->resetTypeTo( Token::Type::CONST_DOUBLE );
+					}
+					else if ( patternIt->content() == "f" ) {
+						patternIt->resetContentTo( "" );
+						opToken->resetTypeTo( Token::Type::CONST_FLOAT );
+					}
+					else if ( patternIt->content() == "i" ) {
+						throw Designtime::Exceptions::SyntaxError( "invalid number format", patternIt->position() );
+					}
+				}
+				else if ( patternIt->type() == Token::Type::CONST_DOUBLE ) {
+					opToken->resetTypeTo( Token::Type::CONST_DOUBLE );
+				}
+				else if ( patternIt->type() == Token::Type::CONST_FLOAT ) {
+					opToken->resetTypeTo( Token::Type::CONST_FLOAT );
+				}
+				else if ( patternIt->type() == Token::Type::CONST_INTEGER ) {
+					throw Designtime::Exceptions::SyntaxError( "invalid number format", patternIt->position() );	
+				}
+
+				opToken->resetContentTo( opToken->content() + patternIt->content() );	// combine token contents
+
+				patternIt = mTokens.erase( patternIt );	// remove the following token
+			}
+
+			continue;
+		}
+
+		++token;
+	}
+}
+
 /*
  * This merges all 'operator' tokens with their according operator (+, -, *, /, &, |, =, ==, <, <=, >, >=, etc.)
  */
 void Tokenizer::replaceOperators()
 {
 	auto token = mTokens.begin();
-	auto last = mTokens.end();
+	auto last  = mTokens.end();
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {
@@ -819,4 +916,3 @@ const TokenList& Tokenizer::tokens() const
 
 
 }
-

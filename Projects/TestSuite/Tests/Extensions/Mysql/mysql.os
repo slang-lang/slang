@@ -7,7 +7,7 @@
 		int handle = mysql_init();
 		writeln("mysq_init() = " + handle);
 
-		handle = mysql_real_connect(handle, "192.168.0.23", 3306, "oscript", "oscript", "");
+		handle = mysql_real_connect(handle, "192.168.0.23", 3306, "slang", "slang", "");
 		writeln("mysql_real_connect() = " + handle);
 
 		error = mysql_select_db(handle, "ts_parking");

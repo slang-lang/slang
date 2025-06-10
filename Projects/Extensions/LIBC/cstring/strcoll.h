@@ -8,10 +8,10 @@
 #include <cstring>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -32,11 +32,11 @@ class STRCOLL : public ExtensionMethod
 {
 public:
 	STRCOLL()
-	: ExtensionMethod( 0, "strcoll", Designtime::IntegerObject::TYPENAME )
+	: ExtensionMethod( 0, "strcoll", Designtime::Int32Type::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back( Parameter::CreateDesigntime( "str1", Designtime::StringObject::TYPENAME ) );
-		params.push_back( Parameter::CreateDesigntime( "str2", Designtime::StringObject::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "str1", Designtime::StringType::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "str2", Designtime::StringType::TYPENAME ) );
 
 		setSignature( params );
 	}
@@ -51,11 +51,11 @@ public:
 			auto param_str1 = (*it++).value().toStdString();
 			auto param_str2 = (*it++).value().toStdString();
 
-			*result = Runtime::IntegerObject( strcoll( param_str1.c_str(), param_str2.c_str() ) );
+			*result = Runtime::Int32Type( strcoll( param_str1.c_str(), param_str2.c_str() ) );
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringObject( std::string( e.what() ) );
+			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringType( std::string( e.what() ) );
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData( data, token.position() );
 			return Runtime::ControlFlow::Throw;

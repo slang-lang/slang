@@ -8,9 +8,9 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 
 // Forward declarations
@@ -27,10 +27,10 @@ class GetEnv : public ExtensionMethod
 {
 public:
 	GetEnv()
-	: ExtensionMethod(0, "getenv", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "getenv", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("envvar", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("envvar", Designtime::StringType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -52,11 +52,11 @@ public:
 				result_value = std::string(val);
 			}
 
-			*result = Runtime::StringObject(result_value);
+			*result = Runtime::StringType(result_value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

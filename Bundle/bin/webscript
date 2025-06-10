@@ -1,0 +1,12 @@
+#!/bin/bash
+
+COMMAND="slang"
+LIBRARY="/var/lib/slang/library"
+USER=$(whoami)
+
+if [ "${USER}" == "www-data" ]; then
+	echo -e "Content: text/html\n"
+fi
+
+${COMMAND} --library ${LIBRARY} "$*"
+

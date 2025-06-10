@@ -14,30 +14,30 @@ namespace Utils {
 namespace Tools {
 
 
-std::string extract(const std::string& source)
-{
-	std::string result;
+std::string extract(const std::string& source) {
+    static const char DOUBLE_QUOTE = '"';
+    static const char SINGLE_QUOTE = '\'';
+    
+    if ( source.empty() ) {
+        return "";
+    }
+    
+    auto stripQuotes = []( const std::string& text, char quoteChar ) -> std::string {
+        if ( text.front() == quoteChar && text.back() == quoteChar ) {
+            return text.substr( 1, text.length() - 2 );
+        }
 
-	if ( source.empty() ) {
-		return result;
-	}
-
-	if ( source[0] == '"' ) {
-		if ( source[source.length() - 1] == '"' ) {
-			for ( unsigned int i = 1; i < source.length() - 1; i++ ) {
-				result += source[i];
-			}
-		}
-	}
-	else if ( source[0] == '\'' ) {
-		if ( source[source.length() - 1] == '\'' ) {
-			for ( unsigned int i = 1; i < source.length() - 1; i++ ) {
-				result += source[i];
-			}
-		}
-	}
-
-	return result;
+        return "";
+    };
+    
+    if ( source.front() == DOUBLE_QUOTE ) {
+        return stripQuotes( source, DOUBLE_QUOTE );
+    }
+    else if ( source.front() == SINGLE_QUOTE ) {
+        return stripQuotes( source, SINGLE_QUOTE );
+    }
+    
+    return "";
 }
 
 std::string indent(unsigned int level)
@@ -57,7 +57,7 @@ void split(const std::string& str, std::string& p, std::string& c)
 {
 	c = "";
 
-	unsigned long pos = str.find_first_of('.');
+	auto pos = str.find_first_of('.');
 
 	p = str.substr(0, pos);
 	if ( p.size() != str.size() ) {
@@ -67,7 +67,7 @@ void split(const std::string& str, std::string& p, std::string& c)
 
 void splitBy(const std::string& str, char splitter, std::string& p, std::string& c)
 {
-	unsigned long pos = str.find_first_of(splitter);
+	auto pos = str.find_first_of(splitter);
 
 	p = str.substr(0, pos);
 	if ( p.size() != str.size() ) {
@@ -80,33 +80,29 @@ void splitBy(const std::string& str, char splitter, std::string& p, std::string&
 
 bool StringCompare(const std::string& s1, const std::string& s2)
 {
-	return s1.size() == s2.size() && !(s1 != s2);
+	return s1 == s2;
 }
 
-bool StringCompareI(const std::string & s1, const std::string& s2)
-{
-	if ( s1.size() != s2.size() ) {
-		return false;
-	}
+bool StringCompareI(const std::string& s1, const std::string& s2) {
+    if ( s1.size() != s2.size() ) {
+        return false;
+    }
 
-	std::string::const_iterator it1 = s1.cbegin();
-	std::string::const_iterator it2 = s2.cbegin();
-
-	while ( (it1 != s1.cend()) && (it2 != s2.cend()) ) {
-		if ( ::toupper(*it1) != ::toupper(*it2) ) {	// letters differ?
-			return false;
-		}
-
-		++it1;
-		++it2;
-	}
-
-	return true;
+    return std::equal( s1.begin(), s1.end(), s2.begin(),
+        [](char a, char b) { return ::toupper( a ) == ::toupper( b ); } );
 }
 
-bool stringToBool(const std::string& str)
-{
-	return !(str.empty() || str == "\n" || str == "false");
+bool stringToBool(const std::string& str) {
+    static const std::string FALSE_VALUE = "false";
+    static const std::string NEWLINE = "\n";
+    
+    // Trim whitespace and convert to lowercase for consistent comparison
+    auto normalizedStr = toLowerCase( stringTrim( str ) );
+    
+    // Return false for empty string, newline, or explicit "false" value
+    return !normalizedStr.empty() && 
+           normalizedStr != NEWLINE && 
+           normalizedStr != FALSE_VALUE;
 }
 
 double stringToDouble(const std::string& str)
@@ -158,13 +154,15 @@ std::string stringTrim(const std::string& source, const std::string& t)
 
 std::string stringTrimLeft( const std::string& source, const std::string& t)
 {
-	std::string str = source;
+	auto str = source;
+
 	return str.erase(0, source.find_first_not_of(t) );
 }
 
 std::string stringTrimRight(const std::string& source, const std::string& t)
 {
-	std::string str = source;
+	auto str = source;
+
 	return str.erase( str.find_last_not_of(t) + 1 );
 }
 

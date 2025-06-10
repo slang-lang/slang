@@ -30,10 +30,10 @@ class Connect : public ExtensionMethod
 {
 public:
 	Connect()
-	: ExtensionMethod(0, "connect", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "connect", Designtime::Int32Type::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::Int32Type::TYPENAME));
 		params.push_back(Parameter::CreateDesigntime("sockaddr", Common::TypeDeclaration("ISocketAddress")));
 
 		setSignature(params);
@@ -51,11 +51,11 @@ public:
 
 			int handle = evaluate(param_sockfd, param_addr);
 
-			*result = Runtime::IntegerObject(handle);
+			*result = Runtime::Int32Type(handle);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -66,23 +66,23 @@ public:
 
 private:
 	int evaluate(int param_sockfd, Runtime::Object* param_addr) const {
-		Symbol* addressSymbol = param_addr->resolve("_sa_address", true, Visibility::Public);
+		auto* addressSymbol = param_addr->resolve("_sa_address", true, Visibility::Public);
 		if ( !addressSymbol ) {
 			throw Runtime::Exceptions::RuntimeException("_sa_address symbol not found");
 		}
 
-		Symbol* familySymbol = param_addr->resolve("_sa_family", true, Visibility::Public);
+		auto* familySymbol = param_addr->resolve("_sa_family", true, Visibility::Public);
 		if ( !familySymbol ) {
 			throw Runtime::Exceptions::RuntimeException("_sa_family symbol not found");
 		}
 
-		Symbol* portSymbol = param_addr->resolve("_sa_port", true, Visibility::Public);
+		auto* portSymbol = param_addr->resolve("_sa_port", true, Visibility::Public);
 		if ( !portSymbol ) {
 			throw Runtime::Exceptions::RuntimeException("_sa_port symbol not found");
 		}
 
 		struct sockaddr_in serv_addr;
-		sa_family_t addr_family = (sa_family_t)static_cast<Runtime::IntegerObject*>(familySymbol)->getValue().toInt();
+		sa_family_t addr_family = static_cast<sa_family_t>( static_cast<Runtime::Int32Type*>(familySymbol)->getValue().toInt() );
 
 		// set sa_family
 		switch ( addr_family ) {
@@ -102,10 +102,10 @@ private:
 #ifdef _MSC_VER
 #else
 		// set sa_address
-		inet_pton(serv_addr.sin_family, static_cast<Runtime::StringObject*>(addressSymbol)->getValue().toStdString().c_str(), &serv_addr.sin_addr);
+		inet_pton(serv_addr.sin_family, static_cast<Runtime::StringType*>(addressSymbol)->getValue().toStdString().c_str(), &serv_addr.sin_addr);
 
 		// set sa_port
-		serv_addr.sin_port = (in_port_t)static_cast<Runtime::IntegerObject*>(portSymbol)->getValue().toInt();
+		serv_addr.sin_port = (in_port_t)static_cast<Runtime::Int32Type*>(portSymbol)->getValue().toInt();
 #endif
 
 		return connect(param_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));

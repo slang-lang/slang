@@ -56,7 +56,7 @@ AExtension* ExtensionManager::load( const std::string& path )
 dynamic_lib_handle ExtensionManager::load_lib( const std::string& path ) {
 	OSdebug( "Loading shared library from '" + path + "'..." );
 
-	return dlopen( path.data(), RTLD_NOW ); // get a handle to the lib, may be nullptr.
+	return dlopen( path.data(), RTLD_NOW | RTLD_GLOBAL ); // get a handle to the lib, may be nullptr.
 	// RTLD_NOW ensures that all the symbols are resolved immediately. This means that
 	// if a symbol cannot be found, the program will crash now instead of later.
 }

@@ -1,0 +1,68 @@
+.TH slang 1 "June 2025" "slang 0.9.3" "User Commands"
+.SH NAME
+slang \- statically typed scripting language with contract enforcement
+.SH SYNOPSIS
+.B slang
+[\fIOPTIONS\fR] \fISCRIPT\fR
+
+.B slang-dbg
+[\fIOPTIONS\fR]
+
+.B slang-pkg
+[\fIOPTIONS\fR]
+
+.B webscript
+[\fIOPTIONS\fR]
+
+.SH DESCRIPTION
+.B slang
+is a statically typed scripting language inspired by C++,
+focusing on contract enforcement and const-correctness.
+
+.SH SUBCOMMANDS AND TOOLS
+
+.TP
+.B slang-dbg
+Debugger interface for the \fBslang\fR scripting language. This tool allows
+interactive debugging of slang scripts.
+
+.TP
+.B slang-pkg
+Packaging utility that creates distributable archives or builds slang projects.
+
+.TP
+.B webscript
+Executes slang scripts designed for web contexts, typically using stdin/stdout
+for CGI or fastcgi scenarios.
+
+.SH OPTIONS
+Run each tool with \fB--help\fR to see its specific options.
+
+.SH FILES
+.TP
+.B /usr/bin/slang
+Main interpreter
+
+.TP
+.B /usr/bin/slang-dbg
+Debugger for slang
+
+.TP
+.B /usr/bin/slang-pkg
+Packaging helper
+
+.TP
+.B /usr/bin/webscript
+Web-execution utility
+
+.SH SEE ALSO
+.BR sh (1),
+.BR bash (1),
+.BR g++ (1)
+
+.SH AUTHOR
+Michael Adelmann <madelmann@github.com>
+
+.SH COPYRIGHT
+Licensed under the GNU Lesser General Public License v2.1 or later.
+See \fB/usr/share/common-licenses/LGPL-2.1\fR for details.

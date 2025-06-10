@@ -7,10 +7,10 @@
 #include <cstdlib>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -29,11 +29,11 @@ class StrPos : public ExtensionMethod
 {
 public:
 	StrPos()
-	: ExtensionMethod(0, "strpos", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "strpos", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME, 0));
-		params.push_back(Parameter::CreateDesigntime("index", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringType::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("index", Designtime::Int32Type::TYPENAME, 0));
 
 		setSignature(params);
 	}
@@ -55,11 +55,11 @@ public:
 
 			std::string result_value = param_value.substr(param_index, 1);
 
-			*result = Runtime::StringObject(result_value);
+			*result = Runtime::StringType(result_value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

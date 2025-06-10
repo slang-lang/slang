@@ -11,6 +11,7 @@ ADD_SUBDIRECTORY(Operator)
 ADD_SUBDIRECTORY(Prototype)
 ADD_SUBDIRECTORY(RealWorldUsage)
 ADD_SUBDIRECTORY(TestFramework)
+ADD_SUBDIRECTORY(Utils)
 
 SET(SOURCES
 	main.cpp
@@ -21,6 +22,7 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	Utils
+	Test_Utils
 	Test_TestFramework
 	Test_RealWorldUsage
 	Test_Prototype
@@ -32,6 +34,8 @@ SET(DEPENDENCIES
 	Test_Inheritance
 	Test_Extensions
 	Test_AST
+	ExtensionsSystem
+	ExtensionsLIBC
 	CoreVirtualMachine
 	CoreRuntime
 	CoreExtensions
@@ -48,4 +52,3 @@ add_include( Projects/Utils )
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/TestSuite)
 build_app( TestSuite "" )
-

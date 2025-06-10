@@ -8,13 +8,13 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -33,10 +33,10 @@ class LOGB: public ExtensionMethod
 {
 public:
 	LOGB()
-	: ExtensionMethod(0, "logb", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "logb", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::StringObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::StringType::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -51,11 +51,11 @@ public:
 
 			auto param_arg = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleObject(logb(param_arg));
+			*result = Runtime::DoubleType(logb(param_arg));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -70,10 +70,10 @@ class LOGBF: public ExtensionMethod
 {
 public:
 	LOGBF()
-	: ExtensionMethod(0, "logbf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "logbf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::StringObject::TYPENAME)));
+		params.push_back(Parameter::CreateDesigntime("arg", Common::TypeDeclaration(Designtime::StringType::TYPENAME)));
 
 		setSignature(params);
 	}
@@ -88,11 +88,11 @@ public:
 
 			auto param_arg = (*it++).value().toFloat();
 
-			*result = Runtime::FloatObject(logbf(param_arg));
+			*result = Runtime::FloatType(logbf(param_arg));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception(data, token.position());
 			return Runtime::ControlFlow::Throw;

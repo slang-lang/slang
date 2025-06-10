@@ -32,40 +32,40 @@ SystemNetworkExtension::SystemNetworkExtension()
 void SystemNetworkExtension::initialize( ExtensionNamespace* scope )
 {
 	// domain constants
-	scope->define( "AF_UNIX", new Runtime::IntegerObject( AF_UNIX ) );
-	scope->define( "AF_INET", new Runtime::IntegerObject( AF_INET ) );
-	scope->define( "AF_IPX", new Runtime::IntegerObject( AF_IPX ) );
-	//scope->define( "AF_NETLINK", new Runtime::IntegerObject( AF_NETLINK ) );
-	//scope->define( "AF_X25", new Runtime::IntegerObject( AF_X25 ) );
-	//scope->define( "AF_AX25", new Runtime::IntegerObject( AF_AX25 ) );
-	//scope->define( "AF_ATMPVC", new Runtime::IntegerObject( AF_ATMPVC ) );
-	scope->define( "AF_APPLETALK", new Runtime::IntegerObject( AF_APPLETALK ) );
-	//scope->define( "AF_PACKET", new Runtime::IntegerObject( AF_PACKET ) );
-	//scope->define( "AF_ALG", new Runtime::IntegerObject( AF_ALG ) );
+	scope->define( "AF_UNIX", new Runtime::Int32Type( AF_UNIX ) );
+	scope->define( "AF_INET", new Runtime::Int32Type( AF_INET ) );
+	scope->define( "AF_IPX", new Runtime::Int32Type( AF_IPX ) );
+	//scope->define( "AF_NETLINK", new Runtime::Int32Type( AF_NETLINK ) );
+	//scope->define( "AF_X25", new Runtime::Int32Type( AF_X25 ) );
+	//scope->define( "AF_AX25", new Runtime::Int32Type( AF_AX25 ) );
+	//scope->define( "AF_ATMPVC", new Runtime::Int32Type( AF_ATMPVC ) );
+	scope->define( "AF_APPLETALK", new Runtime::Int32Type( AF_APPLETALK ) );
+	//scope->define( "AF_PACKET", new Runtime::Int32Type( AF_PACKET ) );
+	//scope->define( "AF_ALG", new Runtime::Int32Type( AF_ALG ) );
 
 #ifdef _WIN32
 	// Win32 only
 #else
 	// Unix/Linux only
-	scope->define( "AF_LOCAL", new Runtime::IntegerObject( AF_LOCAL ) );
-	scope->define( "AF_INET6", new Runtime::IntegerObject( AF_INET6 ) );
+	scope->define( "AF_LOCAL", new Runtime::Int32Type( AF_LOCAL ) );
+	scope->define( "AF_INET6", new Runtime::Int32Type( AF_INET6 ) );
 
-	scope->define( "EAFNOSUPPORT", new Runtime::IntegerObject( EAFNOSUPPORT ) );
-	scope->define( "ENOBUFS", new Runtime::IntegerObject( ENOBUFS ) );
-	scope->define( "EPROTONOSUPPORT", new Runtime::IntegerObject( EPROTONOSUPPORT ) );
+	scope->define( "EAFNOSUPPORT", new Runtime::Int32Type( EAFNOSUPPORT ) );
+	scope->define( "ENOBUFS", new Runtime::Int32Type( ENOBUFS ) );
+	scope->define( "EPROTONOSUPPORT", new Runtime::Int32Type( EPROTONOSUPPORT ) );
 #endif
 
 	// type constants
-	scope->define( "SOCK_STREAM", new Runtime::IntegerObject( SOCK_STREAM ) );
-	scope->define( "SOCK_DGRAM", new Runtime::IntegerObject( SOCK_DGRAM ) );
-	scope->define( "SOCK_SEQPACKET", new Runtime::IntegerObject( SOCK_SEQPACKET ) );
-	scope->define( "SOCK_RAW", new Runtime::IntegerObject( SOCK_RAW ) );
-	scope->define( "SOCK_RDM", new Runtime::IntegerObject( SOCK_RDM ) );
-	//scope->define( "SOCK_PACKET", new Runtime::IntegerObject( SOCK_PACKET ) );
-	//scope->define( "SOCK_NONBLOCK", new Runtime::IntegerObject( SOCK_NONBLOCK ) );
-	//scope->define( "SOCK_CLOEXEC", new Runtime::IntegerObject( SOCK_CLOEXEC ) );
+	scope->define( "SOCK_STREAM", new Runtime::Int32Type( SOCK_STREAM ) );
+	scope->define( "SOCK_DGRAM", new Runtime::Int32Type( SOCK_DGRAM ) );
+	scope->define( "SOCK_SEQPACKET", new Runtime::Int32Type( SOCK_SEQPACKET ) );
+	scope->define( "SOCK_RAW", new Runtime::Int32Type( SOCK_RAW ) );
+	scope->define( "SOCK_RDM", new Runtime::Int32Type( SOCK_RDM ) );
+	//scope->define( "SOCK_PACKET", new Runtime::Int32Type( SOCK_PACKET ) );
+	//scope->define( "SOCK_NONBLOCK", new Runtime::Int32Type( SOCK_NONBLOCK ) );
+	//scope->define( "SOCK_CLOEXEC", new Runtime::Int32Type( SOCK_CLOEXEC ) );
 
-	scope->define( "INADDR_ANY", new Runtime::StringObject( std::string( "0.0.0.0" ) ) );
+	scope->define( "INADDR_ANY", new Runtime::StringType( std::string( "0.0.0.0" ) ) );
 
 
 	/*
@@ -74,9 +74,9 @@ void SystemNetworkExtension::initialize( ExtensionNamespace* scope )
 #ifdef _WIN32
 	 // Win32 only
 #else
-	scope->define( "SHUT_RD", new Runtime::IntegerObject( SHUT_RD ) );		// shut down the reading side
-	scope->define( "SHUT_WR", new Runtime::IntegerObject( SHUT_WR ) );		// shut down the writing side
-	scope->define( "SHUT_RDWR", new Runtime::IntegerObject( SHUT_RDWR ) );	// shut down both sides
+	scope->define( "SHUT_RD", new Runtime::Int32Type( SHUT_RD ) );		// shut down the reading side
+	scope->define( "SHUT_WR", new Runtime::Int32Type( SHUT_WR ) );		// shut down the writing side
+	scope->define( "SHUT_RDWR", new Runtime::Int32Type( SHUT_RDWR ) );	// shut down both sides
 #endif
 }
 

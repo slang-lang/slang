@@ -10,11 +10,13 @@
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
+//#include <Core/Runtime/BuildInTypes/Int16Type.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/Int64Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
@@ -173,19 +175,19 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 
 	// incomplete boolean evaluation
 	if ( exp->mOperation.type() == Token::Type::AND && !leftResult ) {
-		*result = Runtime::BoolObject(false);
+		*result = Runtime::BoolType(false);
 		return;
 	}
 	else if ( exp->mOperation.type() == Token::Type::NAND && !leftResult ) {
-		*result = Runtime::BoolObject(true);
+		*result = Runtime::BoolType(true);
 		return;
 	}
 	else if ( exp->mOperation.type() == Token::Type::NOR && leftResult ) {
-		*result = Runtime::BoolObject(false);
+		*result = Runtime::BoolType(false);
 		return;
 	}
 	else if ( exp->mOperation.type() == Token::Type::OR && leftResult ) {
-		*result = Runtime::BoolObject(true);
+		*result = Runtime::BoolType(true);
 		return;
 	}
 
@@ -197,20 +199,20 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 	switch ( exp->mOperation.type() ) {
 		// boolean expressions
 		// {
-		case Token::Type::AND:  *result = Runtime::BoolObject(leftResult && isTrue(right)); break;
-		case Token::Type::NAND: *result = Runtime::BoolObject(!leftResult && !isTrue(right)); break;
-		case Token::Type::NOR:  *result = Runtime::BoolObject(!leftResult || !isTrue(right)); break;
-		case Token::Type::OR:   *result = Runtime::BoolObject(leftResult || isTrue(right)); break;
+		case Token::Type::AND:  *result = Runtime::BoolType(leftResult && isTrue(right)); break;
+		case Token::Type::NAND: *result = Runtime::BoolType(!leftResult && !isTrue(right)); break;
+		case Token::Type::NOR:  *result = Runtime::BoolType(!leftResult || !isTrue(right)); break;
+		case Token::Type::OR:   *result = Runtime::BoolType(leftResult || isTrue(right)); break;
 		// }
 
 		// comparison expressions
 		// {
-		case Token::Type::COMPARE_EQUAL:         *result = Runtime::BoolObject(operator_binary_equal(&left, &right)); break;
-		case Token::Type::COMPARE_GREATER:       *result = Runtime::BoolObject(operator_binary_greater(&left, &right)); break;
-		case Token::Type::COMPARE_GREATER_EQUAL: *result = Runtime::BoolObject(operator_binary_greater_equal(&left, &right)); break;
-		case Token::Type::COMPARE_LESS:          *result = Runtime::BoolObject(operator_binary_less(&left, &right)); break;
-		case Token::Type::COMPARE_LESS_EQUAL:    *result = Runtime::BoolObject(operator_binary_less_equal(&left, &right)); break;
-		case Token::Type::COMPARE_UNEQUAL:       *result = Runtime::BoolObject(!operator_binary_equal(&left, &right)); break;
+		case Token::Type::COMPARE_EQUAL:         *result = Runtime::BoolType(operator_binary_equal(&left, &right)); break;
+		case Token::Type::COMPARE_GREATER:       *result = Runtime::BoolType(operator_binary_greater(&left, &right)); break;
+		case Token::Type::COMPARE_GREATER_EQUAL: *result = Runtime::BoolType(operator_binary_greater_equal(&left, &right)); break;
+		case Token::Type::COMPARE_LESS:          *result = Runtime::BoolType(operator_binary_less(&left, &right)); break;
+		case Token::Type::COMPARE_LESS_EQUAL:    *result = Runtime::BoolType(operator_binary_less_equal(&left, &right)); break;
+		case Token::Type::COMPARE_UNEQUAL:       *result = Runtime::BoolType(!operator_binary_equal(&left, &right)); break;
 		// }
 
 		// default handling
@@ -235,18 +237,18 @@ void TreeInterpreter::evaluateIsExpression(IsExpression* exp, Runtime::Object* r
 
 	evaluate(exp->mExpression, &tmp);
 
-	*result = Runtime::BoolObject(tmp.isInstanceOf(exp->mMatchType));
+	*result = Runtime::BoolType(tmp.isInstanceOf(exp->mMatchType));
 }
 
 void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* result)
 {
 	switch ( exp->mValue.type() ) {
-		case Runtime::AtomicValue::Type::BOOL:      *result = Runtime::BoolObject(exp->mValue); break;
-		case Runtime::AtomicValue::Type::DOUBLE:    *result = Runtime::DoubleObject(exp->mValue); break;
-		case Runtime::AtomicValue::Type::FLOAT:     *result = Runtime::FloatObject(exp->mValue); break;
-		case Runtime::AtomicValue::Type::INT:       *result = Runtime::IntegerObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::BOOL:      *result = Runtime::BoolType(exp->mValue); break;
+		case Runtime::AtomicValue::Type::DOUBLE:    *result = Runtime::DoubleType(exp->mValue); break;
+		case Runtime::AtomicValue::Type::FLOAT:     *result = Runtime::FloatType(exp->mValue); break;
+		case Runtime::AtomicValue::Type::INT:       *result = Runtime::Int64Type(exp->mValue); break;
 		case Runtime::AtomicValue::Type::REFERENCE: *result = *mMemory->get(Runtime::Reference(exp->mValue.toReference())); break;
-		case Runtime::AtomicValue::Type::STRING:    *result = Runtime::StringObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::STRING:    *result = Runtime::StringType(exp->mValue); break;
 		case Runtime::AtomicValue::Type::UNKNOWN:    throw Common::Exceptions::NotSupported("UNKNOWN type");
 	}
 }
@@ -273,7 +275,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		methodSymbol = resolveMethod(getEnclosingMethodScope(scope), exp->mSymbolExpression, params, Visibility::Private);
 	}
 	if ( !methodSymbol ) {
-		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
 		data->setValue( std::string("NullPointerException: ") + exp->mSymbolExpression->toString() );
 
 		mThread->exception() = Runtime::ExceptionData(data);
@@ -312,7 +314,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	ParameterList params;
 
 	for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
-		objectList.emplace_back(Runtime::Object());
+		objectList.emplace_back();
 
 		Runtime::Object* param = &objectList.back();
 
@@ -360,7 +362,7 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 	// resolve current symbol name
 	Symbol* lvalue = scope->resolve(exp->mName, false, Visibility::Designtime);
 	if ( !lvalue ) {
-		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
 		data->setValue( std::string("NullPointerException: ") + exp->toString() );
 
 		mThread->exception() = Runtime::ExceptionData(data);
@@ -436,7 +438,7 @@ void TreeInterpreter::evaluateTypeidExpression(TypeidExpression* exp, Runtime::O
 
 	evaluate(exp->mExpression, &tmp);
 
-	Runtime::StringObject type(Runtime::AtomicValue(tmp.QualifiedTypename()));
+	Runtime::StringType type(Runtime::AtomicValue(tmp.QualifiedTypename()));
 	Runtime::operator_binary_assign(result, &type);
 }
 
@@ -936,7 +938,7 @@ void TreeInterpreter::visitDelete(DeleteStatement* node)
 
 void TreeInterpreter::visitExit(ExitStatement* node)
 {
-	Runtime::Object* data = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
+	Runtime::Object* data = mRepository->createInstance(Runtime::Int32Type::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
 	tryControl(evaluate(node->mExpression, data));
 
 	mThread->exception(data, node->token().position());

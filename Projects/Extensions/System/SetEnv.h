@@ -14,10 +14,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 
 // Forward declarations
@@ -34,12 +34,12 @@ class SetEnv : public ExtensionMethod
 {
 public:
 	SetEnv()
-	: ExtensionMethod(0, "setenv", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "setenv", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("name", Designtime::StringObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("overwrite", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("name", Designtime::StringType::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringType::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("overwrite", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -58,14 +58,14 @@ public:
 			auto param_overwrite = (*it++).value().toInt();
 
 #ifdef _WIN32
-			*result = Runtime::IntegerObject(SetEnvironmentVariable(param_name.c_str(), param_value.c_str()));
+			*result = Runtime::Int32Type(SetEnvironmentVariable(param_name.c_str(), param_value.c_str()));
 #else
-			*result = Runtime::IntegerObject(setenv(param_name.c_str(), param_value.c_str(), param_overwrite));
+			*result = Runtime::Int32Type(setenv(param_name.c_str(), param_value.c_str(), param_overwrite));
 #endif
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

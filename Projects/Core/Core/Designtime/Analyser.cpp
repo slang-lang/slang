@@ -25,8 +25,9 @@ namespace Slang {
 namespace Designtime {
 
 
-Analyser::Analyser(bool doSanityCheck)
+Analyser::Analyser(bool doSanityCheck, bool printTokens)
 : mDoSanityCheck(doSanityCheck),
+  mPrintTokens( printTokens ),
   mProcessingInterface(false)
 {
 	mRepository = Controller::Instance().repository();
@@ -218,7 +219,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	mRepository->addBluePrint(blueprint);
 
-	return blueprint != nullptr;
+	return true;
 }
 
 bool Analyser::createEnum(TokenIterator& token)
@@ -328,7 +329,7 @@ bool Analyser::createInterface(TokenIterator& token)
 
 	mRepository->addBluePrint(blueprint);
 
-	return blueprint != nullptr;
+	return true;
 }
 
 bool Analyser::createLibraryReference(TokenIterator& token)
@@ -373,7 +374,7 @@ bool Analyser::createMemberOrMethod(TokenIterator& token)
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look up memory layout
 	MemoryLayout::E memoryLayout;
- 	if ( isInterface() ) {
+	if ( isInterface() ) {
 		memoryLayout = MemoryLayout::Abstract;
 	}
 	else if ( isNamespace() ) {
@@ -645,6 +646,13 @@ TokenList Analyser::generateTokens(const std::string& content)
 {
 	Tokenizer t(mFilename, content);
 	t.process();
+
+	if ( mPrintTokens ) {
+		for( const auto& t : t.tokens() )
+		{
+			std::cout << t.toString() << std::endl;
+		}
+	}
 
 	return t.tokens();
 }

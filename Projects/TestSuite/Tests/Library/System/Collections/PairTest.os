@@ -6,6 +6,8 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
+
+	print( "passed" );
 }
 
 private bool TestCase1() {

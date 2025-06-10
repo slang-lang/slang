@@ -83,10 +83,10 @@ public object Tokenizer {
 		}
 
 		// convert to upper case
-		result = toUpper( result );
+		//result = toUpper( result );
 
 		foreach ( Token token : RESERVED_WORDS ) {
-			if ( token == result ) {
+			if ( token == toLower( result ) ) {
 				return new Token( token.type, token.value, new Position( mLine, column ) );
 			}
 		}

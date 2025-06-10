@@ -30,7 +30,7 @@ public:
 	virtual int exec() = 0;
 
 public:
-	void connectSettings(Settings* s);
+	void connectSettings( Settings* s );
 
 protected:
 	Settings* mSettings;
@@ -39,4 +39,4 @@ protected:
 }
 
 
-#endif
+#endif Slang_slang_dbg_Common_AClient_h

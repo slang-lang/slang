@@ -98,7 +98,7 @@ private bool TestCase4() {
 private bool TestCase5() {
 	print("TestCase 5: foreach with null reference");
 
-	List list;
+	List list = new List();
 	assert( !list );
 
 	foreach ( Object o : list ) {

@@ -23,17 +23,17 @@ namespace Common {
 	class Namespace;
 }
 
-class Controller
+class __attribute__((visibility("default"))) Controller
 {
 public:
-// Singleton
-// {
-public:
-	static Controller& Instance();
-// }
+	static Controller& Instance() {
+		static Controller instance;
+		return instance;
+	}
 
 public:
-	class Phase {
+	class Phase
+	{
 	public:
 		enum E {
 			Startup,
@@ -47,6 +47,9 @@ public:
 
 public:
 	~Controller() = default;
+
+	Controller(const Controller&) = delete;
+	Controller& operator=(const Controller&) = delete;
 
 public:
 	void deinit();
@@ -65,8 +68,6 @@ public:
 
 private:
 	Controller();
-	Controller(Controller const&)/* = delete*/;
-	void operator=(Controller const&)/* = delete*/;
 
 private:
 	Common::Namespace* mGlobalScope;

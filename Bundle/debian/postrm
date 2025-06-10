@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "purge" ]; then
+    echo "Purging /var/lib/slang/library..."
+    rm -rf /var/lib/slang/library
+fi
+

@@ -29,12 +29,12 @@ class Socket : public ExtensionMethod
 {
 public:
 	Socket()
-	: ExtensionMethod(0, "socket", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "socket", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("domain", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("type", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("protocol", Designtime::IntegerObject::TYPENAME, 0, true));
+		params.push_back(Parameter::CreateDesigntime("domain", Designtime::Int32Type::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("type", Designtime::Int32Type::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("protocol", Designtime::Int32Type::TYPENAME, 0, true));
 
 		setSignature(params);
 	}
@@ -52,11 +52,11 @@ public:
 
 			int handle = socket(param_domain, param_type, param_protocol);
 
-			*result = Runtime::IntegerObject(handle);
+			*result = Runtime::Int32Type(handle);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

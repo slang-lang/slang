@@ -26,11 +26,11 @@ class Extension : public AExtension
 {
 public:
     Extension();
-    ~Extension() = default;
+    ~Extension() override = default;
 
 public:
-    void initialize( ExtensionNamespace* scope );
-    void provideMethods( ExtensionMethods& methods );
+    void initialize( ExtensionNamespace* scope ) override;
+    void provideMethods( ExtensionMethods& methods ) override;
 
 private:
     LIBC::fenv::fenv_t     mFenv;

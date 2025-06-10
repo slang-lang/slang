@@ -94,7 +94,7 @@ void RealWorldUsageTest::testCreateScriptFromString()
 		vm.runScriptFromString(
 			"public object Main {\
 				public void Main(int argc = 0, string args = \"\") {\
-					int one = 1;\
+					var one = 1;\
 					print(\"one = \" + one);\
 				}\
 			}"

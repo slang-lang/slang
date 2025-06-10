@@ -45,73 +45,73 @@ public:	// AClient implementation
 	int exec();
 
 public:
-	bool addBreakPoint(const StringList& tokens);
-	bool removeBreakPoint(const StringList& tokens);
+	bool addBreakPoint( const StringList& tokens );
+	bool removeBreakPoint( const StringList& tokens );
 
-	void executeMethod(const StringList &tokens);
-	MethodSymbol* getMethod(std::string name, const ParameterList& params) const;
-	Symbol* getSymbol(std::string name) const;
-	bool modifySymbol(const StringList& tokens);
-	void setCurrentFrame(Common::FrameId frameId);
-	void setCurrentFrame(const StringList& tokens);
-	void setCurrentThread(Common::ThreadId threadId);
-	void setCurrentThread(const StringList& tokens);
+	void executeMethod( const StringList &tokens );
+	MethodSymbol* getMethod( std::string name, const ParameterList& params ) const;
+	Symbol* getSymbol( std::string name ) const;
+	bool modifySymbol( const StringList& tokens );
+	void setCurrentFrame( Common::FrameId frameId );
+	void setCurrentFrame( const StringList& tokens );
+	void setCurrentThread( Common::ThreadId threadId );
+	void setCurrentThread( const StringList& tokens );
 
 	void continueExecution();
-	void run(const StringList &tokens);
+	void run( const StringList &tokens );
 	void shutdown();
 	void start();
 	void stop();
 
 public:	// IReceiver implementation
-	int notify(IScope* scope, const Core::BreakPoint& breakpoint);
-	int notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint);
-	int notifyExceptionCatch(IScope *scope, const Core::BreakPoint& breakpoint);
-	int notifyExceptionThrow(IScope *scope, const Core::BreakPoint& breakpoint);
-	int notifyExit(IScope* scope, const Core::BreakPoint& breakpoint);
+	int notify( IScope* scope, const Core::BreakPoint& breakpoint );
+	int notifyEnter( IScope* scope, const Core::BreakPoint& breakpoint );
+	int notifyExceptionCatch( IScope *scope, const Core::BreakPoint& breakpoint );
+	int notifyExceptionThrow( IScope *scope, const Core::BreakPoint& breakpoint );
+	int notifyExit( IScope* scope, const Core::BreakPoint& breakpoint );
 
-	int handleBreakpoint(IScope* scope, const Core::BreakPoint& breakpoint);
+	int handleBreakpoint( IScope* scope, const Core::BreakPoint& breakpoint );
 
 private:	// Configuration
 	void loadConfig();
 	void saveConfig();
 
 private:	// Scopes
-	MethodScope* getEnclosingMethodScope(IScope* scope) const;
-	Common::Namespace* getEnclosingNamespace(IScope* scope) const;
-	Runtime::Object* getEnclosingObject(IScope* scope) const;
-	Common::Method* getMethodFromScope(IScope *scope) const;
+	static MethodScope* getEnclosingMethodScope( IScope* scope ) ;
+	static Common::Namespace* getEnclosingNamespace( IScope* scope ) ;
+	static Runtime::Object* getEnclosingObject( IScope* scope ) ;
+	static Common::Method* getMethodFromScope( IScope *scope ) ;
 
 private:	// Watches
-	bool addWatch(const StringList &tokens);
+	bool addWatch( const StringList &tokens );
 	void refreshWatches();
-	bool removeWatch(const StringList &tokens);
+	bool removeWatch( const StringList &tokens );
 	void toggleAutoWatch();
 
 private:	// Symbol cache
-	bool addLiteralSymbol(const std::string& name, const std::string& value);
-	Symbol* getCachedSymbol(const std::string& name) const;
+	bool addLiteralSymbol( const std::string& name, const std::string& value );
+	Symbol* getCachedSymbol( const std::string& name ) const;
 	void clearSymbolCache();
 
 private:
-	std::string executeCommand(const StringList &tokens);
+	std::string executeCommand( const StringList &tokens );
 	void frameDown();
 	void frameUp();
-	StringList parseCommands(const std::string& commands) const;
-	void prepare(const StringList& tokens);
+	static StringList parseCommands( const std::string& commands ) ;
+	void prepare( const StringList& tokens );
 	void printHelp();
 	void printBreakPoints();
-	void printScope(IScope* scope);
+	void printScope( IScope* scope );
 	void printStackTrace();
-	void printSymbol(const StringList& tokens);
+	void printSymbol( const StringList& tokens );
 	void printThreads();
 	void printWatches();
-	std::string read();
+	static std::string read();
 	void toggleAutoList();
 	void toggleAutoStart();
 	void toggleAutoStop();
-	void write(const std::string& text);
-	void writeln(const std::string& text);
+	static void write( const std::string& text );
+	static void writeln( const std::string& text );
 
 private:
 	Core::BreakPoint mBreakpoint;
@@ -131,4 +131,4 @@ private:
 }
 
 
-#endif
+#endif Slang_slang_dbg_LocalClient_LocalClient_h

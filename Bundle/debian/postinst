@@ -1,0 +1,24 @@
+#!/bin/sh
+set -e
+
+echo "Post installation..."
+
+echo "Creating system-wide Slang library folder..."
+echo "Setting up /var/lib/slang/library..."
+
+SLANG_LIBRARY="/var/lib/slang/library"
+
+# Create the directory if it doesn't exist
+if [ ! -d "$SLANG_LIBRARY" ]; then
+    mkdir -p "$SLANG_LIBRARY"
+    echo "Created $SLANG_LIBRARY"
+fi
+
+# Ensure root owns it, readable and writable only by root
+chown root:root "$SLANG_LIBRARY"
+chmod 755 "$SLANG_LIBRARY"
+
+# create slang-pkg library entry
+cd /var/lib/slang/library && slang-pkg --locallibrary
+
+echo "Post-install script completed."

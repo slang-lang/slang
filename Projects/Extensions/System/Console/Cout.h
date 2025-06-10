@@ -7,9 +7,9 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 #include "Defines.h"
 
@@ -28,10 +28,10 @@ class Cout : public ExtensionMethod
 {
 public:
 	Cout()
-	: ExtensionMethod(0, "cout", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "cout", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("text", Common::TypeDeclaration(Designtime::StringObject::TYPENAME), VALUE_NONE, true));
+		params.push_back(Parameter::CreateDesigntime("text", Common::TypeDeclaration(Designtime::StringType::TYPENAME), VALUE_NONE, true));
 
 		setSignature(params);
 	}
@@ -49,8 +49,8 @@ public:
 			mOutMode = COUT;
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

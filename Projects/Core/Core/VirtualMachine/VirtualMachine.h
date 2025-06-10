@@ -35,19 +35,14 @@ class Script;
 class VirtualMachine
 {
 public:
-	class Settings {
+	class Settings
+	{
 	public:
-		Settings()
-		: DoCollectErrors(false),
-		  DoSanityCheck(true),
-		  DoSkipExtensions(false),
-		  DoSyntaxCheck(false)
-		{ }
-
-		bool DoCollectErrors;
-		bool DoSanityCheck;
-		bool DoSkipExtensions;
-		bool DoSyntaxCheck;
+		bool DoCollectErrors{ false };
+		bool DoSanityCheck{ true };
+		bool DoSkipExtensions{ false };
+		bool DoSyntaxCheck{ false };
+		bool PrintTokens{ false };
 	};
 
 public:

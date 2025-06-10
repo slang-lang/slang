@@ -10,10 +10,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 
 // Forward declarations
@@ -31,11 +31,11 @@ class StrPTime : public ExtensionMethod
 {
 public:
     StrPTime()
-	: ExtensionMethod( 0, "strptime", Designtime::IntegerObject::TYPENAME )
+	: ExtensionMethod( 0, "strptime", Designtime::Int32Type::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back( Parameter::CreateDesigntime( "format", Designtime::StringObject::TYPENAME, 0 ) );
-        params.push_back( Parameter::CreateDesigntime( "time", Designtime::StringObject::TYPENAME, 0 ) );
+		params.push_back( Parameter::CreateDesigntime( "format", Designtime::StringType::TYPENAME, 0 ) );
+        params.push_back( Parameter::CreateDesigntime( "time", Designtime::StringType::TYPENAME, 0 ) );
 
 		setSignature( params );
 	}
@@ -56,15 +56,15 @@ public:
             if ( strptime(param_time.c_str(), param_format.c_str(), &tm ) ) {
                 auto time = mktime( &tm );
 
-                *result = Runtime::IntegerObject( time );
+                *result = Runtime::Int32Type( time );
             }
             else {
-                *result = Runtime::IntegerObject( 0 );
+                *result = Runtime::Int32Type( 0 );
             }
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringObject( std::string( e.what() ) );
+			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringType( std::string( e.what() ) );
 
 			Controller::Instance().thread( threadId )->exception() = Runtime::ExceptionData( data, token.position() );
 			return Runtime::ControlFlow::Throw;

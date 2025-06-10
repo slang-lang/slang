@@ -8,10 +8,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -30,7 +30,7 @@ class StdTime : public ExtensionMethod
 {
 public:
 	StdTime()
-	: ExtensionMethod( nullptr, "time", Designtime::IntegerObject::TYPENAME )
+	: ExtensionMethod( nullptr, "time", Designtime::Int32Type::TYPENAME )
 	{
 		ParameterList params;
 
@@ -41,11 +41,11 @@ public:
 	Runtime::ControlFlow::E execute( Common::ThreadId threadId, const ParameterList& /*params*/, Runtime::Object* result, const Token& token )
 	{
 		try {
-			*result = Runtime::IntegerObject( static_cast<int>( time( nullptr ) ) );
+			*result = Runtime::Int32Type( static_cast<int>( time( nullptr ) ) );
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringObject( std::string( e.what() ) );
+			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringType( std::string( e.what() ) );
 
 			Controller::Instance().thread( threadId )->exception() = Runtime::ExceptionData( data, token.position() );
 			return Runtime::ControlFlow::Throw;

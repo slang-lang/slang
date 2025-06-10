@@ -18,7 +18,7 @@ namespace Designtime {
 bool SanityChecker::checkBalancedBrackets() const
 {
 	int openBrackets = 0;
-	TokenIterator token = mTokens.begin();
+	auto token = mTokens.begin();
 
 	while ( token != mTokens.end() ) {
 		if ( token->type() == Token::Type::BRACKET_OPEN ) {
@@ -28,7 +28,7 @@ bool SanityChecker::checkBalancedBrackets() const
 			openBrackets--;
 		}
 
-		token++;
+		++token;
 	}
 
 	return (openBrackets == 0);
@@ -37,7 +37,7 @@ bool SanityChecker::checkBalancedBrackets() const
 bool SanityChecker::checkBalancedCurlyBrackets() const
 {
 	int openBrackets = 0;
-	TokenIterator token = mTokens.begin();
+	auto token = mTokens.begin();
 
 	while ( token != mTokens.end() ) {
 		if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
@@ -47,7 +47,7 @@ bool SanityChecker::checkBalancedCurlyBrackets() const
 			openBrackets--;
 		}
 
-		token++;
+		++token;
 	}
 
 	return (openBrackets == 0);
@@ -56,7 +56,7 @@ bool SanityChecker::checkBalancedCurlyBrackets() const
 bool SanityChecker::checkBalancedParenthesis() const
 {
 	int openParenthesis = 0;
-	TokenIterator token = mTokens.begin();
+	auto token = mTokens.begin();
 
 	while ( token != mTokens.end() ) {
 		if ( token->type() == Token::Type::PARENTHESIS_OPEN ) {
@@ -66,7 +66,7 @@ bool SanityChecker::checkBalancedParenthesis() const
 			openParenthesis--;
 		}
 
-		token++;
+		++token;
 	}
 
 	return (openParenthesis == 0);
@@ -75,14 +75,14 @@ bool SanityChecker::checkBalancedParenthesis() const
 bool SanityChecker::checkBalancedQuotes() const
 {
 	bool openQuote = false;
-	TokenIterator token = mTokens.begin();
+	auto token = mTokens.begin();
 
 	while ( token != mTokens.end() ) {
 		if ( token->type() == Token::Type::QUOTATION_DOUBLE ) {
 			openQuote = !openQuote;
 		}
 
-		token++;
+		++token;
 	}
 
 	return !openQuote;

@@ -64,11 +64,11 @@ BluePrintObject::BluePrintObject()
 	mType = Symbol::IType::BluePrintObjectSymbol;
 }
 
-BluePrintObject::BluePrintObject(const std::string& unqualifiedTypename, const std::string& filename, const std::string& name)
+BluePrintObject::BluePrintObject(const std::string& unqualifiedTypename, std::string filename, const std::string& name)
 : BlueprintSymbol(unqualifiedTypename),
   MethodScope(unqualifiedTypename, nullptr),
   mIsAtomicType(false),
-  mFilename(filename),
+  mFilename(std::move(filename)),
   mIsPrepared(false),
   mIsReference(false),
   mQualifiedTypename(unqualifiedTypename),

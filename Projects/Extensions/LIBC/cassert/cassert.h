@@ -7,8 +7,8 @@
 #include <cassert>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -29,11 +29,11 @@ class CASSERT : public ExtensionMethod
 {
 public:
     CASSERT()
-    : ExtensionMethod(0, "assert", Designtime::VoidObject::TYPENAME)
+    : ExtensionMethod(0, "assert", Designtime::VoidType::TYPENAME)
     {
         ParameterList params;
         params.push_back(Parameter::CreateDesigntime("condition", Common::TypeDeclaration(_any)));
-        params.push_back(Parameter::CreateDesigntime("message", Designtime::StringObject::TYPENAME, Runtime::AtomicValue(std::string(VALUE_NONE)), true));
+        params.push_back(Parameter::CreateDesigntime("message", Designtime::StringType::TYPENAME, Runtime::AtomicValue(std::string(VALUE_NONE)), true));
 
         setExceptions(CheckedExceptions::Throw);
         setSignature(params);

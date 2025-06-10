@@ -68,6 +68,10 @@ public namespace System.IO {
 			return mFilename;
 		}
 
+		public int getSize() const {
+			return mSize;
+		}
+
 		public bool isEOF() const {
 			return feof( mHandle ) != 0;
 		}
@@ -87,8 +91,12 @@ public namespace System.IO {
 			}
 
 			mAccessMode = mode;
-			mFilename = filename;
-			mHandle = fopen( mFilename, mAccessMode );
+			mFilename   = filename;
+			mHandle     = fopen( mFilename, mAccessMode );
+
+			fseek( mHandle, 0, SEEK_END );
+			mSize = ftell( mHandle );
+			fseek( mHandle, 0, SEEK_SET );
 
 			return mHandle != 0;
 		}
@@ -113,7 +121,7 @@ public namespace System.IO {
 			return freadi( mHandle );
 		}
 
-		public string readString(int length) const {
+		public string readString( int length ) const {
 			return freads( mHandle, length );
 		}
 
@@ -148,6 +156,7 @@ public namespace System.IO {
 		private string mAccessMode;
 		private string mFilename;
 		private int mHandle;
+		private int mSize;
 	}
 
 	private string MapFileAccessModeToString( System.IO.File.AccessMode mode const ) const throws {
@@ -178,4 +187,3 @@ public namespace System.IO {
 		throw new Exception( "invalid mode( \"" + mode + "\" ) provided!" );
 	}
 }
-

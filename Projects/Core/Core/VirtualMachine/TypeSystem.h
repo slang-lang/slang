@@ -105,7 +105,9 @@ private:
 	void initDouble();
 	void initEnumeration();
 	void initFloat();
-	void initInt();
+	void initInt16();
+	void initInt32();
+	void initInt64();
 	void initObject();
 	void initString();
 
@@ -118,4 +120,3 @@ private:
 
 
 #endif
-

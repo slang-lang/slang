@@ -44,8 +44,8 @@ public object Parser {
 		Map<int, Line> lines = new Map<int, Line>();
 		Line previousLine;
 
-		while ( peek() ) {
-			Line line = parseLine();
+		while ( mTokenIterator.hasNext() ) {
+			var line = parseLine();
 			if ( !line ) {
 				// ignore invalid lines (mostly shebangs ;-)
 				continue;

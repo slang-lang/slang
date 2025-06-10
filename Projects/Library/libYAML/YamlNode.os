@@ -59,3 +59,4 @@ private object YamlMap extends YamlNode {
 private object YamlVector extends YamlNode {
 	public Vector<YamlNode> nodes;
 }
+

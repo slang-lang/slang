@@ -128,7 +128,7 @@ public:
 	};
 
 public:
-	explicit BinaryExpression(Node* lhs, const Token& operation, Node* rhs, const std::string& resultType)
+	explicit BinaryExpression(Node* lhs, Token operation, Node* rhs, const std::string& resultType)
 	: Expression(ExpressionType::BinaryExpression),
 	  mLHS(lhs),
 	  mOperation(std::move(operation)),
@@ -242,13 +242,24 @@ public:
 };
 
 
+class Int16LiteralExpression : public LiteralExpression
+{
+public:
+	explicit Int16LiteralExpression(const Runtime::AtomicValue& value)
+	: LiteralExpression(value)
+	{
+		mResultType = _int16;
+	}
+};
+
+
 class IntegerLiteralExpression : public LiteralExpression
 {
 public:
 	explicit IntegerLiteralExpression(const Runtime::AtomicValue& value)
 	: LiteralExpression(value)
 	{
-		mResultType = _int;
+		mResultType = _int32;
 	}
 };
 
@@ -400,7 +411,7 @@ public:
 	}
 
 	std::string toString() const override {
-		std::string result = mName;
+		auto result = mName;
 
 		if ( mSymbolExpression ) {
 			result += "." + mSymbolExpression->toString();
@@ -682,7 +693,7 @@ public:
 	};
 
 public:
-	explicit UnaryExpression(const Token& operation, Node* exp, ValueType::E valueType)
+	explicit UnaryExpression(Token operation, Node* exp, ValueType::E valueType)
 	: Expression(ExpressionType::UnaryExpression),
 	  mExpression(exp),
 	  mOperation(std::move(operation)),

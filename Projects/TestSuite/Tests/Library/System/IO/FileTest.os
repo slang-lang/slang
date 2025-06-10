@@ -5,6 +5,8 @@ import System.IO.File;
 public void Main(int argc = 0, string argv = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
+
+	print( "passed" );
 }
 
 private bool TestCase1() const {
