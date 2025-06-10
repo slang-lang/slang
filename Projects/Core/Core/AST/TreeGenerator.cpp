@@ -8,7 +8,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/OperatorOverloading.h>
@@ -60,7 +60,7 @@ void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 
 Node* TreeGenerator::expression(TokenIterator& start)
 {
-	Node* expression = parseCondition(start);
+	auto* expression = parseCondition(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -96,7 +96,7 @@ void TreeGenerator::finalize()
 	}
 
 	// verify return statement existence
-	if ( mMethod->QualifiedTypename() != Designtime::VoidObject::TYPENAME
+	if ( mMethod->QualifiedTypename() != Designtime::VoidType::TYPENAME
 		 && (mControlFlow != Runtime::ControlFlow::Return && mControlFlow != Runtime::ControlFlow::Throw) ) {
 		Token last;
 		if ( !mMethod->getTokens().empty() ) {
@@ -166,7 +166,7 @@ Statements* TreeGenerator::generateAST(Common::Method* method)
 	return statements;
 }
 
-MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
+MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope)
 {
 	while ( scope ) {
 		auto* methodScope = dynamic_cast<MethodScope*>(scope->getEnclosingScope());
@@ -180,7 +180,7 @@ MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
 	return nullptr;
 }
 
-MethodScope* TreeGenerator::getMethodScope(IScope* scope) const
+MethodScope* TreeGenerator::getMethodScope(IScope* scope)
 {
 	auto* result = dynamic_cast<MethodScope*>(scope);
 
@@ -238,7 +238,7 @@ void TreeGenerator::initialize(Common::Method* method)
 
 Node* TreeGenerator::parseCondition(TokenIterator& start)
 {
-	Node* condition = parseExpression(start);
+	auto* condition = parseExpression(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -319,7 +319,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 
 Node* TreeGenerator::parseExpression(TokenIterator& start)
 {
-	Node* expression = parseFactor(start);
+	auto* expression = parseFactor(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -371,7 +371,7 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 
 Node* TreeGenerator::parseFactor(TokenIterator &start)
 {
-	Node* factor = parseInfix(start);
+	auto* factor = parseInfix(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -515,7 +515,16 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 			++start;
 		} break;
 		case Token::Type::CONST_INTEGER: {
-			term = new IntegerLiteralExpression(Utils::Tools::stringToInt(start->content()));
+		    auto value = Utils::Tools::stringToInt(start->content());
+			/*
+			if( value > -32768 && value < 32,767 )
+			    term = new Int16LiteralExpression(value);
+			else if( value > -2147483648 & value < 2147483647 )
+			    term = new IntegerLiteralExpression(value);
+			else
+			*/
+			    term = new IntegerLiteralExpression(value);  // TODO: replace this with Int64LiteralExpression when available
+
 			++start;
 		} break;
 		case Token::Type::CONST_LITERAL: {
@@ -671,12 +680,12 @@ Node* TreeGenerator::processPostfixRangeOperator(TokenIterator& start, Node* bas
 	auto* rhs = dynamic_cast<Expression*>(expression(start));
 
 	// validate left expression (has to be integer literal expression)
-	if ( !lhs || lhs->getResultType() != _int ) {
+	if ( !lhs || ( lhs->getResultType() != _int16 && lhs->getResultType() != _int32 ) ) {
 		throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on left side", start->position());
 	}
 
 	// validate right expression (has to be integer literal expression)
-	if ( !rhs || rhs->getResultType() != _int ) {
+	if ( !rhs || ( rhs->getResultType() != _int16 && lhs->getResultType() != _int32 ) ) {
 		throw Designtime::Exceptions::SyntaxError("Range operator requires integer expression on right side", start->position());
 	}
 
@@ -713,7 +722,10 @@ Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* bas
 	else if ( infixPostfix->getResultType() == _float ) {
 		return processPostfixObjectOperator(std::string(_float_object), start, infixPostfix);
 	}
-	else if ( infixPostfix->getResultType() == _int ) {
+	else if ( infixPostfix->getResultType() == _int16 ) {
+		return processPostfixObjectOperator(std::string(_int_object), start, infixPostfix);
+	}
+	else if ( infixPostfix->getResultType() == _int32 ) {
 		return processPostfixObjectOperator(std::string(_int_object), start, infixPostfix);
 	}
 	else if ( infixPostfix->getResultType() == _string ) {
@@ -945,8 +957,8 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
-	std::string type = targetExp->getResultType();
-	PrototypeConstraints constraints = targetExp->mConstraints;
+	std::string type{ targetExp->getResultType() };
+	PrototypeConstraints constraints{ targetExp->mConstraints };
 
 	Common::TypeDeclaration typeName(type, constraints);
 
@@ -1633,7 +1645,7 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 	mControlFlow = Runtime::ControlFlow::Return;
 
 	Node* exp = nullptr;
-	std::string returnType = Designtime::VoidObject::TYPENAME;
+	std::string returnType = Designtime::VoidType::TYPENAME;
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		exp = expression(token);
@@ -2107,7 +2119,7 @@ void TreeGenerator::pushScope(IScope* scope, bool allowBreakAndContinue)
 	mStackFrame->pushScope(scope, allowDelete, allowBreakAndContinue || mStackFrame->allowBreakAndContinue());
 }
 
-std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* symbol) const
+std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* symbol)
 {
 	if ( !symbol ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol provided");
@@ -2244,7 +2256,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	return symbol;
 }
 
-MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const
+MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility)
 {
 	if ( !symbol ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol provided");

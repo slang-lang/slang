@@ -21,12 +21,12 @@ public:
 	virtual ~ITerminal() = default;
 
 	virtual std::string read() = 0;
-	virtual void write(const std::string& text) = 0;
-	virtual void writeln(const std::string& text) = 0;
+	virtual void write( const std::string& text ) = 0;
+	virtual void writeln( const std::string& text ) = 0;
 };
 
 
 }
 
 
-#endif
+#endif Slang_slang_dbg_Interfaces_ITerminal_h

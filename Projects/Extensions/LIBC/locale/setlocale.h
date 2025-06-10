@@ -7,8 +7,8 @@
 #include <cassert>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
@@ -29,11 +29,11 @@ class SETLOCALE : public ExtensionMethod
 {
 public:
 	SETLOCALE()
-	: ExtensionMethod( 0, "setlocale", Designtime::StringObject::TYPENAME )
+	: ExtensionMethod( 0, "setlocale", Designtime::StringType::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back( Parameter::CreateDesigntime( "category", Designtime::IntegerObject::TYPENAME ) );
-		params.push_back( Parameter::CreateDesigntime( "locale", Designtime::StringObject::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "category", Designtime::Int32Type::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "locale", Designtime::StringType::TYPENAME ) );
 
 		setSignature( params );
 	}
@@ -48,11 +48,11 @@ public:
 			auto param_category = (*it++).value().toInt();
 			auto param_locale   = (*it++).value().toStdString();
 
-			*result = Runtime::StringObject( std::string( setlocale( param_category, param_locale.c_str() ) ) );
+			*result = Runtime::StringType( std::string( setlocale( param_category, param_locale.c_str() ) ) );
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringObject( std::string( e.what() ) );
+			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringType( std::string( e.what() ) );
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData( data, token.position() );
 			return Runtime::ControlFlow::Throw;

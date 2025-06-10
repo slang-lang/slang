@@ -1,15 +1,16 @@
 {
   "name": "BASIC Interpreter that parses all tokens before interpreting",
   "name_short": "Basic-Token",
-  "version": "0.1.9",
+  "version": "0.2.0-alpha",
   "description": "BASIC Interpreter parses and interprets (=runs) .bas scripts.",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.7.3" },
+    { "module": "Slang", "version_min": "0.9.3-alpha" },
     { "module": "System", "version_min": "0.3.4" },
     { "module": "libParam", "version_min": "0.2.0" }
   ],
   "target": {
     "directory": "Basic-Token",
+    "install": ["Basic.os", "DBasic.os"],
     "type": "internal"
   }
 }

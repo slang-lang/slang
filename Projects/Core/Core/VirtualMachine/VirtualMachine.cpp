@@ -36,23 +36,23 @@ namespace Slang {
 #else
 void read_directory(const std::string& dirname, std::vector<std::string>& files)
 {
-    DIR* dirp = opendir(dirname.c_str());
-    if ( !dirp ) {
-	// couldn't opern directory
-	return;
-    }
+	DIR* dirp = opendir(dirname.c_str());
+	if ( !dirp ) {
+		// couldn't opern directory
+		return;
+	}
 
-    struct dirent * dp;
+	struct dirent * dp;
 
-    while ( (dp = readdir(dirp)) != nullptr ) {
-        std::string file(dp->d_name);
+	while ( (dp = readdir(dirp)) != nullptr ) {
+		std::string file(dp->d_name);
 
-        if ( file != "." && file != ".." ) {
-		files.push_back(dirname + "/" + file);
-        }
-    }
+		if ( file != "." && file != ".." ) {
+			files.push_back(dirname + "/" + file);
+		}
+	}
 
-    closedir(dirp);
+	closedir(dirp);
 }
 #endif
 
@@ -144,7 +144,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 	auto *script = new Script();
 	mScripts.insert(script);
 
-	Designtime::Analyser analyser(mSettings.DoSanityCheck);
+	Designtime::Analyser analyser(mSettings.DoSanityCheck, mSettings.PrintTokens);
 	analyser.processString(content, mScriptFile);
 
 	// load all extension references
@@ -181,7 +181,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 	AST::Generator generator(mSettings.DoCollectErrors);
 	generator.process(globalScope);
 
-	int errors = generator.hasErrors();
+	auto errors = generator.hasErrors();
 	if ( errors ) {
 		throw Common::Exceptions::Exception(Utils::Tools::toString(errors) + " error(s) during AST generation detected!");
 	}
@@ -234,18 +234,18 @@ Script* VirtualMachine::createScriptFromString(const std::string& content)
 
 void VirtualMachine::init()
 {
-	OSdebug("initializing virtual machine...");
+	OSdebug( "initializing virtual machine..." );
 
-	auto* homepath = getenv(SLANG_LIBRARY);
+	auto* homepath = getenv( SLANG_LIBRARY );
 	if ( homepath ) {
-		std::string path(homepath);
+		std::string path( homepath );
 
 		while ( !path.empty() ) {
 			std::string left;
 			std::string right;
 
-			Utils::Tools::splitBy(path, ':', left, right);
-			addLibraryFolder(left);
+			Utils::Tools::splitBy( path, ':', left, right );
+			addLibraryFolder( left );
 
 			path = right;
 		}
@@ -255,14 +255,14 @@ void VirtualMachine::init()
 #ifdef _WIN32
 		// Extension loading is not supported under Windows
 #else
-		OSdebug("loading extensions...");
+		OSdebug( "loading extensions..." );
 
 		std::vector<std::string> sharedLibraries;
-		read_directory(SHARED_LIBRARY_DIRECTORY, sharedLibraries);
+		read_directory( SHARED_EXTENSION_DIRECTORY, sharedLibraries );
 
 		// load installed shared libraries
 		for ( const std::string& library : sharedLibraries ) {
-			addExtension( mExtensionManager.load(library), library );
+			addExtension( mExtensionManager.load( library ), library );
 		}
 #endif
 	}
@@ -310,7 +310,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 	mLibraryFolders.insert( currentFolder );
 
-	Designtime::Analyser analyser(mSettings.DoSanityCheck);
+	Designtime::Analyser analyser(mSettings.DoSanityCheck, mSettings.PrintTokens);
 	analyser.processFile(library);
 
 	mImportedLibraries.insert(library);
@@ -362,7 +362,7 @@ void VirtualMachine::printExtensions()
 
 void VirtualMachine::printLibraryFolders()
 {
-   std::cout << "Libraries:" << std::endl;
+	std::cout << "Libraries:" << std::endl;
 
 	for ( const auto& libraryFolder : mLibraryFolders ) {
 		std::cout << libraryFolder << std::endl;
@@ -372,29 +372,29 @@ void VirtualMachine::printLibraryFolders()
 void VirtualMachine::printSpecification( const std::string& specification )
 {
 	if ( specification.empty() ) {
-        for ( const auto& str : mSpecification ) {
-            std::cout << str << std::endl;
-        }
+		for ( const auto& str : mSpecification ) {
+			std::cout << str << std::endl;
+		}
 
-        return;
-    }
+		return;
+	}
 
-    int32_t found{ 0 };
-    for ( const auto& str : mSpecification ) {
-        if ( str.find( specification ) != std::string::npos ) {
+	int32_t found{ 0 };
+	for ( const auto& str : mSpecification ) {
+		if ( str.find( specification ) != std::string::npos ) {
             std::cout << str << std::endl;
 
             found++;
-        }
-    }
+		}
+	}
 
-    if ( found ) {
-        //std::cout << std::endl;
-        //std::cout << "found " << found << " occurrence(s) of " << specification << std::endl;
-    }
-    else {
-        std::cout << "no result found for '" << specification << "'" << std::endl;
-    }
+	if ( found ) {
+		//std::cout << std::endl;
+		//std::cout << "found " << found << " occurrence(s) of " << specification << std::endl;
+	}
+	else {
+		std::cout << "no result found for '" << specification << "'" << std::endl;
+	}
 }
 
 void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::Object* result)
@@ -422,14 +422,14 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 
 void VirtualMachine::runScriptFromFile(const std::string &filename, const Slang::ParameterList &params, Slang::Runtime::Object *result)
 {
-	Script* script = createScriptFromFile(filename);
+	auto* script = createScriptFromFile(filename);
 
 	run(script, params, result);
 }
 
 void VirtualMachine::runScriptFromString(const std::string &content, const Slang::ParameterList &params, Slang::Runtime::Object *result)
 {
-	Script* script = createScriptFromString(content);
+	auto* script = createScriptFromString(content);
 
 	run(script, params, result);
 }
@@ -444,13 +444,26 @@ VirtualMachine::Settings& VirtualMachine::settings()
 
 namespace {
 	std::string buildFilename( const std::string& folder, const std::string& filename ) {
-		std::string file = Utils::Tools::Files::BuildLibraryPath( folder, filename );
+		// (1) look for a ".slang" file (new standard)
+		auto file = Utils::Tools::Files::BuildPath( folder, filename ) + ".slang";
 		if ( Utils::Tools::Files::exists( file ) ) {
 			return file;
 		}
 
-		return Utils::Tools::Files::BuildLibraryPath( folder, filename + std::string( "/All" ) );
+		// (2) look for a ".os" file (deprecated)
+		file = Utils::Tools::Files::BuildPath( folder, filename ) + ".os";
+		if ( Utils::Tools::Files::exists( file ) ) {
+			return file;
+		}
 
+		// (3) look for an "All.slang" file (new standard)
+		file = Utils::Tools::Files::BuildPath( folder, filename + std::string( "/All" ) ) + ".slang";
+		if ( Utils::Tools::Files::exists( file ) ) {
+			return file;
+		}
+
+		// (4) look for an "All.os" file as a last resort (deprecated)
+		return Utils::Tools::Files::BuildPath( folder, filename + std::string( "/All" ) ) + ".os";
 	}
 }
 

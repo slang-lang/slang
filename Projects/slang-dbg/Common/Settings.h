@@ -21,85 +21,85 @@ class Settings
 {
 public:
 	Settings()
-	: mAutoList(false),
-	  mAutoStart(false),
-	  mAutoStop(false),
-	  mAutoWatch(true),
-	  mBreakOnExceptionCatch(false),
-	  mBreakOnExceptionThrow(true),
-	  mPrompt("slang-dbg> "),
-	  mRemoteClient(false)
+	: mAutoList( false ),
+	  mAutoStart( false ),
+	  mAutoStop( false ),
+	  mAutoWatch( true ),
+	  mBreakOnExceptionCatch( false ),
+	  mBreakOnExceptionThrow( true ),
+	  mPrompt( "slang-dbg> " ),
+	  mRemoteClient( false )
 	{ }
 
 public:
 	bool autoList() const {
 		return mAutoList;
 	}
-	void autoList(bool value) {
+	void autoList( bool value ) {
 		mAutoList = value;
 	}
 
 	bool autoStart() const {
 		return mAutoStart;
 	}
-	void autoStart(bool value) {
+	void autoStart( bool value ) {
 		mAutoStart = value;
 	}
 
 	bool autoStop() const {
 		return mAutoStop;
 	}
-	void autoStop(bool value) {
+	void autoStop( bool value ) {
 		mAutoStop = value;
 	}
 
 	bool autoWatch() const {
 		return mAutoWatch;
 	}
-	void autoWatch(bool value) {
+	void autoWatch( bool value ) {
 		mAutoWatch = value;
 	}
 
 	bool breakOnExceptionCatch() const {
 		return mBreakOnExceptionCatch;
 	}
-	void breakOnExceptionCatch(bool value) {
+	void breakOnExceptionCatch( bool value ) {
 		mBreakOnExceptionCatch = value;
 	}
 
 	bool breakOnExceptionThrow() const {
 		return mBreakOnExceptionThrow;
 	}
-	void breakOnExceptionThrow(bool value) {
+	void breakOnExceptionThrow( bool value ) {
 		mBreakOnExceptionThrow = value;
 	}
 
 	const std::string& filename() const {
 		return mFilename;
 	}
-	void filename(const std::string& value) {
+	void filename( const std::string& value ) {
 		mFilename = value;
 	}
 
 	const std::string& prompt() const {
 		return mPrompt;
 	}
-	void prompt(const std::string& value) {
+	void prompt( const std::string& value ) {
 		mPrompt = value;
 	}
 
 	bool remoteClient() const {
 		return mRemoteClient;
 	}
-	void remoteClient(bool value) {
+	void remoteClient( bool value ) {
 		mRemoteClient = value;
 	}
 
 	const StringSet& libraryFolders() const {
 		return mLibraryFolders;
 	}
-	void addLibraryFolder(const std::string& value) {
-		mLibraryFolders.insert(value);
+	void addLibraryFolder( const std::string& value ) {
+		mLibraryFolders.insert( value );
 	}
 
 private:
@@ -119,4 +119,4 @@ private:
 }
 
 
-#endif
+#endif Slang_slang_dbg_Common_Settings_h

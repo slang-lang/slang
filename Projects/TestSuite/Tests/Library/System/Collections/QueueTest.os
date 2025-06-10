@@ -10,6 +10,8 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase4() );
 	assert( TestCase5() );	// this test should fail
 	assert( TestCase6() );
+
+	print( "passed" );
 }
 
 public bool TestCase1() {

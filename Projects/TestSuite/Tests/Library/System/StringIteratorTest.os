@@ -7,6 +7,8 @@ public void Main(int argc = 0, string args = "") modify {
 	assert( TestCase2() );
 	assert( TestCase3() );
 	assert( TestCase4() );
+
+	print( "passed" );
 }
 
 private bool TestCase1() {

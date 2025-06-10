@@ -139,7 +139,7 @@ std::string PrintVisitor::printExpression(Node* node) const
 	return result;
 }
 
-std::string PrintVisitor::printIndentation(int indentation) const
+std::string PrintVisitor::printIndentation(int indentation)
 {
 	std::string result;
 

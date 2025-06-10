@@ -1,0 +1,20 @@
+
+# Slang base
+SET( BASE_DIR "/home/madelmann/workspace/slang-lang" )
+SET( EXTERNALS_DIR "${BASE_DIR}/externals" )
+
+# CURL library includes
+#SET( BUILD_CURL_INC "${EXTERNALS_DIR}/curl/include" )
+#SET( BUILD_CURL_LIB "${EXTERNALS_DIR}/curl/lib" )
+
+# JSON library includes
+#SET( JSON_INCLUDE_DIR "${EXTERNALS_DIR}/jsoncpp/include" )
+#SET( JSON_LIBRARY "${EXTERNALS_DIR}/jsoncpp/lib" )
+
+# CURL library includes
+SET( BUILD_CURL_INC "/path/to/your/curl/include" )
+SET( BUILD_CURL_LIB "/path/to/your/curl/lib" )
+
+# JSON library includes
+SET( JSON_INCLUDE_DIR "/path/to/your/json/include" )
+SET( JSON_LIBRARY "/path/to/your/json/lib" )

@@ -1,0 +1,3 @@
+shlibs:Depends=libc6 (>= 2.38), libcurl3t64-gnutls (>= 7.56.1), libgcc-s1 (>= 3.0), libjsoncpp25 (>= 1.9.5), libstdc++6 (>= 13.1)
+misc:Depends=
+misc:Pre-Depends=

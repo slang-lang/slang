@@ -17,23 +17,23 @@ namespace Common {
 
 
 Logger::Logger()
-: mContext( nullptr ),
-  mHasParent( false ),
-  mLoudness( LoudnessMethod )
+: mContext( nullptr )
+, mHasParent( false )
+, mLoudness( LoudnessMethod )
 {
 }
 
-Logger::Logger( const ILogger* parent, const std::string& className, const std::string& key )
-: mContext( nullptr ),
-  mHasParent( false ),
-  mKey( key ),
-  mLoudness( LoudnessMethod )
+Logger::Logger( const ILogger* parent, const std::string& className, std::string key )
+: mContext( nullptr )
+, mHasParent( false )
+, mKey( std::move( key ) )
+, mLoudness( LoudnessMethod )
 {
 	if ( parent ) {
 		mContext = parent->getContext();
 		mHasParent = true;
 
-		if ( parent->getClassName().length() > 0 ) {
+		if ( !parent->getClassName().empty() ) {
 			mClassName = parent->getClassName() + "::";
 		}
 	}

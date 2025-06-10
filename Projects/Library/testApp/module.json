@@ -1,0 +1,15 @@
+{
+  "name": "TEST - Application",
+  "name_short": "testApp",
+  "version": "0.1.0",
+  "description": "This is a virtual module to test the dependency resolution.",
+  "dependencies": [
+	  { "module": "Slang", "version_min": "0.7.0", "version_max": "1.0.0" },
+	  { "module": "test_dependency1", "version_min": "0.1.0", "version_max": "1.0.0" },
+	  { "module": "test_dependency2", "version_min": "0.1.0", "version_max": "1.0.0" }
+  ],
+  "target": {
+    "directory": "testApp",
+    "type": "internal"
+  }
+}

@@ -7,8 +7,8 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 
@@ -26,10 +26,10 @@ class Write : public ExtensionMethod
 {
 public:
 	Write()
-	: ExtensionMethod(0, "write", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "write", Designtime::VoidType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("text", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("text", Designtime::StringType::TYPENAME));
 
 		setSignature(params);
 	}
@@ -47,8 +47,8 @@ public:
 			std::cout << param_text;
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

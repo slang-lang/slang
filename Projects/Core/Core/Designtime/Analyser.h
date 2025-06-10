@@ -29,7 +29,7 @@ namespace Designtime {
 class Analyser
 {
 public:
-	explicit Analyser(bool doSanityCheck = true);
+	explicit Analyser(bool doSanityCheck = true, bool printTokens = false);
 	~Analyser() = default;
 
 public:
@@ -75,6 +75,7 @@ private:
 	StringList mExtensions;
 	std::string mFilename;
 	StringList mLibraries;
+	bool mPrintTokens;
 	bool mProcessingInterface;
 	Repository* mRepository;
 	MethodScope* mScope;

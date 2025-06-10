@@ -8,10 +8,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 
@@ -30,10 +30,10 @@ class FERAISEEXCEPT: public ExtensionMethod
 {
 public:
     FERAISEEXCEPT()
-    : ExtensionMethod(0, "feraiseexcept", Designtime::IntegerObject::TYPENAME)
+    : ExtensionMethod(0, "feraiseexcept", Designtime::Int32Type::TYPENAME)
     {
         ParameterList params;
-        params.push_back(Parameter::CreateDesigntime("excepts", Common::TypeDeclaration(Designtime::IntegerObject::TYPENAME)));
+        params.push_back(Parameter::CreateDesigntime("excepts", Common::TypeDeclaration(Designtime::Int32Type::TYPENAME)));
 
         setSignature(params);
     }
@@ -47,11 +47,11 @@ public:
 
             auto param_excepts = (*it++).value().toInt();
 
-            *result = Runtime::IntegerObject(feraiseexcept(param_excepts));
+            *result = Runtime::Int32Type(feraiseexcept(param_excepts));
         }
         catch ( std::exception& e ) {
-            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
-            *data = Runtime::StringObject(std::string(e.what()));
+            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME);
+            *data = Runtime::StringType(std::string(e.what()));
 
             Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
             return Runtime::ControlFlow::Throw;

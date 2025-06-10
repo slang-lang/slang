@@ -4,7 +4,7 @@ public namespace System { }
 
 public void debug( bool condition, string successMsg, string failMsg ) {
 	if ( condition ) {
-		return print( msg_success );
+		print( successMsg );
 		return;
 	}
 
@@ -13,7 +13,7 @@ public void debug( bool condition, string successMsg, string failMsg ) {
 
 public void error( bool condition, string successMsg, string failMsg ) {
 	if ( condition ) {
-		return print( successMsg );
+		print( successMsg );
 		return;
 	}
 
@@ -22,7 +22,7 @@ public void error( bool condition, string successMsg, string failMsg ) {
 
 public void warn( bool condition, string successMsg, string failMsg ) {
 	if ( condition ) {
-		return print( successMsg );
+		print( successMsg );
 		return;
 	}
 

@@ -25,6 +25,11 @@ Memory::Memory()
 {
 }
 
+Memory::~Memory()
+{
+	deinit();
+}
+
 void Memory::add(const Runtime::Reference& ref)
 {
 	if ( !ref.isValid() ) {
@@ -43,9 +48,19 @@ void Memory::add(const Runtime::Reference& ref)
 void Memory::deinit()
 {
 	for ( auto& it : mMemory ) {
+		/*
+		if( it.second.mObject ) {
+			std::cout << "Address " << it.first.getAddress() << " is referenced " << it.second.mCount << " time(s)." << std::endl;
+		}
+		*/
+
+		//it.second.mObject->Destructor();
+
 		// force delete
 		delete it.second.mObject;
 	}
+
+	mMemory.clear();
 }
 
 void Memory::deleteObject(const Runtime::Reference& ref)
@@ -55,23 +70,15 @@ void Memory::deleteObject(const Runtime::Reference& ref)
 		throw Common::Exceptions::Exception("invalid delete for address " + Utils::Tools::toString(ref.getAddress()));
 	}
 
-	Runtime::Object* object = it->second.mObject;
-
-	// reset reference counter
-	it->second.mCount = 0;
-	it->second.mObject = nullptr;
-
-	// ... and remove address from memory
-	mMemory.erase(it);
-
 	// delete it if it's valid ...
-	if ( object ) {
-		object->Destructor();
+	if ( it->second.mObject ) {
+		it->second.mObject->Destructor();
 
-		object->setReference(Runtime::NullReference);
-
-		delete object;
+		delete it->second.mObject;
 	}
+
+	// ... and remove the address from memory
+	mMemory.erase(it);
 }
 
 Runtime::Object* Memory::get(const Runtime::Reference& ref) const
@@ -114,7 +121,7 @@ void Memory::remove(const Runtime::Reference& ref)
 
 	it->second.mCount--;
 	if ( it->second.mCount == 0 && it->second.mObject ) {
-		deleteObject(it->first);
+		deleteObject( it->first );
 	}
 }
 
@@ -125,7 +132,7 @@ const Runtime::Reference& Memory::reserveAddress()
 	//    reused and we accidentally make a forgotten reference
 	//    valid again although its object has been deleted
 	//    long ago;
-	if ( mNextAddress >= (unsigned int)-1 ) {
+	if ( mNextAddress >= static_cast<unsigned int>( -1 ) ) {
 		// 2) the more sophisticated way:
 		//    as soon as we run out of fresh addresses reuse
 		//    one that's not actually referencing a valid object
@@ -147,4 +154,3 @@ const Runtime::Reference& Memory::reserveAddress()
 
 
 }
-

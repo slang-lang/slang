@@ -9,22 +9,26 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Designtime/BluePrintObject.h>
-#include <Core/Designtime/BuildInTypes/BoolObject.h>
-#include <Core/Designtime/BuildInTypes/DoubleObject.h>
-#include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Designtime/BuildInTypes/UserObject.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/BoolType.h>
+#include <Core/Designtime/BuildInTypes/DoubleType.h>
+#include <Core/Designtime/BuildInTypes/FloatType.h>
+#include <Core/Designtime/BuildInTypes/Int16Type.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
+#include <Core/Designtime/BuildInTypes/Int64Type.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
+#include <Core/Designtime/BuildInTypes/UserType.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/EnumerationObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/UserObject.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/EnumerationType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
+#include <Core/Runtime/BuildInTypes/Int16Type.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/Int64Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
+#include <Core/Runtime/BuildInTypes/UserType.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Utils.h>
 #include "Controller.h"
 
@@ -111,7 +115,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 
 	// workaround for complex member types whose imports have not yet been analysed
 	if ( initialize == InitilizationType::None ) {
-		return new Runtime::UserObject(name, SYSTEM_LIBRARY, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
+		return new Runtime::UserType(name, SYSTEM_LIBRARY, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
 	}
 
 	// no entry found for given type
@@ -181,30 +185,36 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	Runtime::Object *object = nullptr;
 
 	// instantiate atomic types
-	if ( blueprint->QualifiedTypename() == Runtime::BoolObject::TYPENAME ) {
-		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE);
+	if ( blueprint->QualifiedTypename() == Runtime::BoolType::TYPENAME ) {
+		object = new Runtime::BoolType(name, Runtime::BoolType::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::DoubleObject::TYPENAME ) {
-		object = new Runtime::DoubleObject(name, Runtime::DoubleObject::DEFAULTVALUE);
+	else if ( blueprint->QualifiedTypename() == Runtime::DoubleType::TYPENAME ) {
+		object = new Runtime::DoubleType(name, Runtime::DoubleType::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::FloatObject::TYPENAME ) {
-		object = new Runtime::FloatObject(name, Runtime::FloatObject::DEFAULTVALUE);
+	else if ( blueprint->QualifiedTypename() == Runtime::FloatType::TYPENAME ) {
+		object = new Runtime::FloatType(name, Runtime::FloatType::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::IntegerObject::TYPENAME ) {
-		object = new Runtime::IntegerObject(name, Runtime::IntegerObject::DEFAULTVALUE);
+	else if ( blueprint->QualifiedTypename() == Runtime::Int16Type::TYPENAME ) {
+		object = new Runtime::Int16Type(name, Runtime::Int16Type::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::StringObject::TYPENAME ) {
-		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE);
+	else if ( blueprint->QualifiedTypename() == Runtime::Int32Type::TYPENAME ) {
+		object = new Runtime::Int32Type(name, Runtime::Int32Type::DEFAULTVALUE);
 	}
-	else if ( blueprint->QualifiedTypename() == Runtime::VoidObject::TYPENAME ) {
-		object = new Runtime::VoidObject(name);
+	else if ( blueprint->QualifiedTypename() == Runtime::Int64Type::TYPENAME ) {
+		object = new Runtime::Int64Type(name, Runtime::Int64Type::DEFAULTVALUE);
+	}
+	else if ( blueprint->QualifiedTypename() == Runtime::StringType::TYPENAME ) {
+		object = new Runtime::StringType(name, Runtime::StringType::DEFAULTVALUE);
+	}
+	else if ( blueprint->QualifiedTypename() == Runtime::VoidType::TYPENAME ) {
+		object = new Runtime::VoidType(name);
 	}
 	else if ( blueprint->isEnumeration() ) {
-		object = new Runtime::EnumerationObject(name, blueprint->QualifiedTypename(), blueprint->getValue());
+		object = new Runtime::EnumerationType(name, blueprint->QualifiedTypename(), blueprint->getValue());
 	}
 	// instantiate user defined types
 	else {
-		object = createUserObject(name, blueprint, initialize);
+		object = createUserType(name, blueprint, initialize);
 	}
 
 	IScope* parent = blueprint->getEnclosingScope();
@@ -261,14 +271,12 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintObject* bluepr
 /*
  * creates and initializes a user defined object type and initializes its base classes
  */
-Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize)
+Runtime::Object* Repository::createUserType(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize)
 {
 	assert(blueprint);
 
 	// create the base object
-	Runtime::Object* object = new Runtime::UserObject(name, blueprint->Filename(),
-													  Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(),
-																										 blueprint->getPrototypeConstraints()));
+	auto* object = new Runtime::UserType(name, blueprint->Filename(), Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(), blueprint->getPrototypeConstraints()));
 
 	if ( initialize >= InitilizationType::AllowAbstract ) {
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
@@ -285,7 +293,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 				switch ( ancestorIt.ancestorType() ) {
 					case Designtime::Ancestor::Type::Extends: {
 						// create base object
-						Runtime::Object *ancestor = createReference(blueIt->second, IDENTIFIER_THIS, ancestorIt.constraints(), InitilizationType::AllowAbstract);
+						auto* ancestor = createReference(blueIt->second, IDENTIFIER_THIS, ancestorIt.constraints(), InitilizationType::AllowAbstract);
 						ancestor->setParent(blueprint->getEnclosingScope());
 
 						// define new base
@@ -298,7 +306,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						// ignore hidden ancestors
 					} break;
 					case Designtime::Ancestor::Type::Implements: {
-						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt.constraints(), InitilizationType::None);
+						auto* ancestor = createReference(blueIt->second, name, ancestorIt.constraints(), InitilizationType::None);
 						ancestor->setParent(blueprint->getEnclosingScope());
 
 						// add our newly created ancestor to our inheritance
@@ -395,56 +403,68 @@ void Repository::init()
 	// Initialize virtual machine stuff
 	mTypeSystem = Controller::Instance().typeSystem();
 
-	IScope* scope = Controller::Instance().globalScope();
+	auto* scope = Controller::Instance().globalScope();
 
 	// add atomic types
 	{	// "bool" type
-		auto* obj = new Designtime::BoolObject();
+		auto* obj = new Designtime::BoolType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::BoolObject::TYPENAME, obj);
+		scope->define(Designtime::BoolType::TYPENAME, obj);
 	}
 	{	// "double" type
-		auto* obj = new Designtime::DoubleObject();
+		auto* obj = new Designtime::DoubleType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::DoubleObject::TYPENAME, obj);
+		scope->define(Designtime::DoubleType::TYPENAME, obj);
 	}
 	{	// "float" type
-		auto* obj = new Designtime::FloatObject();
+		auto* obj = new Designtime::FloatType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::FloatObject::TYPENAME, obj);
+		scope->define(Designtime::FloatType::TYPENAME, obj);
 	}
-	{	// "int" type
-		auto* obj = new Designtime::IntegerObject();
+	{	// "int16" type
+		auto* obj = new Designtime::Int16Type();
 		addBluePrint(obj);
 
-		scope->define(Designtime::IntegerObject::TYPENAME, obj);
+		scope->define(Designtime::Int16Type::TYPENAME, obj);
+	}
+	{	// "int32" type
+		auto* obj = new Designtime::Int32Type();
+		addBluePrint(obj);
+
+		scope->define(Designtime::Int32Type::TYPENAME, obj);
+	}
+	{	// "int64" type
+		auto* obj = new Designtime::Int64Type();
+		addBluePrint(obj);
+
+		scope->define(Designtime::Int64Type::TYPENAME, obj);
 	}
 	{	// "string" type
-		auto* obj = new Designtime::StringObject();
+		auto* obj = new Designtime::StringType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::StringObject::TYPENAME, obj);
+		scope->define(Designtime::StringType::TYPENAME, obj);
 	}
 	{	// "void" type
-		auto* obj = new Designtime::VoidObject();
+		auto* obj = new Designtime::VoidType();
 		addBluePrint(obj);
 
-		scope->define(Designtime::VoidObject::TYPENAME, obj);
+		scope->define(Designtime::VoidType::TYPENAME, obj);
 	}
 	{	// "Object" type
-		auto* obj = new Designtime::UserObject();
+		auto* obj = new Designtime::UserType();
 		obj->setIsReference(true);
 		addBluePrint(obj);
 
-		scope->define(Designtime::UserObject::TYPENAME, obj);
+		scope->define(Designtime::UserType::TYPENAME, obj);
 	}
 
 	// add predefined runtime objects
 	{	// null
-		auto* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
+		auto* nullObject = new Runtime::UserType(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
 		nullObject->setIsReference(true);
 		nullObject->setMemoryLayout(MemoryLayout::Static);
 		nullObject->setMutability(Mutability::Const);
@@ -602,9 +622,9 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	if ( blueprint->isEnumeration() ) {
 		// assignment operator
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-		//mTypeSystem->define(_int, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+		//mTypeSystem->define(_int32, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 		//mTypeSystem->define(_string, Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-		mTypeSystem->define(_int, Token::Type::ASSIGN, blueprint->QualifiedTypename(), _int);
+		mTypeSystem->define(_int32, Token::Type::ASSIGN, blueprint->QualifiedTypename(), _int32);
 		mTypeSystem->define(_string, Token::Type::ASSIGN, blueprint->QualifiedTypename(), _string);
 
 		// comparison operators (enum vs enum)
@@ -616,20 +636,20 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL,       blueprint->QualifiedTypename(), _bool);
 
 		// comparison operators (enum vs int)
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_EQUAL,         Designtime::IntegerObject::TYPENAME, _bool);
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS,          Designtime::IntegerObject::TYPENAME, _bool);
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS_EQUAL,    Designtime::IntegerObject::TYPENAME, _bool);
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER,       Designtime::IntegerObject::TYPENAME, _bool);
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER_EQUAL, Designtime::IntegerObject::TYPENAME, _bool);
-		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_UNEQUAL,       Designtime::IntegerObject::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_EQUAL,         Designtime::Int32Type::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS,          Designtime::Int32Type::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_LESS_EQUAL,    Designtime::Int32Type::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER,       Designtime::Int32Type::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_GREATER_EQUAL, Designtime::Int32Type::TYPENAME, _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(),      Token::Type::COMPARE_UNEQUAL,       Designtime::Int32Type::TYPENAME, _bool);
 
 		// comparison operators (int vs enum)
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_EQUAL,         blueprint->QualifiedTypename(), _bool);
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_LESS,          blueprint->QualifiedTypename(), _bool);
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    blueprint->QualifiedTypename(), _bool);
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_GREATER,       blueprint->QualifiedTypename(), _bool);
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, blueprint->QualifiedTypename(), _bool);
-		mTypeSystem->define(Designtime::IntegerObject::TYPENAME, Token::Type::COMPARE_UNEQUAL,       blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_EQUAL,         blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_LESS,          blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_LESS_EQUAL,    blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_GREATER,       blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_GREATER_EQUAL, blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(Designtime::Int32Type::TYPENAME, Token::Type::COMPARE_UNEQUAL,       blueprint->QualifiedTypename(), _bool);
 
 		// arithmetic operators
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_ADDITION, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
@@ -639,7 +659,7 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_SUBTRACT, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 
 		// typecast operator
-		mTypeSystem->define(_int, Token::Type::TYPECAST, blueprint->QualifiedTypename(), _int);
+		mTypeSystem->define(_int32, Token::Type::TYPECAST, blueprint->QualifiedTypename(), _int32);
 		mTypeSystem->define(_string, Token::Type::TYPECAST, blueprint->QualifiedTypename(), _string);
 
 		return;
@@ -759,4 +779,3 @@ void Repository::prepareType(const Common::TypeDeclaration& type)
 
 
 }
-

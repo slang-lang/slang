@@ -13,7 +13,6 @@ public enum JsonType {
 	Array,
 	Object,
 	Value
-	;
 }
 
 public enum JsonValueType {
@@ -23,7 +22,6 @@ public enum JsonValueType {
 	Number,
 	Object,
 	String
-	;
 }
 
 
@@ -31,9 +29,9 @@ public object JsonValue {
 // Public
 	public void Constructor() {
 		mObjectValue = JsonValue null;
-		mType = JsonType.Value;
-		mValue = "null";
-		mValueType = JsonValueType.Null;
+		mType        = JsonType.Value;
+		mValue       = "null";
+		mValueType   = JsonValueType.Null;
 	}
 
 	public void Constructor( bool value ) {
@@ -81,7 +79,7 @@ public object JsonValue {
 	}
 
 	public double asDouble() const throws {
-		if ( mValueType == JsonValueType.Object ) {
+		if ( mValueType == JsonValueType.Array || mValueType == JsonValueType.Object ) {
 			throw new InvalidTypeException( "double" );
 		}
 
@@ -89,7 +87,7 @@ public object JsonValue {
 	}
 
 	public float asFloat() const throws {
-		if ( mValueType == JsonValueType.Object ) {
+		if ( mValueType == JsonValueType.Array || mValueType == JsonValueType.Object ) {
 			throw new InvalidTypeException( "float" );
 		}
 
@@ -97,7 +95,7 @@ public object JsonValue {
 	}
 
 	public int asInt() const throws {
-		if ( mValueType == JsonValueType.Object ) {
+		if ( mValueType == JsonValueType.Array || mValueType == JsonValueType.Object ) {
 			throw new InvalidTypeException( "int" );
 		}
 
@@ -105,7 +103,7 @@ public object JsonValue {
 	}
 
 	public JsonObject asObject() const throws {
-		if ( mValueType != JsonValueType.Object ) {
+		if ( mValueType != JsonValueType.Array && mValueType != JsonValueType.Object ) {
 			throw new InvalidTypeException( "object" );
 		}
 
@@ -113,11 +111,15 @@ public object JsonValue {
 	}
 
 	public string asString() const {
-		if ( mValueType == JsonValueType.Object ) {
-			return mObjectValue.asString();
+		if ( mValueType == JsonValueType.Null ) {
+			return "null";
 		}
 
-		return cast<string>( mValue );
+		if ( mValueType != JsonValueType.Array && mValueType != JsonValueType.Object ) {
+			return cast<string>( mValue );
+		}
+
+		return mObjectValue.asString();
 	}
 
 	public JsonType getType() const {
@@ -154,44 +156,44 @@ public object JsonValue {
 
 	public void setValue( bool value ) modify {
 		mObjectValue = JsonValue null;
-		mValue = cast<string>( value );
-		mType = JsonType.Value;
-		mValueType = JsonValueType.Bool;
+		mValue       = cast<string>( value );
+		mType        = JsonType.Value;
+		mValueType   = JsonValueType.Bool;
 	}
 
 	public void setValue( double value ) modify {
 		mObjectValue = JsonValue null;
-		mValue = cast<string>( value );
-		mType = JsonType.Value;
-		mValueType = JsonValueType.Number;
+		mValue       = cast<string>( value );
+		mType        = JsonType.Value;
+		mValueType   = JsonValueType.Number;
 	}
 
 	public void setValue( float value ) modify {
 		mObjectValue = JsonValue null;
-		mValue = cast<string>( value );
-		mType = JsonType.Value;
-		mValueType = JsonValueType.Number;
+		mValue       = cast<string>( value );
+		mType        = JsonType.Value;
+		mValueType   = JsonValueType.Number;
 	}
 
 	public void setValue( int value ) modify {
 		mObjectValue = JsonValue null;
-		mValue = cast<string>( value );
-		mType = JsonType.Value;
-		mValueType = JsonValueType.Number;
+		mValue       = cast<string>( value );
+		mType        = JsonType.Value;
+		mValueType   = JsonValueType.Number;
 	}
 
 	public void setValue( string value ) modify {
 		mObjectValue = JsonValue null;
-		mValue = value;
-		mType = JsonType.Value;
-		mValueType = JsonValueType.String;
+		mValue       = value;
+		mType        = JsonType.Value;
+		mValueType   = JsonValueType.String;
 	}
 
 	public void setValue( JsonValue value ) modify {
 		mObjectValue = value;
-		mValue = "";
-		mType = value.getType();
-		mValueType = value.getValueType();
+		mValue       = "";
+		mType        = value.getType();
+		mValueType   = value.getValueType();
 	}
 
 	public int size() const {

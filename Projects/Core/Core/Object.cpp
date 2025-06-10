@@ -9,7 +9,7 @@
 #include <Core/AST/TreeInterpreter.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
@@ -176,7 +176,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	// if a specialized constructor is implemented, the default constructor cannot be used
 	Common::Method *constructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Protected));
 	if ( constructor ) {
-		VoidObject tmp;
+		VoidType tmp;
 
 		controlflow = Controller::Instance().thread(0)->execute(mThis, constructor, params, &tmp);
 
@@ -226,7 +226,7 @@ ControlFlow::E Object::Destructor()
 		// only execute destructor if one is present
 		Common::Method *destructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
 		if ( destructor ) {
-			VoidObject tmp;
+			VoidType tmp;
 
 			controlflow = Controller::Instance().thread(0)->execute(mThis, destructor, params, &tmp);
 
@@ -579,12 +579,13 @@ std::string Object::ToString(unsigned int indent) const
 
 	std::string result;
 	result += ::Utils::Tools::indent(indent);
-	result += " " + MemoryLayout::convert(mMemoryLayout);
+	//result += MemoryLayout::convert(mMemoryLayout) + " ";
 	if ( mLanguageFeatureState != LanguageFeatureState::Stable ) {
-		result += Visibility::convert(mVisibility);
+		result += Visibility::convert(mVisibility) + " ";
 	}
-	result += " " + QualifiedTypename() + " " + getName();
-	result += " " + Mutability::convert(mMutability);
+	result += QualifiedTypename() + " ";
+	result += getName() + " ";
+	result += Mutability::convert(mMutability);
 
 	if ( isAtomicType() ) {
 		result += " = '" + getValue().toStdString() + "'";
@@ -602,7 +603,7 @@ std::string Object::ToString(unsigned int indent) const
 */
 
 		for ( const auto& mSymbol : mSymbols ) {
-			if ( mSymbol.first == IDENTIFIER_THIS || !mSymbol.second ) {
+			if ( mSymbol.first == IDENTIFIER_THIS || mSymbol.second->getName() == IDENTIFIER_THIS || !mSymbol.second ) {
 				continue;
 			}
 

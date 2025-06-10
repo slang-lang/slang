@@ -16,6 +16,8 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase8() );
 	assert( TestCase9() );
 	assert( TestCase10() );
+
+	print( "passed" );
 }
 
 private bool TestCase1() const {

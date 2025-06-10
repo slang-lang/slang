@@ -14,8 +14,8 @@ public object JsonObject extends JsonValue implements IIterable {
 	public void Constructor() {
 		base.Constructor();
 
-		mMembers = new Map<string, JsonValue>();
-		mType = JsonType.Object;
+		mMembers   = new Map<string, JsonValue>();
+		mType      = JsonType.Object;
 		mValueType = JsonValueType.Object;
 	}
 

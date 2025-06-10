@@ -1,0 +1,23 @@
+Source: slang
+Section: devel
+Priority: optional
+Maintainer: Michael Adelmann <madelmann@github.com>
+Build-Depends: debhelper-compat (= 12)
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+Vcs-Git: https://github.com/slang-lang/slang-meta.git
+Vcs-Browser: https://github.com/slang-lang/slang
+Homepage: https://www.slang-lang.org/
+
+Package: slang
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         libjsoncpp-dev (>= 1.8.0),
+         libcurl4-openssl-dev (>= 1:8.0.0) | libcurl4-gnutls-dev (>= 1:8.0.0) | libcurl4
+Description: Statically typed scripting language with contract enforcement
+ The Slang programming language is a scripting language with a C++-like
+ syntax and strong static typing. It emphasizes design by contract and
+ const-correctness.
+ This package includes the core interpreter, a CLI debugger, and a package
+ manager for distributing .slang and .os scripts.

@@ -7,8 +7,8 @@
 #include <math.h>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
+#include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include "Defines.h"
@@ -28,10 +28,10 @@ class SRAND: public ExtensionMethod
 {
 public:
     SRAND()
-    : ExtensionMethod(0, "srand", Designtime::VoidObject::TYPENAME)
+    : ExtensionMethod(0, "srand", Designtime::VoidType::TYPENAME)
     {
         ParameterList params;
-        params.push_back(Parameter::CreateDesigntime("seed", Designtime::IntegerObject::TYPENAME));
+        params.push_back(Parameter::CreateDesigntime("seed", Designtime::Int32Type::TYPENAME));
 
         setSignature(params);
     }
@@ -49,8 +49,8 @@ public:
             srand(param_seed);
         }
         catch ( std::exception& e ) {
-            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-            *data = Runtime::StringObject(std::string(e.what()));
+            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+            *data = Runtime::StringType(std::string(e.what()));
 
             Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
             return Runtime::ControlFlow::Throw;

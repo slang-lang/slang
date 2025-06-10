@@ -20,9 +20,9 @@ namespace Common {
 class FileLogger : public Logger
 {
 public:
-	explicit FileLogger( const std::string& logfile );
+	explicit FileLogger( std::string logfile );
 	FileLogger( const ILogger* parent, const std::string& className, const std::string& key = "" );
-	~FileLogger();
+	~FileLogger() override;
 
 private:
 	std::string mLogFile;

@@ -27,6 +27,8 @@ private object SemVer const {
 		var dash = strfind( version, "-", dot2 + 1 );
 		var label = ( dash != -1 ) ? substr( version, dash + 1 ) : "";
 
+		// TODO: implement parsing of build number
+
 		return new SemVer( cast<int>( substr( version, 0, dot1 ) ),
 				   cast<int>( substr( version, dot1 + 1, dot2 ) ),
 				   cast<int>( substr( version, dot2 + 1 ) ),
@@ -38,6 +40,7 @@ private object SemVer const {
 	 * Public members which indicate the major, minor, bugfix version and an optional label
 	 */
 	public int Bugfix const;
+	public string BuildNumber const;	// not yet parsed!
 	public string Label const;
 	public int Major const;
 	public int Minor const;
@@ -45,11 +48,12 @@ private object SemVer const {
 	/*
 	 * Default constructor
 	 */
-	public void Constructor( int _major, int _minor, int _bugfix , string _label = "" ) {
-		Major = _major;
-		Minor = _minor;
-		Bugfix = _bugfix;
-		Label = _label;
+	public void Constructor( int _major, int _minor, int _bugfix , string _label = "", string _buildNumber = "" ) {
+		Bugfix      = _bugfix;
+		BuildNumber = _buildNumber;
+		Label       = _label;
+		Major       = _major;
+		Minor       = _minor;
 	}
 
 	/*
@@ -80,7 +84,14 @@ private object SemVer const {
 		if ( Major == other.Major ) {
 			if ( Minor == other.Minor ) {
 				if ( Bugfix == other.Bugfix ) {
-					return Label < other.Label;
+					if ( Label == other.Label ) {
+						return BuildNumber < other.BuildNumber;
+					}
+					else if ( Label && other.Label ) {
+						return Label < other.Label;
+					}
+
+					return Label && !other.Label;
 				}
 
 				return Bugfix < other.Bugfix;
@@ -93,13 +104,24 @@ private object SemVer const {
 	}
 
 	/*
+	 * equality operator
+	 */
+	public bool operator==( SemVer other const ) const {
+		return Major       == other.Major
+		    && Minor       == other.Minor
+		    && Bugfix      == other.Bugfix
+		    && Label       == other.Label
+		    && BuildNumber == other.BuildNumber;
+	}
+
+	/*
 	 * string cast operator
 	 */
 	public string =operator( string ) const {
 		return cast<string>( Major )
 			+ "." + cast<string>( Minor )
 			+ "." + cast<string>( Bugfix )
-			+ Label ? "-" + Label : "";
+			+ ( Label ? "-" + Label : "" )
+			+ ( BuildNumber ? "+" + BuildNumber : "" );
 	}
 }
-

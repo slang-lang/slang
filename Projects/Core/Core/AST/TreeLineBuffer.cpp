@@ -23,7 +23,7 @@ void TreeLineBuffer::clear()
 	mTreeLines.clear();
 }
 
-void TreeLineBuffer::getLines(Lines& lines)
+void TreeLineBuffer::getLines(Lines& lines) const
 {
 	lines = mTreeLines;
 }

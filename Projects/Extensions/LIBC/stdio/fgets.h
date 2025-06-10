@@ -8,11 +8,11 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/Int32Type.h>
+#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -35,11 +35,11 @@ class FGETS : public ExtensionMethod
 
 public:
 	FGETS()
-	: ExtensionMethod( 0, "fgets", Designtime::StringObject::TYPENAME )
+	: ExtensionMethod( 0, "fgets", Designtime::StringType::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back( Parameter::CreateDesigntime( "stream", Designtime::IntegerObject::TYPENAME ) );
-		params.push_back( Parameter::CreateDesigntime( "size", Designtime::IntegerObject::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "stream", Designtime::Int32Type::TYPENAME ) );
+		params.push_back( Parameter::CreateDesigntime( "size", Designtime::Int32Type::TYPENAME ) );
 
 		setSignature( params );
 	}
@@ -68,15 +68,15 @@ public:
 
 				char stream[READ_SIZE];
 				if ( fgets( stream, readSize, stdio_t::FileHandles[ param_handle ] ) != nullptr ) {
-					*result = Runtime::StringObject( std::string( stream ) );
+					*result = Runtime::StringType( std::string( stream ) );
 				}
 
 				remainingSize += readSize;
 			}
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringObject( std::string( e.what() ) );
+			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringType( std::string( e.what() ) );
 
 			Controller::Instance().thread( threadId )->exception() = Runtime::ExceptionData( data, token.position() );
 			return Runtime::ControlFlow::Throw;

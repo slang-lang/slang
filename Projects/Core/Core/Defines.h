@@ -6,11 +6,14 @@
 //#define USE_AST_OPTIMIZATION
 
 #ifdef __APPLE__
-#define SHARED_LIBRARY_DIRECTORY "/usr/local/share/slang/libs"
+#define SHARED_EXTENSION_DIRECTORY "/var/lib/slang/extensions/"
+#define SHARED_LIBRARY_DIRECTORY   "/var/lib/slang/library/"
 #elif _WIN32
-#define SHARED_LIBRARY_DIRECTORY ""
+#define SHARED_EXTENSION_DIRECTORY ""
+#define SHARED_LIBRARY_DIRECTORY   ""
 #elif __linux__
-#define SHARED_LIBRARY_DIRECTORY "/usr/local/share/slang/libs"
+#define SHARED_EXTENSION_DIRECTORY "/var/lib/slang/extensions/"
+#define SHARED_LIBRARY_DIRECTORY   "/var/lib/slang/library/"
 #endif
 
 

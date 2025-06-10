@@ -43,12 +43,9 @@ public object Scanner implements IIterable {
 			return;
 		}
 
-		while ( !mFile.isEOF() ) {
-			mText += mFile.readChar();
-		}
+		mText = mFile.readString( mFile.getSize() );
 	}
 
 	private System.IO.File mFile;
 	private string mText;
 }
-

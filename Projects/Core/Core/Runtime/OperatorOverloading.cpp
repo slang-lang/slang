@@ -6,14 +6,16 @@
 
 // Project includes
 #include <Core/Common/Method.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/EnumerationObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/UserObject.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/EnumerationType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
+#include <Core/Runtime/BuildInTypes/Int16Type.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/Int64Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
+#include <Core/Runtime/BuildInTypes/UserType.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/Tools.h>
@@ -31,31 +33,37 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string source = rvalue->QualifiedTypename();
-	std::string target = lvalue->QualifiedTypename();
+	const auto& source{ rvalue->QualifiedTypename() };
+	const auto& target{ lvalue->QualifiedTypename() };
 
 	if ( target == ANONYMOUS_OBJECT || source == target ) {
 		// assign directly because our lvalue has not yet been initialized
 		// or no type conversion is necessary
 		lvalue->assign( *rvalue );
 	}
-	else if ( target == BoolObject::TYPENAME ) {
-		lvalue->assign( BoolObject( rvalue->getValue().toBool() ) );
+	else if ( target == BoolType::TYPENAME ) {
+		lvalue->assign( BoolType( rvalue->getValue().toBool() ) );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		lvalue->assign( DoubleObject( rvalue->getValue().toDouble() ) );
+	else if ( target == DoubleType::TYPENAME ) {
+		lvalue->assign( DoubleType( rvalue->getValue().toDouble() ) );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		lvalue->assign( FloatObject( rvalue->getValue().toFloat() ) );
+	else if ( target == FloatType::TYPENAME ) {
+		lvalue->assign( FloatType( rvalue->getValue().toFloat() ) );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		lvalue->assign( IntegerObject( rvalue->getValue().toInt() ) );
+	else if ( target == Int16Type::TYPENAME ) {
+		lvalue->assign( Int16Type( rvalue->getValue().toInt() ) );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		lvalue->assign( StringObject( rvalue->getValue().toStdString() ) );
+	else if ( target == Int32Type::TYPENAME ) {
+		lvalue->assign( Int32Type( rvalue->getValue().toInt() ) );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		lvalue->assign( Int64Type( rvalue->getValue().toInt() ) );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		lvalue->assign( StringType( rvalue->getValue().toStdString() ) );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 
 		lvalue->assign( tmp );
 	}
@@ -66,11 +74,11 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 	}
 */
 	// special handling for enumeration values
-	else if ( lvalue->isEnumerationValue() && rvalue->QualifiedTypename() == _int ) {
+	else if ( lvalue->isEnumerationValue() && rvalue->QualifiedTypename() == _int32 ) {
 		lvalue->setValue( rvalue->getValue().toInt() );
 	}
 	// special handling for enumeration values
-	else if ( lvalue->QualifiedTypename() == _int && rvalue->isEnumerationValue() ) {
+	else if ( lvalue->QualifiedTypename() == _int32 && rvalue->isEnumerationValue() ) {
 		lvalue->setValue( rvalue->getValue().toInt() );
 	}
 	// no atomic data type, so we have to look if our assign operator has been overwritten
@@ -86,7 +94,7 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 		}
 
 		// invalid binary assignment operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->QualifiedTypename() + ".operator=: conversion from " + lvalue->QualifiedTypename() + " to " + rvalue->QualifiedTypename() + " not supported" );
+		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->QualifiedTypename() + ".operator=: conversion from " + rvalue->QualifiedTypename() + " to " + lvalue->QualifiedTypename() + " not supported" );
 	}
 }
 
@@ -98,38 +106,38 @@ void operator_binary_bitand( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_bitand( rvalue );
 
 		lvalue->assign( tmp );
@@ -148,38 +156,38 @@ void operator_binary_bitcomplement( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_bitcomplement( rvalue );
 
 		lvalue->assign( tmp );
@@ -196,40 +204,40 @@ void operator_binary_bitor( Object* lvalue, Object* rvalue )
 		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
-	std::string target = lvalue->QualifiedTypename();
+	const auto& target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_bitor( rvalue );
 
 		lvalue->assign( tmp );
@@ -248,38 +256,50 @@ void operator_binary_divide( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_divide( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		tmp.operator_divide( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_divide( rvalue );
 
 		lvalue->assign( tmp );
@@ -301,23 +321,29 @@ bool operator_binary_equal( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		return BoolObject( lvalue->isValid() ).operator_equal( rvalue );
+	if ( target == BoolType::TYPENAME ) {
+		return BoolType( lvalue->isValid() ).operator_equal( rvalue );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		return DoubleObject( lvalue->getValue().toDouble() ).operator_equal( rvalue );
+	else if ( target == DoubleType::TYPENAME ) {
+		return DoubleType( lvalue->getValue().toDouble() ).operator_equal( rvalue );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		return FloatObject( lvalue->getValue().toFloat() ).operator_equal( rvalue );
+	else if ( target == FloatType::TYPENAME ) {
+		return FloatType( lvalue->getValue().toFloat() ).operator_equal( rvalue );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		return IntegerObject( lvalue->getValue().toInt() ).operator_equal( rvalue );
+	else if ( target == Int16Type::TYPENAME ) {
+		return Int16Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		return StringObject( lvalue->getValue().toStdString() ).operator_equal( rvalue );
+	else if ( target == Int32Type::TYPENAME ) {
+		return Int32Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		return Int64Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		return StringType( lvalue->getValue().toStdString() ).operator_equal( rvalue );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		return tmp.operator_equal( rvalue );
 	}
 	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
@@ -345,28 +371,36 @@ bool operator_binary_greater( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_greater( rvalue );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		return tmp.operator_greater( rvalue );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		return tmp.operator_greater( rvalue );
 	}
 	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
@@ -389,28 +423,36 @@ bool operator_binary_greater_equal( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_greater_equal( rvalue );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		return tmp.operator_greater_equal( rvalue );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		return tmp.operator_greater_equal( rvalue );
 	}
 	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
@@ -433,28 +475,36 @@ bool operator_binary_less( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_less( rvalue );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		return tmp.operator_less( rvalue );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		return tmp.operator_less( rvalue );
 	}
 	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
@@ -477,28 +527,36 @@ bool operator_binary_less_equal( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		return tmp.operator_less_equal( rvalue );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		return tmp.operator_less_equal( rvalue );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		return tmp.operator_less_equal( rvalue );
 	}
 	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
@@ -521,38 +579,50 @@ void operator_binary_modulo( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_modulo( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		tmp.operator_modulo( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_modulo( rvalue );
 
 		lvalue->assign( tmp );
@@ -571,38 +641,50 @@ void operator_binary_multiply( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if (target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if (target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_multiply( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if (target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		tmp.operator_multiply( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if (target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_multiply( rvalue );
 
 		lvalue->assign( tmp );
@@ -621,38 +703,50 @@ void operator_binary_plus( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_plus( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		tmp.operator_plus( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_plus( rvalue );
 
 		lvalue->assign( tmp );
@@ -671,38 +765,38 @@ void operator_binary_shift_left( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_shift_left( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_shift_left( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_shift_left( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_shift_left( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
 		tmp.operator_shift_left( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_shift_left( rvalue );
 
 		lvalue->assign( tmp );
@@ -721,38 +815,38 @@ void operator_binary_shift_right( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_shift_right( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_shift_right( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_shift_right( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_shift_right( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
 		tmp.operator_shift_right( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_shift_right( rvalue );
 
 		lvalue->assign( tmp );
@@ -771,38 +865,50 @@ void operator_binary_subtract( Object* lvalue, Object* rvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_subtract( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		tmp.operator_subtract( rvalue );
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_subtract( rvalue );
 
 		lvalue->assign( tmp );
@@ -821,38 +927,50 @@ void operator_unary_decrement (Object* lvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_decrement();
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		tmp.operator_unary_decrement();
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_unary_decrement();
 
 		lvalue->assign( tmp );
@@ -871,38 +989,50 @@ void operator_unary_increment( Object* lvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->isValid() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->isValid() );
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_increment();
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		tmp.operator_unary_increment();
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_unary_increment();
 
 		lvalue->assign( tmp );
@@ -921,38 +1051,50 @@ void operator_unary_minus( Object* lvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->getValue().toBool() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->getValue().toBool() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
 	}
-	else if (target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_minus();
+
+		lvalue->assign( tmp );
+	}
+	else if (target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		tmp.operator_unary_minus();
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_unary_minus();
 
 		lvalue->assign( tmp );
@@ -971,38 +1113,50 @@ void operator_unary_plus( Object* lvalue )
 
 	std::string target = lvalue->QualifiedTypename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp( lvalue->getValue().toBool() );
+	if ( target == BoolType::TYPENAME ) {
+		BoolType tmp( lvalue->getValue().toBool() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( lvalue->getValue().toDouble() );
+	else if ( target == DoubleType::TYPENAME ) {
+		DoubleType tmp( lvalue->getValue().toDouble() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == FloatObject::TYPENAME ) {
-		FloatObject tmp( lvalue->getValue().toFloat() );
+	else if ( target == FloatType::TYPENAME ) {
+		FloatType tmp( lvalue->getValue().toFloat() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( lvalue->getValue().toInt() );
+	else if ( target == Int16Type::TYPENAME ) {
+		Int16Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == StringObject::TYPENAME ) {
-		StringObject tmp( lvalue->getValue().toStdString() );
+	else if ( target == Int32Type::TYPENAME ) {
+		Int32Type tmp( lvalue->getValue().toInt() );
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
 	}
-	else if ( target == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( target == Int64Type::TYPENAME ) {
+		Int64Type tmp( lvalue->getValue().toInt() );
+		tmp.operator_unary_plus();
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == StringType::TYPENAME ) {
+		StringType tmp( lvalue->getValue().toStdString() );
+		tmp.operator_unary_plus();
+
+		lvalue->assign( tmp );
+	}
+	else if ( target == VoidType::TYPENAME ) {
+		VoidType tmp;
 		tmp.operator_unary_plus();
 
 		lvalue->assign( tmp );
@@ -1021,38 +1175,48 @@ void operator_unary_not( Object* base )
 
 	std::string source = base->QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp( base->isValid() );
+	if ( source == BoolType::TYPENAME ) {
+		BoolType tmp( base->isValid() );
 
-		*base = BoolObject( !tmp.operator_bool() );
+		*base = BoolType( !tmp.operator_bool() );
 	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp( base->getValue() );
+	else if ( source == DoubleType::TYPENAME ) {
+		DoubleType tmp( base->getValue() );
 
-		*base = BoolObject( !tmp.operator_bool() );
+		*base = BoolType( !tmp.operator_bool() );
 	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp( base->getValue() );
+	else if ( source == FloatType::TYPENAME ) {
+		FloatType tmp( base->getValue() );
 
-		*base = BoolObject( !tmp.operator_bool() );
+		*base = BoolType( !tmp.operator_bool() );
 	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp( base->getValue() );
+	else if ( source == Int16Type::TYPENAME ) {
+		Int16Type tmp( base->getValue() );
 
-		*base = BoolObject( !tmp.operator_bool() );
+		*base = BoolType( !tmp.operator_bool() );
 	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp( base->getValue() );
+	else if ( source == Int32Type::TYPENAME ) {
+		Int32Type tmp( base->getValue() );
 
-		*base = BoolObject( !tmp.operator_bool() );
+		*base = BoolType( !tmp.operator_bool() );
 	}
-	else if ( source == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+	else if ( source == Int64Type::TYPENAME ) {
+		Int64Type tmp( base->getValue() );
 
-		*base = BoolObject( !tmp.operator_bool() );
+		*base = BoolType( !tmp.operator_bool() );
+	}
+	else if ( source == StringType::TYPENAME ) {
+		StringType tmp( base->getValue() );
+
+		*base = BoolType( !tmp.operator_bool() );
+	}
+	else if ( source == VoidType::TYPENAME ) {
+		VoidType tmp;
+
+		*base = BoolType( !tmp.operator_bool() );
 	}
 	else {
-		*base = BoolObject( !base->isValid() );
+		*base = BoolType( !base->isValid() );
 	}
 }
 
@@ -1070,4 +1234,3 @@ void operator_unary_validate( Object* base )
 
 }
 }
-

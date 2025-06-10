@@ -23,10 +23,10 @@ class ReadBool : public ExtensionMethod
 {
 public:
 	ReadBool()
-	: ExtensionMethod(0, "readb", Designtime::BoolObject::TYPENAME)
+	: ExtensionMethod(0, "readb", Designtime::BoolType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -47,11 +47,11 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while reading handle");
 			}
 
-			*result = Runtime::BoolObject(value);
+			*result = Runtime::BoolType(value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -66,10 +66,10 @@ class ReadDouble : public ExtensionMethod
 {
 public:
 	ReadDouble()
-	: ExtensionMethod(0, "readd", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "readd", Designtime::DoubleType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -90,11 +90,11 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while reading handle");
 			}
 
-			*result = Runtime::DoubleObject(value);
+			*result = Runtime::DoubleType(value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -109,10 +109,10 @@ class ReadFloat : public ExtensionMethod
 {
 public:
 	ReadFloat()
-	: ExtensionMethod(0, "readf", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "readf", Designtime::FloatType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -133,11 +133,11 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while reading handle");
 			}
 
-			*result = Runtime::FloatObject(value);
+			*result = Runtime::FloatType(value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -152,10 +152,10 @@ class ReadInt : public ExtensionMethod
 {
 public:
 	ReadInt()
-	: ExtensionMethod(0, "readi", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "readi", Designtime::Int32Type::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
 
 		setSignature(params);
 	}
@@ -176,11 +176,11 @@ public:
 				throw Runtime::Exceptions::RuntimeException("error while reading handle");
 			}
 
-			*result = Runtime::IntegerObject(value);
+			*result = Runtime::Int32Type(value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
@@ -195,11 +195,11 @@ class ReadString : public ExtensionMethod
 {
 public:
 	ReadString()
-	: ExtensionMethod(0, "reads", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "reads", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("length", Designtime::IntegerObject::TYPENAME, 1, true));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::Int32Type::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("length", Designtime::Int32Type::TYPENAME, 1, true));
 
 		setSignature(params);
 	}
@@ -234,11 +234,11 @@ public:
 				}
 			}
 
-			*result = Runtime::StringObject(value);
+			*result = Runtime::StringType(value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(std::string(e.what()));
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringType(std::string(e.what()));
 
 			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;

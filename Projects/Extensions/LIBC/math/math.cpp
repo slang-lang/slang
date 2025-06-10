@@ -6,8 +6,8 @@
 #include <math.h>
 
 // Project includes
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
 #include "abs.h"
 #include "acos.h"
 #include "acosh.h"
@@ -74,25 +74,27 @@ math_t::math_t()
 
 void math_t::initialize( ExtensionNamespace* scope )
 {
-	// constants
-	scope->define( "FP_NORMAL",    new Runtime::FloatObject(  "FP_NORMAL",    FP_NORMAL ) );
-	scope->define( "FP_SUBNORMAL", new Runtime::FloatObject(  "FP_SUBNORMAL", FP_SUBNORMAL ) );
-	scope->define( "FP_ZERO",      new Runtime::FloatObject(  "FP_ZERO",      FP_ZERO ) );
-	scope->define( "FP_INFINITE",  new Runtime::FloatObject(  "FP_INFINITE",  FP_INFINITE ) );
-	scope->define( "FP_NAN",       new Runtime::FloatObject(  "FP_NAN",       FP_NAN ) );
+    // constants
+    scope->define( "FP_NORMAL",    new Runtime::FloatType(  "FP_NORMAL",    FP_NORMAL ) );
+    scope->define( "FP_SUBNORMAL", new Runtime::FloatType(  "FP_SUBNORMAL", FP_SUBNORMAL ) );
+    scope->define( "FP_ZERO",      new Runtime::FloatType(  "FP_ZERO",      FP_ZERO ) );
+    scope->define( "FP_INFINITE",  new Runtime::FloatType(  "FP_INFINITE",  FP_INFINITE ) );
+    scope->define( "FP_NAN",       new Runtime::FloatType(  "FP_NAN",       FP_NAN ) );
 
-	//scope->define( "FP_FAST_FMA",  new Runtime::DoubleObject( "FP_FAST_FMA",  FP_FAST_FMA ) );
-	//scope->define( "FP_FAST_FMAF", new Runtime::FloatObject(  "FP_FAST_FMAF", FP_FAST_FMAF ) );
+    //scope->define( "FP_FAST_FMA",  new Runtime::DoubleType( "FP_FAST_FMA",  FP_FAST_FMA ) );
+    //scope->define( "FP_FAST_FMAF", new Runtime::FloatType(  "FP_FAST_FMAF", FP_FAST_FMAF ) );
 
-	scope->define( "HUGE_VAL",     new Runtime::DoubleObject( "HUGE_VAL",     HUGE_VAL ) );
-	scope->define( "HUGE_VALF",    new Runtime::FloatObject(  "HUGE_VALF",    HUGE_VALF ) );
+    scope->define( "HUGE_VAL",     new Runtime::DoubleType( "HUGE_VAL",     HUGE_VAL ) );
+    scope->define( "HUGE_VALF",    new Runtime::FloatType(  "HUGE_VALF",    HUGE_VALF ) );
+    //scope->define( "HUGE_VALL",    new Runtime::Int64Type(  "HUGE_VALL",    HUGE_VALL ) );
 
-	scope->define( "INFINITY",     new Runtime::DoubleObject( "INFINITY",     INFINITY ) );
-	scope->define( "NAN",          new Runtime::DoubleObject( "NAN",          NAN ) );
+    scope->define( "INFINITY",     new Runtime::DoubleType( "INFINITY",     INFINITY ) );
+    scope->define( "NAN",          new Runtime::DoubleType( "NAN",          NAN ) );
 }
 
 void math_t::provideMethods( ExtensionMethods& methods )
 {
+    methods.push_back( new ABS() );
     methods.push_back( new ACOS() );
     methods.push_back( new ACOSF() );
     methods.push_back( new ACOSH() );
@@ -145,6 +147,7 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new HYPOTF() );
     methods.push_back( new ILOGB() );
     methods.push_back( new ILOGBF() );
+    methods.push_back( new LABS() );
     methods.push_back( new LDEXP() );
     methods.push_back( new LDEXPF() );
     methods.push_back( new LGAMMA() );
@@ -169,7 +172,7 @@ void math_t::provideMethods( ExtensionMethods& methods )
     methods.push_back( new NEXTTOWARDF() );
     methods.push_back( new POW() );
     methods.push_back( new POWF() );
-    methods.push_back( new REMAINDER() );
+    methods.push_back( new POWL() );
     methods.push_back( new REMAINDERF() );
     methods.push_back( new RINT() );
     methods.push_back( new RINTF() );
@@ -199,3 +202,4 @@ void math_t::provideMethods( ExtensionMethods& methods )
 }
 }
 }
+

@@ -15,14 +15,14 @@ namespace VSCodeDebug {
 
 ProtocolMessage* MessageConverter::convert(const std::string& message) const
 {
-	ProtocolMessage* result = 0;
+	ProtocolMessage* result = nullptr;
 
 	Json::Reader r;
 	Json::Value msg;
 
 	if ( r.parse(message, msg) ) {
 		if ( !msg.isMember("type") ) {
-			return 0;
+			return nullptr;
 		}
 
 		if ( msg["type"].asString() == "event" ) {

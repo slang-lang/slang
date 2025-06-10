@@ -6,12 +6,14 @@
 
 // Project includes
 #include <Core/Consts.h>
-#include <Core/Runtime/BuildInTypes/BoolObject.h>
-#include <Core/Runtime/BuildInTypes/DoubleObject.h>
-#include <Core/Runtime/BuildInTypes/FloatObject.h>
-#include <Core/Runtime/BuildInTypes/IntegerObject.h>
-#include <Core/Runtime/BuildInTypes/StringObject.h>
-#include <Core/Runtime/BuildInTypes/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/BoolType.h>
+#include <Core/Runtime/BuildInTypes/DoubleType.h>
+#include <Core/Runtime/BuildInTypes/FloatType.h>
+#include <Core/Runtime/BuildInTypes/Int16Type.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/Int64Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 
 // Namespace declaration
 
@@ -22,9 +24,7 @@ bool isAtomicType(const std::string& type)
 {
 	static const StringSet& atomicTypes = provideAtomicTypes();
 
-	auto it = atomicTypes.find(type);
-
-	return it != atomicTypes.end();
+	return atomicTypes.find(type) != atomicTypes.end();
 }
 
 StringSet provideAccessMode()
@@ -41,12 +41,14 @@ StringSet provideAtomicTypes()
 {
 	static StringSet types;
 
-	types.insert(Runtime::BoolObject::TYPENAME);
-	types.insert(Runtime::DoubleObject::TYPENAME);
-	types.insert(Runtime::FloatObject::TYPENAME);
-	types.insert(Runtime::IntegerObject::TYPENAME);
-	types.insert(Runtime::StringObject::TYPENAME);
-	types.insert(Runtime::VoidObject::TYPENAME);
+	types.insert(Runtime::BoolType::TYPENAME);
+	types.insert(Runtime::DoubleType::TYPENAME);
+	types.insert(Runtime::FloatType::TYPENAME);
+	types.insert(Runtime::Int16Type::TYPENAME);
+	types.insert(Runtime::Int32Type::TYPENAME);
+	types.insert(Runtime::Int64Type::TYPENAME);
+	types.insert(Runtime::StringType::TYPENAME);
+	types.insert(Runtime::VoidType::TYPENAME);
 
 	return types;
 }
