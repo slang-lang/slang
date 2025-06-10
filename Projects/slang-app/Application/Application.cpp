@@ -25,7 +25,7 @@
 #include <Common/Consts.h>
 #include <Common/Defines.h>
 #include <Common/Service.h>
-#include <Common/FileLogger.h>
+#include <Common/StdOutLogger.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
@@ -48,21 +48,18 @@ namespace {
     // void execute( const std::string& command, bool debug = false );
     // size_t findCaseInsensitive( std::string data, std::string toSearch, size_t pos = 0 );
     bool isLocalLibrary();
-    void loadConfig();
-    void loadServices();
     void readJsonFile( const std::string& filename, Json::Value& result );
     // void storeConfig();
     // void writeJsonFile( const std::string& filename, Json::Value& result );
 
-    // void handle_hello(FCGX_Stream *out);
-    // void handle_data(FCGX_Stream *out);
-    void handle_not_found(FCGX_Stream *out);
+    // void handle_hello( FCGX_Stream *out );
+    // void handle_data( FCGX_Stream *out );
+    void handle_not_found( FCGX_Stream *out );
 
 
-    Utils::Common::FileLogger mLogger( TMP + "slang-app.log" );
+    Utils::Common::StdOutLogger mLogger;
     StringList mParameters;
     Settings mSettings;
-    Slang::VirtualMachine mVirtualMachine;
 
 }
 
@@ -81,10 +78,6 @@ Application::~Application()
 
 void Application::deinit()
 {
-    OSdebug( "deinit()" );
-
-    // put de-initialization stuff here
-
     for ( auto& service : mSettings.Services ) {
         delete service;
     }
@@ -95,14 +88,6 @@ void Application::deinit()
 int Application::exec()
 {
     OSdebug( "exec()" );
-
-    // // add extensions
-    // #ifdef USE_SYSTEM_EXTENSION
-    // mVirtualMachine.addExtension( new Slang::Extensions::System::SystemExtension() );
-    // mVirtualMachine.addExtension( new Slang::Extensions::LIBC::Extension() );
-    // #endif
-
-    // mVirtualMachine.init();
 
     FCGX_Request request;
     FCGX_Init();
@@ -138,12 +123,11 @@ int Application::exec()
             }
             else {
                 if ( mSettings.DefaultService ) {
-                    OSdebug( "Using default service" );
-
                     mSettings.DefaultService->handleRequest( request );
                 }
                 else {
                     OSwarn( "No default service configured" );
+
                     handle_not_found( request.out );
                 }
             }
@@ -209,7 +193,57 @@ void Application::init( int argc, const char* argv[] )
         mSettings.LibraryFolder = mSettings.CurrentFolder;
     }
 
+    mVirtualMachine = new VirtualMachine();
+
+    // add extensions
+    #ifdef USE_SYSTEM_EXTENSION
+    mVirtualMachine->addExtension( new Slang::Extensions::System::SystemExtension() );
+    mVirtualMachine->addExtension( new Slang::Extensions::LIBC::Extension() );
+    #endif
+
+    mVirtualMachine->addLibraryFolder( mSettings.CurrentFolder );
+    mVirtualMachine->init();
+
+    mVirtualMachine->printLibraryFolders();
+    mVirtualMachine->printExtensions();
+
     loadConfig();
+}
+
+void Application::loadConfig()
+{
+    OSdebug( "Loading configuration" );
+
+    readJsonFile( mSettings.LibraryFolder + CONFIG_SERVER, mSettings.Config );
+
+    // TODO: Implement configuration loading
+
+    loadServices();
+}
+
+void Application::loadServices()
+{
+    if ( !mSettings.Config.isMember( "services" ) ) {
+        mSettings.Config[ "services" ] = Json::Value();
+    }
+
+    // load service paths from config
+    auto services = mSettings.Config[ "services" ];
+    for ( const auto& serviceName : services.getMemberNames() ) {
+        auto service = services[ serviceName ];
+
+        OSdebug( "Loading service '" + serviceName + "' with service path '" + service.asString() + "'" );
+
+        mSettings.Services.push_back(
+            new Service( serviceName, service.asString(), mVirtualMachine )
+        );
+    }
+
+    if ( mSettings.Config.isMember( "default" ) ) {
+        mSettings.DefaultService = new Service(
+            "default", mSettings.Config[ "default" ].asString(), mVirtualMachine
+        );
+    }
 }
 
 void Application::printUsage()
@@ -299,42 +333,6 @@ bool isLocalLibrary()
     return Utils::Tools::Files::exists( mSettings.CurrentFolder + CONFIG_SERVER );
 }
 
-void loadConfig()
-{
-    OSdebug( "Loading configuration" );
-
-    readJsonFile( mSettings.LibraryFolder + CONFIG_SERVER, mSettings.Config );
-
-    // TODO: Implement configuration loading
-
-    loadServices();
-}
-
-void loadServices()
-{
-    if ( !mSettings.Config.isMember( "services" ) ) {
-        mSettings.Config[ "services" ] = Json::Value();
-    }
-
-    // load service paths from config
-    auto services = mSettings.Config[ "services" ];
-    for ( const auto& serviceName : services.getMemberNames() ) {
-        auto service = services[ serviceName ];
-
-        OSdebug( "Loading service '" + serviceName + "' with service path '" + service.asString() + "'" );
-
-        mSettings.Services.push_back(
-            new Service( serviceName, service.asString(), &mVirtualMachine )
-        );
-    }
-
-    if ( mSettings.Config.isMember( "default" ) ) {
-        mSettings.DefaultService = new Service(
-            "default", mSettings.Config[ "default" ].asString(), &mVirtualMachine
-        );
-    }
-}
-
 void readJsonFile( const std::string& filename, Json::Value& result )
 {
     // load contents of filename into Json::Value
@@ -367,19 +365,19 @@ void readJsonFile( const std::string& filename, Json::Value& result )
 //     stream.close();
 // }
 
-// void handle_hello(FCGX_Stream *out)
+// void handle_hello( FCGX_Stream *out )
 // {
 //     FCGX_FPrintF(out, "Content-Type: text/plain\r\n\r\n");
 //     FCGX_FPrintF(out, "Hello from /hello endpoint!\n");
 // }
 
-// void handle_data(FCGX_Stream *out)
+// void handle_data( FCGX_Stream *out )
 // {
 //     FCGX_FPrintF(out, "Content-Type: application/json\r\n\r\n");
 //     FCGX_FPrintF(out, "{\"status\": \"ok\", \"data\": 42}\n");
 // }
 
-void handle_not_found(FCGX_Stream *out)
+void handle_not_found( FCGX_Stream *out )
 {
     FCGX_FPrintF(out, "Status: 404 Not Found\r\n");
     FCGX_FPrintF(out, "Content-Type: text/plain\r\n\r\n");

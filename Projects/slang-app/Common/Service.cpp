@@ -2,6 +2,7 @@
 // Header
 #include "Service.h"
 #include <iostream>
+#include <sstream>
 
 // Library includes
 
@@ -11,6 +12,7 @@
 #include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
+#include <Utils.h>
 
 // Namespace declarations
 
@@ -25,22 +27,27 @@ Service::Service( std::string path, std::string scriptFilename, Slang::VirtualMa
 
 bool Service::handleRequest( const FCGX_Request& request )
 {
-    std::string output;
-    output = "Hello from ";
-    output += mPath;
-    output += "\r\n";
-
     FCGX_FPrintF( request.out, "Content-Type: text/plain\r\n\r\n" );
-    FCGX_FPrintF( request.out, output.c_str() );
+
+    std::stringstream stream;
+    auto* old = std::cout.rdbuf( stream.rdbuf() );
 
     if ( mScript ) {
         Slang::Runtime::Object result;
-        mVirtualMachine->run( mScript, Slang::ParameterList(), &result );
+        //mVirtualMachine->run( mScript, Slang::ParameterList(), &result );
+        mScript->execute( Slang::Controller::Instance().threads()->createThread()->getId(), "Start", Slang::ParameterList(), &result );
 
         // if ( result.getValue().type() == Slang::Runtime::AtomicValue::Type::INT ) {
         //     return result.getValue().toInt();
         // }
     }
+
+    std::cout.rdbuf( old );
+    auto output = stream.str();
+
+    OSinfo( "Output: \r\n" + output );
+
+    FCGX_FPrintF( request.out, output.c_str() );
 
     return true;
 }
@@ -53,5 +60,5 @@ void Service::initialize()
     }
 
     mScript = mVirtualMachine->createScriptFromFile( mScriptFilename );
-	assert( mScript );
+    assert( mScript );
 }

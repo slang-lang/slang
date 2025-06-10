@@ -2,6 +2,7 @@
 // Library includes
 
 // Project includes
+#include <Common/StackTrace.h>
 #include <Common/StdOutLogger.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
@@ -242,6 +243,8 @@ int main( int argc, const char* argv[] )
 		return 0;
 	}
 	catch ( Slang::Runtime::ControlFlow::E &e ) {
+		Utils::Common::printStackTrace();
+
 		if ( e == Slang::Runtime::ControlFlow::ExitProgram ) {
 			return 0;
 		}

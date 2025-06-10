@@ -3,23 +3,25 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 ADD_SUBDIRECTORY(Configuration)
 
 SET(SOURCES
-	Context.cpp
-	FileLogger.cpp
-	Logger.cpp
-	StdOutLogger.cpp
+    Context.cpp
+    FileLogger.cpp
+    Logger.cpp
+    StackTrace.cpp
+    StdOutLogger.cpp
 )
 
 SET(HEADERS
-	Context.h
-	Exceptions.h
-	FileLogger.h
-	Logger.h
-	StdOutLogger.h
+    Context.h
+    Exceptions.h
+    FileLogger.h
+    Logger.h
+    StackTrace.h
+    StdOutLogger.h
 )
 
 SET(DEPENDENCIES
-	UtilsTools
-	UtilsCommonConfiguration
+    UtilsTools
+    UtilsCommonConfiguration
 )
 
 add_include(Projects/Utils)

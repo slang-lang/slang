@@ -10,6 +10,9 @@
 #include "Settings.h"
 
 // Forward declarations
+namespace Slang {
+    class VirtualMachine;
+}
 
 // Namespace declarations
 
@@ -32,10 +35,13 @@ private:
 	static void printVersion();
 
 	void deinit();
+	void loadConfig();
+    void loadServices();
 	void processParameters( int argc, const char* argv[] );
 
 private:
     //Settings mSettings;
+    VirtualMachine* mVirtualMachine;
 };
 
 
