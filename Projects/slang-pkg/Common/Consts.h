@@ -34,6 +34,7 @@ static const std::string REMOTE_REPOSITORY_NAME    = "main";
 static const std::string REMOTE_REPOSITORY_URL     = "https://slang-lang.org/repository/stable";
 static const std::string TMP                       = "/tmp/";
 static const std::string UPLOAD_PATH               = "upload/";
+static const char PATH_SEPARATOR                   = ':';
 static const char VERSION_SEPARATOR                = ':';
 
 

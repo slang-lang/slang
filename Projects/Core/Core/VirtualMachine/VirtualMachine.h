@@ -38,19 +38,11 @@ public:
 	class Settings
 	{
 	public:
-		Settings()
-		: DoCollectErrors(false),
-		  DoSanityCheck(true),
-		  DoSkipExtensions(false),
-		  DoSyntaxCheck(false),
-		  PrintTokens(false)
-		{ }
-
-		bool DoCollectErrors;
-		bool DoSanityCheck;
-		bool DoSkipExtensions;
-		bool DoSyntaxCheck;
-		bool PrintTokens;
+		bool DoCollectErrors{ false };
+		bool DoSanityCheck{ true };
+		bool DoSkipExtensions{ false };
+		bool DoSyntaxCheck{ false };
+		bool PrintTokens{ false };
 	};
 
 public:
