@@ -23,7 +23,7 @@ class IContext
 public:
 	virtual ~IContext() = default;
 
-	virtual void write(const std::string& msg) = 0;
+	virtual void write( const std::string& msg ) = 0;
 };
 
 

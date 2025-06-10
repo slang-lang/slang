@@ -20,8 +20,8 @@ FileLogger::FileLogger( std::string logfile )
 }
 
 FileLogger::FileLogger( const ILogger* parent, const std::string& className, const std::string& key )
-: Logger( parent, className, key ),
-  mLogFile( "logger.log" )
+: Logger( parent, className, key )
+, mLogFile( "logger.log" )
 {
 	if ( !mContext ) {
 		mContext = new FileContext( mLogFile );

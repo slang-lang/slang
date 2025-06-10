@@ -39,15 +39,15 @@ public:
 	virtual IContext* getContext() const = 0;
 	virtual ILogger* getLogger() = 0;
 
-	virtual void LogDebug(const std::string& message, const std::string& file, unsigned int line) = 0;
-	virtual void LogDeprecate(const std::string& message, const std::string& file, unsigned int line) = 0;
-	virtual void LogError(const std::string& message, const std::string& file, unsigned int line) = 0;
-	virtual void LogFatal(const std::string& message, const std::string& file, unsigned int line) = 0;
-	virtual void LogInfo(const std::string& message, const std::string& file, unsigned int line) = 0;
-	virtual void LogMethod(const std::string& message, const std::string& file, unsigned int line) = 0;
-	virtual void LogWarn(const std::string& message, const std::string& file, unsigned int line) = 0;
+	virtual void LogDebug( const std::string& message, const std::string& file, unsigned int line ) = 0;
+	virtual void LogDeprecate( const std::string& message, const std::string& file, unsigned int line ) = 0;
+	virtual void LogError( const std::string& message, const std::string& file, unsigned int line ) = 0;
+	virtual void LogFatal( const std::string& message, const std::string& file, unsigned int line ) = 0;
+	virtual void LogInfo( const std::string& message, const std::string& file, unsigned int line ) = 0;
+	virtual void LogMethod( const std::string& message, const std::string& file, unsigned int line ) = 0;
+	virtual void LogWarn( const std::string& message, const std::string& file, unsigned int line ) = 0;
 
-	virtual void setLoudness(int loudness) = 0;
+	virtual void setLoudness( int loudness ) = 0;
 };
 
 

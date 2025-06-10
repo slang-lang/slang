@@ -153,7 +153,7 @@ void Application::init( int argc, const char* argv[] )
                 std::string left;
                 std::string right;
 
-                Utils::Tools::splitBy( path, VERSION_SEPARATOR, left, right );
+                Utils::Tools::splitBy( path, PATH_SEPARATOR, left, right );
 
                 mSettings.LibraryFolder = left;
             }
