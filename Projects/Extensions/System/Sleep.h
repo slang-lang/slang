@@ -41,28 +41,19 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* /*result*/ )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			long param_millis = (*it++).value().toInt();
+		long param_millis = (*it++).value().toInt();
 
 #ifdef _WIN32
-			_sleep(param_millis);
+		_sleep(param_millis);
 #else
-			std::this_thread::sleep_for(std::chrono::milliseconds(param_millis));
+		std::this_thread::sleep_for(std::chrono::milliseconds(param_millis));
 #endif
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
 
 		return Runtime::ControlFlow::Normal;
 	}

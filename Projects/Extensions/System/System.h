@@ -52,73 +52,64 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			std::string param_text = (*it++).value().toStdString();
+		std::string param_text = (*it++).value().toStdString();
 
 #if __cplusplus > 201402L
-			std::array<char, 128> buffer;
-			std::string resultStr;
-			std::shared_ptr<FILE> pipe(popen(param_text.c_str(), "r"), pclose);
-			if ( !pipe ) {
-				throw std::runtime_error("popen() failed!");
-			}
+		std::array<char, 128> buffer;
+		std::string resultStr;
+		std::shared_ptr<FILE> pipe(popen(param_text.c_str(), "r"), pclose);
+		if ( !pipe ) {
+			throw std::runtime_error("popen() failed!");
+		}
 
-			while ( !feof(pipe.get()) ) {
-				if ( fgets(buffer.data(), 128, pipe.get()) != nullptr ) {
-					resultStr += buffer.data();
-				}
+		while ( !feof(pipe.get()) ) {
+			if ( fgets(buffer.data(), 128, pipe.get()) != nullptr ) {
+				resultStr += buffer.data();
 			}
+		}
 #else
-			std::string resultStr = "";
+		std::string resultStr = "";
 
 #ifdef _WIN32
-			FILE* pipe = _popen(param_text.c_str(), "r");
+		FILE* pipe = _popen(param_text.c_str(), "r");
 #else
-			FILE* pipe = popen(param_text.c_str(), "r");
+		FILE* pipe = popen(param_text.c_str(), "r");
 #endif
-			if ( !pipe ) {
-				throw std::runtime_error("popen() failed!");
-			}
+		if ( !pipe ) {
+			throw std::runtime_error("popen() failed!");
+		}
 
-			try {
-				char buffer[128];
+		try {
+			char buffer[128];
 
-				while ( !feof(pipe) ) {
-					if ( fgets(buffer, 128, pipe) != nullptr ) {
-						resultStr += buffer;
-					}
+			while ( !feof(pipe) ) {
+				if ( fgets(buffer, 128, pipe) != nullptr ) {
+					resultStr += buffer;
 				}
 			}
-			catch ( ... ) {
-#ifdef _WIN32
-				_pclose(pipe);
-#else
-				pclose(pipe);
-#endif
-				throw;
-			}
+		}
+		catch ( ... ) {
 #ifdef _WIN32
 			_pclose(pipe);
 #else
 			pclose(pipe);
 #endif
+			throw;
+		}
+#ifdef _WIN32
+		_pclose(pipe);
+#else
+		pclose(pipe);
+#endif
 #endif
 
-			*result = Runtime::StringType(resultStr);
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::StringType(resultStr);
 
 		return Runtime::ControlFlow::Normal;
 	}

@@ -48,35 +48,26 @@ public:
 		setSignature( params );
 	}
 
-	Runtime::ControlFlow::E execute( Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token )
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters( params );
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
-			auto param_offset = (*it++).value().toInt();
-			auto param_origin = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
+		auto param_offset = (*it++).value().toInt();
+		auto param_origin = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find( param_handle ) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException( "invalid file handle" );
-			}
-
-			long size = fseek( stdio_t::FileHandles[param_handle], param_offset, param_origin );
-			if ( size == -1 ) {
-				throw Runtime::Exceptions::RuntimeException( "error while seeking file" );
-			}
-
-			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
+		if ( stdio_t::FileHandles.find( param_handle ) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException( "invalid file handle" );
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringType( std::string( e.what() ) );
 
-			Controller::Instance().thread( threadId )->exception() = Runtime::ExceptionData( data, token.position() );
-			return Runtime::ControlFlow::Throw;
+		long size = fseek( stdio_t::FileHandles[param_handle], param_offset, param_origin );
+		if ( size == -1 ) {
+			throw Runtime::Exceptions::RuntimeException( "error while seeking file" );
 		}
+
+		*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 
 		return Runtime::ControlFlow::Normal;
 	}

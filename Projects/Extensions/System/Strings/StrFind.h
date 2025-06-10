@@ -42,28 +42,19 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			std::string param_source = (*it++).value().toStdString();
-			std::string param_target = (*it++).value().toStdString();
-			unsigned long param_position = (*it).value().toInt();
+		std::string param_source = (*it++).value().toStdString();
+		std::string param_target = (*it++).value().toStdString();
+		unsigned long param_position = (*it).value().toInt();
 
-			int my_result = (int)param_source.find(param_target, param_position);
+		int my_result = (int)param_source.find(param_target, param_position);
 
-			*result = Runtime::Int32Type(my_result);
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::Int32Type(my_result);
 
 		return Runtime::ControlFlow::Normal;
 	}

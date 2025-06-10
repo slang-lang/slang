@@ -24,21 +24,21 @@ class ExtensionMethod : public Common::Method
 {
 public:
 	ExtensionMethod( IScope* parent,
-			 const std::string& name,
-			 const std::string& type,
-			 Mutability::E mutability = Mutability::Const,
-			 MemoryLayout::E memoryLayout = MemoryLayout::Static,
-			 LanguageFeatureState::E languageFeatureState = LanguageFeatureState::Stable )
+					 const std::string& name,
+					 const std::string& type,
+					 Mutability::E mutability = Mutability::Const,
+					 MemoryLayout::E memoryLayout = MemoryLayout::Static,
+					 LanguageFeatureState::E languageFeatureState = LanguageFeatureState::Stable )
 	: Common::Method( parent, name, Common::TypeDeclaration( type ) )
 	{
-		mIsExtensionMethod = true;
+		mIsExtensionMethod    = true;
 		mLanguageFeatureState = languageFeatureState;
-		mMemoryLayout = memoryLayout;
-		mMethodMutability = mutability;
-		mMutability = Mutability::Modify;
+		mMemoryLayout         = memoryLayout;
+		mMethodMutability     = mutability;
+		mMutability           = Mutability::Modify;
 	}
 
-	virtual Runtime::ControlFlow::E execute( Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token ) = 0;
+	virtual Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result ) = 0;
 };
 
 typedef std::list<ExtensionMethod*> ExtensionMethods;

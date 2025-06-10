@@ -290,7 +290,18 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	assert(method);
 
 	if ( method->isExtensionMethod() ) {
-		mControlFlow = dynamic_cast<Slang::Extensions::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
+		try {
+			dynamic_cast<Slang::Extensions::ExtensionMethod*>( method )->execute( params, result );
+
+			mControlFlow = Runtime::ControlFlow::Normal;
+		}
+		catch ( std::exception& e ) {
+			auto* data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringType( std::string( e.what() ) );
+
+			mThread->exception( Runtime::ExceptionData( data, Token().position() ) );
+			mControlFlow = Runtime::ControlFlow::Throw;
+		}
 	}
 	else {
 		mControlFlow = execute(dynamic_cast<Runtime::Object*>(method->getEnclosingScope()), method, params, result);
@@ -298,7 +309,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 	switch ( mControlFlow ) {
 		case Runtime::ControlFlow::ExitProgram: throw Runtime::ControlFlow::ExitProgram;	// promote control flow
-		case Runtime::ControlFlow::Throw: throw Runtime::ControlFlow::Throw;				// promote control flow
+		case Runtime::ControlFlow::Throw:       throw Runtime::ControlFlow::Throw;			// promote control flow
 		default: mControlFlow = Runtime::ControlFlow::Normal; break;
 	}
 }

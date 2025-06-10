@@ -47,25 +47,16 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-            ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-            auto param_old_filename = (*it++).value().toStdString();
-            auto param_new_filename = (*it++).value().toStdString();
+		auto param_old_filename = (*it++).value().toStdString();
+		auto param_new_filename = (*it++).value().toStdString();
 
-            *result = Runtime::Int32Type( rename( param_old_filename.c_str(), param_new_filename.c_str() ) );
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::Int32Type( rename( param_old_filename.c_str(), param_new_filename.c_str() ) );
 
 		return Runtime::ControlFlow::Normal;
 	}
