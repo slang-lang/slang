@@ -103,12 +103,12 @@ int Application::exec()
             if ( path != NULL ) {
                 auto servicePath = std::string( path );
 
-                OSdebug( "Looking up service '" << servicePath << "'" );
+                OSdebug( "Looking up service '" + servicePath + "'" );
 
                 // Dispatch based on path
                 for ( auto* service : mSettings.Services ) {
-                    OSdebug( "Service path: '" << service->getPath() << "'" );
-                    OSdebug( "Request path: '" << servicePath << "'" );
+                    OSdebug( "Service path: '" + service->getPath() + "'" );
+                    OSdebug( "Request path: '" + servicePath + "'" );
 
                     if ( service->getPath() == servicePath ) {
                         requestHandled = service->handleRequest( request );
