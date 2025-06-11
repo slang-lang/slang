@@ -12,5 +12,6 @@ Bundle/debian/debhelper-build-stamp
 Bundle/debian/changelog
 Bundle/debian/files
 Bundle/debian/slang
+Bundle/debian/slang.substvars
 CMake/Dependencies.cmake
 
