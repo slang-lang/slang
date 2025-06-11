@@ -31,31 +31,22 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+		int param_handle = (*it++).value().toInt();
 
-			bool value = false;
+		bool value = false;
 
-			long size = read(param_handle, &value, sizeof(bool));
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading handle");
-			}
-
-			*result = Runtime::BoolType(value);
+		long size = read(param_handle, &value, sizeof(bool));
+		if ( size == -1 ) {    // error while reading
+			throw Runtime::Exceptions::RuntimeException("error while reading handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::BoolType(value);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -74,31 +65,22 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+		int param_handle = (*it++).value().toInt();
 
-			double value = 0.0;
+		double value = 0.0;
 
-			long size = read(param_handle, &value, sizeof(double));
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading handle");
-			}
-
-			*result = Runtime::DoubleType(value);
+		long size = read(param_handle, &value, sizeof(double));
+		if ( size == -1 ) {    // error while reading
+			throw Runtime::Exceptions::RuntimeException("error while reading handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::DoubleType(value);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -117,31 +99,22 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+		int param_handle = (*it++).value().toInt();
 
-			float value = 0.f;
+		float value = 0.f;
 
-			long size = read(param_handle, &value, sizeof(float));
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading handle");
-			}
-
-			*result = Runtime::FloatType(value);
+		long size = read(param_handle, &value, sizeof(float));
+		if ( size == -1 ) {    // error while reading
+			throw Runtime::Exceptions::RuntimeException("error while reading handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::FloatType(value);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -160,31 +133,22 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+		int param_handle = (*it++).value().toInt();
 
-			int value = 0;
+		int value = 0;
 
-			long size = read(param_handle, &value, sizeof(int));
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading handle");
-			}
-
-			*result = Runtime::Int32Type(value);
+		long size = read(param_handle, &value, sizeof(int));
+		if ( size == -1 ) {    // error while reading
+			throw Runtime::Exceptions::RuntimeException("error while reading handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::Int32Type(value);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -204,45 +168,36 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
-			int param_length = (*it++).value().toInt();
+		int param_handle = (*it++).value().toInt();
+		int param_length = (*it++).value().toInt();
 
-			std::string value;
+		std::string value;
 
-			while ( param_length > 0 || param_length == -1 ) {
-				char charValue;
+		while ( param_length > 0 || param_length == -1 ) {
+			char charValue;
 
-				long size = read(param_handle, &charValue, sizeof(char));
-				if ( size == -1 ) {    // error while reading
-					return Runtime::ControlFlow::Throw;
-				}
-				if ( size == 0 ) {	// EOF reached
-					break;
-				}
-
-				value += charValue;
-
-				if ( param_length > 0 ) {
-					param_length--;
-				}
+			long size = read(param_handle, &charValue, sizeof(char));
+			if ( size == -1 ) {    // error while reading
+				return Runtime::ControlFlow::Throw;
+			}
+			if ( size == 0 ) {	// EOF reached
+				break;
 			}
 
-			*result = Runtime::StringType(value);
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
+			value += charValue;
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+			if ( param_length > 0 ) {
+				param_length--;
+			}
 		}
+
+		*result = Runtime::StringType(value);
 
 		return Runtime::ControlFlow::Normal;
 	}

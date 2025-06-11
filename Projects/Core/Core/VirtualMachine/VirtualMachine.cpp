@@ -412,9 +412,9 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
 
-	Thread* thread = Controller::Instance().threads()->createThread();
+	auto* thread = Controller::Instance().threads()->createThread();
 
-	Runtime::ControlFlow::E controlflow = thread->execute(nullptr, main, params, result);
+	auto controlflow = thread->execute(nullptr, main, params, result);
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		throw Runtime::ControlFlow::Throw;
 	}

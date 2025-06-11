@@ -1521,7 +1521,18 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	}
 
 	if ( method->isExtensionMethod() ) {
-		mControlFlow = dynamic_cast<Slang::Extensions::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
+		try {
+			dynamic_cast<Slang::Extensions::ExtensionMethod*>( method )->execute( params, result );
+
+			mControlFlow = Runtime::ControlFlow::Normal;
+		}
+		catch ( std::exception& e ) {
+			auto* data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringType( std::string( e.what() ) );
+
+			mThread->exception( Runtime::ExceptionData( data, Token().position() ) );
+			mControlFlow = Runtime::ControlFlow::Throw;
+		}
 	}
 	else {
 		mControlFlow = execute(method, params, result);

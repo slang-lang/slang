@@ -17,5 +17,12 @@
 #endif
 
 
+#ifdef _WIN32
+#  define SLANG_API __declspec(dllexport)
+#else
+#  define SLANG_API __attribute__((visibility("default")))
+#endif
+
+
 #endif
 
