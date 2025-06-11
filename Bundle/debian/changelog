@@ -1,5 +1,5 @@
-slang (0.9.3) noble; urgency=medium
+slang (0.9.4) noble; urgency=medium
 
-  * Refactored debian package structure
+  * Refactored external method exception handling
 
- -- Michael Adelmann <madelmann@github.com>  Sun, 25 May 2025 19:14:00 +0100
+ -- Michael Adelmann <madelmann@github.com>  Weg, 11 Jun 2025 19:03:00 +0100
