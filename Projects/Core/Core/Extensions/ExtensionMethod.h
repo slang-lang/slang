@@ -38,7 +38,7 @@ public:
 		mMutability           = Mutability::Modify;
 	}
 
-	virtual Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result ) = 0;
+	virtual Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result ) = 0;
 };
 
 typedef std::list<ExtensionMethod*> ExtensionMethods;
