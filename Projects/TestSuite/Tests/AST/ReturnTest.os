@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public int Main(int argc = 1, string args = "") {
 	print("Main(" + argc + ", \"" + args + "\")");

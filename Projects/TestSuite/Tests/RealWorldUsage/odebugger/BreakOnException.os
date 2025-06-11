@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 private void BreakOnException() const throws {
 	print("Break on exception...");

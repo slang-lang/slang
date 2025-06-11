@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 import System.Collections.Iterator;
 import System.Collections.List;

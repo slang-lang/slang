@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public int Main(int argc = 0, string args = "") {
 	int lowerbound ref = new int(1);

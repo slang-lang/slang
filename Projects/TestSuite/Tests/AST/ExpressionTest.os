@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public void Main(int argc = 1, string args = "") {
 	int i = 1 + 2 + (3 + 4) * (5 + 6);
