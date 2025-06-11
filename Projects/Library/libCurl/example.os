@@ -3,7 +3,7 @@
 import CurlRequest;
 
 public void Main( int argc, string args ) modify {
-	var curl = new CurlRequest( "https://api.exchange.bitpanda.com/public/v1/time" );
+	var curl = new CurlRequest( "https://bitbroker.michaeladelmann.at/api/v1/time/" );
 
 	//curl.setData( "" );
 	//curl.setHeader( "" );
