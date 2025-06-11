@@ -70,10 +70,10 @@ TreeInterpreter::TreeInterpreter(Common::ThreadId id)
   mFrame(nullptr)
 {
 	// initialize virtual machine stuff
-	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
-	mMemory = Controller::Instance().memory();
+	mDebugger   = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
+	mMemory     = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
-	mThread = Controller::Instance().thread(id);
+	mThread     = Controller::Instance().thread(id);
 }
 
 void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
@@ -1340,7 +1340,7 @@ void TreeInterpreter::visitWhile(WhileStatement* node)
 {
 	Runtime::Object condition;
 
-	for  ( ; ; ) {
+	for ( ; ; ) {
 		// evaluate while condition
 		tryControl(evaluate(node->mCondition, &condition));
 

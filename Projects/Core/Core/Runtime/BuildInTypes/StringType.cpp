@@ -34,7 +34,7 @@ StringType::StringType( const AtomicValue& value )
 	mIsAtomicType = true;
 }
 
-StringType::StringType(  const std::string& value)
+StringType::StringType( const std::string& value)
 : Object( ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue( value ) )
 {
 	mIsAtomicType = true;
