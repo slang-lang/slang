@@ -26,6 +26,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	CoreDebugger
 	CoreRuntime
 	CoreCommon
 )
