@@ -38,27 +38,18 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_sockfd = (*it++).value().toInt();
-			int param_backlog_queue_size = (*it++).value().toInt();
+		int param_sockfd = (*it++).value().toInt();
+		int param_backlog_queue_size = (*it++).value().toInt();
 
-			int handle = listen(param_sockfd, param_backlog_queue_size);
+		int handle = listen(param_sockfd, param_backlog_queue_size);
 
-			*result = Runtime::Int32Type(handle);
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::Int32Type(handle);
 
 		return Runtime::ControlFlow::Normal;
 	}

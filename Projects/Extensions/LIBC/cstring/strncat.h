@@ -40,26 +40,17 @@ public:
 		setSignature( params );
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_destination = (*it++).value().toStdString();
-			auto param_source      = (*it++).value().toStdString();
-            auto param_num         = (*it++).value().toInt();
+		auto param_destination = (*it++).value().toStdString();
+		auto param_source      = (*it++).value().toStdString();
+		auto param_num         = (*it++).value().toInt();
 
-			*result = Runtime::StringType( param_destination + param_source.substr( param_num ) );
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringType( std::string( e.what() ) );
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData( data, token.position() );
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::StringType( param_destination + param_source.substr( param_num ) );
 
 		return Runtime::ControlFlow::Normal;
 	}

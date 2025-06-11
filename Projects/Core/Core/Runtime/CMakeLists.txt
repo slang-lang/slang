@@ -27,7 +27,6 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-	CoreDebugger
 	CoreRuntimeBuildInTypes
 	Utils
 )

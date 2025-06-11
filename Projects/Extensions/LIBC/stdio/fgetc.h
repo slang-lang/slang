@@ -44,28 +44,19 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute( Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token )
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters( params );
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_stream = (*it++).value().toInt();
+		auto param_stream = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find( param_stream ) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException( "invalid file handle" );
-			}
-
-			*result = Runtime::StringType( std::to_string( fgetc( stdio_t::FileHandles[ param_stream ] ) ) );
+		if ( stdio_t::FileHandles.find( param_stream ) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException( "invalid file handle" );
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringType( std::string( e.what() ) );
 
-			Controller::Instance().thread( threadId )->exception() = Runtime::ExceptionData( data, token.position() );
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::StringType( std::to_string( fgetc( stdio_t::FileHandles[ param_stream ] ) ) );
 
 		return Runtime::ControlFlow::Normal;
 	}

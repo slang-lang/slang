@@ -40,35 +40,25 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			std::string param_filename = (*it++).value().toStdString();
-			std::string param_accessmode = (*it++).value().toStdString();
+		std::string param_filename = (*it++).value().toStdString();
+		std::string param_accessmode = (*it++).value().toStdString();
 
-			int result_handle = 0;
+		int result_handle = 0;
 
-			FILE* fileHandle = fopen(param_filename.c_str(), param_accessmode.c_str());
-			if ( fileHandle ) {
-				result_handle = stdio_t::FileHandles.size();
+		FILE* fileHandle = fopen(param_filename.c_str(), param_accessmode.c_str());
+		if ( fileHandle ) {
+			result_handle = stdio_t::FileHandles.size();
 
-				stdio_t::FileHandles.insert(std::make_pair(result_handle, fileHandle));
-			}
-
-			*result = Runtime::Int32Type(result_handle);
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+			stdio_t::FileHandles.insert(std::make_pair(result_handle, fileHandle));
 		}
 
+		*result = Runtime::Int32Type(result_handle);
 		return Runtime::ControlFlow::Normal;
 	}
 

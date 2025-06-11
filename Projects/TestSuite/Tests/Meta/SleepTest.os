@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public void Main(int argc = 0, string args = "") modify {
 	print("Starting endless loop with sleep(1)");

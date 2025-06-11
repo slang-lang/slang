@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 private namespace OutterSpace {
 	private namespace InnerSpace {

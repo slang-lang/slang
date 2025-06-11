@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 // NOTE: before using this System.IO.MapFileAccessModeToString has to be made public
 

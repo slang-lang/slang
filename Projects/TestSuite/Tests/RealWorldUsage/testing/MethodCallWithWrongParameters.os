@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public object MethodWithWrongParameters {
 	public static float calc(float value default) const {

@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public void Main( int argc, string args ) {
 	print( "b 238649.21316934d = " + ( bool 238649.21316934d ) );

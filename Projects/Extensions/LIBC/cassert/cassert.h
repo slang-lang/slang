@@ -39,7 +39,7 @@ public:
         setSignature(params);
     }
 
-    Runtime::ControlFlow::E execute(Common::ThreadId /*threadId*/, const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+    Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* /*result*/ )
     {
         ParameterList list = mergeParameters(params);
 
@@ -68,7 +68,7 @@ public:
         }
 
         if ( !success ) {
-            throw Runtime::Exceptions::AssertionFailed(param_message, token.position());
+            throw Runtime::Exceptions::AssertionFailed(param_message);
         }
 
         return Runtime::ControlFlow::Normal;

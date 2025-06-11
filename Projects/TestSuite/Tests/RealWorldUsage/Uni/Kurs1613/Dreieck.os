@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public void Main(int argc, string args) {
 	writeln("Geben Sie eine natürlich Zahl ein: ");

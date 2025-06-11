@@ -43,26 +43,17 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_x = (*it++).value().toDouble();
-			auto param_y = (*it++).value().toDouble();
-			auto param_z = (*it++).value().toDouble();
+		auto param_x = (*it++).value().toDouble();
+		auto param_y = (*it++).value().toDouble();
+		auto param_z = (*it++).value().toDouble();
 
-			*result = Runtime::DoubleType(fma(param_x, param_y, param_z));
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::DoubleType(fma(param_x, param_y, param_z));
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -84,26 +75,17 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_x = (*it++).value().toFloat();
-			auto param_y = (*it++).value().toFloat();
-			auto param_z = (*it++).value().toFloat();
+		auto param_x = (*it++).value().toFloat();
+		auto param_y = (*it++).value().toFloat();
+		auto param_z = (*it++).value().toFloat();
 
-			*result = Runtime::FloatType(fmaf(param_x, param_y, param_z));
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::FloatType(fmaf(param_x, param_y, param_z));
 
 		return Runtime::ControlFlow::Normal;
 	}

@@ -45,41 +45,32 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute( Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token )
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters( params );
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
-			auto param_size   = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
+		auto param_size   = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find( param_handle ) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException( "invalid file handle" );
-			}
-
-			int32_t remainingSize{0};
-			while ( remainingSize < param_size ) {
-				auto readSize = param_size - remainingSize;
-				if ( readSize > READ_SIZE ) {
-					readSize = READ_SIZE;
-				}
-
-				char stream[READ_SIZE];
-				if ( fgets( stream, readSize, stdio_t::FileHandles[ param_handle ] ) != nullptr ) {
-					*result = Runtime::StringType( std::string( stream ) );
-				}
-
-				remainingSize += readSize;
-			}
+		if ( stdio_t::FileHandles.find( param_handle ) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException( "invalid file handle" );
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringType( std::string( e.what() ) );
 
-			Controller::Instance().thread( threadId )->exception() = Runtime::ExceptionData( data, token.position() );
-			return Runtime::ControlFlow::Throw;
+		int32_t remainingSize{0};
+		while ( remainingSize < param_size ) {
+			auto readSize = param_size - remainingSize;
+			if ( readSize > READ_SIZE ) {
+				readSize = READ_SIZE;
+			}
+
+			char stream[READ_SIZE];
+			if ( fgets( stream, readSize, stdio_t::FileHandles[ param_handle ] ) != nullptr ) {
+				*result = Runtime::StringType( std::string( stream ) );
+			}
+
+			remainingSize += readSize;
 		}
 
 		return Runtime::ControlFlow::Normal;

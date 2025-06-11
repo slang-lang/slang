@@ -27,10 +27,10 @@ void Script::execute(Common::ThreadId threadId, const std::string& method, const
 
 	auto* methodSymbol = dynamic_cast<Common::Method*>(symbol);
 
-	Runtime::ControlFlow::E controlflow = Controller::Instance().thread(threadId)->execute(nullptr, methodSymbol, params, result);
+	auto controlflow = Controller::Instance().thread(threadId)->execute(nullptr, methodSymbol, params, result);
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
-		Runtime::ExceptionData data = Controller::Instance().thread(threadId)->exception();
+		auto data = Controller::Instance().thread(threadId)->exception();
 
 		std::string text = "Exception raised in " + data.getPosition().toString() + ":\n";
 					text += data.getData()->ToString() + "\n";

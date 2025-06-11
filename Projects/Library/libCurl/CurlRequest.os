@@ -1,5 +1,4 @@
 
-import extension libSlangCurl;
 import Settings;
 
 

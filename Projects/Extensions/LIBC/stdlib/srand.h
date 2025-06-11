@@ -37,24 +37,15 @@ public:
     }
 
 public:
-    Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+    Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* /*result*/ )
     {
         ParameterList list = mergeParameters(params);
 
-        try {
-            ParameterList::const_iterator it = list.begin();
+        ParameterList::const_iterator it = list.begin();
 
-            auto param_seed = (it++)->value().toInt();
+        auto param_seed = (it++)->value().toInt();
 
-            srand(param_seed);
-        }
-        catch ( std::exception& e ) {
-            Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-            *data = Runtime::StringType(std::string(e.what()));
-
-            Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-            return Runtime::ControlFlow::Throw;
-        }
+        srand(param_seed);
 
         return Runtime::ControlFlow::Normal;
     }

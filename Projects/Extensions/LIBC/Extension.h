@@ -7,6 +7,8 @@
 
 // Project includes
 #include <Core/Extensions/AExtension.h>
+#include "cassert/cassert.hpp"
+#include "cstring/cstring.hpp"
 #include "fenv/fenv.hpp"
 #include "math/math.hpp"
 #include "stdio/stdio.hpp"
@@ -33,10 +35,12 @@ public:
     void provideMethods( ExtensionMethods& methods ) override;
 
 private:
-    LIBC::fenv::fenv_t     mFenv;
-    LIBC::math::math_t     mMath;
-    LIBC::stdio::stdio_t   mStdio;
-    LIBC::stdlib::stdlib_t mStdlib;
+    LIBC::cassert::cassert_t mCassert;
+    LIBC::cstring::cstring_t mCstring;
+    LIBC::fenv::fenv_t       mFenv;
+    LIBC::math::math_t       mMath;
+    LIBC::stdio::stdio_t     mStdio;
+    LIBC::stdlib::stdlib_t   mStdlib;
 };
 
 

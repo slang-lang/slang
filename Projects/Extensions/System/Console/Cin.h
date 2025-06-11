@@ -29,31 +29,22 @@ class Cin : public ExtensionMethod
 {
 public:
 	Cin()
-	: ExtensionMethod(0, "cin", Designtime::StringType::TYPENAME)
+	: ExtensionMethod( 0, "cin", Designtime::StringType::TYPENAME )
 	{
 		ParameterList params;
 
-		setSignature(params);
+		setSignature( params );
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& /*params*/, Runtime::Object* result )
 	{
-		try {
-			std::string text;
+		std::string text;
 
-			getline(std::cin >> std::ws, text);
-			std::cin.clear();
+		getline( std::cin >> std::ws, text );
+		std::cin.clear();
 
-			*result = Runtime::StringType(text);
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::StringType( text );
 
 		return Runtime::ControlFlow::Normal;
 	}
