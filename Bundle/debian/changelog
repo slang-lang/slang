@@ -1,5 +1,12 @@
 slang (0.9.4) noble; urgency=medium
 
-  * Refactored external method exception handling
+  * updated debian/changelog
+  * updated shebang to /usr/bin/env slang
+  * Merge pull request #32 from slang-lang/task/external-method-refactoring
+  * Merge remote-tracking branch 'origin/main' into task/external-method-refactoring
+  * minor code formatting
+  * Merge remote-tracking branch 'origin/main' into task/external-method-refactoring
+  * fixed static libraries
+  * refactored extension method error handling: - exceptions are caught directly in (Tree)Interpreter.cpp instead of offloading it to the extension method itself - removed threadId from extension method execute
 
- -- Michael Adelmann <madelmann@github.com>  Weg, 11 Jun 2025 19:03:00 +0100
+ -- madelmann <madelmann@users.noreply.github.com>  Wed, 11 Jun 2025 20:04:37 +0200
