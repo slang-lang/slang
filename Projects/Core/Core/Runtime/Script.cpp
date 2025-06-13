@@ -18,7 +18,7 @@
 namespace Slang {
 
 
-void Script::execute(Common::ThreadId threadId, const std::string& method, const ParameterList& params, Runtime::Object* result)
+void Script::execute(ThreadId threadId, const std::string& method, const ParameterList& params, Runtime::Object* result)
 {
 	MethodSymbol *symbol = Controller::Instance().globalScope()->resolveMethod(method, params, false);
 	if ( !symbol ) {

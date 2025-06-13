@@ -21,7 +21,6 @@
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Script.h>
-#include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
@@ -1036,7 +1035,7 @@ void LocalClient::saveConfig()
 	stream.close();
 }
 
-void LocalClient::setCurrentFrame( Common::FrameId frameId )
+void LocalClient::setCurrentFrame( FrameId frameId )
 {
 	if (  frameId >= Controller::Instance().thread( mCurrentThreadId )->getNumFrames()  ) {
 		writeln( "invalid frame selected!" );
@@ -1070,10 +1069,10 @@ void LocalClient::setCurrentFrame( const StringList& tokens )
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	setCurrentFrame( ( Common::FrameId )::Utils::Tools::stringToInt( ( *it++ ) ) );
+	setCurrentFrame( ( FrameId )::Utils::Tools::stringToInt( ( *it++ ) ) );
 }
 
-void LocalClient::setCurrentThread( Common::ThreadId threadId )
+void LocalClient::setCurrentThread( ThreadId threadId )
 {
 	if (  threadId >= Controller::Instance().threads()->getNumThreads()  ) {
 		writeln( "invalid thread selected!" );
@@ -1100,7 +1099,7 @@ void LocalClient::setCurrentThread( const StringList& tokens )
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	setCurrentThread( ( Common::FrameId )::Utils::Tools::stringToInt( ( *it++ ) ) );
+	setCurrentThread( ( FrameId )::Utils::Tools::stringToInt( ( *it++ ) ) );
 }
 
 void LocalClient::shutdown()

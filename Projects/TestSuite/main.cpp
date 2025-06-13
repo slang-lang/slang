@@ -3,10 +3,10 @@
 #include <list>
 
 // Project includes
-#include <Common/StdOutLogger.h>
 #include <Core/Defines.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/VirtualMachine/Controller.h>
+#include <Logger/StdOutLogger.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
 #include <Utils.h>

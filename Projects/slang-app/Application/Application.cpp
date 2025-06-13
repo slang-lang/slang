@@ -23,20 +23,19 @@
 
 // Project includes
 #include <Common/Consts.h>
-#include <Common/Defines.h>
 #include <Common/Service.h>
-#include <Common/StdOutLogger.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Types.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Core/Consts.h>
-#include <Core/Types.h>
+#include <Core/Defines.h>
 #include <Core/Version.h>
 #include <LIBC/Extension.h>
+#include <Logger/StdOutLogger.h>
 #include <System/SystemExtension.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
-#include <Types.h>
 #include <Utils.h>
 
 // Namespace declarations
@@ -58,7 +57,7 @@ namespace {
 
 
     Utils::Common::StdOutLogger mLogger;
-    StringList mParameters;
+    Slang::StringList mParameters;
     Settings mSettings;
 
 }

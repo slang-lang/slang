@@ -20,21 +20,21 @@
 
 // Project includes
 #include <Common/Consts.h>
-#include <Common/Defines.h>
 #include <Common/Module.h>
 #include <Common/Repository.h>
 #include <Common/Restriction.h>
-#include <Common/StdOutLogger.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Types.h>
 #include <Core/Consts.h>
-#include <Core/Types.h>
+#include <Core/Defines.h>
 #include <Core/Version.h>
+#include <Logger/StdOutLogger.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
-#include <Types.h>
 #include <Utils.h>
 
 // Namespace declarations
+using namespace Slang;
 
 
 namespace {

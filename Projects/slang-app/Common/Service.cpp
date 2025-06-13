@@ -8,10 +8,11 @@
 
 // Project includes
 #include <Core/Object.h>
-#include <Core/Parameter.h>
+#include <Core/Runtime/Parameter.h>
 #include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
+#include <Logger/Logger.h>
 #include <Utils.h>
 
 // Namespace declarations

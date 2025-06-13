@@ -20,7 +20,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Core/Tools.h>
+#include <Core/Runtime/Utils.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
@@ -65,7 +65,7 @@ namespace Slang {
 namespace AST {
 
 
-TreeInterpreter::TreeInterpreter(Common::ThreadId id)
+TreeInterpreter::TreeInterpreter(ThreadId id)
 : mControlFlow(Runtime::ControlFlow::Normal),
   mFrame(nullptr)
 {
@@ -335,7 +335,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	}
 
 	// create initialized reference of new object
-	*result = TRYMOVE(*mRepository->createReference(exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final));
+	*result = std::move( *mRepository->createReference( exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final ) );
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);

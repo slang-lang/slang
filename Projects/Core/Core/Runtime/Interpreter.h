@@ -7,11 +7,11 @@
 #include <list>
 
 // Project includes
+#include <Core/Common/Token.h>
 #include <Core/Common/Types.h>
-#include <Core/Designtime/Parser/Token.h>
-#include <Core/Parameter.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
+#include "Parameter.h"
 
 // Forward declarations
 
@@ -133,7 +133,7 @@ private: // Execution
 
 private:
 	// prevent usage
-	explicit Interpreter(Common::ThreadId threadId);
+	explicit Interpreter(ThreadId threadId);
 
 private:	// Initialization
 	void deinitialize();

@@ -9,7 +9,7 @@
 #include <string>
 
 // Project includes
-#include <Common/Logger.h>
+#include <Logger/Logger.h>
 #include <Parsers/Value.h>
 
 // Forward declarations

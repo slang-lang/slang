@@ -22,7 +22,7 @@ namespace Slang {
 
 // Forward declarations
 namespace Runtime {
-	class Object;
+class Object;
 }
 
 class Parameter

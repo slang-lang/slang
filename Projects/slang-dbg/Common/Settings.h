@@ -7,7 +7,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Types.h>
+#include <Core/Common/Types.h>
 
 // Forward declarations
 

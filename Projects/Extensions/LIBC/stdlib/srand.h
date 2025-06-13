@@ -10,7 +10,7 @@
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Tools.h>
+#include <Core/Runtime/Utils.h>
 #include "Defines.h"
 
 // Forward declarations

@@ -6,7 +6,6 @@
 // Library includes
 
 // Project includes
-#include <Types.h>
 #include "Settings.h"
 
 // Forward declarations

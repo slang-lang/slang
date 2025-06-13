@@ -12,6 +12,7 @@ SET(HEADERS
 SET(DEPENDENCIES
     ServerCommon
     Core
+    UtilsLogger
     Utils
 )
 

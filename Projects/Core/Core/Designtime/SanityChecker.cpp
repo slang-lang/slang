@@ -5,7 +5,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Tools.h>
 #include "Exceptions.h"
 
 // Namespace declarations

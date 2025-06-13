@@ -92,7 +92,7 @@ Repository* Controller::repository() const
 	return mRepository;
 }
 
-Thread* Controller::thread(Common::ThreadId id) const
+Thread* Controller::thread(ThreadId id) const
 {
 	return mThreads->getThread(id);
 }

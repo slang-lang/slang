@@ -62,7 +62,7 @@ public:
 	Common::Namespace* globalScope() const;
 	Memory* memory() const;
 	Repository* repository() const;
-	Thread* thread(Common::ThreadId id) const;
+	Thread* thread(ThreadId id) const;
 	Threads* threads() const;
 	TypeSystem* typeSystem() const;
 

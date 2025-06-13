@@ -2,14 +2,14 @@
 // Library includes
 
 // Project includes
-#include <Common/StackTrace.h>
-#include <Common/StdOutLogger.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Version.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
+#include <Logger/StackTrace.h>
+#include <Logger/StdOutLogger.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
@@ -18,6 +18,8 @@
 #include <Extensions.h>
 
 // Namespace declarations
+using namespace Slang;
+
 
 #ifdef __APPLE__
 #elif defined _WIN32

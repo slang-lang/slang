@@ -8,11 +8,11 @@
 #include <map>
 
 // Project includes
+#include <Core/Common/Token.h>
 #include <Core/Common/Types.h>
-#include <Core/Designtime/Parser/Token.h>
-#include <Core/Parameter.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
+#include <Core/Runtime/Parameter.h>
 #include <Core/VirtualMachine/StackFrame.h>
 
 // Forward declarations
@@ -50,7 +50,7 @@ public:
 
 public:
 	Thread();
-	explicit Thread(Common::ThreadId id);
+	explicit Thread(ThreadId id);
 	~Thread();
 
 public:	// Initialization
@@ -60,13 +60,13 @@ public:	// Initialization
 	void print();
 
 public:	// Thread specificas
-	Common::ThreadId getId() const;
+	ThreadId getId() const;
 	State::E getState() const;
 
 public:	// StackFrame specificas
 	StackFrame* currentFrame() const;
-	StackFrame* frame(Common::FrameId frameId) const;
-	Common::FrameId getNumFrames() const;
+	StackFrame* frame(FrameId frameId) const;
+	FrameId getNumFrames() const;
 	std::string stackTrace() const;
 
 	Runtime::ExceptionData& exception();
@@ -81,7 +81,7 @@ private:
 
 private:
 	Runtime::ExceptionData mExceptionData;
-	Common::ThreadId mId;
+	ThreadId mId;
 	StackFrames mStackFrames;
 	State::E mState;
 };
@@ -99,8 +99,8 @@ public:
 
 public:
 	Thread* createThread();
-	void deleteThread(Common::ThreadId id);
-	Thread* getThread(Common::ThreadId id) const;
+	void deleteThread(ThreadId id);
+	Thread* getThread(ThreadId id) const;
 
 	unsigned int getNumThreads() const;
 

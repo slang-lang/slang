@@ -10,7 +10,6 @@
 
 // Project includes
 #include <Common/Consts.h>
-#include <Types.h>
 #include <Utils.h>
 
 // Forward declarations
