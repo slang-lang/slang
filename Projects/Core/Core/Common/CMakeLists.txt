@@ -6,8 +6,10 @@ SET(SOURCES
     Namespace.cpp
     Position.cpp
     PrototypeConstraint.cpp
+	Token.cpp
     Types.cpp
     Visibility.cpp
+	Utils.cpp
 )
 
 SET(HEADERS
@@ -16,9 +18,11 @@ SET(HEADERS
     Namespace.h
     Position.h
     PrototypeConstraint.h
+	Token.h
     TypeDeclaration.h
     Types.h
     Visibility.h
+	Utils.h
 )
 
 SET(DEPENDENCIES

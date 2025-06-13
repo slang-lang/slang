@@ -11,6 +11,7 @@
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Object.h>
 #include <Core/VirtualMachine/Controller.h>
+#include <Logger/Logger.h>
 #include <Utils.h>
 #include "TreeGenerator.h"
 

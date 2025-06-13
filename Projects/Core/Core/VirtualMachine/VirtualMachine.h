@@ -9,6 +9,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Common/Types.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Extensions/AExtension.h>
 #ifdef _WIN32
@@ -16,8 +17,7 @@
 #else
 #	include <Core/Extensions/ExtensionManager.h>
 #endif
-#include <Core/Parameter.h>
-#include <Core/Types.h>
+#include <Core/Runtime/Parameter.h>
 
 // Forward declarations
 

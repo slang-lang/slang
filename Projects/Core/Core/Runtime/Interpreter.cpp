@@ -8,6 +8,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
+#include <Core/Common/Utils.h>
 #include <Core/Defines.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
@@ -23,13 +24,13 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/Threads.h>
 #include <Debugger/Debugger.h>
+#include <Logger/Logger.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
-#include <Utils.h>
+#include "Utils.h"
 
 // Namespace declarations
 
@@ -71,7 +72,7 @@ namespace Runtime {
 		}
 
 
-Interpreter::Interpreter(Common::ThreadId threadId)
+Interpreter::Interpreter(ThreadId threadId)
 : mControlFlow(ControlFlow::Normal),
   mOwner(0)
 {

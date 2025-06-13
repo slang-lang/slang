@@ -8,10 +8,11 @@
 
 // Project includes
 #include <Core/Common/TypeDeclaration.h>
+#include <Core/Common/Types.h>
+#include <Core/Runtime/Parameter.h>
 #include <Core/Object.h>
-#include <Core/Parameter.h>
 #include <Core/Scope.h>
-#include <Core/Types.h>
+#include "Types.h"
 
 // Forward declarations
 

@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Common/Logger.h>
+#include <Logger/Logger.h>
 #include <Framework/TestFixture.h>
 
 // Forward declarations

@@ -16,6 +16,7 @@
 #include <Core/Defines.h>
 #include <Core/Designtime/Analyser.h>
 #include <Core/Runtime/Script.h>
+#include <Logger/Logger.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
 #include <Utils.h>

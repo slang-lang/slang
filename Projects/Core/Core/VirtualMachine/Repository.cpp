@@ -29,6 +29,7 @@
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/BuildInTypes/UserType.h>
 #include <Core/Runtime/BuildInTypes/VoidType.h>
+#include <Logger/Logger.h>
 #include <Utils.h>
 #include "Controller.h"
 

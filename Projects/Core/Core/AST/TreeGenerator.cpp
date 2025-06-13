@@ -8,13 +8,14 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
+#include <Core/Common/Utils.h>
 #include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
+#include <Logger/Logger.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
 

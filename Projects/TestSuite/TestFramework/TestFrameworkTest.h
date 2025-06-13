@@ -6,8 +6,8 @@
 // Library includes
 
 // Project includes
-#include <Common/Logger.h>
 #include <Framework/UnitTest.h>
+#include <Logger/Logger.h>
 
 // Forward declarations
 

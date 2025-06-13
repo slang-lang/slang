@@ -8,11 +8,10 @@
 // Project includes
 #include <Core/Attributes/Types.h>
 #include <Core/Common/PrototypeConstraint.h>
+#include <Core/Common/Token.h>
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Designtime/Ancestor.h>
-#include <Core/Parameter.h>
-#include <Core/Attributes/Types.h>
-#include "Token.h"
+#include <Core/Runtime/Parameter.h>
 
 // Forward declarations
 

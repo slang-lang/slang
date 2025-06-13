@@ -8,7 +8,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Designtime/Parser/Token.h>
+#include <Core/Common/Token.h>
 
 // Forward declarations
 
