@@ -38,7 +38,6 @@ TreeGenerator::TreeGenerator()
 {
 	// initialize virtual machine stuff
 	mRepository = Controller::Instance().repository();
-	mTypeSystem = Controller::Instance().typeSystem();
 }
 
 /*
@@ -2313,7 +2312,7 @@ std::string TreeGenerator::resolveType(TokenIterator& token, Node* left, const T
 std::string TreeGenerator::resolveType(TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const
 {
 	try {
-		return mTypeSystem->getType(left, operation, right);
+		return mRepository->getType(left, operation, right);
 	}
 	catch ( Common::Exceptions::UnknownIdentifier& ) {
 		throw Common::Exceptions::UnknownIdentifier("unknown type '" + left + "' detected during type check", token->position());

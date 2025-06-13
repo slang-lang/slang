@@ -171,7 +171,6 @@ private:
 private:	// Virtual machine stuff
 	Repository* mRepository;
 	StackFrame* mStackFrame;
-	TypeSystem* mTypeSystem;
 };
 
 

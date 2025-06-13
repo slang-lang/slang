@@ -64,7 +64,6 @@ public:
 	Repository* repository() const;
 	Thread* thread(ThreadId id) const;
 	Threads* threads() const;
-	TypeSystem* typeSystem() const;
 
 private:
 	Controller();
@@ -75,7 +74,6 @@ private:
 	Phase::E mPhase;
 	Repository* mRepository;
 	Threads* mThreads;
-	TypeSystem* mTypeSystem;
 };
 
 
