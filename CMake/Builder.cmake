@@ -61,6 +61,11 @@ function(_handle_modules_pre_linker modules)
         _handle_pre_curl()
     endif()
 
+    list(FIND modules "fcgi" found)
+    if ( ${found} GREATER -1 )
+        _handle_pre_fcgi()
+    endif()
+
     list(FIND modules "json" found)
     if ( ${found} GREATER -1 )
         _handle_pre_json()
@@ -84,6 +89,11 @@ function(_handle_modules_post_linker modules target)
     list(FIND modules "curl" found)
     if ( ${found} GREATER -1 )
         _handle_post_curl(${target})
+    endif()
+
+    list(FIND modules "fcgi" found)
+    if ( ${found} GREATER -1 )
+        _handle_post_fcgi(${target})
     endif()
 
     list(FIND modules "json" found)
@@ -163,6 +173,70 @@ endfunction()
 ###############################
 
 ###############################
+### FCGI
+
+function(_could_not_find_fcgi)
+    MESSAGE(STATUS "Could not find (the correct version of) libfcgi.")
+
+    MESSAGE(FATAL_ERROR "Slang currently requires ${FGCI_PACKAGE_NAME}\n")
+endfunction()
+
+
+function(_fcgi_check_existence)
+
+    # Look for the header file.
+    find_path(FCGI_INCLUDE_DIR NAMES fastcgi.h)
+    # Look for the library.
+    find_library(FCGI_LIBRARY NAMES fcgi)
+    # Handle the QUIETLY and REQUIRED arguments and set FCGI_FOUND to TRUE if all listed variables are TRUE.
+    include(FindPackageHandleStandardArgs)
+    FIND_PACKAGE_HANDLE_STANDARD_ARGS(FCGI DEFAULT_MSG FCGI_LIBRARY FCGI_INCLUDE_DIR)
+    # Copy the results to the output variables.
+    if(FCGI_FOUND)
+        set(FCGI_LIBRARIES ${FCGI_LIBRARY})
+        set(FCGI_INCLUDE_DIRS ${FCGI_INCLUDE_DIR})
+    else()
+        set(FCGI_LIBRARIES)
+        set(FCGI_INCLUDE_DIRS)
+    endif()
+    mark_as_advanced(FCGI_INCLUDE_DIR FCGI_LIBRARY)
+
+
+    #set(FGCI_PACKAGE_NAME "libfcgi")
+
+    #find_package(${FGCI_PACKAGE_NAME} REQUIRED)
+
+    # make sure the appropriate environment variable is set!
+    #if(NOT FGCI_FOUND)
+    #    MESSAGE( STATUS "FGCI_FOUND: ${FGCI_FOUND}" )
+    #    MESSAGE( STATUS "FGCI_INCLUDE_DIR: ${FGCI_INCLUDE_DIR}" )
+
+    #    _could_not_find_fcgi()
+    #endif()
+
+endfunction()
+
+
+function(_handle_post_fcgi TARGET)
+
+    # for a proper library this also setups any required include directories or other compilation options
+    _fcgi_check_existence()
+    target_link_libraries(${TARGET} fcgi) # using libfcgi
+
+endfunction()
+
+
+function(_handle_pre_fcgi)
+
+    _fcgi_check_existence()
+    include_directories(${FGCI_INCLUDE_DIR})
+
+endfunction()
+
+### FCGI
+###############################
+
+###############################
 ### JSON
 
 function(_could_not_find_json)
@@ -193,7 +267,7 @@ function(_handle_post_json TARGET)
 
     # for a proper library this also setups any required include directories or other compilation options
     _json_check_existence()
-    target_link_libraries(${TARGET} jsoncpp)	# using jsoncpp
+    target_link_libraries(${TARGET} jsoncpp) # using jsoncpp
 
 endfunction()
 

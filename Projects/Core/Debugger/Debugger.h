@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/Parser/Token.h>
+#include <Core/Common/Token.h>
 #include <Core/Scope.h>
 #include "BreakPoint.h"
 #include "IDebugger.h"

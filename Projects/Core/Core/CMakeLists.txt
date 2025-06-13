@@ -11,11 +11,8 @@ ADD_SUBDIRECTORY(VirtualMachine)
 
 SET(SOURCES
 	Object.cpp
-	Parameter.cpp
 	Scope.cpp
 	Symbol.cpp
-	Tools.cpp
-	Types.cpp
 )
 
 SET(HEADERS
@@ -24,11 +21,8 @@ SET(HEADERS
 	MemleakCheck.h
 	Object.h
 	Slang.h
-	Parameter.h
 	Scope.h
 	Symbol.h
-	Tools.h
-	Types.h
 	Version.h
 )
 
@@ -51,7 +45,6 @@ SET(MODULES
 )
 
 add_include(Projects/Core)
-add_include(Projects/Debugger)
 add_include(Projects/Utils)
 
 build_static_lib(Core "${MODULES}")

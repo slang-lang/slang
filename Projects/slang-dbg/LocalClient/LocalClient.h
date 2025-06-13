@@ -8,9 +8,8 @@
 // Project includes
 #include <Common/AClient.h>
 #include <Core/Common/Types.h>
-#include <Core/Parameter.h>
+#include <Core/Runtime/Parameter.h>
 #include <Core/Scope.h>
-#include <Core/Types.h>
 #include <Debugger/BreakPoint.h>
 #include <Debugger/IReceiver.h>
 #include "Watch.h"
@@ -52,9 +51,9 @@ public:
 	MethodSymbol* getMethod( std::string name, const ParameterList& params ) const;
 	Symbol* getSymbol( std::string name ) const;
 	bool modifySymbol( const StringList& tokens );
-	void setCurrentFrame( Common::FrameId frameId );
+	void setCurrentFrame( FrameId frameId );
 	void setCurrentFrame( const StringList& tokens );
-	void setCurrentThread( Common::ThreadId threadId );
+	void setCurrentThread( ThreadId threadId );
 	void setCurrentThread( const StringList& tokens );
 
 	void continueExecution();
@@ -116,8 +115,8 @@ private:
 private:
 	Core::BreakPoint mBreakpoint;
 	bool mContinue;
-	Common::FrameId mCurrentFrameId;
-	Common::ThreadId mCurrentThreadId;
+	FrameId mCurrentFrameId;
+	ThreadId mCurrentThreadId;
 	Core::Debugger* mDebugger;
 	ParameterList mParameters;
 	bool mRunning;

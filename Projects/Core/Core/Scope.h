@@ -13,7 +13,7 @@
 
 // Project includes
 #include <Core/Interfaces/IScope.h>
-#include "Parameter.h"
+#include <Core/Runtime/Parameter.h>
 
 // Forward declarations
 

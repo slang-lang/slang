@@ -3,15 +3,13 @@
 #include "StackFrame.h"
 
 // Library includes
+#include <utility>
 
 // Project includes
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
-#include <Core/Tools.h>
-#include <Core/Types.h>
+#include <Core/Common/Types.h>
 #include <Tools/Strings.h>
-
-#include <utility>
 
 // Namespace declarations
 

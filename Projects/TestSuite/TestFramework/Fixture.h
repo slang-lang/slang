@@ -6,12 +6,14 @@
 // Library includes
 
 // Project includes
-#include <Common/Logger.h>
+#include <Core/Common/Types.h>
 #include <Framework/TestFixture.h>
+#include <Logger/Logger.h>
 
 // Forward declarations
 
 // Namespace declarations
+using namespace Slang;
 using namespace Testing;
 
 

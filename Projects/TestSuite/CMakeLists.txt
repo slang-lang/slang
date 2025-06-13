@@ -21,7 +21,6 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-	Utils
 	Test_Utils
 	Test_TestFramework
 	Test_RealWorldUsage
@@ -44,6 +43,8 @@ SET(DEPENDENCIES
 	CoreCommon
 	CoreAttributes
 	Core
+	UtilsLogger
+	Utils
 )
 
 add_include( Projects/Core )

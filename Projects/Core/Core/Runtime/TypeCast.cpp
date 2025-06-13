@@ -15,7 +15,7 @@
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Utils.h>
+#include <Logger/Logger.h>
 
 // Namespace declarations
 

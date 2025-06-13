@@ -7,8 +7,8 @@
 #include <string>
 
 // Project includes
+#include <Core/Common/Token.h>
 #include <Core/Common/TypeDeclaration.h>
-#include <Core/Designtime/Parser/Token.h>
 #include "Ancestor.h"
 #include "BluePrintObject.h"
 
