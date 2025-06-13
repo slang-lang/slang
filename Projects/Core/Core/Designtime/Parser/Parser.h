@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Attributes/Types.h>
+#include <Core/Common/Attributes/Types.h>
 #include <Core/Common/PrototypeConstraint.h>
 #include <Core/Common/Token.h>
 #include <Core/Common/TypeDeclaration.h>

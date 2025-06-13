@@ -1,5 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
+ADD_SUBDIRECTORY(Attributes)
+
 SET(SOURCES
     Exceptions.cpp
     Method.cpp
@@ -26,6 +28,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+    CoreCommonAttributes
 )
 
 add_include(Projects/Core)

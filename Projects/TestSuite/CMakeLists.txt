@@ -41,7 +41,7 @@ SET(DEPENDENCIES
 	CoreDebugger
 	CoreDesigntime
 	CoreCommon
-	CoreAttributes
+	CoreCommonAttributes
 	Core
 	UtilsLogger
 	Utils
