@@ -9,7 +9,7 @@
 #include <utility>
 
 // Project includes
-#include <Common/Logger.h>
+#include <Logger/Logger.h>
 #include "GenericTest.h"
 
 // Forward declarations

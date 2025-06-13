@@ -2,9 +2,8 @@
 // Header
 #include "Symbol.h"
 
-#include <utility>
-
 // Library includes
+#include <utility>
 
 // Project includes
 

@@ -16,6 +16,7 @@ SET(DEPENDENCIES
 	DebuggerApplication
 	CoreDebugger
 	Core
+	UtilsLogger
 	Utils
 )
 

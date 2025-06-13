@@ -18,8 +18,7 @@ Controller::Controller()
   mMemory(nullptr),
   mPhase(Phase::Startup),
   mRepository(nullptr),
-  mThreads(nullptr),
-  mTypeSystem(nullptr)
+  mThreads(nullptr)
 {
 }
 
@@ -33,7 +32,6 @@ void Controller::deinit()
 	mMemory->deinit();
 	mThreads->deinit();
 	mRepository->deinit();
-	mTypeSystem->deinit();
 
 	delete mThreads;
 	mThreads = nullptr;
@@ -41,8 +39,6 @@ void Controller::deinit()
 	mMemory = nullptr;
 	delete mRepository;
 	mRepository = nullptr;
-	delete mTypeSystem;
-	mTypeSystem = nullptr;
 
 	mPhase = Phase::Shutdown;
 }
@@ -62,9 +58,7 @@ void Controller::init()
 	mMemory = new Memory();
 	mRepository = new Repository();
 	mThreads = new Threads();
-	mTypeSystem = new TypeSystem();
 
-	mTypeSystem->init();
 	mMemory->init();
 	mRepository->init();
 	mThreads->init();
@@ -92,7 +86,7 @@ Repository* Controller::repository() const
 	return mRepository;
 }
 
-Thread* Controller::thread(Common::ThreadId id) const
+Thread* Controller::thread(ThreadId id) const
 {
 	return mThreads->getThread(id);
 }
@@ -100,11 +94,6 @@ Thread* Controller::thread(Common::ThreadId id) const
 Threads* Controller::threads() const
 {
 	return mThreads;
-}
-
-TypeSystem* Controller::typeSystem() const
-{
-	return mTypeSystem;
 }
 
 

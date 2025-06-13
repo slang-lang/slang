@@ -10,11 +10,12 @@
 
 // Project includes
 #include <Common/AClient.h>
-#include <Core/Types.h>
+#include <Core/Common/Types.h>
 
 // Forward declarations
 
 // Namespace declarations
+using namespace Slang;
 
 
 namespace VSCodeDebug {

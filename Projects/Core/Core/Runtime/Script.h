@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Core/Common/Types.h>
-#include <Core/Parameter.h>
+#include "Parameter.h"
 
 // Forward declarations
 
@@ -33,7 +33,7 @@ public:	//Helpers
 	Symbol* resolveMethod(const std::string& method, const ParameterList& params);
 
 public:	// Execution
-	void execute(Common::ThreadId threadId, const std::string& method, const ParameterList& params, Runtime::Object* result);
+	void execute(ThreadId threadId, const std::string& method, const ParameterList& params, Runtime::Object* result);
 };
 
 

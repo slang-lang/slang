@@ -6,12 +6,13 @@
 // Library includes
 
 // Project includes
-#include <Core/Types.h>
+#include <Core/Common/Types.h>
 #include <MyUnit/TestFixture.h>
 
 // Forward declarations
 
 // Namespace declarations
+using namespace Slang;
 
 
 namespace Testing {

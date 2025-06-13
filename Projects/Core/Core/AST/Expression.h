@@ -9,8 +9,8 @@
 #include <utility>
 
 // Project includes
+#include <Core/Common/Token.h>
 #include <Core/Consts.h>
-#include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Scope.h>
 #include "Node.h"

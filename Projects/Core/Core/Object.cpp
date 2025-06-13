@@ -6,7 +6,6 @@
 #include <utility>
 
 // Project includes
-#include <Core/AST/TreeInterpreter.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Runtime/BuildInTypes/VoidType.h>

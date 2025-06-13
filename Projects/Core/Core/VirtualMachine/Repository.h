@@ -12,6 +12,7 @@
 #include <Core/Common/PrototypeConstraint.h>
 #include <Core/Object.h>
 #include <Core/Runtime/Reference.h>
+#include "TypeSystem.h"
 
 // Forward declarations
 
@@ -27,9 +28,8 @@ namespace Designtime {
 namespace Runtime {
 	class Object;
 }
-class TypeSystem;
 
-class Repository
+class Repository : public TypeSystem
 {
 public:
 	class InitilizationType {
@@ -42,7 +42,7 @@ public:
 	};
 
 public:
-	Repository();
+	Repository() = default;
 	~Repository() = default;
 
 public:
@@ -78,9 +78,6 @@ private:
 
 private:
 	BluePrintObjectMap mBluePrintObjects;
-
-private:	// Virtual machine stuff
-	TypeSystem* mTypeSystem;
 };
 
 

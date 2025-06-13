@@ -7,8 +7,8 @@
 
 // Project includes
 #include <Core/Common/Types.h>
-#include <Core/Parameter.h>
 #include <Core/Runtime/ControlFlow.h>
+#include <Core/Runtime/Parameter.h>
 #include "Expression.h"
 #include "Operator.h"
 #include "Statement.h"
@@ -46,7 +46,7 @@ class Statements;
 class TreeInterpreter
 {
 public:
-	explicit TreeInterpreter(Common::ThreadId id);
+	explicit TreeInterpreter( Thread* thread );
 	~TreeInterpreter() = default;
 
 public: // Execution
