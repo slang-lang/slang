@@ -5,12 +5,13 @@
 // Library includes
 
 // Project includes
+#include <Core/AST/Node.h>
+#include <Core/AST/Statement.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Utils.h>
-#include "TreeGenerator.h"
 
 // Namespace declarations
 

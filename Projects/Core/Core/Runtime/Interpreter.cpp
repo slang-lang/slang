@@ -72,15 +72,15 @@ namespace Runtime {
 		}
 
 
-Interpreter::Interpreter(ThreadId threadId)
-: mControlFlow(ControlFlow::Normal),
-  mOwner(0)
+Interpreter::Interpreter(Thread* thread)
+: mControlFlow(ControlFlow::Normal)
+, mOwner( nullptr )
+, mThread( thread )
 {
 	// initialize virtual machine stuff
 	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
-	mThread = Controller::Instance().thread(threadId);
 }
 
 Interpreter::~Interpreter()
@@ -1528,7 +1528,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 			mControlFlow = Runtime::ControlFlow::Normal;
 		}
 		catch ( std::exception& e ) {
-			auto* data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			auto* data = mRepository->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
 			*data = Runtime::StringType( std::string( e.what() ) );
 
 			mThread->exception( Runtime::ExceptionData( data, Token().position() ) );

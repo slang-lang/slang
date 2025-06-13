@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/AST/Generator.h>
+#include <Core/AST/TreeGenerator.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Designtime/BluePrintObject.h>
@@ -91,7 +91,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	initBluePrintObject(newBlue);
 
 	if ( Controller::Instance().phase() > Controller::Phase::Preparation ) {
-		AST::Generator generator;
+		AST::TreeGenerator generator( this );
 		generator.process(newBlue);
 	}
 

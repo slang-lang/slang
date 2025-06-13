@@ -133,7 +133,7 @@ private: // Execution
 
 private:
 	// prevent usage
-	explicit Interpreter(ThreadId threadId);
+	explicit Interpreter(Thread* thread);
 
 private:	// Initialization
 	void deinitialize();
