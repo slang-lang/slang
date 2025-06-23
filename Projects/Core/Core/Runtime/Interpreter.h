@@ -7,11 +7,11 @@
 #include <list>
 
 // Project includes
+#include <Core/Common/Parameter.h>
 #include <Core/Common/Token.h>
 #include <Core/Common/Types.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
-#include "Parameter.h"
 
 // Forward declarations
 
@@ -34,6 +34,7 @@ class NamedScope;
 class Repository;
 class Symbol;
 class Thread;
+class VirtualMachine;
 
 namespace Runtime {
 
@@ -44,7 +45,7 @@ class Object;
 class Interpreter
 {
 public:
-	~Interpreter();
+	~Interpreter() = default;
 
 public: // Execution
 	ControlFlow::E execute(Common::Method* method, const ParameterList& params, Object* result);
@@ -133,7 +134,7 @@ private: // Execution
 
 private:
 	// prevent usage
-	explicit Interpreter(Thread* thread);
+	explicit Interpreter( VirtualMachine* vm, Thread* thread );
 
 private:	// Initialization
 	void deinitialize();

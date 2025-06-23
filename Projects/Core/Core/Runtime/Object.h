@@ -1,6 +1,6 @@
 
-#ifndef Slang_Core_Core_Object_h
-#define Slang_Core_Core_Object_h
+#ifndef Slang_Core_Core_Runtime_Object_h
+#define Slang_Core_Core_Runtime_Object_h
 
 
 // Library includes
@@ -16,13 +16,14 @@
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/Reference.h>
-#include <Core/Runtime/Parameter.h>
-#include "Scope.h"
-#include "Symbol.h"
+#include <Core/Common/Parameter.h>
+#include <Core/Scope.h>
+#include <Core/Symbol.h>
 
 // Forward declarations
 namespace Slang {
 	class Repository;
+	class Scope;
 }
 
 // Namespace declarations
@@ -90,12 +91,6 @@ public:	// Value
 
 	virtual std::string ToString(unsigned int indent = 0) const;
 
-public:	// Usage
-	bool CanExecuteDefaultConstructor() const;
-	ControlFlow::E Constructor(const ParameterList& params);
-	ControlFlow::E Destructor();
-	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params);
-
 public:	// Operators
 	virtual void operator_assign(const Object *other);
 	virtual void operator_bitand(const Object *other);
@@ -139,9 +134,6 @@ protected:
 	Object* mThis;
 	std::string mTypename;
 	AtomicValue mValue;
-
-private:
-	void assignReference(const Reference& ref);
 };
 
 

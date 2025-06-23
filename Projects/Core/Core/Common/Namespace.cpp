@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Consts.h>
 #include <Tools/Strings.h>
 #include "Method.h"
 
@@ -59,6 +60,7 @@ void Namespace::defineMethod(const std::string& name, Common::Method* method)
 {
 	MethodScope::defineMethod(name, method);
 
+	method->setParent( this );
 	method->initialize();
 }
 

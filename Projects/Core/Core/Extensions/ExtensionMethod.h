@@ -10,6 +10,8 @@
 // Project includes
 #include <Core/Common/Method.h>
 #include <Core/Common/Types.h>
+#include <Core/Runtime/ControlFlow.h>
+#include <Core/Runtime/Object.h>
 
 // Forward declarations
 

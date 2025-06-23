@@ -6,9 +6,9 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Parameter.h>
 #include <Core/Common/Types.h>
 #include <Core/Runtime/ControlFlow.h>
-#include <Core/Runtime/Parameter.h>
 #include "Expression.h"
 #include "Operator.h"
 #include "Statement.h"
@@ -36,6 +36,7 @@ namespace Runtime {
 class Repository;
 class StackFrame;
 class Thread;
+class VirtualMachine;
 
 namespace AST {
 
@@ -46,7 +47,7 @@ class Statements;
 class TreeInterpreter
 {
 public:
-	explicit TreeInterpreter( Thread* thread );
+	explicit TreeInterpreter( VirtualMachine* vm, Thread* thread );
 	~TreeInterpreter() = default;
 
 public: // Execution

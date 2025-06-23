@@ -5,7 +5,6 @@
 // Project includes
 #include <Core/Defines.h>
 #include <Core/Runtime/ControlFlow.h>
-#include <Core/VirtualMachine/Controller.h>
 #include <Logger/StdOutLogger.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
@@ -230,9 +229,6 @@ int main( int argc, const char* argv[] )
 	catch ( ... ) {	// catch everything
 		std::cout << "uncaught exception detected" << std::endl;
 	}
-
-	// if we get here something bad has happened
-	Slang::Controller::Instance().threads()->print();
 
 	return -1;
 }

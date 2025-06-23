@@ -7,8 +7,6 @@
 // Project includes
 #include <Core/Consts.h>
 
-#include <utility>
-
 // Namespace declarations
 
 

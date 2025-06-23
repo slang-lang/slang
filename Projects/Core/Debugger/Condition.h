@@ -18,6 +18,10 @@ namespace Slang {
 // Forward declarations
 class Symbol;
 
+namespace AST {
+	class TreeInterpreter;
+}
+
 namespace Core {
 
 
@@ -45,7 +49,7 @@ public:
 	~Condition() = default;
 
 public:
-	bool evaluate(Symbol* lhs, Symbol* rhs) const;
+	bool evaluate( AST::TreeInterpreter* runtime, Symbol* lhs, Symbol* rhs) const;
 
 	bool isValid() const;
 	const std::string& lhs() const;

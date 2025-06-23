@@ -22,6 +22,7 @@ namespace Slang {
 // Forward declarations
 class MethodScope;
 class Repository;
+class VirtualMachine;
 
 namespace Designtime {
 
@@ -29,7 +30,7 @@ namespace Designtime {
 class Analyser
 {
 public:
-	explicit Analyser(bool doSanityCheck = true, bool printTokens = false);
+	explicit Analyser(VirtualMachine* vm, bool doSanityCheck = true, bool printTokens = false);
 	~Analyser() = default;
 
 public:

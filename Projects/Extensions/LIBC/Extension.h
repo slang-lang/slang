@@ -35,7 +35,7 @@ public:
     void provideMethods( ExtensionMethods& methods ) override;
 
 private:
-    LIBC::cassert::cassert_t mCassert;
+//    LIBC::cassert::cassert_t mCassert;
     LIBC::cstring::cstring_t mCstring;
     LIBC::fenv::fenv_t       mFenv;
     LIBC::math::math_t       mMath;

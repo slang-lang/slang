@@ -9,8 +9,8 @@
 #include <unordered_set>
 
 // Project includes
+#include <Core/Common/Parameter.h>
 #include <Core/Runtime/Reference.h>
-#include <Core/Runtime/Parameter.h>
 
 // Forward declarations
 

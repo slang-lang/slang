@@ -4,6 +4,7 @@
 
 
 // Library include
+#include "Threads.h"
 #include <map>
 #include <iostream>
 #include <string>
@@ -17,7 +18,7 @@
 #else
 #	include <Core/Extensions/ExtensionManager.h>
 #endif
-#include <Core/Runtime/Parameter.h>
+#include <Core/Common/Parameter.h>
 
 // Forward declarations
 
@@ -31,10 +32,24 @@ namespace Runtime {
 	class Object;
 }
 class Script;
+class Thread;
 
 class VirtualMachine
 {
 public:
+	class Phase
+	{
+	public:
+		enum E {
+			Startup,
+			Preparation,
+			Generation,
+			Optimization,
+			Execution,
+			Shutdown
+		};
+	};
+
 	class Settings
 	{
 	public:
@@ -48,6 +63,15 @@ public:
 public:
 	VirtualMachine();
 	~VirtualMachine();
+
+public:	// VM Context access
+	Phase::E phase() const;
+
+	Common::Namespace* globalScope() const;
+	Memory* memory() const;
+	Repository* repository() const;
+	Thread* thread(ThreadId id) const;
+	Threads* threads() const;
 
 public:	// Setup
 	bool addExtension(Extensions::AExtension* extension, const std::string& library = "<internal library>");
@@ -75,6 +99,16 @@ private:
 	bool loadLibrary(const std::string& library);
 
 private:
+	// VM state
+	Common::Namespace* mGlobalScope;
+	Memory* mMemory;
+	Phase::E mPhase;
+	Repository* mRepository;
+	Threads* mThreads;
+
+	void initVMComponents();
+	void deinitVMComponents();
+
 #ifdef _WIN32
 	// Extension loading is not supported under Windows
 #else

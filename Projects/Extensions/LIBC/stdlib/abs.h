@@ -17,7 +17,6 @@
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Utils.h>
-#include <Core/VirtualMachine/Controller.h>
 
 // Forward declarations
 

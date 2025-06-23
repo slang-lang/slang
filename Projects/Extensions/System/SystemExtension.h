@@ -44,9 +44,9 @@ private:
 	// Win32 only
 #else
 	// Unix/Linux only
-	Network::SystemNetworkExtension mNetworkExtension;
+//	Network::SystemNetworkExtension mNetworkExtension;
 #endif
-	Reflection::SystemReflectionExtension mReflectionExtension;
+//	Reflection::SystemReflectionExtension mReflectionExtension;
 	Strings::SystemStringsExtension mStringsExtension;
     Time::SystemTimeExtension mTimeExtension;
 };

@@ -10,7 +10,7 @@
 
 // Project includes
 #include <Core/Common/PrototypeConstraint.h>
-#include <Core/Object.h>
+#include <Core/Runtime/Object.h>
 #include <Core/Runtime/Reference.h>
 #include "TypeSystem.h"
 
@@ -28,6 +28,7 @@ namespace Designtime {
 namespace Runtime {
 	class Object;
 }
+class VirtualMachine;
 
 class Repository : public TypeSystem
 {
@@ -42,7 +43,7 @@ public:
 	};
 
 public:
-	Repository() = default;
+	Repository( VirtualMachine* vm );
 	~Repository() = default;
 
 public:
@@ -78,6 +79,7 @@ private:
 
 private:
 	BluePrintObjectMap mBluePrintObjects;
+	VirtualMachine* mVirtualMachine;
 };
 
 

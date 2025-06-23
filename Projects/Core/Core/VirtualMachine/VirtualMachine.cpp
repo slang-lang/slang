@@ -15,12 +15,13 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Defines.h>
 #include <Core/Designtime/Analyser.h>
-#include <Core/Runtime/Script.h>
+#include <Core/Script.h>
+#include <Core/VirtualMachine/Memory.h>
+#include <Core/VirtualMachine/Repository.h>
 #include <Logger/Logger.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
-#include "Controller.h"
 
 // Namespace declarations
 
@@ -59,9 +60,18 @@ void read_directory(const std::string& dirname, std::vector<std::string>& files)
 
 
 VirtualMachine::VirtualMachine()
-: mIsInitialized(false)
+: mGlobalScope(nullptr),
+  mMemory(nullptr),
+  mPhase(Phase::Startup),
+  mRepository(nullptr),
+  mThreads(nullptr),
+  mIsInitialized(false)
 {
-	Controller::Instance().init();
+	mMemory     = new Memory( this );
+	mRepository = new Repository( this );
+	mThreads    = new Threads( this );
+
+	initVMComponents();
 }
 
 VirtualMachine::~VirtualMachine()
@@ -71,11 +81,16 @@ VirtualMachine::~VirtualMachine()
 	}
 	mScripts.clear();
 
-	Controller::Instance().deinit();
+	deinitVMComponents();
 
 	for ( auto& extension : mExtensions ) {
 		delete extension;
 	}
+
+	delete mGlobalScope;
+	delete mThreads;
+	delete mMemory;
+	delete mRepository;
 }
 
 bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std::string& library )
@@ -92,7 +107,7 @@ bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std:
 	try {
 		OSdebug( "adding extension '" + extension->getName() + "'" );
 
-		auto* globalScope = Controller::Instance().globalScope();
+		auto* globalScope = mGlobalScope;
 		Extensions::ExtensionMethods methods;
 
 		extension->initialize( globalScope );
@@ -106,8 +121,6 @@ bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std:
 
 		for ( auto& method : methods ) {
 			OSdebug( "adding extension method '" + extension->getName() + "." + method->getName() + "'" );
-
-			method->setParent( globalScope );
 
 			globalScope->defineMethod( method->getName(), method );
 
@@ -142,10 +155,10 @@ Script* VirtualMachine::createScript(const std::string& content)
 		init();
 	}
 
-	auto *script = new Script();
+	auto script = new Script(this);
 	mScripts.insert(script);
 
-	Designtime::Analyser analyser(mSettings.DoSanityCheck, mSettings.PrintTokens);
+	Designtime::Analyser analyser(this, mSettings.DoSanityCheck, mSettings.PrintTokens);
 	analyser.processString(content, mScriptFile);
 
 	// load all extension references
@@ -173,13 +186,13 @@ Script* VirtualMachine::createScript(const std::string& content)
 		}
 	}
 
-	MethodScope* globalScope = Controller::Instance().globalScope();
+	MethodScope* globalScope = mGlobalScope;
 
-	Controller::Instance().repository()->initializeBlueprints();
+	mRepository->initializeBlueprints();
 
-	Controller::Instance().phase(Controller::Phase::Generation);
+	mPhase = Phase::Generation;
 
-	AST::TreeGenerator generator( Controller::Instance().repository(), mSettings.DoCollectErrors );
+	AST::TreeGenerator generator( mRepository, mSettings.DoCollectErrors );
 	generator.process(globalScope);
 
 	auto errors = generator.hasErrors();
@@ -189,7 +202,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 
 #ifdef USE_AST_OPTIMIZATION
 
-	Controller::Instance().phase(Controller::Phase::Optimization);
+	mPhase = Phase::Optimization;
 
 	AST::TreeOptimizer optimizer;
 	optimizer.process(globalScope);
@@ -311,7 +324,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 	mLibraryFolders.insert( currentFolder );
 
-	Designtime::Analyser analyser(mSettings.DoSanityCheck, mSettings.PrintTokens);
+	Designtime::Analyser analyser(this, mSettings.DoSanityCheck, mSettings.PrintTokens);
 	analyser.processFile(library);
 
 	mImportedLibraries.insert(library);
@@ -404,18 +417,18 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 		throw Common::Exceptions::Exception("provided invalid script to run!");
 	}
 
-	Controller::Instance().phase(Controller::Phase::Execution);
+	mPhase = Phase::Execution;
 
-	MethodScope* globalScope = Controller::Instance().globalScope();
+	MethodScope* globalScope = mGlobalScope;
 
 	Common::Method* main = dynamic_cast<Common::Method*>(globalScope->resolveMethod("Main", params, false));
 	if ( !main ) {
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
 
-	auto* thread = Controller::Instance().threads()->createThread();
+	auto* thread = mThreads->createThread();
 
-	auto controlflow = thread->execute(nullptr, main, params, result);
+	auto controlflow = thread->execute( main, params, result );
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		throw Runtime::ControlFlow::Throw;
 	}
@@ -438,6 +451,59 @@ void VirtualMachine::runScriptFromString(const std::string &content, const Slang
 VirtualMachine::Settings& VirtualMachine::settings()
 {
 	return mSettings;
+}
+
+void VirtualMachine::initVMComponents()
+{
+	assert(mPhase == Phase::Startup);
+
+	assert(!mGlobalScope);
+	mGlobalScope = new Common::Namespace(VALUE_NONE, nullptr);
+
+	mMemory->init();
+	mRepository->init();
+	mThreads->init();
+
+	mPhase = Phase::Preparation;
+}
+
+void VirtualMachine::deinitVMComponents()
+{
+	mPhase = Phase::Shutdown;
+
+	mMemory->deinit();
+	mThreads->deinit();
+	mRepository->deinit();
+}
+
+VirtualMachine::Phase::E VirtualMachine::phase() const
+{
+	return mPhase;
+}
+
+Common::Namespace* VirtualMachine::globalScope() const
+{
+	return mGlobalScope;
+}
+
+Memory* VirtualMachine::memory() const
+{
+	return mMemory;
+}
+
+Repository* VirtualMachine::repository() const
+{
+	return mRepository;
+}
+
+Thread* VirtualMachine::thread(ThreadId id) const
+{
+	return mThreads->getThread(id);
+}
+
+Threads* VirtualMachine::threads() const
+{
+	return mThreads;
 }
 
 
@@ -467,4 +533,3 @@ namespace {
 		return Utils::Tools::Files::BuildPath( folder, filename + std::string( "/All" ) ) + ".os";
 	}
 }
-

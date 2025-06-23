@@ -7,12 +7,11 @@
 #include <map>
 
 // Project includes
-#include <Core/Common/TypeDeclaration.h>
-#include <Core/Common/Types.h>
-#include <Core/Runtime/Parameter.h>
-#include <Core/Object.h>
 #include <Core/Scope.h>
+#include "Parameter.h"
+#include "TypeDeclaration.h"
 #include "Types.h"
+#include "Token.h"
 
 // Forward declarations
 
@@ -29,11 +28,9 @@ class IPrinter;
 class Memory;
 class Repository;
 
-namespace Runtime {
-	class Object;
-}
 
 namespace Common {
+
 
 class Method : public NamedScope,
 			   public MethodSymbol

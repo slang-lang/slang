@@ -7,11 +7,11 @@
 
 // Project includes
 #include <Core/Common/Attributes/Types.h>
+#include <Core/Common/Parameter.h>
 #include <Core/Common/PrototypeConstraint.h>
 #include <Core/Common/Token.h>
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Designtime/Ancestor.h>
-#include <Core/Runtime/Parameter.h>
 
 // Forward declarations
 

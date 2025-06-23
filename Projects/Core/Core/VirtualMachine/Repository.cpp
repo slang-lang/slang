@@ -1,6 +1,7 @@
 
 // Header
 #include "Repository.h"
+#include "VirtualMachine.h"
 
 // Library includes
 
@@ -31,13 +32,17 @@
 #include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Logger/Logger.h>
 #include <Utils.h>
-#include "Controller.h"
+#include "Memory.h"
 
 // Namespace declarations
 
 
 namespace Slang {
 
+Repository::Repository( VirtualMachine* vm )
+: mVirtualMachine( vm )
+{
+}
 
 /*
  * adds a new blue print object to the repository
@@ -90,7 +95,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// initialize newly created blueprint
 	initBluePrintObject(newBlue);
 
-	if ( Controller::Instance().phase() > Controller::Phase::Preparation ) {
+	if ( mVirtualMachine->phase() > VirtualMachine::Phase::Preparation ) {
 		AST::TreeGenerator generator( this );
 		generator.process(newBlue);
 	}
@@ -158,7 +163,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 		}
 	}
 
-	if ( Controller::Instance().phase() == Controller::Phase::Preparation ) {
+	if ( mVirtualMachine->phase() == VirtualMachine::Phase::Preparation ) {
 		switch ( object->getLanguageFeatureState() ) {
 			case LanguageFeatureState::Deprecated: OSwarn("Used type '" + object->QualifiedTypename() + "' is marked as deprecated"); break;
 			case LanguageFeatureState::NotImplemented: OSerror("Used type '" + object->QualifiedTypename() + "' is marked as not implemented"); break;
@@ -216,7 +221,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	IScope* parent = blueprint->getEnclosingScope();
 	if ( !parent ) {
 		// set global scope as fallback parent
-		parent = Controller::Instance().globalScope();
+		parent = mVirtualMachine->globalScope();
 	}
 
 	object->setBluePrint(blueprint);
@@ -258,7 +263,7 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintObject* bluepr
 			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->QualifiedTypename() + "'");
 		}
 
-		Controller::Instance().memory()->newObject(object);
+		mVirtualMachine->memory()->newObject(object);
 	}
 
 	return object;
@@ -398,7 +403,7 @@ void Repository::init()
 {
 	TypeSystem::init();
 
-	auto* scope = Controller::Instance().globalScope();
+	auto* scope = mVirtualMachine->globalScope();
 
 	// add atomic types
 	{	// "bool" type

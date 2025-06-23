@@ -10,7 +10,10 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Object.h>
+#include <Core/Common/Method.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
+#include <Core/Runtime/Object.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Logger/Logger.h>
 #include <Tools/Strings.h>
 
@@ -20,8 +23,9 @@
 namespace Slang {
 
 
-Memory::Memory()
+Memory::Memory( VirtualMachine* vm )
 : mNextAddress(1)
+, mVirtualMachine( vm )
 {
 }
 
@@ -72,7 +76,11 @@ void Memory::deleteObject(const Runtime::Reference& ref)
 
 	// delete it if it's valid ...
 	if ( it->second.mObject ) {
-		it->second.mObject->Destructor();
+		if ( !it->second.mObject->isAtomicType() ) {
+			Runtime::VoidType tmp;
+			auto* method = dynamic_cast<Common::Method*>( it->second.mObject->resolveMethod( RESERVED_WORD_DESTRUCTOR, ParameterList(), false, Visibility::Designtime ) );
+			mVirtualMachine->thread( 0 )->execute( method, ParameterList(), &tmp );
+		}
 
 		delete it->second.mObject;
 	}
@@ -93,6 +101,7 @@ Runtime::Object* Memory::get(const Runtime::Reference& ref) const
 
 void Memory::init()
 {
+	// nothing to do here atm
 }
 
 const Runtime::Reference& Memory::newObject(Runtime::Object* obj)

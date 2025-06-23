@@ -1,6 +1,6 @@
 
-#ifndef Slang_Core_Core_Parameter_h
-#define Slang_Core_Core_Parameter_h
+#ifndef Slang_Core_Core_Common_Parameter_h
+#define Slang_Core_Core_Common_Parameter_h
 
 
 // Library includes
@@ -20,10 +20,6 @@
 
 namespace Slang {
 
-// Forward declarations
-namespace Runtime {
-class Object;
-}
 
 class Parameter
 {

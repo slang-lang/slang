@@ -8,8 +8,8 @@
 
 // Project includes
 #include <Core/Common/Token.h>
-#include <Core/Runtime/Parameter.h>
-#include <Core/Object.h>
+#include <Core/Common/Parameter.h>
+#include <Core/Runtime/Object.h>
 
 // Forward declarations
 

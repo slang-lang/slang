@@ -8,11 +8,12 @@
 #include <map>
 
 // Project includes
+#include <Core/AST/TreeInterpreter.h>
+#include <Core/Common/Parameter.h>
 #include <Core/Common/Token.h>
 #include <Core/Common/Types.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
-#include <Core/Runtime/Parameter.h>
 #include <Core/VirtualMachine/StackFrame.h>
 
 // Forward declarations
@@ -30,9 +31,10 @@ class IScope;
 namespace Runtime {
 	class Object;
 }
+class VirtualMachine;
 
 
-class Thread
+class Thread : public AST::TreeInterpreter
 {
 public:
 	class State
@@ -50,12 +52,12 @@ public:
 
 public:
 	Thread();
-	explicit Thread(ThreadId id);
+	explicit Thread(VirtualMachine* vm, ThreadId id);
 	~Thread();
 
 public:	// Initialization
 	void deinit();
-	Runtime::ControlFlow::E execute(Runtime::Object* self, Common::Method* method, const ParameterList& params, Runtime::Object* result);
+	Runtime::ControlFlow::E execute( Common::Method* method, const ParameterList& params, Runtime::Object* result );
 	void init();
 	void print();
 
@@ -84,13 +86,14 @@ private:
 	ThreadId mId;
 	StackFrames mStackFrames;
 	State::E mState;
+	VirtualMachine* mVirtualMachine;
 };
 
 
 class Threads
 {
 public:
-	Threads() = default;
+	Threads( VirtualMachine* vm );
 	~Threads() = default;
 
 public:
@@ -111,6 +114,7 @@ private:
 
 private:
 	InternalThreads mThreads;
+	VirtualMachine* mVirtualMachine;
 };
 
 

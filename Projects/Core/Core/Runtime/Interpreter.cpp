@@ -24,8 +24,10 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Core/VirtualMachine/Controller.h>
+#include <Core/VirtualMachine/Memory.h>
+#include <Core/VirtualMachine/Repository.h>
 #include <Core/VirtualMachine/Threads.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include <Logger/Logger.h>
 #include <Tools/Printer.h>
@@ -72,19 +74,15 @@ namespace Runtime {
 		}
 
 
-Interpreter::Interpreter(Thread* thread)
+Interpreter::Interpreter(VirtualMachine* vm, Thread* thread)
 : mControlFlow(ControlFlow::Normal)
 , mOwner( nullptr )
 , mThread( thread )
 {
 	// initialize virtual machine stuff
-	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
-	mMemory = Controller::Instance().memory();
-	mRepository = Controller::Instance().repository();
-}
-
-Interpreter::~Interpreter()
-{
+	mDebugger   = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
+	mMemory     = vm->memory();
+	mRepository = vm->repository();
 }
 
 /*
@@ -1203,7 +1201,8 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 
 	// get collection's forward iterator
 	Object iterator;
-	collection->execute(&iterator, "getIterator", ParameterList());
+	auto* getIteratorMethod = dynamic_cast<Common::Method*>( collection->resolveMethod( std::string( "getIterator" ), ParameterList(), false, Visibility::Public ) );
+	execute( getIteratorMethod, ParameterList(), &iterator );
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
@@ -1221,13 +1220,17 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 		// Setup
 		// {
 		Object tmp;
-		iterator.execute(&tmp, "hasNext", ParameterList());	// evaluate hasNext method
+		// evaluate hasNext method
+		auto* hasNextMethod = dynamic_cast<Common::Method*>( iterator.resolveMethod( std::string( "hasNext" ), ParameterList(), false, Visibility::Public ) );
+		execute( hasNextMethod, ParameterList(), &tmp );
 
 		if ( !isTrue(tmp) ) {	// do we have more items to iterate over?
 			break;
 		}
 
-		iterator.execute(loop, "next", ParameterList());	// get current item
+		// get current item
+		auto* nextMethod = dynamic_cast<Common::Method*>( iterator.resolveMethod( std::string( "next" ), ParameterList(), false, Visibility::Public ) );
+		execute( nextMethod, ParameterList(), &tmp );
 		// }
 
 		// Body parsing
@@ -1574,7 +1577,9 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	*result = *mRepository->createReference(static_cast<Designtime::BluePrintObject*>(symbol), ANONYMOUS_OBJECT, constraints, Repository::InitilizationType::Final);
 
 	// execute new object's constructor
-	mControlFlow = result->Constructor(params);
+	Runtime::VoidType tmp;
+	auto* method = dynamic_cast<Common::Method*>( result->resolveMethod( RESERVED_WORD_CONSTRUCTOR, params, false, Visibility::Public ) );
+	mControlFlow = execute( method, params, &tmp );
 }
 
 /*

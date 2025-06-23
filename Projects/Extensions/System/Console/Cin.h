@@ -11,7 +11,6 @@
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Utils.h>
-#include <Core/VirtualMachine/Controller.h>
 #include "Defines.h"
 
 // Forward declarations
