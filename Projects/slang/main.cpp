@@ -207,17 +207,17 @@ int main( int argc, const char* argv[] )
 
 		return 0;
 	}
-	else if ( mPrintSpecification ) {
+	if ( mPrintSpecification ) {
 		mVirtualMachine.printSpecification( mRequestedSpecification );
 
 		return 0;
 	}
-	else if ( mPrintVersion ) {
+	if ( mPrintVersion ) {
 		printVersion();
 
 		return 0;
 	}
-	else if ( mPrintUsage || mFilename.empty() ) {
+	if ( mPrintUsage || mFilename.empty() ) {
 		printUsage();
 
 		return 0;

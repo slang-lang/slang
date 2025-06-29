@@ -178,15 +178,15 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 		*result = Runtime::BoolType(false);
 		return;
 	}
-	else if ( exp->mOperation.type() == Token::Type::NAND && !leftResult ) {
+	if ( exp->mOperation.type() == Token::Type::NAND && !leftResult ) {
 		*result = Runtime::BoolType(true);
 		return;
 	}
-	else if ( exp->mOperation.type() == Token::Type::NOR && leftResult ) {
+	if ( exp->mOperation.type() == Token::Type::NOR && leftResult ) {
 		*result = Runtime::BoolType(false);
 		return;
 	}
-	else if ( exp->mOperation.type() == Token::Type::OR && leftResult ) {
+	if ( exp->mOperation.type() == Token::Type::OR && leftResult ) {
 		*result = Runtime::BoolType(true);
 		return;
 	}

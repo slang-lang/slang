@@ -324,29 +324,29 @@ bool operator_binary_equal( Object* lvalue, Object* rvalue )
 	if ( target == BoolType::TYPENAME ) {
 		return BoolType( lvalue->isValid() ).operator_equal( rvalue );
 	}
-	else if ( target == DoubleType::TYPENAME ) {
+	if ( target == DoubleType::TYPENAME ) {
 		return DoubleType( lvalue->getValue().toDouble() ).operator_equal( rvalue );
 	}
-	else if ( target == FloatType::TYPENAME ) {
+	if ( target == FloatType::TYPENAME ) {
 		return FloatType( lvalue->getValue().toFloat() ).operator_equal( rvalue );
 	}
-	else if ( target == Int16Type::TYPENAME ) {
+	if ( target == Int16Type::TYPENAME ) {
 		return Int16Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
-	else if ( target == Int32Type::TYPENAME ) {
+	if ( target == Int32Type::TYPENAME ) {
 		return Int32Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
-	else if ( target == Int64Type::TYPENAME ) {
+	if ( target == Int64Type::TYPENAME ) {
 		return Int64Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
-	else if ( target == StringType::TYPENAME ) {
+	if ( target == StringType::TYPENAME ) {
 		return StringType( lvalue->getValue().toStdString() ).operator_equal( rvalue );
 	}
-	else if ( target == VoidType::TYPENAME ) {
+	if ( target == VoidType::TYPENAME ) {
 		VoidType tmp;
 		return tmp.operator_equal( rvalue );
 	}
-	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+	if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
 		return lvalue->getValue().toInt() == rvalue->getValue().toInt();
 	}
 
@@ -375,35 +375,35 @@ bool operator_binary_greater( Object* lvalue, Object* rvalue )
 		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == DoubleType::TYPENAME ) {
+	if ( target == DoubleType::TYPENAME ) {
 		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == FloatType::TYPENAME ) {
+	if ( target == FloatType::TYPENAME ) {
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == Int16Type::TYPENAME ) {
+	if ( target == Int16Type::TYPENAME ) {
 		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == Int32Type::TYPENAME ) {
+	if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == Int64Type::TYPENAME ) {
+	if ( target == Int64Type::TYPENAME ) {
 		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == StringType::TYPENAME ) {
+	if ( target == StringType::TYPENAME ) {
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == VoidType::TYPENAME ) {
+	if ( target == VoidType::TYPENAME ) {
 		VoidType tmp;
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+	if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
 		return lvalue->getValue().toInt() > rvalue->getValue().toInt();
 	}
 
@@ -427,35 +427,35 @@ bool operator_binary_greater_equal( Object* lvalue, Object* rvalue )
 		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == DoubleType::TYPENAME ) {
+	if ( target == DoubleType::TYPENAME ) {
 		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == FloatType::TYPENAME ) {
+	if ( target == FloatType::TYPENAME ) {
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == Int16Type::TYPENAME ) {
+	if ( target == Int16Type::TYPENAME ) {
 		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == Int32Type::TYPENAME ) {
+	if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == Int64Type::TYPENAME ) {
+	if ( target == Int64Type::TYPENAME ) {
 		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == StringType::TYPENAME ) {
+	if ( target == StringType::TYPENAME ) {
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == VoidType::TYPENAME ) {
+	if ( target == VoidType::TYPENAME ) {
 		VoidType tmp;
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+	if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
 		return lvalue->getValue().toInt() >= rvalue->getValue().toInt();
 	}
 
@@ -479,35 +479,35 @@ bool operator_binary_less( Object* lvalue, Object* rvalue )
 		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == DoubleType::TYPENAME ) {
+	if ( target == DoubleType::TYPENAME ) {
 		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == FloatType::TYPENAME ) {
+	if ( target == FloatType::TYPENAME ) {
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == Int16Type::TYPENAME ) {
+	if ( target == Int16Type::TYPENAME ) {
 		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == Int32Type::TYPENAME ) {
+	if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == Int64Type::TYPENAME ) {
+	if ( target == Int64Type::TYPENAME ) {
 		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == StringType::TYPENAME ) {
+	if ( target == StringType::TYPENAME ) {
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == VoidType::TYPENAME ) {
+	if ( target == VoidType::TYPENAME ) {
 		VoidType tmp;
 		return tmp.operator_less( rvalue );
 	}
-	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+	if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
 		return lvalue->getValue().toInt() < rvalue->getValue().toInt();
 	}
 
@@ -531,35 +531,35 @@ bool operator_binary_less_equal( Object* lvalue, Object* rvalue )
 		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == DoubleType::TYPENAME ) {
+	if ( target == DoubleType::TYPENAME ) {
 		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == FloatType::TYPENAME ) {
+	if ( target == FloatType::TYPENAME ) {
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == Int16Type::TYPENAME ) {
+	if ( target == Int16Type::TYPENAME ) {
 		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == Int32Type::TYPENAME ) {
+	if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == Int64Type::TYPENAME ) {
+	if ( target == Int64Type::TYPENAME ) {
 		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == StringType::TYPENAME ) {
+	if ( target == StringType::TYPENAME ) {
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == VoidType::TYPENAME ) {
+	if ( target == VoidType::TYPENAME ) {
 		VoidType tmp;
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+	if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
 		return lvalue->getValue().toInt() <= rvalue->getValue().toInt();
 	}
 

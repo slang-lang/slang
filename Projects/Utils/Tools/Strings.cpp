@@ -33,7 +33,7 @@ std::string extract(const std::string& source) {
     if ( source.front() == DOUBLE_QUOTE ) {
         return stripQuotes( source, DOUBLE_QUOTE );
     }
-    else if ( source.front() == SINGLE_QUOTE ) {
+    if ( source.front() == SINGLE_QUOTE ) {
         return stripQuotes( source, SINGLE_QUOTE );
     }
 
