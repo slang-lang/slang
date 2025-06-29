@@ -50,10 +50,9 @@ Value Configurator::getValue(const std::string& key, int idx) const
 		member += ":" + Tools::toString(idx);
 	}
 
-	KeyValueMap::const_iterator it;
-	for ( it = mValues.begin(); it != mValues.end(); ++it ) {
-		if ( Tools::StringCompare((*it).first, member) ) {
-			return (*it).second;
+	for ( auto it = mValues.begin(); it != mValues.end(); ++it ) {
+		if ( Tools::StringCompare( it->first, member ) ) {
+			return it->second;
 		}
 	}
 
@@ -73,9 +72,8 @@ bool Configurator::isMember(const std::string& key, int idx) const
 		member += ":" + Tools::toString(idx);
 	}
 
-	KeyValueMap::const_iterator it;
-	for ( it = mValues.begin(); it != mValues.end(); ++it ) {
-		if ( Tools::StringCompare((*it).first, member) ) {
+	for ( auto it = mValues.begin(); it != mValues.end(); ++it ) {
+		if ( Tools::StringCompare( it->first, member ) ) {
 			return true;
 		}
 	}
