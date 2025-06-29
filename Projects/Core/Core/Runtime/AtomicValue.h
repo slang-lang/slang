@@ -1,6 +1,6 @@
 
-#ifndef Core_Runtime_AtomicValue_h
-#define Core_Runtime_AtomicValue_h
+#ifndef Slang_Core_Core_Runtime_AtomicValue_h
+#define Slang_Core_Core_Runtime_AtomicValue_h
 
 
 // Library includes

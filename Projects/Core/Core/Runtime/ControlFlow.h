@@ -1,6 +1,6 @@
 
-#ifndef Core_Runtime_ControlFlow_h
-#define Core_Runtime_ControlFlow_h
+#ifndef Slang_Core_Core_Runtime_ControlFlow_h
+#define Slang_Core_Core_Runtime_ControlFlow_h
 
 
 // Library includes

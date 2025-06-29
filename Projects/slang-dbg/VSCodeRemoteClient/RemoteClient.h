@@ -8,8 +8,8 @@
 
 // Project includes
 #include <Common/AClient.h>
-#include <Core/Parameter.h>
-#include <Core/Types.h>
+#include <Core/Common/Types.h>
+#include <Core/Runtime/Parameter.h>
 #include <Debugger/IReceiver.h>
 
 // Forward declarations

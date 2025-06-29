@@ -12,7 +12,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Attributes/Attributes.h>
+#include <Core/Common/Attributes/Attributes.h>
 #include <Core/Common/Visibility.h>
 
 // Forward declarations

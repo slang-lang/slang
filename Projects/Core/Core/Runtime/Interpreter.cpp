@@ -8,6 +8,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
+#include <Core/Common/Utils.h>
 #include <Core/Defines.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
@@ -23,13 +24,13 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/Threads.h>
 #include <Debugger/Debugger.h>
+#include <Logger/Logger.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
-#include <Utils.h>
+#include "Utils.h"
 
 // Namespace declarations
 
@@ -71,15 +72,15 @@ namespace Runtime {
 		}
 
 
-Interpreter::Interpreter(Common::ThreadId threadId)
-: mControlFlow(ControlFlow::Normal),
-  mOwner(0)
+Interpreter::Interpreter(Thread* thread)
+: mControlFlow(ControlFlow::Normal)
+, mOwner( nullptr )
+, mThread( thread )
 {
 	// initialize virtual machine stuff
 	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
-	mThread = Controller::Instance().thread(threadId);
 }
 
 Interpreter::~Interpreter()
@@ -1527,7 +1528,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 			mControlFlow = Runtime::ControlFlow::Normal;
 		}
 		catch ( std::exception& e ) {
-			auto* data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			auto* data = mRepository->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
 			*data = Runtime::StringType( std::string( e.what() ) );
 
 			mThread->exception( Runtime::ExceptionData( data, Token().position() ) );

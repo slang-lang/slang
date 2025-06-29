@@ -1,18 +1,17 @@
 
-#ifndef Slang_Designtime_Parser_Parser_h
-#define Slang_Designtime_Parser_Parser_h
+#ifndef Slang_Core_Core_Designtime_Parser_Parser_h
+#define Slang_Core_Core_Designtime_Parser_Parser_h
 
 
 // Library includes
 
 // Project includes
-#include <Core/Attributes/Types.h>
+#include <Core/Common/Attributes/Types.h>
 #include <Core/Common/PrototypeConstraint.h>
+#include <Core/Common/Token.h>
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Designtime/Ancestor.h>
-#include <Core/Parameter.h>
-#include <Core/Attributes/Types.h>
-#include "Token.h"
+#include <Core/Runtime/Parameter.h>
 
 // Forward declarations
 

@@ -6,10 +6,10 @@
 // Library includes
 
 // Project includes
+#include <Core/Defines.h>
 #include "Memory.h"
 #include "Repository.h"
 #include "Threads.h"
-#include "TypeSystem.h"
 
 // Forward declarations
 
@@ -23,7 +23,7 @@ namespace Common {
 	class Namespace;
 }
 
-class __attribute__((visibility("default"))) Controller
+class SLANG_API Controller
 {
 public:
 	static Controller& Instance() {
@@ -62,9 +62,8 @@ public:
 	Common::Namespace* globalScope() const;
 	Memory* memory() const;
 	Repository* repository() const;
-	Thread* thread(Common::ThreadId id) const;
+	Thread* thread(ThreadId id) const;
 	Threads* threads() const;
-	TypeSystem* typeSystem() const;
 
 private:
 	Controller();
@@ -75,7 +74,6 @@ private:
 	Phase::E mPhase;
 	Repository* mRepository;
 	Threads* mThreads;
-	TypeSystem* mTypeSystem;
 };
 
 

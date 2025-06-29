@@ -11,11 +11,12 @@
 #include <fstream>
 
 // Project includes
-#include <Core/AST/Generator.h>
+#include <Core/AST/TreeGenerator.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Defines.h>
 #include <Core/Designtime/Analyser.h>
 #include <Core/Runtime/Script.h>
+#include <Logger/Logger.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
@@ -178,7 +179,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 
 	Controller::Instance().phase(Controller::Phase::Generation);
 
-	AST::Generator generator(mSettings.DoCollectErrors);
+	AST::TreeGenerator generator( Controller::Instance().repository(), mSettings.DoCollectErrors );
 	generator.process(globalScope);
 
 	auto errors = generator.hasErrors();

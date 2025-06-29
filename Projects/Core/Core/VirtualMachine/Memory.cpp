@@ -11,7 +11,7 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Object.h>
-#include <Core/Tools.h>
+#include <Logger/Logger.h>
 #include <Tools/Strings.h>
 
 // Namespace declarations
