@@ -79,7 +79,7 @@ private:
 	void cleanup() {
 		for ( auto & mTest : mTests ) {
 			delete mTest;
-			mTest = 0;
+			mTest = nullptr;
 		}
 		mTests.clear();
 	}

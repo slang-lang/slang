@@ -31,7 +31,7 @@ class IsKnownType : public ExtensionMethod
 {
 public:
 	IsKnownType()
-	: ExtensionMethod(0, "isKnownType", Designtime::BoolType::TYPENAME)
+	: ExtensionMethod(nullptr, "isKnownType", Designtime::BoolType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("type", Designtime::StringType::TYPENAME));

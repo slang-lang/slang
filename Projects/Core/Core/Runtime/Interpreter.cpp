@@ -292,7 +292,7 @@ NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 Common::Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
@@ -1739,7 +1739,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	bool caseMatched = false;
 
 	// loop through all case-labels and match their expressions against the switch-expression
-	for ( CaseBlocks::iterator it = caseBlocks.begin(); it != caseBlocks.end(); ++it ) {
+	for ( auto it = caseBlocks.begin(); it != caseBlocks.end(); ++it ) {
 		it->mBegin++;
 
 		// evaluate switch-expression
@@ -2043,7 +2043,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 
-			return 0;
+			return nullptr;
 		}
 	}
 	else if ( initialization == Initialization::Required ) {
