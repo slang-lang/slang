@@ -15,13 +15,13 @@ namespace Tools {
 
 
 std::string extract(const std::string& source) {
-    static const char DOUBLE_QUOTE = '"';
-    static const char SINGLE_QUOTE = '\'';
-    
+    static constexpr char DOUBLE_QUOTE = '"';
+    static constexpr char SINGLE_QUOTE = '\'';
+
     if ( source.empty() ) {
         return "";
     }
-    
+
     auto stripQuotes = []( const std::string& text, char quoteChar ) -> std::string {
         if ( text.front() == quoteChar && text.back() == quoteChar ) {
             return text.substr( 1, text.length() - 2 );
@@ -29,14 +29,14 @@ std::string extract(const std::string& source) {
 
         return "";
     };
-    
+
     if ( source.front() == DOUBLE_QUOTE ) {
         return stripQuotes( source, DOUBLE_QUOTE );
     }
     else if ( source.front() == SINGLE_QUOTE ) {
         return stripQuotes( source, SINGLE_QUOTE );
     }
-    
+
     return "";
 }
 
