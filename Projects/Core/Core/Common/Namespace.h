@@ -24,7 +24,7 @@ class Namespace : public MethodScope,
 {
 public:
 	Namespace(const std::string& name, IScope* parent);
-	~Namespace();
+	~Namespace() override;
 
 public: // MethodScope overrides
 	void defineMethod(const std::string& name, Method* method);
