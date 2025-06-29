@@ -57,8 +57,8 @@ private:
 	typedef std::map<Runtime::Reference, RefCount> MemoryMap;
 
 private:
-	Memory(Memory const&)/* = delete*/;
-	void operator=(Memory const&)/* = delete*/;
+	Memory( Memory const& ) = delete;
+	void operator=( Memory const& ) = delete;
 
 private:
 	void deleteObject(const Runtime::Reference& ref);

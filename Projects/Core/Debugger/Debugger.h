@@ -73,8 +73,8 @@ private:
 
 private:
 	Debugger();
-	Debugger(const Debugger& );
-	Debugger operator=(const Debugger& );
+	Debugger( const Debugger& ) = delete;
+	Debugger operator=( const Debugger& ) = delete;
 	~Debugger() override = default;
 
 private:
