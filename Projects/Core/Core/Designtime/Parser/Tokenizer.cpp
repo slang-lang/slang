@@ -648,7 +648,6 @@ void Tokenizer::mergeAssignments()
 void Tokenizer::replaceConstDataTypes()
 {
 	auto token = mTokens.begin();
-	TokenList::iterator tmp;
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {
@@ -656,7 +655,7 @@ void Tokenizer::replaceConstDataTypes()
 		if ( token->type() == Token::Type::CONST_INTEGER ) {
 			int numCombines = 0;
 
-			tmp = lookahead(token, numCombines + 1);
+			auto tmp = lookahead(token, numCombines + 1);
 
 			if ( tmp->type() == Token::Type::OPERATOR_SCOPE ) {
 				// CONST_INTEGER '.'

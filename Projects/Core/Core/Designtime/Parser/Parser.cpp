@@ -193,13 +193,12 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 	++token;
 
 	std::string constraint;
-	std::string designType;
 	unsigned int index = 0;
-	std::string runType;
 
 	while ( token->type() != Token::Type::COMPARE_GREATER ) {
-		designType = token->content();
-		runType = token->content();	// hack to prevent runtime type to be empty
+		auto designType = token->content();
+		auto runType    = token->content();	// hack to prevent runtime type to be empty
+
 		++token;
 
 		if ( token->type() == Token::Type::COLON ) {	// constraint
@@ -248,10 +247,10 @@ PrototypeConstraints Parser::collectRuntimePrototypeConstraints(TokenIterator& t
 	std::string constraint;
 	std::string designType;
 	unsigned int index = 0;
-	std::string runType;
 
 	while ( token->type() != Token::Type::COMPARE_GREATER ) {
-		runType = token->content();
+		auto runType = token->content();
+
 		++token;
 
 		if ( token->type() == Token::Type::COLON ) {	// constraint

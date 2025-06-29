@@ -296,12 +296,11 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 	ParameterList result;
 
 	auto paramIt = params.begin();
-	auto sigIt = mSignature.begin();
 
 	Runtime::Reference ref;
 	Runtime::AtomicValue value;
 
-	for ( ; sigIt != mSignature.end(); ++sigIt ) {
+	for ( auto sigIt = mSignature.begin(); sigIt != mSignature.end(); ++sigIt ) {
 		// initialize parameter with default value
 		value = sigIt->value();
 

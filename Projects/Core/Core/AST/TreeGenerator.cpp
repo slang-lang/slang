@@ -1125,15 +1125,13 @@ Expression* TreeGenerator::process_copy(TokenIterator& token)
 		throw Common::Exceptions::InvalidSymbol("invalid runtime symbol detected", start->position());
 	}
 
-	std::string type;
-
 	SymbolExpression* inner = exp;
 	for ( ; ; ) {
 		if ( inner->mSymbolExpression ) {
 			inner = inner->mSymbolExpression;
 		}
 		else {
-			type = exp->getResultType();
+			auto type = exp->getResultType();
 
 			Designtime::BluePrintObject* obj = mRepository->findBluePrintObject(type);
 			if ( !obj ) {
