@@ -99,7 +99,7 @@ public:
 
 public:
 	BluePrintObject* fromPrototype(const PrototypeConstraints& constraints) const;
-	BluePrintObject* replicate(const std::string& newType, const std::string& filename, BluePrintObject* target = 0) const;
+	BluePrintObject* replicate( const std::string& newType, const std::string& filename, BluePrintObject* target = nullptr ) const;
 
 public:
 	MethodCollection provideMethods() const;

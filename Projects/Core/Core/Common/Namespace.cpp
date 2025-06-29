@@ -44,7 +44,7 @@ Namespace::~Namespace()
 			switch ( tmpSymbol.second->getSymbolType() ) {
 				case Symbol::IType::NamespaceSymbol:
 					delete tmpSymbol.second;
-					tmpSymbol.second = 0;
+					tmpSymbol.second = nullptr;
 
 					mSymbols.erase(tmpSymbol.first);
 					break;

@@ -314,7 +314,7 @@ Common::Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 Object* Interpreter::getEnclosingObject(IScope* scope) const
@@ -336,7 +336,7 @@ Object* Interpreter::getEnclosingObject(IScope* scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 IScope* Interpreter::getScope() const
@@ -351,7 +351,7 @@ const TokenList& Interpreter::getTokens() const
 
 inline Symbol* Interpreter::identify(TokenIterator& token) const
 {
-	Symbol *result = 0;
+	Symbol *result = nullptr;
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
 
@@ -409,7 +409,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 
 Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& params) const
 {
-	Symbol *result = 0;
+	Symbol *result = nullptr;
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
 
@@ -467,7 +467,7 @@ void Interpreter::initialize(IScope* scope, const TokenList& tokens, const Param
 {
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
-		Object *object = 0;
+		Object *object = nullptr;
 
 		switch ( it->access() ) {
 			case AccessMode::ByReference: {
@@ -511,7 +511,7 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result, b
 	// reset control flow to normal
 	mControlFlow = ControlFlow::Normal;
 
-	pushScope(0, allowBreakAndContinue);
+	pushScope(nullptr, allowBreakAndContinue);
 		pushTokens(tokens);
 			TokenIterator start = getTokens().begin();
 			TokenIterator end = getTokens().end();

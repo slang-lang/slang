@@ -15,7 +15,7 @@ namespace Runtime {
 
 
 ExceptionData::ExceptionData()
-: mData(0)
+: mData( nullptr )
 {
 }
 

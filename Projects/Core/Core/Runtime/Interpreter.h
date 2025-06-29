@@ -115,7 +115,7 @@ private: // Execution
 	// {
 	IScope* getScope() const;
 	void popScope();
-	void pushScope(IScope* scope = 0, bool allowBreakAndContinue = false);
+	void pushScope( IScope* scope = nullptr, bool allowBreakAndContinue = false );
 	// }
 
 	// Token stack
@@ -127,9 +127,9 @@ private: // Execution
 
 	ControlFlow::E interpret(const TokenList& tokens, Object* result, bool allowBreakAndContinue = false);
 
-	NamedScope* getEnclosingMethodScope(IScope* scope = 0) const;
-	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
-	Object* getEnclosingObject(IScope* scope = 0) const;
+	NamedScope* getEnclosingMethodScope( IScope* scope = nullptr ) const;
+	Common::Namespace* getEnclosingNamespace( IScope* scope = nullptr ) const;
+	Object* getEnclosingObject( IScope* scope = nullptr ) const;
 
 private:
 	// prevent usage
