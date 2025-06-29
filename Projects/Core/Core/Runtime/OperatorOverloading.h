@@ -17,6 +17,10 @@ namespace Slang {
 // Forward declarations
 class Symbol;
 
+namespace AST {
+    class TreeInterpreter;
+}
+
 namespace Runtime {
 
 // Forward declarations
@@ -27,11 +31,11 @@ void operator_binary_bitand( Object* lvalue, Object* rvalue );
 void operator_binary_bitcomplement( Object* lvalue, Object* rvalue );
 void operator_binary_bitor( Object* lvalue, Object* rvalue );
 void operator_binary_divide( Object* lvalue, Object* rvalue );
-bool operator_binary_equal( Object* lvalue, Object* rvalue );
-bool operator_binary_greater( Object* lvalue, Object* rvalue );
-bool operator_binary_greater_equal( Object* lvalue, Object* rvalue );
-bool operator_binary_less( Object* lvalue, Object* rvalue );
-bool operator_binary_less_equal( Object* lvalue, Object* rvalue );
+bool operator_binary_equal( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue );
+bool operator_binary_greater( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue );
+bool operator_binary_greater_equal( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue );
+bool operator_binary_less( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue );
+bool operator_binary_less_equal( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue );
 void operator_binary_modulo( Object* lvalue, Object* rvalue );
 void operator_binary_multiply( Object* lvalue, Object* rvalue );
 void operator_binary_plus( Object* lvalue, Object* rvalue );

@@ -10,8 +10,7 @@
 #include <Common/Settings.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/Script.h>
-#include <Core/VirtualMachine/Controller.h>
+#include <Core/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include "Protocol.h"

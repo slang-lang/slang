@@ -17,11 +17,14 @@
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
+#include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Runtime/Utils.h>
-#include <Core/VirtualMachine/Controller.h>
+#include <Core/VirtualMachine/Memory.h>
+#include <Core/VirtualMachine/Repository.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
@@ -65,15 +68,15 @@ namespace Slang {
 namespace AST {
 
 
-TreeInterpreter::TreeInterpreter( Thread* thread )
+TreeInterpreter::TreeInterpreter( VirtualMachine* vm, Thread* thread )
 : mControlFlow( Runtime::ControlFlow::Normal )
 ,  mFrame( nullptr )
 ,  mThread( thread )
 {
 	// initialize virtual machine stuff
 	mDebugger   = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
-	mMemory     = Controller::Instance().memory();
-	mRepository = Controller::Instance().repository();
+	mMemory     = vm->memory();
+	mRepository = vm->repository();
 }
 
 void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
@@ -207,12 +210,12 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 
 		// comparison expressions
 		// {
-		case Token::Type::COMPARE_EQUAL:         *result = Runtime::BoolType(operator_binary_equal(&left, &right)); break;
-		case Token::Type::COMPARE_GREATER:       *result = Runtime::BoolType(operator_binary_greater(&left, &right)); break;
-		case Token::Type::COMPARE_GREATER_EQUAL: *result = Runtime::BoolType(operator_binary_greater_equal(&left, &right)); break;
-		case Token::Type::COMPARE_LESS:          *result = Runtime::BoolType(operator_binary_less(&left, &right)); break;
-		case Token::Type::COMPARE_LESS_EQUAL:    *result = Runtime::BoolType(operator_binary_less_equal(&left, &right)); break;
-		case Token::Type::COMPARE_UNEQUAL:       *result = Runtime::BoolType(!operator_binary_equal(&left, &right)); break;
+		case Token::Type::COMPARE_EQUAL:         *result = Runtime::BoolType(operator_binary_equal(this, &left, &right)); break;
+		case Token::Type::COMPARE_GREATER:       *result = Runtime::BoolType(operator_binary_greater(this, &left, &right)); break;
+		case Token::Type::COMPARE_GREATER_EQUAL: *result = Runtime::BoolType(operator_binary_greater_equal(this, &left, &right)); break;
+		case Token::Type::COMPARE_LESS:          *result = Runtime::BoolType(operator_binary_less(this, &left, &right)); break;
+		case Token::Type::COMPARE_LESS_EQUAL:    *result = Runtime::BoolType(operator_binary_less_equal(this, &left, &right)); break;
+		case Token::Type::COMPARE_UNEQUAL:       *result = Runtime::BoolType(!operator_binary_equal(this, &left, &right)); break;
 		// }
 
 		// default handling
@@ -338,8 +341,30 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	// create initialized reference of new object
 	*result = std::move( *mRepository->createReference( exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final ) );
 
-	// execute new object's constructor
-	mControlFlow = result->Constructor(params);
+	if ( result->isAtomicType() ) {	// hack to initialize atomic types
+		if ( !params.empty() ) {
+			if ( params.size() != 1 ) {
+				throw Common::Exceptions::ParameterCountMismatch( "atomic types only support one constructor parameter" );
+			}
+
+			result->setValue( params.front().value() );
+		}
+
+		return;
+	}
+
+	// check if we have implemented a constructor with the given amount and type of parameters
+	// if a specialized constructor is implemented, the default constructor cannot be used
+	auto* constructorMethod = dynamic_cast<Common::Method*>( result->resolveMethod( RESERVED_WORD_CONSTRUCTOR, params, false, Visibility::Protected ) );
+	if ( constructorMethod ) {
+		Runtime::VoidType tmp;
+
+		mControlFlow = execute( result, constructorMethod, params, &tmp );
+	}
+	else {
+		// no appropriate constructor found
+		throw Common::Exceptions::Exception( result->QualifiedTypename() + ": no appropriate constructor found" );
+	}
 }
 
 void TreeInterpreter::evaluateScopeExpression(ScopeExpression* exp, Runtime::Object* result)
@@ -1200,7 +1225,7 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 			tryControl(evaluate(stmt->mCaseExpression, &caseValue));
 
 			// check if our switch-expression and our case-expression match
-			if ( Runtime::operator_binary_equal(&value, &caseValue) ) {
+			if ( Runtime::operator_binary_equal(this, &value, &caseValue) ) {
 				caseMatched = true;
 
 				// both expressions matched so we need to execute this case-block
