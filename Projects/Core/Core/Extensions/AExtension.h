@@ -27,7 +27,7 @@ namespace Extensions {
 class AExtension
 {
 public:
-	AExtension( std::string name, std::string version = "" )
+	explicit AExtension( std::string name, std::string version = "" )
 	: mName( std::move( name ) )
 	, mVersion( std::move( version ) )
 	{ }
