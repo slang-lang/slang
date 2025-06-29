@@ -6,11 +6,11 @@ SET(SOURCES
 )
 
 SET(HEADERS
-	Exceptions.h
+    Exceptions.h
 )
 
 SET(DEPENDENCIES
-	UtilsCommonConfiguration
+    UtilsCommonConfiguration
 )
 
 add_include(Projects/Utils)
