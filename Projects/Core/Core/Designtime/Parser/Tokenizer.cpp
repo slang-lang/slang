@@ -246,7 +246,7 @@ bool Tokenizer::isLanguageFeature(const std::string& token) const
 
 bool Tokenizer::isLiteral(const std::string& token)
 {
-	static const char DOUBLE_QUOTE = '"';
+	static constexpr char DOUBLE_QUOTE = '"';
 
 	// Check if string is enclosed in double quotes (represents a string literal)
 	if ( token.size() > 1 ) {
