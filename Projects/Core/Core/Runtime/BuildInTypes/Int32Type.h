@@ -24,7 +24,7 @@ public:
 	static std::string TYPENAME;
 
 public:
-    explicit Int32Type( int32_t value = 0 );
+	explicit Int32Type( int32_t value = 0 );
 	explicit Int32Type( const AtomicValue& value );
 	explicit Int32Type( const std::string& name, const AtomicValue& value );
 	explicit Int32Type( const Object& object );
