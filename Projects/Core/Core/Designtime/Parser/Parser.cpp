@@ -577,7 +577,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 				value = static_cast<int16_t>( Utils::Tools::stringToInt(sign + token->content()) );
 			}
 			else if ( type == _int32 ) {
-				value = static_cast<int32_t>( Utils::Tools::stringToInt(sign + token->content()) );
+				value = Utils::Tools::stringToInt( sign + token->content() );
 			}
 			else if ( type == _int64 ) {
 				value = static_cast<int64_t>( Utils::Tools::stringToInt(sign + token->content()) );
