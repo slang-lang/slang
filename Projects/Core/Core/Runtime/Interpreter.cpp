@@ -305,7 +305,7 @@ Common::Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Common::Namespace* result = dynamic_cast<Common::Namespace*>(parent);
+			auto* result = dynamic_cast<Common::Namespace*>(parent);
 			if ( result ) {
 				return result;
 			}
@@ -327,7 +327,7 @@ Object* Interpreter::getEnclosingObject(IScope* scope) const
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Object* result = dynamic_cast<Object*>(parent);
+			auto* result = dynamic_cast<Object*>(parent);
 			if ( result ) {
 				return result;
 			}
@@ -466,7 +466,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 void Interpreter::initialize(IScope* scope, const TokenList& tokens, const ParameterList& params)
 {
 	// add parameters as locale variables
-	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
+	for ( auto it = params.begin(); it != params.end(); ++it ) {
 		Object *object = nullptr;
 
 		switch ( it->access() ) {
@@ -998,7 +998,7 @@ void Interpreter::process_copy(TokenIterator& token, Object* result)
 		throw Common::Exceptions::Exception("cannot assign copy to same object");
 	}
 
-	Object* source = dynamic_cast<Object*>(symbol);
+	auto* source = dynamic_cast<Object*>(symbol);
 	if ( !source ) {
 		throw Common::Exceptions::Exception("nullptr access!");
 	}
@@ -1024,7 +1024,7 @@ void Interpreter::process_delete(TokenIterator& token)
 
 	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::ObjectSymbol: {
-			Object* object = static_cast<Object*>(symbol);
+			auto* object = static_cast<Object*>(symbol);
 
 			object->assign(Object());
 		} break;
@@ -1189,7 +1189,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	expect(Token::Type::IDENTIFIER, token);
 
 	// identify collection symbol
-	Object* collection = dynamic_cast<Object*>(identify(token));
+	auto* collection = dynamic_cast<Object*>(identify(token));
 	if ( !collection ) {
 		throw Designtime::Exceptions::SyntaxError("invalid symbol '" + token->content() + "' found", token->position());
 	}
@@ -1278,7 +1278,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 			process_method(token, &tmpObject);
 		}
 		else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			Object* object = dynamic_cast<Object*>(symbol);
+			auto* object = dynamic_cast<Object*>(symbol);
 			if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
 				throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getName() + "'", token->position());
 			}
@@ -1286,7 +1286,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 			++token;
 
 			if ( token->category() == Token::Category::Assignment ) {
-				TokenIterator assignToken = token;
+				auto assignToken = token;
 
 				Object tmp;
 				expression(&tmp, ++token);
@@ -1494,20 +1494,20 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	Symbol* symbol = identifyMethod(tmp, params);
 
-	Common::Method* method = dynamic_cast<Common::Method*>(symbol);
+	auto* method = dynamic_cast<Common::Method*>(symbol);
 	if ( !method) {
 		throw Common::Exceptions::UnknownIdentifier("could not resolve identifier '" + tmp->content() + "' with parameters '" + toString(params) + "'", tmp->position());
 	}
 
 	// compare callee's constness with its parent's constness
-	Object* calleeParent = dynamic_cast<Object*>(method->getEnclosingScope());
+	auto* calleeParent = dynamic_cast<Object*>(method->getEnclosingScope());
 	if ( calleeParent && calleeParent->isConst() && !method->isConst() ) {
 		// we want to call a modifiable method of a const object... neeeeey!
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", tmp->position());
 	}
 
 	// check caller's constness
-	Common::Method* owner = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
+	auto* owner = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
 	if ( owner && owner->isConst() ) {
 		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
@@ -1716,7 +1716,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	// collect all case-blocks for further processing
 	while ( bodyBegin != bodyEnd ) {
 		if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_CASE ) {
-			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
+			auto tmp = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			caseBlocks.push_back(CaseBlock(bodyBegin, tmp));
 
@@ -1727,7 +1727,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 				throw Designtime::Exceptions::SyntaxError("duplicate default entry for switch statement");
 			}
 
-			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
+			auto tmp = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			defaultBlock = CaseBlock(bodyBegin, tmp);
 
@@ -1819,7 +1819,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
 	// check if our parent scope is a method that is allowed to throw exceptions
-	Common::Method* method = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
+	auto* method = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
 	if ( method && !method->throws() ) {
 		// this method is not marked as 'throwing', so we are not allowed to throw exceptions here
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());

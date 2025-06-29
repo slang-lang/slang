@@ -1322,7 +1322,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 			throw Designtime::Exceptions::SyntaxError(collectionExpression->getResultType() + " is not iterable", token->position());
 		}
 
-		Common::Method* getIteratorMethod = dynamic_cast<Common::Method*>(collection->resolveMethod("getIterator", ParameterList(), false, Visibility::Public));
+		auto* getIteratorMethod = dynamic_cast<Common::Method*>(collection->resolveMethod("getIterator", ParameterList(), false, Visibility::Public));
 		if ( !getIteratorMethod ) {
 			throw Designtime::Exceptions::SyntaxError(collectionExpression->getResultType() + " has no 'getIterator' method", token->position());
 		}
@@ -1695,7 +1695,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 		else {
 			PrototypeConstraints constraints = dynamic_cast<DesigntimeSymbolExpression*>(inner)->mConstraints;
 
-			Common::TypeDeclaration typeDeclaration = Common::TypeDeclaration(inner->getResultType(), constraints);
+			Common::TypeDeclaration typeDeclaration(inner->getResultType(), constraints);
 			mRepository->prepareType(typeDeclaration);
 
 			type = Designtime::Parser::buildRuntimeConstraintTypename(

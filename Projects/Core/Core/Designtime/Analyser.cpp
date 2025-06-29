@@ -39,8 +39,8 @@ bool Analyser::buildEnum(BluePrintObject* symbol, const TokenList& tokens)
 {
 	auto token = tokens.begin();
 
-	Runtime::AtomicValue previous_value = Runtime::AtomicValue(-1);
-	Runtime::AtomicValue value = Runtime::AtomicValue(-1);
+	Runtime::AtomicValue previous_value{ -1 };
+	Runtime::AtomicValue value{ -1 };
 
 	// Format: <identifier> = <value>[, [or ;]]
 	while ( token != tokens.end() ) {
@@ -665,7 +665,7 @@ const StringList& Analyser::getLibraryReferences() const
 
 std::string Analyser::getQualifiedTypename(const std::string& type) const
 {
-	std::string result = mScope->getFullScopeName();
+	auto result = mScope->getFullScopeName();
 
 	if ( !result.empty() && !type.empty() ) {
 		result += RESERVED_WORD_SCOPE_OPERATOR;
@@ -687,7 +687,7 @@ bool Analyser::isInterface() const
 
 ParameterList Analyser::parseParameters(TokenIterator& token, IScope* scope)
 {
-	ParameterList params = Parser::parseParameters(token, scope);
+	auto params = Parser::parseParameters(token, scope);
 
 	for ( auto& param : params ) {
 		param.mType = resolveType(param.typeDeclaration(), token);

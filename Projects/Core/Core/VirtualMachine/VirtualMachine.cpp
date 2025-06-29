@@ -216,7 +216,7 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename)
 	std::ifstream in(filename.c_str(), std::ios_base::binary);
 
 	// read file content
-	std::string content = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+	auto content = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
 
 	addLibraryFolder(Utils::Tools::Files::ExtractPathname(Utils::Tools::Files::GetFullname(filename)));
 	mScriptFile = Utils::Tools::Files::GetFullname(filename);
@@ -408,7 +408,7 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 
 	MethodScope* globalScope = Controller::Instance().globalScope();
 
-	Common::Method* main = dynamic_cast<Common::Method*>(globalScope->resolveMethod("Main", params, false));
+	auto* main = dynamic_cast<Common::Method*>(globalScope->resolveMethod("Main", params, false));
 	if ( !main ) {
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}

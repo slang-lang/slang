@@ -173,7 +173,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 
 	// check if we have implemented a constructor with the given amount and type of parameters
 	// if a specialized constructor is implemented, the default constructor cannot be used
-	Common::Method *constructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Protected));
+	auto* constructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Protected));
 	if ( constructor ) {
 		VoidType tmp;
 
@@ -201,7 +201,7 @@ void Object::defineMethod(const std::string& name, Common::Method* method)
 	// try to override abstract methods a.k.a. implement an interface method
 	auto* old = dynamic_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
 	if ( old && old->isAbstractMethod() ) {
-		Object* base = dynamic_cast<Object*>(resolve(IDENTIFIER_BASE, true, Visibility::Designtime));
+		auto* base = dynamic_cast<Object*>(resolve(IDENTIFIER_BASE, true, Visibility::Designtime));
 		base->undefineMethod(old);
 
 		delete old;
@@ -223,7 +223,7 @@ ControlFlow::E Object::Destructor()
 		ParameterList params;
 
 		// only execute destructor if one is present
-		Common::Method *destructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
+		auto* destructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
 		if ( destructor ) {
 			VoidType tmp;
 
@@ -493,7 +493,7 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope, Visibili
 
 	// (2) check inheritance
 	if ( !result ) {
-		Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true, Visibility::Designtime));
+		auto* base = dynamic_cast<Object*>(MethodScope::resolve("base", true, Visibility::Designtime));
 		if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol && !onlyCurrentScope ) {
 			result = base->resolve(name, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
 		}
