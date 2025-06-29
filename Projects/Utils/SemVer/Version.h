@@ -29,6 +29,8 @@ public:
 	SemanticVersionNumber& operator=( const std::string& version );
 	bool operator==( const SemanticVersionNumber& other ) const;
 	bool operator==( const std::string& other ) const;
+	bool operator!=( const SemanticVersionNumber& other ) const;
+	bool operator!=( const std::string& other ) const;
 	bool operator<( const SemanticVersionNumber& other ) const;
 	bool operator<( const std::string& other ) const;
 
