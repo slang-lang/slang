@@ -25,7 +25,7 @@ namespace Configuration {
 class Configurator : private Common::Logger
 {
 public:
-	Configurator( const Common::Logger* p, const std::string& file = "" );
+	explicit Configurator( const Common::Logger* p, const std::string& file = "" );
 	~Configurator();
 
 public:

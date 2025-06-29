@@ -24,7 +24,7 @@ namespace VSCodeDebug {
 class ProtocolMessage
 {
 public:
-	ProtocolMessage(std::string type_)
+	explicit ProtocolMessage(std::string type_)
 	: seq(-1),
 	  type(std::move(type_))
 	{ }
