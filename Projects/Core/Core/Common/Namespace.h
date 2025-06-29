@@ -1,6 +1,6 @@
 
-#ifndef Core_Runtime_Namespace_h
-#define Core_Runtime_Namespace_h
+#ifndef Slang_Core_Core_Common_Namespace_h
+#define Slang_Core_Core_Common_Namespace_h
 
 
 // Library includes

@@ -1,6 +1,6 @@
 
-#ifndef Slang_Core_Core_Parameter_h
-#define Slang_Core_Core_Parameter_h
+#ifndef Slang_Core_Core_Runtime_Parameter_h
+#define Slang_Core_Core_Runtime_Parameter_h
 
 
 // Library includes

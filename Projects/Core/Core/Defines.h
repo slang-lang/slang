@@ -1,6 +1,6 @@
 
-#ifndef Core_Defines_h
-#define Core_Defines_h
+#ifndef Slang_Core_Core_Defines_h
+#define Slang_Core_Core_Defines_h
 
 
 //#define USE_AST_OPTIMIZATION
