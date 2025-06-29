@@ -10,8 +10,6 @@
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Tools/Strings.h>
-#include <Utils.h>
-#include "Types.h"
 
 // Namespace declarations
 
@@ -77,8 +75,8 @@ bool Method::operator() (const Method& first, const Method& second) const
 		//}
 
 		if ( firstList.size() == secondList.size() ) {
-			ParameterList::const_iterator fIt = firstList.begin();
-			ParameterList::const_iterator sIt = secondList.begin();
+			auto fIt = firstList.begin();
+			auto sIt = secondList.begin();
 			for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
 				if ( fIt->type() != sIt->type() ) {
 					return fIt->type() < sIt->type();
@@ -290,20 +288,18 @@ bool Method::isSignatureValid(const ParameterList& params) const
 ParameterList Method::mergeParameters(const ParameterList& params) const
 {
 	if ( !isSignatureValid(params) ) {
-		throw Common::Exceptions::ParameterCountMismatch("incorrect number or type of parameters");
+		throw Exceptions::ParameterCountMismatch("incorrect number or type of parameters");
 	}
 
 	ParameterList result;
 
 	auto paramIt = params.begin();
-	auto sigIt = mSignature.begin();
 
 	Runtime::Reference ref;
-	Runtime::AtomicValue value;
 
-	for ( ; sigIt != mSignature.end(); ++sigIt ) {
+	for ( auto sigIt = mSignature.begin(); sigIt != mSignature.end(); ++sigIt ) {
 		// initialize parameter with default value
-		value = sigIt->value();
+		auto value = sigIt->value();
 
 		if ( paramIt != params.end() ) {
 			// override parameter with correct value
@@ -372,7 +368,7 @@ std::string Method::ToString(unsigned int indent) const
 {
 	std::string result;
 
-	result += ::Utils::Tools::indent(indent);
+	result += Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
 	result += " " + MemoryLayout::convert(mMemoryLayout);
 	if ( mLanguageFeatureState != LanguageFeatureState::Stable ) {

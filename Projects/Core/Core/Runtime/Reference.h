@@ -40,7 +40,7 @@ private:
 typedef std::list<Reference> ReferencesList;
 
 
-static const Reference NullReference = Reference();
+static const Reference NullReference;
 
 
 }

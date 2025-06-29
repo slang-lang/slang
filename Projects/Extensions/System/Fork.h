@@ -4,16 +4,11 @@
 
 
 // Library includes
-#include <cstdlib>
-#include <sys/types.h>
 #include <unistd.h>
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/Utils.h>
 
 // Forward declarations
 

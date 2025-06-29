@@ -55,13 +55,13 @@ private:
 	bool createMethodStub(TokenIterator& token, Visibility::E visibility, MemoryLayout::E memoryLayout, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name);
 	bool createMemberStub(TokenIterator& token, Visibility::E visibility, MemoryLayout::E memoryLayout, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name);
 
-	bool buildEnum(Designtime::BluePrintObject* symbol, const TokenList& tokens);
+	bool buildEnum(BluePrintObject* symbol, const TokenList& tokens);
 
 	bool isNamespace() const;
 	bool isInterface() const;
 
 private: // type resolution
-	std::string getQualifiedTypename(const std::string& name) const;
+	std::string getQualifiedTypename(const std::string& type) const;
 	std::string resolveType(const std::string& type, const TokenIterator& token) const;
 	Common::TypeDeclaration resolveType(const Common::TypeDeclaration& type, const TokenIterator& token) const;
 

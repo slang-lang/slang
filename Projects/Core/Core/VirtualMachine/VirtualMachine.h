@@ -4,7 +4,6 @@
 
 
 // Library include
-#include <map>
 #include <iostream>
 #include <string>
 

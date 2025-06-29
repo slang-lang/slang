@@ -7,15 +7,10 @@
 #include <cstdlib>
 
 // Project includes
-#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
-#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Runtime/Utils.h>
-#include <Core/VirtualMachine/Controller.h>
-#include "stdio.hpp"
 
 // Forward declarations
 
@@ -30,7 +25,7 @@ namespace stdio {
 
 class FPUTC : public ExtensionMethod
 {
-	static const int32_t READ_SIZE = 1024;
+	static constexpr int32_t READ_SIZE = 1024;
 
 public:
 	FPUTC()

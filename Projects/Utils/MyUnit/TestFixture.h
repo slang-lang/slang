@@ -5,11 +5,9 @@
 
 // Library includes
 #include <list>
-#include <typeinfo>
 #include <utility>
 
 // Project includes
-#include <Logger/Logger.h>
 #include "GenericTest.h"
 
 // Forward declarations
@@ -79,7 +77,7 @@ private:
 	void cleanup() {
 		for ( auto & mTest : mTests ) {
 			delete mTest;
-			mTest = 0;
+			mTest = nullptr;
 		}
 		mTests.clear();
 	}

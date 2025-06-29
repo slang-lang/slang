@@ -105,7 +105,7 @@ void LanguageTest::testAbstractObject()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/AbstractObjectTest.os"), Slang::Common::Exceptions::AbstractException);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/AbstractObjectTest.os"), Common::Exceptions::AbstractException);
 
 		// automatic success
 	}
@@ -119,7 +119,7 @@ void LanguageTest::testAssert()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/AssertTest.os"), Slang::Runtime::Exceptions::AssertionFailed);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/AssertTest.os"), Runtime::Exceptions::AssertionFailed);
 
 		// automatic success
 	}
@@ -203,7 +203,7 @@ void LanguageTest::testConstCorrectness1()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness1.os"), Slang::Common::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness1.os"), Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -217,7 +217,7 @@ void LanguageTest::testConstCorrectness2()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness2.os"), Slang::Common::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness2.os"), Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -231,7 +231,7 @@ void LanguageTest::testConstCorrectness3()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness3.os"), Slang::Common::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness3.os"), Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -245,7 +245,7 @@ void LanguageTest::testConstCorrectness4()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness4.os"), Slang::Common::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/ConstCorrectness4.os"), Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -329,8 +329,8 @@ void LanguageTest::testForeach()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new Slang::Extensions::LIBC::Extension());
-		vm.addExtension(new Slang::Extensions::System::SystemExtension());
+		vm.addExtension(new Extensions::LIBC::Extension());
+		vm.addExtension(new Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/Language/ForeachTest.os");
 
@@ -490,7 +490,7 @@ void LanguageTest::testSanityChecker()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.runScriptFromFile("Tests/Language/SanityCheckerTest.os"), Slang::Designtime::Exceptions::SanityCheckError);
+		TTHROWS(vm.runScriptFromFile("Tests/Language/SanityCheckerTest.os"), Designtime::Exceptions::SanityCheckError);
 
 		// automatic success
 	}

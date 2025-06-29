@@ -6,7 +6,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Common/Types.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/Parameter.h>
 #include "Expression.h"

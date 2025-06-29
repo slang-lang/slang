@@ -176,7 +176,7 @@ void Threads::deinit()
 		thread.second->deinit();
 
 		delete thread.second;
-		thread.second = 0;
+		thread.second = nullptr;
 	}
 	mThreads.clear();
 }

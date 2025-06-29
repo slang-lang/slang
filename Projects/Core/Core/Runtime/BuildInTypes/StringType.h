@@ -24,7 +24,7 @@ public:
 	static std::string TYPENAME;
 
 public:
-    explicit StringType( const std::string& value = "" );
+	explicit StringType( const std::string& value = "" );
 	explicit StringType( const AtomicValue& value );
 	explicit StringType( const std::string& name, const AtomicValue& value );
 	explicit StringType( const Object& other );

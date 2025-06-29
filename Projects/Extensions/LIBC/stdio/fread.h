@@ -11,7 +11,6 @@
 #include <Core/Designtime/BuildInTypes/FloatType.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
-#include <Core/Common/Exceptions.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
@@ -19,9 +18,6 @@
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Runtime/Utils.h>
-#include <Core/VirtualMachine/Controller.h>
-#include "stdio.hpp"
 
 // Forward declarations
 

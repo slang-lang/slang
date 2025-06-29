@@ -5,13 +5,11 @@
 
 // Library includes
 #include <map>
-#include <set>
 #include <string>
 
 // Project includes
 #include <Core/Common/PrototypeConstraint.h>
 #include <Core/Object.h>
-#include <Core/Runtime/Reference.h>
 #include "TypeSystem.h"
 
 // Forward declarations

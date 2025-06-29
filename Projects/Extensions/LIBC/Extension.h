@@ -35,12 +35,12 @@ public:
     void provideMethods( ExtensionMethods& methods ) override;
 
 private:
-    LIBC::cassert::cassert_t mCassert;
-    LIBC::cstring::cstring_t mCstring;
-    LIBC::fenv::fenv_t       mFenv;
-    LIBC::math::math_t       mMath;
-    LIBC::stdio::stdio_t     mStdio;
-    LIBC::stdlib::stdlib_t   mStdlib;
+    cassert::cassert_t mCassert;
+    cstring::cstring_t mCstring;
+    fenv::fenv_t       mFenv;
+    math::math_t       mMath;
+    stdio::stdio_t     mStdio;
+    stdlib::stdlib_t   mStdlib;
 };
 
 

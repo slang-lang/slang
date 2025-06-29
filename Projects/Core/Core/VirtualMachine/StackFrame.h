@@ -56,7 +56,7 @@ public:
 	std::string toString() const;
 
 private:
-	void operator=(const StackFrame&)/* = delete*/;
+	void operator=( const StackFrame& ) = delete;
 
 private:
 	unsigned int mLevel;

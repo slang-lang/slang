@@ -22,11 +22,11 @@ namespace Common {
 namespace Configuration {
 
 
-class Configurator : private Common::Logger
+class Configurator : private Logger
 {
 public:
-	Configurator( const Common::Logger* p, const std::string& file = "" );
-	~Configurator();
+	explicit Configurator( const Logger* p, const std::string& file = "" );
+	~Configurator() override;
 
 public:
 	// deprecated

@@ -9,7 +9,6 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Common/Utils.h>
-#include <Core/Defines.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Extensions/ExtensionMethod.h>
@@ -20,7 +19,6 @@
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
@@ -48,7 +46,7 @@ namespace Runtime {
 		try { \
 			exp; \
 		} \
-		catch ( Runtime::ControlFlow::E &e ) { \
+		catch ( ControlFlow::E &e ) { \
 			mControlFlow = e; \
 			return; \
 		}
@@ -57,7 +55,7 @@ namespace Runtime {
 		try { \
 			exp; \
 		} \
-		catch ( Runtime::ControlFlow::E &e ) { \
+		catch ( ControlFlow::E &e ) { \
 			mControlFlow = e; \
 			return nullptr; \
 		}
@@ -66,7 +64,7 @@ namespace Runtime {
 		try { \
 			evaluate(left, right); \
 		} \
-		catch ( Runtime::ControlFlow::E &e ) { \
+		catch ( ControlFlow::E &e ) { \
 			mControlFlow = e; \
 			return nullptr; \
 		}
@@ -170,7 +168,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 
 	switch ( method->getLanguageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + method->getFullScopeName() + "' is marked as not implemented"); throw Slang::Common::Exceptions::MethodNotImplemented(method->getFullScopeName()); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + method->getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::MethodNotImplemented(method->getFullScopeName());
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
 		case LanguageFeatureState::Unspecified: OSerror("unknown language feature state set for method '" + method->getFullScopeName() + "'"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
@@ -242,15 +240,15 @@ void Interpreter::expression(Object* result, TokenIterator& start, bool complete
 				*result = BoolType(false);
 				return;
 			}
-			else if ( op == Token::Type::NAND && !lvalue ) {
+			if ( op == Token::Type::NAND && !lvalue ) {
 				*result = BoolType(true);
 				return;
 			}
-			else if ( op == Token::Type::NOR && lvalue ) {
+			if ( op == Token::Type::NOR && lvalue ) {
 				*result = BoolType(false);
 				return;
 			}
-			else if ( op == Token::Type::OR && lvalue ) {
+			if ( op == Token::Type::OR && lvalue ) {
 				*result = BoolType(true);
 				return;
 			}
@@ -292,7 +290,7 @@ NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 Common::Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
@@ -305,7 +303,7 @@ Common::Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Common::Namespace* result = dynamic_cast<Common::Namespace*>(parent);
+			auto* result = dynamic_cast<Common::Namespace*>(parent);
 			if ( result ) {
 				return result;
 			}
@@ -314,10 +312,10 @@ Common::Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
 }
 
-Runtime::Object* Interpreter::getEnclosingObject(IScope* scope) const
+Object* Interpreter::getEnclosingObject(IScope* scope) const
 {
 	if ( !scope ) {
 		scope = getScope();
@@ -327,7 +325,7 @@ Runtime::Object* Interpreter::getEnclosingObject(IScope* scope) const
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Object* result = dynamic_cast<Object*>(parent);
+			auto* result = dynamic_cast<Object*>(parent);
 			if ( result ) {
 				return result;
 			}
@@ -336,7 +334,7 @@ Runtime::Object* Interpreter::getEnclosingObject(IScope* scope) const
 		scope = parent;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 IScope* Interpreter::getScope() const
@@ -351,7 +349,7 @@ const TokenList& Interpreter::getTokens() const
 
 inline Symbol* Interpreter::identify(TokenIterator& token) const
 {
-	Symbol *result = 0;
+	Symbol *result = nullptr;
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
 
@@ -409,7 +407,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 
 Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& params) const
 {
-	Symbol *result = 0;
+	Symbol *result = nullptr;
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
 
@@ -436,7 +434,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, true,
-																		  (prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
+																		(prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
 					break;
 				case Symbol::IType::MethodSymbol:
 					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
@@ -466,8 +464,8 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 void Interpreter::initialize(IScope* scope, const TokenList& tokens, const ParameterList& params)
 {
 	// add parameters as locale variables
-	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
-		Object *object = 0;
+	for ( auto it = params.begin(); it != params.end(); ++it ) {
+		Object *object = nullptr;
 
 		switch ( it->access() ) {
 			case AccessMode::ByReference: {
@@ -493,9 +491,8 @@ void Interpreter::initialize(IScope* scope, const TokenList& tokens, const Param
 
 				scope->define(it->name(), object);
 			} break;
-			case AccessMode::Unspecified: {
+			case AccessMode::Unspecified:
 				throw Common::Exceptions::AccessMode("unspecified access mode");
-			} break;
 		}
 	}
 
@@ -511,10 +508,10 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result, b
 	// reset control flow to normal
 	mControlFlow = ControlFlow::Normal;
 
-	pushScope(0, allowBreakAndContinue);
+	pushScope(nullptr, allowBreakAndContinue);
 		pushTokens(tokens);
-			TokenIterator start = getTokens().begin();
-			TokenIterator end = getTokens().end();
+			auto start = getTokens().begin();
+			auto end   = getTokens().end();
 
 			process(result, start, end);
 		popTokens();
@@ -877,7 +874,7 @@ void Interpreter::popTokens()
  */
 void Interpreter::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
-	TokenIterator localEnd = getTokens().end();
+	auto localEnd = getTokens().end();
 
 	while ( ( (token != localEnd) && (token != end) ) &&
 			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
@@ -936,7 +933,7 @@ void Interpreter::process_assert(TokenIterator& token)
 	}
 
 	if ( !isTrue(condition) ) {
-		throw Runtime::Exceptions::AssertionFailed(condition.ToString(), token->position());
+		throw Exceptions::AssertionFailed(condition.ToString(), token->position());
 	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
@@ -998,7 +995,7 @@ void Interpreter::process_copy(TokenIterator& token, Object* result)
 		throw Common::Exceptions::Exception("cannot assign copy to same object");
 	}
 
-	Runtime::Object* source = dynamic_cast<Runtime::Object*>(symbol);
+	auto* source = dynamic_cast<Object*>(symbol);
 	if ( !source ) {
 		throw Common::Exceptions::Exception("nullptr access!");
 	}
@@ -1024,7 +1021,7 @@ void Interpreter::process_delete(TokenIterator& token)
 
 	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::ObjectSymbol: {
-			Object* object = static_cast<Object*>(symbol);
+			auto* object = static_cast<Object*>(symbol);
 
 			object->assign(Object());
 		} break;
@@ -1189,12 +1186,12 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	expect(Token::Type::IDENTIFIER, token);
 
 	// identify collection symbol
-	Object* collection = dynamic_cast<Object*>(identify(token));
+	auto* collection = dynamic_cast<Object*>(identify(token));
 	if ( !collection ) {
 		throw Designtime::Exceptions::SyntaxError("invalid symbol '" + token->content() + "' found", token->position());
 	}
 	if ( !collection->isValid() ) {
-		throw Runtime::Exceptions::NullPointerException("null pointer access", token->position());
+		throw Exceptions::NullPointerException("null pointer access", token->position());
 	}
 	if ( !collection->isInstanceOf("IIterable") ) {
 		throw Designtime::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIterable", token->position());
@@ -1278,7 +1275,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 			process_method(token, &tmpObject);
 		}
 		else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			Object* object = dynamic_cast<Object*>(symbol);
+			auto* object = dynamic_cast<Object*>(symbol);
 			if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
 				throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getName() + "'", token->position());
 			}
@@ -1286,7 +1283,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 			++token;
 
 			if ( token->category() == Token::Category::Assignment ) {
-				TokenIterator assignToken = token;
+				auto assignToken = token;
 
 				Object tmp;
 				expression(&tmp, ++token);
@@ -1398,7 +1395,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 	}
 
 
-    Object condition;
+	Object condition;
 	try {
 		expression(&condition, condBegin, false);
 	}
@@ -1494,20 +1491,20 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	Symbol* symbol = identifyMethod(tmp, params);
 
-	Common::Method* method = dynamic_cast<Common::Method*>(symbol);
+	auto* method = dynamic_cast<Common::Method*>(symbol);
 	if ( !method) {
 		throw Common::Exceptions::UnknownIdentifier("could not resolve identifier '" + tmp->content() + "' with parameters '" + toString(params) + "'", tmp->position());
 	}
 
 	// compare callee's constness with its parent's constness
-	Object* calleeParent = dynamic_cast<Object*>(method->getEnclosingScope());
+	auto* calleeParent = dynamic_cast<Object*>(method->getEnclosingScope());
 	if ( calleeParent && calleeParent->isConst() && !method->isConst() ) {
 		// we want to call a modifiable method of a const object... neeeeey!
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", tmp->position());
 	}
 
 	// check caller's constness
-	Common::Method* owner = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
+	auto* owner = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
 	if ( owner && owner->isConst() ) {
 		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
@@ -1523,16 +1520,16 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	if ( method->isExtensionMethod() ) {
 		try {
-			dynamic_cast<Slang::Extensions::ExtensionMethod*>( method )->execute( params, result );
+			dynamic_cast<Extensions::ExtensionMethod*>( method )->execute( params, result );
 
-			mControlFlow = Runtime::ControlFlow::Normal;
+			mControlFlow = ControlFlow::Normal;
 		}
 		catch ( std::exception& e ) {
-			auto* data = mRepository->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringType( std::string( e.what() ) );
+			auto* data = mRepository->createInstance( StringType::TYPENAME, ANONYMOUS_OBJECT );
+			*data = StringType( std::string( e.what() ) );
 
-			mThread->exception( Runtime::ExceptionData( data, Token().position() ) );
-			mControlFlow = Runtime::ControlFlow::Throw;
+			mThread->exception( ExceptionData( data, Token().position() ) );
+			mControlFlow = ControlFlow::Throw;
 		}
 	}
 	else {
@@ -1540,9 +1537,9 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	}
 
 	switch (mControlFlow) {
-		case Runtime::ControlFlow::ExitProgram: throw Runtime::ControlFlow::ExitProgram;	// promote control flow
-		case Runtime::ControlFlow::Throw: throw Runtime::ControlFlow::Throw;				// promote control flow
-		default: mControlFlow = Runtime::ControlFlow::Normal; break;
+		case ControlFlow::ExitProgram: throw ControlFlow::ExitProgram;	// promote control flow
+		case ControlFlow::Throw: throw ControlFlow::Throw;				// promote control flow
+		default: mControlFlow = ControlFlow::Normal; break;
 	}
 }
 
@@ -1594,7 +1591,7 @@ void Interpreter::process_print(TokenIterator& token)
 		return;
 	}
 
-	::Utils::Printer::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
+	Utils::Printer::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
@@ -1716,7 +1713,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	// collect all case-blocks for further processing
 	while ( bodyBegin != bodyEnd ) {
 		if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_CASE ) {
-			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
+			auto tmp = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			caseBlocks.push_back(CaseBlock(bodyBegin, tmp));
 
@@ -1727,7 +1724,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 				throw Designtime::Exceptions::SyntaxError("duplicate default entry for switch statement");
 			}
 
-			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
+			auto tmp = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			defaultBlock = CaseBlock(bodyBegin, tmp);
 
@@ -1739,8 +1736,8 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	bool caseMatched = false;
 
 	// loop through all case-labels and match their expressions against the switch-expression
-	for ( CaseBlocks::iterator it = caseBlocks.begin(); it != caseBlocks.end(); ++it ) {
-		it->mBegin++;
+	for ( auto it = caseBlocks.begin(); it != caseBlocks.end(); ++it ) {
+		++it->mBegin;
 
 		// evaluate switch-expression
 		Object condition;
@@ -1763,7 +1760,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 			TokenList caseTokens;
 			while ( it->mBegin != it->mEnd ) {
 				caseTokens.push_back((*it->mBegin));
-				it->mBegin++;
+				++it->mBegin;
 			}
 
 			// interpret case-block tokens
@@ -1789,7 +1786,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 	// execute the default block (if present)
 	if ( !caseMatched && defaultBlock.mBegin != localEnd ) {
-		defaultBlock.mBegin++;
+		++defaultBlock.mBegin;
 		expect(Token::Type::COLON, defaultBlock.mBegin++);
 
 		TokenList defaultTokens;
@@ -1819,7 +1816,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
 	// check if our parent scope is a method that is allowed to throw exceptions
-	Common::Method* method = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
+	auto* method = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
 	if ( method && !method->throws() ) {
 		// this method is not marked as 'throwing', so we are not allowed to throw exceptions here
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
@@ -1970,10 +1967,10 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	}
 
 	// store current control flow and reset it after finally block has been executed
-	Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
+	ControlFlow::E tmpControlFlow = mControlFlow;
 
 	// reset current control flow to allow execution of finally-block
-	mControlFlow = Runtime::ControlFlow::Normal;
+	mControlFlow = ControlFlow::Normal;
 
 	// process finally-block (if present)
 	if ( finallyToken != localEnd ) {
@@ -1987,7 +1984,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	}
 
 	// reset control flow to previous state if not set differently by finally statement
-	if ( mControlFlow == Runtime::ControlFlow::Normal && tmpControlFlow != Runtime::ControlFlow::Throw ) {
+	if ( mControlFlow == ControlFlow::Normal && tmpControlFlow != ControlFlow::Throw ) {
 		mControlFlow = tmpControlFlow;
 	}
 }
@@ -2029,11 +2026,11 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 			expression(&tmp, token);
 
 			if ( accessMode == AccessMode::ByReference && (tmp.isAtomicType() && !tmp.getReference().isValid()) ) {
-				throw Runtime::Exceptions::InvalidAssignment("reference type expected", token->position());
+				throw Exceptions::InvalidAssignment("reference type expected", token->position());
 			}
 /* temporarily disabled because this prevents the usage of =operator with atomic types
 			else if ( accessMode == AccessMode::ByValue && tmp.getReference().isValid() ) {
-				throw Runtime::Exceptions::InvalidAssignment("value type expected", token->position());
+				throw Exceptions::InvalidAssignment("value type expected", token->position());
 			}
 */
 
@@ -2043,7 +2040,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 
-			return 0;
+			return nullptr;
 		}
 	}
 	else if ( initialization == Initialization::Required ) {
@@ -2071,7 +2068,7 @@ void Interpreter::process_typeid(TokenIterator& token, Object* result)
 
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Runtime::Exceptions::InvalidSymbol("typeid(): invalid symbol provided", token->position());
+		throw Exceptions::InvalidSymbol("typeid(): invalid symbol provided", token->position());
 	}
 
 	switch ( symbol->getSymbolType() ) {
@@ -2082,7 +2079,7 @@ void Interpreter::process_typeid(TokenIterator& token, Object* result)
 			*result = StringType(static_cast<Object*>(symbol)->QualifiedTypename());
 			break;
 		default:
-			throw Runtime::Exceptions::InvalidSymbol("typeid(): cannot resolve symbol type", token->position());
+			throw Exceptions::InvalidSymbol("typeid(): cannot resolve symbol type", token->position());
 	}
 
 	++token;
@@ -2204,7 +2201,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 
 void Interpreter::pushScope(IScope* scope, bool allowBreakAndContinue)
 {
-	StackFrame* stack = mThread->currentFrame();
+	auto* stack = mThread->currentFrame();
 
 	bool allowDelete = !scope;
 

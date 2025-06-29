@@ -3,6 +3,7 @@
 #include "RemoteClient.h"
 
 // Library includes
+#include <cassert>
 #include <iostream>
 
 // Project includes
@@ -185,7 +186,7 @@ Symbol* RemoteClient::getSymbol(std::string name) const
 		Utils::Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
-			scope = dynamic_cast<Slang::Runtime::Object*>(scope->resolve(parent, false, Visibility::Private));
+			scope = dynamic_cast<Runtime::Object*>(scope->resolve(parent, false, Visibility::Private));
 		}
 		else {
 			return scope->resolve(parent, false, Visibility::Private);
@@ -202,8 +203,8 @@ void RemoteClient::Initialize(const VSCodeDebug::Request& request)
 	std::string paramStr = mSettings->filename();
 
 	mParameters.clear();
-	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::Int32Type::TYPENAME, 1));
-	mParameters.push_back(Slang::Parameter::CreateRuntime(Slang::Runtime::StringType::TYPENAME, paramStr));
+	mParameters.push_back(Parameter::CreateRuntime(Runtime::Int32Type::TYPENAME, 1));
+	mParameters.push_back(Parameter::CreateRuntime(Runtime::StringType::TYPENAME, paramStr));
 
 	VSCodeDebug::Response response(request);
 	response.success = true;
@@ -378,8 +379,8 @@ void RemoteClient::start()
 
 	// add extensions
 #ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine->addExtension(new Slang::Extensions::System::SystemExtension());
-	mVirtualMachine->addExtension(new Slang::Extensions::LIBC::Extension());
+	mVirtualMachine->addExtension(new Extensions::System::SystemExtension());
+	mVirtualMachine->addExtension(new Extensions::LIBC::Extension());
 #endif
 
 	try {

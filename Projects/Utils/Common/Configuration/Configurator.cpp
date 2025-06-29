@@ -18,8 +18,8 @@ namespace Common {
 namespace Configuration {
 
 
-Configurator::Configurator( const Utils::Common::Logger* p, const std::string& file )
-: Utils::Common::Logger( p, "Configurator" ),
+Configurator::Configurator( const Logger* p, const std::string& file )
+: Logger( p, "Configurator" ),
   mConfigFile(file),
   mSuccess(false)
 {
@@ -50,15 +50,14 @@ Value Configurator::getValue(const std::string& key, int idx) const
 		member += ":" + Tools::toString(idx);
 	}
 
-	KeyValueMap::const_iterator it;
-	for ( it = mValues.begin(); it != mValues.end(); ++it ) {
-		if ( Tools::StringCompare((*it).first, member) ) {
-			return (*it).second;
+	for ( const auto& pair : mValues ) {
+		if ( Tools::StringCompare( pair.first, member ) ) {
+			return pair.second;
 		}
 	}
 
 	//error("Key '" + member + "' not found in configuration file '" + mConfigFile + "'!");
-	return Value();
+	return {};
 }
 
 Value Configurator::getValue(const std::string& parent, int idx, const std::string& key) const
@@ -73,9 +72,8 @@ bool Configurator::isMember(const std::string& key, int idx) const
 		member += ":" + Tools::toString(idx);
 	}
 
-	KeyValueMap::const_iterator it;
-	for ( it = mValues.begin(); it != mValues.end(); ++it ) {
-		if ( Tools::StringCompare((*it).first, member) ) {
+	for ( const auto& pair : mValues ) {
+		if ( Tools::StringCompare( pair.first, member ) ) {
 			return true;
 		}
 	}
@@ -105,7 +103,7 @@ bool Configurator::load(const std::string& file)
 	}
 
 	std::string line;
-	for ( std::string::const_iterator it = data.begin(); it != data.end(); ++it ) {
+	for ( auto it = data.begin(); it != data.end(); ++it ) {
 		if ( (*it) == '\n' ) {
 			mLines.push_back(line);
 			line = "";

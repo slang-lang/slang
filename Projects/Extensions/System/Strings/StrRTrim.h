@@ -4,13 +4,11 @@
 
 
 // Library includes
-#include <cstdlib>
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/Utils.h>
 #include <Tools/Strings.h>
 
 // Forward declarations
@@ -45,7 +43,7 @@ public:
 
 		std::string param_value = (*it++).value().toStdString();
 
-		*result = Runtime::StringType(::Utils::Tools::stringTrimRight(param_value));
+		*result = Runtime::StringType(Utils::Tools::stringTrimRight(param_value));
 
 		return Runtime::ControlFlow::Normal;
 	}

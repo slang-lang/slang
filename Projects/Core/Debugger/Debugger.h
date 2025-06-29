@@ -65,16 +65,16 @@ public:	// IDebugger implementation
 	void stepOver() override;
 
 public:
-	bool registerReceiver(Core::IReceiver* receiver);
-	bool unregisterReceiver(Core::IReceiver* receiver);
+	bool registerReceiver(IReceiver* receiver);
+	bool unregisterReceiver(IReceiver* receiver);
 
 private:
 	BreakPointCollection::iterator findBreakPoint(const Token& token);
 
 private:
 	Debugger();
-	Debugger(const Debugger& );
-	Debugger operator=(const Debugger& );
+	Debugger( const Debugger& ) = delete;
+	Debugger operator=( const Debugger& ) = delete;
 	~Debugger() override = default;
 
 private:
@@ -82,7 +82,7 @@ private:
 	bool mBreakOnExceptionThrow;
 	BreakPointCollection mBreakPoints;
 	NextAction::E mNextAction;
-	Core::IReceiver* mReceiver;
+	IReceiver* mReceiver;
 	bool mUseDebugger;
 };
 

@@ -45,7 +45,7 @@ void TreeOptimizer::process(MethodScope* base)
 	}
 
 	for ( auto it = base->beginMethods(); it != base->endMethods(); ++it ) {
-		processMethod(static_cast<Common::Method*>((*it)));
+		processMethod( (*it) );
 	}
 }
 

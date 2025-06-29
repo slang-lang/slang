@@ -45,18 +45,16 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		int param_sockfd = (*it++).value().toInt();
-		Runtime::Object* param_addr = Controller::Instance().memory()->get((*it++).reference());
+		auto param_sockfd = static_cast<int32_t>( (*it++).value().toInt() );
+		auto* param_addr  = Controller::Instance().memory()->get((*it++).reference());
 
-		int handle = evaluate(param_sockfd, param_addr);
-
-		*result = Runtime::Int32Type(handle);
+		*result = Runtime::Int32Type( evaluate( param_sockfd, param_addr ) );
 
 		return Runtime::ControlFlow::Normal;
 	}
 
 private:
-	int evaluate(int param_sockfd, Runtime::Object* param_addr) const {
+	static int evaluate(int param_sockfd, Runtime::Object* param_addr) {
 		auto* addressSymbol = param_addr->resolve("_sa_address", true, Visibility::Public);
 		if ( !addressSymbol ) {
 			throw Runtime::Exceptions::RuntimeException("_sa_address symbol not found");
@@ -72,7 +70,7 @@ private:
 			throw Runtime::Exceptions::RuntimeException("_sa_port symbol not found");
 		}
 
-		struct sockaddr_in serv_addr;
+		sockaddr_in serv_addr;
 		sa_family_t addr_family = static_cast<sa_family_t>( static_cast<Runtime::Int32Type*>(familySymbol)->getValue().toInt() );
 
 		// set sa_family
@@ -96,10 +94,10 @@ private:
 		inet_pton(serv_addr.sin_family, static_cast<Runtime::StringType*>(addressSymbol)->getValue().toStdString().c_str(), &serv_addr.sin_addr);
 
 		// set sa_port
-		serv_addr.sin_port = (in_port_t)static_cast<Runtime::Int32Type*>(portSymbol)->getValue().toInt();
+		serv_addr.sin_port = static_cast<in_port_t>( static_cast<Runtime::Int32Type*>( portSymbol )->getValue().toInt() );
 #endif
 
-		return connect(param_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+		return connect(param_sockfd, (sockaddr *) &serv_addr, sizeof(serv_addr));
 	}
 };
 

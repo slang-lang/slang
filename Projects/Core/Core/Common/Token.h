@@ -143,8 +143,6 @@ public:
 
 	std::string toString() const;
 
-protected:
-
 private:
 	Category::E mCategory;
 	std::string mContent;

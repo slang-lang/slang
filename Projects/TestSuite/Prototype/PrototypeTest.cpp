@@ -11,9 +11,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
-#include <Core/Runtime/Exceptions.h>
 
 // Extension includes
 #ifdef USE_SYSTEM_EXTENSION
@@ -63,8 +61,8 @@ void PrototypeTest::testAdvancedPrototypeTest()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-        vm.addExtension(new Slang::Extensions::LIBC::Extension());
-		vm.addExtension(new Slang::Extensions::System::SystemExtension());
+        vm.addExtension(new Extensions::LIBC::Extension());
+		vm.addExtension(new Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/Prototypes/AdvancedPrototypeTest.os");
 
@@ -95,8 +93,8 @@ void PrototypeTest::testBasicPrototypeWithInheritanceConstraint()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-        vm.addExtension(new Slang::Extensions::LIBC::Extension());
-		vm.addExtension(new Slang::Extensions::System::SystemExtension());
+        vm.addExtension(new Extensions::LIBC::Extension());
+		vm.addExtension(new Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/Prototypes/BasicPrototypeWithInheritanceConstraint.os");
 
@@ -127,10 +125,10 @@ void PrototypeTest::testFail_BasicPrototypeWithInheritanceConstraint()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-        vm.addExtension(new Slang::Extensions::LIBC::Extension());
-		vm.addExtension(new Slang::Extensions::System::SystemExtension());
+        vm.addExtension(new Extensions::LIBC::Extension());
+		vm.addExtension(new Extensions::System::SystemExtension());
 #endif
-		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_BasicPrototypeWithInheritanceConstraint.os"), Slang::Common::Exceptions::TypeMismatch);
+		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_BasicPrototypeWithInheritanceConstraint.os"), Common::Exceptions::TypeMismatch);
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -142,8 +140,8 @@ void PrototypeTest::testFail_PrototypeAssignment()
 {
 	try {
 		VirtualMachine vm;
-		//TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), Slang::Common::Exceptions::TypeMismatch);
-		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), Slang::Common::Exceptions::TypeMismatch);
+		//TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), Common::Exceptions::TypeMismatch);
+		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), Common::Exceptions::TypeMismatch);
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -155,7 +153,7 @@ void PrototypeTest::testInheritFromPrototypeTest()
 {
 	try {
 		VirtualMachine vm;
-		//TTHROWS(vm.runScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os"), Slang::Common::Exceptions::NotSupported);
+		//TTHROWS(vm.runScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os"), Common::Exceptions::NotSupported);
 		vm.runScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os");
 	}
 	catch ( std::exception& e ) {

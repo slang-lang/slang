@@ -9,6 +9,7 @@
 #include <dirent.h>
 #endif
 #include <fstream>
+#include <vector>
 
 // Project includes
 #include <Core/AST/TreeGenerator.h>
@@ -43,7 +44,7 @@ void read_directory(const std::string& dirname, std::vector<std::string>& files)
 		return;
 	}
 
-	struct dirent * dp;
+	dirent* dp;
 
 	while ( (dp = readdir(dirp)) != nullptr ) {
 		std::string file(dp->d_name);
@@ -216,7 +217,7 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename)
 	std::ifstream in(filename.c_str(), std::ios_base::binary);
 
 	// read file content
-	std::string content = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+	auto content = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
 
 	addLibraryFolder(Utils::Tools::Files::ExtractPathname(Utils::Tools::Files::GetFullname(filename)));
 	mScriptFile = Utils::Tools::Files::GetFullname(filename);
@@ -408,7 +409,7 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 
 	MethodScope* globalScope = Controller::Instance().globalScope();
 
-	Common::Method* main = dynamic_cast<Common::Method*>(globalScope->resolveMethod("Main", params, false));
+	auto* main = dynamic_cast<Common::Method*>(globalScope->resolveMethod("Main", params, false));
 	if ( !main ) {
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
@@ -421,14 +422,14 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 	}
 }
 
-void VirtualMachine::runScriptFromFile(const std::string &filename, const Slang::ParameterList &params, Slang::Runtime::Object *result)
+void VirtualMachine::runScriptFromFile(const std::string &filename, const ParameterList &params, Runtime::Object *result)
 {
 	auto* script = createScriptFromFile(filename);
 
 	run(script, params, result);
 }
 
-void VirtualMachine::runScriptFromString(const std::string &content, const Slang::ParameterList &params, Slang::Runtime::Object *result)
+void VirtualMachine::runScriptFromString(const std::string &content, const ParameterList &params, Runtime::Object *result)
 {
 	auto* script = createScriptFromString(content);
 

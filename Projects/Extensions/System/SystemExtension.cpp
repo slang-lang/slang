@@ -3,7 +3,7 @@
 #include "SystemExtension.h"
 
 // Library includes
-#include <cerrno>
+#include <cassert>
 
 // Project includes
 #include <Defines.h>

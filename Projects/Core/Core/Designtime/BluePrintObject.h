@@ -9,7 +9,6 @@
 #include <string>
 
 // Project includes
-#include <Core/Common/Attributes/Attributes.h>
 #include <Core/Common/PrototypeConstraint.h>
 #include <Core/Common/Token.h>
 #include <Core/Common/Types.h>
@@ -99,7 +98,7 @@ public:
 
 public:
 	BluePrintObject* fromPrototype(const PrototypeConstraints& constraints) const;
-	BluePrintObject* replicate(const std::string& newType, const std::string& filename, BluePrintObject* target = 0) const;
+	BluePrintObject* replicate( const std::string& newType, const std::string& filename, BluePrintObject* target = nullptr ) const;
 
 public:
 	MethodCollection provideMethods() const;

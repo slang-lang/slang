@@ -4,16 +4,12 @@
 
 
 // Library includes
-#include <cstdlib>
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
-#include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/Utils.h>
-#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
 
 // Forward declarations
@@ -48,13 +44,11 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		std::string param_source = (*it++).value().toStdString();
-		std::string param_target = (*it++).value().toStdString();
-		unsigned long param_position = (*it).value().toInt();
+		auto param_source   = (*it++).value().toStdString();
+		auto param_target   = (*it++).value().toStdString();
+		auto param_position = (*it).value().toInt();
 
-		int my_result = (int)param_source.find(param_target, param_position);
-
-		*result = Runtime::Int32Type(my_result);
+		*result = Runtime::Int32Type( static_cast<int32_t>( param_source.find( param_target, param_position ) ) );
 
 		return Runtime::ControlFlow::Normal;
 	}

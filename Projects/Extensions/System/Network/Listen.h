@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <sys/types.h>
 #ifdef _MSC_VER
 #	include <winsock.h>
 #else

@@ -24,10 +24,10 @@ public:
 	static std::string TYPENAME;
 
 public:
-    explicit Int16Type( int16_t value = 0 );
-    explicit Int16Type( const AtomicValue& value );
-    explicit Int16Type( const std::string& name, const AtomicValue& value );
-    explicit Int16Type( const Object& object );
+	explicit Int16Type( int16_t value = 0 );
+	explicit Int16Type( const AtomicValue& value );
+	explicit Int16Type( const std::string& name, const AtomicValue& value );
+	explicit Int16Type( const Object& object );
 
 public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;

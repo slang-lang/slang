@@ -5,7 +5,6 @@
 
 // Library includes
 #include <string>
-#include <vector>
 
 // Project includes
 
