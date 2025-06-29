@@ -46,9 +46,9 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		std::string param_value = (*it++).value().toStdString();
-		int param_length = (*it++).value().toInt();
-		std::string param_pattern = (*it++).value().toStdString();
+		auto param_value   = (*it++).value().toStdString();
+		auto param_length  = static_cast<size_t>( (*it++).value().toInt() );
+		auto param_pattern = (*it++).value().toStdString();
 
 		if ( param_length < 0 ) {
 			throw Runtime::Exceptions::SizeException("invalid length");
@@ -57,7 +57,7 @@ public:
 			throw Runtime::Exceptions::SizeException("invalid pattern size");
 		}
 
-		if ( (size_t)param_length > param_value.size() ) {
+		if ( param_length > param_value.size() ) {
 			param_value.append(param_length - param_value.size(), param_pattern[0]);
 		}
 

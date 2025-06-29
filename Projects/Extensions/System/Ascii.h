@@ -46,7 +46,7 @@ public:
 		ParameterList::const_iterator it = list.begin();
 
 		std::ostringstream character;
-		character << (char)(*it++).value().toInt();
+		character << static_cast<char>( (*it++).value().toInt() );
 
 		*result = Runtime::StringType(character.str());
 

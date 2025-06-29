@@ -45,12 +45,10 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		int param_sockfd = (*it++).value().toInt();
-		Runtime::Object* param_addr = Controller::Instance().memory()->get((*it++).reference());
+		auto param_sockfd = static_cast<int32_t>( (*it++).value().toInt() );
+		auto* param_addr  = Controller::Instance().memory()->get((*it++).reference());
 
-		int handle = evaluate(param_sockfd, param_addr);
-
-		*result = Runtime::Int32Type(handle);
+		*result = Runtime::Int32Type( evaluate( param_sockfd, param_addr ) );
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -96,7 +94,7 @@ private:
 		inet_pton(serv_addr.sin_family, static_cast<Runtime::StringType*>(addressSymbol)->getValue().toStdString().c_str(), &serv_addr.sin_addr);
 
 		// set sa_port
-		serv_addr.sin_port = (in_port_t)static_cast<Runtime::Int32Type*>(portSymbol)->getValue().toInt();
+		serv_addr.sin_port = static_cast<in_port_t>( static_cast<Runtime::Int32Type*>( portSymbol )->getValue().toInt() );
 #endif
 
 		return connect(param_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));

@@ -77,8 +77,8 @@ bool LocalClient::addBreakPoint( const StringList& tokens )
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	std::string file = Utils::Tools::Files::GetFullname( ( *it++ ) );
-	unsigned int line = ( unsigned int )Utils::Tools::stringToInt( ( *it++ ) );
+	auto file = Utils::Tools::Files::GetFullname( ( *it++ ) );
+	auto line = static_cast<size_t>( Utils::Tools::stringToInt( ( *it++ ) ) );
 
 	Core::BreakPoint breakpoint( Common::Position( file, line ) );
 
