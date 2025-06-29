@@ -5,11 +5,9 @@
 
 // Library includes
 #include <list>
-#include <typeinfo>
 #include <utility>
 
 // Project includes
-#include <Logger/Logger.h>
 #include "GenericTest.h"
 
 // Forward declarations

@@ -3,6 +3,7 @@
 #include "RemoteClient.h"
 
 // Library includes
+#include <cassert>
 #include <iostream>
 
 // Project includes

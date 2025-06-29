@@ -12,7 +12,6 @@
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/Exceptions.h>
-#include "stdio.hpp"
 
 // Forward declarations
 

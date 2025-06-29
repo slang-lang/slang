@@ -9,6 +9,7 @@
 #include <dirent.h>
 #endif
 #include <fstream>
+#include <vector>
 
 // Project includes
 #include <Core/AST/TreeGenerator.h>

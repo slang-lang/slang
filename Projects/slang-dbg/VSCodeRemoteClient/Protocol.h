@@ -9,7 +9,6 @@
 #include <json/value.h>
 
 // Project includes
-#include <Common/AClient.h>
 #include <Core/Common/Types.h>
 
 // Forward declarations

@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <cstdlib>
 #ifdef _WIN32
 	// Win32 only methods
 #	include <Windows.h>
@@ -13,12 +12,9 @@
 #endif
 
 // Project includes
-#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/Utils.h>
 
 // Forward declarations
 

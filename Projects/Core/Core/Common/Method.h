@@ -11,7 +11,6 @@
 #include <Core/Runtime/Parameter.h>
 #include <Core/Object.h>
 #include <Core/Scope.h>
-#include "Types.h"
 
 // Forward declarations
 

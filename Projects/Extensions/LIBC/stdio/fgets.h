@@ -12,7 +12,6 @@
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
-#include "stdio.hpp"
 
 // Forward declarations
 

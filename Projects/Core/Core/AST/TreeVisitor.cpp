@@ -3,7 +3,6 @@
 #include "TreeVisitor.h"
 
 // Library includes
-#include <iostream>
 #include <Core/Common/Exceptions.h>
 
 // Project includes

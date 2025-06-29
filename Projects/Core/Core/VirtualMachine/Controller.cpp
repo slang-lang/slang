@@ -3,6 +3,7 @@
 #include "Controller.h"
 
 // Library includes
+#include <cassert>
 
 // Project includes
 #include <Core/Common/Namespace.h>

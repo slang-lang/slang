@@ -245,6 +245,8 @@ int main( int argc, const char* argv[] )
 		return 0;
 	}
 	catch ( Slang::Runtime::ControlFlow::E &e ) {
+		Utils::Common::printStackTrace();
+
 		if ( e == Slang::Runtime::ControlFlow::ExitProgram ) {
 			return 0;
 		}

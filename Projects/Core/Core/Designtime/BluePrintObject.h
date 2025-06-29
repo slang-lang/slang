@@ -9,7 +9,6 @@
 #include <string>
 
 // Project includes
-#include <Core/Common/Attributes/Attributes.h>
 #include <Core/Common/PrototypeConstraint.h>
 #include <Core/Common/Token.h>
 #include <Core/Common/Types.h>

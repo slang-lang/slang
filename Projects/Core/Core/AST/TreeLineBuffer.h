@@ -2,7 +2,6 @@
 #ifndef Slang_Core_Core_AST_TreeLineBuffer_h
 #define Slang_Core_Core_AST_TreeLineBuffer_h
 
-#include <Core/Defines.h>
 
 // Library includes
 #include <map>

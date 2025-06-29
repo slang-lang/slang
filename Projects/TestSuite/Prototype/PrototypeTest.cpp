@@ -11,9 +11,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
-#include <Core/Runtime/Exceptions.h>
 
 // Extension includes
 #ifdef USE_SYSTEM_EXTENSION

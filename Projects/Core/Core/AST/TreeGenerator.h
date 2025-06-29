@@ -10,7 +10,6 @@
 #include <Core/Common/Namespace.h>
 #include <Core/Common/Token.h>
 #include <Core/Runtime/ControlFlow.h>
-#include <Core/Runtime/ExceptionData.h>
 #include <Core/Runtime/Parameter.h>
 #include <Core/Scope.h>
 #include "Statement.h"

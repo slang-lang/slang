@@ -3,6 +3,7 @@
 #include "AtomicValue.h"
 
 // Library includes
+#include <cassert>
 
 // Project includes
 #include <Tools/Strings.h>
