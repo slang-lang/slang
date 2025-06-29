@@ -8,7 +8,7 @@
 #include <utility>
 
 // Project includes
-#include <Core/Attributes/Attributes.h>
+#include <Core/Common/Attributes/Attributes.h>
 #include "PrototypeConstraint.h"
 
 // Forward declarations

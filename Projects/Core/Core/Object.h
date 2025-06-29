@@ -8,28 +8,27 @@
 #include <string>
 
 // Project includes
-#include <Core/Attributes/Attributes.h>
+#include <Core/Common/Attributes/Attributes.h>
+#include <Core/Common/Token.h>
+#include <Core/Common/Types.h>
 #include <Core/Designtime/Ancestor.h>
 #include <Core/Designtime/BluePrintObject.h>
-#include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/Reference.h>
-#include "Parameter.h"
+#include <Core/Runtime/Parameter.h>
 #include "Scope.h"
 #include "Symbol.h"
-#include "Types.h"
 
 // Forward declarations
+namespace Slang {
+	class Repository;
+}
 
 // Namespace declarations
 
 
 namespace Slang {
-
-// Forward declaration
-class Repository;
-
 namespace Runtime {
 
 // Forward declarations

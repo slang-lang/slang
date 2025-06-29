@@ -6,12 +6,12 @@
 
 // Project includes
 #include <Core/AST/Statement.h>
+#include <Core/Common/Types.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
-
-#include <utility>
+#include "Types.h"
 
 // Namespace declarations
 

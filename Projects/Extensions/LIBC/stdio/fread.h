@@ -19,7 +19,7 @@
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Tools.h>
+#include <Core/Runtime/Utils.h>
 #include <Core/VirtualMachine/Controller.h>
 #include "stdio.hpp"
 
@@ -46,35 +46,26 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			bool value = false;
-
-			long size = fread(&value, 1, sizeof(bool), stdio_t::FileHandles[param_handle]);
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading file");
-			}
-
-			*result = Runtime::BoolType(value);
+		if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException("invalid file handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		bool value = false;
+
+		long size = fread(&value, 1, sizeof(bool), stdio_t::FileHandles[param_handle]);
+		if ( size == -1 ) {    // error while reading
+			throw Runtime::Exceptions::RuntimeException("error while reading file");
 		}
+
+		*result = Runtime::BoolType(value);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -93,35 +84,26 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			double value = 0.0;
-
-			long size = fread(&value, 1, sizeof(double), stdio_t::FileHandles[param_handle]);
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading file");
-			}
-
-			*result = Runtime::DoubleType(value);
+		if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException("invalid file handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		double value = 0.0;
+
+		long size = fread(&value, 1, sizeof(double), stdio_t::FileHandles[param_handle]);
+		if ( size == -1 ) {    // error while reading
+			throw Runtime::Exceptions::RuntimeException("error while reading file");
 		}
+
+		*result = Runtime::DoubleType(value);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -140,35 +122,26 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			float value = 0.f;
-
-			long size = fread(&value, 1, sizeof(float), stdio_t::FileHandles[param_handle]);
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading file");
-			}
-
-			*result = Runtime::FloatType(value);
+		if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException("invalid file handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		float value = 0.f;
+
+		long size = fread(&value, 1, sizeof(float), stdio_t::FileHandles[param_handle]);
+		if ( size == -1 ) {    // error while reading
+			throw Runtime::Exceptions::RuntimeException("error while reading file");
 		}
+
+		*result = Runtime::FloatType(value);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -187,35 +160,26 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			int value = 0;
-
-			long size = fread(&value, 1, sizeof(int), stdio_t::FileHandles[param_handle]);
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading file");
-			}
-
-			*result = Runtime::Int32Type(value);
+		if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException("invalid file handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		int value = 0;
+
+		long size = fread(&value, 1, sizeof(int), stdio_t::FileHandles[param_handle]);
+		if ( size == -1 ) {    // error while reading
+			throw Runtime::Exceptions::RuntimeException("error while reading file");
 		}
+
+		*result = Runtime::Int32Type(value);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -235,49 +199,40 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
-			auto param_length = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
+		auto param_length = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+		if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException("invalid file handle");
+		}
+
+		std::string value;
+
+		while ( param_length > 0 || param_length == -1 ) {
+			char charValue;
+
+			long size = fread(&charValue, 1, sizeof(char), stdio_t::FileHandles[param_handle]);
+			if ( size == -1 ) {    // error while reading
+				return Runtime::ControlFlow::Throw;
+			}
+			if ( size == 0 ) {	// EOF reached
+				break;
 			}
 
-			std::string value;
+			value += charValue;
 
-			while ( param_length > 0 || param_length == -1 ) {
-				char charValue;
-
-				long size = fread(&charValue, 1, sizeof(char), stdio_t::FileHandles[param_handle]);
-				if ( size == -1 ) {    // error while reading
-					return Runtime::ControlFlow::Throw;
-				}
-				if ( size == 0 ) {	// EOF reached
-					break;
-				}
-
-				value += charValue;
-
-				if ( param_length > 0 ) {
-					param_length--;
-				}
+			if ( param_length > 0 ) {
+				param_length--;
 			}
-
-			*result = Runtime::StringType(value);
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::StringType(value);
 
 		return Runtime::ControlFlow::Normal;
 	}

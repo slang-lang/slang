@@ -11,7 +11,7 @@
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Tools.h>
+#include <Core/Runtime/Utils.h>
 #include <Tools/Strings.h>
 
 // Forward declarations
@@ -40,32 +40,23 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			std::string param_value = (*it++).value().toStdString();
-			unsigned long param_start = (*it++).value().toInt();
-			unsigned long param_end = std::string::npos;
+		std::string param_value = (*it++).value().toStdString();
+		unsigned long param_start = (*it++).value().toInt();
+		unsigned long param_end = std::string::npos;
 
-			if ( params.size() >= 3 ) {
-				param_end = (*it++).value().toInt();
-			}
-
-			std::string result_value = param_value.substr(param_start, param_end);
-
-			*result = Runtime::StringType(result_value);
+		if ( params.size() >= 3 ) {
+			param_end = (*it++).value().toInt();
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		std::string result_value = param_value.substr(param_start, param_end);
+
+		*result = Runtime::StringType(result_value);
 
 		return Runtime::ControlFlow::Normal;
 	}

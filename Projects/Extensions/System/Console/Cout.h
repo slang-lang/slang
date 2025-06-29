@@ -10,7 +10,7 @@
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Tools.h>
+#include <Core/Runtime/Utils.h>
 #include "Defines.h"
 
 // Forward declarations
@@ -28,33 +28,24 @@ class Cout : public ExtensionMethod
 {
 public:
 	Cout()
-	: ExtensionMethod(0, "cout", Designtime::StringType::TYPENAME)
+	: ExtensionMethod( 0, "cout", Designtime::StringType::TYPENAME )
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("text", Common::TypeDeclaration(Designtime::StringType::TYPENAME), VALUE_NONE, true));
+		params.push_back( Parameter::CreateDesigntime( "text", Common::TypeDeclaration( Designtime::StringType::TYPENAME ), VALUE_NONE, true ) );
 
-		setSignature(params);
+		setSignature( params );
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* /*result*/ )
 	{
-		ParameterList list = mergeParameters(params);
+		auto list = mergeParameters( params );
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		auto it = list.begin();
 
-			std::cout << (*it++).value().toStdString();
+		std::cout << (*it++).value().toStdString();
 
-			mOutMode = COUT;
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		mOutMode = COUT;
 
 		return Runtime::ControlFlow::Normal;
 	}

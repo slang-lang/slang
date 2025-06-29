@@ -22,7 +22,7 @@ SET(DEPENDENCIES
 	CoreDesigntimeParser
 	CoreDesigntimeBuildInTypes
 	CoreCommon
-	CoreAttributes
+	CoreCommonAttributes
 	CoreAST
 )
 

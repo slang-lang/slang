@@ -18,7 +18,7 @@
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Tools.h>
+#include <Core/Runtime/Utils.h>
 #include <Core/VirtualMachine/Controller.h>
 #include "stdio.hpp"
 
@@ -46,35 +46,26 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			bool param_value = (*it++).value().toBool();
-
-			long size = fwrite(&param_value, sizeof(bool), 1, stdio_t::FileHandles[param_handle]);
-			if ( size == -1 ) {    // error while writing
-				throw Runtime::Exceptions::RuntimeException("error while writing file");
-			}
-
-			*result = Runtime::Int32Type((int)size);
+		if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException("invalid file handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		bool param_value = (*it++).value().toBool();
+
+		long size = fwrite(&param_value, sizeof(bool), 1, stdio_t::FileHandles[param_handle]);
+		if ( size == -1 ) {    // error while writing
+			throw Runtime::Exceptions::RuntimeException("error while writing file");
 		}
+
+		*result = Runtime::Int32Type((int)size);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -94,35 +85,26 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			double param_value = (*it++).value().toDouble();
-
-			long size = fwrite(&param_value, sizeof(double), 1, stdio_t::FileHandles[param_handle]);
-			if ( size == -1 ) {    // error while writing
-				throw Runtime::Exceptions::RuntimeException("error while writing file");
-			}
-
-			*result = Runtime::Int32Type((int)size);
+		if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException("invalid file handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		double param_value = (*it++).value().toDouble();
+
+		long size = fwrite(&param_value, sizeof(double), 1, stdio_t::FileHandles[param_handle]);
+		if ( size == -1 ) {    // error while writing
+			throw Runtime::Exceptions::RuntimeException("error while writing file");
 		}
+
+		*result = Runtime::Int32Type((int)size);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -142,35 +124,26 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			float param_value = (*it++).value().toFloat();
-
-			long size = fwrite(&param_value, sizeof(float), 1, stdio_t::FileHandles[param_handle]);
-			if ( size == -1 ) {    // error while writing
-				throw Runtime::Exceptions::RuntimeException("error while writing file");
-			}
-
-			*result = Runtime::Int32Type((int)size);
+		if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException("invalid file handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		float param_value = (*it++).value().toFloat();
+
+		long size = fwrite(&param_value, sizeof(float), 1, stdio_t::FileHandles[param_handle]);
+		if ( size == -1 ) {    // error while writing
+			throw Runtime::Exceptions::RuntimeException("error while writing file");
 		}
+
+		*result = Runtime::Int32Type((int)size);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -190,35 +163,26 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			int param_value = (*it++).value().toInt();
-
-			long size = fwrite(&param_value, sizeof(int), 1, stdio_t::FileHandles[param_handle]);
-			if ( size == -1 ) {    // error while writing
-				throw Runtime::Exceptions::RuntimeException("error while writing file");
-			}
-
-			*result = Runtime::Int32Type((int)size);
+		if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException("invalid file handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		int param_value = (*it++).value().toInt();
+
+		long size = fwrite(&param_value, sizeof(int), 1, stdio_t::FileHandles[param_handle]);
+		if ( size == -1 ) {    // error while writing
+			throw Runtime::Exceptions::RuntimeException("error while writing file");
 		}
+
+		*result = Runtime::Int32Type((int)size);
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -238,36 +202,27 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			auto param_handle = (*it++).value().toInt();
+		auto param_handle = (*it++).value().toInt();
 
-			if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			std::string param_value = (*it++).value().toStdString();
-
-			//long size = fwrite(&param_value, sizeof(char), strlen(param_value.c_str()), stdio_t::FileHandles[param_handle]);
-			long size = fputs(param_value.c_str(), stdio_t::FileHandles[param_handle]);
-			if ( size == -1 ) {    // error while writing
-				throw Runtime::Exceptions::RuntimeException("error while writing file");
-			}
-
-			*result = Runtime::Int32Type(static_cast<int>(size));
+		if ( stdio_t::FileHandles.find(param_handle) == stdio_t::FileHandles.end() ) {
+			throw Runtime::Exceptions::RuntimeException("invalid file handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		std::string param_value = (*it++).value().toStdString();
+
+		//long size = fwrite(&param_value, sizeof(char), strlen(param_value.c_str()), stdio_t::FileHandles[param_handle]);
+		long size = fputs(param_value.c_str(), stdio_t::FileHandles[param_handle]);
+		if ( size == -1 ) {    // error while writing
+			throw Runtime::Exceptions::RuntimeException("error while writing file");
 		}
+
+		*result = Runtime::Int32Type(static_cast<int>(size));
 
 		return Runtime::ControlFlow::Normal;
 	}

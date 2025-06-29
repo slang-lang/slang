@@ -6,6 +6,7 @@
 #include <dlfcn.h>
 
 // Project includes
+#include <Logger/Logger.h>
 #include <Utils.h>
 
 // Namespace declarations

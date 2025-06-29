@@ -8,13 +8,15 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
+#include <Core/Common/Utils.h>
 #include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Core/Tools.h>
-#include <Core/VirtualMachine/Controller.h>
+#include <Core/VirtualMachine/Repository.h>
+#include <Core/VirtualMachine/StackFrame.h>
+#include <Logger/Logger.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
 
@@ -28,16 +30,16 @@ namespace Slang {
 namespace AST {
 
 
-TreeGenerator::TreeGenerator()
-: mAllowConstModify(false),
+TreeGenerator::TreeGenerator(Repository* repository, bool collectErrors)
+: mCollectErrors(collectErrors),
+  mErrorCount(0),
+  mAllowConstModify(false),
   mControlFlow(Runtime::ControlFlow::Normal),
   mMethod(nullptr),
   mThis(nullptr),
+  mRepository( repository ),
   mStackFrame(nullptr)
 {
-	// initialize virtual machine stuff
-	mRepository = Controller::Instance().repository();
-	mTypeSystem = Controller::Instance().typeSystem();
 }
 
 /*
@@ -195,6 +197,14 @@ IScope* TreeGenerator::getScope() const
 const TokenList& TreeGenerator::getTokens() const
 {
 	return mStackFrame->getTokens();
+}
+
+/*
+ * returns the number of errors that occurred during AST generation
+ */
+size_t TreeGenerator::hasErrors() const
+{
+	return mErrorCount;
 }
 
 void TreeGenerator::initialize(Common::Method* method)
@@ -561,6 +571,105 @@ void TreeGenerator::popScope()
 void TreeGenerator::popTokens()
 {
 	mStackFrame->popTokens();
+}
+
+/*
+ * walk through global namespace and process all methods of all symbols
+ */
+void TreeGenerator::process(MethodScope* base)
+{
+	if ( !base ) {
+		throw Common::Exceptions::Exception("invalid scope symbol provided");
+	}
+
+	for ( auto it = base->beginSymbols(); it != base->endSymbols(); ++it ) {
+		switch ( it->second->getSymbolType() ) {
+			case Symbol::IType::MethodSymbol:
+				throw Common::Exceptions::Exception("invalid symbol found: " + it->second->getName());
+			case Symbol::IType::BluePrintObjectSymbol:
+				processBluePrint(dynamic_cast<Designtime::BluePrintObject*>(it->second));
+				break;
+			case Symbol::IType::NamespaceSymbol:
+				processNamespace(dynamic_cast<Common::Namespace*>(it->second));
+				break;
+			case Symbol::IType::ObjectSymbol:
+				break;	// ignore runtime symbols
+		}
+	}
+
+	if ( base->beginMethods() != base->endMethods() ) {
+		for ( auto it = base->beginMethods(); it != base->endMethods(); ++it ) {
+			processMethod(dynamic_cast<Common::Method*>((*it)));
+		}
+	}
+}
+
+/*
+ * walk through a blueprint and process all members and methods
+ */
+void TreeGenerator::processBluePrint(Designtime::BluePrintObject* object)
+{
+	if ( !object ) {
+		throw Common::Exceptions::Exception("invalid blueprint symbol provided");
+	}
+	if ( object->isInterface() ) {
+		// interfaces have no implementation, so there's nothing to parse; adieu..
+		return;
+	}
+	if ( object->provideMethods().empty() && object->provideSymbols().empty() ) {
+		// an object without methods and symbols... maybe a primitive?
+		return;
+	}
+	if ( !object->getPrototypeConstraints().empty() ) {
+		// skip prototypes
+		return;
+	}
+
+	process(object);
+}
+
+/*
+ * generates the AST for a single function/method
+ */
+void TreeGenerator::processMethod(Common::Method* method)
+{
+	if ( !method ) {
+		throw Common::Exceptions::Exception("invalid method symbol provided");
+	}
+	if (method->isAbstractMethod() || method->isExtensionMethod() || method->isNotImplemented() ) {
+		// abstract, extension or not implemented methods have no implementation, so there's nothing to parse...
+		return;
+	}
+
+	try {
+		method->setRootNode(
+			generateAST( method )
+		);
+	}
+	catch ( Common::Exceptions::Exception& e ) {
+		if ( !mCollectErrors ) {
+			// rethrow error
+			throw;
+		}
+
+		// increment error count
+		mErrorCount++;
+
+		// write error to log device
+		OSerror(e.what());
+	}
+}
+
+/*
+ * walks through a complete namespace with all blueprints & methods
+ */
+void TreeGenerator::processNamespace(Common::Namespace* space)
+{
+	if ( !space ) {
+		throw Common::Exceptions::Exception("invalid namespace symbol provided");
+	}
+
+	process(space);
 }
 
 /*
@@ -2336,7 +2445,7 @@ std::string TreeGenerator::resolveType(TokenIterator& token, Node* left, const T
 std::string TreeGenerator::resolveType(TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const
 {
 	try {
-		return mTypeSystem->getType(left, operation, right);
+		return mRepository->getType(left, operation, right);
 	}
 	catch ( Common::Exceptions::UnknownIdentifier& ) {
 		throw Common::Exceptions::UnknownIdentifier("unknown type '" + left + "' detected during type check", token->position());

@@ -24,7 +24,7 @@ Thread::Thread()
 {
 }
 
-Thread::Thread(Common::ThreadId id)
+Thread::Thread(ThreadId id)
 : mId(id),
   mState(State::Starting)
 {
@@ -55,7 +55,7 @@ Runtime::ControlFlow::E Thread::execute(Runtime::Object* self, Common::Method* m
 {
 	mState = State::Started;
 
-	AST::TreeInterpreter interpreter(mId);
+	AST::TreeInterpreter interpreter( this );
 	Runtime::ControlFlow::E controlflow = interpreter.execute(self, method, params, result);
 
 	mState = State::Stopping;
@@ -82,7 +82,7 @@ void Thread::exception(Runtime::Object* data, const Common::Position& position)
 	mExceptionData = Runtime::ExceptionData(data, position, stackTrace());
 }
 
-StackFrame* Thread::frame(Common::FrameId frameId) const
+StackFrame* Thread::frame(FrameId frameId) const
 {
 	size_t idx = 0;
 	for ( auto it = mStackFrames.cbegin(); it != mStackFrames.cend(); ++it, ++idx ) {
@@ -94,12 +94,12 @@ StackFrame* Thread::frame(Common::FrameId frameId) const
 	return nullptr;
 }
 
-Common::ThreadId Thread::getId() const
+ThreadId Thread::getId() const
 {
 	return mId;
 }
 
-Common::FrameId Thread::getNumFrames() const
+FrameId Thread::getNumFrames() const
 {
 	return mStackFrames.size();
 }
@@ -181,7 +181,7 @@ void Threads::deinit()
 	mThreads.clear();
 }
 
-void Threads::deleteThread(Common::ThreadId id)
+void Threads::deleteThread(ThreadId id)
 {
 	Thread* thread = getThread(id);
 
@@ -193,7 +193,7 @@ unsigned int Threads::getNumThreads() const
 	return mThreads.size();
 }
 
-Thread* Threads::getThread(Common::ThreadId id) const
+Thread* Threads::getThread(ThreadId id) const
 {
 	auto it = mThreads.find(id);
 	if ( it == mThreads.end() ) {

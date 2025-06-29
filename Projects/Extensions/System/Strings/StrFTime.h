@@ -14,7 +14,7 @@
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Tools.h>
+#include <Core/Runtime/Utils.h>
 
 // Forward declarations
 
@@ -41,38 +41,29 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute( Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token )
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result )
 	{
 		ParameterList list = mergeParameters( params );
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			std::string param_format = (*it++).value().toStdString();
-			int32_t param_time = (*it++).value().toInt();
+		std::string param_format = (*it++).value().toStdString();
+		int32_t param_time = (*it++).value().toInt();
 
-			std::time_t time;
-			if ( param_time ) {
-				time = param_time;
-			}
-			else {
-				time = std::time( nullptr );
-			}
-
-			std::tm tm = *std::localtime( &time );
-
-			std::stringstream ssr;
-			ssr << std::put_time( &tm, param_format.c_str() );
-
-			*result = Runtime::StringType( ssr.str() );
+		std::time_t time;
+		if ( param_time ) {
+			time = param_time;
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
-			*data = Runtime::StringType( std::string( e.what() ) );
-
-			Controller::Instance().thread( threadId )->exception() = Runtime::ExceptionData( data, token.position() );
-			return Runtime::ControlFlow::Throw;
+		else {
+			time = std::time( nullptr );
 		}
+
+		std::tm tm = *std::localtime( &time );
+
+		std::stringstream ssr;
+		ssr << std::put_time( &tm, param_format.c_str() );
+
+		*result = Runtime::StringType( ssr.str() );
 
 		return Runtime::ControlFlow::Normal;
 	}

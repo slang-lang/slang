@@ -1,6 +1,6 @@
 
-#ifndef Core_Consts_h
-#define Core_Consts_h
+#ifndef Slang_Core_Core_Consts_h
+#define Slang_Core_Core_Consts_h
 
 
 // Library includes

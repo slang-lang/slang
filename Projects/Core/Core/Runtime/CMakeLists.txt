@@ -8,9 +8,11 @@ SET(SOURCES
 	Interpreter.cpp
 	OperatorOverloading.cpp
 	Reference.cpp
+	Parameter.cpp
 	Script.cpp
 	TypeCast.cpp
 	Types.cpp
+	Utils.cpp
 )
 
 SET(HEADERS
@@ -21,13 +23,14 @@ SET(HEADERS
 	Interpreter.h
 	OperatorOverloading.h
 	Reference.h
+	Parameter.h
 	Script.h
 	TypeCast.h
 	Types.h
+	Utils.h
 )
 
 SET(DEPENDENCIES
-	CoreDebugger
 	CoreRuntimeBuildInTypes
 	Utils
 )

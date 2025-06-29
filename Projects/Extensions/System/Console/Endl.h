@@ -10,7 +10,7 @@
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Tools.h>
+#include <Core/Runtime/Utils.h>
 #include "Defines.h"
 
 // Forward declarations
@@ -28,30 +28,21 @@ class Endl : public ExtensionMethod
 {
 public:
 	Endl()
-	: ExtensionMethod(0, "endl", Designtime::StringType::TYPENAME)
+	: ExtensionMethod( 0, "endl", Designtime::StringType::TYPENAME )
 	{
 		ParameterList params;
 
-		setSignature(params);
+		setSignature( params );
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& /*params*/, Runtime::Object* /*result*/, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& /*params*/, Runtime::Object* /*result*/ )
 	{
-		try {
-			if ( mOutMode == CERR ) {
-				std::cerr << std::endl;
-			}
-			else if ( mOutMode == COUT ) {
-				std::cout << std::endl;
-			}
+		if ( mOutMode == CERR ) {
+			std::cerr << std::endl;
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
+		else if ( mOutMode == COUT ) {
+			std::cout << std::endl;
 		}
 
 		return Runtime::ControlFlow::Normal;

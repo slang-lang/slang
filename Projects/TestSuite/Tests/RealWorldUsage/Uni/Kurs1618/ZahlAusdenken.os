@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
     public void Main(int argc, string args) {
         // default initialisierung unseres startwerts

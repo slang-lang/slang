@@ -18,7 +18,7 @@
 #include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Core/Tools.h>
+#include "Utils.h"
 
 // Namespace declarations
 
