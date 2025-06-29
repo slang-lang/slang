@@ -77,8 +77,8 @@ bool Method::operator() (const Method& first, const Method& second) const
 		//}
 
 		if ( firstList.size() == secondList.size() ) {
-			ParameterList::const_iterator fIt = firstList.begin();
-			ParameterList::const_iterator sIt = secondList.begin();
+			auto fIt = firstList.begin();
+			auto sIt = secondList.begin();
 			for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
 				if ( fIt->type() != sIt->type() ) {
 					return fIt->type() < sIt->type();

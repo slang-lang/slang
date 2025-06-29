@@ -274,14 +274,12 @@ bool BluePrintObject::isInterface() const
 
 bool BluePrintObject::isIterable() const
 {
-	ParameterList params;
-
-	if ( isOfType("ICollection") ) {
-	    return true;
+	if ( isOfType( "ICollection" ) ) {
+		return true;
 	}
 
 	for ( auto& mMethod : mMethods ) {
-		if ( mMethod->getName() == "getIterator" && mMethod->isSignatureValid(params) ) {
+		if ( mMethod->getName() == "getIterator" && mMethod->isSignatureValid( ParameterList() ) ) {
 			return true;
 		}
 	}
