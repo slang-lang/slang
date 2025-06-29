@@ -649,9 +649,9 @@ TokenList Analyser::generateTokens(const std::string& content)
 	t.process();
 
 	if ( mPrintTokens ) {
-		for( const auto& t : t.tokens() )
+		for( const auto& token : t.tokens() )
 		{
-			std::cout << t.toString() << std::endl;
+			std::cout << token.toString() << std::endl;
 		}
 	}
 
