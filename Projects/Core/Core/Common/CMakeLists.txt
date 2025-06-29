@@ -1,15 +1,17 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
+ADD_SUBDIRECTORY(Attributes)
+
 SET(SOURCES
     Exceptions.cpp
     Method.cpp
     Namespace.cpp
     Position.cpp
     PrototypeConstraint.cpp
-	Token.cpp
+    Token.cpp
     Types.cpp
     Visibility.cpp
-	Utils.cpp
+    Utils.cpp
 )
 
 SET(HEADERS
@@ -18,14 +20,15 @@ SET(HEADERS
     Namespace.h
     Position.h
     PrototypeConstraint.h
-	Token.h
+    Token.h
     TypeDeclaration.h
     Types.h
     Visibility.h
-	Utils.h
+    Utils.h
 )
 
 SET(DEPENDENCIES
+    CoreCommonAttributes
 )
 
 add_include(Projects/Core)

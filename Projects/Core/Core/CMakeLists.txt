@@ -1,7 +1,6 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(AST)
-ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(Common)
 ADD_SUBDIRECTORY(Designtime)
 ADD_SUBDIRECTORY(Extensions)
@@ -36,7 +35,7 @@ SET(DEPENDENCIES
 	CoreDesigntimeBuildInTypes
 	CoreDesigntime
 	CoreCommon
-	CoreAttributes
+	CoreCommonAttributes
 	CoreAST
 	Utils
 )

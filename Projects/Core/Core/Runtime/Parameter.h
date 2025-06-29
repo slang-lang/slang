@@ -1,6 +1,6 @@
 
-#ifndef Slang_Core_Core_Parameter_h
-#define Slang_Core_Core_Parameter_h
+#ifndef Slang_Core_Core_Runtime_Parameter_h
+#define Slang_Core_Core_Runtime_Parameter_h
 
 
 // Library includes
@@ -8,7 +8,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Attributes/Types.h>
+#include <Core/Common/Attributes/Types.h>
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/Reference.h>

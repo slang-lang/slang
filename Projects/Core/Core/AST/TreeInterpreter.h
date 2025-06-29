@@ -46,7 +46,7 @@ class Statements;
 class TreeInterpreter
 {
 public:
-	explicit TreeInterpreter(ThreadId id);
+	explicit TreeInterpreter( Thread* thread );
 	~TreeInterpreter() = default;
 
 public: // Execution

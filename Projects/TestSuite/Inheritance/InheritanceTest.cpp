@@ -100,10 +100,6 @@ void InheritanceTest::testExceptionDuringDestructorTest()
 {
     try {
         VirtualMachine vm;
-#ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new Slang::Extensions::LIBC::Extension());
-		vm.addExtension(new Slang::Extensions::System::SystemExtension());
-#endif
         vm.runScriptFromFile("Tests/Inheritance/ExceptionDuringDestructor.os");
 
         // automatic success

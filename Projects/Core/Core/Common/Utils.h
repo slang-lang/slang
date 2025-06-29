@@ -1,11 +1,9 @@
 
-#ifndef Slang_Core_Core_Designtime_Parser_Utils_h
-#define Slang_Core_Core_Designtime_Parser_Utils_h
+#ifndef Slang_Core_Core_Common_Utils_h
+#define Slang_Core_Core_Common_Utils_h
 
 
 // Library includes
-#include <iostream>
-#include <sstream>
 #include <string>
 
 // Project includes

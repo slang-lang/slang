@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <utility>
 
 // Project includes
 #include <Core/Common/Token.h>

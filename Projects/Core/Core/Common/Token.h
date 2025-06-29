@@ -1,6 +1,6 @@
 
-#ifndef Slang_Core_Core_Designtime_Parser_Token_h
-#define Slang_Core_Core_Designtime_Parser_Token_h
+#ifndef Slang_Core_Core_Common_Token_h
+#define Slang_Core_Core_Common_Token_h
 
 
 // Library includes

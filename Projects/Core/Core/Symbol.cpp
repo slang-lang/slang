@@ -3,7 +3,6 @@
 #include "Symbol.h"
 
 // Library includes
-#include <utility>
 
 // Project includes
 

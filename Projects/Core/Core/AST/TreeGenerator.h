@@ -7,6 +7,7 @@
 #include <set>
 
 // Project includes
+#include <Core/Common/Namespace.h>
 #include <Core/Common/Token.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
@@ -23,6 +24,7 @@ namespace Slang {
 
 // Forward declarations
 namespace Common {
+	class Method;
 	class Namespace;
 }
 namespace Designtime {
@@ -48,11 +50,12 @@ class Node;
 class TreeGenerator
 {
 public:
-	TreeGenerator();
+	explicit TreeGenerator(Repository* repository, bool collectErrors = false);
 	~TreeGenerator() = default;
 
 public:
-	Statements* generateAST(Common::Method* method);
+	size_t hasErrors() const;
+	void process(MethodScope* base);
 
 private:
 	class Initialization {
@@ -63,6 +66,13 @@ private:
 			Required
 		};
 	};
+
+private: // Generator
+	void processBluePrint(Designtime::BluePrintObject* object);
+	void processMethod(Common::Method* method);
+	void processNamespace(Common::Namespace* space);
+
+	Statements* generateAST(Common::Method* method);
 
 private: // Execution
 	void collectScopeTokens(TokenIterator& token, TokenList& tokens);
@@ -161,6 +171,10 @@ private:	// Initialization
 	void finalize();
 	void initialize(Common::Method* method);
 
+private: // Generator
+	bool mCollectErrors;
+	size_t mErrorCount;
+
 private:
 	bool mAllowConstModify;
 	Runtime::ControlFlow::E mControlFlow;
@@ -171,7 +185,6 @@ private:
 private:	// Virtual machine stuff
 	Repository* mRepository;
 	StackFrame* mStackFrame;
-	TypeSystem* mTypeSystem;
 };
 
 
