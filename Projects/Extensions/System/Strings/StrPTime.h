@@ -45,7 +45,7 @@ public:
 		std::string param_format = (*it++).value().toStdString();
 		std::string param_time = (*it++).value().toStdString();
 
-		struct tm tm{};
+		tm tm{};
 
 		if ( strptime(param_time.c_str(), param_format.c_str(), &tm ) ) {
 			auto time = mktime( &tm );

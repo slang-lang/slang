@@ -368,7 +368,7 @@ std::string Method::ToString(unsigned int indent) const
 {
 	std::string result;
 
-	result += ::Utils::Tools::indent(indent);
+	result += Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
 	result += " " + MemoryLayout::convert(mMemoryLayout);
 	if ( mLanguageFeatureState != LanguageFeatureState::Stable ) {

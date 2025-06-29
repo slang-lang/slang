@@ -57,7 +57,7 @@ LocalClient::LocalClient()
   mScope( nullptr ),
   mVirtualMachine( nullptr )
 {
-	mDebugger = &Slang::Core::Debugger::Instance();
+	mDebugger = &Core::Debugger::Instance();
 }
 
 LocalClient::~LocalClient()
@@ -437,7 +437,7 @@ MethodSymbol* LocalClient::getMethod( std::string name, const ParameterList& par
 		Utils::Tools::split( name, parent, child );
 
 		if (  !parent.empty() && !child.empty()  ) {
-			scope = dynamic_cast<Slang::Runtime::Object*>( scope->resolve( parent, false ) );
+			scope = dynamic_cast<Runtime::Object*>( scope->resolve( parent, false ) );
 		}
 		else {
 			return scope->resolveMethod( parent, params, false );
@@ -530,7 +530,7 @@ Symbol* LocalClient::getSymbol( std::string name ) const
 		Utils::Tools::split( name, parent, child );
 
 		if (  !parent.empty() && !child.empty()  ) {
-			scope = dynamic_cast<Slang::Runtime::Object*>( scope->resolve( parent, false, Visibility::Private ) );
+			scope = dynamic_cast<Runtime::Object*>( scope->resolve( parent, false, Visibility::Private ) );
 		}
 		else {
 			return scope->resolve( parent, false, Visibility::Private );
@@ -578,9 +578,9 @@ int LocalClient::handleBreakpoint( IScope* scope, const Core::BreakPoint& breakp
 
 void LocalClient::loadConfig()
 {
-	std::string filename = mSettings->filename() + ".dbg";
+	auto filename = mSettings->filename() + ".dbg";
 
-	if (  !::Utils::Tools::Files::exists( filename )  ) {
+	if (  !Utils::Tools::Files::exists( filename )  ) {
 		// no configuration file exists
 		return;
 	}
@@ -783,8 +783,8 @@ void LocalClient::prepare(  const StringList& tokens  )
 	}
 
 	mParameters.clear();
-	mParameters.push_back(  Slang::Parameter::CreateRuntime(  Slang::Runtime::Int32Type::TYPENAME, static_cast<int32_t>(  tokens.size()  )  )  );
-	mParameters.push_back(  Slang::Parameter::CreateRuntime(  Slang::Runtime::StringType::TYPENAME, paramStr  )  );
+	mParameters.push_back(  Parameter::CreateRuntime(  Runtime::Int32Type::TYPENAME, static_cast<int32_t>(  tokens.size()  )  )  );
+	mParameters.push_back(  Parameter::CreateRuntime(  Runtime::StringType::TYPENAME, paramStr  )  );
 }
 
 void LocalClient::printBreakPoints()
@@ -950,7 +950,7 @@ bool LocalClient::removeBreakPoint( const StringList& tokens )
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	int idx = ::Utils::Tools::stringToInt( ( *it ) );
+	auto idx = Utils::Tools::stringToInt( ( *it ) );
 
 	Core::BreakPointCollection points = mDebugger->getBreakPoints();
 
@@ -1069,7 +1069,7 @@ void LocalClient::setCurrentFrame( const StringList& tokens )
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	setCurrentFrame( ( FrameId )::Utils::Tools::stringToInt( ( *it++ ) ) );
+	setCurrentFrame( static_cast<FrameId>( Utils::Tools::stringToInt( ( *it++ ) ) ) );
 }
 
 void LocalClient::setCurrentThread( ThreadId threadId )
@@ -1099,7 +1099,7 @@ void LocalClient::setCurrentThread( const StringList& tokens )
 	auto it = tokens.begin();
 	++it;	// skip first token
 
-	setCurrentThread( ( FrameId )::Utils::Tools::stringToInt( ( *it++ ) ) );
+	setCurrentThread( static_cast<FrameId>( Utils::Tools::stringToInt( ( *it++ ) ) ) );
 }
 
 void LocalClient::shutdown()
@@ -1132,8 +1132,8 @@ void LocalClient::start()
 
 	// add extensions
 #ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine->addExtension( new Slang::Extensions::System::SystemExtension() );
-	mVirtualMachine->addExtension( new Slang::Extensions::LIBC::Extension() );
+	mVirtualMachine->addExtension( new Extensions::System::SystemExtension() );
+	mVirtualMachine->addExtension( new Extensions::LIBC::Extension() );
 #endif
 
 	try {
@@ -1152,14 +1152,14 @@ void LocalClient::start()
 			mRunning = false;
 		}
 	}
-	catch (  Slang::Runtime::ControlFlow::E &e  ) {
+	catch (  Runtime::ControlFlow::E &e  ) {
 		switch (  e  ) {
-			case Slang::Runtime::ControlFlow::ExitProgram:
+			case Runtime::ControlFlow::ExitProgram:
 				// everything is fine
 				break;
-			case Slang::Runtime::ControlFlow::Throw:
-				writeln(  "[Exception thrown in " + Slang::Controller::Instance().thread(  0  )->exception().getPosition().toString() + "\n"
-						+ Slang::Controller::Instance().thread(  0  )->exception().getData()->ToString() + "]"  );
+			case Runtime::ControlFlow::Throw:
+				writeln(  "[Exception thrown in " + Controller::Instance().thread(  0  )->exception().getPosition().toString() + "\n"
+						+ Controller::Instance().thread(  0  )->exception().getData()->ToString() + "]"  );
 				break;
 			default:
 				writeln(  "[abnormal program termination!]"  );

@@ -18,8 +18,8 @@ namespace Common {
 namespace Configuration {
 
 
-Configurator::Configurator( const Utils::Common::Logger* p, const std::string& file )
-: Utils::Common::Logger( p, "Configurator" ),
+Configurator::Configurator( const Logger* p, const std::string& file )
+: Logger( p, "Configurator" ),
   mConfigFile(file),
   mSuccess(false)
 {

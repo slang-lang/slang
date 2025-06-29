@@ -1591,7 +1591,7 @@ void Interpreter::process_print(TokenIterator& token)
 		return;
 	}
 
-	::Utils::Printer::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
+	Utils::Printer::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;

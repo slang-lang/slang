@@ -474,7 +474,7 @@ void collectLocalModuleData()
                 auto filename = "module.json";
                 auto path     = mSettings.LibraryFolder + entry + "/";
 
-                if ( ::Utils::Tools::Files::exists( path + filename ) ) {
+                if ( Utils::Tools::Files::exists( path + filename ) ) {
                     mLocalRepository.addModule(
                         collectModuleData( path, filename )
                     );
@@ -1091,7 +1091,7 @@ bool prepareRemoteRepository()
     auto filename = mSettings.LibraryFolder + CONFIG_CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
     // check if filename exists
-    if ( !::Utils::Tools::Files::exists( filename ) ) {
+    if ( !Utils::Tools::Files::exists( filename ) ) {
         // no configuration file exists
         std::cerr << "!!! File \"" + filename + "\" not found" << std::endl;
         return false;
@@ -1298,7 +1298,7 @@ void search( const StringList& params )
     auto filename = mSettings.LibraryFolder + CONFIG_CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
     // check if filename exists
-    if ( !::Utils::Tools::Files::exists( filename ) ) {
+    if ( !Utils::Tools::Files::exists( filename ) ) {
         // no configuration file exists
         std::cerr << "!!! File \"" + filename + "\" not found" << std::endl;
         return;

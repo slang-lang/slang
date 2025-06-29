@@ -93,10 +93,10 @@ void BluePrintObject::defineMethod(const std::string& name, Common::Method* meth
 	auto* oldMethod = dynamic_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
 	if ( oldMethod ) {
 		if ( oldMethod->getMemoryLayout() != MemoryLayout::Abstract && oldMethod->getMemoryLayout() != MemoryLayout::Virtual ) {
-			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is not abstract or marked with " + std::string(Slang::MEMORY_LAYOUT_VIRTUAL ) );
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is not abstract or marked with " + std::string(MEMORY_LAYOUT_VIRTUAL ) );
 		}
 		if ( method->getMethodType() == MethodType::Method && method->getMemoryLayout() != MemoryLayout::Abstract && method->getMemoryLayout() != MemoryLayout::Override ) {
-			throw Exceptions::SyntaxError( "Overriding method '" + method->getFullScopeName() + "' is not marked with " + std::string( Slang::MEMORY_LAYOUT_OVERRIDE ) );
+			throw Exceptions::SyntaxError( "Overriding method '" + method->getFullScopeName() + "' is not marked with " + std::string( MEMORY_LAYOUT_OVERRIDE ) );
 		}
 
 		// compare methods
@@ -107,10 +107,10 @@ void BluePrintObject::defineMethod(const std::string& name, Common::Method* meth
 			throw Exceptions::SyntaxError("Overriding method '" + method->getFullScopeName() + "' has different mutability then base method" );
 		}
 		if ( oldMethod->isFinalMethod() ) {
-			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(Slang::MEMORY_LAYOUT_FINAL ) + " and cannot be overwritten" );
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(MEMORY_LAYOUT_FINAL ) + " and cannot be overwritten" );
 		}
 		if ( oldMethod->isStatic() ) {
-			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(Slang::MEMORY_LAYOUT_STATIC ) + " and cannot be overwritten" );
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(MEMORY_LAYOUT_STATIC ) + " and cannot be overwritten" );
 		}
 		if ( oldMethod->QualifiedTypename() != method->QualifiedTypename() ) {
 			throw Exceptions::SyntaxError("Overriding method '" + method->getFullScopeName() + "' has different return value then base method" );
@@ -491,7 +491,7 @@ void BluePrintObject::setValue(const Runtime::AtomicValue& value)
 
 std::string BluePrintObject::ToString(unsigned int indent) const
 {
-	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName();
+	return Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName();
 }
 
 

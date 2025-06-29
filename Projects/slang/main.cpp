@@ -46,7 +46,7 @@ namespace {
 	std::string mFilename;
 	StringSet mLibraryFolders;
 	Utils::Common::StdOutLogger mLogger;
-	Slang::ParameterList mParameters;
+	ParameterList mParameters;
 	bool mPrintDebugInfo = false;
 	bool mPrintSpecification = false;
 	bool mPrintTokens = false;
@@ -168,8 +168,8 @@ void processParameters( int argc, const char* argv[] )
 		}
 	}
 
-	mParameters.push_back( Slang::Parameter::CreateRuntime( Slang::Runtime::Int32Type::TYPENAME, static_cast<int32_t>( params.size() ) ) );
-	mParameters.push_back( Slang::Parameter::CreateRuntime( Slang::Runtime::StringType::TYPENAME, paramStr ) );
+	mParameters.push_back( Parameter::CreateRuntime( Runtime::Int32Type::TYPENAME, static_cast<int32_t>( params.size() ) ) );
+	mParameters.push_back( Parameter::CreateRuntime( Runtime::StringType::TYPENAME, paramStr ) );
 }
 
 int main( int argc, const char* argv[] )
@@ -182,12 +182,12 @@ int main( int argc, const char* argv[] )
 
 	processParameters( argc, argv );
 
-	Slang::VirtualMachine mVirtualMachine;
+	VirtualMachine mVirtualMachine;
 
 	// add extensions
 #ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine.addExtension( new Slang::Extensions::System::SystemExtension() );
-	mVirtualMachine.addExtension( new Slang::Extensions::LIBC::Extension() );
+	mVirtualMachine.addExtension( new Extensions::System::SystemExtension() );
+	mVirtualMachine.addExtension( new Extensions::LIBC::Extension() );
 #endif
 
 	mVirtualMachine.settings().DoCollectErrors = true;
@@ -234,25 +234,25 @@ int main( int argc, const char* argv[] )
 			std::cout << "Syntax check done, no errors found." << std::endl;
 		}
 		else {
-			Slang::Runtime::Object result;
+			Runtime::Object result;
 			mVirtualMachine.run( script, mParameters, &result );
 
-			if ( result.getValue().type() == Slang::Runtime::AtomicValue::Type::INT ) {
+			if ( result.getValue().type() == Runtime::AtomicValue::Type::INT ) {
 				return result.getValue().toInt();
 			}
 		}
 
 		return 0;
 	}
-	catch ( Slang::Runtime::ControlFlow::E &e ) {
+	catch ( Runtime::ControlFlow::E &e ) {
 		Utils::Common::printStackTrace();
 
-		if ( e == Slang::Runtime::ControlFlow::ExitProgram ) {
+		if ( e == Runtime::ControlFlow::ExitProgram ) {
 			return 0;
 		}
-		else if ( e == Slang::Runtime::ControlFlow::Throw ) {
-			OSerror( "Exception thrown in " << Slang::Controller::Instance().thread( 0 )->exception().getPosition().toString() << std::endl
-			         << Slang::Controller::Instance().thread( 0 )->exception().getData()->ToString() );
+		else if ( e == Runtime::ControlFlow::Throw ) {
+			OSerror( "Exception thrown in " << Controller::Instance().thread( 0 )->exception().getPosition().toString() << std::endl
+			         << Controller::Instance().thread( 0 )->exception().getData()->ToString() );
 		}
 		else {
 			OSerror( "abnormal program termination!" );

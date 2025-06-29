@@ -70,7 +70,7 @@ private:
 			throw Runtime::Exceptions::RuntimeException("_sa_port symbol not found");
 		}
 
-		struct sockaddr_in serv_addr;
+		sockaddr_in serv_addr;
 		sa_family_t addr_family = static_cast<sa_family_t>( static_cast<Runtime::Int32Type*>(familySymbol)->getValue().toInt() );
 
 		// set sa_family
@@ -97,7 +97,7 @@ private:
 		serv_addr.sin_port = static_cast<in_port_t>( static_cast<Runtime::Int32Type*>( portSymbol )->getValue().toInt() );
 #endif
 
-		return connect(param_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+		return connect(param_sockfd, (sockaddr *) &serv_addr, sizeof(serv_addr));
 	}
 };
 

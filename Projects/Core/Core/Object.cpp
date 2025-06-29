@@ -577,7 +577,7 @@ std::string Object::ToString(unsigned int indent) const
 	}
 
 	std::string result;
-	result += ::Utils::Tools::indent(indent);
+	result += Utils::Tools::indent(indent);
 	//result += MemoryLayout::convert(mMemoryLayout) + " ";
 	if ( mLanguageFeatureState != LanguageFeatureState::Stable ) {
 		result += Visibility::convert(mVisibility) + " ";
@@ -617,7 +617,7 @@ std::string Object::ToString(unsigned int indent) const
 			}
 		}
 
-		result += ::Utils::Tools::indent(indent) + "}";
+		result += Utils::Tools::indent(indent) + "}";
 	}
 
 	return result;

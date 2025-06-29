@@ -219,8 +219,8 @@ int main( int argc, const char* argv[] )
 
 		return 0;
 	}
-	catch ( Slang::Runtime::ControlFlow::E &e ) {
-		if ( e != Slang::Runtime::ControlFlow::ExitProgram ) {
+	catch ( Runtime::ControlFlow::E &e ) {
+		if ( e != Runtime::ControlFlow::ExitProgram ) {
 			OSerror( "abnormal program termination!" );
 		}
 	}
@@ -232,7 +232,7 @@ int main( int argc, const char* argv[] )
 	}
 
 	// if we get here something bad has happened
-	Slang::Controller::Instance().threads()->print();
+	Controller::Instance().threads()->print();
 
 	return -1;
 }

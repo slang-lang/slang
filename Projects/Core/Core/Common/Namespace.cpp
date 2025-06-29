@@ -66,7 +66,7 @@ std::string Namespace::ToString(unsigned int indent) const
 {
 	std::string result;
 
-	result += ::Utils::Tools::indent(indent);
+	result += Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
 	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + std::string(RESERVED_WORD_NAMESPACE) + " " + getName();
@@ -85,7 +85,7 @@ std::string Namespace::ToString(unsigned int indent) const
 		}
 	}
 
-	result += ::Utils::Tools::indent(indent) + "}";
+	result += Utils::Tools::indent(indent) + "}";
 
 	return result;
 }

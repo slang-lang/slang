@@ -43,7 +43,7 @@ public:
 
 		std::string param_value = (*it++).value().toStdString();
 
-		*result = Runtime::StringType(::Utils::Tools::stringTrim(param_value));
+		*result = Runtime::StringType(Utils::Tools::stringTrim(param_value));
 
 		return Runtime::ControlFlow::Normal;
 	}

@@ -705,7 +705,7 @@ void Analyser::processFile(const std::string& filename)
 {
 	mFilename = filename;
 
-	if ( !::Utils::Tools::Files::exists(mFilename) ) {
+	if ( !Utils::Tools::Files::exists(mFilename) ) {
 		throw Common::Exceptions::Exception("File '" + mFilename + "' not found");
 	}
 

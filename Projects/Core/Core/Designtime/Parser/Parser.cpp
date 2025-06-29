@@ -162,9 +162,9 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 			break;
 		}
 
-		std::string type = Parser::identify(token);
+		auto type = identify(token);
 
-		PrototypeConstraints constraints = collectDesigntimePrototypeConstraints(token);
+		auto constraints = collectDesigntimePrototypeConstraints(token);
 
 /*
 		// extending prototypes is not supported right now
