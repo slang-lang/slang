@@ -1740,7 +1740,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 	// loop through all case-labels and match their expressions against the switch-expression
 	for ( auto it = caseBlocks.begin(); it != caseBlocks.end(); ++it ) {
-		it->mBegin++;
+		++it->mBegin;
 
 		// evaluate switch-expression
 		Object condition;
@@ -1763,7 +1763,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 			TokenList caseTokens;
 			while ( it->mBegin != it->mEnd ) {
 				caseTokens.push_back((*it->mBegin));
-				it->mBegin++;
+				++it->mBegin;
 			}
 
 			// interpret case-block tokens
@@ -1789,7 +1789,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 	// execute the default block (if present)
 	if ( !caseMatched && defaultBlock.mBegin != localEnd ) {
-		defaultBlock.mBegin++;
+		++defaultBlock.mBegin;
 		expect(Token::Type::COLON, defaultBlock.mBegin++);
 
 		TokenList defaultTokens;
