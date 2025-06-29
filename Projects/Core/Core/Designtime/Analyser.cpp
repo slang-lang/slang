@@ -416,7 +416,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 		throw Common::Exceptions::ConstCorrectnessViolated("cannot add modifiable member '" + name + "' to const object '" + parent->getFullScopeName() + "'", token->position());
 	}
 
-	Runtime::AtomicValue value = (type == _string) ? Runtime::AtomicValue(std::string(VALUE_NONE)) : Runtime::AtomicValue(int(0));
+	Runtime::AtomicValue value{ (type == _string) ? Runtime::AtomicValue( std::string( VALUE_NONE ) ) : Runtime::AtomicValue( static_cast<int32_t>( 0 ) ) };
 	if ( token->type() == Token::Type::ASSIGN ) {
 		++token;
 

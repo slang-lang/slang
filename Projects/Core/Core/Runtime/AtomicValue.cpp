@@ -267,7 +267,7 @@ MemoryId AtomicValue::toReference() const
         case Type::DOUBLE:
         case Type::FLOAT:
         case Type::INT:
-        case Type::STRING:      return MemoryId( -1 );	// invalid typecast
+        case Type::STRING:      return static_cast<MemoryId>( -1 );	// invalidly typecast
         case Type::UNKNOWN:     break;
     }
 
