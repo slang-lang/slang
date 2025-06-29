@@ -291,7 +291,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 	if ( method->isExtensionMethod() ) {
 		try {
-			dynamic_cast<Slang::Extensions::ExtensionMethod*>( method )->execute( params, result );
+			dynamic_cast<Extensions::ExtensionMethod*>( method )->execute( params, result );
 
 			mControlFlow = Runtime::ControlFlow::Normal;
 		}

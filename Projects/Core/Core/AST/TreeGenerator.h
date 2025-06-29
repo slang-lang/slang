@@ -35,9 +35,6 @@ namespace Runtime {
 	class Object;
 }
 class Repository;
-namespace Runtime {
-	class Object;
-}
 class StackFrame;
 class TypeSystem;
 

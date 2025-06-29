@@ -35,7 +35,7 @@ Analyser::Analyser(bool doSanityCheck, bool printTokens)
 	mScope = Controller::Instance().globalScope();
 }
 
-bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& tokens)
+bool Analyser::buildEnum(BluePrintObject* symbol, const TokenList& tokens)
 {
 	auto token = tokens.begin();
 
@@ -46,7 +46,7 @@ bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& t
 	while ( token != tokens.end() ) {
 		expect(Token::Type::IDENTIFIER, token);
 
-		std::string name = (token++)->content();
+		auto name = (token++)->content();
 
 		if ( token->type() == Token::Type::ASSIGN ) {
 			expect(Token::Type::ASSIGN, token);
@@ -61,7 +61,7 @@ bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& t
 
 		// verify declaration order (this also prevents duplicate values)
 		if ( previous_value.toInt() >= value.toInt() ) {
-			throw Designtime::Exceptions::SyntaxError("enum values have to be defined in ascending order", token->position());
+			throw Exceptions::SyntaxError("enum values have to be defined in ascending order", token->position());
 		}
 
 		previous_value = value;
@@ -80,22 +80,22 @@ bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& t
 		symbol->define(name, entry);
 
 		if ( token->type() == Token::Type::COMMA ) {
-            if ( lookahead(token) == tokens.end() ) {
-                throw Designtime::Exceptions::SyntaxError("new enum value expected but none found!", token->position());
-            }
+			if ( lookahead(token) == tokens.end() ) {
+				throw Exceptions::SyntaxError("new enum value expected but none found!", token->position());
+			}
 
 			++token;
 		}
 		else if ( token->type() == Token::Type::SEMICOLON || token == tokens.end() ) {
-            // omitting the semicolon as last token is also allowed
+			// omitting the semicolon as last token is also allowed
 			return true;
 		}
 		else {
-			throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
+			throw Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
 		}
 	}
 
-	throw Designtime::Exceptions::SyntaxError("invalid enum declaration", token->position());
+	throw Exceptions::SyntaxError("invalid enum declaration", token->position());
 }
 
 Ancestors Analyser::collectInheritance(TokenIterator& token)
@@ -115,7 +115,7 @@ Ancestors Analyser::collectInheritance(TokenIterator& token)
 bool Analyser::createBluePrint(TokenIterator& token)
 {
 	if ( mScope && (!dynamic_cast<Common::Namespace*>(mScope) && !dynamic_cast<BluePrintObject*>(mScope)) ) {
-		throw Designtime::Exceptions::SyntaxError("objects can only be created within namespaces or objects", token->position());
+		throw Exceptions::SyntaxError("objects can only be created within namespaces or objects", token->position());
 	}
 
 	// look for an optional visibility token
@@ -125,12 +125,12 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	// look for an optional memory layout token
 	MemoryLayout::E memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Virtual);
 	if ( memoryLayout != MemoryLayout::Abstract && memoryLayout != MemoryLayout::Final && memoryLayout != MemoryLayout::Virtual ) {
-		throw Designtime::Exceptions::SyntaxError("invalid memory layout", token->position());
+		throw Exceptions::SyntaxError("invalid memory layout", token->position());
 	}
 	// look for the object token, BlueprintType::Object is required
 	BlueprintType::E blueprintType = Parser::parseBluePrintType(token);
 	if ( blueprintType != BlueprintType::Object ) {
-		throw Designtime::Exceptions::SyntaxError("object expected", token->position());
+		throw Exceptions::SyntaxError("object expected", token->position());
 	}
 	// look for the type declaration
 	Common::TypeDeclaration type = parseTypeDeclaration(token, mScope);
@@ -176,7 +176,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	// validate mutability
 	if ( type.mMutability == Mutability::Unknown ) {
-		throw Designtime::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(type.mMutability) + "' for " + getQualifiedTypename(type.mName), token->position());
+		throw Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(type.mMutability) + "' for " + getQualifiedTypename(type.mName), token->position());
 	}
 
 	blueprint->setBluePrintType(blueprintType);
@@ -226,7 +226,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 bool Analyser::createEnum(TokenIterator& token)
 {
 	if ( mScope && (!dynamic_cast<Common::Namespace*>(mScope) && !dynamic_cast<BluePrintObject*>(mScope)) ) {
-		throw Designtime::Exceptions::SyntaxError("enum can only be created within namespaces or objects", token->position());
+		throw Exceptions::SyntaxError("enum can only be created within namespaces or objects", token->position());
 	}
 
 	// look for an optional visibility token
@@ -236,12 +236,12 @@ bool Analyser::createEnum(TokenIterator& token)
 	// look for the object token, BlueprintType::Enum is required
 	BlueprintType::E bluePrintType = Parser::parseBluePrintType(token);
 	if (bluePrintType != BlueprintType::Enum ) {
-		throw Designtime::Exceptions::SyntaxError("enum type expected", token->position());
+		throw Exceptions::SyntaxError("enum type expected", token->position());
 	}
 	// look for the type declaration
 	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	if ( !type.mConstraints.empty() ) {
-		throw Designtime::Exceptions::SyntaxError("enums are now allowed to be prototypes", token->position());
+		throw Exceptions::SyntaxError("enums are now allowed to be prototypes", token->position());
 	}
 
 	// collect all tokens of this method
@@ -269,7 +269,7 @@ bool Analyser::createEnum(TokenIterator& token)
 bool Analyser::createInterface(TokenIterator& token)
 {
 	if ( mScope && (!dynamic_cast<Common::Namespace*>(mScope) && !dynamic_cast<BluePrintObject*>(mScope)) ) {
-		throw Designtime::Exceptions::SyntaxError("objects can only be created within namespaces or objects", token->position());
+		throw Exceptions::SyntaxError("objects can only be created within namespaces or objects", token->position());
 	}
 
 	// look for an optional visibility token
@@ -279,12 +279,12 @@ bool Analyser::createInterface(TokenIterator& token)
 	// look for the object token, BlueprintType::Interface is required
 	BlueprintType::E blueprintType = Parser::parseBluePrintType(token);
 	if ( blueprintType != BlueprintType::Interface ) {
-		throw Designtime::Exceptions::SyntaxError("interface type expected", token->position());
+		throw Exceptions::SyntaxError("interface type expected", token->position());
 	}
 	// look for the type declaration
 	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	if ( type.mMutability == Mutability::Unknown ) {
-		throw Designtime::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(type.mMutability) + "' for " + getQualifiedTypename(type.mName), token->position());
+		throw Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(type.mMutability) + "' for " + getQualifiedTypename(type.mName), token->position());
 	}
 	// collect inheritance (if present)
 	Ancestors inheritance = Parser::collectInheritance(token);
@@ -508,18 +508,18 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	TokenList tokens;
 	if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
 		if ( memoryLayout == MemoryLayout::Abstract ) {
-			throw Designtime::Exceptions::SyntaxError("abstract methods are not allowed to be implemented", token->position());
+			throw Exceptions::SyntaxError("abstract methods are not allowed to be implemented", token->position());
 		}
 
 		tokens = Parser::collectScopeTokens(token);
 	}
 	else if ( memoryLayout != MemoryLayout::Abstract && languageFeature != LanguageFeatureState::NotImplemented ) {
-		throw Designtime::Exceptions::SyntaxError("method '" + name + "' is not declared as abstract or not annotated with '" + LANGUAGE_FEATURE_NOTIMPLEMENTED + "' but has no implementation", token->position());
+		throw Exceptions::SyntaxError("method '" + name + "' is not declared as abstract or not annotated with '" + LANGUAGE_FEATURE_NOTIMPLEMENTED + "' but has no implementation", token->position());
 	}
 
 	// if this method is a runtime method then prototype constraints are not allowed (because they will never get resolved)
 	if ( !blueprint && !type.mConstraints.hasRuntimeTypes() ) {
-		throw Designtime::Exceptions::SyntaxError("only resolved prototype constraints are allowed in static methods", token->position());
+		throw Exceptions::SyntaxError("only resolved prototype constraints are allowed in static methods", token->position());
 	}
 
 	// create a new method with the corresponding return type
@@ -543,7 +543,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 bool Analyser::createNamespace(TokenIterator& token)
 {
 	if ( mScope && !dynamic_cast<Common::Namespace*>(mScope) ) {
-		throw Designtime::Exceptions::SyntaxError("namespaces can only be created within namespaces", token->position());
+		throw Exceptions::SyntaxError("namespaces can only be created within namespaces", token->position());
 	}
 
 	// look for an optional visibility token
@@ -636,8 +636,8 @@ void Analyser::generate(const TokenList& tokens)
 			// nothing to do here
 		}
 		else {
-			throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
-		};
+			throw Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+		}
 
 		++token;
 	}
@@ -758,7 +758,7 @@ std::string Analyser::resolveType(const std::string& type, const TokenIterator& 
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::NamespaceSymbol:
 				case Symbol::IType::ObjectSymbol:
-					throw Designtime::Exceptions::SyntaxError("invalid symbol type detected", token->position());
+					throw Exceptions::SyntaxError("invalid symbol type detected", token->position());
 			}
 		}
 

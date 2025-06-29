@@ -43,7 +43,7 @@ void read_directory(const std::string& dirname, std::vector<std::string>& files)
 		return;
 	}
 
-	struct dirent * dp;
+	dirent* dp;
 
 	while ( (dp = readdir(dirp)) != nullptr ) {
 		std::string file(dp->d_name);
@@ -421,14 +421,14 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 	}
 }
 
-void VirtualMachine::runScriptFromFile(const std::string &filename, const Slang::ParameterList &params, Slang::Runtime::Object *result)
+void VirtualMachine::runScriptFromFile(const std::string &filename, const ParameterList &params, Runtime::Object *result)
 {
 	auto* script = createScriptFromFile(filename);
 
 	run(script, params, result);
 }
 
-void VirtualMachine::runScriptFromString(const std::string &content, const Slang::ParameterList &params, Slang::Runtime::Object *result)
+void VirtualMachine::runScriptFromString(const std::string &content, const ParameterList &params, Runtime::Object *result)
 {
 	auto* script = createScriptFromString(content);
 

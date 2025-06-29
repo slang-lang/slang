@@ -18,18 +18,18 @@ namespace Designtime {
 namespace Exceptions {
 
 
-class DesigntimeException : public Slang::Common::Exceptions::Exception
+class DesigntimeException : public Common::Exceptions::Exception
 {
 public:
 #ifdef _WIN32
 	explicit DesigntimeException(const std::string& text, const Common::Position& position = Common::Position())
-	: Slang::Common::Exceptions::Exception("DesigntimeException: " + text, position)
+	: Common::Exceptions::Exception("DesigntimeException: " + text, position)
 	{ }
 
 	virtual ~DesigntimeException() { }
 #else
 	explicit DesigntimeException(const std::string& text, const Common::Position& position = Common::Position()) noexcept
-	: Slang::Common::Exceptions::Exception(text, position)
+	: Common::Exceptions::Exception(text, position)
 	{ }
 #endif
 };

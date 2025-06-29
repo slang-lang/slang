@@ -27,7 +27,7 @@ public:
 	~Namespace();
 
 public: // MethodScope overrides
-	void defineMethod(const std::string& name, Common::Method* method);
+	void defineMethod(const std::string& name, Method* method);
 
 public:	// Symbol::IType implementation
 	const std::string& Filename() const { return mFilename; }

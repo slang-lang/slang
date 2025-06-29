@@ -34,8 +34,8 @@ public:
 	virtual ~AExtension() = default;
 
 public:
-	virtual void initialize( Slang::Extensions::ExtensionNamespace* space ) = 0;
-	virtual void provideMethods( Slang::Extensions::ExtensionMethods& methods ) = 0;
+	virtual void initialize( ExtensionNamespace* space ) = 0;
+	virtual void provideMethods( ExtensionMethods& methods ) = 0;
 
 public:
 	const std::string& getName() const {

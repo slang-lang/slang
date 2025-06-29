@@ -78,7 +78,7 @@ BluePrintObject::BluePrintObject(const std::string& unqualifiedTypename, std::st
 	mType = Symbol::IType::BluePrintObjectSymbol;
 }
 
-void BluePrintObject::addInheritance(const Designtime::Ancestor& inheritance)
+void BluePrintObject::addInheritance(const Ancestor& inheritance)
 {
 	if ( inheritance.name().empty() ) {
 		throw Common::Exceptions::Exception("invalid inheritance added");
@@ -135,7 +135,7 @@ const std::string& BluePrintObject::Filename() const
 BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& constraints) const
 {
 	// generate a new blueprint from our prototype
-	BluePrintObject* prototype = replicate(Designtime::Parser::buildRuntimeConstraintTypename(QualifiedTypename(), constraints), mFilename);
+	BluePrintObject* prototype = replicate(Parser::buildRuntimeConstraintTypename(QualifiedTypename(), constraints), mFilename);
 
 	// set base type
 	prototype->mBasedOnType = QualifiedTypename();
@@ -151,7 +151,7 @@ BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& cons
 			continue;
 		}
 
-		auto* blue = dynamic_cast<Designtime::BluePrintObject*>(symIt->second);
+		auto* blue = dynamic_cast<BluePrintObject*>(symIt->second);
 
 		if ( blue->isPrototype() ) {
 			blue->setPrototypeConstraints(
@@ -416,9 +416,9 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 	replica->setVisibility(getVisibility());
 
 	// replicate inheritance
-	Designtime::Ancestors ancestors = getInheritance();
+	Ancestors ancestors = getInheritance();
 	for ( const auto& ancestor : ancestors ) {
-		replica->addInheritance(Designtime::Ancestor(
+		replica->addInheritance(Ancestor(
 			Common::TypeDeclaration(ancestor.name(), ancestor.constraints()),
 			ancestor.ancestorType(),
 			ancestor.visibility()
@@ -431,9 +431,9 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 			continue;
 		}
 
-		auto* blue = dynamic_cast<Designtime::BluePrintObject*>(mSymbol.second);
+		auto* blue = dynamic_cast<BluePrintObject*>(mSymbol.second);
 
-		auto* member = new Designtime::BluePrintObject(blue->QualifiedTypename(), blue->Filename(), blue->getName());
+		auto* member = new BluePrintObject(blue->QualifiedTypename(), blue->Filename(), blue->getName());
 		member->setBluePrintType(BlueprintType::Enum);
 		member->setLanguageFeatureState(blue->getLanguageFeatureState());
 		member->setMember(blue->isMember());

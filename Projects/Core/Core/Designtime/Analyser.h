@@ -55,7 +55,7 @@ private:
 	bool createMethodStub(TokenIterator& token, Visibility::E visibility, MemoryLayout::E memoryLayout, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name);
 	bool createMemberStub(TokenIterator& token, Visibility::E visibility, MemoryLayout::E memoryLayout, LanguageFeatureState::E languageFeature, const Common::TypeDeclaration& type, const std::string& name);
 
-	bool buildEnum(Designtime::BluePrintObject* symbol, const TokenList& tokens);
+	bool buildEnum(BluePrintObject* symbol, const TokenList& tokens);
 
 	bool isNamespace() const;
 	bool isInterface() const;

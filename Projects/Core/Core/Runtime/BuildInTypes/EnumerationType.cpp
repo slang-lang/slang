@@ -44,7 +44,7 @@ void EnumerationType::operator_assign(const Object *other)
 		mValue = other->getValue().toInt();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Exceptions::InvalidOperation(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool EnumerationType::operator_bool() const
@@ -58,7 +58,7 @@ bool EnumerationType::operator_equal(const Object *other)
 		return mValue.toInt() == other->getValue().toInt();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Exceptions::InvalidOperation(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool EnumerationType::operator_greater(const Object *other)
@@ -67,7 +67,7 @@ bool EnumerationType::operator_greater(const Object *other)
 		return mValue.toInt() > other->getValue().toInt();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Exceptions::InvalidOperation(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool EnumerationType::operator_greater_equal(const Object *other)
@@ -76,7 +76,7 @@ bool EnumerationType::operator_greater_equal(const Object *other)
 		return mValue.toInt() >= other->getValue().toInt();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Exceptions::InvalidOperation(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool EnumerationType::operator_less(const Object *other)
@@ -85,7 +85,7 @@ bool EnumerationType::operator_less(const Object *other)
 		return mValue.toInt() < other->getValue().toInt();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Exceptions::InvalidOperation(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool EnumerationType::operator_less_equal(const Object *other)
@@ -94,7 +94,7 @@ bool EnumerationType::operator_less_equal(const Object *other)
 		return mValue.toInt() <= other->getValue().toInt();
 	}
 
-	throw Runtime::Exceptions::InvalidOperation(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Exceptions::InvalidOperation(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 

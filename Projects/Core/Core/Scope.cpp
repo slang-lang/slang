@@ -135,7 +135,6 @@ void SymbolScope::undefine(const std::string& name)
 	auto it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		mSymbols.erase(it);
-		return;
 	}
 }
 

@@ -67,8 +67,6 @@ public:
 	}
 #endif
 
-protected:
-
 private:
 	std::string mMessage;
 	Position mPosition;
@@ -159,7 +157,7 @@ public:
 class StaticException : public Exception
 {
 public:
-	explicit StaticException(const std::string& text, const Common::Position& position = Common::Position())
+	explicit StaticException(const std::string& text, const Position& position = Position())
 	: Exception("StaticException: " + text, position)
 	{ }
 };

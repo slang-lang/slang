@@ -196,7 +196,7 @@ bool ObjectAttributes::isSealed() const
 	return mIsSealed;
 }
 
-void ObjectAttributes::setBluePrintType(Slang::BlueprintType::E value)
+void ObjectAttributes::setBluePrintType(BlueprintType::E value)
 {
 	mBluePrintType = value;
 }

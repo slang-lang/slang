@@ -55,7 +55,7 @@ Namespace::~Namespace()
 	}
 }
 
-void Namespace::defineMethod(const std::string& name, Common::Method* method)
+void Namespace::defineMethod(const std::string& name, Method* method)
 {
 	MethodScope::defineMethod(name, method);
 

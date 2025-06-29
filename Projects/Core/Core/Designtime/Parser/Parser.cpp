@@ -51,7 +51,7 @@ PrototypeConstraints mergeConstraints(const PrototypeConstraints& designtime, co
 	PrototypeConstraints result;
 
 	if ( designtime.size() != runtime.size() ) {
-		throw Designtime::Exceptions::SyntaxError("prototype constraint size mismatch");
+		throw Exceptions::SyntaxError("prototype constraint size mismatch");
 	}
 
 	auto designIt = designtime.begin();
@@ -126,7 +126,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 	for ( ; ; ) {
 		if ( token->content() == RESERVED_WORD_EXTENDS ) {
 			if ( replicates ) {
-				throw Designtime::Exceptions::SyntaxError("combinations with 'replicates' are not allowed");
+				throw Exceptions::SyntaxError("combinations with 'replicates' are not allowed");
 			}
 
 			++token;	// consume token
@@ -135,7 +135,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 		}
 		else if ( token->content() == RESERVED_WORD_IMPLEMENTS ) {
 			if ( replicates ) {
-				throw Designtime::Exceptions::SyntaxError("combinations with 'replicates' are not allowed");
+				throw Exceptions::SyntaxError("combinations with 'replicates' are not allowed");
 			}
 
 			++token;	// consume token
@@ -144,7 +144,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 		}
 		else if ( token->content() == RESERVED_WORD_REPLICATES ) {
 			if ( replicates ) {
-				throw Designtime::Exceptions::SyntaxError("combinations with 'replicates' are not allowed");
+				throw Exceptions::SyntaxError("combinations with 'replicates' are not allowed");
 			}
 
 			++token;	// consume token
@@ -209,7 +209,7 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 				constraint = token->content();
 			}
 			else {
-				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
+				throw Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
 			}
 
 			++token;
@@ -490,7 +490,7 @@ ParameterList Parser::parseParameters(TokenIterator& token, IScope* scope)
 		Runtime::AtomicValue value;
 		if ( token->type() == Token::Type::ASSIGN ) {
 			if ( name.empty() ) {
-				throw Designtime::Exceptions::SyntaxError("cannot use default values for unnamed parameters", token->position());
+				throw Exceptions::SyntaxError("cannot use default values for unnamed parameters", token->position());
 			}
 
 			hasDefaultValue = true;
@@ -503,7 +503,7 @@ ParameterList Parser::parseParameters(TokenIterator& token, IScope* scope)
 
 		if ( hasDefaultValue && accessMode == AccessMode::ByReference ) {
 			// parameters with default values cannot be accessed by reference
-			throw Designtime::Exceptions::SyntaxError("parameters with default values are not allowed to be accessed by reference");
+			throw Exceptions::SyntaxError("parameters with default values are not allowed to be accessed by reference");
 		}
 
 		params.push_back(
@@ -554,7 +554,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
 			}
 			if ( !sign.empty() ) {
-				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+				throw Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
 			value = Utils::Tools::stringToBool(token->content());
@@ -592,7 +592,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
 			}
 			if ( !sign.empty() ) {
-				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+				throw Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
 			value = token->content();
@@ -603,7 +603,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
 			}
 			if ( !sign.empty() ) {
-				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+				throw Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
 			value = Runtime::null;
@@ -615,17 +615,17 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token, cons
 				throw Exceptions::DesigntimeException("invalid initialization value type provided: " + type, token->position());
 			}
 			if ( token->content() != VALUE_NULL ) {
-				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+				throw Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 			if ( !sign.empty() ) {
-				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+				throw Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
 			value = Runtime::null;
 			break;
 		default:
 			if ( !sign.empty() ) {
-				throw Designtime::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+				throw Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
 			throw Common::Exceptions::NotSupported("only atomic data types are allowed as default parameters", token->position());

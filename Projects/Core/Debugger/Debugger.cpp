@@ -152,7 +152,7 @@ void Debugger::notifyExit(IScope* scope, const Token& token)
 	}
 }
 
-bool Debugger::registerReceiver(Core::IReceiver* receiver)
+bool Debugger::registerReceiver(IReceiver* receiver)
 {
 	// only one receiver can be registered at a time
 
@@ -198,7 +198,7 @@ void Debugger::stepOver()
 	mNextAction = NextAction::StepOver;
 }
 
-bool Debugger::unregisterReceiver(Core::IReceiver* receiver)
+bool Debugger::unregisterReceiver(IReceiver* receiver)
 {
 	// only the original receiver is allowed to unregister itself
 
