@@ -9,10 +9,10 @@ SET(SOURCES
 	Parameter.cpp
     Position.cpp
     PrototypeConstraint.cpp
-	Token.cpp
+    Token.cpp
     Types.cpp
     Visibility.cpp
-	Utils.cpp
+    Utils.cpp
 )
 
 SET(HEADERS
@@ -22,11 +22,11 @@ SET(HEADERS
 	Parameter.h
     Position.h
     PrototypeConstraint.h
-	Token.h
+    Token.h
     TypeDeclaration.h
     Types.h
     Visibility.h
-	Utils.h
+    Utils.h
 )
 
 SET(DEPENDENCIES

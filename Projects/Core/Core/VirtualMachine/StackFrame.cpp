@@ -3,7 +3,6 @@
 #include "StackFrame.h"
 
 // Library includes
-#include <utility>
 
 // Project includes
 #include <Core/Common/Method.h>

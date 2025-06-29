@@ -3,7 +3,6 @@
 #include "Method.h"
 
 // Library includes
-#include <utility>
 
 // Project includes
 #include <Core/AST/Statement.h>

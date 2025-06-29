@@ -1,6 +1,6 @@
 
-#ifndef Slang_Designtime_Parser_Parser_h
-#define Slang_Designtime_Parser_Parser_h
+#ifndef Slang_Core_Core_Designtime_Parser_Parser_h
+#define Slang_Core_Core_Designtime_Parser_Parser_h
 
 
 // Library includes

@@ -1,17 +1,17 @@
 {
   "name": "FileReader",
   "name_short": "FileReader",
-  "version": "1.0.2-alpha",
+  "version": "1.0.2",
   "description": "Script which reads in a complete text file and prints its contents to stdout.",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.9.3-alpha" },
+    { "module": "Slang", "version_min": "0.9.3" },
     { "module": "System", "version_min": "0.4.7" },
     { "module": "libParam", "version_min": "0.2.9" }
   ],
   "keywords": ["cat"],
   "target": {
     "directory": "FileReader",
-    "install": ["FileReader.os"],
+    "install": ["FileReader.slang"],
     "type": "internal"
   }
 }

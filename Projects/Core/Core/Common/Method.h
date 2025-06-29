@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <map>
 
 // Project includes
 #include <Core/Scope.h>
