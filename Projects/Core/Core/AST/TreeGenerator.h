@@ -11,7 +11,6 @@
 #include <Core/Common/Parameter.h>
 #include <Core/Common/Token.h>
 #include <Core/Runtime/ControlFlow.h>
-#include <Core/Runtime/ExceptionData.h>
 #include <Core/Scope.h>
 #include "Statement.h"
 
@@ -35,9 +34,6 @@ namespace Runtime {
 	class Object;
 }
 class Repository;
-namespace Runtime {
-	class Object;
-}
 class StackFrame;
 class TypeSystem;
 

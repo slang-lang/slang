@@ -268,8 +268,8 @@ void ASTTest::testForeach()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-		vm.addExtension(new Slang::Extensions::LIBC::Extension());
-		vm.addExtension(new Slang::Extensions::System::SystemExtension());
+		vm.addExtension(new Extensions::LIBC::Extension());
+		vm.addExtension(new Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/AST/ForeachTest.os");
 
@@ -472,8 +472,8 @@ void ASTTest::testTypecastExpression()
 	try {
 		VirtualMachine vm;
 #ifdef USE_SYSTEM_EXTENSION
-        vm.addExtension(new Slang::Extensions::LIBC::Extension());
-		vm.addExtension(new Slang::Extensions::System::SystemExtension());
+        vm.addExtension(new Extensions::LIBC::Extension());
+		vm.addExtension(new Extensions::System::SystemExtension());
 #endif
 		vm.runScriptFromFile("Tests/AST/TypecastExpression.os");
 

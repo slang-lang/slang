@@ -41,7 +41,7 @@ class Object : public MethodScope,
 public:
 	Object();
 	Object(const std::string& name, std::string filename, const std::string& type, const AtomicValue& value);
-	virtual ~Object();
+	virtual ~Object() override;
 
 public:
 	Object& operator= (const Object& other);

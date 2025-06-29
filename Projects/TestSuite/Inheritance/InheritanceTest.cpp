@@ -11,13 +11,11 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 
 // Extension includes
 #ifdef USE_SYSTEM_EXTENSION
 #	include <LIBC/Extension.h>
-#	include <System/SystemExtension.h>
 #endif
 
 // Namespace declarations

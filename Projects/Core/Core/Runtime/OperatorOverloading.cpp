@@ -30,7 +30,7 @@ namespace Runtime {
 void operator_binary_assign( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue || !rvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	const auto& source{ rvalue->QualifiedTypename() };
@@ -94,14 +94,14 @@ void operator_binary_assign( Object* lvalue, Object* rvalue )
 		}
 
 		// invalid binary assignment operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->QualifiedTypename() + ".operator=: conversion from " + rvalue->QualifiedTypename() + " to " + lvalue->QualifiedTypename() + " not supported" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->QualifiedTypename() + ".operator=: conversion from " + rvalue->QualifiedTypename() + " to " + lvalue->QualifiedTypename() + " not supported" );
 	}
 }
 
 void operator_binary_bitand( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -144,14 +144,14 @@ void operator_binary_bitand( Object* lvalue, Object* rvalue )
 	}
 	else {
 		// invalid binary bitand operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator&()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator&()'" );
 	}
 }
 
 void operator_binary_bitcomplement( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -194,14 +194,14 @@ void operator_binary_bitcomplement( Object* lvalue, Object* rvalue )
 	}
 	else {
 		// invalid binary bitcomplement operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator~()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator~()'" );
 	}
 }
 
 void operator_binary_bitor( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	const auto& target = lvalue->QualifiedTypename();
@@ -244,14 +244,14 @@ void operator_binary_bitor( Object* lvalue, Object* rvalue )
 	}
 	else {
 		// invalid binary bitor operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator|()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator|()'" );
 	}
 }
 
 void operator_binary_divide( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -306,17 +306,17 @@ void operator_binary_divide( Object* lvalue, Object* rvalue )
 	}
 	else {
 		// invalid binary division operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator/()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator/()'" );
 	}
 }
 
 bool operator_binary_equal( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot compare null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot compare null pointer to object" );
 	}
 	if ( !rvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot compare object to null pointer" );
+		throw Exceptions::AccessViolation( "cannot compare object to null pointer" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -324,29 +324,29 @@ bool operator_binary_equal( AST::TreeInterpreter* runtime, Object* lvalue, Objec
 	if ( target == BoolType::TYPENAME ) {
 		return BoolType( lvalue->isValid() ).operator_equal( rvalue );
 	}
-	else if ( target == DoubleType::TYPENAME ) {
+	if ( target == DoubleType::TYPENAME ) {
 		return DoubleType( lvalue->getValue().toDouble() ).operator_equal( rvalue );
 	}
-	else if ( target == FloatType::TYPENAME ) {
+	if ( target == FloatType::TYPENAME ) {
 		return FloatType( lvalue->getValue().toFloat() ).operator_equal( rvalue );
 	}
-	else if ( target == Int16Type::TYPENAME ) {
+	if ( target == Int16Type::TYPENAME ) {
 		return Int16Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
-	else if ( target == Int32Type::TYPENAME ) {
+	if ( target == Int32Type::TYPENAME ) {
 		return Int32Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
-	else if ( target == Int64Type::TYPENAME ) {
+	if ( target == Int64Type::TYPENAME ) {
 		return Int64Type( lvalue->getValue().toInt() ).operator_equal( rvalue );
 	}
-	else if ( target == StringType::TYPENAME ) {
+	if ( target == StringType::TYPENAME ) {
 		return StringType( lvalue->getValue().toStdString() ).operator_equal( rvalue );
 	}
-	else if ( target == VoidType::TYPENAME ) {
+	if ( target == VoidType::TYPENAME ) {
 		VoidType tmp;
 		return tmp.operator_equal( rvalue );
 	}
-	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+	if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
 		return lvalue->getValue().toInt() == rvalue->getValue().toInt();
 	}
 
@@ -366,7 +366,7 @@ bool operator_binary_equal( AST::TreeInterpreter* runtime, Object* lvalue, Objec
 bool operator_binary_greater( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -375,35 +375,35 @@ bool operator_binary_greater( AST::TreeInterpreter* runtime, Object* lvalue, Obj
 		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == DoubleType::TYPENAME ) {
+	if ( target == DoubleType::TYPENAME ) {
 		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == FloatType::TYPENAME ) {
+	if ( target == FloatType::TYPENAME ) {
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == Int16Type::TYPENAME ) {
+	if ( target == Int16Type::TYPENAME ) {
 		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == Int32Type::TYPENAME ) {
+	if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == Int64Type::TYPENAME ) {
+	if ( target == Int64Type::TYPENAME ) {
 		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == StringType::TYPENAME ) {
+	if ( target == StringType::TYPENAME ) {
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( target == VoidType::TYPENAME ) {
+	if ( target == VoidType::TYPENAME ) {
 		VoidType tmp;
 		return tmp.operator_greater( rvalue );
 	}
-	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+	if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
 		return lvalue->getValue().toInt() > rvalue->getValue().toInt();
 	}
 
@@ -420,7 +420,7 @@ bool operator_binary_greater( AST::TreeInterpreter* runtime, Object* lvalue, Obj
 bool operator_binary_greater_equal( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -429,35 +429,35 @@ bool operator_binary_greater_equal( AST::TreeInterpreter* runtime, Object* lvalu
 		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == DoubleType::TYPENAME ) {
+	if ( target == DoubleType::TYPENAME ) {
 		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == FloatType::TYPENAME ) {
+	if ( target == FloatType::TYPENAME ) {
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == Int16Type::TYPENAME ) {
+	if ( target == Int16Type::TYPENAME ) {
 		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == Int32Type::TYPENAME ) {
+	if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == Int64Type::TYPENAME ) {
+	if ( target == Int64Type::TYPENAME ) {
 		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == StringType::TYPENAME ) {
+	if ( target == StringType::TYPENAME ) {
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( target == VoidType::TYPENAME ) {
+	if ( target == VoidType::TYPENAME ) {
 		VoidType tmp;
 		return tmp.operator_greater_equal( rvalue );
 	}
-	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+	if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
 		return lvalue->getValue().toInt() >= rvalue->getValue().toInt();
 	}
 
@@ -474,7 +474,7 @@ bool operator_binary_greater_equal( AST::TreeInterpreter* runtime, Object* lvalu
 bool operator_binary_less( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -483,35 +483,35 @@ bool operator_binary_less( AST::TreeInterpreter* runtime, Object* lvalue, Object
 		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == DoubleType::TYPENAME ) {
+	if ( target == DoubleType::TYPENAME ) {
 		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == FloatType::TYPENAME ) {
+	if ( target == FloatType::TYPENAME ) {
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == Int16Type::TYPENAME ) {
+	if ( target == Int16Type::TYPENAME ) {
 		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == Int32Type::TYPENAME ) {
+	if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == Int64Type::TYPENAME ) {
+	if ( target == Int64Type::TYPENAME ) {
 		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == StringType::TYPENAME ) {
+	if ( target == StringType::TYPENAME ) {
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_less( rvalue );
 	}
-	else if ( target == VoidType::TYPENAME ) {
+	if ( target == VoidType::TYPENAME ) {
 		VoidType tmp;
 		return tmp.operator_less( rvalue );
 	}
-	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+	if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
 		return lvalue->getValue().toInt() < rvalue->getValue().toInt();
 	}
 
@@ -528,7 +528,7 @@ bool operator_binary_less( AST::TreeInterpreter* runtime, Object* lvalue, Object
 bool operator_binary_less_equal( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -537,35 +537,35 @@ bool operator_binary_less_equal( AST::TreeInterpreter* runtime, Object* lvalue, 
 		BoolType tmp( lvalue->isValid() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == DoubleType::TYPENAME ) {
+	if ( target == DoubleType::TYPENAME ) {
 		DoubleType tmp( lvalue->getValue().toDouble() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == FloatType::TYPENAME ) {
+	if ( target == FloatType::TYPENAME ) {
 		FloatType tmp( lvalue->getValue().toFloat() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == Int16Type::TYPENAME ) {
+	if ( target == Int16Type::TYPENAME ) {
 		Int16Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == Int32Type::TYPENAME ) {
+	if ( target == Int32Type::TYPENAME ) {
 		Int32Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == Int64Type::TYPENAME ) {
+	if ( target == Int64Type::TYPENAME ) {
 		Int64Type tmp( lvalue->getValue().toInt() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == StringType::TYPENAME ) {
+	if ( target == StringType::TYPENAME ) {
 		StringType tmp( lvalue->getValue().toStdString() );
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( target == VoidType::TYPENAME ) {
+	if ( target == VoidType::TYPENAME ) {
 		VoidType tmp;
 		return tmp.operator_less_equal( rvalue );
 	}
-	else if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
+	if ( lvalue->isEnumerationValue() && rvalue->isEnumerationValue() && lvalue->QualifiedTypename() == rvalue->QualifiedTypename() ) {
 		return lvalue->getValue().toInt() <= rvalue->getValue().toInt();
 	}
 
@@ -582,7 +582,7 @@ bool operator_binary_less_equal( AST::TreeInterpreter* runtime, Object* lvalue, 
 void operator_binary_modulo( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -637,14 +637,14 @@ void operator_binary_modulo( Object* lvalue, Object* rvalue )
 	}
 	else {
 		// invalid binary modulo operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator%()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator%()'" );
 	}
 }
 
 void operator_binary_multiply( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -699,14 +699,14 @@ void operator_binary_multiply( Object* lvalue, Object* rvalue )
 	}
 	else {
 		// invalid binary multiply operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator*()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator*()'" );
 	}
 }
 
 void operator_binary_plus( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -761,14 +761,14 @@ void operator_binary_plus( Object* lvalue, Object* rvalue )
 	}
 	else {
 		// invalid binary addition operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator+()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator+()'" );
 	}
 }
 
 void operator_binary_shift_left( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -811,14 +811,14 @@ void operator_binary_shift_left( Object* lvalue, Object* rvalue )
 	}
 	else {
 		// invalid left shift operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator<<()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator<<()'" );
 	}
 }
 
 void operator_binary_shift_right( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -861,14 +861,14 @@ void operator_binary_shift_right( Object* lvalue, Object* rvalue )
 	}
 	else {
 		// invalid right shift operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator>>()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator>>()'" );
 	}
 }
 
 void operator_binary_subtract( Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "cannot add null pointer to object" );
+		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -923,14 +923,14 @@ void operator_binary_subtract( Object* lvalue, Object* rvalue )
 	}
 	else {
 		// invalid binary subtract operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator-()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator-()'" );
 	}
 }
 
 void operator_unary_decrement (Object* lvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
+		throw Exceptions::AccessViolation( "null pointer access" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -985,14 +985,14 @@ void operator_unary_decrement (Object* lvalue )
 	}
 	else {
 		// invalid decrement operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator--()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator--()'" );
 	}
 }
 
 void operator_unary_increment( Object* lvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
+		throw Exceptions::AccessViolation( "null pointer access" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -1047,14 +1047,14 @@ void operator_unary_increment( Object* lvalue )
 	}
 	else {
 		// invalid increment operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator++()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".operator++()'" );
 	}
 }
 
 void operator_unary_minus( Object* lvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
+		throw Exceptions::AccessViolation( "null pointer access" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -1109,14 +1109,14 @@ void operator_unary_minus( Object* lvalue )
 	}
 	else {
 		// invalid unary minus operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".-operator()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".-operator()'" );
 	}
 }
 
 void operator_unary_plus( Object* lvalue )
 {
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
+		throw Exceptions::AccessViolation( "null pointer access" );
 	}
 
 	std::string target = lvalue->QualifiedTypename();
@@ -1171,14 +1171,14 @@ void operator_unary_plus( Object* lvalue )
 	}
 	else {
 		// invalid unary plus operator handling!
-		throw Runtime::Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".+operator()'" );
+		throw Exceptions::InvalidOperation( "'" + lvalue->getFullScopeName() + ".+operator()'" );
 	}
 }
 
 void operator_unary_not( Object* base )
 {
 	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
+		throw Exceptions::AccessViolation( "null pointer access" );
 	}
 
 	std::string source = base->QualifiedTypename();
@@ -1231,7 +1231,7 @@ void operator_unary_not( Object* base )
 void operator_unary_validate( Object* base )
 {
 	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation( "null pointer access" );
+		throw Exceptions::AccessViolation( "null pointer access" );
 	}
 
 	if ( !base->isValid() ) {

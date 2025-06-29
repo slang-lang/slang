@@ -102,15 +102,15 @@ int main( int argc, const char* argv[] )
 
 				return 0;
 			}
-            else if ( Utils::Tools::StringCompare( argv[i], "-l" ) || Utils::Tools::StringCompare( argv[i], "--library" ) ) {
-                if ( argc <= ++i ) {
-                    std::cout << "invalid number of parameters provided!" << std::endl;
+			else if ( Utils::Tools::StringCompare( argv[i], "-l" ) || Utils::Tools::StringCompare( argv[i], "--library" ) ) {
+				if ( argc <= ++i ) {
+					std::cout << "invalid number of parameters provided!" << std::endl;
 
-                    exit( -1 );
-                }
+					exit( -1 );
+				}
 
-                mLibraryFolders.insert( argv[i] );
-            }
+				mLibraryFolders.insert( argv[i] );
+			}
 			else if ( Utils::Tools::StringCompare( argv[i], "-q" ) || Utils::Tools::StringCompare( argv[i], "--quiet" ) ) {
 				mLogger->setLoudness( Utils::Common::ILogger::LoudnessMute );
 
@@ -218,8 +218,8 @@ int main( int argc, const char* argv[] )
 
 		return 0;
 	}
-	catch ( Slang::Runtime::ControlFlow::E &e ) {
-		if ( e != Slang::Runtime::ControlFlow::ExitProgram ) {
+	catch ( Runtime::ControlFlow::E &e ) {
+		if ( e != Runtime::ControlFlow::ExitProgram ) {
 			OSerror( "abnormal program termination!" );
 		}
 	}

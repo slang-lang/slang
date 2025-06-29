@@ -19,8 +19,8 @@ namespace Runtime {
 class Object;
 
 
-bool isTrue(const Runtime::Object& object);
-bool isTrue(const Runtime::Object* object);
+bool isTrue(const Object& object);
+bool isTrue(const Object* object);
 
 
 }

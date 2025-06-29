@@ -2,7 +2,6 @@
 #include "Files.h"
 
 // Library includes
-#include <cassert>
 #include <climits>
 #include <fstream>
 #ifdef _MSC_VER
@@ -10,6 +9,7 @@
 #	include <tchar.h>
 #	include <stdio.h>
 #endif
+#include <vector>
 
 // Project includes
 

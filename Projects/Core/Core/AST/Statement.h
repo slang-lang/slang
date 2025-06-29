@@ -9,7 +9,6 @@
 
 // Project includes
 #include <Core/Common/PrototypeConstraint.h>
-#include <Core/Symbol.h>
 #include "Expression.h"
 #include "Node.h"
 

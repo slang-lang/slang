@@ -14,7 +14,7 @@ namespace Slang {
 namespace Runtime {
 
 
-bool isTrue(const Runtime::Object& object)
+bool isTrue(const Object& object)
 {
 	if ( object.isAtomicType() ) {
 		return object.getValue().toBool();
@@ -23,7 +23,7 @@ bool isTrue(const Runtime::Object& object)
 	return object.isValid();
 }
 
-bool isTrue(const Runtime::Object* object)
+bool isTrue(const Object* object)
 {
 	if ( object->isAtomicType() ) {
 		return object->getValue().toBool();

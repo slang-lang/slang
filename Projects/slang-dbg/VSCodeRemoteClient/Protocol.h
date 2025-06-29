@@ -9,7 +9,6 @@
 #include <json/value.h>
 
 // Project includes
-#include <Common/AClient.h>
 #include <Core/Common/Types.h>
 
 // Forward declarations
@@ -24,7 +23,7 @@ namespace VSCodeDebug {
 class ProtocolMessage
 {
 public:
-	ProtocolMessage(std::string type_)
+	explicit ProtocolMessage(std::string type_)
 	: seq(-1),
 	  type(std::move(type_))
 	{ }

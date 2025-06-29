@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <cassert>
 #include <cstdint>
 #include <list>
 #include <utility>

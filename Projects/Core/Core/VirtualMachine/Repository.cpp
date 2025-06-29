@@ -324,7 +324,7 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 
 		// create and define all symbols based on given blueprint
 		const Symbols& symbols = blueprint->provideSymbols();
-		for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
+		for ( auto it = symbols.cbegin(); it != symbols.cend(); ++it ) {
 			if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 				continue;
 			}

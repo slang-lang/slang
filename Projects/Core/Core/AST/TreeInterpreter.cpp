@@ -181,15 +181,15 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 		*result = Runtime::BoolType(false);
 		return;
 	}
-	else if ( exp->mOperation.type() == Token::Type::NAND && !leftResult ) {
+	if ( exp->mOperation.type() == Token::Type::NAND && !leftResult ) {
 		*result = Runtime::BoolType(true);
 		return;
 	}
-	else if ( exp->mOperation.type() == Token::Type::NOR && leftResult ) {
+	if ( exp->mOperation.type() == Token::Type::NOR && leftResult ) {
 		*result = Runtime::BoolType(false);
 		return;
 	}
-	else if ( exp->mOperation.type() == Token::Type::OR && leftResult ) {
+	if ( exp->mOperation.type() == Token::Type::OR && leftResult ) {
 		*result = Runtime::BoolType(true);
 		return;
 	}
@@ -294,7 +294,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 	if ( method->isExtensionMethod() ) {
 		try {
-			dynamic_cast<Slang::Extensions::ExtensionMethod*>( method )->execute( params, result );
+			dynamic_cast<Extensions::ExtensionMethod*>( method )->execute( params, result );
 
 			mControlFlow = Runtime::ControlFlow::Normal;
 		}
@@ -918,7 +918,7 @@ void TreeInterpreter::visitAssert(AssertStatement* assertStmt)
            	Runtime::Object message;
            	tryControl(evaluate(assertStmt->mMessage, &message));
 
-           	::Utils::Printer::Instance()->print(message.getValue().toStdString(), assertStmt->mPosition.mFile, assertStmt->mPosition.mLine);
+           	Utils::Printer::Instance()->print(message.getValue().toStdString(), assertStmt->mPosition.mFile, assertStmt->mPosition.mLine);
     	}
 
 		throw Runtime::Exceptions::AssertionFailed(printExpression(assertStmt->mExpression), assertStmt->mPosition);
@@ -1114,7 +1114,7 @@ void TreeInterpreter::visitPrint(PrintStatement* node)
 	Runtime::Object text;
 	tryControl(evaluate(node->mExpression, &text));
 
-	::Utils::Printer::Instance()->print(text.getValue().toStdString(), node->mPosition.mFile, node->mPosition.mLine);
+	Utils::Printer::Instance()->print(text.getValue().toStdString(), node->mPosition.mFile, node->mPosition.mLine);
 }
 
 void TreeInterpreter::visitReturn(ReturnStatement* node)

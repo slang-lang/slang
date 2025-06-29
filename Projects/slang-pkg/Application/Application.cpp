@@ -88,10 +88,6 @@ namespace {
 namespace Slang {
 
 
-Application::Application()
-{
-}
-
 Application::~Application()
 {
     deinit();
@@ -173,13 +169,13 @@ void Application::init( int argc, const char* argv[] )
         mSettings.CurrentFolder = std::string( currentPath );
 
         // require a trailing slash
-        if ( mSettings.CurrentFolder[ sizeof( mSettings.CurrentFolder ) - 1 ] != '/' ) {
+        if ( mSettings.CurrentFolder[ mSettings.CurrentFolder.size() - 1 ] != '/' ) {
             mSettings.CurrentFolder += '/';
         }
     }
 
     // require a trailing slash
-    if ( mSettings.LibraryFolder[ sizeof( mSettings.LibraryFolder ) - 1 ] != '/' ) {
+    if ( mSettings.LibraryFolder[ mSettings.LibraryFolder.size() - 1 ] != '/' ) {
         mSettings.LibraryFolder += '/';
     }
     // override library folder if our current folder is a library
@@ -387,7 +383,7 @@ void Application::processParameters( int argc, const char* argv[] )
 
 namespace {
 
-static size_t write_data( void *ptr, size_t size, size_t nmemb, void *stream )
+size_t write_data( void *ptr, size_t size, size_t nmemb, void *stream )
 {
     size_t written = fwrite( ptr, size, nmemb, (FILE*)stream );
     return written;
@@ -474,7 +470,7 @@ void collectLocalModuleData()
                 auto filename = "module.json";
                 auto path     = mSettings.LibraryFolder + entry + "/";
 
-                if ( ::Utils::Tools::Files::exists( path + filename ) ) {
+                if ( Utils::Tools::Files::exists( path + filename ) ) {
                     mLocalRepository.addModule(
                         collectModuleData( path, filename )
                     );
@@ -1008,7 +1004,7 @@ void loadRestrictions()
     // load restrictions from config
     auto restrictions = mSettings.Config[ "restrictions" ];
     for ( const auto& restrictionName : restrictions.getMemberNames() ) {
-        auto restriction = restrictions[ restrictionName ];
+        const auto& restriction = restrictions[ restrictionName ];
 
         std::string versionMin;
         if ( restriction.isMember( "version_min" ) ) {
@@ -1091,7 +1087,7 @@ bool prepareRemoteRepository()
     auto filename = mSettings.LibraryFolder + CONFIG_CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
     // check if filename exists
-    if ( !::Utils::Tools::Files::exists( filename ) ) {
+    if ( !Utils::Tools::Files::exists( filename ) ) {
         // no configuration file exists
         std::cerr << "!!! File \"" + filename + "\" not found" << std::endl;
         return false;
@@ -1298,7 +1294,7 @@ void search( const StringList& params )
     auto filename = mSettings.LibraryFolder + CONFIG_CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
     // check if filename exists
-    if ( !::Utils::Tools::Files::exists( filename ) ) {
+    if ( !Utils::Tools::Files::exists( filename ) ) {
         // no configuration file exists
         std::cerr << "!!! File \"" + filename + "\" not found" << std::endl;
         return;

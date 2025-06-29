@@ -39,12 +39,13 @@ Condition::Condition(std::string lhs, const std::string& type, std::string rhs)
 Condition::Type::E Condition::ConditionFromString(const std::string& type)
 {
 	if ( type == "==" ) return Type::Equals;
-	else if ( type == ">" ) return Type::Greater;
-	else if ( type == ">=" ) return Type::GreaterEqual;
-	else if ( type == "<" ) return Type::Less;
-	else if ( type == "<=" ) return Type::LessEqual;
-	else if ( type == "!=" ) return Type::Unequal;
-	else return Type::Invalid;
+	if ( type == ">" ) return Type::Greater;
+	if ( type == ">=" ) return Type::GreaterEqual;
+	if ( type == "<" ) return Type::Less;
+	if ( type == "<=" ) return Type::LessEqual;
+	if ( type == "!=" ) return Type::Unequal;
+
+	return Type::Invalid;
 }
 
 bool Condition::evaluate(AST::TreeInterpreter* runtime, Symbol* lhs, Symbol* rhs) const

@@ -3,7 +3,6 @@
 #include "Extension.h"
 
 // Library includes
-#include <cerrno>
 
 // Project includes
 #include <Core/Runtime/BuildInTypes/Int32Type.h>

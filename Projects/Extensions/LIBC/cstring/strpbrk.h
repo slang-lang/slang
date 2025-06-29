@@ -4,15 +4,12 @@
 
 
 // Library includes
-#include <cassert>
 #include <cstring>
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/Exceptions.h>
-#include <Core/Runtime/Utils.h>
 
 // Forward declarations
 

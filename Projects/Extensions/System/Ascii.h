@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <cstdlib>
 #include <sstream>
 
 // Project includes
@@ -13,7 +12,6 @@
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/Utils.h>
 
 // Forward declarations
 
@@ -45,7 +43,7 @@ public:
 		ParameterList::const_iterator it = list.begin();
 
 		std::ostringstream character;
-		character << (char)(*it++).value().toInt();
+		character << static_cast<char>( (*it++).value().toInt() );
 
 		*result = Runtime::StringType(character.str());
 

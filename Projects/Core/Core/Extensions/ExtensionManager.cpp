@@ -34,7 +34,7 @@ AExtension* ExtensionManager::instantiate( dynamic_lib_handle handle )
 	}
 
 	typedef AExtension* (*fptr)();
-	fptr func = reinterpret_cast<fptr>( reinterpret_cast<dynamic_lib_handle>( maker ) );
+	auto func = reinterpret_cast<fptr>( reinterpret_cast<dynamic_lib_handle>( maker ) );
 
 	return func();
 }

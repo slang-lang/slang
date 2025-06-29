@@ -7,14 +7,11 @@
 #include <cstdlib>
 
 // Project includes
-#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Runtime/Utils.h>
 
 // Forward declarations
 
@@ -29,7 +26,7 @@ namespace stdio {
 
 class FGETC : public ExtensionMethod
 {
-	static const int32_t READ_SIZE = 1024;
+	static constexpr int32_t READ_SIZE = 1024;
 
 public:
 	FGETC()

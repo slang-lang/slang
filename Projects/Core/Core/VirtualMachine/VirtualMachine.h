@@ -4,8 +4,6 @@
 
 
 // Library include
-#include "Threads.h"
-#include <map>
 #include <iostream>
 #include <string>
 
@@ -19,6 +17,7 @@
 #	include <Core/Extensions/ExtensionManager.h>
 #endif
 #include <Core/Common/Parameter.h>
+#include "Threads.h"
 
 // Forward declarations
 

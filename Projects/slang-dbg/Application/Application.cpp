@@ -66,7 +66,7 @@ int Application::exec()
 	}
 
 	// initial checks
-	if ( !::Utils::Tools::Files::exists( mSettings.filename() ) ) {
+	if ( !Utils::Tools::Files::exists( mSettings.filename() ) ) {
 		OSerror( "File '" + mSettings.filename() + "' does not exist!" );
 		return -1;
 	}
@@ -76,8 +76,8 @@ int Application::exec()
 	try {
 		result = mClient->exec();
 	}
-	catch ( Slang::Runtime::ControlFlow::E &e ) {
-		if ( e != Slang::Runtime::ControlFlow::ExitProgram ) {
+	catch ( Runtime::ControlFlow::E &e ) {
+		if ( e != Runtime::ControlFlow::ExitProgram ) {
 			OSerror( "abnormal program termination!" );
 		}
 	}
@@ -115,7 +115,7 @@ void Application::printVersion()
 void Application::processParameters( int argc, const char* argv[] )
 {
 	for ( int i = 1; i < argc; i++ ) {
-		if ( ::Utils::Tools::StringCompare( argv[i], "-f" ) || ::Utils::Tools::StringCompare( argv[i], "--file" ) ) {
+		if ( Utils::Tools::StringCompare( argv[i], "-f" ) || Utils::Tools::StringCompare( argv[i], "--file" ) ) {
 			if ( argc <= ++i ) {
 				OSerror( "invalid number of parameters provided!" );
 
@@ -124,12 +124,12 @@ void Application::processParameters( int argc, const char* argv[] )
 
 			mSettings.filename( argv[i] );
 		}
-		else if ( ::Utils::Tools::StringCompare( argv[i], "-h" ) || ::Utils::Tools::StringCompare( argv[i], "--help" ) ) {
+		else if ( Utils::Tools::StringCompare( argv[i], "-h" ) || Utils::Tools::StringCompare( argv[i], "--help" ) ) {
 			printUsage();
 
 			exit( 0 );
 		}
-		else if ( ::Utils::Tools::StringCompare( argv[i], "-l" ) || ::Utils::Tools::StringCompare( argv[i], "--library" ) ) {
+		else if ( Utils::Tools::StringCompare( argv[i], "-l" ) || Utils::Tools::StringCompare( argv[i], "--library" ) ) {
 			if ( argc <= ++i ) {
 				OSerror( "invalid number of parameters provided!" );
 
@@ -138,18 +138,18 @@ void Application::processParameters( int argc, const char* argv[] )
 
 			mSettings.addLibraryFolder( argv[i] );
 		}
-		else if ( ::Utils::Tools::StringCompare( argv[i], "--remote" ) ) {
+		else if ( Utils::Tools::StringCompare( argv[i], "--remote" ) ) {
 			mSettings.remoteClient( true );
 		}
-		else if ( ::Utils::Tools::StringCompare( argv[i], "--version" ) ) {
+		else if ( Utils::Tools::StringCompare( argv[i], "--version" ) ) {
 			printVersion();
 
 			exit( 0 );
 		}
-		else if ( ::Utils::Tools::StringCompare( argv[i], "-r" ) || ::Utils::Tools::StringCompare( argv[i], "--run" ) ) {
+		else if ( Utils::Tools::StringCompare( argv[i], "-r" ) || Utils::Tools::StringCompare( argv[i], "--run" ) ) {
 			mSettings.autoStart( true );
 		}
-		else if ( ::Utils::Tools::StringCompare( argv[i], "--runandquit" ) ) {
+		else if ( Utils::Tools::StringCompare( argv[i], "--runandquit" ) ) {
 			mSettings.autoStart( true );
 			mSettings.autoStop( true );
 		}

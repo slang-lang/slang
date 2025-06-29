@@ -24,7 +24,7 @@ public:
 	static std::string TYPENAME;
 
 public:
-    explicit FloatType( float value = 0.0f );
+	explicit FloatType( float value = 0.0f );
 	explicit FloatType( const AtomicValue& value );
 	explicit FloatType( const std::string& name, const AtomicValue& value );
 	explicit FloatType( const Object& object );

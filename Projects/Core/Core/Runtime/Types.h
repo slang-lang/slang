@@ -18,7 +18,7 @@ namespace Runtime {
 
 typedef unsigned int MemoryId;
 
-static const MemoryId null(0);
+static constexpr MemoryId null(0);
 
 
 }

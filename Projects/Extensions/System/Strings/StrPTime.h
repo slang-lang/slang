@@ -5,16 +5,11 @@
 
 // Library includes
 #include <ctime>
-#include <iomanip>
-#include <iostream>
 
 // Project includes
-#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/Int32Type.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
-#include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/Utils.h>
 
 // Forward declarations
 
@@ -50,7 +45,7 @@ public:
 		std::string param_format = (*it++).value().toStdString();
 		std::string param_time = (*it++).value().toStdString();
 
-		struct tm tm{};
+		tm tm{};
 
 		if ( strptime(param_time.c_str(), param_format.c_str(), &tm ) ) {
 			auto time = mktime( &tm );

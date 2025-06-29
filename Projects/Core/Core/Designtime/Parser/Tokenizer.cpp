@@ -9,7 +9,6 @@
 
 // Project includes
 #include <Core/Common/Utils.h>
-#include <Core/Runtime/Utils.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Consts.h>
 
@@ -246,7 +245,7 @@ bool Tokenizer::isLanguageFeature(const std::string& token) const
 
 bool Tokenizer::isLiteral(const std::string& token)
 {
-	static const char DOUBLE_QUOTE = '"';
+	static constexpr char DOUBLE_QUOTE = '"';
 
 	// Check if string is enclosed in double quotes (represents a string literal)
 	if ( token.size() > 1 ) {
@@ -648,7 +647,6 @@ void Tokenizer::mergeAssignments()
 void Tokenizer::replaceConstDataTypes()
 {
 	auto token = mTokens.begin();
-	TokenList::iterator tmp;
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {
@@ -656,7 +654,7 @@ void Tokenizer::replaceConstDataTypes()
 		if ( token->type() == Token::Type::CONST_INTEGER ) {
 			int numCombines = 0;
 
-			tmp = lookahead(token, numCombines + 1);
+			auto tmp = lookahead(token, numCombines + 1);
 
 			if ( tmp->type() == Token::Type::OPERATOR_SCOPE ) {
 				// CONST_INTEGER '.'

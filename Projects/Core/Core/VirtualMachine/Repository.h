@@ -5,7 +5,6 @@
 
 // Library includes
 #include <map>
-#include <set>
 #include <string>
 
 // Project includes

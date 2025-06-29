@@ -4,16 +4,12 @@
 
 
 // Library includes
-#include <cstdlib>
 
 // Project includes
-#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/BoolType.h>
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
-#include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/Utils.h>
 
 // Forward declarations
 
@@ -30,7 +26,7 @@ class IsKnownType : public ExtensionMethod
 {
 public:
 	IsKnownType()
-	: ExtensionMethod(0, "isKnownType", Designtime::BoolType::TYPENAME)
+	: ExtensionMethod(nullptr, "isKnownType", Designtime::BoolType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("type", Designtime::StringType::TYPENAME));
@@ -45,7 +41,7 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		std::string param_type = (*it++).value().toStdString();
+		auto param_type = (*it++).value().toStdString();
 
 		*result = Runtime::BoolType( Controller::Instance().repository()->findBluePrintObject(param_type) != nullptr );
 

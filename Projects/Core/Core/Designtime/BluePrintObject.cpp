@@ -78,7 +78,7 @@ BluePrintObject::BluePrintObject(const std::string& unqualifiedTypename, std::st
 	mType = Symbol::IType::BluePrintObjectSymbol;
 }
 
-void BluePrintObject::addInheritance(const Designtime::Ancestor& inheritance)
+void BluePrintObject::addInheritance(const Ancestor& inheritance)
 {
 	if ( inheritance.name().empty() ) {
 		throw Common::Exceptions::Exception("invalid inheritance added");
@@ -93,10 +93,10 @@ void BluePrintObject::defineMethod(const std::string& name, Common::Method* meth
 	auto* oldMethod = dynamic_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
 	if ( oldMethod ) {
 		if ( oldMethod->getMemoryLayout() != MemoryLayout::Abstract && oldMethod->getMemoryLayout() != MemoryLayout::Virtual ) {
-			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is not abstract or marked with " + std::string(Slang::MEMORY_LAYOUT_VIRTUAL ) );
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is not abstract or marked with " + std::string(MEMORY_LAYOUT_VIRTUAL ) );
 		}
 		if ( method->getMethodType() == MethodType::Method && method->getMemoryLayout() != MemoryLayout::Abstract && method->getMemoryLayout() != MemoryLayout::Override ) {
-			throw Exceptions::SyntaxError( "Overriding method '" + method->getFullScopeName() + "' is not marked with " + std::string( Slang::MEMORY_LAYOUT_OVERRIDE ) );
+			throw Exceptions::SyntaxError( "Overriding method '" + method->getFullScopeName() + "' is not marked with " + std::string( MEMORY_LAYOUT_OVERRIDE ) );
 		}
 
 		// compare methods
@@ -107,10 +107,10 @@ void BluePrintObject::defineMethod(const std::string& name, Common::Method* meth
 			throw Exceptions::SyntaxError("Overriding method '" + method->getFullScopeName() + "' has different mutability then base method" );
 		}
 		if ( oldMethod->isFinalMethod() ) {
-			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(Slang::MEMORY_LAYOUT_FINAL ) + " and cannot be overwritten" );
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(MEMORY_LAYOUT_FINAL ) + " and cannot be overwritten" );
 		}
 		if ( oldMethod->isStatic() ) {
-			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(Slang::MEMORY_LAYOUT_STATIC ) + " and cannot be overwritten" );
+			throw Exceptions::SyntaxError("Method '" + oldMethod->getFullScopeName() + "' is marked with " + std::string(MEMORY_LAYOUT_STATIC ) + " and cannot be overwritten" );
 		}
 		if ( oldMethod->QualifiedTypename() != method->QualifiedTypename() ) {
 			throw Exceptions::SyntaxError("Overriding method '" + method->getFullScopeName() + "' has different return value then base method" );
@@ -135,7 +135,7 @@ const std::string& BluePrintObject::Filename() const
 BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& constraints) const
 {
 	// generate a new blueprint from our prototype
-	BluePrintObject* prototype = replicate(Designtime::Parser::buildRuntimeConstraintTypename(QualifiedTypename(), constraints), mFilename);
+	BluePrintObject* prototype = replicate(Parser::buildRuntimeConstraintTypename(QualifiedTypename(), constraints), mFilename);
 
 	// set base type
 	prototype->mBasedOnType = QualifiedTypename();
@@ -151,7 +151,7 @@ BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& cons
 			continue;
 		}
 
-		auto* blue = dynamic_cast<Designtime::BluePrintObject*>(symIt->second);
+		auto* blue = dynamic_cast<BluePrintObject*>(symIt->second);
 
 		if ( blue->isPrototype() ) {
 			blue->setPrototypeConstraints(
@@ -274,14 +274,12 @@ bool BluePrintObject::isInterface() const
 
 bool BluePrintObject::isIterable() const
 {
-	ParameterList params;
-
-	if ( isOfType("ICollection") ) {
-	    return true;
+	if ( isOfType( "ICollection" ) ) {
+		return true;
 	}
 
 	for ( auto& mMethod : mMethods ) {
-		if ( mMethod->getName() == "getIterator" && mMethod->isSignatureValid(params) ) {
+		if ( mMethod->getName() == "getIterator" && mMethod->isSignatureValid( ParameterList() ) ) {
 			return true;
 		}
 	}
@@ -416,9 +414,9 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 	replica->setVisibility(getVisibility());
 
 	// replicate inheritance
-	Designtime::Ancestors ancestors = getInheritance();
+	Ancestors ancestors = getInheritance();
 	for ( const auto& ancestor : ancestors ) {
-		replica->addInheritance(Designtime::Ancestor(
+		replica->addInheritance(Ancestor(
 			Common::TypeDeclaration(ancestor.name(), ancestor.constraints()),
 			ancestor.ancestorType(),
 			ancestor.visibility()
@@ -431,9 +429,9 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 			continue;
 		}
 
-		auto* blue = dynamic_cast<Designtime::BluePrintObject*>(mSymbol.second);
+		auto* blue = dynamic_cast<BluePrintObject*>(mSymbol.second);
 
-		auto* member = new Designtime::BluePrintObject(blue->QualifiedTypename(), blue->Filename(), blue->getName());
+		auto* member = new BluePrintObject(blue->QualifiedTypename(), blue->Filename(), blue->getName());
 		member->setBluePrintType(BlueprintType::Enum);
 		member->setLanguageFeatureState(blue->getLanguageFeatureState());
 		member->setMember(blue->isMember());
@@ -493,7 +491,7 @@ void BluePrintObject::setValue(const Runtime::AtomicValue& value)
 
 std::string BluePrintObject::ToString(unsigned int indent) const
 {
-	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName();
+	return Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName();
 }
 
 

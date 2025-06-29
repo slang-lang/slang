@@ -16,7 +16,7 @@ namespace System {
 
 #ifdef _WIN32
 #else
-struct termios mTerminalSettings;
+termios mTerminalSettings;
 
 void restoreKeyboardBlockingMode()
 {
@@ -30,7 +30,7 @@ void storeKeyboardBlockingMode()
 
 void SetKeyboardBlocking()
 {
-	struct termios new_settings;
+	termios new_settings;
 	tcgetattr(0, &new_settings);
 
 	new_settings.c_lflag &= ~ICANON;
@@ -44,7 +44,7 @@ void SetKeyboardBlocking()
 
 void SetKeyboardNonBlocking()
 {
-	struct termios new_settings;
+	termios new_settings;
 	tcgetattr(0, &new_settings);
 
 	new_settings.c_lflag &= ~ICANON;

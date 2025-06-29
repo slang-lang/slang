@@ -66,7 +66,7 @@ PrototypeConstraints PrototypeConstraints::buildRawConstraints(const PrototypeCo
 	PrototypeConstraints result = other;
 
 	auto otherIt = other.begin();
-	auto thisIt = this->begin();
+	auto thisIt  = this->begin();
 
 	for ( ; thisIt != this->end(); ++thisIt ) {
 		if ( otherIt == other.end() ) {

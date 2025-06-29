@@ -45,7 +45,7 @@ Namespace::~Namespace()
 			switch ( tmpSymbol.second->getSymbolType() ) {
 				case Symbol::IType::NamespaceSymbol:
 					delete tmpSymbol.second;
-					tmpSymbol.second = 0;
+					tmpSymbol.second = nullptr;
 
 					mSymbols.erase(tmpSymbol.first);
 					break;
@@ -56,7 +56,7 @@ Namespace::~Namespace()
 	}
 }
 
-void Namespace::defineMethod(const std::string& name, Common::Method* method)
+void Namespace::defineMethod(const std::string& name, Method* method)
 {
 	MethodScope::defineMethod(name, method);
 
@@ -68,7 +68,7 @@ std::string Namespace::ToString(unsigned int indent) const
 {
 	std::string result;
 
-	result += ::Utils::Tools::indent(indent);
+	result += Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
 	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + std::string(RESERVED_WORD_NAMESPACE) + " " + getName();
@@ -87,7 +87,7 @@ std::string Namespace::ToString(unsigned int indent) const
 		}
 	}
 
-	result += ::Utils::Tools::indent(indent) + "}";
+	result += Utils::Tools::indent(indent) + "}";
 
 	return result;
 }

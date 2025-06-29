@@ -44,7 +44,7 @@ std::string stringTrimRight(const std::string& source, const std::string& t = " 
 std::string toLowerCase(std::string data);
 
 template <class T>
-inline std::string toString( const T& t ) {
+std::string toString( const T& t ) {
     std::stringstream ss;
     ss << t;
     return ss.str();

@@ -42,9 +42,9 @@ namespace stdio {
 
 stdio_t::FileHandles_t stdio_t::FileHandles;
 
-const int32_t STDIN  = 1;
-const int32_t STDOUT = 2;
-const int32_t STDERR = 3;
+constexpr int32_t STDIN  = 1;
+constexpr int32_t STDOUT = 2;
+constexpr int32_t STDERR = 3;
 
 stdio_t::stdio_t()
 : AExtension( "stdio", "0.2.0" )

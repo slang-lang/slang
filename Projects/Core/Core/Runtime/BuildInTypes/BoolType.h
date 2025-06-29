@@ -24,7 +24,7 @@ public:
 	static std::string TYPENAME;
 
 public:
-    explicit BoolType( bool value = false );
+	explicit BoolType( bool value = false );
 	explicit BoolType( const AtomicValue& value );
 	explicit BoolType( const std::string& name, const AtomicValue& value );
 	explicit BoolType( const Object& other );

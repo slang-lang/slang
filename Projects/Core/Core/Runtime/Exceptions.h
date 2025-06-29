@@ -18,16 +18,16 @@ namespace Runtime {
 namespace Exceptions {
 
 
-class RuntimeException : public ::Slang::Common::Exceptions::Exception
+class RuntimeException : public Common::Exceptions::Exception
 {
 public:
 #ifdef _WIN32
-	explicit RuntimeException(const std::string& text, const Slang::Common::Position& position = Slang::Common::Position())
-	: ::Slang::Common::Exceptions::Exception(text, position)
+	explicit RuntimeException(const std::string& text, const Common::Position& position = Common::Position())
+	: Common::Exceptions::Exception(text, position)
 	{ }
 #else
-	explicit RuntimeException(const std::string& text, const Slang::Common::Position& position = Slang::Common::Position()) noexcept
-	: ::Slang::Common::Exceptions::Exception(text, position)
+	explicit RuntimeException(const std::string& text, const Common::Position& position = Common::Position()) noexcept
+	: Common::Exceptions::Exception(text, position)
 	{ }
 #endif
 };

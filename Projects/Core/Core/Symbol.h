@@ -4,11 +4,9 @@
 
 
 // Defines
-#include <Core/Defines.h>
 
 // Library includes
 #include <map>
-#include <set>
 #include <string>
 
 // Project includes

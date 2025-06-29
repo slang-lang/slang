@@ -24,7 +24,7 @@ public:
 	static std::string TYPENAME;
 
 public:
-    explicit DoubleType( double value = 0.0 );
+	explicit DoubleType( double value = 0.0 );
 	explicit DoubleType( const AtomicValue& value );
 	explicit DoubleType( const std::string& name, const AtomicValue& value );
 	explicit DoubleType( const Object& object );

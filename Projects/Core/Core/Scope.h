@@ -36,7 +36,7 @@ public:
 
 public:
 	explicit SymbolScope(IScope* parent = nullptr);
-	virtual ~SymbolScope();
+	virtual ~SymbolScope() override;
 
 public:	// IScope implementation
 	virtual void define(const std::string& name, Symbol* symbol);
@@ -75,7 +75,7 @@ public:
 
 public:
 	explicit MethodScope(std::string name, IScope* parent = nullptr);
-	virtual ~MethodScope();
+	virtual ~MethodScope() override;
 
 public:	// IScope implementation
 	virtual void define(const std::string& name, Symbol* symbol);

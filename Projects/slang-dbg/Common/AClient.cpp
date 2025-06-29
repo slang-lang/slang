@@ -3,6 +3,7 @@
 #include "AClient.h"
 
 // Library includes
+#include <cassert>
 
 // Project includes
 

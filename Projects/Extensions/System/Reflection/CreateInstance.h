@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <cstdlib>
 
 // Project includes
 #include <Core/Common/Exceptions.h>
@@ -12,8 +11,7 @@
 #include <Core/Designtime/BuildInTypes/UserType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/BuildInTypes/UserType.h>
-#include <Core/Runtime/Utils.h>
+#include <Core/VirtualMachine/Controller.h>
 
 // Forward declarations
 
@@ -45,9 +43,9 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		std::string param_type = (*it++).value().toStdString();
+		auto param_type = (*it++).value().toStdString();
 
-		Runtime::Object* newInstance = Controller::Instance().repository()->createReference(param_type, ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
+		auto* newInstance = Controller::Instance().repository()->createReference(param_type, ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
 
 		*result = *newInstance;
 

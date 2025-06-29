@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <array>
 #include <stdexcept>
 #ifdef _WIN32
 #	include <stdio.h>
@@ -19,8 +18,6 @@
 #include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/Exceptions.h>
-#include <Core/Runtime/Utils.h>
 
 // Forward declarations
 
@@ -57,7 +54,7 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		std::string param_text = (*it++).value().toStdString();
+		auto param_text = (*it++).value().toStdString();
 
 #if __cplusplus > 201402L
 		std::array<char, 128> buffer;
