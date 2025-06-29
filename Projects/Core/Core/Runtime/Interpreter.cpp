@@ -1398,7 +1398,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 	}
 
 
-    Object condition;
+	Object condition;
 	try {
 		expression(&condition, condBegin, false);
 	}

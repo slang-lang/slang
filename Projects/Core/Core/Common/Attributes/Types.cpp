@@ -15,8 +15,8 @@ namespace Slang {
 
 AccessMode::E AccessMode::convert(const std::string& v)
 {
-	if ( v == RESERVED_WORD_BY_REFERENCE ) { return AccessMode::ByReference; }
-	else if ( v == DEFAULT ) { return AccessMode::Unspecified; }
+	if ( v == DEFAULT )                    return AccessMode::Unspecified;
+	if ( v == RESERVED_WORD_BY_REFERENCE ) return AccessMode::ByReference;
 
 	return AccessMode::Unspecified;
 }
@@ -35,8 +35,8 @@ std::string AccessMode::convert(AccessMode::E e)
 
 Algorithm::E Algorithm::convert(const std::string& v)
 {
-	if ( v == MODIFIER_HEURISTIC ) { return Algorithm::Heuristic; }
-	else if ( v == MODIFIER_RECURSIVE ) { return Algorithm::Recursive; }
+	if ( v == MODIFIER_HEURISTIC ) return Algorithm::Heuristic;
+	if ( v == MODIFIER_RECURSIVE ) return Algorithm::Recursive;
 
 	return Algorithm::Unspecified;
 }
@@ -55,9 +55,9 @@ std::string Algorithm::convert(Algorithm::E e)
 
 BlueprintType::E BlueprintType::convert(const std::string& v)
 {
-	if ( v == RESERVED_WORD_ENUM ) { return BlueprintType::Enum; }
-	else if ( v == RESERVED_WORD_INTERFACE ) { return BlueprintType::Interface; }
-	else if ( v == RESERVED_WORD_OBJECT ) { return BlueprintType::Object; }
+	if ( v == RESERVED_WORD_ENUM )      return BlueprintType::Enum;
+	if ( v == RESERVED_WORD_INTERFACE ) return BlueprintType::Interface;
+	if ( v == RESERVED_WORD_OBJECT )    return BlueprintType::Object;
 
 	return BlueprintType::Unknown;
 }
@@ -77,8 +77,8 @@ std::string BlueprintType::convert(BlueprintType::E e)
 
 CheckedExceptions::E CheckedExceptions::convert(const std::string& v)
 {
-	if ( v == MODIFIER_NOTHROW ) { return CheckedExceptions::Nothrow; }
-	else if ( v == MODIFIER_THROWS ) { return CheckedExceptions::Throw; }
+	if ( v == MODIFIER_NOTHROW ) return CheckedExceptions::Nothrow;
+	if ( v == MODIFIER_THROWS )  return CheckedExceptions::Throw;
 
 	return CheckedExceptions::Unspecified;
 }
@@ -97,11 +97,11 @@ std::string CheckedExceptions::convert(CheckedExceptions::E e)
 
 LanguageFeatureState::E LanguageFeatureState::convert(const std::string& v)
 {
-	if ( v == LANGUAGE_FEATURE_DEPRECATED ) { return LanguageFeatureState::Deprecated; }
-	else if ( v == LANGUAGE_FEATURE_NONE ) { return LanguageFeatureState::Stable; }
-	else if ( v == LANGUAGE_FEATURE_NOTIMPLEMENTED ) { return LanguageFeatureState::NotImplemented; }
-	else if ( v == LANGUAGE_FEATURE_STABLE ) { return LanguageFeatureState::Stable; }
-	else if ( v == LANGUAGE_FEATURE_UNSTABLE ) { return LanguageFeatureState::Unstable; }
+	if ( v == LANGUAGE_FEATURE_DEPRECATED )     return LanguageFeatureState::Deprecated;
+	if ( v == LANGUAGE_FEATURE_NONE )           return LanguageFeatureState::Stable;
+	if ( v == LANGUAGE_FEATURE_NOTIMPLEMENTED ) return LanguageFeatureState::NotImplemented;
+	if ( v == LANGUAGE_FEATURE_STABLE )         return LanguageFeatureState::Stable;
+	if ( v == LANGUAGE_FEATURE_UNSTABLE )       return LanguageFeatureState::Unstable;
 
 	return LanguageFeatureState::Unspecified;
 }
@@ -122,11 +122,11 @@ std::string LanguageFeatureState::convert(LanguageFeatureState::E e)
 
 MemoryLayout::E MemoryLayout::convert(const std::string& v)
 {
-	if (v == MEMORY_LAYOUT_ABSTRACT ) { return MemoryLayout::Abstract; }
-	else if (v == MEMORY_LAYOUT_FINAL ) { return MemoryLayout::Final; }
-	else if (v == MEMORY_LAYOUT_OVERRIDE ) { return MemoryLayout::Override; }
-	else if (v == MEMORY_LAYOUT_STATIC ) { return MemoryLayout::Static; }
-	else if (v == MEMORY_LAYOUT_VIRTUAL ) { return MemoryLayout::Virtual; }
+	if ( v == MEMORY_LAYOUT_ABSTRACT ) return MemoryLayout::Abstract;
+	if ( v == MEMORY_LAYOUT_FINAL )    return MemoryLayout::Final;
+	if ( v == MEMORY_LAYOUT_OVERRIDE ) return MemoryLayout::Override;
+	if ( v == MEMORY_LAYOUT_STATIC )   return MemoryLayout::Static;
+	if ( v == MEMORY_LAYOUT_VIRTUAL )  return MemoryLayout::Virtual;
 
 	return MemoryLayout::Unspecified;
 }
@@ -148,8 +148,8 @@ std::string MemoryLayout::convert(MemoryLayout::E e)
 
 Mutability::E Mutability::convert(const std::string& v)
 {
-	if (v == MUTABILITY_CONST ) { return Mutability::Const; }
-	else if (v == MUTABILITY_MODIFY ) { return Mutability::Modify; }
+	if ( v == MUTABILITY_CONST )  return Mutability::Const;
+	if ( v == MUTABILITY_MODIFY ) return Mutability::Modify;
 
 	return Mutability::Unknown;
 }

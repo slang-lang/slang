@@ -21,10 +21,10 @@ const std::string Visibility::PublicStr = "public";
 
 Visibility::E Visibility::convert(const std::string& v)
 {
-	if ( v == DesigntimeStr ) { return Visibility::Designtime; }
-	else if ( v == PrivateStr ) { return Visibility::Private; }
-	else if ( v == ProtectedStr ) { return Visibility::Protected; }
-	else if ( v == PublicStr ) { return Visibility::Public; }
+	if ( v == DesigntimeStr ) return Visibility::Designtime;
+	if ( v == PrivateStr )    return Visibility::Private;
+	if ( v == ProtectedStr )  return Visibility::Protected;
+	if ( v == PublicStr )     return Visibility::Public;
 
 	assert(!"invalid visibility!");
 	return Visibility::Private;
