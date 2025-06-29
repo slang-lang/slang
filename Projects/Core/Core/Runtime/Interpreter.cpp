@@ -242,15 +242,15 @@ void Interpreter::expression(Object* result, TokenIterator& start, bool complete
 				*result = BoolType(false);
 				return;
 			}
-			else if ( op == Token::Type::NAND && !lvalue ) {
+			if ( op == Token::Type::NAND && !lvalue ) {
 				*result = BoolType(true);
 				return;
 			}
-			else if ( op == Token::Type::NOR && lvalue ) {
+			if ( op == Token::Type::NOR && lvalue ) {
 				*result = BoolType(false);
 				return;
 			}
-			else if ( op == Token::Type::OR && lvalue ) {
+			if ( op == Token::Type::OR && lvalue ) {
 				*result = BoolType(true);
 				return;
 			}
@@ -436,7 +436,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, true,
-																		  (prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
+																		(prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
 					break;
 				case Symbol::IType::MethodSymbol:
 					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
@@ -513,8 +513,8 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result, b
 
 	pushScope(nullptr, allowBreakAndContinue);
 		pushTokens(tokens);
-			TokenIterator start = getTokens().begin();
-			TokenIterator end = getTokens().end();
+			auto start = getTokens().begin();
+			auto end   = getTokens().end();
 
 			process(result, start, end);
 		popTokens();
@@ -877,7 +877,7 @@ void Interpreter::popTokens()
  */
 void Interpreter::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
-	TokenIterator localEnd = getTokens().end();
+	auto localEnd = getTokens().end();
 
 	while ( ( (token != localEnd) && (token != end) ) &&
 			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
@@ -2204,7 +2204,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 
 void Interpreter::pushScope(IScope* scope, bool allowBreakAndContinue)
 {
-	StackFrame* stack = mThread->currentFrame();
+	auto* stack = mThread->currentFrame();
 
 	bool allowDelete = !scope;
 
