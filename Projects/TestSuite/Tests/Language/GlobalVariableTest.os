@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public namespace OutterSpace {
 	public object InnerObject {

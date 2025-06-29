@@ -10,6 +10,7 @@
 #include <Core/Version.h>
 #include <Debugger/Debugger.h>
 #include <LocalClient/LocalClient.h>
+#include <Logger/Logger.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
 #include <Utils.h>

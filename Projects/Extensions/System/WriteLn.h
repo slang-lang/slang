@@ -10,7 +10,7 @@
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Extensions/ExtensionMethod.h>
-#include <Core/Tools.h>
+#include <Core/Runtime/Utils.h>
 
 // Forward declarations
 
@@ -35,24 +35,15 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* /*result*/ )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			std::string param_text = (*it++).value().toStdString();
+		std::string param_text = (*it++).value().toStdString();
 
-			std::cout << param_text << std::endl;
-		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
-
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		std::cout << param_text << std::endl;
 
 		return Runtime::ControlFlow::Normal;
 	}

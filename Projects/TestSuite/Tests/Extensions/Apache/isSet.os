@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public void Main(int argv, string args) {
 	writeln("getenv(\"QUERY_STRING\") = " + getenv("QUERY_STRING"));

@@ -12,6 +12,7 @@ SET(HEADERS
 SET(DEPENDENCIES
     PackageCommon
     Core
+    UtilsLogger
     Utils
 )
 

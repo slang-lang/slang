@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 // Fazit: recursion is really slow in slang
 

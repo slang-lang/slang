@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public void Main(int argc, string args) {
 	var i = 173;

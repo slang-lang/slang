@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public namespace InstanciationTest {
 	public object OuterObject {

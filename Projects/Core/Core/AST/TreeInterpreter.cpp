@@ -20,7 +20,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Core/Tools.h>
+#include <Core/Runtime/Utils.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
@@ -65,15 +65,15 @@ namespace Slang {
 namespace AST {
 
 
-TreeInterpreter::TreeInterpreter(Common::ThreadId id)
-: mControlFlow(Runtime::ControlFlow::Normal),
-  mFrame(nullptr)
+TreeInterpreter::TreeInterpreter( Thread* thread )
+: mControlFlow( Runtime::ControlFlow::Normal )
+,  mFrame( nullptr )
+,  mThread( thread )
 {
 	// initialize virtual machine stuff
-	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
-	mMemory = Controller::Instance().memory();
+	mDebugger   = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
+	mMemory     = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
-	mThread = Controller::Instance().thread(id);
 }
 
 void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
@@ -275,7 +275,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		methodSymbol = resolveMethod(getEnclosingMethodScope(scope), exp->mSymbolExpression, params, Visibility::Private);
 	}
 	if ( !methodSymbol ) {
-		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+		auto* data = mRepository->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
 		data->setValue( std::string("NullPointerException: ") + exp->mSymbolExpression->toString() );
 
 		mThread->exception() = Runtime::ExceptionData(data);
@@ -290,7 +290,19 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	assert(method);
 
 	if ( method->isExtensionMethod() ) {
-		mControlFlow = dynamic_cast<Slang::Extensions::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
+		try {
+			dynamic_cast<Slang::Extensions::ExtensionMethod*>( method )->execute( params, result );
+
+			mControlFlow = Runtime::ControlFlow::Normal;
+		}
+		catch ( std::exception& e ) {
+			auto* data = mRepository->createInstance( Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT );
+			*data = Runtime::StringType( std::string( e.what() ) );
+
+			mThread->exception( Runtime::ExceptionData( data, Token().position() ) );
+
+			mControlFlow = Runtime::ControlFlow::Throw;
+		}
 	}
 	else {
 		mControlFlow = execute(dynamic_cast<Runtime::Object*>(method->getEnclosingScope()), method, params, result);
@@ -298,7 +310,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 	switch ( mControlFlow ) {
 		case Runtime::ControlFlow::ExitProgram: throw Runtime::ControlFlow::ExitProgram;	// promote control flow
-		case Runtime::ControlFlow::Throw: throw Runtime::ControlFlow::Throw;				// promote control flow
+		case Runtime::ControlFlow::Throw:       throw Runtime::ControlFlow::Throw;			// promote control flow
 		default: mControlFlow = Runtime::ControlFlow::Normal; break;
 	}
 }
@@ -324,7 +336,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	}
 
 	// create initialized reference of new object
-	*result = TRYMOVE(*mRepository->createReference(exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final));
+	*result = std::move( *mRepository->createReference( exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final ) );
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
@@ -354,7 +366,7 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 	// resolve current symbol name
 	Symbol* lvalue = scope->resolve(exp->mName, false, Visibility::Designtime);
 	if ( !lvalue ) {
-		auto* data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
+		auto* data = mRepository->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
 		data->setValue( std::string("NullPointerException: ") + exp->toString() );
 
 		mThread->exception() = Runtime::ExceptionData(data);
@@ -1329,7 +1341,7 @@ void TreeInterpreter::visitWhile(WhileStatement* node)
 {
 	Runtime::Object condition;
 
-	for  ( ; ; ) {
+	for ( ; ; ) {
 		// evaluate while condition
 		tryControl(evaluate(node->mCondition, &condition));
 

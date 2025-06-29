@@ -6,8 +6,8 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/Parser/Token.h>
-#include <Core/Types.h>
+#include <Core/Common/Token.h>
+#include <Core/Common/Types.h>
 
 // Forward declarations
 

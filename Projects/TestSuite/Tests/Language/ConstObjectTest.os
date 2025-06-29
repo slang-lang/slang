@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 private stable object ValueObject const /*extends Object*/ {
 	protected int mValue const;

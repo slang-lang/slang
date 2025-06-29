@@ -6,9 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/Parser/Token.h>
-
-#include <utility>
+#include <Core/Common/Token.h>
 #include "Expression.h"
 #include "Node.h"
 

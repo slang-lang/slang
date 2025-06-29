@@ -1,6 +1,6 @@
 
-#ifndef Core_Defines_h
-#define Core_Defines_h
+#ifndef Slang_Core_Core_Defines_h
+#define Slang_Core_Core_Defines_h
 
 
 //#define USE_AST_OPTIMIZATION
@@ -14,6 +14,13 @@
 #elif __linux__
 #define SHARED_EXTENSION_DIRECTORY "/var/lib/slang/extensions/"
 #define SHARED_LIBRARY_DIRECTORY   "/var/lib/slang/library/"
+#endif
+
+
+#ifdef _WIN32
+#  define SLANG_API __declspec(dllexport)
+#else
+#  define SLANG_API __attribute__((visibility("default")))
 #endif
 
 

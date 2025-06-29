@@ -6,19 +6,7 @@
 #include <cerrno>
 
 // Project includes
-#include "cassert/cassert.h"
-#include "cstring/strcat.h"
-#include "cstring/strchr.h"
-#include "cstring/strcmp.h"
-#include "cstring/strcoll.h"
-#include "cstring/strcspn.h"
-#include "cstring/strlen.h"
-#include "cstring/strncat.h"
-#include "cstring/strncmp.h"
-#include "cstring/strpbrk.h"
-#include "cstring/strspn.h"
-#include "cstring/strrchr.h"
-#include "cstring/strstr.h"
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include "locale/setlocale.h"
 
 // Namespace declarations
@@ -30,7 +18,7 @@ namespace LIBC {
 
 
 Extension::Extension()
-: AExtension( "LIBC", "0.1.1" )
+: AExtension( "LIBC", "0.2.0" )
 {
 }
 
@@ -56,6 +44,8 @@ void Extension::initialize( ExtensionNamespace* scope )
 #else
     // Unix/Linux only
 
+    // mCassert.initialize( scope );
+    mCstring.initialize( scope );
     mFenv.initialize( scope );
     mMath.initialize( scope );
     mStdio.initialize( scope );
@@ -67,23 +57,6 @@ void Extension::provideMethods( ExtensionMethods& methods )
 {
     assert( methods.empty() );
 
-    // cassert
-    //methods.push_back( new CASSERT() );
-
-    // cstring
-    methods.push_back( new cstring::STRCAT() );
-    methods.push_back( new cstring::STRCHR() );
-    methods.push_back( new cstring::STRCMP() );
-    methods.push_back( new cstring::STRCOLL() );
-    methods.push_back( new cstring::STRCSPN() );
-    methods.push_back( new cstring::STRLEN() );
-    methods.push_back( new cstring::STRNCAT() );
-    methods.push_back( new cstring::STRNCMP() );
-    methods.push_back( new cstring::STRPBRK() );
-    methods.push_back( new cstring::STRSPN() );
-    methods.push_back( new cstring::STRRCHR() );
-    methods.push_back( new cstring::STRSTR() );
-
     // locale
     methods.push_back( new locale::SETLOCALE() );
 
@@ -92,6 +65,8 @@ void Extension::provideMethods( ExtensionMethods& methods )
 #else
     // Unix/Linux only
 
+    // mCassert.provideMethods( methods );
+    mCstring.provideMethods( methods );
     mFenv.provideMethods( methods );
     mMath.provideMethods( methods );
     mStdio.provideMethods( methods );

@@ -5,11 +5,11 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Types.h>
+#include <Core/Common/Utils.h>
 #include <Core/Consts.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Interfaces/IScope.h>
-#include <Core/Tools.h>
-#include <Core/Types.h>
 #include <Tools/Strings.h>
 
 // Namespace declarations

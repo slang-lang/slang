@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 object TestObject {
 	public void Constructor(Object value const) {

@@ -1,4 +1,4 @@
-#!/usr/local/bin/slang
+#!/usr/bin/env slang
 
 public object PrivateConstructor {
 	private void Constructor() {

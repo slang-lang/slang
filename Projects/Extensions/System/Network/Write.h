@@ -32,31 +32,22 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+		int param_handle = (*it++).value().toInt();
 
-			bool value = (*it++).value().toBool();
+		bool value = (*it++).value().toBool();
 
-			long size = write(param_handle, &value, sizeof(bool));
-			if ( size == -1 ) {    // error while writing
-				throw Runtime::Exceptions::RuntimeException("error while writing handle");
-			}
-
-			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
+		long size = write(param_handle, &value, sizeof(bool));
+		if ( size == -1 ) {    // error while writing
+			throw Runtime::Exceptions::RuntimeException("error while writing handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -76,31 +67,22 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+		int param_handle = (*it++).value().toInt();
 
-			double value = (*it++).value().toDouble();
+		double value = (*it++).value().toDouble();
 
-			long size = write(param_handle, &value, sizeof(double));
-			if ( size == -1 ) {    // error while writing
-				throw Runtime::Exceptions::RuntimeException("error while writing handle");
-			}
-
-			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
+		long size = write(param_handle, &value, sizeof(double));
+		if ( size == -1 ) {    // error while writing
+			throw Runtime::Exceptions::RuntimeException("error while writing handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -120,31 +102,22 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+		int param_handle = (*it++).value().toInt();
 
-			float value = (*it++).value().toFloat();
+		float value = (*it++).value().toFloat();
 
-			long size = write(param_handle, &value, sizeof(float));
-			if ( size == -1 ) {    // error while writing
-				throw Runtime::Exceptions::RuntimeException("error while writing handle");
-			}
-
-			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
+		long size = write(param_handle, &value, sizeof(float));
+		if ( size == -1 ) {    // error while writing
+			throw Runtime::Exceptions::RuntimeException("error while writing handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -164,31 +137,22 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+		int param_handle = (*it++).value().toInt();
 
-			int value = (*it++).value().toInt();
+		int value = (*it++).value().toInt();
 
-			long size = write(param_handle, &value, sizeof(int));
-			if ( size == -1 ) {    // error while writing
-				throw Runtime::Exceptions::RuntimeException("error while writing handle");
-			}
-
-			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
+		long size = write(param_handle, &value, sizeof(int));
+		if ( size == -1 ) {    // error while writing
+			throw Runtime::Exceptions::RuntimeException("error while writing handle");
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 
 		return Runtime::ControlFlow::Normal;
 	}
@@ -208,37 +172,28 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList &params, Runtime::Object *result, const Token& token)
+	Runtime::ControlFlow::E execute( const ParameterList &params, Runtime::Object *result )
 	{
 		ParameterList list = mergeParameters(params);
 
-		try {
-			ParameterList::const_iterator it = list.begin();
+		ParameterList::const_iterator it = list.begin();
 
-			int param_handle = (*it++).value().toInt();
+		int param_handle = (*it++).value().toInt();
 
-			std::string value = params.back().value().toStdString();
-			unsigned long count = 0;
-			long size = 0;
+		std::string value = params.back().value().toStdString();
+		unsigned long count = 0;
+		long size = 0;
 
-			while ( count < value.size() ) {
-				size = write(param_handle, &value[count], sizeof(char));
-				if ( size == -1 ) {    // error while writing
-					throw Runtime::Exceptions::RuntimeException("error while writing handle");
-				}
-
-				count++;
+		while ( count < value.size() ) {
+			size = write(param_handle, &value[count], sizeof(char));
+			if ( size == -1 ) {    // error while writing
+				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
+			count++;
 		}
-		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringType::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringType(std::string(e.what()));
 
-			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
-			return Runtime::ControlFlow::Throw;
-		}
+		*result = Runtime::Int32Type( static_cast<int32_t>( size ) );
 
 		return Runtime::ControlFlow::Normal;
 	}

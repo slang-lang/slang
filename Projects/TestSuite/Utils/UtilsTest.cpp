@@ -56,7 +56,7 @@ void UtilsTest::testSemVer()
 
 		std::cout << "1.0.0+001 vs " << version100WithBuildMetadata.toString() << std::endl;
 
-		assert( (version100 == version101) );
+		TVERIFY( (version100 != version101) );
 		TVERIFY( (version100WithLabel < version100) );
 		TVERIFY( (version100WithLabelAndBuildMetadata < version100WithLabel) );
 

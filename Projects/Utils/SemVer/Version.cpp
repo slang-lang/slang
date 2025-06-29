@@ -45,6 +45,20 @@ bool SemanticVersionNumber::operator==( const std::string& other ) const
 	return operator==( SemanticVersionNumber( other ) );
 }
 
+bool SemanticVersionNumber::operator!=( const SemanticVersionNumber& other ) const
+{
+	return mMajor         != other.mMajor
+	    || mMinor         != other.mMinor
+	    || mBugfix        != other.mBugfix
+	    || mLabel         != other.mLabel
+	    || mBuildMetadata != other.mBuildMetadata;
+}
+
+bool SemanticVersionNumber::operator!=( const std::string& other ) const
+{
+	return operator!=( SemanticVersionNumber( other ) );
+}
+
 bool SemanticVersionNumber::operator<( const SemanticVersionNumber& other ) const
 {
 	if ( mMajor == other.mMajor ) {
