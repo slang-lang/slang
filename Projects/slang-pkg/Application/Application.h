@@ -20,7 +20,7 @@ namespace Slang {
 class Application
 {
 public:
-	Application();
+	Application() = default;
 	~Application();
 
 public:

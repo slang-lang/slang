@@ -54,7 +54,7 @@ public:
 	}
 
 private:
-	int evaluate(int param_sockfd, Runtime::Object* param_addr) const {
+	static int evaluate(int param_sockfd, Runtime::Object* param_addr) {
 		auto* addressSymbol = param_addr->resolve("_sa_address", true, Visibility::Public);
 		if ( !addressSymbol ) {
 			throw Runtime::Exceptions::RuntimeException("_sa_address symbol not found");

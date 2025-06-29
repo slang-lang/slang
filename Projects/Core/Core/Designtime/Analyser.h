@@ -61,7 +61,7 @@ private:
 	bool isInterface() const;
 
 private: // type resolution
-	std::string getQualifiedTypename(const std::string& name) const;
+	std::string getQualifiedTypename(const std::string& type) const;
 	std::string resolveType(const std::string& type, const TokenIterator& token) const;
 	Common::TypeDeclaration resolveType(const Common::TypeDeclaration& type, const TokenIterator& token) const;
 

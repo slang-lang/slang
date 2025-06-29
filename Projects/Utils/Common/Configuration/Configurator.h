@@ -26,7 +26,7 @@ class Configurator : private Logger
 {
 public:
 	explicit Configurator( const Logger* p, const std::string& file = "" );
-	~Configurator();
+	~Configurator() override;
 
 public:
 	// deprecated
