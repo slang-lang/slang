@@ -98,6 +98,9 @@ public:
 	virtual std::string getResultType() const {
 		return mResultType;
 	}
+	virtual std::string toString() const {
+		return ExpressionType::ToString(mExpressionType);
+	}
 
 protected:
 	ExpressionType::E mExpressionType;
@@ -199,6 +202,7 @@ public:
 	{
 		mIsAtomicType = true;
 	}
+	virtual ~LiteralExpression() { }
 
 public:
 	Runtime::AtomicValue mValue;
@@ -367,6 +371,7 @@ public:
 	public:
 		enum E {
 			DesigntimeSymbolExpression,
+			LocalSymbolExpression,
 			RuntimeSymbolExpression
 		};
 	};
@@ -405,7 +410,7 @@ public:
 		return mIsMember || (mSymbolExpression ? mSymbolExpression->isMember() : false);
 	}
 
-	std::string toString() const {
+	std::string toString() const override {
 		auto result = mName;
 
 		if ( mSymbolExpression ) {
@@ -470,6 +475,39 @@ public:
 };
 
 
+class LocalSymbolExpression : public SymbolExpression
+{
+public:
+	explicit LocalSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isAtomicType, size_t index)
+	: SymbolExpression(name, resultType, isAtomicType)
+	{
+		mIndex = index;
+		mIsConst = isConst;
+		mIsMember = false;
+		mSymbolExpressionType = SymbolExpressionType::LocalSymbolExpression;
+	}
+
+	std::string getResultType() const {
+		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
+	}
+
+	size_t getIndex() const {
+		return mIndex;
+	}
+
+	std::string toString() const {
+		std::string result = ExpressionType::ToString(mExpressionType) + ": LocalSymbolExpression\n";
+		result += "mName: " + mName + "\n";
+		result += "mIndex: " + std::to_string(mIndex);
+
+		return result;
+	}
+
+private:
+	size_t mIndex;
+};
+
+
 class RuntimeSymbolExpression : public SymbolExpression
 {
 public:
@@ -487,29 +525,6 @@ public:
 };
 
 
-class LocalSymbolExpression : public SymbolExpression
-{
-public:
-	explicit LocalSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isAtomicType)
-	: SymbolExpression(name, resultType, isAtomicType),
-	  mIndex( SIZE_MAX )
-	{
-		mIsConst = isConst;
-		mIsMember = false;
-		mSymbolExpressionType = SymbolExpressionType::RuntimeSymbolExpression;
-	}
-
-	std::string getResultType() const override {
-		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
-	}
-
-	unsigned int getIndex() const {
-		return mIndex;
-	}
-
-private:
-	size_t mIndex;
-};
 
 // Variable expressions
 ///////////////////////////////////////////////////////////////////////////////
