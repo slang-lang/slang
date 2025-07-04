@@ -210,6 +210,9 @@ public object JsonValue {
 			}
 			case JsonType.Value: {
 				switch ( mValueType ) {
+					case JsonValueType.Bool: {
+						return mValue ? "true" : "false";
+					}
 					case JsonValueType.String: {
 						return "\"" + mValue + "\"";
 					}
