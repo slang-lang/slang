@@ -106,7 +106,7 @@ public object JsonReader {
                 break;
             }
             case TokenType.BOOLEAN: {
-                value = new JsonValue( token.value );
+                value = new JsonValue( token.value == "true" );
                 t.next();
                 break;
             }

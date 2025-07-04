@@ -12,6 +12,7 @@ public void Main(int argc, string args) {
 	assert( TestCase3() );
 	assert( TestCase4() );
 	assert( TestCase5() );
+	assert( TestCase6() );
 }
 
 private bool TestCase1() {
@@ -113,6 +114,28 @@ private bool TestCase5() {
 
 	try {
 		var str = "{ \"key\": null }";
+		print( str );
+
+		var reader = new JsonReader();
+		var value = reader.parse( str );
+		assert( value );
+
+		print( value.toString() );
+
+		return true;
+	}
+	catch ( IException e ) {
+		print( "Exception: " + e.what() );
+	}
+
+	return false;
+}
+
+private bool TestCase6() {
+	print( "TestCase 6: boolean values" );
+
+	try {
+		var str = "{ \"key\": true, \"key2\": false }";
 		print( str );
 
 		var reader = new JsonReader();

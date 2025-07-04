@@ -156,7 +156,7 @@ public object JsonValue {
 
 	public void setValue( bool value ) modify {
 		mObjectValue = JsonValue null;
-		mValue       = cast<string>( value );
+		mValue       = value ? "true" : "false";
 		mType        = JsonType.Value;
 		mValueType   = JsonValueType.Bool;
 	}
