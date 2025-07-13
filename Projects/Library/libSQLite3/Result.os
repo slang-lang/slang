@@ -1,9 +1,6 @@
 
-// Library imports
 import System.Collections.Iterator;
 import System.Collections.Vector;
-
-// Project imports
 import Connection;
 import Exceptions;
 

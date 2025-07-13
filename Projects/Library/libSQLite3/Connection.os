@@ -1,7 +1,4 @@
 
-// load extension
-import extension libSlangSQLite3;
-
 
 public namespace Sqlite3 { }
 
