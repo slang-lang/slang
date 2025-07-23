@@ -1,6 +1,7 @@
 #!/usr/bin/env slang
 
 import FileReader;
+import IPCService;
 import JsonReader;
 import libBehaviourTree;
 import libCSVReader;
