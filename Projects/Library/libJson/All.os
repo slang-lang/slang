@@ -1,7 +1,7 @@
 
 // import all publically necessary files
 import Array;
-import Exception;
+import Exceptions;
 import Object;
 import Reader;
 import Token;

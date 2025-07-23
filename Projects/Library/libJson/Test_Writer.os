@@ -106,7 +106,7 @@ private bool TestCase4() {
 
 		var obj = new JsonObject();
 		obj.addMember( "key", new JsonValue( "value" ) );
-		//obj.addMember( "key", new JsonValue( "value2" ) );
+		obj.addMember( "key", new JsonValue( "value2" ) );
 
 		print( writer.toString( obj ) );
 
@@ -176,7 +176,7 @@ private bool TestCase7() {
 	try {
 		var writer = new JsonStyledWriter();
 
-		var value = new JsonValue( "value" );
+		var value = new JsonValue( true );
 		print( writer.toString( value ) );
 
 		var obj = new JsonObject( "object", value );
