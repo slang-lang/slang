@@ -7,19 +7,17 @@ import libParam;
 import Client;
 
 
-public void Main( int argc, string args )
+public int Main( int argc, string args )
 {
-	if ( argc < 2 ) {
-		print( "usage: program [arg1 [arg2 [...] ] ]" );
-		print( "" );
-		return;
-	}
-
 	try {
 		var params = new ParameterHandler( argc, args );
 
-		var client = new Client( params[ 0 ].Key );
-		client.Run();
+		string filename;
+		if ( !params.empty() ) {
+			filename = params[ 0 ].Key;
+		}
+
+		return ( new Client( filename ) ).Run();
 	}
 	catch ( string e ) {
 		print( "Exception: " + e );
@@ -27,5 +25,7 @@ public void Main( int argc, string args )
 	catch ( IException e ) {
 		print( "Exception: " + e.what() );
 	}
+
+	return -1;
 }
 

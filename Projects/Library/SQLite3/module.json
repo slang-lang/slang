@@ -1,15 +1,15 @@
 {
-  "name": "SQLite3 Editor",
+  "name": "SQLite3 cli client",
   "name_short": "SQLite3",
   "version": "0.1.0",
-  "description": "SQLite3 database editor",
+  "description": "SQLite3 command line database client",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.0" },
     { "module": "System", "version_min": "0.3.4" },
     { "module": "libSQLite3", "version_min": "0.1.5" }
   ],
   "target": {
-    "directory": "libSQLite3",
+    "directory": "SQLite3",
     "install": [ "SQLite3.slang" ],
     "type": "internal"
   }
