@@ -31,11 +31,11 @@ public object Client
 		while ( true ) {
 			write( "sqlite> " );
 
-            var input = new String( cin() );
+			var input = new String( cin() );
 
-            var tokenIt = input.SplitBy( " " );
-            if ( tokenIt.hasNext() ) {
-                var command = tokenIt++;
+			var tokenIt = input.SplitBy( " " );
+			if ( tokenIt.hasNext() ) {
+				var command = tokenIt++;
 
 				if ( command == ".echo" ) {
 					string echo;
@@ -160,7 +160,7 @@ public object Client
 	}
 
 	private void query( string command ) modify {
-		if ( Settings.Echo ) {
+		if ( settings.Echo ) {
 			print( command );
 		}
 
