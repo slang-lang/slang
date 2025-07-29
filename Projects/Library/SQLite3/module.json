@@ -1,7 +1,7 @@
 {
   "name": "SQLite3 cli client",
   "name_short": "SQLite3",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SQLite3 command line database client",
   "dependencies": [
     { "module": "Slang", "version_min": "0.7.0" },

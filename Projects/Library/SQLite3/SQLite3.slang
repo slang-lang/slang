@@ -4,13 +4,26 @@
 import libParam;
 
 // project imports
-import Client;
+import libs.Consts;
+import libs.Client;
 
 
 public int Main( int argc, string args )
 {
 	try {
 		var params = new ParameterHandler( argc, args );
+
+		if ( params.contains( "help" ) ) {
+			print( "usage: program [arg1 [arg2 [...] ] ]" );
+			print( "" );
+			return 0;
+		}
+
+		if ( params.contains( "version" ) ) {
+			print( APPNAME + " " + VERSION );
+			print( "" );
+			return 0;
+		}
 
 		string filename;
 		if ( !params.empty() ) {

@@ -85,10 +85,22 @@ public object Client
 
 	private void open( string filename ) modify {
 		database = new Sqlite3Database( filename );
-		var result = database.exec( "SELECT name, type FROM sqlite_master" );
 
-		print( "Error: " + database.errCode() + ", "+ database.errMsg() );
-		print( "Entities(" + result.Rows.size() + "): " + cast<string>( result ) );
+		var result = database.exec( "SELECT name FROM sqlite_master WHERE type = 'table'" );
+
+		if ( database.errCode() ) {
+			print( "Error: " + database.errMsg() );
+		}
+		else {
+			print( "Tables:" );
+
+			foreach ( Sqlite3Row row : result ) {
+				foreach ( Sqlite3Entry entry : row ) {
+					print( "   " + entry.Value );
+				}
+			}
+		}
+
 		print( "" );
 	}
 
