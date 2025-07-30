@@ -2,35 +2,35 @@
 
 // library imports
 import libParam;
-import libSQLite3;
-import libSQLite3.Exceptions;
 
 // project imports
+import libs.Consts;
+import libs.Client;
 
 
-public void Main( int argc, string args )
+public int Main( int argc, string args )
 {
-	if ( argc < 2 ) {
-		print( "usage: program [arg1 [arg2 [...] ] ]" );
-		print( "" );
-		return;
-	}
-
 	try {
 		var params = new ParameterHandler( argc, args );
 
-		foreach ( Parameter filename : params ) {
-			if ( params.size() > 1 ) {
-				print( filename.Key + ":" );
-			}
-
-            var db = new Sqlite3Database( filename.Key );
-            var result = db.exec( "SELECT name, type FROM sqlite_master" );
-
-            print( "Error: " + db.errCode() + ", "+ db.errMsg() );
-            print( "Entities(" + result.Rows.size() + "): " + cast<string>( result ) );
-            print( "" );
+		if ( params.contains( "help" ) ) {
+			print( "usage: program [arg1 [arg2 [...] ] ]" );
+			print( "" );
+			return 0;
 		}
+
+		if ( params.contains( "version" ) ) {
+			print( APPNAME + " " + VERSION );
+			print( "" );
+			return 0;
+		}
+
+		string filename;
+		if ( !params.empty() ) {
+			filename = params[ 0 ].Key;
+		}
+
+		return ( new Client( filename ) ).Run();
 	}
 	catch ( string e ) {
 		print( "Exception: " + e );
@@ -38,4 +38,7 @@ public void Main( int argc, string args )
 	catch ( IException e ) {
 		print( "Exception: " + e.what() );
 	}
+
+	return -1;
 }
+

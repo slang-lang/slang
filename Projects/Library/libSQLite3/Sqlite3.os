@@ -24,7 +24,7 @@ public object Sqlite3Database {
     }
 
     public Sqlite3Result exec( string query ) const throws {
-        int handle = sqlite3_exec( mConnection.Handle, query );
+        var handle = sqlite3_exec( mConnection.Handle, query );
         if ( !handle ) {
             throw new Sqlite3Exception( "invalid result set!" );
         }

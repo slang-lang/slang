@@ -18,16 +18,20 @@ public void Main( int argc, string args ) {
 	try {
 		var params = new ParameterHandler( argc, args );
 
-		foreach ( Parameter filename : params ) {
-			if ( params.size() > 1 ) {
-				print( filename.Key + ":" );
-			}
+		var reader = new JsonReader();
+		var writer = new JsonStyledWriter();
 
-			var reader = new JsonReader();
-			var data = reader.parse( new Scanner( filename.Key ).getText() );
+		/*
+		if ( params.contains( "string" ) ) {
+			var data = reader.parse( params[ "string" ].Value );
 
-			var writer = new JsonStyledWriter();
 			print( writer.toString( data ) );
+			return;
+		}
+		*/
+
+		foreach ( Parameter filename : params ) {
+			print( writer.toString( reader.parse( new Scanner( filename.Key ).getText() ) ) );
 		}
 	}
 	catch ( string e ) {
