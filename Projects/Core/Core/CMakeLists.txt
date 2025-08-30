@@ -9,7 +9,7 @@ ADD_SUBDIRECTORY(Runtime)
 ADD_SUBDIRECTORY(VirtualMachine)
 
 SET(SOURCES
-	Object.cpp
+	Script.cpp
 	Scope.cpp
 	Symbol.cpp
 )
@@ -18,8 +18,8 @@ SET(HEADERS
 	Consts.h
 	Defines.h
 	MemleakCheck.h
-	Object.h
 	Slang.h
+	Script.h
 	Scope.h
 	Symbol.h
 	Version.h

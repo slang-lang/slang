@@ -11,7 +11,7 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintObject.h>
-#include <Core/VirtualMachine/Controller.h>
+#include <Core/Runtime/Object.h>
 
 // Namespace declarations
 
