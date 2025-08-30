@@ -7,7 +7,7 @@ public namespace System { }
 
 public object CharacterIterator implements Iterator<string> {
 	/*
-	 * Standard constructor
+	 * Standard string constructor
 	 */
 	public void Constructor( string value = "" ) {
 		reset( value );
@@ -25,6 +25,13 @@ public object CharacterIterator implements Iterator<string> {
 	 */
 	public CharacterIterator Copy() const {
 		return new CharacterIterator( mValue );
+	}
+
+	/*
+	 * Copy operator
+	 */
+	public CharacterIterator Copy() const {
+		return new CharacterIterator(mValue);
 	}
 
 	/*
@@ -77,6 +84,18 @@ public object CharacterIterator implements Iterator<string> {
 	}
 
 	/*
+	 * returns the next character of the held string value without changing the current iteration index
+	 * throws OutOfBoundsException
+	 */
+	public string peek(int pos = 1) modify throws {
+		if ( mCurrentIndex + pos < 0 || mCurrentIndex + pos > mLength ) {
+			throw new OutOfBoundsException("index(" + mCurrentIndex + pos + ") out of bounds");
+		}
+
+		return substr(mValue, mCurrentIndex, pos);
+	}
+
+	/*
 	 * resets the current iteration
 	 */
 	public void reset( string value = "" ) modify {
@@ -111,7 +130,7 @@ public object CharacterIterator implements Iterator<string> {
 	}
 
 	private int mCurrentIndex;
-	private int mLength;
-	private string mValue;
+	private int mLength const;
+	private string mValue const;
 }
 

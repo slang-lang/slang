@@ -177,3 +177,25 @@ private bool TestCase6() {
 	return true;
 }
 
+private bool TestCase6() {
+	print("TestCase 6: Queue.at()");
+
+	Queue<string> queue = new Queue<string>();
+
+	assert( queue );
+	assert( queue is Object );
+	assert( queue is ICollection );
+
+	queue.enqueue("1");
+	queue.enqueue("2");
+	queue.enqueue("3");
+
+	assert( queue.size() == 3 );
+
+	assert( queue.at(0) == "1" );
+	assert( queue.at(1) == "2" );
+	assert( queue.at(2) == "3" );
+
+	return true;
+}
+

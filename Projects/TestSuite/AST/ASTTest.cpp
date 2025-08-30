@@ -197,7 +197,7 @@ void ASTTest::testConstCorrectness4()
 {
 	try {
 		VirtualMachine vm;
-		vm.runScriptFromFile("Tests/AST/ConstCorrectnessTest4.os");
+		TTHROWS(vm.runScriptFromFile("Tests/AST/ConstCorrectnessTest4.os"), Common::Exceptions::StaticException);
 
 		// automatic success
 	}

@@ -70,6 +70,20 @@ public object String implements IIterable {
 	}
 
 	/*
+	 * Destructor
+	 */
+	public void Destructor() {
+		// this is empty by intend
+	}
+
+	/*
+	 * Copy operator
+	 */
+	public String Copy() {
+		return new String(mValue);
+	}
+
+	/*
 	 * Returns the character at the given position
 	 */
 	public string CharAt( int index ) const throws {
@@ -218,6 +232,13 @@ public object String implements IIterable {
 	/*
 	 * Returns the held string in lower case letters
 	 */
+	public String ToLower() const {
+		return new String(toLower(mValue));
+	}
+
+	/*
+	 * Returns the held string in lower case letters
+	 */
 	public string ToLowerCase() const {
 		return toLower( mValue );
 	}
@@ -227,6 +248,67 @@ public object String implements IIterable {
 	 */
 	public String ToUpper() const {
 		return new String( toUpper( mValue ) );
+	}
+
+	/*
+	 * Trims whitespaces from the left side of the held string value
+	 */
+	public string TrimLeft() modify {
+		mValue = strltrim(mValue);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Cuts away from the left side of the held string value
+	 */
+	public string TrimLeft(int index) modify throws {
+		if ( index < 0 || index >= mSize ) {
+			throw new OutOfBoundsException("index(" + index + ") is out of bounds!");
+		}
+
+		mValue = substr(mValue, index);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Trims whitespaces from the right side of the held string value
+	 */
+	public string TrimRight() modify {
+		mValue = strrtrim(mValue);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Cuts away from the right side of the held string value
+	 */
+	public string TrimRight(int index) modify {
+		mValue = substr(mValue, 0, strlen(mValue) - index);
+		mSize = strlen(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Trims whitespaces from both sides of the held string value
+	 */
+	public string Trim() modify {
+		mValue = strltrim(mValue);
+		mValue = strrtrim(mValue);
+
+		return mValue;
+	}
+
+	/*
+	 * Returns the held string in capital letters
+	 */
+	public String ToUpper() const {
+		return new String(toUpper(mValue));
 	}
 
 	/*
@@ -326,6 +408,7 @@ public object String implements IIterable {
 		// update members
 		mSize = strlen( other );
 		mValue = other;
+		mSize = strlen(mValue);
 
 		return this;
 	}

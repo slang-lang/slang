@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <stdio.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #ifdef __APPLE__
