@@ -12,6 +12,8 @@ public object Prototype<T> {
 	}
 }
 
+Prototype<int> hack;
+
 public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
 }
