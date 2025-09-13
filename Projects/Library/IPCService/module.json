@@ -1,7 +1,7 @@
 {
   "name": "IPC service",
   "name_short": "IPCService",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Library for convenience access to a UNIX system V message queue",
   "dependencies": [
     { "module": "Slang", "version_min": "0.8.0" },

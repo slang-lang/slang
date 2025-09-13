@@ -41,6 +41,13 @@ private object Application
 		Logger.info( "Closing message queues..." );
 	}
 
+	private void Help() {
+		print( "help		this info" );
+		print( "read		read from queue and immediately return" );
+		print( "readwait	read and block until data is received in the queue" );
+		print( "quit		end program" );
+	}
+
 	private void Read( bool wait ) modify {
 		print( Queue.receive( wait ) );
 	}
@@ -55,7 +62,7 @@ private object Application
 			var command = cin();
 
 			switch ( command ) {
-				case "help": { break; }
+				case "help": { Help(); break; }
 				case "read": { Read( false ); break; }
 				case "readwait": { Read( true ); break; }
 				case "quit": { return; }
