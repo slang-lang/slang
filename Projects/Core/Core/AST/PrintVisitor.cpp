@@ -109,6 +109,9 @@ std::string PrintVisitor::printExpression(Node* node) const
 			result += ".";
 			result += printExpression(scopeExp->mRHS);
 		} break;
+		case Expression::ExpressionType::StringEvalExpression: {
+			result += "streval( " + printExpression(dynamic_cast<StringEvalExpression*>(expression)->mExpression) + " )";
+		} break;
 		case Expression::ExpressionType::SymbolExpression: {
 			auto* symExp = dynamic_cast<SymbolExpression*>(expression);
 

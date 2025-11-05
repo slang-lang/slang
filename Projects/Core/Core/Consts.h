@@ -40,6 +40,7 @@ static const char* KEYWORD_IF       = "if";
 static const char* KEYWORD_NEW      = "new";
 static const char* KEYWORD_PRINT    = "print";
 static const char* KEYWORD_RETURN   = "return";
+static const char* KEYWORD_STREVAL  = "streval";
 static const char* KEYWORD_SWITCH   = "switch";
 static const char* KEYWORD_THROW    = "throw";
 static const char* KEYWORD_TRY      = "try";
