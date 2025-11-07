@@ -75,7 +75,8 @@ static const char* MUTABILITY_CONST  = "const";
 static const char* MUTABILITY_MODIFY = "modify";
 
 // Operators
-static const char* OPERATOR_IS = "is";
+static const char* OPERATOR_IS    = "is";
+static const char* OPERATOR_RANGE = "..";
 
 // Reserved words
 static const char* RESERVED_WORD_BY_REFERENCE   = "ref";

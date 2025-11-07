@@ -5,7 +5,6 @@
 // Library includes
 #include <algorithm>
 #include <vector>
-#include <utility>
 
 // Project includes
 #include <Core/Common/Utils.h>
@@ -18,9 +17,9 @@
 namespace Slang {
 
 
-const std::string CONTROLCHARS	= "#.,;:=()[]{}!?<>+-*/%&|~'\" ";
-const std::string WHITESPACES	= "\t\n\r ";
-const std::string DELIMITERS	= CONTROLCHARS + WHITESPACES;
+static const std::string CONTROLCHARS{ "#.,;:=()[]{}!?<>+-*/%&|~'\" " };
+static const std::string WHITESPACES { "\t\n\r " };
+static const std::string DELIMITERS  { CONTROLCHARS + WHITESPACES };
 
 
 Tokenizer::Tokenizer(std::string filename, std::string content)
@@ -39,28 +38,26 @@ Tokenizer::Tokenizer(std::string filename, std::string content)
 
 void Tokenizer::addToken(const std::string& con, const Common::Position& position)
 {
-	std::string content{ con };
-
 	Token::Category::E category{ Token::Category::None };
+	std::string content{ con };
 	bool isOptional{ false };
 	Token::Type::E type{ Token::Type::IDENTIFIER };
 
 	if ( content == "=" ) { category = Token::Category::Assignment; type = Token::Type::ASSIGN; }
-	else if ( content == "&" ) { category = Token::Category::Operator; type = Token::Type::BITAND; }
-	else if ( content == "|" ) { category = Token::Category::Operator; type = Token::Type::BITOR; }
-	else if ( content == "," ) { type = Token::Type::COMMA; }
-	else if ( content == "." ) { type = Token::Type::OPERATOR_SCOPE; }
-	else if ( content == ".." ) { type = Token::Type::OPERATOR_RANGE; }
 	else if ( content == ";" ) { type = Token::Type::SEMICOLON; }
+	else if ( content == "{" ) { type = Token::Type::BRACKET_CURLY_OPEN; }
+	else if ( content == "}" ) { type = Token::Type::BRACKET_CURLY_CLOSE; }
+	else if ( content == "." ) { type = Token::Type::OPERATOR_SCOPE; }
+	else if ( content == "," ) { type = Token::Type::COMMA; }
 	else if ( content == ":" ) { type = Token::Type::COLON; }
 	else if ( content == "[" ) { type = Token::Type::BRACKET_OPEN; }
 	else if ( content == "]" ) { type = Token::Type::BRACKET_CLOSE; }
-	else if ( content == "{" ) { type = Token::Type::BRACKET_CURLY_OPEN; }
-	else if ( content == "}" ) { type = Token::Type::BRACKET_CURLY_CLOSE; }
 	else if ( content == ">" ) { category = Token::Category::Operator; type = Token::Type::COMPARE_GREATER; }
 	else if ( content == "<" ) { category = Token::Category::Operator; type = Token::Type::COMPARE_LESS; }
 	else if ( content == "(" ) { type = Token::Type::PARENTHESIS_OPEN; }
 	else if ( content == ")" ) { type = Token::Type::PARENTHESIS_CLOSE; }
+	else if ( content == "&" ) { category = Token::Category::Operator; type = Token::Type::BITAND; }
+	else if ( content == "|" ) { category = Token::Category::Operator; type = Token::Type::BITOR; }
 	else if ( content == "+" ) { category = Token::Category::Operator; type = Token::Type::MATH_ADDITION; }
 	else if ( content == "/" ) { category = Token::Category::Operator; type = Token::Type::MATH_DIVIDE; }
 	else if ( content == "%" ) { category = Token::Category::Operator; type = Token::Type::MATH_MODULO; }
@@ -69,6 +66,7 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( content == "?" ) { category = Token::Category::Operator; type = Token::Type::QUESTION_MARK; }
 	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_NOT; }
 	else if ( content == "~" ) { category = Token::Category::Operator; type = Token::Type::TILDE; }
+	else if ( content == OPERATOR_RANGE ) { type = Token::Type::OPERATOR_RANGE; }
 	else if ( content == OPERATOR_IS ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_IS; }
 	else if ( isAccessMode(content) ) { category = Token::Category::Modifier; type = Token::Type::ACCESS_MODE; }
 	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
@@ -294,13 +292,13 @@ bool Tokenizer::isWhiteSpace(const std::string& token)
 void Tokenizer::mergeOperators()
 {
 	TokenList tmp;
-	Token::Type::E lastType = Token::Type::UNKNOWN;
-	TokenIterator token = mTokens.begin();
+	Token::Type::E lastType{ Token::Type::UNKNOWN };
+	TokenIterator token{ mTokens.begin() };
 
 	// try to combine all compare tokens
 	while ( token != mTokens.end() ) {
-		bool changed = false;
-		Token::Type::E activeType = token->type();
+		bool changed{ false };
+		Token::Type::E activeType{ token->type() };
 
 		if ( (lastType == Token::Type::BITAND) && (activeType == Token::Type::BITAND) ) {
 			// && and
@@ -340,7 +338,7 @@ void Tokenizer::mergeOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add OR instead
-			tmp.emplace_back( Token::Category::Operator, Token::Type::OPERATOR_RANGE, "..", token->position() );
+			tmp.emplace_back( Token::Category::Operator, Token::Type::OPERATOR_RANGE, OPERATOR_RANGE, token->position() );
 		}
 		else if ( (lastType == Token::Type::MATH_SUBTRACT) && (activeType == Token::Type::MATH_SUBTRACT) ) {
 			// --
@@ -397,15 +395,15 @@ void Tokenizer::mergeOperators()
 void Tokenizer::process()
 {
 	size_t offset = 0;
-	size_t size = mContent.size();
+	size_t size{ mContent.size() };
 	std::string token;
 
-	bool isEscapeSequence = false;
-	bool isMultiLineComment = false;
-	bool isSingleLineComment = false;
-	bool isString = false;
+	bool isEscapeSequence{ false };
+	bool isMultiLineComment{ false };
+	bool isSingleLineComment{ false };
+	bool isString{ false };
 
-	char lastChar = 0;
+	char previousChar{ 0 };
 	Common::Position pos(mFilename, 1, 1);
 
 	while ( offset <= size ) {
@@ -416,13 +414,13 @@ void Tokenizer::process()
 			isSingleLineComment = true;
 		}
 		// single line comments '//'
-		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && currentChar == '/' ) {
+		else if ( !isMultiLineComment && !isSingleLineComment && !isString && previousChar == '/' && currentChar == '/' ) {
 			isSingleLineComment = true;
 			// remove last inserted token
 			mTokens.pop_back();
 		}
 		// multi line comments '/*'
-		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && currentChar == '*' ) {
+		else if ( !isMultiLineComment && !isSingleLineComment && !isString && previousChar == '/' && currentChar == '*' ) {
 			isMultiLineComment = true;
 			// remove last inserted token
 			mTokens.pop_back();
@@ -469,7 +467,7 @@ void Tokenizer::process()
 		}
 
 		// multi line comments '*/'
-		if ( isMultiLineComment && lastChar == '*' && currentChar == '/' ) {
+		if ( isMultiLineComment && previousChar == '*' && currentChar == '/' ) {
 			isMultiLineComment = false;
 		}
 
@@ -484,10 +482,10 @@ void Tokenizer::process()
 		}
 
 		// keep track of our last char (i.e. for escape sequences)
-		lastChar = currentChar;
+		previousChar = currentChar;
 	}
 
-	if ( lastChar != 0 ) {
+	if ( previousChar != 0 ) {
 		addToken(token, pos);
 	}
 
@@ -506,13 +504,13 @@ void Tokenizer::process()
 void Tokenizer::mergeAssignments()
 {
 	TokenList tmp;
-	Token::Type::E lastType = Token::Type::UNKNOWN;
-	TokenIterator token = mTokens.begin();
+	Token::Type::E lastType{ Token::Type::UNKNOWN };
+	TokenIterator token{ mTokens.begin() };
 
 	// try to combine all compare tokens
 	while ( token != mTokens.end() ) {
-		bool changed = false;
-		Token::Type::E currentType = token->type();
+		bool changed{ false };
+		Token::Type::E currentType{ token->type() };
 
 		if ( (lastType == Token::Type::ASSIGN) && (currentType == Token::Type::ASSIGN) ) {
 			// ==
@@ -646,13 +644,13 @@ void Tokenizer::mergeAssignments()
  */
 void Tokenizer::replaceConstDataTypes()
 {
-	auto token = mTokens.begin();
+	auto token{ mTokens.begin() };
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {
 		// all our consts start with a CONST_INTEGER token
 		if ( token->type() == Token::Type::CONST_INTEGER ) {
-			int numCombines = 0;
+			int numCombines{ 0 };
 
 			auto tmp = lookahead(token, numCombines + 1);
 
@@ -775,7 +773,7 @@ void Tokenizer::replaceConstDataTypes()
 
 void Tokenizer::replaceConstDataTypesPatternMatching()
 {
-	auto token = mTokens.begin();
+	auto token{ mTokens.begin() };
 
 	std::vector<TokenList> patterns{
 		// 1 . 2 d
@@ -815,7 +813,7 @@ void Tokenizer::replaceConstDataTypesPatternMatching()
 
 		// search for known patterns
 		for( const TokenList& p : patterns ) {
-			patternIt = std::search( mTokens.begin(), mTokens.end(), p.begin(), p.end(), 
+			patternIt = std::search( mTokens.begin(), mTokens.end(), p.begin(), p.end(),
 										[]( const Token& a, const Token& b ) { return a.type() == b.type(); } );
 
 			if ( patternIt != mTokens.end() ) {
@@ -857,7 +855,7 @@ void Tokenizer::replaceConstDataTypesPatternMatching()
 					opToken->resetTypeTo( Token::Type::CONST_FLOAT );
 				}
 				else if ( patternIt->type() == Token::Type::CONST_INTEGER ) {
-					throw Designtime::Exceptions::SyntaxError( "invalid number format", patternIt->position() );	
+					throw Designtime::Exceptions::SyntaxError( "invalid number format", patternIt->position() );
 				}
 
 				opToken->resetContentTo( opToken->content() + patternIt->content() );	// combine token contents
@@ -877,8 +875,8 @@ void Tokenizer::replaceConstDataTypesPatternMatching()
  */
 void Tokenizer::replaceOperators()
 {
-	auto token = mTokens.begin();
-	auto last  = mTokens.end();
+	auto token{ mTokens.begin() };
+	auto last{ mTokens.end() };
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {

@@ -26,7 +26,7 @@ class SubStr : public ExtensionMethod
 {
 public:
 	SubStr()
-	: ExtensionMethod(0, "substr", Designtime::StringType::TYPENAME)
+	: ExtensionMethod(nullptr, "substr", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringType::TYPENAME, 0));
