@@ -3,6 +3,10 @@
 public object TestObject
 {
     public int Value = 173;
+
+    public string toString() const {
+        return streval( "Value: {{{Value}}}" );
+    }
 }
 
 public void Main(int argc = 1, string args = "") {
@@ -13,6 +17,7 @@ public void Main(int argc = 1, string args = "") {
 
 	var testObject = new TestObject();
 	print(streval("Hello, {{{testObject.Value}}} World!"));
+	print( testObject.toString() );
 
 	assert(stringEval == "Hello, 3 World!");
 }
