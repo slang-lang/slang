@@ -26,7 +26,7 @@ class StrPTime : public ExtensionMethod
 {
 public:
     StrPTime()
-	: ExtensionMethod( 0, "strptime", Designtime::Int32Type::TYPENAME )
+	: ExtensionMethod( nullptr, "strptime", Designtime::Int32Type::TYPENAME )
 	{
 		ParameterList params;
 		params.push_back( Parameter::CreateDesigntime( "format", Designtime::StringType::TYPENAME, 0 ) );
