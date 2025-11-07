@@ -42,6 +42,7 @@ public:
 			MethodExpression,
 			NewExpression,
 			ScopeExpression,
+			StringEvalExpression,
 			SymbolExpression,
 			TernaryExpression,
 			TypecastExpression,
@@ -59,6 +60,7 @@ public:
 				case MethodExpression: return "MethodExpression";
 				case NewExpression: return "NewExpression";
 				case ScopeExpression: return "ScopeExpression";
+				case StringEvalExpression: return "StringEvalExpression";
 				case SymbolExpression: return "SymbolExpression";
 				case TernaryExpression: return "TernaryExpression";
 				case TypecastExpression: return "TypecastExpression";
@@ -358,6 +360,24 @@ public:
 public:
 	Expression* mLHS;
 	Expression* mRHS;
+};
+
+
+class StringEvalExpression : public Expression
+{
+public:
+	explicit StringEvalExpression(Node* expression)
+	: Expression(ExpressionType::StringEvalExpression),
+	  mExpression(expression)
+	{
+		mResultType = _string;
+	}
+	~StringEvalExpression() override {
+		delete mExpression;
+	}
+
+public:
+	Node* mExpression;
 };
 
 

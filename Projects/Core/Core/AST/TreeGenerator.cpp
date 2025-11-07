@@ -1207,6 +1207,9 @@ Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
 	else if ( keyword == KEYWORD_NEW ) {
 		expression = process_new(token);
 	}
+	else if ( keyword == KEYWORD_STREVAL ) {
+		expression = process_streval(token);
+	}
 	else if ( keyword == KEYWORD_TYPEID ) {
 		expression = process_typeid(token);
 	}
@@ -1846,6 +1849,22 @@ Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndC
 	}
 
 	return node;
+}
+
+/*
+ * streval ( <expression> );
+ */
+Expression* TreeGenerator::process_streval(TokenIterator& token)
+{
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
+
+	Node* exp = expression(token);
+
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
+
+	return new StringEvalExpression(exp);
 }
 
 /*
