@@ -29,7 +29,7 @@ class StrFTime : public ExtensionMethod
 {
 public:
 	StrFTime()
-	: ExtensionMethod( 0, "strftime", Designtime::StringType::TYPENAME )
+	: ExtensionMethod( nullptr, "strftime", Designtime::StringType::TYPENAME )
 	{
 		ParameterList params;
 		params.push_back( Parameter::CreateDesigntime( "format", Designtime::StringType::TYPENAME, 0 ) );

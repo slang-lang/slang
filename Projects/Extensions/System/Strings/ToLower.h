@@ -27,7 +27,7 @@ class ToLower : public ExtensionMethod
 {
 public:
 	ToLower()
-	: ExtensionMethod(0, "toLower", Designtime::StringType::TYPENAME)
+	: ExtensionMethod(nullptr, "toLower", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringType::TYPENAME));

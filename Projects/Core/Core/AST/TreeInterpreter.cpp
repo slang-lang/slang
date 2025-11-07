@@ -3,6 +3,7 @@
 #include "TreeInterpreter.h"
 
 // Library includes
+#include <cstring>
 
 // Project includes
 #include <Core/Common/Exceptions.h>
@@ -94,6 +95,7 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 		case Expression::ExpressionType::MethodExpression:     evaluateMethodExpression(dynamic_cast<MethodExpression*>(exp), result); break;
 		case Expression::ExpressionType::NewExpression:        evaluateNewExpression(dynamic_cast<NewExpression*>(exp), result); break;
 		case Expression::ExpressionType::ScopeExpression:      evaluateScopeExpression(dynamic_cast<ScopeExpression*>(exp), result); break;
+		case Expression::ExpressionType::StringEvalExpression: evaluateStringEvalExpression(dynamic_cast<StringEvalExpression*>(exp), result, getScope()); break;
 		case Expression::ExpressionType::SymbolExpression:     evaluateSymbolExpression(dynamic_cast<SymbolExpression *>(exp), result, getScope()); break;
 		case Expression::ExpressionType::TernaryExpression:    evaluateTernaryExpression(dynamic_cast<TernaryExpression*>(exp), result); break;
 		case Expression::ExpressionType::TypecastExpression:   evaluateTypeCastExpression(dynamic_cast<TypecastExpression*>(exp), result); break;
@@ -355,6 +357,60 @@ void TreeInterpreter::evaluateScopeExpression(ScopeExpression* exp, Runtime::Obj
 	popScope();
 
 	*result = right;
+}
+
+void TreeInterpreter::evaluateStringEvalExpression( StringEvalExpression *exp, Runtime::Object *result, IScope *scope )
+{
+    if ( !scope ) {
+		throw Common::Exceptions::Exception( "invalid scope provided" );
+	}
+
+	Runtime::StringType tmp;
+
+	evaluate( exp->mExpression, &tmp );
+
+	static constexpr char* VARPREFIX  { "{{{" };
+    static constexpr char* VARPOSTFIX { "}}}" };
+    static constexpr size_t PREFIXLEN { strlen( VARPREFIX ) };
+    static constexpr size_t POSTFIXLEN{ strlen( VARPOSTFIX ) };
+
+	auto sourceStr = tmp.getValue().toStdString();
+	size_t start   = 0;
+
+	while ( ( start = sourceStr.find_first_of( VARPREFIX, start ) ) != std::string::npos ) {
+		auto end = sourceStr.find_first_of( VARPOSTFIX, start );
+		if ( end == std::string::npos ) {
+			start += PREFIXLEN;
+			break;
+		}
+
+		auto startPos = start + PREFIXLEN;
+		auto endPos   = end;
+		end += POSTFIXLEN;
+
+		auto var = sourceStr.substr( startPos, endPos - startPos );
+		if ( var.empty() ) {
+			start += PREFIXLEN;
+			continue;
+		}
+
+		auto* symbol = scope->resolve( var, false, Visibility::Designtime );
+		if ( !symbol ) {
+		    start += PREFIXLEN;
+			continue;	// skip not-existing symbols
+		}
+		if ( symbol->getSymbolType() != Symbol::IType::ObjectSymbol ) {
+		    start += PREFIXLEN;
+			continue;	// skip symbols with wrong type
+		}
+
+		auto* tmp = dynamic_cast<Runtime::Object*>(symbol);
+
+		sourceStr.replace( start, end - start, tmp->getValue().toStdString() );
+	}
+
+	Runtime::StringType type( sourceStr );
+	Runtime::operator_binary_assign( result, &type );
 }
 
 void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::Object *result, IScope *scope)
@@ -718,6 +774,9 @@ std::string TreeInterpreter::printExpression(Node* node) const
 			result += printExpression(scope->mLHS);
 			result += ".";
 			result += printExpression(scope->mRHS);
+		} break;
+		case Expression::ExpressionType::StringEvalExpression: {
+			result += "streval(" + printExpression(dynamic_cast<StringEvalExpression*>(expression)->mExpression) + ")";
 		} break;
 		case Expression::ExpressionType::SymbolExpression: {
 			auto* sym = dynamic_cast<SymbolExpression*>(expression);

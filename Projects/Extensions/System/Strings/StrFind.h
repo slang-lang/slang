@@ -27,7 +27,7 @@ class StrFind : public ExtensionMethod
 {
 public:
 	StrFind()
-	: ExtensionMethod(0, "strfind", Designtime::Int32Type::TYPENAME)
+	: ExtensionMethod( nullptr, "strfind", Designtime::Int32Type::TYPENAME )
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("source", Designtime::StringType::TYPENAME));

@@ -1,30 +1,30 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	Defines.cpp
-	StringsExtension.cpp
+    Defines.cpp
+    StringsExtension.cpp
 )
 
 SET(HEADERS
-	Defines.h
-	StrFind.h
-	StrFTime.h
-	StrPTime.h
-	StringsExtension.h
-	StrLPad.h
-	StrLTrim.h
-	StrPos.h
-	StrRPad.h
-	StrRTrim.h
-	StrTrim.h
-	SubStr.h
-	ToLower.h
-	ToUpper.h
+    Defines.h
+    StrFind.h
+    StrFTime.h
+    StrPTime.h
+    StringsExtension.h
+    StrLPad.h
+    StrLTrim.h
+    StrPos.h
+    StrRPad.h
+    StrRTrim.h
+    StrTrim.h
+    SubStr.h
+    ToLower.h
+    ToUpper.h
 )
 
 SET(DEPENDENCIES
-	Utils
-	Core
+    Utils
+    Core
 )
 
 SET(MODULES

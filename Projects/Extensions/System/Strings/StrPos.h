@@ -27,7 +27,7 @@ class StrPos : public ExtensionMethod
 {
 public:
 	StrPos()
-	: ExtensionMethod(0, "strpos", Designtime::StringType::TYPENAME)
+	: ExtensionMethod(nullptr, "strpos", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringType::TYPENAME, 0));

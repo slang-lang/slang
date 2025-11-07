@@ -26,7 +26,7 @@ class StrTrim : public ExtensionMethod
 {
 public:
 	StrTrim()
-	: ExtensionMethod(0, "strtrim", Designtime::StringType::TYPENAME)
+	: ExtensionMethod(nullptr, "strtrim", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringType::TYPENAME, 0));
