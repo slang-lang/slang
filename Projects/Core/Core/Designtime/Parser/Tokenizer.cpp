@@ -103,61 +103,6 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 			break;
 	}
 
-	/*
-	if ( content == "=" ) { category = Token::Category::Assignment; type = Token::Type::ASSIGN; }
-	else if ( content == ";" ) { type = Token::Type::SEMICOLON; }
-	else if ( content == "{" ) { type = Token::Type::BRACKET_CURLY_OPEN; }
-	else if ( content == "}" ) { type = Token::Type::BRACKET_CURLY_CLOSE; }
-	else if ( content == "." ) { type = Token::Type::OPERATOR_SCOPE; }
-	else if ( content == "," ) { type = Token::Type::COMMA; }
-	else if ( content == ":" ) { type = Token::Type::COLON; }
-	else if ( content == "[" ) { type = Token::Type::BRACKET_OPEN; }
-	else if ( content == "]" ) { type = Token::Type::BRACKET_CLOSE; }
-	else if ( content == ">" ) { category = Token::Category::Operator; type = Token::Type::COMPARE_GREATER; }
-	else if ( content == "<" ) { category = Token::Category::Operator; type = Token::Type::COMPARE_LESS; }
-	else if ( content == "(" ) { type = Token::Type::PARENTHESIS_OPEN; }
-	else if ( content == ")" ) { type = Token::Type::PARENTHESIS_CLOSE; }
-	else if ( content == "&" ) { category = Token::Category::Operator; type = Token::Type::BITAND; }
-	else if ( content == "|" ) { category = Token::Category::Operator; type = Token::Type::BITOR; }
-	else if ( content == "+" ) { category = Token::Category::Operator; type = Token::Type::MATH_ADDITION; }
-	else if ( content == "/" ) { category = Token::Category::Operator; type = Token::Type::MATH_DIVIDE; }
-	else if ( content == "%" ) { category = Token::Category::Operator; type = Token::Type::MATH_MODULO; }
-	else if ( content == "*" ) { category = Token::Category::Operator; type = Token::Type::MATH_MULTIPLY; }
-	else if ( content == "-" ) { category = Token::Category::Operator; type = Token::Type::MATH_SUBTRACT; }
-	else if ( content == "?" ) { category = Token::Category::Operator; type = Token::Type::QUESTION_MARK; }
-	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_NOT; }
-	else if ( content == "~" ) { category = Token::Category::Operator; type = Token::Type::TILDE; }
-	else if ( content == OPERATOR_RANGE ) { type = Token::Type::OPERATOR_RANGE; }
-	else if ( content == OPERATOR_IS ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_IS; }
-	else if ( isAccessMode(content) ) { category = Token::Category::Modifier; type = Token::Type::ACCESS_MODE; }
-	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
-	else if ( isDouble(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_DOUBLE;
-		// remove trailing 'd' character
-		content = con.substr(0, con.length() - 1);
-	}
-	else if ( isFloat(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_FLOAT;
-		// remove trailing 'f' character
-		content = con.substr(0, con.length() - 1);
-	}
-	else if ( isIntegerWithType(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER;
-		// remove trailing 'i' character
-		content = con.substr(0, con.length() - 1);
-	}
-	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
-	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
-	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::LANGUAGE_FEATURE_STATE; }
-	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
-		// remove leading and trailing quotation marks (")
-		content = con.substr(1, con.length() - 2);
-	}
-	else if ( isMemoryLayout(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MEMORY_LAYOUT; }
-	else if ( isModifier(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MODIFIER; }
-	else if ( isMutability(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MUTABILITY; }
-	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
-	else if ( isVisibility(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::VISIBILITY; }
-	else if ( isWhiteSpace(content) ) { return; }
-	*/
-
 	mTokens.emplace_back( category, type, content, position, isOptional );
 }
 
