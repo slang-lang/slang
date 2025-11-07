@@ -135,7 +135,7 @@ public object String implements IIterable {
 	public bool Replace( string oldStr, string newStr ) modify {
 		int position = strfind( mValue, oldStr, 0 );
 
-		if ( position > 0 ) {
+		if ( position >= 0 ) {
 			string tmp = substr( mValue, 0, position ) + newStr + substr( mValue, position + strlen( oldStr ) );
 
 			// update members

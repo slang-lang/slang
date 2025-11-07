@@ -26,7 +26,7 @@ class StrRPad : public ExtensionMethod
 {
 public:
 	StrRPad()
-	: ExtensionMethod(0, "strrpad", Designtime::StringType::TYPENAME)
+	: ExtensionMethod(nullptr, "strrpad", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringType::TYPENAME, 0));

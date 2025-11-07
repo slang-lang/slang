@@ -27,7 +27,7 @@ class ToUpper : public ExtensionMethod
 {
 public:
 	ToUpper()
-	: ExtensionMethod(0, "toUpper", Designtime::StringType::TYPENAME)
+	: ExtensionMethod(nullptr, "toUpper", Designtime::StringType::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringType::TYPENAME));

@@ -88,6 +88,7 @@ StringSet provideKeyWords()
 	keywords.insert(KEYWORD_NEW);
 	keywords.insert(KEYWORD_PRINT);
 	keywords.insert(KEYWORD_RETURN);
+	keywords.insert(KEYWORD_STREVAL);
 	keywords.insert(KEYWORD_SWITCH);
 	keywords.insert(KEYWORD_THROW);
 	keywords.insert(KEYWORD_TRY);

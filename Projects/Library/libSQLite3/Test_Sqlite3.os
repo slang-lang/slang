@@ -1,8 +1,5 @@
 #!/usr/bin/env slang
 
-// library imports
-
-// project imports
 import All;
 
 

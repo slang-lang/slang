@@ -1,0 +1,16 @@
+{
+  "name": "SQLite3 cli client",
+  "name_short": "SQLite3",
+  "version": "0.1.1",
+  "description": "SQLite3 command line database client",
+  "dependencies": [
+    { "module": "Slang", "version_min": "0.7.0" },
+    { "module": "System", "version_min": "0.3.4" },
+    { "module": "libSQLite3", "version_min": "0.1.5" }
+  ],
+  "target": {
+    "directory": "SQLite3",
+    "install": [ "SQLite3.slang" ],
+    "type": "internal"
+  }
+}

@@ -100,8 +100,9 @@ private: // Execution
 	Statement* process_print(TokenIterator& token);
 	Statement* process_return(TokenIterator& token);
 	Statements* process_scope(TokenIterator& token, bool allowBreakAndContinue = false, bool needsControlStatement = false);
-	Expression* process_subscript(TokenIterator& token, SymbolExpression* symbol);
 	Node* process_statement(TokenIterator& token, bool allowBreakAndContinue = false);
+	Expression* process_streval(TokenIterator& token);
+	Expression* process_subscript(TokenIterator& token, SymbolExpression* symbol);
 	Statement* process_switch(TokenIterator& token);
 	Statement* process_throw(TokenIterator& token);
 	Statement* process_try(TokenIterator& token);

@@ -40,6 +40,7 @@ static const char* KEYWORD_IF       = "if";
 static const char* KEYWORD_NEW      = "new";
 static const char* KEYWORD_PRINT    = "print";
 static const char* KEYWORD_RETURN   = "return";
+static const char* KEYWORD_STREVAL  = "streval";
 static const char* KEYWORD_SWITCH   = "switch";
 static const char* KEYWORD_THROW    = "throw";
 static const char* KEYWORD_TRY      = "try";
@@ -74,7 +75,8 @@ static const char* MUTABILITY_CONST  = "const";
 static const char* MUTABILITY_MODIFY = "modify";
 
 // Operators
-static const char* OPERATOR_IS = "is";
+static const char* OPERATOR_IS    = "is";
+static const char* OPERATOR_RANGE = "..";
 
 // Reserved words
 static const char* RESERVED_WORD_BY_REFERENCE   = "ref";
