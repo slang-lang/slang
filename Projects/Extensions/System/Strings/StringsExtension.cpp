@@ -28,7 +28,7 @@ namespace Strings {
 
 
 SystemStringsExtension::SystemStringsExtension()
-: AExtension( "Strings", "0.1.1" )
+: AExtension( "Strings", "0.1.2" )
 {
 }
 
