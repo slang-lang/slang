@@ -7,7 +7,6 @@ SET(SOURCES
 
 SET(HEADERS
     Defines.h
-    StrEval.h
     StrFind.h
     StrFTime.h
     StrPTime.h
