@@ -1,4 +1,3 @@
-
 #ifndef Slang_Core_Core_Extensions_AExtension_h
 #define Slang_Core_Core_Extensions_AExtension_h
 
@@ -27,9 +26,9 @@ namespace Extensions {
 class AExtension
 {
 public:
-	explicit AExtension( std::string name, std::string version = "" )
-	: mName( std::move( name ) )
-	, mVersion( std::move( version ) )
+	explicit AExtension( const std::string& name, const std::string& version = "" )
+	: mName( name )
+	, mVersion( version )
 	{ }
 	virtual ~AExtension() = default;
 

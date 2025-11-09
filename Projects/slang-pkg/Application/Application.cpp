@@ -652,14 +652,16 @@ void execute( const std::string& command, bool debug )
 /*
  * Find Case Insensitive Sub String in a given substring
  */
-size_t findCaseInsensitive( std::string data, std::string toSearch, size_t pos )
+size_t findCaseInsensitive( const std::string& data, const std::string& toSearch, size_t pos )
 {
+    std::string dataLower = data;
+    std::string toSearchLower = toSearch;
     // Convert complete given String to lower case
-    std::transform( data.begin(), data.end(), data.begin(), ::tolower );
+    std::transform( dataLower.begin(), dataLower.end(), dataLower.begin(), ::tolower );
     // Convert complete given Sub String to lower case
-    std::transform( toSearch.begin(), toSearch.end(), toSearch.begin(), ::tolower );
+    std::transform( toSearchLower.begin(), toSearchLower.end(), toSearchLower.begin(), ::tolower );
     // Find sub string in given string
-    return data.find( toSearch, pos );
+    return dataLower.find( toSearchLower, pos );
 }
 
 void info( const StringList& params )
