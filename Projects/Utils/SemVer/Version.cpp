@@ -15,7 +15,7 @@ SemanticVersionNumber::SemanticVersionNumber( const std::string& version )
 	parse( version );
 }
 
-SemanticVersionNumber::SemanticVersionNumber( int major, int minor, int bugfix, std::string label, std::string buildMetadata )
+SemanticVersionNumber::SemanticVersionNumber( int major, int minor, int bugfix, const std::string& label, const std::string& buildMetadata )
 : mBugfix( bugfix )
 , mBuildMetadata( buildMetadata )
 , mLabel( label )
