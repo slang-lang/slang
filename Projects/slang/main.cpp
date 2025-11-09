@@ -4,9 +4,8 @@
 // Project includes
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/Runtime/Script.h>
+#include <Core/Script.h>
 #include <Core/Version.h>
-#include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Logger/StackTrace.h>
 #include <Logger/StdOutLogger.h>
@@ -250,9 +249,9 @@ int main( int argc, const char* argv[] )
 		if ( e == Runtime::ControlFlow::ExitProgram ) {
 			return 0;
 		}
-		else if ( e == Runtime::ControlFlow::Throw ) {
-			OSerror( "Exception thrown in " << Controller::Instance().thread( 0 )->exception().getPosition().toString() << std::endl
-			         << Controller::Instance().thread( 0 )->exception().getData()->ToString() );
+		else if ( e == Slang::Runtime::ControlFlow::Throw ) {
+			OSerror( "Exception thrown in " << mVirtualMachine.thread( 0 )->exception().getPosition().toString() << std::endl
+			         << mVirtualMachine.thread( 0 )->exception().getData()->ToString() );
 		}
 		else {
 			OSerror( "abnormal program termination!" );

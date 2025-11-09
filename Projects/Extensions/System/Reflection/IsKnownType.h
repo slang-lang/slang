@@ -10,7 +10,6 @@
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
-#include <Core/VirtualMachine/Controller.h>
 
 // Forward declarations
 
@@ -42,7 +41,7 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		std::string param_type = (*it++).value().toStdString();
+		auto param_type = (*it++).value().toStdString();
 
 		*result = Runtime::BoolType( Controller::Instance().repository()->findBluePrintObject(param_type) != nullptr );
 

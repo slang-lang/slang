@@ -20,10 +20,6 @@
 
 namespace Slang {
 
-// Forward declarations
-namespace Runtime {
-class Object;
-}
 
 class Parameter
 {

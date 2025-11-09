@@ -31,7 +31,7 @@ public:
 	const std::string& getStackTrace() const;
 
 private:
-	Object *mData;
+	Object* mData;
 	Common::Position mPosition;
 	std::string mStackTrace;
 };
