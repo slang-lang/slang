@@ -23,7 +23,7 @@ class SemanticVersionNumber
 public:
 	SemanticVersionNumber() = default;
 	explicit SemanticVersionNumber( const std::string& version );
-	SemanticVersionNumber( int major, int minor, int bugfix, std::string label = "", std::string buildMetadata = "" );
+	SemanticVersionNumber( int major, int minor, int bugfix, const std::string& label = "", const std::string& buildMetadata = "" );
 
 public:
 	SemanticVersionNumber& operator=( const std::string& version );

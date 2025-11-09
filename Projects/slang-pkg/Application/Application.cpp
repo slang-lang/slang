@@ -49,7 +49,7 @@ namespace {
     void createLocalLibrary();
     bool download( const std::string& url, const std::string& target, bool allowCleanup = true );
     void execute( const std::string& command, bool debug = false );
-    size_t findCaseInsensitive( std::string data, std::string toSearch, size_t pos = 0 );
+    size_t findCaseInsensitive( const std::string& data, const std::string& toSearch, size_t pos = 0 );
     void info( const StringList& params );
     void install( const StringList& params );
     void installModule( const std::string& repo, const std::string& module );
@@ -652,7 +652,7 @@ void execute( const std::string& command, bool debug )
 /*
  * Find Case Insensitive Sub String in a given substring
  */
-size_t findCaseInsensitive(const std::string& data, const std::string& toSearch, size_t pos)
+size_t findCaseInsensitive( const std::string& data, const std::string& toSearch, size_t pos )
 {
     // Convert complete given String to lower case
     std::string dataLower = data;
