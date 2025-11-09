@@ -341,7 +341,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	}
 
 	// create initialized reference of new object
-	*result = std::move( *mRepository->createReference( exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final ) );
+	*result = *mRepository->createReference( exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final );
 
 	if ( result->isAtomicType() ) {	// hack to initialize atomic types
 		if ( !params.empty() ) {
