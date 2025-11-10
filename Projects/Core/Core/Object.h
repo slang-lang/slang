@@ -31,8 +31,6 @@ namespace Slang {
 namespace Slang {
 namespace Runtime {
 
-// Forward declarations
-class Method;
 
 class Object : public MethodScope,
 			   public ObjectSymbol
@@ -78,7 +76,7 @@ public:	// Type
 	bool isInstanceOf(const std::string& type) const;
 
 public:	// Value
-	AtomicValue getValue() const;
+	const AtomicValue& getValue() const;
 	void setValue(const AtomicValue& value);
 
 	Object* getThis() const { return mThis; }

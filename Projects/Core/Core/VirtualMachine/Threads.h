@@ -102,12 +102,12 @@ public:
 	void deleteThread(ThreadId id);
 	Thread* getThread(ThreadId id) const;
 
-	unsigned int getNumThreads() const;
+	size_t getNumThreads() const;
 
 	void print();
 
 private:
-	typedef std::map<unsigned int /*id*/, Thread* /*thread*/> InternalThreads;
+	typedef std::map<size_t /*id*/, Thread* /*thread*/> InternalThreads;
 
 private:
 	InternalThreads mThreads;

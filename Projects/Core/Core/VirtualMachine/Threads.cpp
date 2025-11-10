@@ -188,7 +188,7 @@ void Threads::deleteThread(ThreadId id)
 	(void)thread;
 }
 
-unsigned int Threads::getNumThreads() const
+size_t Threads::getNumThreads() const
 {
 	return mThreads.size();
 }

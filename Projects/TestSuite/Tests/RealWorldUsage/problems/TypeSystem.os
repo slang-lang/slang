@@ -1,7 +1,7 @@
 #!/usr/bin/env slang
 
 public void Main( int argc, string args ) {
-	bool bval = 1;
+	bool bval = 17.3;
 	print( typeid( bval ) + ": " + bval );
 
 	int ival = true;
