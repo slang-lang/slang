@@ -1,0 +1,11 @@
+PROGRAM VarTest;
+VAR
+	A: INTEGER;
+	B: INTEGER := 173;
+BEGIN
+	A := 1;
+	WRITELN( A );
+
+	B := 2;
+	WRITELN( B );
+END.

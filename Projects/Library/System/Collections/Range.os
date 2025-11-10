@@ -78,6 +78,26 @@ public object Range implements ICollection, IIterable {
 		return new Range( mStart, mEnd, stepSize );
 	}
 
+	public int getStart() const {
+		return mStart;
+	}
+
+	public int getStep() const {
+		return mStep;
+	}
+
+	/*
+	 * returns a new Range object with given step size
+	 * throws Exception
+	 */
+	public Range step(int stepSize) throws {
+		if ( stepSize == 0 ) {
+			throw new Exception("invalid step size(" + stepSize + ") provided");
+		}
+
+		return new Range(mStart, mEnd, stepSize);
+	}
+
 	public int size() const {
 		return ( mEnd - mStart ) / mStep + 1;
 	}

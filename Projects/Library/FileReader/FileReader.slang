@@ -6,7 +6,6 @@ import System.IO.File;
 
 // Project imports
 
-
 public void Main( int argc, string args ) {
 	if ( argc < 2 ) {
 		print( "usage: program [arg1 [arg2 [...] ] ]" );

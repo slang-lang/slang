@@ -47,8 +47,8 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		std::string param_name = (*it++).value().toStdString();
-		std::string param_value = (*it++).value().toStdString();
+		auto param_name  = (*it++).value().toStdString();
+		auto param_value = (*it++).value().toStdString();
 
 #ifdef _WIN32
 		*result = Runtime::Int32Type(SetEnvironmentVariable(param_name.c_str(), param_value.c_str()));

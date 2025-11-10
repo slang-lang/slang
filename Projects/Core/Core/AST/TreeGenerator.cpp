@@ -228,6 +228,7 @@ void TreeGenerator::initialize(Common::Method* method)
 	// add 'this' symbol to method
 	if ( mThis && !mMethod->isStatic() ) {
 		scope->define(IDENTIFIER_THIS, mThis);
+		//mStackFrame->pushIdentifier(mThis, IDENTIFIER_THIS);
 	}
 
 	const ParameterList& params = mMethod->provideSignature();
@@ -2124,7 +2125,8 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::AllowAbstract);
 	object->setMutability(mutability);
 
-	getScope()->define(name, object);
+	//getScope()->define(name, object);
+	size_t index = mStackFrame->pushIdentifier(object, name);
 
 	// non-atomic types are references by default
 	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, object->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference);
@@ -2205,7 +2207,8 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 	object->setMutability(mutability);
 	object->setIsReference(accessMode == AccessMode::ByReference);
 
-	getScope()->define(name, object);
+	//getScope()->define(name, object);
+	mStackFrame->pushIdentifier(object, name);
 
 	// this could easily be changed to return a TypeDeclaration statement, which would be a little faster but during debugging the wrong statement would be shown
 	return new TypeInference(start, rhs->getResultType(), PrototypeConstraints(), name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, rhs);
@@ -2380,6 +2383,27 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	symbol->mSurroundingScope = base;
 
 	return symbol;
+}
+
+SymbolExpression* TreeGenerator::resolveLocal(TokenIterator& token) const
+{
+	std::string name = token->content();
+
+	size_t index = mStackFrame->lookup(name);
+	if ( index != size_t(-1) ) {
+		IScope* scope = mStackFrame->peek(index);
+		if ( !scope ) {
+			return NULL;
+		}
+
+		++token;
+
+		Runtime::Object* object = dynamic_cast<Runtime::Object*>(scope);
+
+		return new LocalSymbolExpression(name, object->QualifiedTypename(), object->isConst(), object->isAtomicType(), index);
+	}
+
+	return NULL;
 }
 
 MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility)

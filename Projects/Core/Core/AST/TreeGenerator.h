@@ -136,6 +136,7 @@ private: // Execution
 	// }
 
 	SymbolExpression* resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope, Visibility::E visibility) const;
+	SymbolExpression* resolveLocal(TokenIterator& token) const;
 	SymbolExpression* resolveWithExceptions(TokenIterator& token, IScope* base) const;
 	SymbolExpression* resolveWithThis(TokenIterator& token, IScope* base) const;
 	static MethodSymbol* resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) ;

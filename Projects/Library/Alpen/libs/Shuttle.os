@@ -145,4 +145,3 @@ public object Shuttle {
         typeID = ShuttleType cast<int>( mysql_get_field_value(dbResult, "shuttle_type_id") );
     }
 }
-

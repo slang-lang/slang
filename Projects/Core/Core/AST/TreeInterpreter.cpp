@@ -415,6 +415,14 @@ void TreeInterpreter::evaluateStringEvalExpression( StringEvalExpression *exp, R
 
 void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::Object *result, IScope *scope)
 {
+	if ( exp->getSymbolExpressionType() == SymbolExpression::SymbolExpressionType::LocalSymbolExpression ) {
+		//OSinfo(mThread->currentFrame()->toString());
+		//OSinfo(exp->toString());
+
+		*result = *dynamic_cast<Runtime::Object*>(mThread->currentFrame()->peek(dynamic_cast<LocalSymbolExpression*>(exp)->getIndex()));
+		return;
+	}
+
 	if ( !scope ) {
 		throw Common::Exceptions::Exception("invalid scope provided");
 	}
@@ -572,6 +580,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Object* self, Common::
 	// assign this pointer and add to scope
 	if ( self ) {
 		scope.define(IDENTIFIER_THIS, self);
+		//mThread->currentFrame()->pushIdentifier(self, IDENTIFIER_THIS);
 	}
 
 	// initialize parameters & push scope
@@ -675,6 +684,8 @@ inline IScope* TreeInterpreter::getScope() const
 
 void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 {
+	mThread->pushFrame(scope, TokenList(), params);
+
 	// add parameters as locale variables
 	for ( const auto& param : params ) {
 		if ( param.name().empty() ) {
@@ -845,6 +856,13 @@ Runtime::Object& TreeInterpreter::resolveLValue(IScope *scope, SymbolExpression 
 
 Symbol* TreeInterpreter::resolveRValue(IScope *scope, SymbolExpression *symbol, bool onlyCurrentScope, Visibility::E visibility) const
 {
+	if ( symbol->getSymbolExpressionType() == SymbolExpression::SymbolExpressionType::LocalSymbolExpression ) {
+		//OSinfo(mThread->currentFrame()->toString());
+		//OSinfo(symbol->toString());
+
+		return dynamic_cast<Runtime::Object*>(mThread->currentFrame()->peek(dynamic_cast<LocalSymbolExpression*>(symbol)->getIndex()));
+	}
+
 	if ( !scope ) {
 		throw Runtime::Exceptions::InvalidSymbol("invalid scope provided");
 	}
@@ -1055,11 +1073,7 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 		Runtime::Object collection;
 		tryControl(evaluate(node->mCollectionExpression, &collection));
 
-		pushScope(&collection);
-
-			evaluateMethodExpression(node->mGetIteratorExpression, &iterator);
-
-		popScope();
+		evaluate(node->mGetIteratorExpression, &iterator);
 	}
 	else {
 		// an iterator has been provided instead of a collection
@@ -1073,11 +1087,7 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 		// {
 		Runtime::Object condition;
 
-		pushScope(&iterator);
-
-			evaluateMethodExpression(node->mHasNextExpression, &condition);
-
-		popScope();
+		evaluate(node->mHasNextExpression, &condition);
 
 		if ( !isTrue(condition) ) {	// do we have more items to iterate over?
 			break;
@@ -1090,15 +1100,12 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 			// {
 			Runtime::Object* loopVariable = mRepository->createInstance(typeDeclaration->mType, typeDeclaration->mName, typeDeclaration->mConstraints);
 
-			getScope()->define(typeDeclaration->mName, loopVariable);
+			//getScope()->define(typeDeclaration->mName, loopVariable);
+			mThread->currentFrame()->pushIdentifier(loopVariable, typeDeclaration->mName);
 			// }
 
 			// iterate over next item
-			pushScope(&iterator);
-
-				evaluateMethodExpression(node->mNextExpression, loopVariable);
-
-			popScope();
+			evaluate(node->mNextExpression, loopVariable);
 
 			// set mutability after initializing
 			loopVariable->setMutability(typeDeclaration->mIsConst ? Mutability::Const : Mutability::Modify);
@@ -1377,7 +1384,8 @@ Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 	lvalue->setMutability(node->mIsConst ? Mutability::Const : Mutability::Modify);
 	lvalue->setIsReference(node->mIsReference);
 
-	getScope()->define(node->mName, lvalue);
+	//getScope()->define(node->mName, lvalue);
+	mThread->currentFrame()->pushIdentifier(lvalue, node->mName);
 
 	if ( node->mAssignmentExpression ) {
 		Runtime::Object right;

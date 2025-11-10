@@ -40,7 +40,6 @@ public object JsonArray extends JsonValue implements IIterable {
 
 	public string toString() const {
 		string members;
-
 		foreach ( JsonValue value : mMembers ) {
 			members += ( members ? ", " : "" ) + value.toString();
 		}

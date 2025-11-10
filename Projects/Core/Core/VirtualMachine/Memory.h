@@ -22,6 +22,11 @@ namespace Runtime {
 	class Object;
 }
 
+// Forward declarations
+namespace Runtime {
+	class Object;
+}
+
 
 class Memory
 {

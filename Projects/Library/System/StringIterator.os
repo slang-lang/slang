@@ -33,6 +33,13 @@ public object StringIterator implements Iterator<string> {
 	}
 
 	/*
+	 * Copy operator
+	 */
+	public StringIterator Copy() const {
+		return new StringIterator(mValue, mSeparator);
+	}
+
+	/*
 	 * returns the value of the current iteration
 	 * throws NotInitializedException
 	 * throws OutOfBoundsException
