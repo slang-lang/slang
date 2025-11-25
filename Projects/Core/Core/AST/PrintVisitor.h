@@ -54,7 +54,7 @@ private:
 
 private:
 	std::string printExpression(Node* node) const;
-	static std::string printIndentation(int indentation) ;
+	static std::string printIndentation(int indentation);
 
 private:
 	int mIndentation;

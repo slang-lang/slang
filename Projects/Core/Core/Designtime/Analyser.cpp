@@ -32,7 +32,7 @@ Analyser::Analyser(bool doSanityCheck, bool printTokens)
   mProcessingInterface(false)
 {
 	mRepository = Controller::Instance().repository();
-	mScope = Controller::Instance().globalScope();
+	mScope      = Controller::Instance().globalScope();
 }
 
 bool Analyser::buildEnum(BluePrintObject* symbol, const TokenList& tokens)
@@ -67,7 +67,7 @@ bool Analyser::buildEnum(BluePrintObject* symbol, const TokenList& tokens)
 		previous_value = value;
 
 		// define enum entries as parent type
-		Runtime::Object* entry = mRepository->createInstance(symbol->QualifiedTypename(), name);
+		auto* entry = mRepository->createInstance(symbol->QualifiedTypename(), name);
 		entry->setMember(true);
 		entry->setMemoryLayout(MemoryLayout::Static);
 		entry->setMutability(Mutability::Const);
