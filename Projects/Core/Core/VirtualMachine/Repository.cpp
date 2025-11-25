@@ -319,16 +319,16 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 
 		// create and define all symbols based on given blueprint
 		const Symbols& symbols = blueprint->provideSymbols();
-		for ( auto it = symbols.cbegin(); it != symbols.cend(); ++it ) {
-			if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+		for ( auto symbolIt = symbols.cbegin(); symbolIt != symbols.cend(); ++symbolIt ) {
+			if ( symbolIt->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 				continue;
 			}
-			if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ) {
+			if ( symbolIt->first == IDENTIFIER_BASE || symbolIt->first == IDENTIFIER_THIS ) {
 				// skip "base" && "this" symbols
 				continue;
 			}
 
-			auto* blue = dynamic_cast<Designtime::BluePrintObject*>(it->second);
+			auto* blue = dynamic_cast<Designtime::BluePrintObject*>(symbolIt->second);
 			if ( blue->isStatic() ) {
 				continue;
 			}
@@ -337,7 +337,7 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 				continue;
 			}
 
-			Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
+			auto* symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
 			symbol->setBluePrint(blue);
 			symbol->setIsReference(!blue->isEnumeration() && blue->isReference());
 			symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
