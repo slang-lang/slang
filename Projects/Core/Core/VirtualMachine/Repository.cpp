@@ -360,7 +360,7 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 			auto* newMethod = new Common::Method(object, method->getName(), Common::TypeDeclaration(method->QualifiedTypename()));
 
 			// ... copy its data from our template method
-			*newMethod = *method;
+			newMethod->shallowCopy(*method);
 
 			object->defineMethod(method->getName(), newMethod);
 		}
