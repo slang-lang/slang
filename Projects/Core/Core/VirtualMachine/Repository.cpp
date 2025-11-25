@@ -351,8 +351,7 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 		}
 
 		// create and define all methods based on given blueprint
-		MethodScope::MethodCollection methods = blueprint->provideMethods();
-		for ( auto& method : methods ) {
+		for ( const auto& method : blueprint->provideMethods() ) {
 			if ( method->isStatic() ) {
 				continue;
 			}
