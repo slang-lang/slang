@@ -351,7 +351,7 @@ bool operator_binary_equal( Object* lvalue, Object* rvalue )
 	}
 
 	ParameterList params;
-	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
+	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	if ( lvalue->resolveMethod( "operator==", params, false, Visibility::Public ) ) {
 		Object tmp;
@@ -408,7 +408,7 @@ bool operator_binary_greater( Object* lvalue, Object* rvalue )
 	}
 
 	ParameterList params;
-	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
+	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
 	lvalue->execute( &tmp, "operator>", params );
@@ -460,7 +460,7 @@ bool operator_binary_greater_equal( Object* lvalue, Object* rvalue )
 	}
 
 	ParameterList params;
-	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
+	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
 	lvalue->execute( &tmp, "operator>=", params );
@@ -512,7 +512,7 @@ bool operator_binary_less( Object* lvalue, Object* rvalue )
 	}
 
 	ParameterList params;
-	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
+	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
 	lvalue->execute( &tmp, "operator<", params );
@@ -564,7 +564,7 @@ bool operator_binary_less_equal( Object* lvalue, Object* rvalue )
 	}
 
 	ParameterList params;
-	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
+	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
 	lvalue->execute( &tmp, "operator<=", params );

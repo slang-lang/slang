@@ -267,7 +267,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 		evaluate((*it), param);
 
-		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
+		params.emplace_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
 
 	IScope* scope = getScope();
@@ -334,7 +334,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 
 		evaluate((*it), param);
 
-		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
+		params.emplace_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
 
 	// create initialized reference of new object
