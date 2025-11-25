@@ -302,8 +302,10 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 						// ignore hidden ancestors
 					} break;
 					case Designtime::Ancestor::Type::Implements: {
-						auto* ancestor = createReference(blueIt->second, name, ancestorIt.constraints(), InitilizationType::None);
+						auto* ancestor = createReference(blueIt->second, blueIt->first, ancestorIt.constraints(), InitilizationType::None);
 						ancestor->setParent(blueprint->getEnclosingScope());
+
+						object->define( "__" + ancestor->getName() + "__", ancestor);
 
 						// add our newly created ancestor to our inheritance
 						object->addInheritance(ancestorIt, ancestor);
