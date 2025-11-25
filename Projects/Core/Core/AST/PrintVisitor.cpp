@@ -35,7 +35,7 @@ void PrintVisitor::generate(Statements* root, TreeLineBuffer& output)
 std::string PrintVisitor::printExpression(Node* node) const
 {
 	if ( !node ) {
-		return "";
+		return std::string( "" );
 	}
 
 	assert(node->getNodeType() == Node::NodeType::Expression);

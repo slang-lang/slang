@@ -174,7 +174,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 		}
 	}
 
-	MethodScope* globalScope = Controller::Instance().globalScope();
+	auto* globalScope = Controller::Instance().globalScope();
 
 	Controller::Instance().repository()->initializeBlueprints();
 
@@ -468,4 +468,3 @@ namespace {
 		return Utils::Tools::Files::BuildPath( folder, filename + std::string( "/All" ) ) + ".os";
 	}
 }
-
