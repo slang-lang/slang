@@ -302,8 +302,10 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 						// ignore hidden ancestors
 					} break;
 					case Designtime::Ancestor::Type::Implements: {
-						auto* ancestor = createReference(blueIt->second, name, ancestorIt.constraints(), InitilizationType::None);
+						auto* ancestor = createReference(blueIt->second, blueIt->first, ancestorIt.constraints(), InitilizationType::None);
 						ancestor->setParent(blueprint->getEnclosingScope());
+
+						object->define( "__" + ancestor->getName() + "__", ancestor);
 
 						// add our newly created ancestor to our inheritance
 						object->addInheritance(ancestorIt, ancestor);
@@ -351,8 +353,7 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 		}
 
 		// create and define all methods based on given blueprint
-		MethodScope::MethodCollection methods = blueprint->provideMethods();
-		for ( auto& method : methods ) {
+		for ( const auto& method : blueprint->provideMethods() ) {
 			if ( method->isStatic() ) {
 				continue;
 			}
@@ -361,7 +362,7 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 			auto* newMethod = new Common::Method(object, method->getName(), Common::TypeDeclaration(method->QualifiedTypename()));
 
 			// ... copy its data from our template method
-			*newMethod = *method;
+			newMethod->shallowCopy(*method);
 
 			object->defineMethod(method->getName(), newMethod);
 		}
