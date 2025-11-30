@@ -222,9 +222,17 @@ void Application::loadConfig()
 
 void Application::loadServices()
 {
+    if ( !mSettings.Config.isMember( "script" ) ) {
+        mSettings.Config[ "script" ] = Json::Value();
+    }
     if ( !mSettings.Config.isMember( "services" ) ) {
         mSettings.Config[ "services" ] = Json::Value();
     }
+
+    mSettings.Script = mSettings.Config[ "script" ].asString();
+    OSdebug( "Loading script '" + mSettings.Script + "'" );
+
+    mScript = mVirtualMachine->createScriptFromFile( mSettings.Script );
 
     // load service paths from config
     auto services = mSettings.Config[ "services" ];
@@ -234,13 +242,13 @@ void Application::loadServices()
         OSdebug( "Loading service '" + serviceName + "' with service path '" + service.asString() + "'" );
 
         mSettings.Services.push_back(
-            new Service( serviceName, service.asString(), mVirtualMachine )
+            new Service( serviceName, service.asString(), mScript )
         );
     }
 
     if ( mSettings.Config.isMember( "default" ) ) {
         mSettings.DefaultService = new Service(
-            "default", mSettings.Config[ "default" ].asString(), mVirtualMachine
+            "default", mSettings.Config[ "default" ].asString(), mScript
         );
     }
 }

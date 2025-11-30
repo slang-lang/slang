@@ -25,6 +25,7 @@ public:
     std::string CurrentFolder;
     Service* DefaultService{ nullptr };
     std::string LibraryFolder;
+    std::string Script;
     std::vector<Service*> Services;
     bool Verbose{ false };
 };

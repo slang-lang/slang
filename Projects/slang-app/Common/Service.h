@@ -11,7 +11,6 @@
 
 // Forward declarations
 namespace Slang {
-    class VirtualMachine;
     class Script;
 }
 
@@ -21,7 +20,7 @@ namespace Slang {
 class Service
 {
 public:
-    Service( std::string path, std::string scriptFilename, Slang::VirtualMachine* vm );
+    Service( std::string path, std::string entryPoint, Slang::Script* script );
     ~Service() = default;
 
     const std::string& getPath() const {
@@ -35,10 +34,9 @@ private:
     void initialize();
 
 private:
+    std::string mEntryPoint;
     std::string mPath;
     Slang::Script* mScript{ nullptr };
-    std::string mScriptFilename;
-    Slang::VirtualMachine* mVirtualMachine{ nullptr };
 };
 
 

@@ -18,10 +18,10 @@
 // Namespace declarations
 
 
-Service::Service( std::string path, std::string scriptFilename, Slang::VirtualMachine* vm )
-: mPath( std::move( path ) )
-, mScriptFilename( std::move( scriptFilename ) )
-, mVirtualMachine( vm )
+Service::Service( std::string path, std::string entryPoint, Slang::Script* script )
+: mEntryPoint( std::move( entryPoint ) )
+, mPath( std::move( path ) )
+, mScript( script )
 {
     initialize();
 }
@@ -35,12 +35,7 @@ bool Service::handleRequest( const FCGX_Request& request )
 
     if ( mScript ) {
         Slang::Runtime::Object result;
-        //mVirtualMachine->run( mScript, Slang::ParameterList(), &result );
-        mScript->execute( Slang::Controller::Instance().threads()->createThread()->getId(), "Start", Slang::ParameterList(), &result );
-
-        // if ( result.getValue().type() == Slang::Runtime::AtomicValue::Type::INT ) {
-        //     return result.getValue().toInt();
-        // }
+        mScript->execute( Slang::Controller::Instance().threads()->createThread()->getId(), mEntryPoint, Slang::ParameterList(), &result );
     }
 
     std::cout.rdbuf( old );
@@ -55,11 +50,11 @@ bool Service::handleRequest( const FCGX_Request& request )
 
 void Service::initialize()
 {
-    if ( mScriptFilename.empty() ) {
+    if ( mEntryPoint.empty() ) {
         // nothing to do here
         return;
     }
 
-    mScript = mVirtualMachine->createScriptFromFile( mScriptFilename );
-    assert( mScript );
+    // CHECKME: verify that the entry point exists in the script
+    //mScript->
 }
