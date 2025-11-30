@@ -35,8 +35,9 @@ int main( int argc, const char* argv[] )
 	// Memory leak detection
 #endif
 
-    Slang::Application app;
-    app.init( argc, argv );
+	Slang::Application app;
+	app.init( argc, argv );
 
 	return app.exec();
 }
+
