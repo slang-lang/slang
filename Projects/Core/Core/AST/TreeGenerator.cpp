@@ -53,7 +53,7 @@ void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 	auto bodyEnd = --findNextBalancedCurlyBracket(token, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	while ( token != bodyEnd ) {
-		tokens.push_back((*++token));
+		tokens.emplace_back((*++token));
 	}
 
 	++token;
@@ -1605,7 +1605,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 {
 	ParameterList params;
 	for ( auto& expression : expressions ) {
-		params.push_back(Parameter::CreateDesigntime(
+		params.emplace_back(Parameter::CreateDesigntime(
 			ANONYMOUS_OBJECT,
 			Common::TypeDeclaration(dynamic_cast<Expression*>(expression)->getResultType(), PrototypeConstraints(), dynamic_cast<Expression*>(expression)->isConst() ? Mutability::Const : Mutability::Modify),
 			Runtime::AtomicValue(),
@@ -2270,7 +2270,7 @@ std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* 
 
 	for ( auto methodIt = scope->beginMethods(); methodIt != scope->endMethods(); ++methodIt ) {
 		if ( (*methodIt)->getName() == symbol->innerName() ) {
-			result.push_back( *methodIt );
+			result.emplace_back( *methodIt );
 		}
 	}
 

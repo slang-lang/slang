@@ -356,7 +356,7 @@ void Object::operator_assign(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
+	params.emplace_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::Slang::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	if ( value_operator ) {
