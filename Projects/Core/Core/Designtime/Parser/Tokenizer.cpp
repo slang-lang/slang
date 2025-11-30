@@ -633,7 +633,7 @@ void Tokenizer::mergeAssignments()
 		}
 
 		if ( !changed ) {
-			tmp.push_back((*token));
+			tmp.emplace_back((*token));
 		}
 		lastType = tmp.back().type();
 
