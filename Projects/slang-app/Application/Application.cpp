@@ -203,8 +203,8 @@ void Application::init( int argc, const char* argv[] )
     mVirtualMachine->addLibraryFolder( mSettings.CurrentFolder );
     mVirtualMachine->init();
 
-    mVirtualMachine->printLibraryFolders();
-    mVirtualMachine->printExtensions();
+    //mVirtualMachine->printLibraryFolders();
+    //mVirtualMachine->printExtensions();
 
     loadConfig();
 }
