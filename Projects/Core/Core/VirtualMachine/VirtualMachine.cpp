@@ -170,7 +170,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 		bool imported{ false };
 
 		for ( const auto& folder : mLibraryFolders ) {
-			if ( loadLibrary( buildFilename( folder, file ) ) ) {
+			if ( loadLibrary( buildFilename( folder, file ), mScriptFile ) ) {
 				imported = true;
 				break;
 			}
@@ -300,18 +300,17 @@ bool VirtualMachine::loadExtension( const std::string& extension, const std::str
 #endif
 }
 
-bool VirtualMachine::loadLibrary(const std::string& library)
+bool VirtualMachine::loadLibrary(const std::string& library, const std::string& fromLibrary)
 {
-	OSdebug("loading library file '" + library + "'...");
+	OSdebug( "loading library file '" + library + "' from file '" + fromLibrary + "'..." );
 
-	if ( !Utils::Tools::Files::exists(library) ) {
+	if ( !Utils::Tools::Files::exists( library ) ) {
 		// provided library file doesn't exist!
 		return false;
 	}
 
-	if ( mImportedLibraries.find(library) != mImportedLibraries.end() ) {
-		// circular import => abort
-		OSdebug("circular imports detected in file '" + library + "'");
+	if ( mImportedLibraries.find( library ) != mImportedLibraries.end() ) {
+		OSdebug( "Ignoring already imported file '" + library + "'" );
 		return true;
 	}
 
@@ -331,13 +330,28 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		}
 	}
 
+	auto librariesFolders = mLibraryFolders;
+	librariesFolders.insert( librariesFolders.begin(), currentFolder );
+
 	// load all library references
 	auto libraryImports = analyser.getLibraryReferences();
+
+	// (1) first try to resolve relative to the current file
+	for ( auto libIt = libraryImports.begin(); libIt != libraryImports.end(); ) {
+		if ( loadLibrary( buildFilename( currentFolder, *libIt ), library ) ) {
+			libIt = libraryImports.erase( libIt );
+		}
+		else {
+			++libIt;
+		}
+	}
+
+	// (2) then try to resolve via the library folders
 	for ( const auto& file : libraryImports ) {
 		bool imported{ false };
 
-		for ( const auto& folder : mLibraryFolders ) {
-			if ( loadLibrary( buildFilename( folder, file ) ) ) {
+		for ( const auto& folder : librariesFolders ) {
+			if ( loadLibrary( buildFilename( folder, file ), library ) ) {
 				imported = true;
 				break;
 			}

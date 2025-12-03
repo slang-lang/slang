@@ -214,8 +214,7 @@ void MethodScope::defineMethod(const std::string& name, Common::Method* method)
 	}
 
 	if ( MethodScope::resolveMethod(name, method->provideSignature(), true) ) {
-		// duplicate method defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate method '" + method->getName() + "(" + toString(method->provideSignature()) + ")' added with same signature");
+		throw Common::Exceptions::DuplicateIdentifier("duplicate method '" + method->getFullScopeName() + "(" + toString(method->provideSignature()) + ")' added with same signature");
 	}
 
 	mMethods.insert(method);
