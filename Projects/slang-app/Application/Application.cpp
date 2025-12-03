@@ -46,7 +46,7 @@ namespace {
     // bool contains( const StringList& list, const std::string& value );
     // void execute( const std::string& command, bool debug = false );
     // size_t findCaseInsensitive( std::string data, std::string toSearch, size_t pos = 0 );
-    bool isLocalLibrary();
+    // bool isLocalLibrary();
     void readJsonFile( const std::string& filename, Json::Value& result );
     // void storeConfig();
     // void writeJsonFile( const std::string& filename, Json::Value& result );
@@ -187,10 +187,6 @@ void Application::init( int argc, const char* argv[] )
     if ( mSettings.LibraryFolder[ sizeof( mSettings.LibraryFolder ) - 1 ] != '/' ) {
         mSettings.LibraryFolder += '/';
     }
-    // override library folder if our current folder is a library
-    if ( isLocalLibrary() ) {
-        mSettings.LibraryFolder = mSettings.CurrentFolder;
-    }
 
     mVirtualMachine = new VirtualMachine();
 
@@ -201,6 +197,7 @@ void Application::init( int argc, const char* argv[] )
     #endif
 
     mVirtualMachine->addLibraryFolder( mSettings.CurrentFolder );
+    mVirtualMachine->addLibraryFolder( mSettings.LibraryFolder );
     mVirtualMachine->init();
 
     //mVirtualMachine->printLibraryFolders();
@@ -213,7 +210,7 @@ void Application::loadConfig()
 {
     OSdebug( "Loading configuration" );
 
-    readJsonFile( mSettings.LibraryFolder + CONFIG_SERVER, mSettings.Config );
+    readJsonFile( mSettings.CurrentFolder + CONFIG_SERVER, mSettings.Config );
 
     // TODO: Implement configuration loading
 
@@ -335,10 +332,10 @@ namespace {
 //     return data.find( toSearch, pos );
 // }
 
-bool isLocalLibrary()
-{
-    return Utils::Tools::Files::exists( mSettings.CurrentFolder + CONFIG_SERVER );
-}
+// bool isLocalLibrary()
+// {
+//     return Utils::Tools::Files::exists( mSettings.CurrentFolder + CONFIG_SERVER );
+// }
 
 void readJsonFile( const std::string& filename, Json::Value& result )
 {

@@ -50,7 +50,7 @@ public:
 
 public:	// Setup
 	bool addExtension(Extensions::AExtension* extension, const std::string& library = "<internal library>");
-	void addLibraryFolder(const std::string& library);
+	void addLibraryFolder(const std::string& libraryFolder);
 	void init();
 	void printExtensions();
 	void printLibraryFolders();

@@ -61,7 +61,7 @@ bool Service::handleRequest( const FCGX_Request& request )
     std::cout.rdbuf( old );
     auto output = stream.str();
 
-    OSinfo( "Output: \r\n" + output );
+    std::cout << output << std::endl;
 
     FCGX_FPrintF( request.out, output.c_str() );
 

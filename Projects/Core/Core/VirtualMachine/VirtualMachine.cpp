@@ -27,7 +27,9 @@
 
 
 namespace {
+
 	std::string buildFilename( const std::string& folder, const std::string& filename );
+
 }
 
 namespace Slang {
@@ -124,17 +126,21 @@ bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std:
 	return true;
 }
 
-void VirtualMachine::addLibraryFolder(const std::string& library)
+void VirtualMachine::addLibraryFolder(const std::string& libraryFolder )
 {
-	if ( library.empty() ) {
+	if ( libraryFolder .empty() ) {
 		return;
 	}
 
 #ifdef _MSC_VER
-	mLibraryFolders.insert(Utils::Tools::Files::GetFullname(library + "/"));
+	auto folder = Utils::Tools::Files::GetFullname( libraryFolder  + "/" );
 #else
-	mLibraryFolders.insert(Utils::Tools::Files::GetFullname(library) + "/");
+	auto folder = Utils::Tools::Files::GetFullname( libraryFolder  ) + "/";
 #endif
+
+	if ( mLibraryFolders.find( folder ) == mLibraryFolders.end() ) {
+		mLibraryFolders.insert( folder );
+	}
 }
 
 Script* VirtualMachine::createScript(const std::string& content)
@@ -143,34 +149,35 @@ Script* VirtualMachine::createScript(const std::string& content)
 		init();
 	}
 
-	auto *script = new Script();
-	mScripts.insert(script);
+	auto* script = new Script();
 
-	Designtime::Analyser analyser(mSettings.DoSanityCheck, mSettings.PrintTokens);
-	analyser.processString(content, mScriptFile);
+	mScripts.insert( script );
+
+	Designtime::Analyser analyser( mSettings.DoSanityCheck, mSettings.PrintTokens );
+	analyser.processString( content, mScriptFile );
 
 	// load all extension references
 	auto extensions = analyser.getExtensionReferences();
-	for ( const auto& ext : extensions ) {
-		if ( !loadExtension( ext, (*mLibraryFolders.begin()) ) ) {
-			throw Common::Exceptions::Exception( "could not load extension '" + ext + "' from '" + (*mLibraryFolders.begin()) + "'" );
+	for ( const auto& extension : extensions ) {
+		if ( !loadExtension( extension, (*mLibraryFolders.begin()) ) ) {
+			throw Common::Exceptions::Exception( "could not load extension '" + extension + "' from '" + (*mLibraryFolders.begin()) + "'" );
 		}
 	}
 
 	// load all library references
-	auto libraries = analyser.getLibraryReferences();
-	for ( auto libIt = libraries.begin(); libIt != libraries.end(); ++libIt ) {
-		bool imported = false;
+	auto libraryImports = analyser.getLibraryReferences();
+	for ( const auto& file : libraryImports ) {
+		bool imported{ false };
 
-		for ( const auto& libraryFolder : mLibraryFolders ) {
-			if ( loadLibrary( buildFilename( libraryFolder, (*libIt) ) ) ) {
+		for ( const auto& folder : mLibraryFolders ) {
+			if ( loadLibrary( buildFilename( folder, file ) ) ) {
 				imported = true;
 				break;
 			}
 		}
 
 		if ( !imported ) {
-			throw Common::Exceptions::Exception("could not resolve import '" + (*libIt) + "'");
+			throw Common::Exceptions::Exception( "could not resolve import '" + file + "'" );
 		}
 	}
 
@@ -309,35 +316,35 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 	}
 
 	auto currentFolder = Utils::Tools::Files::ExtractPathname( library );
+	addLibraryFolder( currentFolder );
 
-	mLibraryFolders.insert( currentFolder );
+	mImportedLibraries.insert( library );
 
-	Designtime::Analyser analyser(mSettings.DoSanityCheck, mSettings.PrintTokens);
-	analyser.processFile(library);
-
-	mImportedLibraries.insert(library);
+	Designtime::Analyser analyser( mSettings.DoSanityCheck, mSettings.PrintTokens );
+	analyser.processFile( library );
 
 	// load all extension references
 	auto extensions = analyser.getExtensionReferences();
-	for ( const auto& ext : extensions ) {
-		if ( !loadExtension( ext, currentFolder ) ) {
-			throw Common::Exceptions::Exception( "could not load extension '" + ext + "' from '" + currentFolder + "'" );
+	for ( const auto& extension : extensions ) {
+		if ( !loadExtension( extension, currentFolder ) ) {
+			throw Common::Exceptions::Exception( "could not load extension '" + extension + "' from '" + currentFolder + "'" );
 		}
 	}
 
-	const std::list<std::string>& libraries = analyser.getLibraryReferences();
-	for ( const auto& lib : libraries ) {
-		bool imported = false;
+	// load all library references
+	auto libraryImports = analyser.getLibraryReferences();
+	for ( const auto& file : libraryImports ) {
+		bool imported{ false };
 
-		for ( const auto& libraryFolder : mLibraryFolders ) {
-			if ( loadLibrary( buildFilename( libraryFolder, lib ) ) ) {
+		for ( const auto& folder : mLibraryFolders ) {
+			if ( loadLibrary( buildFilename( folder, file ) ) ) {
 				imported = true;
 				break;
 			}
 		}
 
 		if ( !imported ) {
-			throw Common::Exceptions::Exception("could not resolve import '" + lib + "' in file '" + library + "'");
+			throw Common::Exceptions::Exception( "could not resolve import '" + file + "' in file '" + library + "'" );
 		}
 	}
 
@@ -445,26 +452,30 @@ VirtualMachine::Settings& VirtualMachine::settings()
 }
 
 namespace {
+
 	std::string buildFilename( const std::string& folder, const std::string& filename ) {
+		auto path = Utils::Tools::Files::BuildPath( folder, filename );
+
 		// (1) look for a ".slang" file (new standard)
-		auto file = Utils::Tools::Files::BuildPath( folder, filename ) + ".slang";
+		auto file = path + ".slang";
 		if ( Utils::Tools::Files::exists( file ) ) {
 			return file;
 		}
 
 		// (2) look for a ".os" file (deprecated)
-		file = Utils::Tools::Files::BuildPath( folder, filename ) + ".os";
+		file = path + ".os";
 		if ( Utils::Tools::Files::exists( file ) ) {
 			return file;
 		}
 
 		// (3) look for an "All.slang" file (new standard)
-		file = Utils::Tools::Files::BuildPath( folder, filename + std::string( "/All" ) ) + ".slang";
+		file = Utils::Tools::Files::BuildPath( path, std::string( "/All" ) ) + ".slang";
 		if ( Utils::Tools::Files::exists( file ) ) {
 			return file;
 		}
 
 		// (4) look for an "All.os" file as a last resort (deprecated)
-		return Utils::Tools::Files::BuildPath( folder, filename + std::string( "/All" ) ) + ".os";
+		return Utils::Tools::Files::BuildPath( path, std::string( "/All" ) ) + ".os";
 	}
+
 }
