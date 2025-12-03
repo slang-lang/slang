@@ -18,35 +18,50 @@
 // Namespace declarations
 
 
-Service::Service( std::string path, std::string scriptFilename, Slang::VirtualMachine* vm )
-: mPath( std::move( path ) )
-, mScriptFilename( std::move( scriptFilename ) )
-, mVirtualMachine( vm )
+Service::Service( std::string path, std::string entryPoint, Slang::Script* script )
+: mEntryPoint( std::move( entryPoint ) )
+, mPath( std::move( path ) )
+, mScript( script )
 {
     initialize();
 }
 
 bool Service::handleRequest( const FCGX_Request& request )
 {
+    char* env           = FCGX_GetParam( "QUERY_STRING", request.envp );
+    char* requestMethod = FCGX_GetParam( "REQUEST_METHOD", request.envp );
+    char* requestUri    = FCGX_GetParam( "REQUEST_URI", request.envp );
+    char* scriptName    = FCGX_GetParam( "SCRIPT_NAME", request.envp );
+
+    setenv( "QUERY_STRING", env, 1 );
+    setenv( "REQUEST_METHOD", requestMethod, 1 );
+    setenv( "REQUEST_URI", requestUri, 1 );
+    setenv( "SCRIPT_NAME", scriptName, 1 );
+
+    OSinfo( "QUERY_STRING: " << env );
+    OSinfo( "REQUEST_METHOD: " << requestMethod );
+    OSinfo( "REQUEST_URI: " << requestUri );
+    OSinfo( "SCRIPT_NAME: " << scriptName );
+
     FCGX_FPrintF( request.out, "Content-Type: text/plain\r\n\r\n" );
 
     std::stringstream stream;
     auto* old = std::cout.rdbuf( stream.rdbuf() );
 
     if ( mScript ) {
-        Slang::Runtime::Object result;
-        //mVirtualMachine->run( mScript, Slang::ParameterList(), &result );
-        mScript->execute( Slang::Controller::Instance().threads()->createThread()->getId(), "Start", Slang::ParameterList(), &result );
-
-        // if ( result.getValue().type() == Slang::Runtime::AtomicValue::Type::INT ) {
-        //     return result.getValue().toInt();
-        // }
+        try {
+            Slang::Runtime::Object result;
+            mScript->execute( Slang::Controller::Instance().threads()->createThread()->getId(), mEntryPoint, Slang::ParameterList(), &result );
+        }
+        catch ( const std::exception& e ) {
+            OSerror( "Exception: " << e.what() );
+        }
     }
 
     std::cout.rdbuf( old );
     auto output = stream.str();
 
-    OSinfo( "Output: \r\n" + output );
+    std::cout << output << std::endl;
 
     FCGX_FPrintF( request.out, output.c_str() );
 
@@ -55,11 +70,11 @@ bool Service::handleRequest( const FCGX_Request& request )
 
 void Service::initialize()
 {
-    if ( mScriptFilename.empty() ) {
+    if ( mEntryPoint.empty() ) {
         // nothing to do here
         return;
     }
 
-    mScript = mVirtualMachine->createScriptFromFile( mScriptFilename );
-    assert( mScript );
+    // CHECKME: verify that the entry point exists in the script
+    //mScript->
 }

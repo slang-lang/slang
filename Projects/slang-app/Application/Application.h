@@ -10,6 +10,7 @@
 
 // Forward declarations
 namespace Slang {
+	class Script;
     class VirtualMachine;
 }
 
@@ -39,6 +40,7 @@ private:
 	void processParameters( int argc, const char* argv[] );
 
 private:
+	Script* mScript;
     //Settings mSettings;
     VirtualMachine* mVirtualMachine;
 };

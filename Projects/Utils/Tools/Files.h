@@ -20,7 +20,7 @@ namespace Files {
 
 bool exists(const std::string& filename);
 
-std::string BuildPath(const std::string& baseFolder, const std::string& filename);
+std::string BuildPath(const std::string& baseFolder, std::string filename);
 std::string ExtractFileExt(const std::string& filename);
 std::string ExtractFilename(const std::string& filename);
 std::string ExtractPathname(const std::string& pathname);
