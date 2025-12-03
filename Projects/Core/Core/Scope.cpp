@@ -347,7 +347,7 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	for ( auto& method : mMethods ) {
-			if ( method->getVisibility() >= visibility ) {
+		if ( method->getVisibility() >= visibility ) {
 			if ( method->getName() == name && method->isSignatureValid(params) ) {
 				return method;
 			}
