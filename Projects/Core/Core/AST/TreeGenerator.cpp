@@ -53,7 +53,7 @@ void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 	auto bodyEnd = --findNextBalancedCurlyBracket(token, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	while ( token != bodyEnd ) {
-		tokens.push_back((*++token));
+		tokens.emplace_back((*++token));
 	}
 
 	++token;
@@ -131,12 +131,12 @@ Statements* TreeGenerator::generate(const TokenList& tokens, bool allowBreakAndC
 	// reset control flow to be able to check for missing control flow statements during switch/case
 	mControlFlow = Runtime::ControlFlow::Normal;
 
-	Statements* statements = nullptr;
+	Statements* statements{ nullptr };
 
 	pushScope(nullptr, allowBreakAndContinue);
 		pushTokens(tokens);
 			auto start = getTokens().begin();
-			auto end = getTokens().end();
+			auto end   = getTokens().end();
 
 			Common::Position position(start != end ? start->position() : Common::Position());
 
@@ -575,13 +575,13 @@ void TreeGenerator::popTokens()
 /*
  * walk through global namespace and process all methods of all symbols
  */
-void TreeGenerator::process(MethodScope* base)
+void TreeGenerator::process(MethodScope* scope)
 {
-	if ( !base ) {
+	if ( !scope ) {
 		throw Common::Exceptions::Exception("invalid scope symbol provided");
 	}
 
-	for ( auto it = base->beginSymbols(); it != base->endSymbols(); ++it ) {
+	for ( auto it = scope->beginSymbols(); it != scope->endSymbols(); ++it ) {
 		switch ( it->second->getSymbolType() ) {
 			case Symbol::IType::MethodSymbol:
 				throw Common::Exceptions::Exception("invalid symbol found: " + it->second->getName());
@@ -596,9 +596,9 @@ void TreeGenerator::process(MethodScope* base)
 		}
 	}
 
-	if ( base->beginMethods() != base->endMethods() ) {
-		for ( auto it = base->beginMethods(); it != base->endMethods(); ++it ) {
-			processMethod(dynamic_cast<Common::Method*>((*it)));
+	if ( scope->beginMethods() != scope->endMethods() ) {
+		for ( auto it = scope->beginMethods(); it != scope->endMethods(); ++it ) {
+			processMethod( dynamic_cast<Common::Method*>( (*it) ) );
 		}
 	}
 }
@@ -624,7 +624,7 @@ void TreeGenerator::processBluePrint(Designtime::BluePrintObject* object)
 		return;
 	}
 
-	process(object);
+	process( object );
 }
 
 /*
@@ -635,7 +635,7 @@ void TreeGenerator::processMethod(Common::Method* method)
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method symbol provided");
 	}
-	if (method->isAbstractMethod() || method->isExtensionMethod() || method->isNotImplemented() ) {
+	if ( method->isAbstractMethod() || method->isExtensionMethod() || method->isNotImplemented() ) {
 		// abstract, extension or not implemented methods have no implementation, so there's nothing to parse...
 		return;
 	}
@@ -655,7 +655,7 @@ void TreeGenerator::processMethod(Common::Method* method)
 		mErrorCount++;
 
 		// write error to log device
-		OSerror(e.what());
+		OSerror( e.what() );
 	}
 }
 
@@ -668,7 +668,7 @@ void TreeGenerator::processNamespace(Common::Namespace* space)
 		throw Common::Exceptions::Exception("invalid namespace symbol provided");
 	}
 
-	process(space);
+	process( space );
 }
 
 /*
@@ -1605,7 +1605,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 {
 	ParameterList params;
 	for ( auto& expression : expressions ) {
-		params.push_back(Parameter::CreateDesigntime(
+		params.emplace_back(Parameter::CreateDesigntime(
 			ANONYMOUS_OBJECT,
 			Common::TypeDeclaration(dynamic_cast<Expression*>(expression)->getResultType(), PrototypeConstraints(), dynamic_cast<Expression*>(expression)->isConst() ? Mutability::Const : Mutability::Modify),
 			Runtime::AtomicValue(),
@@ -2270,7 +2270,7 @@ std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* 
 
 	for ( auto methodIt = scope->beginMethods(); methodIt != scope->endMethods(); ++methodIt ) {
 		if ( (*methodIt)->getName() == symbol->innerName() ) {
-			result.push_back( *methodIt );
+			result.emplace_back( *methodIt );
 		}
 	}
 

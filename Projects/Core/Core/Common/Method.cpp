@@ -364,6 +364,26 @@ void Method::setTokens(const TokenList& tokens)
 	mTokens = tokens;
 }
 
+void Method::shallowCopy(const Method& other)
+{
+	mAlgorithm = other.mAlgorithm;
+	mAllowDelete = false;
+	mCheckedExceptions = other.mCheckedExceptions;
+	mIsExtensionMethod = other.mIsExtensionMethod;
+	mIsInitialized = other.mIsInitialized;
+	mIsSealed = other.mIsSealed;
+	mLanguageFeatureState = other.mLanguageFeatureState;
+	mMemoryLayout = other.mMemoryLayout;
+	mMethodMutability = other.mMethodMutability;
+	mMethodType = other.mMethodType;
+	mMutability = other.mMutability;
+	mRootNode = other.mRootNode;
+	mScopeName = other.mScopeName;
+	mScopeType = other.mScopeType;
+	mSignature = other.mSignature;
+	mVisibility = other.mVisibility;
+}
+
 std::string Method::ToString(unsigned int indent) const
 {
 	std::string result;

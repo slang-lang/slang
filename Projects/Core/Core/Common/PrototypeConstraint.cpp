@@ -70,7 +70,7 @@ PrototypeConstraints PrototypeConstraints::buildRawConstraints(const PrototypeCo
 
 	for ( ; thisIt != this->end(); ++thisIt ) {
 		if ( otherIt == other.end() ) {
-			result.push_back(
+			result.emplace_back(
 				PrototypeConstraint(thisIt->mIndex, thisIt->mDesignType, _object, VALUE_NONE)
 			);
 			continue;
@@ -93,11 +93,10 @@ PrototypeConstraints PrototypeConstraints::buildRuntimeConstraints(const Prototy
 		PrototypeConstraint constraint = other.lookupConstraint(thisIt->mDesignType);
 
 		if ( constraint.hasRuntimeType() ) {
-			result.push_back(constraint);
+			result.emplace_back(constraint);
 		}
 		else {
-			//result.push_back((*thisIt));
-			result.push_back(PrototypeConstraint(thisIt->mIndex, thisIt->mDesignType, _object, VALUE_NONE));
+			result.emplace_back(PrototypeConstraint(thisIt->mIndex, thisIt->mDesignType, _object, VALUE_NONE));
 		}
 	}
 

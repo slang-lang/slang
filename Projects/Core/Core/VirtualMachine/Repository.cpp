@@ -302,8 +302,10 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 						// ignore hidden ancestors
 					} break;
 					case Designtime::Ancestor::Type::Implements: {
-						auto* ancestor = createReference(blueIt->second, name, ancestorIt.constraints(), InitilizationType::None);
+						auto* ancestor = createReference(blueIt->second, blueIt->first, ancestorIt.constraints(), InitilizationType::None);
 						ancestor->setParent(blueprint->getEnclosingScope());
+
+						object->define( "__" + ancestor->getName() + "__", ancestor);
 
 						// add our newly created ancestor to our inheritance
 						object->addInheritance(ancestorIt, ancestor);
@@ -319,16 +321,16 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 
 		// create and define all symbols based on given blueprint
 		const Symbols& symbols = blueprint->provideSymbols();
-		for ( auto it = symbols.cbegin(); it != symbols.cend(); ++it ) {
-			if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+		for ( auto symbolIt = symbols.cbegin(); symbolIt != symbols.cend(); ++symbolIt ) {
+			if ( symbolIt->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 				continue;
 			}
-			if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ) {
+			if ( symbolIt->first == IDENTIFIER_BASE || symbolIt->first == IDENTIFIER_THIS ) {
 				// skip "base" && "this" symbols
 				continue;
 			}
 
-			auto* blue = dynamic_cast<Designtime::BluePrintObject*>(it->second);
+			auto* blue = dynamic_cast<Designtime::BluePrintObject*>(symbolIt->second);
 			if ( blue->isStatic() ) {
 				continue;
 			}
@@ -337,7 +339,7 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 				continue;
 			}
 
-			Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
+			auto* symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
 			symbol->setBluePrint(blue);
 			symbol->setIsReference(!blue->isEnumeration() && blue->isReference());
 			symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
@@ -351,8 +353,7 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 		}
 
 		// create and define all methods based on given blueprint
-		MethodScope::MethodCollection methods = blueprint->provideMethods();
-		for ( auto& method : methods ) {
+		for ( const auto& method : blueprint->provideMethods() ) {
 			if ( method->isStatic() ) {
 				continue;
 			}
@@ -361,7 +362,7 @@ Runtime::Object* Repository::createUserType(const std::string& name, Designtime:
 			auto* newMethod = new Common::Method(object, method->getName(), Common::TypeDeclaration(method->QualifiedTypename()));
 
 			// ... copy its data from our template method
-			*newMethod = *method;
+			newMethod->shallowCopy(*method);
 
 			object->defineMethod(method->getName(), newMethod);
 		}

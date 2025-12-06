@@ -58,7 +58,7 @@ PrototypeConstraints mergeConstraints(const PrototypeConstraints& designtime, co
 	auto runIt = runtime.begin();
 
 	while ( designIt != designtime.end() ) {
-		result.push_back(
+		result.emplace_back(
 			PrototypeConstraint(designIt->mIndex, designIt->mDesignType, runIt->mRunType, designIt->mConstraint)
 		);
 
@@ -214,7 +214,7 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 			++token;
 		}
 
-		constraints.push_back(
+		constraints.emplace_back(
 			PrototypeConstraint(index, designType, runType, constraint)
 		);
 
@@ -257,7 +257,7 @@ PrototypeConstraints Parser::collectRuntimePrototypeConstraints(TokenIterator& t
 			++token;
 		}
 
-		constraints.push_back(
+		constraints.emplace_back(
 			PrototypeConstraint(index, designType, runType, constraint)
 		);
 
@@ -293,7 +293,7 @@ TokenList Parser::collectScopeTokens(TokenIterator& token)
 			--scope;
 		}
 
-		tokens.push_back((*token));
+		tokens.emplace_back((*token));
 	}
 
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
@@ -505,7 +505,7 @@ ParameterList Parser::parseParameters(TokenIterator& token, IScope* scope)
 			throw Exceptions::SyntaxError("parameters with default values are not allowed to be accessed by reference");
 		}
 
-		params.push_back(
+		params.emplace_back(
 			Parameter::CreateDesigntime(name, type, value, hasDefaultValue, mutability, accessMode)
 		);
 

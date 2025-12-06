@@ -210,11 +210,6 @@ void Object::defineMethod(const std::string& name, Common::Method* method)
 	MethodScope::defineMethod(name, method);
 }
 
-void Object::deinit()
-{
-	garbageCollector();
-}
-
 ControlFlow::E Object::Destructor()
 {
 	ControlFlow::E controlflow = ControlFlow::Normal;
@@ -246,6 +241,11 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	}
 
 	return Controller::Instance().thread(0)->execute(mThis, method, params, result);
+}
+
+void Object::free()
+{
+    garbageCollector();
 }
 
 void Object::garbageCollector()
@@ -356,7 +356,7 @@ void Object::operator_assign(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
+	params.emplace_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::Slang::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	if ( value_operator ) {

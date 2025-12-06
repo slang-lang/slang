@@ -46,6 +46,9 @@ public: // overloaded operators
 	bool operator< (const Method& other) const;
 	Method& operator= (const Method& other);
 
+public:
+	void shallowCopy(const Method& other);
+
 public:	// Symbol::IType implementation
 	const std::string& QualifiedTypename() const;
 	void setQualifiedTypename(const std::string& type);
