@@ -28,20 +28,22 @@ Service::Service( std::string path, std::string entryPoint, Slang::Script* scrip
 
 bool Service::handleRequest( const FCGX_Request& request )
 {
-    char* env           = FCGX_GetParam( "QUERY_STRING", request.envp );
+    char* pathInfo      = FCGX_GetParam( "PATH_INFO", request.envp );
+    char* queryString   = FCGX_GetParam( "QUERY_STRING", request.envp );
     char* requestMethod = FCGX_GetParam( "REQUEST_METHOD", request.envp );
     char* requestUri    = FCGX_GetParam( "REQUEST_URI", request.envp );
     char* scriptName    = FCGX_GetParam( "SCRIPT_NAME", request.envp );
 
-    setenv( "QUERY_STRING", env, 1 );
+    setenv( "QUERY_STRING", queryString, 1 );
     setenv( "REQUEST_METHOD", requestMethod, 1 );
     setenv( "REQUEST_URI", requestUri, 1 );
     setenv( "SCRIPT_NAME", scriptName, 1 );
 
-    OSinfo( "QUERY_STRING: " << env );
-    OSinfo( "REQUEST_METHOD: " << requestMethod );
-    OSinfo( "REQUEST_URI: " << requestUri );
-    OSinfo( "SCRIPT_NAME: " << scriptName );
+    OSinfo( "REQUEST_METHOD: " << ( requestMethod ? requestMethod : "" ) );
+    OSinfo( "SCRIPT_NAME: " << ( scriptName ? scriptName : "" ) );
+    OSinfo( "PATH_INFO: " << ( pathInfo ? pathInfo : "" ) );
+    OSinfo( "QUERY_STRING: " << ( queryString ? queryString : "" ) );
+    // OSinfo( "REQUEST_URI: " << ( requestUri ? requestUri : "" ) );
 
     FCGX_FPrintF( request.out, "Content-Type: text/plain\r\n\r\n" );
 

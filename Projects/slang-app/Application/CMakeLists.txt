@@ -10,7 +10,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-    ServerCommon
+    SlangAppCommon
     Core
     UtilsLogger
     Utils
@@ -26,4 +26,4 @@ add_include(Projects/Extensions)
 add_include(Projects/slang-app)
 add_include(Projects/Utils)
 
-build_static_lib(ServerApplication "${MODULES}")
+build_static_lib(SlangAppApplication "${MODULES}")

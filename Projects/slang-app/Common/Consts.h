@@ -15,7 +15,7 @@
 
 // Constants
 static const std::string CONFIG_FOLDER             = ".slang/";
-static const std::string CONFIG_SERVER             = ".slang/server.json";
+static const std::string CONFIG_SERVER             = "services.json";
 #ifdef __APPLE__
 static const std::string CONFIG_SCRIPTS            = "/var/lib/slang/scripts/";
 #endif

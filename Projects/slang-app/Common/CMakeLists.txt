@@ -19,4 +19,4 @@ add_include(Projects/Core)
 add_include(Projects/slang-app)
 add_include(Projects/Utils)
 
-build_static_lib(ServerCommon "json")
+build_static_lib(SlangAppCommon "json")
