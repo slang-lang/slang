@@ -34,16 +34,16 @@ bool Service::handleRequest( const FCGX_Request& request )
     char* requestUri    = FCGX_GetParam( "REQUEST_URI", request.envp );
     char* scriptName    = FCGX_GetParam( "SCRIPT_NAME", request.envp );
 
-    setenv( "QUERY_STRING", queryString, 1 );
+    setenv( "QUERY_STRING",   queryString, 1 );
     setenv( "REQUEST_METHOD", requestMethod, 1 );
-    setenv( "REQUEST_URI", requestUri, 1 );
-    setenv( "SCRIPT_NAME", scriptName, 1 );
+    setenv( "REQUEST_URI",    requestUri, 1 );
+    setenv( "SCRIPT_NAME",    scriptName, 1 );
 
     OSinfo( "REQUEST_METHOD: " << ( requestMethod ? requestMethod : "" ) );
-    OSinfo( "SCRIPT_NAME: " << ( scriptName ? scriptName : "" ) );
-    OSinfo( "PATH_INFO: " << ( pathInfo ? pathInfo : "" ) );
-    OSinfo( "QUERY_STRING: " << ( queryString ? queryString : "" ) );
-    // OSinfo( "REQUEST_URI: " << ( requestUri ? requestUri : "" ) );
+    OSinfo( "SCRIPT_NAME: "    << ( scriptName ? scriptName : "" ) );
+    OSinfo( "PATH_INFO: "      << ( pathInfo ? pathInfo : "" ) );
+    OSinfo( "QUERY_STRING: "   << ( queryString ? queryString : "" ) );
+    // OSinfo( "REQUEST_URI: "    << ( requestUri ? requestUri : "" ) );
 
     FCGX_FPrintF( request.out, "Content-Type: text/plain\r\n\r\n" );
 
@@ -55,8 +55,11 @@ bool Service::handleRequest( const FCGX_Request& request )
             Slang::Runtime::Object result;
             mScript->execute( Slang::Controller::Instance().threads()->createThread()->getId(), mEntryPoint, Slang::ParameterList(), &result );
         }
-        catch ( const std::exception& e ) {
-            OSerror( "Exception: " << e.what() );
+        catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
+            OSerror( e.what() );
+        }
+        catch ( ... ) {	// catch everything
+            OSerror( "uncaught exception detected!" );
         }
     }
 
@@ -73,10 +76,9 @@ bool Service::handleRequest( const FCGX_Request& request )
 void Service::initialize()
 {
     if ( mEntryPoint.empty() ) {
-        // nothing to do here
-        return;
+        OSwarn( "Service entry point is empty." );
     }
-
-    // CHECKME: verify that the entry point exists in the script
-    //mScript->
+    if ( !mScript ) {
+        OSwarn( "Service script is null." );
+    }
 }
