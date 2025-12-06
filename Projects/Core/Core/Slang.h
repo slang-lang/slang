@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Runtime/Script.h>
+#include <Core/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 
 // Forward declarations

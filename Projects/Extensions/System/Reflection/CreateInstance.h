@@ -43,9 +43,9 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		std::string param_type = (*it++).value().toStdString();
+		auto param_type = (*it++).value().toStdString();
 
-		Runtime::Object* newInstance = Controller::Instance().repository()->createReference(param_type, ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
+		auto* newInstance = Controller::Instance().repository()->createReference(param_type, ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
 
 		*result = *newInstance;
 

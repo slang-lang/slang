@@ -17,6 +17,8 @@
 
 namespace Slang {
 
+class VirtualMachine;
+
 // Forward declarations
 namespace Runtime {
 	class Object;
@@ -26,7 +28,7 @@ namespace Runtime {
 class Memory
 {
 public:
-	Memory();
+	Memory( VirtualMachine* vm );
 	~Memory();
 
 public:
@@ -67,6 +69,7 @@ private:
 private:
 	MemoryMap mMemory;
 	Runtime::MemoryId mNextAddress;
+	VirtualMachine* mVirtualMachine;
 };
 
 

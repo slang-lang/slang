@@ -8,7 +8,7 @@
 // Project includes
 #include <Common/AClient.h>
 #include <Core/Common/Types.h>
-#include <Core/Runtime/Parameter.h>
+#include <Core/Common/Parameter.h>
 #include <Core/Scope.h>
 #include <Debugger/BreakPoint.h>
 #include <Debugger/IReceiver.h>

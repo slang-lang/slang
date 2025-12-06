@@ -12,8 +12,8 @@
 #include <string>
 
 // Project includes
+#include <Core/Common/Parameter.h>
 #include <Core/Interfaces/IScope.h>
-#include <Core/Runtime/Parameter.h>
 
 // Forward declarations
 

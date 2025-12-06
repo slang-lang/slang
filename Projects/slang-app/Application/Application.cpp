@@ -25,8 +25,8 @@
 #include <Common/Consts.h>
 #include <Common/Service.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Parameter.h>
 #include <Core/Common/Types.h>
-#include <Core/Runtime/Parameter.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/Consts.h>

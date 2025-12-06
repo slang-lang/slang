@@ -11,7 +11,7 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Runtime/ControlFlow.h>
-#include <Core/VirtualMachine/Controller.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Utils.h>
 
 // Namespace declarations
@@ -26,10 +26,14 @@ namespace
 
 namespace Slang {
 
-
-void Script::execute(ThreadId threadId, const std::string& method, const ParameterList& params, Runtime::Object* result)
+Script::Script( VirtualMachine* vm)
+: mVirtualMachine( vm )
 {
-	MethodScope* scope = Controller::Instance().globalScope();
+}
+
+void Script::execute(const std::string& method, const ParameterList& params, Runtime::Object* result)
+{
+	MethodScope* scope = mVirtualMachine->globalScope();
 
 	auto spaces = split( method, '.' );
 	for ( size_t i = 0; i < spaces.size() - 1; ++i ) {
@@ -53,10 +57,10 @@ void Script::execute(ThreadId threadId, const std::string& method, const Paramet
 		throw Common::Exceptions::Exception("could not resolve method '" + method + "(" + toString(params) + ")'");
 	}
 
-	auto controlflow = Controller::Instance().thread(threadId)->execute(nullptr, methodSymbol, params, result);
+	auto controlflow = mVirtualMachine->thread(0)->execute( methodSymbol, params, result );
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
-		auto data = Controller::Instance().thread(threadId)->exception();
+		auto data = mVirtualMachine->thread(0)->exception();
 
 		std::string text = "Exception raised in " + data.getPosition().toString() + ":\n";
 					text += data.getData()->ToString() + "\n";
@@ -68,12 +72,12 @@ void Script::execute(ThreadId threadId, const std::string& method, const Paramet
 
 Symbol* Script::resolve(const std::string &symbol)
 {
-	return Controller::Instance().globalScope()->resolve(symbol);
+	return mVirtualMachine->globalScope()->resolve(symbol);
 }
 
 Symbol* Script::resolveMethod(const std::string &method, const ParameterList &params)
 {
-	return Controller::Instance().globalScope()->resolveMethod(method, params);
+	return mVirtualMachine->globalScope()->resolveMethod(method, params);
 }
 
 

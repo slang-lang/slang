@@ -7,11 +7,9 @@
 // Library includes
 
 // Project includes
-#include <Core/Object.h>
-#include <Core/Runtime/Parameter.h>
-#include <Core/Runtime/Script.h>
-#include <Core/VirtualMachine/Controller.h>
-#include <Core/VirtualMachine/VirtualMachine.h>
+#include <Core/Common/Parameter.h>
+#include <Core/Runtime/Object.h>
+#include <Core/Script.h>
 #include <Logger/Logger.h>
 #include <Utils.h>
 
@@ -53,7 +51,7 @@ bool Service::handleRequest( const FCGX_Request& request )
     if ( mScript ) {
         try {
             Slang::Runtime::Object result;
-            mScript->execute( Slang::Controller::Instance().threads()->createThread()->getId(), mEntryPoint, Slang::ParameterList(), &result );
+            mScript->execute( mEntryPoint, Slang::ParameterList(), &result );
         }
         catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
             OSerror( e.what() );

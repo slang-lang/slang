@@ -7,7 +7,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Object.h>
+#include <Core/Runtime/Object.h>
 
 // Forward declarations
 

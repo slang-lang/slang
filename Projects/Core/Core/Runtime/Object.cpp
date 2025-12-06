@@ -3,14 +3,13 @@
 #include "Object.h"
 
 // Library includes
-#include <utility>
+#include <cassert>
 
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
 
 // Namespace declarations
@@ -52,7 +51,8 @@ Object::Object(const std::string& name, std::string filename, const std::string&
 Object::~Object()
 {
 	if ( this != mThis ) {
-		Controller::Instance().memory()->remove(mReference);
+		assert( !"~Object()" );
+		//Controller::Instance().memory()->remove(mReference);
 	}
 }
 
@@ -79,7 +79,24 @@ Object& Object::operator= (const Object& other)
 		setMember(other.isMember());
 		setMutability(other.getMutability());
 
-		assignReference(other.mReference);
+		{	// assign reference
+			Reference old = mReference;
+
+			mReference = other.mReference;
+			assert( !"assignReference" );
+			//Controller::Instance().memory()->add(mReference);
+
+			if ( mReference.isValid() ) {
+				//mThis = Controller::Instance().memory()->get(mReference);
+			}
+			else {
+				mThis = this;
+			}
+
+			if ( old.isValid() ) {
+				//Controller::Instance().memory()->remove(old);
+			}
+		}
 	}
 
 	return *this;
@@ -106,7 +123,24 @@ void Object::assign(const Object& other)
 
 		mIsReference = other.mIsReference;
 		if ( mIsReference && other.mIsReference ) {
-			assignReference(other.mReference);
+			{	// assign reference
+				Reference old = mReference;
+
+				mReference = other.mReference;
+				assert( !"assignReference" );
+				//Controller::Instance().memory()->add(mReference);
+
+				if ( mReference.isValid() ) {
+					//mThis = Controller::Instance().memory()->get(mReference);
+				}
+				else {
+					mThis = this;
+				}
+
+				if ( old.isValid() ) {
+					//Controller::Instance().memory()->remove(old);
+				}
+			}
 		}
 		else {
 			setValue(other.getValue());
@@ -121,74 +155,6 @@ void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheri
 	}
 
 	mInheritance.insert(std::make_pair(ancestor, inheritance));
-}
-
-void Object::assignReference(const Reference& ref)
-{
-	Reference old = mReference;
-
-	mReference = ref;
-	Controller::Instance().memory()->add(mReference);
-
-	if ( mReference.isValid() ) {
-		mThis = Controller::Instance().memory()->get(mReference);
-	}
-	else {
-		mThis = this;
-	}
-
-	if ( old.isValid() ) {
-		Controller::Instance().memory()->remove(old);
-	}
-}
-
-bool Object::CanExecuteDefaultConstructor() const
-{
-	Symbol* anyConstructor = resolve(RESERVED_WORD_CONSTRUCTOR, false, Visibility::Private);
-	if ( !anyConstructor ) {
-		// no constructor found at all, so we can call our default constructor but it won't do anything besides setting our object to constructed
-		return true;
-	}
-
-	Symbol* defaultConstructor = resolveMethod(RESERVED_WORD_CONSTRUCTOR, ParameterList(), true, Visibility::Private);
-
-	return defaultConstructor && (anyConstructor == defaultConstructor);
-}
-
-ControlFlow::E Object::Constructor(const ParameterList& params)
-{
-	ControlFlow::E controlflow = ControlFlow::Normal;
-
-	if ( mIsAtomicType ) {	// hack to initialize atomic types
-		if ( !params.empty() ) {
-			if ( params.size() != 1 ) {
-				throw Common::Exceptions::ParameterCountMismatch("atomic types only support one constructor parameter");
-			}
-
-			setValue(params.front().value());
-		}
-
-		return controlflow;
-	}
-
-	// check if we have implemented a constructor with the given amount and type of parameters
-	// if a specialized constructor is implemented, the default constructor cannot be used
-	auto* constructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Protected));
-	if ( constructor ) {
-		VoidType tmp;
-
-		controlflow = Controller::Instance().thread(0)->execute(mThis, constructor, params, &tmp);
-
-		if ( controlflow != ControlFlow::Normal ) {
-			return controlflow;
-		}
-	}
-	else {
-		// no appropriate constructor found
-		throw Common::Exceptions::Exception(QualifiedTypename() + ": no appropriate constructor found");
-	}
-
-	return controlflow;
 }
 
 void Object::defineMember(const std::string& name, Symbol* symbol)
@@ -210,42 +176,9 @@ void Object::defineMethod(const std::string& name, Common::Method* method)
 	MethodScope::defineMethod(name, method);
 }
 
-ControlFlow::E Object::Destructor()
-{
-	ControlFlow::E controlflow = ControlFlow::Normal;
-
-	if ( !mIsAtomicType ) {
-		ParameterList params;
-
-		// only execute destructor if one is present
-		auto* destructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
-		if ( destructor ) {
-			VoidType tmp;
-
-			controlflow = Controller::Instance().thread(0)->execute(mThis, destructor, params, &tmp);
-
-			if ( controlflow != ControlFlow::Normal ) {
-				return controlflow;
-			}
-		}
-	}
-
-	return controlflow;
-}
-
-ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params)
-{
-	auto *method = dynamic_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
-	if ( !method ) {
-		throw Common::Exceptions::UnknownIdentifier("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
-	}
-
-	return Controller::Instance().thread(0)->execute(mThis, method, params, result);
-}
-
 void Object::free()
 {
-    garbageCollector();
+	garbageCollector();
 }
 
 void Object::garbageCollector()
@@ -262,7 +195,8 @@ void Object::garbageCollector()
 		if ( symIt.first == IDENTIFIER_BASE ) {
 			auto* obj = dynamic_cast<Object*>( symIt.second );
 			if ( obj ) {
-				Controller::Instance().memory()->remove(obj->mReference);
+				assert( !"garbageCollector()" );
+				//Controller::Instance().memory()->remove(obj->mReference);
 			}
 		}
 		else if ( symIt.first == IDENTIFIER_THIS ) {
@@ -360,7 +294,8 @@ void Object::operator_assign(const Object *other)
 
 	::Slang::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	if ( value_operator ) {
-		Controller::Instance().thread(0)->execute(other->getThis(), dynamic_cast<Common::Method*>(value_operator), params, this);
+		assert( !"operator_assign" );
+		//Controller::Instance().thread(0)->execute(other->getThis(), dynamic_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 
