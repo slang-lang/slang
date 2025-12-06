@@ -37,7 +37,7 @@ void VoidType::initialize()
 	auto* constructor = new Common::Method(this, RESERVED_WORD_CONSTRUCTOR, Common::TypeDeclaration(_void));
 	{
 		ParameterList params;
-		params.push_back(
+		params.emplace_back(
 			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, Common::TypeDeclaration(_void))
 		);
 		constructor->setSignature(params);

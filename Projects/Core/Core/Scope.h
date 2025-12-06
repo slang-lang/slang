@@ -107,7 +107,7 @@ protected:
 	Symbols mExternalSymbols;
 	MethodCollection mExternalMethods;
 	MethodCollection mMethods;
-	IScope *mParent;
+	IScope* mParent;
 	std::string mScopeName;
 	IType::E mScopeType;
 	Symbols mSymbols;

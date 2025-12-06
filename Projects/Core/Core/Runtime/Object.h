@@ -47,6 +47,8 @@ public:
 	Object& operator= (const Object& other);
 	void assign(const Object& other);
 
+	void free();
+
 public: // MethodScope overrides
 	void defineMember(const std::string& name, Symbol* symbol);
 	void defineMethod(const std::string& name, Common::Method* method);
@@ -119,7 +121,6 @@ protected:
 	typedef std::map<Designtime::Ancestor, Object*> Inheritance;
 
 protected:
-	void deinit();
 	void garbageCollector();
 
 protected:

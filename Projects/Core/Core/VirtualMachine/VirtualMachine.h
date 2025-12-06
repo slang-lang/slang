@@ -74,7 +74,7 @@ public:	// VM Context access
 
 public:	// Setup
 	bool addExtension(Extensions::AExtension* extension, const std::string& library = "<internal library>");
-	void addLibraryFolder(const std::string& library);
+	void addLibraryFolder(const std::string& libraryFolder);
 	void init();
 	void printExtensions();
 	void printLibraryFolders();
@@ -95,7 +95,7 @@ private:
 private:
 	Script* createScript(const std::string& content);
 	bool loadExtension( const std::string& extension, const std::string& folder );
-	bool loadLibrary(const std::string& library);
+	bool loadLibrary(const std::string& library, const std::string& fromLibrary = "" );
 
 private:
 	// VM state

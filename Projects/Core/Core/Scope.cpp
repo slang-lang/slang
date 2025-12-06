@@ -214,8 +214,7 @@ void MethodScope::defineMethod(const std::string& name, Common::Method* method)
 	}
 
 	if ( MethodScope::resolveMethod(name, method->provideSignature(), true) ) {
-		// duplicate method defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate method '" + method->getName() + "(" + toString(method->provideSignature()) + ")' added with same signature");
+		throw Common::Exceptions::DuplicateIdentifier("duplicate method '" + method->getFullScopeName() + "(" + toString(method->provideSignature()) + ")' added with same signature");
 	}
 
 	mMethods.insert(method);
@@ -347,7 +346,7 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	for ( auto& method : mMethods ) {
-			if ( method->getVisibility() >= visibility ) {
+		if ( method->getVisibility() >= visibility ) {
 			if ( method->getName() == name && method->isSignatureValid(params) ) {
 				return method;
 			}

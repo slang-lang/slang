@@ -2,6 +2,7 @@
 #include "Files.h"
 
 // Library includes
+#include <algorithm>
 #include <climits>
 #include <fstream>
 #ifdef _MSC_VER
@@ -39,19 +40,13 @@ bool exists(const std::string& filename)
 #endif
 }
 
-std::string BuildPath(const std::string& baseFolder, const std::string& filename)
+std::string BuildPath(const std::string& baseFolder, std::string filename)
 {
-	std::string result = filename;
-	unsigned long npos;
+	auto result = std::move( filename );
 
-	do {
-		npos = result.find_first_of('.');
-		if ( npos != std::string::npos ) {
-			result[npos] = '/';
-		}
-	} while ( npos != std::string::npos );
+	std::replace( result.begin(), result.end(), '.', '/' );
 
-	return GetFullname(baseFolder + result);
+	return GetFullname( baseFolder + "/" + result );
 }
 
 std::string ExtractFileExt(const std::string& filename)

@@ -34,7 +34,7 @@ public:	//Helpers
 	Symbol* resolveMethod( const std::string& method, const ParameterList& params );
 
 public:	// Execution
-	void execute( ThreadId threadId, const std::string& method, const ParameterList& params, Runtime::Object* result );
+	void execute( const std::string& method, const ParameterList& params, Runtime::Object* result );
 
 private:
 	VirtualMachine* mVirtualMachine;

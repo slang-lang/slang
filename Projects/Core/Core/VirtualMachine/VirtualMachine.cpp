@@ -176,7 +176,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 		bool imported = false;
 
 		for ( const auto& libraryFolder : mLibraryFolders ) {
-			if ( loadLibrary( buildFilename( libraryFolder, (*libIt) ) ) ) {
+			if ( loadLibrary( buildFilename( libraryFolder, (*libIt) ), mScriptFile ) ) {
 				imported = true;
 				break;
 			}
@@ -187,7 +187,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 		}
 	}
 
-	MethodScope* globalScope = mGlobalScope;
+	auto* globalScope = mGlobalScope;
 
 	mRepository->initializeBlueprints();
 
@@ -306,51 +306,65 @@ bool VirtualMachine::loadExtension( const std::string& extension, const std::str
 #endif
 }
 
-bool VirtualMachine::loadLibrary(const std::string& library)
+bool VirtualMachine::loadLibrary(const std::string& library, const std::string& fromLibrary)
 {
-	OSdebug("loading library file '" + library + "'...");
+	OSdebug( "loading library file '" + library + "' from file '" + fromLibrary + "'..." );
 
-	if ( !Utils::Tools::Files::exists(library) ) {
+	if ( !Utils::Tools::Files::exists( library ) ) {
 		// provided library file doesn't exist!
 		return false;
 	}
 
-	if ( mImportedLibraries.find(library) != mImportedLibraries.end() ) {
-		// circular import => abort
-		OSdebug("circular imports detected in file '" + library + "'");
+	if ( mImportedLibraries.find( library ) != mImportedLibraries.end() ) {
+		OSdebug( "Ignoring already imported file '" + library + "'" );
 		return true;
 	}
 
 	auto currentFolder = Utils::Tools::Files::ExtractPathname( library );
+	addLibraryFolder( currentFolder );
 
-	mLibraryFolders.insert( currentFolder );
+	mImportedLibraries.insert( library );
 
-	Designtime::Analyser analyser(this, mSettings.DoSanityCheck, mSettings.PrintTokens);
-	analyser.processFile(library);
-
-	mImportedLibraries.insert(library);
+	Designtime::Analyser analyser( this, mSettings.DoSanityCheck, mSettings.PrintTokens );
+	analyser.processFile( library );
 
 	// load all extension references
 	auto extensions = analyser.getExtensionReferences();
-	for ( const auto& ext : extensions ) {
-		if ( !loadExtension( ext, currentFolder ) ) {
-			throw Common::Exceptions::Exception( "could not load extension '" + ext + "' from '" + currentFolder + "'" );
+	for ( const auto& extension : extensions ) {
+		if ( !loadExtension( extension, currentFolder ) ) {
+			throw Common::Exceptions::Exception( "could not load extension '" + extension + "' from '" + currentFolder + "'" );
 		}
 	}
 
-	const std::list<std::string>& libraries = analyser.getLibraryReferences();
-	for ( const auto& lib : libraries ) {
-		bool imported = false;
+	auto librariesFolders = mLibraryFolders;
+	librariesFolders.insert( librariesFolders.begin(), currentFolder );
 
-		for ( const auto& libraryFolder : mLibraryFolders ) {
-			if ( loadLibrary( buildFilename( libraryFolder, lib ) ) ) {
+	// load all library references
+	auto libraryImports = analyser.getLibraryReferences();
+
+	// (1) first try to resolve relative to the current file
+	for ( auto libIt = libraryImports.begin(); libIt != libraryImports.end(); ) {
+		if ( loadLibrary( buildFilename( currentFolder, *libIt ), library ) ) {
+			libIt = libraryImports.erase( libIt );
+		}
+		else {
+			++libIt;
+		}
+	}
+
+	// (2) then try to resolve via the library folders
+	for ( const auto& file : libraryImports ) {
+		bool imported{ false };
+
+		for ( const auto& folder : librariesFolders ) {
+			if ( loadLibrary( buildFilename( folder, file ), library ) ) {
 				imported = true;
 				break;
 			}
 		}
 
 		if ( !imported ) {
-			throw Common::Exceptions::Exception("could not resolve import '" + lib + "' in file '" + library + "'");
+			throw Common::Exceptions::Exception( "could not resolve import '" + file + "' in file '" + library + "'" );
 		}
 	}
 

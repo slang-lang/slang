@@ -351,7 +351,7 @@ bool operator_binary_equal( AST::TreeInterpreter* runtime, Object* lvalue, Objec
 	}
 
 	ParameterList params;
-	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
+	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	if ( auto* method = dynamic_cast<Common::Method*>( lvalue->resolveMethod( "operator==", params, false, Visibility::Public ) ) ) {
 		Object tmp;
@@ -408,7 +408,7 @@ bool operator_binary_greater( AST::TreeInterpreter* runtime, Object* lvalue, Obj
 	}
 
 	ParameterList params;
-	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
+	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
 	auto* method = dynamic_cast<Common::Method*>( lvalue->resolveMethod( "operator>", params, false, Visibility::Public ) );
@@ -462,7 +462,7 @@ bool operator_binary_greater_equal( AST::TreeInterpreter* runtime, Object* lvalu
 	}
 
 	ParameterList params;
-	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
+	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
 	auto* method = dynamic_cast<Common::Method*>( lvalue->resolveMethod( "operator>=", params, false, Visibility::Public ) );
@@ -516,7 +516,7 @@ bool operator_binary_less( AST::TreeInterpreter* runtime, Object* lvalue, Object
 	}
 
 	ParameterList params;
-	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
+	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
 	auto* method = dynamic_cast<Common::Method*>( lvalue->resolveMethod( "operator<", params, false, Visibility::Public ) );
@@ -570,7 +570,7 @@ bool operator_binary_less_equal( AST::TreeInterpreter* runtime, Object* lvalue, 
 	}
 
 	ParameterList params;
-	params.push_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
+	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
 	auto* method = dynamic_cast<Common::Method*>( lvalue->resolveMethod( "operator<=", params, false, Visibility::Public ) );

@@ -67,7 +67,7 @@ void TreeOptimizer::processBluePrint(Designtime::BluePrintObject* object)
 		return;
 	}
 
-	process(object);
+	process( object );
 }
 
 void TreeOptimizer::processMethod(Common::Method* method)
@@ -75,14 +75,14 @@ void TreeOptimizer::processMethod(Common::Method* method)
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method symbol provided");
 	}
-	if (method->isAbstractMethod() || method->isExtensionMethod() ) {
+	if ( method->isAbstractMethod() || method->isExtensionMethod() ) {
 		// abstract or extension methods have no implementation, so there's nothing to optimize; adieu..
 		return;
 	}
 
 	// loop through all nodes of a method and decide if we keep or remove them
 
-	Node* rootNode = method->getRootNode();
+	auto* rootNode = method->getRootNode();
 	if ( !rootNode ) {
 		//OSinfo("method \"" + method->getFullScopeName() + "\" is empty");
 		return;
