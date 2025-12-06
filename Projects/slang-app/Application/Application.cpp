@@ -26,8 +26,10 @@
 #include <Common/Service.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Types.h>
+#include <Core/Runtime/Parameter.h>
+#include <Core/Runtime/BuildInTypes/Int32Type.h>
+#include <Core/Runtime/BuildInTypes/StringType.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Core/Consts.h>
 #include <Core/Defines.h>
 #include <Core/Version.h>
@@ -43,22 +45,12 @@
 
 namespace {
 
-    // bool contains( const StringList& list, const std::string& value );
-    // void execute( const std::string& command, bool debug = false );
-    // size_t findCaseInsensitive( std::string data, std::string toSearch, size_t pos = 0 );
-    // bool isLocalLibrary();
-    void readJsonFile( const std::string& filename, Json::Value& result );
-    // void storeConfig();
-    // void writeJsonFile( const std::string& filename, Json::Value& result );
-
-    // void handle_hello( FCGX_Stream *out );
-    // void handle_data( FCGX_Stream *out );
     void handle_not_found( FCGX_Stream *out );
+    void readJsonFile( const std::string& filename, Json::Value& result );
 
-
-    Utils::Common::StdOutLogger mLogger;
-    Slang::StringList mParameters;
-    Settings mSettings;
+	Slang::StringSet mLibraryFolders;
+	Slang::ParameterList mParameters;
+	bool mPrintDebugInfo{ false };
 
 }
 
@@ -106,9 +98,6 @@ int Application::exec()
 
                 // Dispatch based on path
                 for ( auto* service : mSettings.Services ) {
-                    OSdebug( "Service path: '" + service->getPath() + "'" );
-                    OSdebug( "Request path: '" + servicePath + "'" );
-
                     if ( service->getPath() == servicePath ) {
                         requestHandled = service->handleRequest( request );
                         break;
@@ -117,6 +106,7 @@ int Application::exec()
 
                 if ( !requestHandled ) {
                     OSwarn( "Service '" << servicePath << "' not found" );
+
                     handle_not_found( request.out );
                 }
             }
@@ -145,8 +135,6 @@ int Application::exec()
 void Application::init( int argc, const char* argv[] )
 {
     OSdebug( "Initializing application" );
-
-    processParameters( argc, argv );
 
     {   // set library home path
         const char* homepath = getenv( Slang::SLANG_LIBRARY );
@@ -188,20 +176,32 @@ void Application::init( int argc, const char* argv[] )
         mSettings.LibraryFolder += '/';
     }
 
-    mVirtualMachine = new VirtualMachine();
+    processParameters( argc, argv );
 
     // add extensions
     #ifdef USE_SYSTEM_EXTENSION
-    mVirtualMachine->addExtension( new Slang::Extensions::System::SystemExtension() );
-    mVirtualMachine->addExtension( new Slang::Extensions::LIBC::Extension() );
+    mVirtualMachine.addExtension( new Slang::Extensions::System::SystemExtension() );
+    mVirtualMachine.addExtension( new Slang::Extensions::LIBC::Extension() );
     #endif
 
-    mVirtualMachine->addLibraryFolder( mSettings.CurrentFolder );
-    mVirtualMachine->addLibraryFolder( mSettings.LibraryFolder );
-    mVirtualMachine->init();
+    mVirtualMachine.addLibraryFolder( mSettings.CurrentFolder );
+    mVirtualMachine.addLibraryFolder( mSettings.LibraryFolder );
 
-    //mVirtualMachine->printLibraryFolders();
-    //mVirtualMachine->printExtensions();
+	for ( const auto& library : mLibraryFolders ) {
+		mVirtualMachine.addLibraryFolder( library );
+	}
+
+    mVirtualMachine.init();
+
+    if ( mPrintDebugInfo ) {
+        mVirtualMachine.printLibraryFolders();
+        mVirtualMachine.printExtensions();
+    }
+
+    mScript = mVirtualMachine.createScriptFromFile( mSettings.Script );
+
+    Runtime::Object result;
+    mVirtualMachine.run( mScript, mParameters, &result );
 
     loadConfig();
 }
@@ -212,25 +212,11 @@ void Application::loadConfig()
 
     readJsonFile( mSettings.CurrentFolder + CONFIG_SERVER, mSettings.Config );
 
-    // TODO: Implement configuration loading
-
     loadServices();
 }
 
 void Application::loadServices()
 {
-    if ( !mSettings.Config.isMember( "script" ) ) {
-        mSettings.Config[ "script" ] = Json::Value();
-    }
-    if ( !mSettings.Config.isMember( "services" ) ) {
-        mSettings.Config[ "services" ] = Json::Value();
-    }
-
-    mSettings.Script = mSettings.Config[ "script" ].asString();
-    OSdebug( "Loading script '" + mSettings.Script + "'" );
-
-    mScript = mVirtualMachine->createScriptFromFile( mSettings.Script );
-
     // load service paths from config
     auto services = mSettings.Config[ "services" ];
     for ( const auto& serviceName : services.getMemberNames() ) {
@@ -269,27 +255,68 @@ void Application::printVersion()
 
 void Application::processParameters( int argc, const char* argv[] )
 {
-    if ( argc > 1 ) {
-        std::string arg1 = argv[ 1 ];
+	StringList params;
+	std::string paramStr;
 
-        if ( Utils::Tools::StringCompare( arg1, "help" ) ) {
-            printUsage();
-            exit( 0 );
-        }
-        else if ( Utils::Tools::StringCompare( arg1, "--version" ) ) {
-            printVersion();
-            exit( 0 );
-        }
-    }
+	bool scriptParams = false;
 
-    for ( int i = 2; i < argc; ++i ) {
-        if ( Utils::Tools::StringCompare( argv[ i ], "--verbose" ) ) {
-            mSettings.Verbose = true;
-        }
-        else {
-            mParameters.emplace_back( argv[ i ] );
-        }
-    }
+	for ( int i = 1; i < argc; i++ ) {
+		if ( !scriptParams ) {
+			if ( Utils::Tools::StringCompare( argv[i], "--debug" ) ) {
+				mPrintDebugInfo = true;
+			}
+			else if ( Utils::Tools::StringCompare( argv[i], "-f" ) || Utils::Tools::StringCompare( argv[i], "--file" ) ) {
+				if ( argc <= ++i ) {
+					std::cout << "invalid number of parameters provided!" << std::endl;
+
+					exit( -1 );
+				}
+
+				mSettings.Script = argv[i];
+				params.push_back( mSettings.Script );
+				paramStr += mSettings.Script;
+
+				// all parameters that follow are designated for our script
+				scriptParams = true;
+			}
+			else if ( Utils::Tools::StringCompare( argv[i], "-h" ) || Utils::Tools::StringCompare( argv[i], "--help" ) ) {
+				printUsage();
+                exit( 0 );
+			}
+			else if ( Utils::Tools::StringCompare( argv[i], "-l" ) || Utils::Tools::StringCompare( argv[i], "--library" ) ) {
+				if ( argc <= ++i ) {
+					std::cout << "invalid number of parameters provided!" << std::endl;
+
+					exit( -1 );
+				}
+
+				mLibraryFolders.insert( argv[i] );
+			}
+			else if ( Utils::Tools::StringCompare( argv[i], "-v" ) || Utils::Tools::StringCompare( argv[i], "--verbose" ) ) {
+				mSettings.Verbose = true;
+			}
+			else if ( Utils::Tools::StringCompare( argv[i], "--version" ) ) {
+				printVersion();
+                exit( 0 );
+			}
+			else if ( mSettings.Script.empty() ){
+				mSettings.Script = argv[i];
+				params.push_back( mSettings.Script );
+				paramStr += mSettings.Script;
+
+				// all parameters that follow are designated for our script
+				scriptParams = true;
+			}
+		}
+		else {
+			params.emplace_back( argv[i] );
+			paramStr += "\n";
+			paramStr += argv[i];
+		}
+	}
+
+	mParameters.push_back( Parameter::CreateRuntime( Runtime::Int32Type::TYPENAME, static_cast<int32_t>( params.size() ) ) );
+	mParameters.push_back( Parameter::CreateRuntime( Runtime::StringType::TYPENAME, paramStr ) );
 }
 
 
@@ -298,94 +325,22 @@ void Application::processParameters( int argc, const char* argv[] )
 
 namespace {
 
-// bool contains( const StringList& list, const std::string& value )
-// {
-//     for ( const auto& it : list ) {
-//         if ( it == value ) {
-//             return true;
-//         }
-//     }
+    void handle_not_found( FCGX_Stream *out )
+    {
+        FCGX_FPrintF( out, "Status: 404 Not Found\r\n" );
+        FCGX_FPrintF( out, "Content-Type: text/plain\r\n\r\n" );
+        FCGX_FPrintF( out, "404 - Endpoint not found\n" );
+    }
 
-//     return false;
-// }
+    void readJsonFile( const std::string& filename, Json::Value& result )
+    {
+        std::fstream stream;
+        stream.open( filename.c_str(), std::ios::in );    // open for reading
+        std::string data( ( std::istreambuf_iterator<char>( stream ) ), std::istreambuf_iterator<char>() );    // read stream
+        stream.close();
 
-// void execute( const std::string& command, bool debug )
-// {
-//     if ( debug ) {
-//         std::cout << command << std::endl;
-//     }
-
-//     auto result = system( command.c_str() );
-//     ( void )result;
-// }
-
-// /*
-//  * Find Case Insensitive Sub String in a given substring
-//  */
-// size_t findCaseInsensitive( std::string data, std::string toSearch, size_t pos )
-// {
-//     // Convert complete given String to lower case
-//     std::transform( data.begin(), data.end(), data.begin(), ::tolower );
-//     // Convert complete given Sub String to lower case
-//     std::transform( toSearch.begin(), toSearch.end(), toSearch.begin(), ::tolower );
-//     // Find sub string in given string
-//     return data.find( toSearch, pos );
-// }
-
-// bool isLocalLibrary()
-// {
-//     return Utils::Tools::Files::exists( mSettings.CurrentFolder + CONFIG_SERVER );
-// }
-
-void readJsonFile( const std::string& filename, Json::Value& result )
-{
-    // load contents of filename into Json::Value
-
-    std::fstream stream;
-    stream.open( filename.c_str(), std::ios::in );    // open for reading
-    std::string data( ( std::istreambuf_iterator<char>( stream ) ), std::istreambuf_iterator<char>() );    // read stream
-    stream.close();
-
-    Json::Reader reader;
-    reader.parse( data, result );
-}
-
-// void storeConfig()
-// {
-//     // write json config to file
-//     writeJsonFile( mSettings.LibraryFolder + CONFIG_SERVER, mSettings.Config );
-// }
-
-// void writeJsonFile( const std::string& filename, Json::Value& result )
-// {
-//     // write contents of Json::Value into filename
-
-//     Json::StyledWriter writer;
-//     std::string data = writer.write( result );
-
-//     std::fstream stream;
-//     stream.open( filename.c_str(), std::ios::out );    // open file for writing
-//     stream.write( data.c_str(), data.size() );
-//     stream.close();
-// }
-
-// void handle_hello( FCGX_Stream *out )
-// {
-//     FCGX_FPrintF(out, "Content-Type: text/plain\r\n\r\n");
-//     FCGX_FPrintF(out, "Hello from /hello endpoint!\n");
-// }
-
-// void handle_data( FCGX_Stream *out )
-// {
-//     FCGX_FPrintF(out, "Content-Type: application/json\r\n\r\n");
-//     FCGX_FPrintF(out, "{\"status\": \"ok\", \"data\": 42}\n");
-// }
-
-void handle_not_found( FCGX_Stream *out )
-{
-    FCGX_FPrintF(out, "Status: 404 Not Found\r\n");
-    FCGX_FPrintF(out, "Content-Type: text/plain\r\n\r\n");
-    FCGX_FPrintF(out, "404 - Endpoint not found\n");
-}
+        Json::Reader reader;
+        reader.parse( data, result );
+    }
 
 }

@@ -6,12 +6,12 @@
 // Library includes
 
 // Project includes
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include "Settings.h"
 
 // Forward declarations
 namespace Slang {
 	class Script;
-    class VirtualMachine;
 }
 
 // Namespace declarations
@@ -41,8 +41,8 @@ private:
 
 private:
 	Script* mScript;
-    //Settings mSettings;
-    VirtualMachine* mVirtualMachine;
+    Settings mSettings;
+    VirtualMachine mVirtualMachine;
 };
 
 

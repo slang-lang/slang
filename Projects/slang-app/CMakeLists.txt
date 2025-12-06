@@ -11,8 +11,8 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-    ServerCommon
-    ServerApplication
+    SlangAppCommon
+    SlangAppApplication
     ExtensionsLIBC
     ExtensionsSystem
     Core
@@ -24,6 +24,7 @@ SET(MODULES
     json
 )
 
+add_include(Projects/Core)
 add_include(Projects/slang-app)
 add_include(Projects/Utils)
 
