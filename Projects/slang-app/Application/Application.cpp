@@ -29,14 +29,12 @@
 #include <Core/Runtime/Parameter.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
-#include <Core/VirtualMachine/Controller.h>
 #include <Core/Consts.h>
 #include <Core/Defines.h>
 #include <Core/Version.h>
 #include <LIBC/Extension.h>
-#include <Logger/StdOutLogger.h>
+#include <Logger/Logger.h>
 #include <System/SystemExtension.h>
-#include <Tools/Files.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
 
@@ -48,9 +46,9 @@ namespace {
     void handle_not_found( FCGX_Stream *out );
     void readJsonFile( const std::string& filename, Json::Value& result );
 
-	Slang::StringSet mLibraryFolders;
-	Slang::ParameterList mParameters;
-	bool mPrintDebugInfo{ false };
+    Slang::StringSet mLibraryFolders;
+    Slang::ParameterList mParameters;
+    bool mPrintDebugInfo{ false };
 
 }
 
@@ -78,8 +76,6 @@ void Application::deinit()
 
 int Application::exec()
 {
-    OSdebug( "exec()" );
-
     FCGX_Request request;
     FCGX_Init();
     FCGX_InitRequest( &request, 0, 0 );
@@ -96,7 +92,6 @@ int Application::exec()
 
                 OSdebug( "Looking up service '" + servicePath + "'" );
 
-                // Dispatch based on path
                 for ( auto* service : mSettings.Services ) {
                     if ( service->getPath() == servicePath ) {
                         requestHandled = service->handleRequest( request );
@@ -240,8 +235,11 @@ void Application::printUsage()
 {
     std::cout << "Usage: slang-app [ args... ]" << std::endl;
     std::cout << std::endl;
-    std::cout << "help                       Print command usage info" << std::endl;
-    std::cout << "--verbose                  Verbose output" << std::endl;
+    std::cout << "--debug                    Show debug information" << std::endl;
+    std::cout << "-f | --file <file>         Parse and execute <file>" << std::endl;
+    std::cout << "-h | --help                This help" << std::endl;
+    std::cout << "-l | --library <library>   Library root path" << std::endl;
+    std::cout << "-v | --verbose             Verbose output" << std::endl;
     std::cout << "--version                  Version information" << std::endl;
     std::cout << std::endl;
 }
@@ -255,68 +253,68 @@ void Application::printVersion()
 
 void Application::processParameters( int argc, const char* argv[] )
 {
-	StringList params;
-	std::string paramStr;
+    StringList params;
+    std::string paramStr;
 
-	bool scriptParams = false;
+    bool scriptParams = false;
 
-	for ( int i = 1; i < argc; i++ ) {
-		if ( !scriptParams ) {
-			if ( Utils::Tools::StringCompare( argv[i], "--debug" ) ) {
-				mPrintDebugInfo = true;
-			}
-			else if ( Utils::Tools::StringCompare( argv[i], "-f" ) || Utils::Tools::StringCompare( argv[i], "--file" ) ) {
-				if ( argc <= ++i ) {
-					std::cout << "invalid number of parameters provided!" << std::endl;
+    for ( int i = 1; i < argc; i++ ) {
+        if ( !scriptParams ) {
+            if ( Utils::Tools::StringCompare( argv[i], "--debug" ) ) {
+                mPrintDebugInfo = true;
+            }
+            else if ( Utils::Tools::StringCompare( argv[i], "-f" ) || Utils::Tools::StringCompare( argv[i], "--file" ) ) {
+                if ( argc <= ++i ) {
+                    std::cout << "invalid number of parameters provided!" << std::endl;
 
-					exit( -1 );
-				}
+                    exit( -1 );
+                }
 
-				mSettings.Script = argv[i];
-				params.push_back( mSettings.Script );
-				paramStr += mSettings.Script;
+                mSettings.Script = argv[i];
+                params.push_back( mSettings.Script );
+                paramStr += mSettings.Script;
 
-				// all parameters that follow are designated for our script
-				scriptParams = true;
-			}
-			else if ( Utils::Tools::StringCompare( argv[i], "-h" ) || Utils::Tools::StringCompare( argv[i], "--help" ) ) {
-				printUsage();
+                // all parameters that follow are designated for our script
+                scriptParams = true;
+            }
+            else if ( Utils::Tools::StringCompare( argv[i], "-h" ) || Utils::Tools::StringCompare( argv[i], "--help" ) ) {
+                printUsage();
                 exit( 0 );
-			}
-			else if ( Utils::Tools::StringCompare( argv[i], "-l" ) || Utils::Tools::StringCompare( argv[i], "--library" ) ) {
-				if ( argc <= ++i ) {
-					std::cout << "invalid number of parameters provided!" << std::endl;
+            }
+            else if ( Utils::Tools::StringCompare( argv[i], "-l" ) || Utils::Tools::StringCompare( argv[i], "--library" ) ) {
+                if ( argc <= ++i ) {
+                    std::cout << "invalid number of parameters provided!" << std::endl;
 
-					exit( -1 );
-				}
+                    exit( -1 );
+                }
 
-				mLibraryFolders.insert( argv[i] );
-			}
-			else if ( Utils::Tools::StringCompare( argv[i], "-v" ) || Utils::Tools::StringCompare( argv[i], "--verbose" ) ) {
-				mSettings.Verbose = true;
-			}
-			else if ( Utils::Tools::StringCompare( argv[i], "--version" ) ) {
-				printVersion();
+                mLibraryFolders.insert( argv[i] );
+            }
+            else if ( Utils::Tools::StringCompare( argv[i], "-v" ) || Utils::Tools::StringCompare( argv[i], "--verbose" ) ) {
+                mSettings.Verbose = true;
+            }
+            else if ( Utils::Tools::StringCompare( argv[i], "--version" ) ) {
+                printVersion();
                 exit( 0 );
-			}
-			else if ( mSettings.Script.empty() ){
-				mSettings.Script = argv[i];
-				params.push_back( mSettings.Script );
-				paramStr += mSettings.Script;
+            }
+            else if ( mSettings.Script.empty() ){
+                mSettings.Script = argv[i];
+                params.push_back( mSettings.Script );
+                paramStr += mSettings.Script;
 
-				// all parameters that follow are designated for our script
-				scriptParams = true;
-			}
-		}
-		else {
-			params.emplace_back( argv[i] );
-			paramStr += "\n";
-			paramStr += argv[i];
-		}
-	}
+                // all parameters that follow are designated for our script
+                scriptParams = true;
+            }
+        }
+        else {
+            params.emplace_back( argv[i] );
+            paramStr += "\n";
+            paramStr += argv[i];
+        }
+    }
 
-	mParameters.push_back( Parameter::CreateRuntime( Runtime::Int32Type::TYPENAME, static_cast<int32_t>( params.size() ) ) );
-	mParameters.push_back( Parameter::CreateRuntime( Runtime::StringType::TYPENAME, paramStr ) );
+    mParameters.push_back( Parameter::CreateRuntime( Runtime::Int32Type::TYPENAME, static_cast<int32_t>( params.size() ) ) );
+    mParameters.push_back( Parameter::CreateRuntime( Runtime::StringType::TYPENAME, paramStr ) );
 }
 
 
