@@ -14,7 +14,7 @@
 #include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
 #include <Core/Runtime/BuildInTypes/FloatType.h>
-//#include <Core/Runtime/BuildInTypes/Int16Type.h>
+#include <Core/Runtime/BuildInTypes/Int16Type.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
 #include <Core/Runtime/BuildInTypes/Int64Type.h>
 #include <Core/Runtime/BuildInTypes/StringType.h>
@@ -248,7 +248,15 @@ void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* r
 		case Runtime::AtomicValue::Type::BOOL:      *result = Runtime::BoolType(exp->mValue); break;
 		case Runtime::AtomicValue::Type::DOUBLE:    *result = Runtime::DoubleType(exp->mValue); break;
 		case Runtime::AtomicValue::Type::FLOAT:     *result = Runtime::FloatType(exp->mValue); break;
-		case Runtime::AtomicValue::Type::INT:       *result = Runtime::Int64Type(exp->mValue); break;
+		case Runtime::AtomicValue::Type::INT:       {
+			if( dynamic_cast<Int32LiteralExpression*>( exp ) )
+				*result = Runtime::Int32Type(exp->mValue);
+			else if( dynamic_cast<Int16LiteralExpression*>( exp ) )
+				*result = Runtime::Int16Type(exp->mValue);
+			else
+				*result = Runtime::Int64Type(exp->mValue);
+			break;
+		}
 		case Runtime::AtomicValue::Type::REFERENCE: *result = *mMemory->get(Runtime::Reference(exp->mValue.toReference())); break;
 		case Runtime::AtomicValue::Type::STRING:    *result = Runtime::StringType(exp->mValue); break;
 		case Runtime::AtomicValue::Type::UNKNOWN:    throw Common::Exceptions::NotSupported("UNKNOWN type");

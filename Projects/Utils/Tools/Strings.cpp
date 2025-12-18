@@ -95,13 +95,13 @@ bool StringCompareI(const std::string& s1, const std::string& s2) {
 bool stringToBool(const std::string& str) {
     static const std::string FALSE_VALUE = "false";
     static const std::string NEWLINE = "\n";
-    
+
     // Trim whitespace and convert to lowercase for consistent comparison
     auto normalizedStr = toLowerCase( stringTrim( str ) );
-    
+
     // Return false for empty string, newline, or explicit "false" value
-    return !normalizedStr.empty() && 
-           normalizedStr != NEWLINE && 
+    return !normalizedStr.empty() &&
+           normalizedStr != NEWLINE &&
            normalizedStr != FALSE_VALUE;
 }
 
@@ -133,7 +133,7 @@ float stringToFloat(const std::string& str)
 	return f;
 }
 
-int stringToInt(const std::string& str)
+int64_t stringToInt(const std::string& str)
 {
 	if ( str.empty() ) {
 		return 0;
@@ -141,7 +141,7 @@ int stringToInt(const std::string& str)
 
 	std::stringstream stream;
 	stream << str;
-	int i;
+	int64_t i;
 	stream >> i;
 
 	return i;

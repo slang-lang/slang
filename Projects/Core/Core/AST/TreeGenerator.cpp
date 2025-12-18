@@ -3,6 +3,7 @@
 #include "TreeGenerator.h"
 
 // Library includes
+#include <limits.h>
 
 // Project includes
 #include <Core/Common/Exceptions.h>
@@ -526,14 +527,14 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 		} break;
 		case Token::Type::CONST_INTEGER: {
 		    auto value = Utils::Tools::stringToInt(start->content());
-			/*
-			if( value > -32768 && value < 32,767 )
-			    term = new Int16LiteralExpression(value);
-			else if( value > -2147483648 & value < 2147483647 )
-			    term = new IntegerLiteralExpression(value);
+
+			//if( value >= SHRT_MIN && value <= SHRT_MAX )
+			//    term = new Int16LiteralExpression(value);
+			//else
+			if( value >= INT_MIN && value <= INT_MAX )
+			    term = new Int32LiteralExpression(value);
 			else
-			*/
-			    term = new IntegerLiteralExpression(value);  // TODO: replace this with Int64LiteralExpression when available
+			    term = new Int64LiteralExpression(value);
 
 			++start;
 		} break;

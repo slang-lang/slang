@@ -13,5 +13,14 @@ public void Main(int argc = 0, string args = "") {
 
 	print(typeid(objectValue));
 	assert( typeid(objectValue) == "Object" );
+
+	print( typeid( 17 ) );
+	assert( typeid( 17 ) == "int" );
+
+	print( typeid( 2147483647 ) );
+	assert( typeid( 2147483647 ) == "int" );
+
+	print( typeid( 2147483650 ) );
+	assert( typeid( 2147483650 ) == "int64" );
 }
 

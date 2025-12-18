@@ -252,13 +252,24 @@ public:
 };
 
 
-class IntegerLiteralExpression : public LiteralExpression
+class Int32LiteralExpression : public LiteralExpression
 {
 public:
-	explicit IntegerLiteralExpression(const Runtime::AtomicValue& value)
+	explicit Int32LiteralExpression(const Runtime::AtomicValue& value)
 	: LiteralExpression(value)
 	{
 		mResultType = _int32;
+	}
+};
+
+
+class Int64LiteralExpression : public LiteralExpression
+{
+public:
+	explicit Int64LiteralExpression(const Runtime::AtomicValue& value)
+	: LiteralExpression(value)
+	{
+		mResultType = _int64;
 	}
 };
 

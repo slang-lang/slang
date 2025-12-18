@@ -26,7 +26,7 @@ bool StringCompareI(const std::string &s1, const std::string &s2);
 bool stringToBool(const std::string& str);
 double stringToDouble(const std::string& str);
 float stringToFloat(const std::string& str);
-int stringToInt(const std::string& str);
+int64_t stringToInt(const std::string& str);
 
 // Extraction
 std::string extract(const std::string& source);
