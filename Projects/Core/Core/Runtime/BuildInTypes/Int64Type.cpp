@@ -23,7 +23,7 @@ namespace Runtime {
 
 
 AtomicValue Int64Type::DEFAULTVALUE = AtomicValue( static_cast<int64_t>( 0 ) );
-std::string Int64Type::TYPENAME = _int32;
+std::string Int64Type::TYPENAME = _int64;
 
 
 Int64Type::Int64Type( int64_t value )
