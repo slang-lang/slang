@@ -5,11 +5,10 @@ ADD_SUBDIRECTORY(BuildInTypes)
 SET(SOURCES
 	AtomicValue.cpp
 	ExceptionData.cpp
-	Interpreter.cpp
+#	Interpreter.cpp
 	OperatorOverloading.cpp
+	Object.cpp
 	Reference.cpp
-	Parameter.cpp
-	Script.cpp
 	TypeCast.cpp
 	Types.cpp
 	Utils.cpp
@@ -20,11 +19,10 @@ SET(HEADERS
 	ControlFlow.h
 	ExceptionData.h
 	Exceptions.h
-	Interpreter.h
+#	Interpreter.h
 	OperatorOverloading.h
+	Object.h
 	Reference.h
-	Parameter.h
-	Script.h
 	TypeCast.h
 	Types.h
 	Utils.h

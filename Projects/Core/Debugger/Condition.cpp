@@ -5,11 +5,10 @@
 // Library includes
 
 // Project includes
-#include <Core/Object.h>
+#include <Core/AST/TreeInterpreter.h>
+#include <Core/Runtime/Object.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Tools/Strings.h>
-
-#include <utility>
 
 // Namespace declarations
 
@@ -49,7 +48,7 @@ Condition::Type::E Condition::ConditionFromString(const std::string& type)
 	return Type::Invalid;
 }
 
-bool Condition::evaluate(Symbol* lhs, Symbol* rhs) const
+bool Condition::evaluate(AST::TreeInterpreter* runtime, Symbol* lhs, Symbol* rhs) const
 {
 	if ( !lhs || !rhs ) {
 		// invalid sides provided!
@@ -61,17 +60,17 @@ bool Condition::evaluate(Symbol* lhs, Symbol* rhs) const
 
 	switch ( mType ) {
 		case Type::Equals:
-			return operator_binary_equal(left, right);
+			return operator_binary_equal(runtime, left, right);
 		case Type::Greater:
-			return operator_binary_greater(left, right);
+			return operator_binary_greater(runtime, left, right);
 		case Type::GreaterEqual:
-			return operator_binary_greater_equal(left, right);
+			return operator_binary_greater_equal(runtime, left, right);
 		case Type::Less:
-			return operator_binary_less(left, right);
+			return operator_binary_less(runtime, left, right);
 		case Type::LessEqual:
-			return operator_binary_less_equal(left, right);
+			return operator_binary_less_equal(runtime, left, right);
 		case Type::Unequal:
-			return !operator_binary_equal(left, right);
+			return !operator_binary_equal(runtime, left, right);
 		case Type::Invalid:
 			return true;
 	}

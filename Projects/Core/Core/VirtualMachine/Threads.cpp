@@ -8,9 +8,10 @@
 #include <utility>
 
 // Project includes
-#include <Core/AST/TreeInterpreter.h>
+// #include <Core/AST/TreeInterpreter.h>
 #include <Core/Common/Method.h>
 #include <Core/Runtime/Exceptions.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 
 // Namespace declarations
 
@@ -19,14 +20,17 @@ namespace Slang {
 
 
 Thread::Thread()
-: mId(0),
-  mState(State::Starting)
+: TreeInterpreter( nullptr, this )
+, mId(0)
+, mState(State::Starting)
 {
 }
 
-Thread::Thread(ThreadId id)
-: mId(id),
-  mState(State::Starting)
+Thread::Thread(VirtualMachine* vm, ThreadId id)
+: TreeInterpreter( vm, this )
+, mId(id)
+, mState( State::Starting )
+, mVirtualMachine( vm )
 {
 }
 
@@ -51,12 +55,11 @@ void Thread::deinit()
 	mState = State::Stopped;
 }
 
-Runtime::ControlFlow::E Thread::execute(Runtime::Object* self, Common::Method* method, const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E Thread::execute( Common::Method* method, const ParameterList& params, Runtime::Object* result )
 {
 	mState = State::Started;
 
-	AST::TreeInterpreter interpreter( this );
-	Runtime::ControlFlow::E controlflow = interpreter.execute(self, method, params, result);
+	Runtime::ControlFlow::E controlflow = TreeInterpreter::execute( nullptr, method, params, result );
 
 	mState = State::Stopping;
 
@@ -156,9 +159,14 @@ std::string Thread::stackTrace() const
 }
 
 
+Threads::Threads( VirtualMachine* vm )
+: mVirtualMachine( vm )
+{
+}
+
 Thread* Threads::createThread()
 {
-	auto* t = new Thread(mThreads.size());
+	auto* t = new Thread(mVirtualMachine, mThreads.size());
 	// initialize thread
 	t->init();
 

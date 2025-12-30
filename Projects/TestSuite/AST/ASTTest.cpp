@@ -12,7 +12,7 @@
 // Project includes
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Runtime/ControlFlow.h>
-#include <Core/Runtime/Script.h>
+#include <Core/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 
 // Extension includes

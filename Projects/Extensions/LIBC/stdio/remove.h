@@ -17,7 +17,6 @@
 #include <Core/Designtime/BuildInTypes/StringType.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
-#include "stdio.hpp"
 
 // Forward declarations
 

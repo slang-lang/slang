@@ -13,7 +13,8 @@
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
-#include <Core/VirtualMachine/Controller.h>
+#include <Core/VirtualMachine/Repository.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Logger/Logger.h>
 #include <Tools/Files.h>
 #include <Utils.h>
@@ -26,13 +27,13 @@ namespace Slang {
 namespace Designtime {
 
 
-Analyser::Analyser(bool doSanityCheck, bool printTokens)
+Analyser::Analyser(VirtualMachine* vm, bool doSanityCheck, bool printTokens)
 : mDoSanityCheck(doSanityCheck),
   mPrintTokens( printTokens ),
   mProcessingInterface(false)
 {
-	mRepository = Controller::Instance().repository();
-	mScope      = Controller::Instance().globalScope();
+	mRepository = vm->repository();
+	mScope      = vm->globalScope();
 }
 
 bool Analyser::buildEnum(BluePrintObject* symbol, const TokenList& tokens)

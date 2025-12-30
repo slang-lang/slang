@@ -54,7 +54,7 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		std::string param_text = (*it++).value().toStdString();
+		auto param_text = (*it++).value().toStdString();
 
 #if __cplusplus > 201402L
 		std::array<char, 128> buffer;

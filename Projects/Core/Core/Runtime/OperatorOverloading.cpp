@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/AST/TreeInterpreter.h>
 #include <Core/Common/Method.h>
 #include <Core/Runtime/BuildInTypes/BoolType.h>
 #include <Core/Runtime/BuildInTypes/DoubleType.h>
@@ -17,7 +18,6 @@
 #include <Core/Runtime/BuildInTypes/UserType.h>
 #include <Core/Runtime/BuildInTypes/VoidType.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/VirtualMachine/Controller.h>
 #include "Utils.h"
 
 // Namespace declarations
@@ -310,7 +310,7 @@ void operator_binary_divide( Object* lvalue, Object* rvalue )
 	}
 }
 
-bool operator_binary_equal( Object* lvalue, Object* rvalue )
+bool operator_binary_equal( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
 		throw Exceptions::AccessViolation( "cannot compare null pointer to object" );
@@ -353,9 +353,9 @@ bool operator_binary_equal( Object* lvalue, Object* rvalue )
 	ParameterList params;
 	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
-	if ( lvalue->resolveMethod( "operator==", params, false, Visibility::Public ) ) {
+	if ( auto* method = dynamic_cast<Common::Method*>( lvalue->resolveMethod( "operator==", params, false, Visibility::Public ) ) ) {
 		Object tmp;
-		lvalue->execute( &tmp, "operator==", params );
+		runtime->execute( lvalue, method, params, &tmp );
 		return isTrue( tmp );
 	}
 
@@ -363,7 +363,7 @@ bool operator_binary_equal( Object* lvalue, Object* rvalue )
 	return lvalue->operator_equal( rvalue );
 }
 
-bool operator_binary_greater( Object* lvalue, Object* rvalue )
+bool operator_binary_greater( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
 		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
@@ -411,11 +411,13 @@ bool operator_binary_greater( Object* lvalue, Object* rvalue )
 	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
-	lvalue->execute( &tmp, "operator>", params );
+	auto* method = dynamic_cast<Common::Method*>( lvalue->resolveMethod( "operator>", params, false, Visibility::Public ) );
+	runtime->execute( lvalue, method, params, &tmp );
+
 	return isTrue( tmp );
 }
 
-bool operator_binary_greater_equal( Object* lvalue, Object* rvalue )
+bool operator_binary_greater_equal( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
 		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
@@ -463,11 +465,13 @@ bool operator_binary_greater_equal( Object* lvalue, Object* rvalue )
 	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
-	lvalue->execute( &tmp, "operator>=", params );
+	auto* method = dynamic_cast<Common::Method*>( lvalue->resolveMethod( "operator>=", params, false, Visibility::Public ) );
+	runtime->execute( lvalue, method, params, &tmp );
+
 	return isTrue( tmp );
 }
 
-bool operator_binary_less( Object* lvalue, Object* rvalue )
+bool operator_binary_less( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
 		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
@@ -515,11 +519,13 @@ bool operator_binary_less( Object* lvalue, Object* rvalue )
 	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
-	lvalue->execute( &tmp, "operator<", params );
+	auto* method = dynamic_cast<Common::Method*>( lvalue->resolveMethod( "operator<", params, false, Visibility::Public ) );
+	runtime->execute( lvalue, method, params, &tmp );
+
 	return isTrue( tmp );
 }
 
-bool operator_binary_less_equal( Object* lvalue, Object* rvalue )
+bool operator_binary_less_equal( AST::TreeInterpreter* runtime, Object* lvalue, Object* rvalue )
 {
 	if ( !lvalue ) {
 		throw Exceptions::AccessViolation( "cannot add null pointer to object" );
@@ -567,7 +573,9 @@ bool operator_binary_less_equal( Object* lvalue, Object* rvalue )
 	params.emplace_back( Parameter::CreateRuntime( rvalue->QualifiedTypename(), rvalue->getValue(), rvalue->getReference() ) );
 
 	Object tmp;
-	lvalue->execute( &tmp, "operator<=", params );
+	auto* method = dynamic_cast<Common::Method*>( lvalue->resolveMethod( "operator<=", params, false, Visibility::Public ) );
+	runtime->execute( lvalue, method, params, &tmp );
+
 	return isTrue( tmp );
 }
 

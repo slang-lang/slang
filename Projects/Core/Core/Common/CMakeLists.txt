@@ -6,6 +6,7 @@ SET(SOURCES
     Exceptions.cpp
     Method.cpp
     Namespace.cpp
+	Parameter.cpp
     Position.cpp
     PrototypeConstraint.cpp
     Token.cpp
@@ -18,6 +19,7 @@ SET(HEADERS
     Exceptions.h
     Method.h
     Namespace.h
+	Parameter.h
     Position.h
     PrototypeConstraint.h
     Token.h

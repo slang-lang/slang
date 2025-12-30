@@ -2,8 +2,8 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(Console)
 #ADD_SUBDIRECTORY(IO)
-ADD_SUBDIRECTORY(Network)
-ADD_SUBDIRECTORY(Reflection)
+#ADD_SUBDIRECTORY(Network)
+#ADD_SUBDIRECTORY(Reflection)
 ADD_SUBDIRECTORY(Strings)
 ADD_SUBDIRECTORY(Time)
 
@@ -20,8 +20,8 @@ SET(HEADERS
 SET(DEPENDENCIES
 	ExtensionsSystemTime
 	ExtensionsSystemStrings
-	ExtensionsSystemReflection
-	ExtensionsSystemNetwork
+#	ExtensionsSystemReflection
+#	ExtensionsSystemNetwork
 	ExtensionsSystemConsole
 	CoreExtensions
 )

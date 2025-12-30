@@ -84,7 +84,7 @@ void SystemExtension::initialize( ExtensionNamespace* scope )
 	// Win32 only
 #else
 	// Unix/Linux only
-	mNetworkExtension.initialize( scope );
+//	mNetworkExtension.initialize( scope );
 #endif
 
 	// Strings
@@ -126,11 +126,11 @@ void SystemExtension::provideMethods( ExtensionMethods& methods )
 	// Win32 only
 #else
 	// Unix/Linux only
-	mNetworkExtension.provideMethods( methods );
+//	mNetworkExtension.provideMethods( methods );
 #endif
 
 	// Reflection
-	mReflectionExtension.provideMethods( methods );
+//	mReflectionExtension.provideMethods( methods );
 
 	// Strings
 	mStringsExtension.provideMethods( methods );

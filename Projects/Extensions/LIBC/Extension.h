@@ -7,7 +7,7 @@
 
 // Project includes
 #include <Core/Extensions/AExtension.h>
-#include "cassert/cassert.hpp"
+//#include "cassert/cassert.hpp"
 #include "cstring/cstring.hpp"
 #include "fenv/fenv.hpp"
 #include "math/math.hpp"
@@ -35,7 +35,7 @@ public:
     void provideMethods( ExtensionMethods& methods ) override;
 
 private:
-    cassert::cassert_t mCassert;
+    //cassert::cassert_t mCassert;
     cstring::cstring_t mCstring;
     fenv::fenv_t       mFenv;
     math::math_t       mMath;
