@@ -80,3 +80,4 @@ public object ShellCommand implements ICollection, IIterable
 	protected string       ShellOutput;
 	protected Vector<Line> TableResult;
 }
+

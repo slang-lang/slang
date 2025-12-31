@@ -5,10 +5,10 @@
 import ShellCommand;
 
 
-public object DU extends ShellCommand implements ICollection, IIterable
+public object LS extends ShellCommand implements ICollection, IIterable
 {
 	public void Constructor() {
-		base.Constructor( "du" );
+		base.Constructor( "ls" );
 	}
 }
 
