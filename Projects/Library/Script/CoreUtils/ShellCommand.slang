@@ -8,76 +8,88 @@ import libs.Strings;
 
 public object ShellCommand implements ICollection, IIterable
 {
-    public void Constructor( string cmd ) {
-		Command     = cmd;
+    protected string       Command;
+    protected int          ExitCode;
+    protected string       ShellOutput;
+    protected Vector<Line> TableResult;
+
+    public void Constructor( string cmd )
+    {
+        Command     = cmd;
         TableResult = new Vector<Line>();
     }
 
-    public int getExitCode() const {
+    // ShellCommand interface implementation
+    // {
+    public int getExitCode() const
+    {
         return ExitCode;
     }
 
-	public string getOutput() const {
-		return ShellOutput;
-	}
+    public string getOutput() const
+    {
+        return ShellOutput;
+    }
 
-	public string Run( string params = "", bool parseOutput = true ) modify
-	{
-		ShellOutput = system( streval( "{{{Command}}} {{{params}}} 2>&1" ) );
-		ExitCode    = cast<int>( system( "echo $?" ) );
+    public string Run( string params = "", bool parseOutput = true ) modify
+    {
+        ShellOutput = system( streval( "{{{Command}}} {{{params}}} 2>&1" ) );
+        ExitCode    = cast<int>( system( "echo $?" ) );
 
-		if ( parseOutput ) {
-			ParseOutput();
-		}
+        if ( parseOutput ) {
+            ParseOutput();
+        }
 
-		return ShellOutput;
-	}
+        return ShellOutput;
+    }
+    // }
 
     // ICollection interface implementation
     // {
-    public Line at( int index ) const {
+    public Line at( int index ) const
+    {
         return TableResult.at( index );
     }
 
-    public int size() const {
+    public int size() const
+    {
         return TableResult.size();
     }
 
-    public Line operator[]( int index ) const {
+    public Line operator[]( int index ) const
+    {
         return TableResult.at( index );
     }
     // }
 
     // IIterable interface implementation
     // {
-    public Iterator<Line> getIterator() const {
+    public Iterator<Line> getIterator() const
+    {
         return TableResult.getIterator();
     }
     // }
 
-	private void ParseOutput() modify {
-		var str = new String( ShellOutput );
-		foreach ( string line : str.SplitBy( LINEBREAK ) ) {
-			if ( !line ) {
-				continue;
-			}
+    private void ParseOutput() modify
+    {
+        var str = new String( ShellOutput );
 
-			var tok = new String( line );
+        foreach ( string line : str.SplitBy( LINEBREAK ) ) {
+            if ( !line ) {
+                continue;
+            }
 
-			var row = new Line();
-			foreach ( string token : tok.SplitBy( " " ) ) {
-				if ( token ) {
-					row.push_back( token );
-				}
-			}
+            var tok = new String( line );
 
-			TableResult.push_back( row );
-		}
-	}
+            var row = new Line();
+            foreach ( string token : tok.SplitBy( " " ) ) {
+                if ( token ) {
+                    row.push_back( token );
+                }
+            }
 
-    protected string       Command;
-    protected int          ExitCode;
-	protected string       ShellOutput;
-	protected Vector<Line> TableResult;
+            TableResult.push_back( row );
+        }
+    }
 }
 

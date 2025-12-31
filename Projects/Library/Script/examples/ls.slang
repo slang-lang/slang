@@ -13,7 +13,7 @@ public void Main( int argc, string args )
 		print( cast<string>( line ) );
 	}
 
-	print( "" );
-	print( cmd[ 1 ] );
+	// print( "" );
+	// print( cmd[ 1 ] );
 }
 

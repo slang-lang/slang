@@ -7,14 +7,13 @@ public void Main( int argc, string args )
 {
 	var cmd = new DU();
 
-	print( cmd.Run( "-sch *" ) );
-	// print( cmd.getExitCode() );
+	cmd.Run( "-sch *" );
 
 	foreach ( Line line : cmd ) {
 		print( cast<string>( line ) );
 	}
 
-	print( "" );
+	// print( "" );
 	// print( cmd[ 1 ] );
 }
 
