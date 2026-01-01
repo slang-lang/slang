@@ -1,19 +1,17 @@
 #!/usr/bin/env slang
 
-import libs.CoreUtils.DU;
+import libs.Files;
 
 
 public void Main( int argc, string args )
 {
-	var cmd = new DU();
+	var result = Files.du( "-sch *" );
 
-	cmd.Run( "-sch *" );
-
-	foreach ( Line line : cmd ) {
+	foreach ( Line line : result ) {
 		print( cast<string>( line ) );
 	}
 
 	// print( "" );
-	// print( cmd[ 1 ] );
+	// print( result[ 1 ] );
 }
 

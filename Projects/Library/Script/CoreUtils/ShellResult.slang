@@ -8,29 +8,31 @@ import libs.Strings;
 
 public object ShellResult const implements ICollection, IIterable
 {
-    public void Constructor( string shellOutput, int exitCode )
+    public void Constructor( string shellOutput, int exitCode, bool parsing = true )
     {
         ExitCode    = exitCode;
         ShellOutput = shellOutput;
         TableResult = new Vector<Line>();
 
-        var str = new String( ShellOutput );
+        if ( parsing ) {
+            var str = new String( ShellOutput );
 
-        foreach ( string line : str.SplitBy( LINEBREAK ) ) {
-            if ( !line ) {
-                continue;
-            }
-
-            var tok = new String( line );
-
-            var row = new Line();
-            foreach ( string token : tok.SplitBy( " " ) ) {
-                if ( token ) {
-                    row.push_back( token );
+            foreach ( string line : str.SplitBy( LINEBREAK ) ) {
+                if ( !line ) {
+                    continue;
                 }
-            }
 
-            TableResult.push_back( row );
+                var tok = new String( line );
+
+                var row = new Line();
+                foreach ( string token : tok.SplitBy( " " ) ) {
+                    if ( token ) {
+                        row.push_back( token );
+                    }
+                }
+
+                TableResult.push_back( row );
+            }
         }
     }
 

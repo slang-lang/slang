@@ -1,15 +1,13 @@
 #!/usr/bin/env slang
 
-import libs.CoreUtils.UPTIME;
+import libs.Utils;
 
 
 public void Main( int argc, string args )
 {
-	var cmd = new UPTIME();
+	// var result = Utils.uptime();
 
-	cmd.Run();
-
-	foreach ( Line line : cmd ) {
+	foreach ( Line line : Utils.uptime() ) {
 		print( cast<string>( line ) );
 	}
 }

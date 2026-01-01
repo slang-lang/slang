@@ -1,19 +1,14 @@
 #!/usr/bin/env slang
 
-import libs.CoreUtils.LS;
+import libs.Files;
 
 
 public void Main( int argc, string args )
 {
-	var cmd = new LS();
+	var result = Files.ls( "-la *" );
 
-	cmd.Run( "-la *" );
-
-	foreach ( Line line : cmd ) {
+	foreach ( Line line : result ) {
 		print( cast<string>( line ) );
 	}
-
-	// print( "" );
-	// print( cmd[ 1 ] );
 }
 

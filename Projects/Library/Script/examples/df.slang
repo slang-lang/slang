@@ -1,21 +1,18 @@
 #!/usr/bin/env slang
 
-import libs.CoreUtils.DF;
+import libs.Files;
 
 
 public void Main( int argc, string args )
 {
-	var cmd = new DF();
+	var result = Files.df( "-h" );
 
-	cmd.Run( "-h" );
-	// print( cmd.getExitCode() );
-
-	foreach ( Line line : cmd ) {
+	foreach ( Line line : result ) {
 		print( cast<string>( line ) );
 	}
 
 	print( "" );
-	print( cmd[ 0 ] );
-	print( cmd[ 3 ] );
+	print( result[ 0 ] );
+	print( result[ 3 ] );
 }
 
