@@ -12,7 +12,7 @@ public namespace Utils
     {
         return new ShellResult(
             system( streval( "free {{{params}}} 2>&1" ) ),
-            cast<int>( system( "echo $?" ) )
+            EXIT_CODE
         );
     }
 
@@ -20,7 +20,7 @@ public namespace Utils
     {
         return new ShellResult(
             system( streval( "ps {{{params}}} 2>&1" ) ),
-            cast<int>( system( "echo $?" ) )
+            EXIT_CODE
         );
     }
 
@@ -28,7 +28,7 @@ public namespace Utils
     {
         return new ShellResult(
             system( streval( "uptime {{{params}}} 2>&1" ) ),
-            cast<int>( system( "echo $?" ) )
+            EXIT_CODE
         );
     }
 }

@@ -18,7 +18,25 @@ public namespace Files
     {
         return new ShellResult(
             system( streval( "cat {{{params}}} 2>&1" ) ),
-            cast<int>( system( "echo $?" ) ),
+            EXIT_CODE,
+            false
+        );
+    }
+
+    public ShellResult chmod( string mode, string file, string params = "" )
+    {
+        return new ShellResult(
+            system( streval( "chmod {{{mode}}} {{{file}}} {{{params}}} 2>&1" ) ),
+            EXIT_CODE,
+            false
+        );
+    }
+
+    public ShellResult chown( string owner, string group, string file, string params = "" )
+    {
+        return new ShellResult(
+            system( streval( "chown {{{owner}}}:{{{group}}} {{{file}}} {{{params}}} 2>&1" ) ),
+            EXIT_CODE,
             false
         );
     }
@@ -27,7 +45,7 @@ public namespace Files
     {
         return new ShellResult(
             system( streval( "df {{{params}}} 2>&1" ) ),
-            cast<int>( system( "echo $?" ) )
+            EXIT_CODE
         );
     }
 
@@ -35,7 +53,7 @@ public namespace Files
     {
         return new ShellResult(
             system( streval( "du {{{params}}} 2>&1" ) ),
-            cast<int>( system( "echo $?" ) )
+            EXIT_CODE
         );
     }
 
@@ -43,7 +61,7 @@ public namespace Files
     {
         return new ShellResult(
             system( streval( "ls {{{params}}} 2>&1" ) ),
-            cast<int>( system( "echo $?" ) )
+            EXIT_CODE
         );
     }
 
@@ -60,7 +78,16 @@ public namespace Files
 
         return new ShellResult(
             system( streval( "mkdir {{{params}}} {{{directory}}} 2>&1" ) ),
-            cast<int>( system( "echo $?" ) )
+            EXIT_CODE
+        );
+    }
+
+    public ShellResult mv( string source, string destination, string params = "" )
+    {
+        return new ShellResult(
+            system( streval( "mv {{{source}}} {{{destination}}} {{{params}}} 2>&1" ) ),
+            EXIT_CODE,
+            false
         );
     }
 
