@@ -67,6 +67,8 @@ void SystemExtension::initialize( ExtensionNamespace* scope )
 	scope->define( "ENFILE", new Runtime::Int32Type( "ENFILE", ENFILE ) );
 	scope->define( "ENOMEM", new Runtime::Int32Type( "ENOMEM", ENOMEM ) );
 
+	scope->define( "EXIT_CODE", new Runtime::Int32Type( "EXIT_CODE" ) );
+
 #ifdef _WIN32
 	// Win32 only
 #else

@@ -94,7 +94,20 @@ public:
 #ifdef _WIN32
 			_pclose(pipe);
 #else
-			pclose(pipe);
+			auto status = pclose(pipe);
+
+			if ( WIFEXITED( status ) ) {
+				status = WEXITSTATUS( status );
+			}
+			else if ( WIFSIGNALED( status ) ) {
+				// process was terminated by a signal
+				status = WTERMSIG( status );
+			}
+
+			auto* exitCode = dynamic_cast<Runtime::Object*>( result->resolve( std::string( "EXIT_CODE" ), false, Visibility::Designtime ) );
+			if ( exitCode ) {
+				exitCode->setValue( WEXITSTATUS( status ) );
+			}
 #endif
 			throw;
 		}
