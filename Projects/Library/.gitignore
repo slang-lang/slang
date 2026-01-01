@@ -1,8 +1,5 @@
-.odepend
-.slang
-Basic
-Cryptofox
-MysqlObject
-Pascal
-SmokeAdventure
+# Ignore everything by default
+*
+
+# Allow specific directories to be considered
 
