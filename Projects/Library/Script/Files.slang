@@ -14,10 +14,19 @@ public namespace Files
         return System.IO.File.Exists( filename );
     }
 
-    public ShellResult cat( string params = "" )
+    public ShellResult cat( string file, string params = "" )
     {
         return new ShellResult(
-            system( streval( "cat {{{params}}} 2>&1" ) ),
+            system( streval( "cat {{{params}}} {{{file}}} 2>&1" ) ),
+            EXIT_CODE,
+            false
+        );
+    }
+
+    public ShellResult cd( string directory, string params = "" )
+    {
+        return new ShellResult(
+            system( streval( "cd {{{directory}}} {{{params}}} 2>&1" ) ),
             EXIT_CODE,
             false
         );
@@ -57,6 +66,23 @@ public namespace Files
         );
     }
 
+    public ShellResult file( string file, string params = "" )
+    {
+        return new ShellResult(
+            system( streval( "file {{{params}}} {{{file}}} 2>&1" ) ),
+            EXIT_CODE,
+            false
+        );
+    }
+
+    public ShellResult find( string params )
+    {
+        return new ShellResult(
+            system( streval( "find {{{params}}} 2>&1" ) ),
+            EXIT_CODE
+        );
+    }
+
     public ShellResult ls( string params = "" )
     {
         return new ShellResult(
@@ -86,6 +112,15 @@ public namespace Files
     {
         return new ShellResult(
             system( streval( "mv {{{source}}} {{{destination}}} {{{params}}} 2>&1" ) ),
+            EXIT_CODE,
+            false
+        );
+    }
+
+    public ShellResult pwd( string params = "" )
+    {
+        return new ShellResult(
+            system( streval( "pwd {{{params}}} 2>&1" ) ),
             EXIT_CODE,
             false
         );
