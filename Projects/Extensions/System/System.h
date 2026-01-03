@@ -54,12 +54,12 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		std::string param_text = (*it++).value().toStdString();
+		auto param_command = (*it++).value().toStdString();
 
 #if __cplusplus > 201402L
 		std::array<char, 128> buffer;
 		std::string resultStr;
-		std::shared_ptr<FILE> pipe(popen(param_text.c_str(), "r"), pclose);
+		std::shared_ptr<FILE> pipe(popen(param_command.c_str(), "r"), pclose);
 		if ( !pipe ) {
 			throw std::runtime_error("popen() failed!");
 		}
@@ -73,9 +73,9 @@ public:
 		std::string resultStr = "";
 
 #ifdef _WIN32
-		FILE* pipe = _popen(param_text.c_str(), "r");
+		FILE* pipe = _popen(param_command.c_str(), "r");
 #else
-		FILE* pipe = popen(param_text.c_str(), "r");
+		FILE* pipe = popen(param_command.c_str(), "r");
 #endif
 		if ( !pipe ) {
 			throw std::runtime_error("popen() failed!");
@@ -94,7 +94,20 @@ public:
 #ifdef _WIN32
 			_pclose(pipe);
 #else
-			pclose(pipe);
+			auto status = pclose(pipe);
+
+			if ( WIFEXITED( status ) ) {
+				status = WEXITSTATUS( status );
+			}
+			else if ( WIFSIGNALED( status ) ) {
+				// process was terminated by a signal
+				status = WTERMSIG( status );
+			}
+
+			auto* exitCode = dynamic_cast<Runtime::Object*>( result->resolve( std::string( "EXIT_CODE" ), false, Visibility::Designtime ) );
+			if ( exitCode ) {
+				exitCode->setValue( WEXITSTATUS( status ) );
+			}
 #endif
 			throw;
 		}
