@@ -68,7 +68,7 @@ bool Service::handleRequest( const FCGX_Request& request )
 
     std::cout << output << std::endl;
 
-    FCGX_FPrintF( request.out, output.c_str() );
+    FCGX_PutStr( output.c_str(), output.size(), request.out );
 
     return true;
 }
