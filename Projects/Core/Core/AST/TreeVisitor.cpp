@@ -90,6 +90,9 @@ void TreeVisitor::visitExpression(Expression* expression)
 
 			visit(is->mExpression);
 		} break;
+		case Expression::ExpressionType::MoveExpression: {
+			visit(dynamic_cast<MoveExpression*>(expression)->mExpression);
+		} break;
 		case Expression::ExpressionType::NewExpression: {
 			visit(dynamic_cast<NewExpression*>(expression)->mExpression);
 		} break;
@@ -129,7 +132,7 @@ void TreeVisitor::visitExpression(Expression* expression)
 
 			visit(type->mExpression);
 		} break;
-		case Expression::ExpressionType::TypeidExpression: {
+		case Expression::ExpressionType::TypeIdExpression: {
 			visit(dynamic_cast<TypeidExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::UnaryExpression: {

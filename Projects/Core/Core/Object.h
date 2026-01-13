@@ -45,6 +45,7 @@ public:
 public:
 	Object& operator= (const Object& other);
 	void assign(const Object& other);
+	void move(Object& other);
 
 	void free();
 
@@ -142,7 +143,7 @@ protected:
 	AtomicValue mValue;
 
 private:
-	void assignReference(const Reference& ref);
+	void assignReference(const Reference& newRef);
 };
 
 

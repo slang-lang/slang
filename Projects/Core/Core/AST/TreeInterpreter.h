@@ -99,6 +99,7 @@ private:
 	void evaluateIsExpression(IsExpression* exp, Runtime::Object* result);
 	void evaluateLiteral(LiteralExpression* exp, Runtime::Object* result);
 	void evaluateMethodExpression(MethodExpression* exp, Runtime::Object* result);
+	void evaluateMoveExpression(MoveExpression* exp, Runtime::Object* result);
 	void evaluateNewExpression(NewExpression* exp, Runtime::Object* result);
 	void evaluateScopeExpression(ScopeExpression* exp, Runtime::Object* result);
 	void evaluateStringEvalExpression(StringEvalExpression* exp, Runtime::Object* result, IScope* scope);

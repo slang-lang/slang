@@ -18,8 +18,8 @@ namespace Slang {
 
 
 // Predefined identifiers
-static const char* IDENTIFIER_BASE = "base";
-static const char* IDENTIFIER_THIS = "this";
+static constexpr char* IDENTIFIER_BASE = "base";
+static constexpr char* IDENTIFIER_THIS = "this";
 
 // Keywords
 static const char* KEYWORD_ASSERT   = "assert";
@@ -37,6 +37,7 @@ static const char* KEYWORD_FINALLY  = "finally";
 static const char* KEYWORD_FOR      = "for";
 static const char* KEYWORD_FOREACH  = "foreach";
 static const char* KEYWORD_IF       = "if";
+static const char* KEYWORD_MOVE     = "move";
 static const char* KEYWORD_NEW      = "new";
 static const char* KEYWORD_PRINT    = "print";
 static const char* KEYWORD_RETURN   = "return";
@@ -134,8 +135,9 @@ static const char* PROTECTED = "protected";
 static const char* PUBLIC    = "public";
 
 // Unsorted
-static const char* DEFAULT = "default";
-static const char* EMPTY   = "";
+static const char* DEFAULT     = "default";
+static const char* EMPTY       = "";
+static const char* UNSPECIFIED = "unspecified";
 
 
 }

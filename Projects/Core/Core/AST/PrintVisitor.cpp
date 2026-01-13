@@ -35,7 +35,7 @@ void PrintVisitor::generate(Statements* root, TreeLineBuffer& output)
 std::string PrintVisitor::printExpression(Node* node) const
 {
 	if ( !node ) {
-		return std::string( "" );
+		return { "" };
 	}
 
 	assert(node->getNodeType() == Node::NodeType::Expression);
@@ -65,6 +65,9 @@ std::string PrintVisitor::printExpression(Node* node) const
 			auto* isExp = dynamic_cast<IsExpression*>(expression);
 
 			result += printExpression(isExp->mExpression) + " is " + isExp->mMatchType;
+		} break;
+		case Expression::ExpressionType::MoveExpression: {
+			result += "move " + printExpression(dynamic_cast<MoveExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::NewExpression: {
 			auto* methodExp = dynamic_cast<MethodExpression*>(dynamic_cast<NewExpression*>(expression)->mExpression);
@@ -129,7 +132,7 @@ std::string PrintVisitor::printExpression(Node* node) const
 
 			result += "( " + tcExp->mDestinationType + " " + printExpression(tcExp->mExpression) + " )";
 		} break;
-		case Expression::ExpressionType::TypeidExpression: {
+		case Expression::ExpressionType::TypeIdExpression: {
 			result += "typeid( " + printExpression(dynamic_cast<TypeidExpression*>(expression)->mExpression) + " )";
 		} break;
 		case Expression::ExpressionType::UnaryExpression: {

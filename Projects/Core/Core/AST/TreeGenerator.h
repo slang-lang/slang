@@ -96,6 +96,7 @@ private: // Execution
 	Statement* process_keyword(TokenIterator& token);
 	MethodExpression* process_method(SymbolExpression* symbol, TokenIterator& token);
 	MethodExpression* process_method(SymbolExpression* symbol, const Token& token, const ExpressionList& expressions);
+	Expression* process_move(TokenIterator& token);
 	Expression* process_new(TokenIterator& token);
 	Statement* process_print(TokenIterator& token);
 	Statement* process_return(TokenIterator& token);

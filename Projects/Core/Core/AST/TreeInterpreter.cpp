@@ -93,13 +93,14 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 		case Expression::ExpressionType::IsExpression:         evaluateIsExpression(dynamic_cast<IsExpression*>(exp), result); break;
 		case Expression::ExpressionType::LiteralExpression:    evaluateLiteral(dynamic_cast<LiteralExpression*>(exp), result); break;
 		case Expression::ExpressionType::MethodExpression:     evaluateMethodExpression(dynamic_cast<MethodExpression*>(exp), result); break;
+		case Expression::ExpressionType::MoveExpression:       evaluateMoveExpression(dynamic_cast<MoveExpression*>(exp), result); break;
 		case Expression::ExpressionType::NewExpression:        evaluateNewExpression(dynamic_cast<NewExpression*>(exp), result); break;
 		case Expression::ExpressionType::ScopeExpression:      evaluateScopeExpression(dynamic_cast<ScopeExpression*>(exp), result); break;
 		case Expression::ExpressionType::StringEvalExpression: evaluateStringEvalExpression(dynamic_cast<StringEvalExpression*>(exp), result, getScope()); break;
 		case Expression::ExpressionType::SymbolExpression:     evaluateSymbolExpression(dynamic_cast<SymbolExpression *>(exp), result, getScope()); break;
 		case Expression::ExpressionType::TernaryExpression:    evaluateTernaryExpression(dynamic_cast<TernaryExpression*>(exp), result); break;
 		case Expression::ExpressionType::TypecastExpression:   evaluateTypeCastExpression(dynamic_cast<TypecastExpression*>(exp), result); break;
-		case Expression::ExpressionType::TypeidExpression:     evaluateTypeidExpression(dynamic_cast<TypeidExpression*>(exp), result); break;
+		case Expression::ExpressionType::TypeIdExpression:     evaluateTypeidExpression(dynamic_cast<TypeidExpression*>(exp), result); break;
 		case Expression::ExpressionType::UnaryExpression:      evaluateUnaryExpression(dynamic_cast<UnaryExpression*>(exp), result); break;
 	}
 }
@@ -226,11 +227,11 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 
 void TreeInterpreter::evaluateCopyExpression(CopyExpression* exp, Runtime::Object* result)
 {
-	Runtime::Object obj;
+	Runtime::Object tmp;
 
-	evaluate(exp->mExpression, &obj);
+	evaluate(exp->mExpression, &tmp);
 
-	*result = obj;
+	*result = tmp;
 }
 
 void TreeInterpreter::evaluateIsExpression(IsExpression* exp, Runtime::Object* result)
@@ -325,6 +326,22 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	}
 }
 
+void TreeInterpreter::evaluateMoveExpression(MoveExpression* exp, Runtime::Object* result)
+{
+	Runtime::Object tmp;
+
+	evaluate(exp->mExpression, &tmp);
+
+	auto ref = tmp.getReference();
+	if ( ref.isValid() ) {
+		// result->move( *tmp.getThis() );
+		result->move( tmp );
+	}
+	else {
+		*result = tmp;
+	}
+}
+
 void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object* result)
 {
 	auto* method = dynamic_cast<MethodExpression*>(exp->mExpression);
@@ -378,9 +395,9 @@ void TreeInterpreter::evaluateStringEvalExpression( StringEvalExpression *exp, R
 	evaluate( exp->mExpression, &tmp );
 
 	static constexpr char* VARPREFIX  { "{{{" };
-    static constexpr char* VARPOSTFIX { "}}}" };
-    static constexpr size_t PREFIXLEN { strlen( VARPREFIX ) };
-    static constexpr size_t POSTFIXLEN{ strlen( VARPOSTFIX ) };
+	static constexpr char* VARPOSTFIX { "}}}" };
+	static constexpr size_t PREFIXLEN { strlen( VARPREFIX ) };
+	static constexpr size_t POSTFIXLEN{ strlen( VARPOSTFIX ) };
 
 	auto sourceStr = tmp.getValue().toStdString();
 	size_t start   = 0;
@@ -751,6 +768,9 @@ std::string TreeInterpreter::printExpression(Node* node) const
 
 			result += printExpression(is->mExpression) + " is " + is->mMatchType;
 		} break;
+		case Expression::ExpressionType::MoveExpression: {
+			result += "move " + printExpression(dynamic_cast<MoveExpression*>(expression)->mExpression);
+		} break;
 		case Expression::ExpressionType::NewExpression: {
 			result += "new " + printExpression(dynamic_cast<NewExpression*>(expression)->mExpression);
 		} break;
@@ -803,7 +823,7 @@ std::string TreeInterpreter::printExpression(Node* node) const
 
 			result += type->mDestinationType + " " + printExpression(type->mExpression);
 		} break;
-		case Expression::ExpressionType::TypeidExpression: {
+		case Expression::ExpressionType::TypeIdExpression: {
 			result += "typeid(" + printExpression(dynamic_cast<TypeidExpression*>(expression)->mExpression) + ")";
 		} break;
 		case Expression::ExpressionType::UnaryExpression: {
@@ -1153,10 +1173,16 @@ void TreeInterpreter::visitOperator(Operator*)
 
 void TreeInterpreter::visitPrint(PrintStatement* node)
 {
-	Runtime::Object text;
-	tryControl(evaluate(node->mExpression, &text));
+	Runtime::Object tmp;
+	tryControl(evaluate(node->mExpression, &tmp));
 
-	Utils::Printer::Instance()->print(text.getValue().toStdString(), node->mPosition.mFile, node->mPosition.mLine);
+	auto ref = tmp.getReference();
+	if ( ref.isValid() ) {
+		Utils::Printer::Instance()->print("@" + std::to_string( ref.getAddress() ), node->mPosition.mFile, node->mPosition.mLine);
+	}
+	else {
+		Utils::Printer::Instance()->print(tmp.getValue().toStdString(), node->mPosition.mFile, node->mPosition.mLine);
+	}
 }
 
 void TreeInterpreter::visitReturn(ReturnStatement* node)

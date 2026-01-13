@@ -1446,6 +1446,9 @@ void Interpreter::process_keyword(TokenIterator& token, Object *result)
 	else if ( keyword == KEYWORD_IF ) {
 		process_if(token, result);
 	}
+	else if ( keyword == KEYWORD_MOVE ) {
+		process_move(token, result);
+	}
 	else if ( keyword == KEYWORD_NEW ) {
 		process_new(token, result);
 	}
@@ -1541,6 +1544,35 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		case ControlFlow::Throw: throw ControlFlow::Throw;				// promote control flow
 		default: mControlFlow = ControlFlow::Normal; break;
 	}
+}
+
+/*
+ * syntax:
+ * move <identifier>;
+ */
+void Interpreter::process_move(TokenIterator& token, Object* result)
+{
+	Symbol* symbol = identify(token);
+	if ( !symbol ) {
+		throw Common::Exceptions::UnknownIdentifier("unknown identifier '" + token->content() + "'");
+	}
+	if ( symbol->getSymbolType() != Symbol::IType::ObjectSymbol ) {
+		throw Common::Exceptions::Exception("object symbol expected!");
+	}
+
+	if ( symbol == result ) {
+		throw Common::Exceptions::Exception("cannot assign copy to same object");
+	}
+
+	auto* source = dynamic_cast<Object*>(symbol);
+	if ( !source ) {
+		throw Common::Exceptions::Exception("nullptr access!");
+	}
+	if ( source->QualifiedTypename() != result->QualifiedTypename() ) {
+		throw Common::Exceptions::Exception("object copies are only allowed to same types");
+	}
+
+	result->move( *source );
 }
 
 /*

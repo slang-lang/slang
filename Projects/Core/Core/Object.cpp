@@ -93,6 +93,7 @@ void Object::assign(const Object& other)
 		mFilename = other.mFilename;
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
+		mIsReference = other.mIsReference;
 		mMemoryLayout = other.mMemoryLayout;
 		mParent = other.mParent ? other.mParent : mParent;
 		mScopeName = other.mScopeName;
@@ -104,12 +105,11 @@ void Object::assign(const Object& other)
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
-		mIsReference = other.mIsReference;
-		if ( mIsReference && other.mIsReference ) {
-			assignReference(other.mReference);
+		if ( other.mIsReference ) {
+			assignReference( other.mReference );
 		}
 		else {
-			setValue(other.getValue());
+			setValue( other.getValue() );
 		}
 	}
 }
@@ -123,12 +123,12 @@ void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheri
 	mInheritance.insert(std::make_pair(ancestor, inheritance));
 }
 
-void Object::assignReference(const Reference& ref)
+void Object::assignReference(const Reference& newRef)
 {
-	Reference old = mReference;
+	auto oldRef = mReference;
 
-	mReference = ref;
-	Controller::Instance().memory()->add(mReference);
+	Controller::Instance().memory()->add(newRef);
+	mReference = newRef;
 
 	if ( mReference.isValid() ) {
 		mThis = Controller::Instance().memory()->get(mReference);
@@ -137,8 +137,8 @@ void Object::assignReference(const Reference& ref)
 		mThis = this;
 	}
 
-	if ( old.isValid() ) {
-		Controller::Instance().memory()->remove(old);
+	if ( oldRef.isValid() ) {
+		Controller::Instance().memory()->remove(oldRef);
 	}
 }
 
@@ -346,6 +346,48 @@ bool Object::isValid() const
 	}
 
 	return mReference.isValid();
+}
+
+void Object::move(Object& other)
+{
+	if ( this != &other ) {
+		mBluePrint = other.mBluePrint;
+		mBluePrintType = other.mBluePrintType;
+		mFilename = other.mFilename;
+		mInheritance = other.mInheritance;
+		mIsAtomicType = other.mIsAtomicType;
+		mIsReference = other.mIsReference;
+		mMemoryLayout = other.mMemoryLayout;
+		mParent = other.mParent ? other.mParent : mParent;
+		mScopeName = other.mScopeName;
+		mScopeType = other.mScopeType;
+
+		if ( mQualifiedOuterface == NULL_TYPE ) {
+			mQualifiedOuterface = other.mQualifiedOuterface;
+		}
+		mQualifiedTypename = other.mQualifiedTypename;
+		mTypename = other.mTypename;
+
+		setValue( other.getValue() );
+		other.setValue( 0 );
+
+		if ( other.mIsReference ) {
+			if ( mReference.isValid() ) {
+				Controller::Instance().memory()->remove( mReference );
+			}
+
+			mReference = other.mReference;
+			other.mReference = Reference( null );
+			other.mThis = &other;
+
+			// if ( mReference.isValid() ) {
+				mThis = Controller::Instance().memory()->get( mReference );
+			// }
+			// else {
+			// 	mThis = this;
+			// }
+		}
+	}
 }
 
 void Object::operator_assign(const Object *other)

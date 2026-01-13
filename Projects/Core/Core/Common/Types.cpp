@@ -85,6 +85,7 @@ StringSet provideKeyWords()
 	keywords.insert(KEYWORD_FOR);
 	keywords.insert(KEYWORD_FOREACH);
 	keywords.insert(KEYWORD_IF);
+	keywords.insert(KEYWORD_MOVE);
 	keywords.insert(KEYWORD_NEW);
 	keywords.insert(KEYWORD_PRINT);
 	keywords.insert(KEYWORD_RETURN);
@@ -153,7 +154,8 @@ StringSet provideReservedWords()
 
 std::string toString(const Parameter& param)
 {
-	std::string result = param.type();
+	auto result = param.type();
+
 	if ( !result.empty() ) {
 		result += " ";
 		result += param.name();

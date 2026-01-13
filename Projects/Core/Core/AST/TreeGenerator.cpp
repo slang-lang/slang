@@ -3,7 +3,7 @@
 #include "TreeGenerator.h"
 
 // Library includes
-#include <limits.h>
+#include <climits>
 
 // Project includes
 #include <Core/Common/Exceptions.h>
@@ -13,8 +13,6 @@
 #include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/Runtime/OperatorOverloading.h>
-#include <Core/Runtime/TypeCast.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Core/VirtualMachine/StackFrame.h>
 #include <Logger/Logger.h>
@@ -746,8 +744,6 @@ Node* TreeGenerator::processPostfixIncDecOperator(TokenIterator& start, Node* ba
 
 Node* TreeGenerator::processPostfixNotOperator(TokenIterator& start, Node* baseExp)
 {
-	//throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
-
 	++start;
 
 	return new UnaryExpression(Token(Token::Type::OPERATOR_VALIDATE), baseExp, UnaryExpression::ValueType::RValue);
@@ -1197,13 +1193,16 @@ Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
 {
 	Expression* expression = nullptr;
 
-	std::string keyword = (*token++).content();
+	auto keyword = (*token++).content();
 
 	if ( keyword == KEYWORD_CAST ) {
 		expression = process_cast(token);
 	}
 	else if ( keyword == KEYWORD_COPY ) {
 		expression = process_copy(token);
+	}
+	else if ( keyword == KEYWORD_MOVE ) {
+		expression = process_move(token);
 	}
 	else if ( keyword == KEYWORD_NEW ) {
 		expression = process_new(token);
@@ -1679,6 +1678,51 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	}
 
 	return new MethodExpression(symbol, expressions, method->QualifiedTypename(), method->isConst(), method->getEnclosingScope() == mMethod->getEnclosingScope());
+}
+
+/*
+ * syntax:
+ * move <expression>[;]
+ */
+Expression* TreeGenerator::process_move(TokenIterator& token)
+{
+	auto start = token;
+
+	auto* exp = dynamic_cast<RuntimeSymbolExpression*>(expression(token));
+	if ( !exp ) {
+		throw Common::Exceptions::InvalidSymbol("invalid runtime symbol detected", start->position());
+	}
+
+	/*
+	SymbolExpression* inner = exp;
+	for ( ; ; ) {
+		if ( inner->mSymbolExpression ) {
+			inner = inner->mSymbolExpression;
+		}
+		else {
+			auto type = exp->getResultType();
+
+			auto* obj = mRepository->findBluePrintObject(type);
+			if ( !obj ) {
+				throw Common::Exceptions::UnknownIdentifier("unknown identifier '" + type + "'", token->position());
+			}
+
+			inner->mSymbolExpression = new RuntimeSymbolExpression("Move", type, true, true, obj->isAtomicType());
+			inner->mSymbolExpression->mSurroundingScope = obj;
+
+			if ( !inner->mSymbolExpression->mSurroundingScope ) {
+				throw Common::Exceptions::UnknownIdentifier("unknown identifier '" + type + "'", token->position());
+			}
+			break;
+		}
+	}
+
+	ExpressionList params;
+
+	return new MoveExpression(exp->getResultType(), process_method(exp, (*token), params));
+	*/
+
+	return new MoveExpression(exp->getResultType(), exp);
 }
 
 /*

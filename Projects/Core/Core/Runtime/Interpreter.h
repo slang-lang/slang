@@ -79,6 +79,7 @@ private: // Execution
 	void process_if(TokenIterator& token, Object* result);
 	void process_keyword(TokenIterator& token, Object* result);
 	void process_method(TokenIterator& token, Object* result);
+	void process_move(TokenIterator& token, Object* result);
 	void process_new(TokenIterator& token, Object* result);
 	void process_print(TokenIterator& token);
 	void process_return(TokenIterator& token, Object* result);

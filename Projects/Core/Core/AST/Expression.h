@@ -40,13 +40,14 @@ public:
 			IsExpression,
 			LiteralExpression,
 			MethodExpression,
+			MoveExpression,
 			NewExpression,
 			ScopeExpression,
 			StringEvalExpression,
 			SymbolExpression,
 			TernaryExpression,
 			TypecastExpression,
-			TypeidExpression,
+			TypeIdExpression,
 			UnaryExpression
 		};
 
@@ -58,13 +59,14 @@ public:
 				case IsExpression: return "IsExpression";
 				case LiteralExpression: return "LiteralExpression";
 				case MethodExpression: return "MethodExpression";
+				case MoveExpression: return "MoveExpression";
 				case NewExpression: return "NewExpression";
 				case ScopeExpression: return "ScopeExpression";
 				case StringEvalExpression: return "StringEvalExpression";
 				case SymbolExpression: return "SymbolExpression";
 				case TernaryExpression: return "TernaryExpression";
 				case TypecastExpression: return "TypecastExpression";
-				case TypeidExpression: return "TypeidExpression";
+				case TypeIdExpression: return "TypeIdExpression";
 				case UnaryExpression: return "UnaryExpression";
 			}
 
@@ -301,6 +303,24 @@ public:
 		mResultType = type;
 	}
 	~CopyExpression() override {
+		delete mExpression;
+	}
+
+public:
+	Node* mExpression;
+};
+
+
+class MoveExpression : public Expression
+{
+public:
+	explicit MoveExpression(const std::string& type, Node* exp)
+	: Expression(ExpressionType::MoveExpression),
+	  mExpression(exp)
+	{
+		mResultType = type;
+	}
+	~MoveExpression() override {
 		delete mExpression;
 	}
 
@@ -633,7 +653,7 @@ class TypeidExpression : public Expression
 {
 public:
 	explicit TypeidExpression(Node* expression)
-	: Expression(ExpressionType::TypeidExpression),
+	: Expression(ExpressionType::TypeIdExpression),
 	  mExpression(expression)
 	{
 		mResultType = _string;

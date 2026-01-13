@@ -25,11 +25,11 @@ std::string AccessMode::convert(AccessMode::E e)
 {
 	switch ( e ) {
 		case AccessMode::ByReference: return RESERVED_WORD_BY_REFERENCE;
-		case AccessMode::ByValue: return DEFAULT;
-		case AccessMode::Unspecified: return DEFAULT;
+		case AccessMode::ByValue: return ""; // return DEFAULT;
+		case AccessMode::Unspecified: return UNSPECIFIED;
 	}
 
-	return UNKNOWN;
+	return UNSPECIFIED;
 }
 
 
