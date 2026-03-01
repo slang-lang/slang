@@ -178,7 +178,7 @@ endfunction()
 function(_could_not_find_fcgi)
     MESSAGE(STATUS "Could not find (the correct version of) libfcgi.")
 
-    MESSAGE(FATAL_ERROR "Slang currently requires ${FGCI_PACKAGE_NAME}\n")
+    MESSAGE(FATAL_ERROR "Slang requires ${FGCI_PACKAGE_NAME}\n")
 endfunction()
 
 
@@ -186,11 +186,15 @@ function(_fcgi_check_existence)
 
     # Look for the header file.
     find_path(FCGI_INCLUDE_DIR NAMES fastcgi.h)
+
     # Look for the library.
     find_library(FCGI_LIBRARY NAMES fcgi)
+
     # Handle the QUIETLY and REQUIRED arguments and set FCGI_FOUND to TRUE if all listed variables are TRUE.
     include(FindPackageHandleStandardArgs)
+
     FIND_PACKAGE_HANDLE_STANDARD_ARGS(FCGI DEFAULT_MSG FCGI_LIBRARY FCGI_INCLUDE_DIR)
+
     # Copy the results to the output variables.
     if(FCGI_FOUND)
         set(FCGI_LIBRARIES ${FCGI_LIBRARY})
@@ -199,6 +203,7 @@ function(_fcgi_check_existence)
         set(FCGI_LIBRARIES)
         set(FCGI_INCLUDE_DIRS)
     endif()
+
     mark_as_advanced(FCGI_INCLUDE_DIR FCGI_LIBRARY)
 
 
@@ -242,7 +247,7 @@ endfunction()
 function(_could_not_find_json)
     MESSAGE(STATUS "Could not find (the correct version of) JSON.")
 
-    MESSAGE(FATAL_ERROR "Slang currently requires ${JSON_PACKAGE_NAME}\n")
+    MESSAGE(FATAL_ERROR "Slang requires ${JSON_PACKAGE_NAME}\n")
 endfunction()
 
 
