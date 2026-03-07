@@ -79,6 +79,7 @@ VirtualMachine::~VirtualMachine()
 	for ( auto& extension : mExtensions ) {
 		delete extension;
 	}
+	mExtensions.clear();
 }
 
 bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std::string& library )

@@ -73,6 +73,11 @@ void SymbolScope::deinit()
 		delete tmpSymbol.second;
 	}
 
+	// External symbols are owned by their defining scope and are only borrowed references.
+	// Clearing the collection is sufficient; the actual Symbol objects will be deleted
+	// by the scope that owns them.
+	mExternalSymbols.clear();
+
 	mParent = nullptr;
 }
 
@@ -229,6 +234,10 @@ void MethodScope::deinit()
 		delete tmpMethod;
 	}
 
+	// External methods are owned by their defining scope, not by us
+	// We only clear our references to them without deleting
+	mExternalMethods.clear();
+
 	Symbols tmpSymbols = mSymbols;
 
 	for ( auto& tmpSymbol : tmpSymbols ) {
@@ -240,6 +249,11 @@ void MethodScope::deinit()
 
 		delete tmpSymbol.second;
 	}
+
+	// External symbols are owned by their parent scope and are only borrowed references.
+	// Clearing the collection is sufficient; the actual Symbol objects will be deleted
+	// by the scope that owns them.
+	mExternalSymbols.clear();
 
 	mParent = nullptr;
 }

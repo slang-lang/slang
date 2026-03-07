@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<suppressions>
+    <!-- Exclude Paths -->
+    <suppress>
+        <id>*</id>
+        <fileName>*/build/*</fileName>
+        <fileName>*/cmake-build-debug/*</fileName>
+    </suppress>
+    <suppress>
+        <id>ctuOneDefinitionRuleViolation</id>
+    </suppress>
+    <suppress>
+        <id>CheckLevelMaxBranches</id>
+    </suppress>
+    <suppress>
+        <id>noExplicitConstructor</id>
+    </suppress>
+    <!-- No reason to check third party includes -->
+    <!--
+    <suppress>
+        <id>y2038-unsafe-call</id>
+        <fileName>*/curl/curl.h</fileName>
+    </suppress>
+    -->
+    <suppress>
+        <id>normalCheckLevelMaxBranches</id>
+    </suppress>
+    <suppress>
+        <id>postfixOperator</id>
+    </suppress>
+    <suppress>
+        <id>syntaxError</id>
+        <fileName>*/cmake-build-debug/*</fileName>
+    </suppress>
+</suppressions>

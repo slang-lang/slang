@@ -45,7 +45,7 @@ bool Service::handleRequest( const FCGX_Request& request )
     OSinfo( "QUERY_STRING: "   << ( queryString ? queryString : "" ) );
     // OSinfo( "REQUEST_URI: "    << ( requestUri ? requestUri : "" ) );
 
-    FCGX_FPrintF( request.out, "Content-Type: text/plain\r\n\r\n" );
+    //FCGX_FPrintF( request.out, "Content-Type: text/plain\r\n\r\n" );
 
     std::stringstream stream;
     auto* old = std::cout.rdbuf( stream.rdbuf() );
@@ -68,7 +68,7 @@ bool Service::handleRequest( const FCGX_Request& request )
 
     std::cout << output << std::endl;
 
-    FCGX_FPrintF( request.out, output.c_str() );
+    FCGX_PutStr( output.c_str(), output.size(), request.out );
 
     return true;
 }

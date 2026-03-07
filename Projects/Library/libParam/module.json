@@ -1,11 +1,11 @@
 {
   "name": "Slang cli parameter handling library",
   "name_short": "libParam",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "description": "The Slang cli parameter handling library provides a way to easily handle command line parameters and their values.",
   "dependencies": [
-    { "module": "Slang", "version_min": "0.7.0" },
-    { "module": "System", "version_min": "0.3.4" }
+    { "module": "Slang", "version_min": "0.9.0" },
+    { "module": "System", "version_min": "0.4.0" }
   ],
   "target": {
     "directory": "libParam",

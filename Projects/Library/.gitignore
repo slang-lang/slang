@@ -2,4 +2,26 @@
 *
 
 # Allow specific directories to be considered
+!Alpen
+!Basic-Token
+!csvDB
+!FileReader
+!IPCService
+!JsonReader
+!libBehaviourTree
+!libCSVReader
+!libCurl
+!libJson
+!libJsonBuilder
+!libLog
+!libMsgQueue
+!libMySQL
+!libParam
+!libSemVer
+!libSQLite3
+!libYAML
+!SQLite3
+!SudokuSolver
+!System
+!Telnet
 

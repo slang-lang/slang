@@ -2,6 +2,8 @@
 SET( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin )   # binary root
 SET( LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib )      # library root
 
+SET( CMAKE_EXPORT_COMPILE_COMMANDS ON ) # generate compile_commands.json to be used by other tools (e.g. vs code)
+
 SET( CMAKE_CXX_FLAGS "-std=c++14 -pedantic -fPIC" )
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wunused" )
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-long-long -Wno-deprecated-copy -Wnon-virtual-dtor -Wno-undef -Wno-type-limits" )
@@ -10,8 +12,6 @@ SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-inconsistent-missing-override" )
 
 if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug" )
 
-    # by default we build debug!
-    # MESSAGE( "Setting default build to: Debug" )
     SET( CMAKE_BUILD_TYPE "Debug" )
 
     add_definitions( -DDEBUG ) # do more logging
@@ -24,7 +24,6 @@ if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug" )
 
 elseif( "${BUILD}" MATCHES "Release" )
 
-    # MESSAGE( "Setting default build to: Release" )
     SET( CMAKE_BUILD_TYPE "Release" )
 
     add_definitions( -Wno-unused-result )
@@ -59,4 +58,4 @@ INCLUDE( ${PROJECT_SOURCE_DIR}/CMake/Dependencies.cmake )
 
 #include custom extensions
 INCLUDE( ${PROJECT_SOURCE_DIR}/CMake/Extensions.cmake )
-INCLUDE( ${PROJECT_SOURCE_DIR}/CMake/Extensions.cmake )
+

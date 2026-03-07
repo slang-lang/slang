@@ -5,7 +5,8 @@ import System.Collections.List;
 import System.Exception;
 
 
-public object Parameter const {
+public object Parameter const
+{
 	public string Key const;
 	public string Value const;
 
@@ -28,22 +29,33 @@ public object Parameter const {
 }
 
 
-public object ParameterHandler implements IIterable {
+public object ParameterHandler implements IIterable
+{
 	/*
 	 * Constructor( int, int, bool )
 	 * argc: number of arguments
 	 * args: argument string
-	 * skipProgramName: skip/use 1st parameter
+	 * skipDirectoryName: prepare script's directory name
 	 */
-	public void Constructor( int argc, string args, bool skipProgramName = true ) {
+	public void Constructor( int argc, string args, bool skipDirectoryName = true ) {
 		mParameters = new List<Parameter>();
 
 		process( args );
 
-		if ( skipProgramName && !mParameters.empty() ) {
+		if ( !mParameters.empty() ) {
+			mProgramName = mParameters.at( 0 ).Key;
+
 			argc--;
-			// remove first parameter
-			mParameters.erase( 0 );
+			mParameters.erase( 0 ); // remove first parameter
+
+			if ( !skipDirectoryName ) {
+				var length = strlen( mProgramName );
+				while ( length > 0 && substr( mProgramName, length - 1, 1 ) != "/" ) {
+					length--;
+				}
+
+				mDirectoryName = substr( mProgramName, 0, length );
+			}
 		}
 
 		// verify that we correctly parsed all arguments
@@ -84,6 +96,13 @@ public object ParameterHandler implements IIterable {
 	}
 
 	/*
+	 * returns the directory name
+	 */
+	public string directoryName() const {
+		return mDirectoryName;
+	}
+
+	/*
 	 * returns true if no parameter is held at all
 	 */
 	public bool empty() const {
@@ -95,6 +114,13 @@ public object ParameterHandler implements IIterable {
 	 */
 	public Iterator<Parameter> getIterator() const {
 		return mParameters.getIterator();
+	}
+
+	/*
+	 * returns the program name
+	 */
+	public string programName() const {
+		return mProgramName;
 	}
 
 	/*
@@ -211,6 +237,7 @@ public object ParameterHandler implements IIterable {
 		insertParameter( isValue ? key : param, isValue ? param : "" );
 	}
 
+	private string mDirectoryName;
 	private List<Parameter> mParameters;
+	private string mProgramName;
 }
-

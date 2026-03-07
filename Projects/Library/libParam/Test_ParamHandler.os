@@ -2,21 +2,24 @@
 
 import ParameterHandler;
 
-public void Main(int argc, string args) {
+public void Main( int argc, string args )
+{
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
 	assert( TestCase4() );
+	assert( TestCase5() );
 }
 
-bool TestCase1() {
+bool TestCase1()
+{
 	print( "TestCase 1" );
 
 	try {
 		int argc = 2;
 		string args = "./Test_ParameterHandler.os \"this is a parameter\"";
 
-		var params = new ParameterHandler( argc, args, false );
+		var params = new ParameterHandler( argc, args );
 
 		{	// debug print
 			int count;
@@ -33,13 +36,14 @@ bool TestCase1() {
 	return true;
 }
 
-bool TestCase2() {
+bool TestCase2()
+{
 	print( "TestCase 2" );
 
-	int argc = 4;
-	string args = "--one=true --two --three= four";
+	int argc    = 5;
+	string args = "./Test_ParameterHandler.os --one=true --two --three= four";
 
-	var params = new ParameterHandler( argc, args, false );
+	var params = new ParameterHandler( argc, args );
 
 	{	// debug print
 		int count;
@@ -47,9 +51,6 @@ bool TestCase2() {
 			print( cast<string>( count++ ) + ": " + param.toString() );
 		}
 	}
-
-	assert( params.size() == argc );
-
 
 	Parameter param;
 
@@ -110,13 +111,14 @@ bool TestCase2() {
 	return true;
 }
 
-private bool TestCase3() {
+private bool TestCase3()
+{
 	print( "TestCase 3: throw exception if key does not exist" );
 
-	int argc = 1;
-	string args;
+	int argc    = 1;
+	string args = "./Test_ParameterHandler.os";
 
-	var params = new ParameterHandler( argc, args, false );
+	var params = new ParameterHandler( argc, args );
 
 	try {
 		print( params[ "key" ] );
@@ -129,14 +131,15 @@ private bool TestCase3() {
 	return false;
 }
 
-private bool TestCase4() {
-	print( "TestCase4: parse strings" );
+private bool TestCase4()
+{
+	print( "TestCase 4: parse strings" );
 
 	try {
-		int argc = 1;
-		string args = "--broker=\"broker name\"";
+		int argc    = 2;
+		string args = "./Test_ParameterHandler.os --broker=\"broker name\"";
 
-		var params = new ParameterHandler( argc, args, false );
+		var params = new ParameterHandler( argc, args );
 
 		{	// debug print
 			int count;
@@ -153,3 +156,24 @@ private bool TestCase4() {
 	return false;
 }
 
+private bool TestCase5()
+{
+	print( "TestCase 5: program & directory name" );
+
+	try {
+		int argc    = 2;
+		string args = "./Directory/Test_ParameterHandler.os \"this is a parameter\"";
+
+		var params = new ParameterHandler( argc, args, false );
+
+		assert( params.programName() == "./Directory/Test_ParameterHandler.os" );
+		assert( params.directoryName() == "./Directory/" );
+
+		return true;
+	}
+	catch ( IException e ) {
+		print( "Exception: " + e.what() );
+	}
+
+	return false;
+}
