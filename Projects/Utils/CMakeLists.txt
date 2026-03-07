@@ -1,6 +1,6 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
-ADD_SUBDIRECTORY(Common)
+#ADD_SUBDIRECTORY(Common)
 ADD_SUBDIRECTORY(Logger)
 ADD_SUBDIRECTORY(MyUnit)
 ADD_SUBDIRECTORY(Parsers)
@@ -20,8 +20,8 @@ SET(DEPENDENCIES
 	UtilsSemVer
 	UtilsParsers
 	UtilsMyUnit
-	UtilsCommonConfiguration
-	UtilsCommon
+	#UtilsCommonConfiguration
+	#UtilsCommon
 )
 
 build_static_lib( Utils "" )

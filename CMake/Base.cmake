@@ -6,6 +6,7 @@ SET( CMAKE_CXX_FLAGS "-std=c++14 -pedantic -fPIC" )
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wunused" )
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-long-long -Wno-deprecated-copy -Wnon-virtual-dtor -Wno-undef -Wno-type-limits" )
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-endif-labels" ) # allow endif with label
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-inconsistent-missing-override" )
 
 if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug" )
 

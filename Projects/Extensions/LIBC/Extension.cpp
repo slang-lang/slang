@@ -6,7 +6,10 @@
 
 // Project includes
 #include <Core/Runtime/BuildInTypes/Int32Type.h>
+
+#ifndef __APPLE__
 #include "locale/setlocale.h"
+#endif
 
 // Namespace declarations
 
@@ -27,6 +30,8 @@ void Extension::initialize( ExtensionNamespace* scope )
     // Win32 only
 
     (void)scope;
+#elif defined __APPLE__
+    // no locales for macOS
 #else
     // Unix/Linux only
 
@@ -57,7 +62,9 @@ void Extension::provideMethods( ExtensionMethods& methods )
     assert( methods.empty() );
 
     // locale
+#ifndef __APPLE__
     methods.push_back( new locale::SETLOCALE() );
+#endif
 
 #ifdef _WIN32
     // Win32 only

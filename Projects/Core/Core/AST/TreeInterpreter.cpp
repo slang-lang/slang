@@ -379,8 +379,8 @@ void TreeInterpreter::evaluateStringEvalExpression( StringEvalExpression *exp, R
 
 	static constexpr char* VARPREFIX  { "{{{" };
     static constexpr char* VARPOSTFIX { "}}}" };
-    static constexpr size_t PREFIXLEN { strlen( VARPREFIX ) };
-    static constexpr size_t POSTFIXLEN{ strlen( VARPOSTFIX ) };
+    static constexpr size_t PREFIXLEN { 3 };
+    static constexpr size_t POSTFIXLEN{ 3 };
 
 	auto sourceStr = tmp.getValue().toStdString();
 	size_t start   = 0;
