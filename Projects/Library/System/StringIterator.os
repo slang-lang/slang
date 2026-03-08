@@ -65,9 +65,9 @@ public object StringIterator implements Iterator<string> {
 		}
 
 		mCurrentPosition = mNextPosition + strlen( mSeparator );
-		mNextPosition = mValue.IndexOf( mSeparator, mCurrentPosition );
+		mNextPosition    = mValue.IndexOf( mSeparator, mCurrentPosition );
 
-		if ( mNextPosition > 0 ) {
+		if ( mNextPosition >= 0 ) {
 			return mValue.SubString( mCurrentPosition, mNextPosition - mCurrentPosition );
 		}
 
@@ -93,7 +93,7 @@ public object StringIterator implements Iterator<string> {
 	 */
 	public void reset() modify {
 		mCurrentPosition = -1;
-		mNextPosition = strlen( mSeparator ) * -1;
+		mNextPosition    = strlen( mSeparator ) * -1;
 	}
 
 	/*

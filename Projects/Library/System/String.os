@@ -426,7 +426,7 @@ public object String implements IIterable {
 		return CharAt( index );
 	}
 
-	private int mSize;
+	private int    mSize;
 	private string mValue;
 }
 
