@@ -24,6 +24,7 @@ public:
     std::string Architecture;
     Json::Value Config;
     std::string CurrentFolder;
+    bool Force{ false };
     std::string LibraryFolder;
     Restrictions LocalRestrictions;
     bool SkipDependencies{ false };

@@ -257,6 +257,11 @@ void Application::printUsage( const StringList& params )
             std::cout << std::endl;
             std::cout << "Upgrades outdated modules according to the currently set restrictions. Upgrades only the provided modules or, if no parameter is provided, upgrades all outdated modules." << std::endl;
         }
+        else if ( param == "--force" ) {
+            std::cout << "Usage: slang-pkg <command> --force" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Forces execution of a command, if supported by the command." << std::endl;
+        }
         else if ( param == "--locallibrary" ) {
             std::cout << "Usage: slang-pkg --locallibrary" << std::endl;
             std::cout << std::endl;
@@ -299,6 +304,7 @@ void Application::printUsage( const StringList& params )
     std::cout << "search                     Search for a module" << std::endl;
     std::cout << "update                     Update repository indices" << std::endl;
     std::cout << "upgrade                    Upgrade outdated modules" << std::endl;
+    std::cout << "--force                    Forces the execution of a command, in case the command supports it" << std::endl;
     std::cout << "--locallibrary             Use current directory as library" << std::endl;
     std::cout << "--skip-dependencies        Skip dependencies while installing or removing modules" << std::endl;
     std::cout << "--verbose                  Verbose output" << std::endl;
@@ -365,7 +371,10 @@ void Application::processParameters( int argc, const char* argv[] )
     }
 
     for ( int i = 2; i < argc; ++i ) {
-        if ( Utils::Tools::StringCompare( argv[ i ], "--skip-dependencies" ) ) {
+        if ( Utils::Tools::StringCompare( argv[ i ], "--force" ) ) {
+            mSettings.Force = true;
+        }
+        else if ( Utils::Tools::StringCompare( argv[ i ], "--skip-dependencies" ) ) {
             mSettings.SkipDependencies = true;
         }
         else if ( Utils::Tools::StringCompare( argv[ i ], "--verbose" ) ) {
@@ -774,7 +783,7 @@ void install( const StringList& params )
 
     std::cout << "Preparing dependencies..." << std::endl;
 
-    bool forceVersion = false;
+    bool forceVersion = mSettings.Force;
 
     for ( const auto& param : params ) {
         std::string moduleName;
