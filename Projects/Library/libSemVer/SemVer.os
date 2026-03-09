@@ -4,7 +4,8 @@
 // Project imports
 
 
-private object SemVer const {
+private object SemVer const
+{
 	/*
 	 * Static factory, parses a string and returns a valid SemVer object
 	 * throws string exception
