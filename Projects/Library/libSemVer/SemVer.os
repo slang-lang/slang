@@ -118,7 +118,7 @@ private object SemVer const
 						return Label > other.Label;
 					}
 
-					return Label && !other.Label;
+					return !Label && other.Label;
 				}
 
 				return Bugfix > other.Bugfix;
