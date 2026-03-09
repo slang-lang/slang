@@ -104,6 +104,32 @@ private object SemVer const {
 	}
 
 	/*
+	 * greater compare operator
+	 */
+	public bool operator>( SemVer other const ) const {
+		if ( Major == other.Major ) {
+			if ( Minor == other.Minor ) {
+				if ( Bugfix == other.Bugfix ) {
+					if ( Label == other.Label ) {
+						return BuildNumber > other.BuildNumber;
+					}
+					else if ( Label && other.Label ) {
+						return Label > other.Label;
+					}
+
+					return Label && !other.Label;
+				}
+
+				return Bugfix > other.Bugfix;
+			}
+
+			return Minor > other.Minor;
+		}
+
+		return Major > other.Major;
+	}
+
+	/*
 	 * equality operator
 	 */
 	public bool operator==( SemVer other const ) const {

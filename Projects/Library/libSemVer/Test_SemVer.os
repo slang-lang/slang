@@ -96,6 +96,8 @@ private bool TestCase6() {
     assert( cast<string>( ver1010 ) == "1.0.10" );
     assert( ver109 == SemVer.FromString( "1.0.9" ) );
     assert( ver109 < ver1010 );
+    assert( ver109 != ver1010 );
+    assert( ver1010 > ver109 );
 
     return true;
 }
