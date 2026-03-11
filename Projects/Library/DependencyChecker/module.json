@@ -1,0 +1,14 @@
+{
+  "name": "Dependency Checker",
+  "name_short": "DependencyChecker",
+  "version": "0.1.0",
+  "description": "App to check Slang module dependencies.",
+  "dependencies": [
+    { "module": "Slang", "version_min": "0.7.0" },
+    { "module": "System", "version_min": "0.3.4" }
+  ],
+  "target": {
+    "directory": "DependencyChecker",
+    "type": "internal"
+  }
+}

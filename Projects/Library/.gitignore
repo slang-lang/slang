@@ -1,5 +1,5 @@
 # Ignore everything by default
-*
+#*
 
 # Allow specific directories to be considered
 !Alpen
@@ -24,4 +24,13 @@
 !SudokuSolver
 !System
 !Telnet
+
+# ignore
+MysqlObject
+Pascal
+SmokeAdventure
+SolarProbe
+SolarProbe-Client
+SolarProbe-Server
+libScript
 
