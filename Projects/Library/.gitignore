@@ -27,6 +27,7 @@
 !Telnet
 
 # ignore
+Basic
 MysqlObject
 Pascal
 SmokeAdventure
