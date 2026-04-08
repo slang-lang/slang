@@ -20,22 +20,20 @@ namespace Slang {
 class Application
 {
 public:
-	Application() = default;
-	~Application();
+    Application() = default;
+    ~Application();
 
 public:
-	void init( int argc, const char* argv[] );
-	int exec();
+    void init( int argc, const char* argv[] );
+    int exec();
 
 private:
-	static void printUsage( const StringList& params );
-	static void printVersion();
+    static void printHelp( const std::string& command );
+    static void printUsage( const StringList& params );
+    static void printVersion();
 
-	void deinit();
-	void processParameters( int argc, const char* argv[] );
-
-private:
-    //Settings mSettings;
+    void deinit();
+    void processParameters( int argc, const char* argv[] );
 };
 
 

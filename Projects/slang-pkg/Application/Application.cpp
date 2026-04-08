@@ -189,104 +189,107 @@ void Application::init( int argc, const char* argv[] )
     curl_global_init( CURL_GLOBAL_ALL );
 }
 
+void Application::printHelp( const std::string& param )
+{
+    if ( param == "create" ) {
+        std::cout << "Usage: slang-pkg create <module>" << std::endl;
+        std::cout << std::endl;
+        std::cout << "[Deprecated] Provide a single directory name to create a module from it. A module.json is required in this directory." << std::endl;
+    }
+    else if ( param == "help" ) {
+        std::cout << "Usage: slang-pkg help [<command>]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Prints out the usage/info for a given command." << std::endl;
+    }
+    else if ( param == "info" ) {
+        std::cout << "Usage: slang-pkg info <module> [<module> ...]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Retrieves information of given module[s]." << std::endl;
+    }
+    else if ( param == "install" ) {
+        std::cout << "Usage: slang-pkg install <module> [<module> ...]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Downloads and installs given module[s] from remote repository into library folder." << std::endl;
+    }
+    else if ( param == "list" ) {
+        std::cout << "Usage: slang-pkg list" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Lists installed modules (including version number)." << std::endl;
+    }
+    else if ( param == "purge" ) {
+        std::cout << "Usage: slang-pkg purge <module> [<module> ...]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Deletes installed module[s] and removes restrictions." << std::endl;
+    }
+    else if ( param == "push" ) {
+        std::cout << "Usage: slang-pkg push <module> [<module> ...]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Creates a module and pushes it to the configured repository server." << std::endl;
+    }
+    else if ( param == "remove" ) {
+        std::cout << "Usage: slang-pkg remove <module> [<module> ...]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Deletes installed module[s] without removing restrictions." << std::endl;
+    }
+    else if ( param == "restrict" ) {
+        std::cout << "Usage: slang-pkg restrict <module> [ [<version_min>]:[<version_max>] ]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Adds or removes a restriction for a given module." << std::endl;
+        std::cout << std::endl;
+        std::cout << "Example to add a minimum version restriction without setting a maximum version:" << std::endl;
+        std::cout << "    slang-pkg restrict System 0.1.0:" << std::endl;
+    }
+    else if ( param == "search" ) {
+        std::cout << "Usage: slang-pkg search <text>" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Searches the module cache for the given parameter." << std::endl;
+    }
+    else if ( param == "update" ) {
+        std::cout << "Usage: slang-pkg update" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Updates the module cache from the configured remote repository." << std::endl;
+    }
+    else if ( param == "upgrade" ) {
+        std::cout << "Usage: slang-pkg upgrade <module> [<module> ...]" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Upgrades outdated modules according to the currently set restrictions. Upgrades only the provided modules or, if no parameter is provided, upgrades all outdated modules." << std::endl;
+    }
+    else if ( param == "--force" ) {
+        std::cout << "Usage: slang-pkg <command> --force" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Forces execution of a command, if supported by the command." << std::endl;
+    }
+    else if ( param == "--locallibrary" ) {
+        std::cout << "Usage: slang-pkg --locallibrary" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Creates a library folder in the current folder which is used to install and update modules from a remote repository." << std::endl;
+    }
+    else if ( param == "--skip-dependencies" ) {
+        std::cout << "Usage: slang-pkg --skip-dependencies <command>" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Flag to indicate if dependencies should be ignored while installing or removing/purging modules." << std::endl;
+    }
+    else if ( param == "--verbose" ) {
+        std::cout << "Usage: slang-pkg <command> --verbose" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Activates verbose output of given command, if supported." << std::endl;
+    }
+    else if ( param == "--version" ) {
+        std::cout << "Usage: slang-pkg --version" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Prints the version number of slang-pkg." << std::endl;
+    }
+    else {
+        std::cerr << "!!! Unknown command '" << param << "' provided" << std::endl;
+    }
+
+    std::cout << std::endl;
+}
+
 void Application::printUsage( const StringList& params )
 {
     if ( !params.empty() ) {
-        const auto& param = params.front();
-
-        if ( param == "create" ) {
-            std::cout << "Usage: slang-pkg create <module>" << std::endl;
-            std::cout << std::endl;
-            std::cout << "[Deprecated] Provide a single directory name to create a module from it. A module.json is required in this directory." << std::endl;
-        }
-        else if ( param == "help" ) {
-            std::cout << "Usage: slang-pkg help [<command>]" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Prints out the usage/info for a given command." << std::endl;
-        }
-        else if ( param == "info" ) {
-            std::cout << "Usage: slang-pkg info <module> [<module> ...]" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Retrieves information of given module[s]." << std::endl;
-        }
-        else if ( param == "install" ) {
-            std::cout << "Usage: slang-pkg install <module> [<module> ...]" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Downloads and installs given module[s] from remote repository into library folder." << std::endl;
-        }
-        else if ( param == "list" ) {
-            std::cout << "Usage: slang-pkg list" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Lists installed modules (including version number)." << std::endl;
-        }
-        else if ( param == "purge" ) {
-            std::cout << "Usage: slang-pkg purge <module> [<module> ...]" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Deletes installed module[s] and removes restrictions." << std::endl;
-        }
-        else if ( param == "push" ) {
-            std::cout << "Usage: slang-pkg push <module> [<module> ...]" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Creates a module and pushes it to the configured repository server." << std::endl;
-        }
-        else if ( param == "remove" ) {
-            std::cout << "Usage: slang-pkg remove <module> [<module> ...]" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Deletes installed module[s] without removing restrictions." << std::endl;
-        }
-        else if ( param == "restrict" ) {
-            std::cout << "Usage: slang-pkg restrict <module> [ [<version_min>]:[<version_max>] ]" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Adds or removes a restriction for a given module." << std::endl;
-            std::cout << std::endl;
-            std::cout << "Example to add a minimum version restriction without setting a maximum version:" << std::endl;
-            std::cout << "    slang-pkg restrict System 0.1.0:" << std::endl;
-        }
-        else if ( param == "search" ) {
-            std::cout << "Usage: slang-pkg search <text>" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Searches the module cache for the given parameter." << std::endl;
-        }
-        else if ( param == "update" ) {
-            std::cout << "Usage: slang-pkg update" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Updates the module cache from the configured remote repository." << std::endl;
-        }
-        else if ( param == "upgrade" ) {
-            std::cout << "Usage: slang-pkg upgrade <module> [<module> ...]" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Upgrades outdated modules according to the currently set restrictions. Upgrades only the provided modules or, if no parameter is provided, upgrades all outdated modules." << std::endl;
-        }
-        else if ( param == "--force" ) {
-            std::cout << "Usage: slang-pkg <command> --force" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Forces execution of a command, if supported by the command." << std::endl;
-        }
-        else if ( param == "--locallibrary" ) {
-            std::cout << "Usage: slang-pkg --locallibrary" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Creates a library folder in the current folder which is used to install and update modules from a remote repository." << std::endl;
-        }
-        else if ( param == "--skip-dependencies" ) {
-            std::cout << "Usage: slang-pkg --skip-dependencies <command>" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Flag to indicate if dependencies should be ignored while installing or removing/purging modules." << std::endl;
-        }
-        else if ( param == "--verbose" ) {
-            std::cout << "Usage: slang-pkg <command> --verbose" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Activates verbose output of given command, if supported." << std::endl;
-        }
-        else if ( param == "--version" ) {
-            std::cout << "Usage: slang-pkg --version" << std::endl;
-            std::cout << std::endl;
-            std::cout << "Prints the version number of slang-pkg." << std::endl;
-        }
-        else {
-            std::cerr << "!!! Unknown command '" << param << "' provided" << std::endl;
-        }
-
-        std::cout << std::endl;
+        printHelp( params.front() );
         return;
     }
 
