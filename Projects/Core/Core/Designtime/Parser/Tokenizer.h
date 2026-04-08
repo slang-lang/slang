@@ -68,7 +68,6 @@ private:
 	StringSet mMutability;
 	StringSet mReservedWord;
 	TokenList mTokens;
-	StringSet mType;
 };
 
 

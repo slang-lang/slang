@@ -31,8 +31,7 @@ Tokenizer::Tokenizer(std::string filename, std::string content)
   mMemoryLayout( provideMemoryLayout() ),
   mModifier( provideModifier() ),
   mMutability( provideMutability() ),
-  mReservedWord( provideReservedWords() ),
-  mType( provideAtomicTypes() )
+  mReservedWord( provideReservedWords() )
 {
 }
 
