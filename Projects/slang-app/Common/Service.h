@@ -32,6 +32,7 @@ public:
 
 private:
     void initialize();
+    void prepareEnvironment( const FCGX_Request& request );
 
 private:
     std::string mEntryPoint;
