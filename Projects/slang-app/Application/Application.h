@@ -11,7 +11,7 @@
 
 // Forward declarations
 namespace Slang {
-	class Script;
+    class Script;
 }
 
 // Namespace declarations
@@ -23,24 +23,24 @@ namespace Slang {
 class Application
 {
 public:
-	Application();
-	~Application();
+    Application() = default;
+    ~Application();
 
 public:
-	void init( int argc, const char* argv[] );
-	int exec();
+    void init( int argc, const char* argv[] );
+    int exec();
 
 private:
-	static void printUsage();
-	static void printVersion();
+    static void printUsage();
+    static void printVersion();
 
-	void deinit();
-	void loadConfig();
+    void deinit();
+    void loadConfig();
     void loadServices();
-	void processParameters( int argc, const char* argv[] );
+    void processParameters( int argc, const char* argv[] );
 
 private:
-	Script* mScript;
+    Script* mScript;
     Settings mSettings;
     VirtualMachine mVirtualMachine;
 };

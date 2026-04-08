@@ -56,10 +56,6 @@ namespace {
 namespace Slang {
 
 
-Application::Application()
-{
-}
-
 Application::~Application()
 {
     deinit();
@@ -84,12 +80,16 @@ int Application::exec()
         pid_t pid = fork();
 
         if ( pid == 0 ) {
-            bool requestHandled{false};
+            bool requestHandled{ false };
 
-            char* path = FCGX_GetParam( "PATH_INFO", request.envp );
-            if ( path != NULL ) {
-                auto servicePath = std::string( path );
+            std::string servicePath{ FCGX_GetParam( "PATH_INFO", request.envp ) };
 
+            if ( servicePath.empty() ) {
+                if ( mSettings.DefaultService ) {
+                    requestHandled = mSettings.DefaultService->handleRequest( request );
+                }
+            }
+            else {
                 OSdebug( "Looking up service '" + servicePath + "'" );
 
                 for ( auto* service : mSettings.Services ) {
@@ -98,22 +98,12 @@ int Application::exec()
                         break;
                     }
                 }
-
-                if ( !requestHandled ) {
-                    OSwarn( "Service '" << servicePath << "' not found" );
-
-                    handle_not_found( request.out );
-                }
             }
-            else {
-                if ( mSettings.DefaultService ) {
-                    mSettings.DefaultService->handleRequest( request );
-                }
-                else {
-                    OSwarn( "No default service configured" );
 
-                    handle_not_found( request.out );
-                }
+            if ( !requestHandled ) {
+                OSwarn( "Service '" << servicePath << "' not found" );
+
+                handle_not_found( request.out );
             }
 
             FCGX_Finish_r( &request );
@@ -182,9 +172,9 @@ void Application::init( int argc, const char* argv[] )
     mVirtualMachine.addLibraryFolder( mSettings.CurrentFolder );
     mVirtualMachine.addLibraryFolder( mSettings.LibraryFolder );
 
-	for ( const auto& library : mLibraryFolders ) {
-		mVirtualMachine.addLibraryFolder( library );
-	}
+    for ( const auto& library : mLibraryFolders ) {
+        mVirtualMachine.addLibraryFolder( library );
+    }
 
     mVirtualMachine.init();
 
