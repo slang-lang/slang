@@ -426,6 +426,17 @@ public object String implements IIterable {
 		return CharAt( index );
 	}
 
+	/*
+	 * Returns the substring between given indices
+	 */
+	public string operator[]( int first, int last ) const throws {
+		if ( mSize >= first && mSize <= last - first ) {
+			return substr( mValue, first, last - first );
+		}
+
+		return "";
+	}
+
 	private int    mSize;
 	private string mValue;
 }
