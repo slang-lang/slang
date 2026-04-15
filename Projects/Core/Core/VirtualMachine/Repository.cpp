@@ -90,7 +90,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// initialize newly created blueprint
 	initBluePrintObject(newBlue);
 
-	if ( Controller::Instance().phase() > Controller::Phase::Preparation ) {
+	if ( mController->phase() > Controller::Phase::Preparation ) {
 		AST::TreeGenerator generator( this );
 		generator.process(newBlue);
 	}
@@ -158,7 +158,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 		}
 	}
 
-	if ( Controller::Instance().phase() == Controller::Phase::Preparation ) {
+	if ( mController->phase() == Controller::Phase::Preparation ) {
 		switch ( object->getLanguageFeatureState() ) {
 			case LanguageFeatureState::Deprecated: OSwarn("Used type '" + object->QualifiedTypename() + "' is marked as deprecated"); break;
 			case LanguageFeatureState::NotImplemented: OSerror("Used type '" + object->QualifiedTypename() + "' is marked as not implemented"); break;
@@ -216,7 +216,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	IScope* parent = blueprint->getEnclosingScope();
 	if ( !parent ) {
 		// set global scope as fallback parent
-		parent = Controller::Instance().globalScope();
+		parent = mController->globalScope();
 	}
 
 	object->setBluePrint(blueprint);
@@ -227,6 +227,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	object->setMutability(blueprint->getMutability());
 	object->setParent(parent);
 	object->setVisibility(blueprint->getVisibility());
+	object->setController(mController);
 
 	return object;
 }
@@ -258,7 +259,7 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintObject* bluepr
 			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->QualifiedTypename() + "'");
 		}
 
-		Controller::Instance().memory()->newObject(object);
+		mController->memory()->newObject(object);
 	}
 
 	return object;
@@ -395,11 +396,13 @@ Designtime::BluePrintObject* Repository::findBluePrintObject(const Common::TypeD
 	);
 }
 
-void Repository::init()
+void Repository::init(Controller* controller)
 {
+	mController = controller;
+
 	TypeSystem::init();
 
-	auto* scope = Controller::Instance().globalScope();
+	auto* scope = mController->globalScope();
 
 	// add atomic types
 	{	// "bool" type

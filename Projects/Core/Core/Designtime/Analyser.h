@@ -20,6 +20,7 @@
 namespace Slang {
 
 // Forward declarations
+class Controller;
 class MethodScope;
 class Repository;
 
@@ -29,7 +30,7 @@ namespace Designtime {
 class Analyser
 {
 public:
-	explicit Analyser(bool doSanityCheck = true, bool printTokens = false);
+	explicit Analyser(Controller& controller, bool doSanityCheck = true, bool printTokens = false);
 	~Analyser() = default;
 
 public:

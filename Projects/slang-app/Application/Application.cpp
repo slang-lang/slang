@@ -210,13 +210,13 @@ void Application::loadServices()
         OSdebug( "Loading service '" + serviceName + "' with service path '" + service.asString() + "'" );
 
         mSettings.Services.push_back(
-            new Service( serviceName, service.asString(), mScript )
+            new Service( serviceName, service.asString(), mScript, &mVirtualMachine.controller() )
         );
     }
 
     if ( mSettings.Config.isMember( "default" ) ) {
         mSettings.DefaultService = new Service(
-            "default", mSettings.Config[ "default" ].asString(), mScript
+            "default", mSettings.Config[ "default" ].asString(), mScript, &mVirtualMachine.controller()
         );
     }
 }

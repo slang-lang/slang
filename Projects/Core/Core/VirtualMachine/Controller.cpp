@@ -59,9 +59,10 @@ void Controller::init()
 	mMemory = new Memory();
 	mRepository = new Repository();
 	mThreads = new Threads();
+	mThreads->setController(this);
 
 	mMemory->init();
-	mRepository->init();
+	mRepository->init(this);
 	mThreads->init();
 
 	mPhase = Phase::Preparation;

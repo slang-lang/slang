@@ -11,6 +11,7 @@
 
 // Forward declarations
 namespace Slang {
+    class Controller;
     class Script;
 }
 
@@ -20,7 +21,7 @@ namespace Slang {
 class Service
 {
 public:
-    Service( std::string path, std::string entryPoint, Slang::Script* script );
+    Service( std::string path, std::string entryPoint, Slang::Script* script, Slang::Controller* controller );
     ~Service() = default;
 
     const std::string& getPath() const {
@@ -35,6 +36,7 @@ private:
     void prepareEnvironment( const FCGX_Request& request );
 
 private:
+    Slang::Controller* mController{ nullptr };
     std::string mEntryPoint;
     std::string mPath;
     Slang::Script* mScript{ nullptr };

@@ -17,6 +17,9 @@
 
 
 namespace Slang {
+
+class Controller;
+
 namespace Extensions {
 
 
@@ -39,6 +42,12 @@ public:
 	}
 
 	virtual Runtime::ControlFlow::E execute( const ParameterList& params, Runtime::Object* result ) = 0;
+
+public:
+	void setController(Controller* ctrl) { mController = ctrl; }
+
+protected:
+	Controller* mController = nullptr;
 };
 
 typedef std::list<ExtensionMethod*> ExtensionMethods;

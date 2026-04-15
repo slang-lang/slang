@@ -66,15 +66,15 @@ namespace Slang {
 namespace AST {
 
 
-TreeInterpreter::TreeInterpreter( Thread* thread )
+TreeInterpreter::TreeInterpreter( Thread* thread, Controller& controller )
 : mControlFlow( Runtime::ControlFlow::Normal )
 ,  mFrame( nullptr )
 ,  mThread( thread )
 {
 	// initialize virtual machine stuff
 	mDebugger   = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
-	mMemory     = Controller::Instance().memory();
-	mRepository = Controller::Instance().repository();
+	mMemory     = controller.memory();
+	mRepository = controller.repository();
 }
 
 void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)

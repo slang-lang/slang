@@ -26,13 +26,13 @@ namespace Slang {
 namespace Designtime {
 
 
-Analyser::Analyser(bool doSanityCheck, bool printTokens)
+Analyser::Analyser(Controller& controller, bool doSanityCheck, bool printTokens)
 : mDoSanityCheck(doSanityCheck),
   mPrintTokens( printTokens ),
   mProcessingInterface(false)
 {
-	mRepository = Controller::Instance().repository();
-	mScope      = Controller::Instance().globalScope();
+	mRepository = controller.repository();
+	mScope      = controller.globalScope();
 }
 
 bool Analyser::buildEnum(BluePrintObject* symbol, const TokenList& tokens)

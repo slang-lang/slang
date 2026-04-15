@@ -64,7 +64,7 @@ void read_directory(const std::string& dirname, std::vector<std::string>& files)
 VirtualMachine::VirtualMachine()
 : mIsInitialized(false)
 {
-	Controller::Instance().init();
+	mController.init();
 }
 
 VirtualMachine::~VirtualMachine()
@@ -74,7 +74,7 @@ VirtualMachine::~VirtualMachine()
 	}
 	mScripts.clear();
 
-	Controller::Instance().deinit();
+	mController.deinit();
 
 	for ( auto& extension : mExtensions ) {
 		delete extension;
@@ -96,7 +96,7 @@ bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std:
 	try {
 		OSdebug( "adding extension '" + extension->getName() + "'" );
 
-		auto* globalScope = Controller::Instance().globalScope();
+		auto* globalScope = mController.globalScope();
 		Extensions::ExtensionMethods methods;
 
 		extension->initialize( globalScope );
@@ -111,6 +111,7 @@ bool VirtualMachine::addExtension( Extensions::AExtension* extension, const std:
 		for ( auto& method : methods ) {
 			OSdebug( "adding extension method '" + extension->getName() + "." + method->getName() + "'" );
 
+			method->setController( &mController );
 			method->setParent( globalScope );
 
 			globalScope->defineMethod( method->getName(), method );
@@ -150,11 +151,11 @@ Script* VirtualMachine::createScript(const std::string& content)
 		init();
 	}
 
-	auto* script = new Script();
+	auto* script = new Script(&mController);
 
 	mScripts.insert( script );
 
-	Designtime::Analyser analyser( mSettings.DoSanityCheck, mSettings.PrintTokens );
+	Designtime::Analyser analyser( mController, mSettings.DoSanityCheck, mSettings.PrintTokens );
 	analyser.processString( content, mScriptFile );
 
 	// load all extension references
@@ -182,13 +183,13 @@ Script* VirtualMachine::createScript(const std::string& content)
 		}
 	}
 
-	auto* globalScope = Controller::Instance().globalScope();
+	auto* globalScope = mController.globalScope();
 
-	Controller::Instance().repository()->initializeBlueprints();
+	mController.repository()->initializeBlueprints();
 
-	Controller::Instance().phase(Controller::Phase::Generation);
+	mController.phase(Controller::Phase::Generation);
 
-	AST::TreeGenerator generator( Controller::Instance().repository(), mSettings.DoCollectErrors );
+	AST::TreeGenerator generator( mController.repository(), mSettings.DoCollectErrors );
 	generator.process(globalScope);
 
 	auto errors = generator.hasErrors();
@@ -198,7 +199,7 @@ Script* VirtualMachine::createScript(const std::string& content)
 
 #ifdef USE_AST_OPTIMIZATION
 
-	Controller::Instance().phase(Controller::Phase::Optimization);
+	mController.phase(Controller::Phase::Optimization);
 
 	AST::TreeOptimizer optimizer;
 	optimizer.process(globalScope);
@@ -320,7 +321,7 @@ bool VirtualMachine::loadLibrary(const std::string& library, const std::string& 
 
 	mImportedLibraries.insert( library );
 
-	Designtime::Analyser analyser( mSettings.DoSanityCheck, mSettings.PrintTokens );
+	Designtime::Analyser analyser( mController, mSettings.DoSanityCheck, mSettings.PrintTokens );
 	analyser.processFile( library );
 
 	// load all extension references
@@ -427,16 +428,16 @@ void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::O
 		throw Common::Exceptions::Exception("provided invalid script to run!");
 	}
 
-	Controller::Instance().phase(Controller::Phase::Execution);
+	mController.phase(Controller::Phase::Execution);
 
-	MethodScope* globalScope = Controller::Instance().globalScope();
+	MethodScope* globalScope = mController.globalScope();
 
 	auto* main = dynamic_cast<Common::Method*>(globalScope->resolveMethod("Main", params, false));
 	if ( !main ) {
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
 
-	auto* thread = Controller::Instance().threads()->createThread();
+	auto* thread = mController.threads()->createThread();
 
 	auto controlflow = thread->execute(nullptr, main, params, result);
 	if ( controlflow == Runtime::ControlFlow::Throw ) {

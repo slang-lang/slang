@@ -11,6 +11,7 @@
 #include <Core/AST/TreeInterpreter.h>
 #include <Core/Common/Method.h>
 #include <Core/Runtime/Exceptions.h>
+#include "Controller.h"
 
 // Namespace declarations
 
@@ -19,13 +20,15 @@ namespace Slang {
 
 
 Thread::Thread()
-: mId(0),
+: mController(nullptr),
+  mId(0),
   mState(State::Starting)
 {
 }
 
-Thread::Thread(ThreadId id)
-: mId(id),
+Thread::Thread(ThreadId id, Controller* controller)
+: mController(controller),
+  mId(id),
   mState(State::Starting)
 {
 }
@@ -55,7 +58,7 @@ Runtime::ControlFlow::E Thread::execute(Runtime::Object* self, Common::Method* m
 {
 	mState = State::Started;
 
-	AST::TreeInterpreter interpreter( this );
+	AST::TreeInterpreter interpreter( this, *mController );
 	Runtime::ControlFlow::E controlflow = interpreter.execute(self, method, params, result);
 
 	mState = State::Stopping;
@@ -92,6 +95,11 @@ StackFrame* Thread::frame(FrameId frameId) const
 	}
 
 	return nullptr;
+}
+
+Controller* Thread::controller() const
+{
+	return mController;
 }
 
 ThreadId Thread::getId() const
@@ -158,7 +166,7 @@ std::string Thread::stackTrace() const
 
 Thread* Threads::createThread()
 {
-	auto* t = new Thread(mThreads.size());
+	auto* t = new Thread(mThreads.size(), mController);
 	// initialize thread
 	t->init();
 
@@ -214,6 +222,11 @@ void Threads::print()
 	for ( auto& thread : mThreads ) {
 		thread.second->print();
 	}
+}
+
+void Threads::setController(Controller* controller)
+{
+	mController = controller;
 }
 
 

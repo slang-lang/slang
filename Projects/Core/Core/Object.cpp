@@ -24,6 +24,7 @@ Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, nullptr),
   ObjectSymbol(ANONYMOUS_OBJECT),
   mBluePrint(nullptr),
+  mController(nullptr),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
   mIsReference(false),
@@ -38,6 +39,7 @@ Object::Object(const std::string& name, std::string filename, const std::string&
 : MethodScope(name, nullptr),
   ObjectSymbol(name),
   mBluePrint(nullptr),
+  mController(nullptr),
   mFilename(std::move(filename)),
   mIsAtomicType(false),
   mIsReference(false),
@@ -51,8 +53,8 @@ Object::Object(const std::string& name, std::string filename, const std::string&
 
 Object::~Object()
 {
-	if ( this != mThis ) {
-		Controller::Instance().memory()->remove(mReference);
+	if ( this != mThis && mController ) {
+		mController->memory()->remove(mReference);
 	}
 }
 
@@ -79,6 +81,10 @@ Object& Object::operator= (const Object& other)
 		setMember(other.isMember());
 		setMutability(other.getMutability());
 
+		if ( !mController && other.mController ) {
+			mController = other.mController;
+		}
+
 		assignReference(other.mReference);
 	}
 
@@ -104,6 +110,10 @@ void Object::assign(const Object& other)
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
+		if ( !mController && other.mController ) {
+			mController = other.mController;
+		}
+
 		mIsReference = other.mIsReference;
 		if ( mIsReference && other.mIsReference ) {
 			assignReference(other.mReference);
@@ -128,17 +138,17 @@ void Object::assignReference(const Reference& ref)
 	Reference old = mReference;
 
 	mReference = ref;
-	Controller::Instance().memory()->add(mReference);
+	mController->memory()->add(mReference);
 
 	if ( mReference.isValid() ) {
-		mThis = Controller::Instance().memory()->get(mReference);
+		mThis = mController->memory()->get(mReference);
 	}
 	else {
 		mThis = this;
 	}
 
 	if ( old.isValid() ) {
-		Controller::Instance().memory()->remove(old);
+		mController->memory()->remove(old);
 	}
 }
 
@@ -177,7 +187,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	if ( constructor ) {
 		VoidType tmp;
 
-		controlflow = Controller::Instance().thread(0)->execute(mThis, constructor, params, &tmp);
+		controlflow = mController->thread(0)->execute(mThis, constructor, params, &tmp);
 
 		if ( controlflow != ControlFlow::Normal ) {
 			return controlflow;
@@ -222,7 +232,7 @@ ControlFlow::E Object::Destructor()
 		if ( destructor ) {
 			VoidType tmp;
 
-			controlflow = Controller::Instance().thread(0)->execute(mThis, destructor, params, &tmp);
+			controlflow = mController->thread(0)->execute(mThis, destructor, params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
@@ -240,7 +250,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 		throw Common::Exceptions::UnknownIdentifier("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
 
-	return Controller::Instance().thread(0)->execute(mThis, method, params, result);
+	return mController->thread(0)->execute(mThis, method, params, result);
 }
 
 void Object::free()
@@ -262,7 +272,9 @@ void Object::garbageCollector()
 		if ( symIt.first == IDENTIFIER_BASE ) {
 			auto* obj = dynamic_cast<Object*>( symIt.second );
 			if ( obj ) {
-				Controller::Instance().memory()->remove(obj->mReference);
+				if ( mController ) {
+					mController->memory()->remove(obj->mReference);
+				}
 			}
 		}
 		else if ( symIt.first == IDENTIFIER_THIS ) {
@@ -360,7 +372,7 @@ void Object::operator_assign(const Object *other)
 
 	::Slang::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	if ( value_operator ) {
-		Controller::Instance().thread(0)->execute(other->getThis(), dynamic_cast<Common::Method*>(value_operator), params, this);
+		mController->thread(0)->execute(other->getThis(), dynamic_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 
@@ -621,6 +633,17 @@ std::string Object::ToString(unsigned int indent) const
 	}
 
 	return result;
+}
+
+
+void Object::setController(Controller* controller)
+{
+	mController = controller;
+}
+
+Controller* Object::getController() const
+{
+	return mController;
 }
 
 

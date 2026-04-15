@@ -14,6 +14,7 @@
 #include <Core/Runtime/Utils.h>
 #include <Core/VirtualMachine/Controller.h>
 
+
 // Forward declarations
 
 // Namespace declarations
@@ -52,7 +53,7 @@ public:
         bool success = false;
 
         if ( param_reference.isValid() ) {
-            Runtime::Object* condition = Controller::Instance().memory()->get(param_reference);
+            Runtime::Object* condition = mController->memory()->get(param_reference);
 
             success = isTrue(condition);
         }

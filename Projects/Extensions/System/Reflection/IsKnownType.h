@@ -44,7 +44,7 @@ public:
 
 		std::string param_type = (*it++).value().toStdString();
 
-		*result = Runtime::BoolType( Controller::Instance().repository()->findBluePrintObject(param_type) != nullptr );
+		*result = Runtime::BoolType( mController->repository()->findBluePrintObject(param_type) != nullptr );
 
 		return Runtime::ControlFlow::Normal;
 	}
