@@ -368,7 +368,7 @@ void LocalClient::executeMethod( const StringList &tokens )
 	try {
 		Runtime::Object result;
 
-		Controller::Instance().thread( mCurrentThreadId )->execute( nullptr, method, params, &result );
+		mVirtualMachine->controller().thread( mCurrentThreadId )->execute( nullptr, method, params, &result );
 
 		writeln( "returned " + result.ToString() );
 	}
@@ -382,7 +382,7 @@ void LocalClient::executeMethod( const StringList &tokens )
 
 void LocalClient::frameDown()
 {
-	if (  mCurrentFrameId >= Controller::Instance().thread( mCurrentThreadId )->getNumFrames()  ) {
+	if (  mCurrentFrameId >= mVirtualMachine->controller().thread( mCurrentThreadId )->getNumFrames()  ) {
 		return;
 	}
 
@@ -714,28 +714,28 @@ int LocalClient::notify( IScope* scope, const Core::BreakPoint& breakpoint )
 
 int LocalClient::notifyEnter( IScope* scope, const Core::BreakPoint& breakpoint )
 {
-    writeln( "[Stepping into " + Controller::Instance().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
+    writeln( "[Stepping into " + mVirtualMachine->controller().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
 
     return handleBreakpoint( scope, breakpoint );
 }
 
 int LocalClient::notifyExceptionCatch( IScope *scope, const Core::BreakPoint &breakpoint )
 {
-	writeln( "[Caught exception in " + Controller::Instance().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
+	writeln( "[Caught exception in " + mVirtualMachine->controller().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
 
 	return handleBreakpoint( scope, breakpoint );
 }
 
 int LocalClient::notifyExceptionThrow( IScope *scope, const Core::BreakPoint &breakpoint )
 {
-	writeln( "[Exception has been thrown in " + Controller::Instance().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
+	writeln( "[Exception has been thrown in " + mVirtualMachine->controller().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
 
 	return handleBreakpoint( scope, breakpoint );
 }
 
 int LocalClient::notifyExit( IScope* scope, const Core::BreakPoint& breakpoint )
 {
-    writeln( "[Stepping out of " + Controller::Instance().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
+    writeln( "[Stepping out of " + mVirtualMachine->controller().thread( mCurrentThreadId )->currentFrame()->toString() + "]" );
 
     return handleBreakpoint( scope, breakpoint );
 }
@@ -880,7 +880,7 @@ void LocalClient::printStackTrace()
 		return;
 	}
 
-	Controller::Instance().threads()->print();
+	mVirtualMachine->controller().threads()->print();
 }
 
 void LocalClient::printSymbol( const StringList& tokens )
@@ -906,7 +906,7 @@ void LocalClient::printThreads()
 {
 	writeln( "Threads:" );
 
-	Controller::Instance().threads()->print();
+	mVirtualMachine->controller().threads()->print();
 }
 
 void LocalClient::printWatches()
@@ -1037,7 +1037,7 @@ void LocalClient::saveConfig()
 
 void LocalClient::setCurrentFrame( FrameId frameId )
 {
-	if (  frameId >= Controller::Instance().thread( mCurrentThreadId )->getNumFrames()  ) {
+	if (  frameId >= mVirtualMachine->controller().thread( mCurrentThreadId )->getNumFrames()  ) {
 		writeln( "invalid frame selected!" );
 		return;
 	}
@@ -1046,7 +1046,7 @@ void LocalClient::setCurrentFrame( FrameId frameId )
 	mCurrentFrameId = frameId;
 
 	// update current stack/scope
-	mScope = Controller::Instance().thread( mCurrentThreadId )->frame( mCurrentFrameId )->getScope();
+	mScope = mVirtualMachine->controller().thread( mCurrentThreadId )->frame( mCurrentFrameId )->getScope();
 
 	// automatically print scope
 	if (  mSettings->autoList()  ) {
@@ -1074,7 +1074,7 @@ void LocalClient::setCurrentFrame( const StringList& tokens )
 
 void LocalClient::setCurrentThread( ThreadId threadId )
 {
-	if (  threadId >= Controller::Instance().threads()->getNumThreads()  ) {
+	if (  threadId >= mVirtualMachine->controller().threads()->getNumThreads()  ) {
 		writeln( "invalid thread selected!" );
 		return;
 	}
@@ -1086,7 +1086,7 @@ void LocalClient::setCurrentThread( ThreadId threadId )
 	printStackTrace();
 
 	// reset current frame to newest in thread
-	setCurrentFrame( Controller::Instance().thread( mCurrentThreadId )->getNumFrames() - 1 );
+	setCurrentFrame( mVirtualMachine->controller().thread( mCurrentThreadId )->getNumFrames() - 1 );
 }
 
 void LocalClient::setCurrentThread( const StringList& tokens )
@@ -1158,8 +1158,8 @@ void LocalClient::start()
 				// everything is fine
 				break;
 			case Runtime::ControlFlow::Throw:
-				writeln(  "[Exception thrown in " + Controller::Instance().thread(  0  )->exception().getPosition().toString() + "\n"
-						+ Controller::Instance().thread(  0  )->exception().getData()->ToString() + "]"  );
+				writeln(  "[Exception thrown in " + mVirtualMachine->controller().thread(  0  )->exception().getPosition().toString() + "\n"
+						+ mVirtualMachine->controller().thread(  0  )->exception().getData()->ToString() + "]"  );
 				break;
 			default:
 				writeln(  "[abnormal program termination!]"  );

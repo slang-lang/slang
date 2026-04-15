@@ -25,8 +25,9 @@ namespace {
 }
 
 
-Service::Service( std::string path, std::string entryPoint, Slang::Script* script )
-: mEntryPoint( std::move( entryPoint ) )
+Service::Service( std::string path, std::string entryPoint, Slang::Script* script, Slang::Controller* controller )
+: mController( controller )
+, mEntryPoint( std::move( entryPoint ) )
 , mPath( std::move( path ) )
 , mScript( script )
 {
@@ -43,7 +44,7 @@ bool Service::handleRequest( const FCGX_Request& request )
     if ( mScript ) {
         try {
             Slang::Runtime::Object result;
-            mScript->execute( Slang::Controller::Instance().threads()->createThread()->getId(), mEntryPoint, Slang::ParameterList(), &result );
+            mScript->execute( mController->threads()->createThread()->getId(), mEntryPoint, Slang::ParameterList(), &result );
         }
         catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
             OSerror( e.what() );

@@ -32,6 +32,7 @@ class NamedScope;
 class Repository;
 class Symbol;
 class Thread;
+class Controller;
 
 namespace Runtime {
 
@@ -131,7 +132,7 @@ private: // Execution
 
 private:
 	// prevent usage
-	explicit Interpreter(Thread* thread);
+	Interpreter(Thread* thread, Controller& controller);
 
 private:	// Initialization
 	void deinitialize();

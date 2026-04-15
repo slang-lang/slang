@@ -70,15 +70,15 @@ namespace Runtime {
 		}
 
 
-Interpreter::Interpreter(Thread* thread)
+Interpreter::Interpreter(Thread* thread, Controller& controller)
 : mControlFlow(ControlFlow::Normal)
 , mOwner( nullptr )
 , mThread( thread )
 {
 	// initialize virtual machine stuff
 	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
-	mMemory = Controller::Instance().memory();
-	mRepository = Controller::Instance().repository();
+	mMemory = controller.memory();
+	mRepository = controller.repository();
 }
 
 Interpreter::~Interpreter()

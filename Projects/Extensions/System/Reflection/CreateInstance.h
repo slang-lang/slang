@@ -45,7 +45,7 @@ public:
 
 		std::string param_type = (*it++).value().toStdString();
 
-		Runtime::Object* newInstance = Controller::Instance().repository()->createReference(param_type, ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
+		Runtime::Object* newInstance = mController->repository()->createReference(param_type, ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
 
 		*result = *newInstance;
 

@@ -17,6 +17,7 @@
 #	include <Core/Extensions/ExtensionManager.h>
 #endif
 #include <Core/Runtime/Parameter.h>
+#include "Controller.h"
 
 // Forward declarations
 
@@ -49,6 +50,7 @@ public:
 	~VirtualMachine();
 
 public:	// Setup
+	Controller& controller() { return mController; }
 	bool addExtension(Extensions::AExtension* extension, const std::string& library = "<internal library>");
 	void addLibraryFolder(const std::string& libraryFolder);
 	void init();
@@ -74,6 +76,7 @@ private:
 	bool loadLibrary(const std::string& library, const std::string& fromLibrary = "" );
 
 private:
+	Controller mController;
 #ifdef _WIN32
 	// Extension loading is not supported under Windows
 #else
