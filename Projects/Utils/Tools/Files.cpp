@@ -4,13 +4,14 @@
 // Library includes
 #include <algorithm>
 #include <climits>
+#include <cstdlib>
 #include <fstream>
 #ifdef _MSC_VER
 #	include <windows.h>
 #	include <tchar.h>
 #	include <stdio.h>
 #endif
-#include <vector>
+#include <string>
 
 // Project includes
 
@@ -42,11 +43,9 @@ bool exists(const std::string& filename)
 
 std::string BuildPath(const std::string& baseFolder, std::string filename)
 {
-	auto result = std::move( filename );
+	std::replace( filename.begin(), filename.end(), '.', '/' );
 
-	std::replace( result.begin(), result.end(), '.', '/' );
-
-	return GetFullname( baseFolder + "/" + result );
+	return GetFullname( baseFolder + "/" + filename );
 }
 
 std::string ExtractFileExt(const std::string& filename)

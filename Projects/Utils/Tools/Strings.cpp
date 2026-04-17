@@ -4,6 +4,9 @@
 
 // Library includes
 #include <algorithm>
+#include <cctype>
+#include <string>
+#include <sstream>
 
 // Project includes
 
@@ -14,7 +17,8 @@ namespace Utils {
 namespace Tools {
 
 
-std::string extract(const std::string& source) {
+std::string extract(const std::string& source)
+{
     static constexpr char DOUBLE_QUOTE = '"';
     static constexpr char SINGLE_QUOTE = '\'';
 
@@ -113,7 +117,7 @@ double stringToDouble(const std::string& str)
 
 	std::stringstream stream;
 	stream << str;
-	double d;
+	double d{ 0 };
 	stream >> d;
 
 	return d;
@@ -127,7 +131,7 @@ float stringToFloat(const std::string& str)
 
 	std::stringstream stream;
 	stream << str;
-	float f;
+	float f{ 0 };
 	stream >> f;
 
 	return f;
@@ -141,7 +145,7 @@ int64_t stringToInt(const std::string& str)
 
 	std::stringstream stream;
 	stream << str;
-	int64_t i;
+	int64_t i = 0;
 	stream >> i;
 
 	return i;

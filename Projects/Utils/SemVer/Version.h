@@ -1,6 +1,6 @@
 
-#ifndef _SemVer_Version_h_
-#define _SemVer_Version_h_
+#ifndef SemVer_Version_h
+#define SemVer_Version_h
 
 
 // Library includes

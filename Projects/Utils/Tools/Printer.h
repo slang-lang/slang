@@ -1,6 +1,6 @@
 
-#ifndef _Utils_Tools_Printer_h_
-#define _Utils_Tools_Printer_h_
+#ifndef Utils_Tools_Printer_h
+#define Utils_Tools_Printer_h
 
 
 // Library includes
