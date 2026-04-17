@@ -3,7 +3,7 @@
 #include "TreeGenerator.h"
 
 // Library includes
-#include <limits.h>
+#include <climits>
 
 // Project includes
 #include <Core/Common/Exceptions.h>
@@ -13,8 +13,6 @@
 #include <Core/Designtime/BuildInTypes/VoidType.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/Runtime/OperatorOverloading.h>
-#include <Core/Runtime/TypeCast.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Core/VirtualMachine/StackFrame.h>
 #include <Logger/Logger.h>
@@ -46,7 +44,7 @@ TreeGenerator::TreeGenerator(Repository* repository, bool collectErrors)
 /*
  * collects all tokens of a given scope (excluding the surrounding curly brackets)
  */
-void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
+void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens) const
 {
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
@@ -66,7 +64,7 @@ Node* TreeGenerator::expression(TokenIterator& start)
 	auto* expression = parseCondition(start);
 
 	for ( ; ; ) {
-		Token::Type::E op = start->type();
+		const Token::Type::E op = start->type();
 		if ( op != Token::Type::AND &&
 			 op != Token::Type::NAND &&
 			 op != Token::Type::NOR &&
@@ -74,7 +72,7 @@ Node* TreeGenerator::expression(TokenIterator& start)
 			return expression;
 		}
 
-		Token operation = (*start);
+		const Token operation = (*start);
 		Node* right = parseCondition(++start);
 		/*std::string type = resolveType(start, expression, operation, right);*/
 
@@ -139,7 +137,7 @@ Statements* TreeGenerator::generate(const TokenList& tokens, bool allowBreakAndC
 			auto start = getTokens().begin();
 			auto end   = getTokens().end();
 
-			Common::Position position(start != end ? start->position() : Common::Position());
+			const Common::Position position(start != end ? start->position() : Common::Position());
 
 			statements = process(start, end);
 
@@ -155,7 +153,7 @@ Statements* TreeGenerator::generate(const TokenList& tokens, bool allowBreakAndC
 /*
  * generates the abstract syntax tree that is executed by the TreeInterpreter for the given method
  */
-Statements* TreeGenerator::generateAST(Common::Method* method)
+Statements* TreeGenerator::generateAST(const Common::Method* method)
 {
 	Common::Method scope(*method);
 
@@ -169,7 +167,7 @@ Statements* TreeGenerator::generateAST(Common::Method* method)
 	return statements;
 }
 
-MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope)
+MethodScope* TreeGenerator::getEnclosingMethodScope(const IScope* scope)
 {
 	while ( scope ) {
 		auto* methodScope = dynamic_cast<MethodScope*>(scope->getEnclosingScope());
@@ -252,7 +250,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 	auto* condition = parseExpression(start);
 
 	for ( ; ; ) {
-		Token::Type::E op = start->type();
+		const Token::Type::E op = start->type();
 		if ( op != Token::Type::COMPARE_EQUAL &&
 			 op != Token::Type::COMPARE_EQUAL_CONTENT &&
 			 op != Token::Type::COMPARE_GREATER &&
@@ -283,7 +281,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 		resolveType(start, condition, operation, right);
 
 
-		auto* lhs = dynamic_cast<Expression*>(condition);
+		const auto* lhs = dynamic_cast<Expression*>(condition);
 		auto* rhs = dynamic_cast<Expression*>(right);
 
 		// check if we are using a valid type
@@ -330,10 +328,10 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 
 Node* TreeGenerator::parseExpression(TokenIterator& start)
 {
-	auto* expression = parseFactor(start);
+	auto* expr = parseFactor(start);
 
 	for ( ; ; ) {
-		Token::Type::E op = start->type();
+		const Token::Type::E op = start->type();
 		if ( op != Token::Type::BITAND &&
 			 op != Token::Type::BITCOMPLEMENT &&
 			 op != Token::Type::BITOR &&
@@ -341,21 +339,21 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 			 op != Token::Type::MATH_SUBTRACT &&
 			 op != Token::Type::OPERATOR_SHIFT_LEFT &&
 			 op != Token::Type::OPERATOR_SHIFT_RIGHT ) {
-			return expression;
+			return expr;
 		}
 
-		Token operation = (*start);
+		const Token operation = (*start);
 		Node* right = parseFactor(++start);
-		std::string type = resolveType(start, expression, operation, right);
+		const std::string type = resolveType(start, expr, operation, right);
 
 
-		auto* lhs = dynamic_cast<Expression*>(expression);
+		const auto* lhs = dynamic_cast<Expression*>(expr);
 		auto* rhs = dynamic_cast<Expression*>(right);
 
-		auto* exp = dynamic_cast<SymbolExpression*>(expression);
+		auto* exp = dynamic_cast<SymbolExpression*>(expr);
 
 		if ( !exp || exp->isAtomicType() ) {
-			expression = new BinaryExpressionOwner(expression, operation, right, type);
+			expr = new BinaryExpressionOwner(expr, operation, right, type);
 			continue;
 		}
 
@@ -376,7 +374,7 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 		ExpressionList params;
 		params.emplace_back(rhs);
 
-		expression = process_method(exp, (*start), params);
+		expr = process_method(exp, (*start), params);
 	}
 }
 
@@ -385,19 +383,19 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 	auto* factor = parseInfix(start);
 
 	for ( ; ; ) {
-		Token::Type::E op = start->type();
+		const Token::Type::E op = start->type();
 		if ( op != Token::Type::MATH_DIVIDE &&
 			 op != Token::Type::MATH_MODULO &&
 			 op != Token::Type::MATH_MULTIPLY ) {
 			return factor;
 		}
 
-		Token operation = (*start);
+		const Token operation = (*start);
 		Node* right = parseInfix(++start);
-		std::string type = resolveType(start, factor, operation, right);
+		const std::string type = resolveType(start, factor, operation, right);
 
 
-		auto* lhs = dynamic_cast<Expression*>(factor);
+		const auto* lhs = dynamic_cast<Expression*>(factor);
 		auto* rhs = dynamic_cast<Expression*>(right);
 
 		auto* exp = dynamic_cast<SymbolExpression*>(factor);
@@ -431,13 +429,13 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 Node* TreeGenerator::parseInfix(TokenIterator &start)
 {
 	Node* infix = nullptr;
-	Token::Type::E op = start->type();
+	const Token::Type::E op = start->type();
 
 	// infix
 	switch ( op ) {
 		case Token::Type::MATH_ADDITION:
 		case Token::Type::MATH_SUBTRACT: {		// infix +/- operators
-			Token operation = (*start);
+			const Token operation = (*start);
 
 			auto* exp = dynamic_cast<Expression*>( parseTerm(++start) );
 
@@ -446,7 +444,7 @@ Node* TreeGenerator::parseInfix(TokenIterator &start)
 			infix = new UnaryExpression(operation, exp, UnaryExpression::ValueType::RValue);
 		} break;
 		case Token::Type::OPERATOR_NOT: {		// infix ! operator
-			Token operation = (*start);
+			const Token operation = (*start);
 
 			infix = new BooleanUnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::RValue);
 		} break;
@@ -531,10 +529,12 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 			//if( value >= SHRT_MIN && value <= SHRT_MAX )
 			//    term = new Int16LiteralExpression(value);
 			//else
-			if( value >= INT_MIN && value <= INT_MAX )
-			    term = new Int32LiteralExpression(value);
-			else
-			    term = new Int64LiteralExpression(value);
+			if( value >= INT_MIN && value <= INT_MAX ) {
+				term = new Int32LiteralExpression(value);
+			}
+			else {
+				term = new Int64LiteralExpression(value);
+			}
 
 			++start;
 		} break;
@@ -576,7 +576,7 @@ void TreeGenerator::popTokens()
 /*
  * walk through global namespace and process all methods of all symbols
  */
-void TreeGenerator::process(MethodScope* scope)
+void TreeGenerator::process(const MethodScope* scope)
 {
 	if ( !scope ) {
 		throw Common::Exceptions::Exception("invalid scope symbol provided");
@@ -607,7 +607,7 @@ void TreeGenerator::process(MethodScope* scope)
 /*
  * walk through a blueprint and process all members and methods
  */
-void TreeGenerator::processBluePrint(Designtime::BluePrintObject* object)
+void TreeGenerator::processBluePrint(const Designtime::BluePrintObject* object)
 {
 	if ( !object ) {
 		throw Common::Exceptions::Exception("invalid blueprint symbol provided");
@@ -663,7 +663,7 @@ void TreeGenerator::processMethod(Common::Method* method)
 /*
  * walks through a complete namespace with all blueprints & methods
  */
-void TreeGenerator::processNamespace(Common::Namespace* space)
+void TreeGenerator::processNamespace(const Common::Namespace* space)
 {
 	if ( !space ) {
 		throw Common::Exceptions::Exception("invalid namespace symbol provided");
@@ -709,7 +709,7 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 	return statements;
 }
 
-Node* TreeGenerator::processIsOperator(TokenIterator& start, Node* baseExp)
+Node* TreeGenerator::processIsOperator(TokenIterator& start, Node* baseExp) const
 {
 	++start;
 
@@ -727,7 +727,7 @@ Node* TreeGenerator::processIsOperator(TokenIterator& start, Node* baseExp)
 
 Node* TreeGenerator::processPostfixIncDecOperator(TokenIterator& start, Node* baseExp)
 {
-	Token operation = (*start);
+	const Token operation = (*start);
 	++start;
 
 	Node* postfix = new UnaryExpression(operation, baseExp, UnaryExpression::ValueType::RValue);
@@ -826,19 +826,19 @@ Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* bas
 	if ( infixPostfix->getResultType() == _bool ) {
 		return processPostfixObjectOperator(std::string(_bool_object), start, infixPostfix);
 	}
-	else if ( infixPostfix->getResultType() == _double ) {
+	if ( infixPostfix->getResultType() == _double ) {
 		return processPostfixObjectOperator(std::string(_double_object), start, infixPostfix);
 	}
-	else if ( infixPostfix->getResultType() == _float ) {
+	if ( infixPostfix->getResultType() == _float ) {
 		return processPostfixObjectOperator(std::string(_float_object), start, infixPostfix);
 	}
-	else if ( infixPostfix->getResultType() == _int16 ) {
+	if ( infixPostfix->getResultType() == _int16 ) {
 		return processPostfixObjectOperator(std::string(_int_object), start, infixPostfix);
 	}
-	else if ( infixPostfix->getResultType() == _int32 ) {
+	if ( infixPostfix->getResultType() == _int32 ) {
 		return processPostfixObjectOperator(std::string(_int_object), start, infixPostfix);
 	}
-	else if ( infixPostfix->getResultType() == _string ) {
+	if ( infixPostfix->getResultType() == _string ) {
 		return processPostfixObjectOperator(std::string(_string_object), start, infixPostfix);
 	}
 
@@ -861,7 +861,7 @@ Node* TreeGenerator::processPostfixScopeOperator(TokenIterator& start, Node* bas
 	return new ScopeExpression(infixPostfix, symbolExpression, symbolExpression->getResultType());
 }
 
-Node* TreeGenerator::processPostfixSubscriptOperator(TokenIterator& start, Node* /*baseExp*/)
+Node* TreeGenerator::processPostfixSubscriptOperator(const TokenIterator& start, Node* /*baseExp*/)
 {
 	// postfix operator[]
 	throw Common::Exceptions::NotSupported("postfix [] operator not supported", start->position());
@@ -904,7 +904,7 @@ Node* TreeGenerator::processTernaryOperator(TokenIterator& start, Node* baseExp)
  */
 Statement* TreeGenerator::process_assert(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
@@ -955,7 +955,7 @@ Expression* TreeGenerator::process_assignment_expression(TokenIterator& token, S
 {
 	auto op = token;
 
-	Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
+	const Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
 
 	auto* rhs = dynamic_cast<Expression*>(expression(++token));
 
@@ -1040,7 +1040,7 @@ Expression* TreeGenerator::process_assignment_expression(TokenIterator& token, S
  */
 Statement* TreeGenerator::process_break(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 	mControlFlow = Runtime::ControlFlow::Break;
 
 	if ( !mStackFrame->allowBreakAndContinue() ) {
@@ -1067,10 +1067,10 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
 		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
-	std::string type{ targetExp->getResultType() };
-	PrototypeConstraints constraints{ targetExp->mConstraints };
+	const std::string type{ targetExp->getResultType() };
+	const PrototypeConstraints constraints{ targetExp->mConstraints };
 
-	Common::TypeDeclaration typeName(type, constraints);
+	const Common::TypeDeclaration typeName(type, constraints);
 
 	mRepository->prepareType(typeName);
 
@@ -1100,7 +1100,7 @@ Expression* TreeGenerator::process_cast(TokenIterator& token)
  */
 Statement* TreeGenerator::process_continue(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 	mControlFlow = Runtime::ControlFlow::Continue;
 
 	if ( !mStackFrame->allowBreakAndContinue() ) {
@@ -1149,9 +1149,7 @@ Expression* TreeGenerator::process_copy(TokenIterator& token)
 		}
 	}
 
-	ExpressionList params;
-
-	return new CopyExpression(exp->getResultType(), process_method(exp, (*token), params));
+	return new CopyExpression(exp->getResultType(), process_method(exp, (*token), ExpressionList()));
 }
 
 /*
@@ -1160,7 +1158,7 @@ Expression* TreeGenerator::process_copy(TokenIterator& token)
  */
 Statement* TreeGenerator::process_delete(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 
 	Node* exp = expression(token);
 
@@ -1176,7 +1174,7 @@ Statement* TreeGenerator::process_delete(TokenIterator& token)
  */
 Statement* TreeGenerator::process_exit(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 	mControlFlow = Runtime::ControlFlow::ExitProgram;
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
@@ -1195,30 +1193,30 @@ Statement* TreeGenerator::process_exit(TokenIterator& token)
 
 Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
 {
-	Expression* expression = nullptr;
+	Expression* expr = nullptr;
 
-	std::string keyword = (*token++).content();
+	const std::string keyword = (token++)->content();
 
 	if ( keyword == KEYWORD_CAST ) {
-		expression = process_cast(token);
+		expr = process_cast(token);
 	}
 	else if ( keyword == KEYWORD_COPY ) {
-		expression = process_copy(token);
+		expr = process_copy(token);
 	}
 	else if ( keyword == KEYWORD_NEW ) {
-		expression = process_new(token);
+		expr = process_new(token);
 	}
 	else if ( keyword == KEYWORD_STREVAL ) {
-		expression = process_streval(token);
+		expr = process_streval(token);
 	}
 	else if ( keyword == KEYWORD_TYPEID ) {
-		expression = process_typeid(token);
+		expr = process_typeid(token);
 	}
 	else {
 		throw Designtime::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 	}
 
-	return expression;
+	return expr;
 }
 
 /*
@@ -1227,7 +1225,7 @@ Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
  */
 Statement* TreeGenerator::process_for(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 
 	pushScope();
 
@@ -1282,7 +1280,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
  */
 Statement* TreeGenerator::process_foreach(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 
 	pushScope();
 
@@ -1335,10 +1333,10 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 		iterator = mRepository->findBluePrintObject(getIteratorMethod->ReturnType());
 
 		{	// look up "getIterator" method in given collection
-			SymbolExpression* expression = new DesigntimeSymbolExpression(getIteratorMethod->getName(), getIteratorMethod->QualifiedTypename(), PrototypeConstraints(), false);
-			expression->mSurroundingScope = collection;
+			SymbolExpression* expr = new DesigntimeSymbolExpression(getIteratorMethod->getName(), getIteratorMethod->QualifiedTypename(), PrototypeConstraints(), false);
+			expr->mSurroundingScope = collection;
 
-			getIteratorExpression = process_method(expression, *token, ExpressionList());
+			getIteratorExpression = process_method(expr, *token, ExpressionList());
 		}
 	}
 
@@ -1347,17 +1345,17 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	}
 
 	{	// look up "hasNext" method in given iterator
-		SymbolExpression* expression = new DesigntimeSymbolExpression("hasNext", _bool, PrototypeConstraints(), true);
-		expression->mSurroundingScope = iterator;
+		SymbolExpression* expr = new DesigntimeSymbolExpression("hasNext", _bool, PrototypeConstraints(), true);
+		expr->mSurroundingScope = iterator;
 
-		hasNextExpression = process_method(expression, *token, ExpressionList());
+		hasNextExpression = process_method(expr, *token, ExpressionList());
 	}
 
 	{	// look up "next" method in given iterator
-		SymbolExpression* expression = new DesigntimeSymbolExpression("next", typeDeclaration->mType, PrototypeConstraints(), false);
-		expression->mSurroundingScope = iterator;
+		SymbolExpression* expr = new DesigntimeSymbolExpression("next", typeDeclaration->mType, PrototypeConstraints(), false);
+		expr->mSurroundingScope = iterator;
 
-		nextExpression = process_method(expression, *token, ExpressionList());
+		nextExpression = process_method(expr, *token, ExpressionList());
 
 		// validate result type
 		//resolveType(typeDeclaration->mType, Token(Token::Category::Operator, Token::Type::ASSIGN, "=", token->position()), nextExpression->getResultType());
@@ -1450,7 +1448,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
  */
 Statement* TreeGenerator::process_if(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
@@ -1511,7 +1509,7 @@ Statement* TreeGenerator::process_keyword(TokenIterator& token)
 {
 	Statement* statement = nullptr;
 
-	std::string keyword{ (*token++).content() };
+	const std::string keyword{ (token++)->content() };
 
 	if ( keyword == KEYWORD_ASSERT ) {
 		statement = process_assert(token);
@@ -1571,7 +1569,7 @@ Statement* TreeGenerator::process_keyword(TokenIterator& token)
  */
 MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 
 	auto tmp = token;
 
@@ -1605,14 +1603,14 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const Token& token, const ExpressionList& expressions)
 {
 	ParameterList params;
-	for ( auto& expression : expressions ) {
+	for ( const auto& expr : expressions ) {
 		params.emplace_back(Parameter::CreateDesigntime(
 			ANONYMOUS_OBJECT,
-			Common::TypeDeclaration(dynamic_cast<Expression*>(expression)->getResultType(), PrototypeConstraints(), dynamic_cast<Expression*>(expression)->isConst() ? Mutability::Const : Mutability::Modify),
+			Common::TypeDeclaration(dynamic_cast<Expression*>(expr)->getResultType(), PrototypeConstraints(), dynamic_cast<Expression*>(expr)->isConst() ? Mutability::Const : Mutability::Modify),
 			Runtime::AtomicValue(),
 			false,
-			dynamic_cast<Expression*>(expression)->isConst() ? Mutability::Const : Mutability::Modify,
-			dynamic_cast<Expression*>(expression)->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference
+			dynamic_cast<Expression*>(expr)->isConst() ? Mutability::Const : Mutability::Modify,
+			dynamic_cast<Expression*>(expr)->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference
 		));
 	}
 
@@ -1697,9 +1695,9 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 			inner = inner->mSymbolExpression;
 		}
 		else {
-			PrototypeConstraints constraints = dynamic_cast<DesigntimeSymbolExpression*>(inner)->mConstraints;
+			const PrototypeConstraints constraints = dynamic_cast<DesigntimeSymbolExpression*>(inner)->mConstraints;
 
-			Common::TypeDeclaration typeDeclaration(inner->getResultType(), constraints);
+			const Common::TypeDeclaration typeDeclaration(inner->getResultType(), constraints);
 			mRepository->prepareType(typeDeclaration);
 
 			type = Designtime::Parser::buildRuntimeConstraintTypename(
@@ -1730,7 +1728,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
  */
 Statement* TreeGenerator::process_print(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
@@ -1752,7 +1750,7 @@ Statement* TreeGenerator::process_print(TokenIterator& token)
  */
 Statement* TreeGenerator::process_return(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 	mControlFlow = Runtime::ControlFlow::Return;
 
 	Node* exp = nullptr;
@@ -1789,7 +1787,7 @@ Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpress
 		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
-	std::string type = symbol->getResultType();
+	const std::string type = symbol->getResultType();
 
 	Designtime::BluePrintObject* obj = mRepository->findBluePrintObject(type);
 	if ( !obj ) {
@@ -1799,7 +1797,7 @@ Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpress
 	symbol->mSymbolExpression = new RuntimeSymbolExpression("operator[]", "", true, true, obj->isAtomicType());
 	symbol->mSymbolExpression->mSurroundingScope = obj;
 
-	Token opToken(Token::Category::Operator, Token::Type::BRACKET_OPEN, "[", token->position(), false);
+	const Token opToken(Token::Category::Operator, Token::Type::BRACKET_OPEN, "[", token->position(), false);
 	ExpressionList params;
 
 	do {
@@ -1877,7 +1875,7 @@ Expression* TreeGenerator::process_streval(TokenIterator& token)
  */
 Statement* TreeGenerator::process_switch(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
@@ -1897,7 +1895,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	// collect all case-blocks
 	while ( token->type() != Token::Type::BRACKET_CURLY_CLOSE ) {
 		if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_CASE ) {
-			Token startToken = (*token);
+			const Token startToken = (*token);
 
 			// skip case-label
 			++token;
@@ -1935,17 +1933,17 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	}
 
 	// determine if we are using an enumeration expression
-	auto* enumExp = dynamic_cast<Expression*>(switchExpression);
+	const auto* enumExp = dynamic_cast<Expression*>(switchExpression);
 	if ( enumExp ) {
-		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(enumExp->getResultType());
+		const Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(enumExp->getResultType());
 		if ( !blueprint ) {
 			// unknown result type of switch-expression
 			throw Common::Exceptions::UnknownIdentifier(enumExp->getResultType(), start.position());
 		}
 
 		if ( blueprint->isEnumeration() && !defaultStatement ) {
-			long available = std::distance(blueprint->beginSymbols(), blueprint->endSymbols());
-			long used = caseStatements.size();
+			const size_t available = std::distance(blueprint->beginSymbols(), blueprint->endSymbols());
+			const size_t used = caseStatements.size();
 
 			if ( available > used ) {
 				// no default statement is present, so all enumeration values should be used
@@ -1970,7 +1968,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
  */
 Statement* TreeGenerator::process_throw(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 	mControlFlow = Runtime::ControlFlow::Throw;
 
 	Node* exp = nullptr;
@@ -1997,11 +1995,11 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
  */
 Statement* TreeGenerator::process_try(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
-	std::set<std::string> thrownExceptions = mThrownExceptions;
+	const std::set<std::string> thrownExceptions = mThrownExceptions;
 	mThrownExceptions.clear();
 
 	// process try-block
@@ -2016,7 +2014,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	// collect all catch- and finally-blocks
 	for ( ; ; ) {
 		if ( tmp != localEnd && tmp->content() == KEYWORD_CATCH ) {
-			Token startToken = (*tmp);
+			const Token startToken = (*tmp);
 
 			// skip catch-label
 			++tmp;
@@ -2096,15 +2094,15 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
  */
 TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initialization::E initialization)
 {
-	Token start = (*token);
+	const Token start = (*token);
 
 	auto* lhs = dynamic_cast<DesigntimeSymbolExpression*>(resolve(token, getScope(), false, Visibility::Public));
 	if ( !lhs ) {
 		throw Common::Exceptions::InvalidSymbol(token->content(), token->position());
 	}
 
-	std::string type = lhs->getResultType();
-	PrototypeConstraints constraints = lhs->mConstraints;
+	const std::string type = lhs->getResultType();
+	const PrototypeConstraints constraints = lhs->mConstraints;
 
 	mRepository->prepareType(Common::TypeDeclaration(type, constraints));
 
@@ -2114,10 +2112,10 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 	expect(Token::Type::IDENTIFIER, token);
 
-	std::string name = token->content();
+	const std::string name = token->content();
 	++token;
 
-	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
+	const Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
 	if ( mutability == Mutability::Unknown ) {
 		throw Designtime::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
 	}
@@ -2128,7 +2126,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	getScope()->define(name, object);
 
 	// non-atomic types are references by default
-	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, object->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference);
+	const AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, object->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference);
 
 	Expression* assignmentExp = nullptr;
 
@@ -2138,7 +2136,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 			throw Common::Exceptions::NotSupported("initialization is not allowed here", token->position());
 		}
 
-		Token operation(*token);
+		const Token operation(*token);
 
 		assignmentExp = dynamic_cast<Expression*>( expression( ++token ) );
 
@@ -2180,18 +2178,18 @@ Expression* TreeGenerator::process_typeid(TokenIterator& token)
  */
 TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 {
-	Token start = (*token);
-	std::string name = token->content();
+	const Token start = (*token);
+	const std::string name = token->content();
 
 	expect(Token::Type::IDENTIFIER, token);
 	++token;
 
-	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
+	const Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
 	if ( mutability == Mutability::Unknown ) {
 		throw Designtime::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
 	}
 
-	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, AccessMode::ByValue);
+	const AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, AccessMode::ByValue);
 
 	expect(Token::Type::ASSIGN, token);
 	++token;
@@ -2218,7 +2216,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
  */
 Statement* TreeGenerator::process_while(TokenIterator& token)
 {
-	Token start = (*token);
+	const Token start = (*token);
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
@@ -2237,7 +2235,7 @@ Statement* TreeGenerator::process_while(TokenIterator& token)
 
 void TreeGenerator::pushScope(IScope* scope, bool allowBreakAndContinue)
 {
-	bool allowDelete = !scope;
+	const bool allowDelete = !scope;
 
 	if ( !scope ) {
 		scope = new SymbolScope(mStackFrame->getScope());
@@ -2246,7 +2244,7 @@ void TreeGenerator::pushScope(IScope* scope, bool allowBreakAndContinue)
 	mStackFrame->pushScope(scope, allowDelete, allowBreakAndContinue || mStackFrame->allowBreakAndContinue());
 }
 
-std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* symbol)
+std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(const SymbolExpression* symbol)
 {
 	if ( !symbol ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol provided");
@@ -2254,7 +2252,7 @@ std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* 
 
 	std::list<MethodSymbol*> result;
 
-	SymbolExpression* inner = symbol;
+	const SymbolExpression* inner = symbol;
 	for ( ; ; ) {
 		if ( inner->mSymbolExpression && inner->mSymbolExpression->mSurroundingScope ) {
 			inner = inner->mSymbolExpression;
@@ -2264,7 +2262,7 @@ std::list<MethodSymbol*> TreeGenerator::provideSimilarMethods(SymbolExpression* 
 		break;
 	}
 
-	MethodScope* scope = getMethodScope(inner->mSurroundingScope);
+	const MethodScope* scope = getMethodScope(inner->mSurroundingScope);
 	if ( !scope ) {
 		throw Designtime::Exceptions::DesigntimeException("invalid scope");
 	}
@@ -2289,7 +2287,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 		throw Designtime::Exceptions::DesigntimeException("invalid base scope", token->position());
 	}
 
-	std::string name = token->content();
+	const std::string name = token->content();
 	IScope* scope = nullptr;
 	SymbolExpression* symbol = nullptr;
 	std::string type;
@@ -2383,7 +2381,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	return symbol;
 }
 
-MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility)
+MethodSymbol* TreeGenerator::resolveMethod(const SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility)
 {
 	if ( !symbol ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol provided");
@@ -2391,7 +2389,7 @@ MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const Param
 
 	bool onlyCurrentScope = false;
 
-	SymbolExpression* inner = symbol;
+	const SymbolExpression* inner = symbol;
 	for ( ; ; ) {
 		if ( inner->mSymbolExpression && inner->mSymbolExpression->mSurroundingScope ) {
 			onlyCurrentScope = true;
@@ -2403,7 +2401,7 @@ MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const Param
 		break;
 	}
 
-	MethodScope* scope = getMethodScope(inner->mSurroundingScope);
+	const MethodScope* scope = getMethodScope(inner->mSurroundingScope);
 	if ( !scope ) {
 		throw Designtime::Exceptions::DesigntimeException("invalid scope");
 	}
@@ -2436,7 +2434,7 @@ std::string TreeGenerator::resolveType(TokenIterator& token, Node* left, const T
 	return resolveType(token, leftType, operation, rightType);
 }
 
-std::string TreeGenerator::resolveType(TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const
+std::string TreeGenerator::resolveType(const TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const
 {
 	try {
 		return mRepository->getType(left, operation, right);

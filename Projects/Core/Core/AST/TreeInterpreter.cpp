@@ -68,13 +68,12 @@ namespace AST {
 
 TreeInterpreter::TreeInterpreter( Thread* thread )
 : mControlFlow( Runtime::ControlFlow::Normal )
-,  mFrame( nullptr )
-,  mThread( thread )
+, mDebugger ( Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr )
+, mFrame( nullptr )
+, mMemory( Controller::Instance().memory() )
+, mRepository( Controller::Instance().repository() )
+, mThread( thread )
 {
-	// initialize virtual machine stuff
-	mDebugger   = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr;
-	mMemory     = Controller::Instance().memory();
-	mRepository = Controller::Instance().repository();
 }
 
 void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
@@ -122,7 +121,8 @@ void TreeInterpreter::evaluateAssignmentExpression(AssignmentExpression* exp, Ru
 void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result)
 {
 	if ( exp->getBinaryExpressionType() == BinaryExpression::BinaryExpressionType::BooleanBinaryExpression ) {
-		return evaluateBooleanBinaryExpression(dynamic_cast<BooleanBinaryExpression*>(exp), result);
+		evaluateBooleanBinaryExpression(dynamic_cast<BooleanBinaryExpression*>(exp), result);
+		return;
 	}
 
 	Runtime::Object left;
@@ -162,7 +162,7 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 		// }
 	}
 
-	// assign (left ? right) to result
+	// assign (left ? right) to our result
 	Runtime::operator_binary_assign(result, &left);
 }
 
@@ -173,7 +173,7 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 	// evaluate left expression
 	evaluate(exp->mLHS, &left);
 
-	bool leftResult = isTrue(left);
+	const bool leftResult = isTrue(left);
 
 	// incomplete boolean evaluation
 	if ( exp->mOperation.type() == Token::Type::AND && !leftResult ) {
@@ -249,17 +249,19 @@ void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* r
 		case Runtime::AtomicValue::Type::DOUBLE:    *result = Runtime::DoubleType(exp->mValue); break;
 		case Runtime::AtomicValue::Type::FLOAT:     *result = Runtime::FloatType(exp->mValue); break;
 		case Runtime::AtomicValue::Type::INT:       {
-			if( dynamic_cast<Int32LiteralExpression*>( exp ) )
+			if( dynamic_cast<Int32LiteralExpression*>( exp ) ) {
 				*result = Runtime::Int32Type(exp->mValue);
-			else if( dynamic_cast<Int16LiteralExpression*>( exp ) )
+			}
+			else if( dynamic_cast<Int16LiteralExpression*>( exp ) ) {
 				*result = Runtime::Int16Type(exp->mValue);
-			else
+			}
+			else {
 				*result = Runtime::Int64Type(exp->mValue);
-			break;
-		}
+			}
+		} break;
 		case Runtime::AtomicValue::Type::REFERENCE: *result = *mMemory->get(Runtime::Reference(exp->mValue.toReference())); break;
 		case Runtime::AtomicValue::Type::STRING:    *result = Runtime::StringType(exp->mValue); break;
-		case Runtime::AtomicValue::Type::UNKNOWN:    throw Common::Exceptions::NotSupported("UNKNOWN type");
+		case Runtime::AtomicValue::Type::UNKNOWN:   throw Common::Exceptions::NotSupported("UNKNOWN type");
 	}
 }
 
@@ -269,7 +271,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	ParameterList params;
 
 	for ( ExpressionList::const_iterator it = exp->mParams.begin(); it != exp->mParams.end(); ++it ) {
-		objectList.emplace_back(Runtime::Object());
+		objectList.emplace_back();
 
 		Runtime::Object* param = &objectList.back();
 
@@ -377,13 +379,13 @@ void TreeInterpreter::evaluateStringEvalExpression( StringEvalExpression *exp, R
 
 	evaluate( exp->mExpression, &tmp );
 
-	static constexpr char* VARPREFIX  { "{{{" };
-    static constexpr char* VARPOSTFIX { "}}}" };
-    static constexpr size_t PREFIXLEN { strlen( VARPREFIX ) };
-    static constexpr size_t POSTFIXLEN{ strlen( VARPOSTFIX ) };
+	static constexpr const char* VARPREFIX  { "{{{" };
+	static constexpr const char* VARPOSTFIX { "}}}" };
+	static const size_t PREFIXLEN { strlen(VARPREFIX) };
+	static const size_t POSTFIXLEN { strlen(VARPOSTFIX) };
 
-	auto sourceStr = tmp.getValue().toStdString();
-	size_t start   = 0;
+	std::string sourceStr{ tmp.getValue().toStdString() };
+	size_t start{ 0 };
 
 	while ( ( start = sourceStr.find_first_of( VARPREFIX, start ) ) != std::string::npos ) {
 		auto end = sourceStr.find_first_of( VARPOSTFIX, start );
@@ -392,8 +394,8 @@ void TreeInterpreter::evaluateStringEvalExpression( StringEvalExpression *exp, R
 			break;
 		}
 
-		auto startPos = start + PREFIXLEN;
-		auto endPos   = end;
+		const auto startPos = start + PREFIXLEN;
+		const auto endPos   = end;
 		end += POSTFIXLEN;
 
 		auto var = sourceStr.substr( startPos, endPos - startPos );
@@ -404,17 +406,17 @@ void TreeInterpreter::evaluateStringEvalExpression( StringEvalExpression *exp, R
 
 		auto* symbol = scope->resolve( var, false, Visibility::Designtime );
 		if ( !symbol ) {
-		    start += PREFIXLEN;
+			start += PREFIXLEN;
 			continue;	// skip not-existing symbols
 		}
 		if ( symbol->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-		    start += PREFIXLEN;
+			start += PREFIXLEN;
 			continue;	// skip symbols with wrong type
 		}
 
-		auto* tmp = dynamic_cast<Runtime::Object*>(symbol);
+		auto* tmpSym = dynamic_cast<Runtime::Object*>(symbol);
 
-		sourceStr.replace( start, end - start, tmp->getValue().toStdString() );
+		sourceStr.replace( start, end - start, tmpSym->getValue().toStdString() );
 	}
 
 	Runtime::StringType type( sourceStr );
@@ -979,12 +981,12 @@ void TreeInterpreter::visitAssignment(AssignmentStatement* node)
 	Runtime::operator_binary_assign(&lvalue, &right);
 }
 
-void TreeInterpreter::visitBreak(BreakStatement*)
+void TreeInterpreter::visitBreak(BreakStatement* /*node*/)
 {
 	mControlFlow = Runtime::ControlFlow::Break;
 }
 
-void TreeInterpreter::visitContinue(ContinueStatement*)
+void TreeInterpreter::visitContinue(ContinueStatement* /*node*/)
 {
 	mControlFlow = Runtime::ControlFlow::Continue;
 }
@@ -1074,7 +1076,7 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 		evaluateMethodExpression(node->mGetIteratorExpression, &iterator);
 	}
 
-	TypeDeclaration* typeDeclaration = node->mTypeDeclaration;
+	const TypeDeclaration* typeDeclaration = node->mTypeDeclaration;
 
 	for  ( ; ; ) {
 		// Setup
@@ -1146,7 +1148,7 @@ void TreeInterpreter::visitIf(IfStatement* node)
 	}
 }
 
-void TreeInterpreter::visitOperator(Operator*)
+void TreeInterpreter::visitOperator(Operator* /*node*/)
 {
 	throw Runtime::Exceptions::InvalidOperation("cannot process standalone operator");
 }
@@ -1270,7 +1272,7 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 			if ( Runtime::operator_binary_equal(&value, &caseValue) ) {
 				caseMatched = true;
 
-				// both expressions matched so we need to execute this case-block
+				// both expressions matched, so we need to execute this case-block
 				visitStatements(stmt->mCaseBlock);
 				break;
 			}
@@ -1363,7 +1365,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	}
 
 	// store current control flow and re-set it after finally block has been executed
-	Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
+	const Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
 
 	// execute finally-block if present
 	if ( node->mFinallyBlock ) {

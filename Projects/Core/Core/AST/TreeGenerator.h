@@ -51,7 +51,7 @@ public:
 
 public:
 	size_t hasErrors() const;
-	void process(MethodScope* base);
+	void process(const MethodScope* base);
 
 private:
 	class Initialization {
@@ -64,14 +64,14 @@ private:
 	};
 
 private: // Generator
-	void processBluePrint(Designtime::BluePrintObject* object);
+	void processBluePrint(const Designtime::BluePrintObject* object);
 	void processMethod(Common::Method* method);
-	void processNamespace(Common::Namespace* space);
+	void processNamespace(const Common::Namespace* space);
 
-	Statements* generateAST(Common::Method* method);
+	Statements* generateAST(const Common::Method* method);
 
 private: // Execution
-	void collectScopeTokens(TokenIterator& token, TokenList& tokens);
+	void collectScopeTokens(TokenIterator& token, TokenList& tokens) const;
 
 	Statements* generate(const TokenList& tokens, bool allowBreakAndContinue = false, bool needsControlStatement = false);
 
@@ -125,26 +125,26 @@ private: // Execution
 
 	// operator processing
 	// {
-	Node* processIsOperator(TokenIterator& start, Node* baseExp);
-	Node* processPostfixIncDecOperator(TokenIterator& start, Node* baseExp);
-	Node* processPostfixNotOperator(TokenIterator& start, Node* baseExp);
+	Node* processIsOperator(TokenIterator& start, Node* baseExp) const;
+	static Node* processPostfixIncDecOperator(TokenIterator& start, Node* baseExp);
+	static Node* processPostfixNotOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixObjectOperator(const std::string& objectType, TokenIterator& start, Expression* baseExp);
 	Node* processPostfixRangeOperator(TokenIterator& start, Node* baseExp);
 	Node* processPostfixScopeOperator(TokenIterator& start, Node* baseExp);
-	Node* processPostfixSubscriptOperator(TokenIterator& start, Node* baseExp);
+	static Node* processPostfixSubscriptOperator(const TokenIterator& start, Node* baseExp);
 	Node* processTernaryOperator(TokenIterator& start, Node* baseExp);
 	// }
 
 	SymbolExpression* resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope, Visibility::E visibility) const;
 	SymbolExpression* resolveWithExceptions(TokenIterator& token, IScope* base) const;
 	SymbolExpression* resolveWithThis(TokenIterator& token, IScope* base) const;
-	static MethodSymbol* resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) ;
+	static MethodSymbol* resolveMethod(const SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility);
 	std::string resolveType(TokenIterator& token, Node* left, const Token& operation, Node* right) const;
-	std::string resolveType(TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const;
+	std::string resolveType(const TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const;
 
 	// Scope stack
 	// {
-	static MethodScope* getEnclosingMethodScope(IScope* scope) ;
+	static MethodScope* getEnclosingMethodScope(const IScope* scope) ;
 	static MethodScope* getMethodScope(IScope* scope) ;
 
 	inline IScope* getScope() const;
@@ -161,7 +161,7 @@ private: // Execution
 
 	// Helpers
 	// {
-	static std::list<MethodSymbol*> provideSimilarMethods(SymbolExpression* symbol) ;
+	static std::list<MethodSymbol*> provideSimilarMethods(const SymbolExpression* symbol) ;
 	// }
 
 private:	// Initialization

@@ -29,9 +29,9 @@ Object::Object()
   mIsReference(false),
   mQualifiedOuterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
+  mThis( this ),
   mTypename(ANONYMOUS_OBJECT)
 {
-	mThis = this;
 }
 
 Object::Object(const std::string& name, std::string filename, const std::string& type, const AtomicValue& value)
