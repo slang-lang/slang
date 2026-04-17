@@ -104,7 +104,7 @@ std::string GetFullname(const std::string& filename)
 #else
 
 	char full_path[PATH_MAX];
-	char* result = realpath(filename.c_str(), full_path);
+	const char* result = realpath(filename.c_str(), full_path);
 	(void)result;
 
 	return std::string(full_path);
@@ -126,28 +126,7 @@ std::string RemoveFileExt(const std::string& filename)
     return filename.substr( 0, filename.length() - fileExtension.length() - 1 );
 }
 
-#ifdef _MSC_VER
-#include <io.h>
-#else
-#include <glob.h>
 
-	std::vector<std::string> globVector(const std::string& pattern)
-	{
-		glob_t glob_result;
-		glob(pattern.c_str(), GLOB_TILDE, nullptr, &glob_result);
-
-		std::vector<std::string> files;
-		for ( unsigned int i = 0; i < glob_result.gl_pathc; ++i ) {
-			files.emplace_back(glob_result.gl_pathv[i]);
-		}
-
-		globfree(&glob_result);
-		return files;
-	}
-
-#endif
-
-
-}
-}
-}
+} // namespace Files
+} // namespace Tools
+} // namespace Utils

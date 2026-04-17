@@ -7,7 +7,6 @@
 #include <string>
 
 // Project includes
-#include "Value.h"
 
 // Forward declarations
 
@@ -23,7 +22,7 @@ public:
     static const std::string DELIMITERS;
 
 public:
-    explicit Tokenizer(std::string  str, const std::string& delimiters = "");
+    explicit Tokenizer(std::string str, const std::string& delimiters = "");
 
 public:
     std::string getRemainingString() const;

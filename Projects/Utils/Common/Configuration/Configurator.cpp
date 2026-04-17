@@ -23,7 +23,7 @@ Configurator::Configurator( const Logger* p, const std::string& file )
   mConfigFile(file),
   mSuccess(false)
 {
-	char* homepath = getenv( "SLANG_HOME" );
+	const char* homepath = getenv( "SLANG_HOME" );
 	if ( homepath ) {
 		mHomePath = homepath;
 		if ( !mHomePath.empty() ) {
@@ -94,7 +94,7 @@ bool Configurator::load(const std::string& file)
 	}
 
 	mFile.open(mConfigFile.c_str(), std::ios::in);
-	std::string data((std::istreambuf_iterator<char>(mFile)), std::istreambuf_iterator<char>());
+	const std::string data((std::istreambuf_iterator<char>(mFile)), std::istreambuf_iterator<char>());
 	mFile.close();
 
 	if ( data.empty() ) {
@@ -103,14 +103,14 @@ bool Configurator::load(const std::string& file)
 	}
 
 	std::string line;
-	for ( auto it = data.begin(); it != data.end(); ++it ) {
-		if ( (*it) == '\n' ) {
+	for ( const char& c : data ) {
+		if ( c == '\n' ) {
 			mLines.push_back(line);
 			line = "";
 			continue;
 		}
 
-		line += (*it);
+		line += c;
 	}
 
 	split();
@@ -124,7 +124,7 @@ void Configurator::split()
 	mValues.clear();
 
 	for ( StringList::const_iterator it = mLines.begin(); it != mLines.end(); ++it ) {
-		Value value = LineParser::parse((*it));
+		const Value value = LineParser::parse((*it));
 
 		if ( !value.getName().empty() ) {
 			mValues[value.getName()] = value;
@@ -147,6 +147,6 @@ void Configurator::unload()
 }
 
 
-}
-}
-}
+} // namespace Configuration
+} // namespace Common
+} // namespace Utils

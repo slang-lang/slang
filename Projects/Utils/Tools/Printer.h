@@ -27,7 +27,7 @@ public:
 
 public:
 	void print(const std::string& text, const std::string& file = "", unsigned int line = 0) const;
-	void println(const std::string& text, const std::string& file = "", unsigned int line = 0);
+	void println(const std::string& text, const std::string& file = "", unsigned int line = 0) const;
 
 public:
 	bool ActivatePrinter;
@@ -39,7 +39,7 @@ private:
 };
 
 
-}
+} // namespace Utils
 
 
 #endif

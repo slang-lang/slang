@@ -45,7 +45,7 @@ public:
 	}
 
 	void print() {
-		std::cout << "TestSuite: " << getName() << std::endl;
+		std::cout << "TestSuite: " << getName() << '\n';
 
 		for ( TestList::const_iterator it = mTests.begin(); it!= mTests.end(); ++it ) {
 			(*it)->print();
@@ -55,7 +55,7 @@ public:
 	TestResult run() {
 		TestResult result;
 
-		std::cout << std::endl << "********* Starting: " << getName() << " *********" << std::endl;
+		std::cout << '\n' << "********* Starting: " << getName() << " *********" << '\n';
 
 		setup();
 
@@ -66,7 +66,7 @@ public:
 		teardown();
 		cleanup();
 
-		std::cout << "********* Finished: " << getName() << " *********" << std::endl;
+		std::cout << "********* Finished: " << getName() << " *********" << '\n';
 
 		return result;
 	}
@@ -88,7 +88,7 @@ private:
 };
 
 
-}
+} // namespace MyUnit
 
 
 #endif

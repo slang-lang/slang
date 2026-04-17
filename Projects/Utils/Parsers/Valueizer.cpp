@@ -17,8 +17,8 @@ Valueizer::Valueizer(const std::string& s)
 {
 }
 
-Valueizer::Valueizer(const std::string& s, const std::string& delimiters)
-: Tokenizer(s, delimiters)
+Valueizer::Valueizer(const std::string& str, const std::string& delimiters)
+: Tokenizer(str, delimiters)
 {
 }
 
@@ -28,5 +28,5 @@ Value Valueizer::getTokenAsValue() const
 }
 
 
-}
+} // namespace Utils
 

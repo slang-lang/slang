@@ -122,7 +122,7 @@ double stringToDouble(const std::string& str)
 float stringToFloat(const std::string& str)
 {
 	if ( str.empty() ) {
-		return 0.0f;
+		return 0.F;
 	}
 
 	std::stringstream stream;
@@ -175,5 +175,5 @@ std::string toLowerCase(std::string data)
 }
 
 
-}
-}
+} // namespace Tools
+} // namespace Utils

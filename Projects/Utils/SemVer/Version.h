@@ -15,7 +15,7 @@
 
 
 /*
- * Represents a comparable version number defined by the defacto versioning standard "semantic versioning"
+ * Represents a comparable version number defined by the de-facto versioning standard "semantic versioning"
  * Refer to https://semver.org/ for details about semantic versioning.
  */
 class SemanticVersionNumber
@@ -23,7 +23,7 @@ class SemanticVersionNumber
 public:
 	SemanticVersionNumber() = default;
 	explicit SemanticVersionNumber( const std::string& version );
-	SemanticVersionNumber( int major, int minor, int bugfix, const std::string& label = "", const std::string& buildMetadata = "" );
+	SemanticVersionNumber( int32_t major, int32_t minor, int32_t bugfix, const std::string& label = "", const std::string& buildMetadata = "" );
 
 public:
 	SemanticVersionNumber& operator=( const std::string& version );
@@ -63,12 +63,12 @@ private:
 	void parse( std::string version );
 
 private:
-	int mBugfix{ 0 };
+	int32_t mBugfix{ 0 };
 	std::string mBuildMetadata;
 	std::string mLabel;
 	bool mIsValid{ false };
-	int mMajor{ 0 };
-	int mMinor{ 0 };
+	int32_t mMajor{ 0 };
+	int32_t mMinor{ 0 };
 };
 
 

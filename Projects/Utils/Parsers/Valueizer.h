@@ -7,6 +7,7 @@
 
 // Project includes
 #include "Tokenizer.h"
+#include "Value.h"
 
 // Forward declarations
 
@@ -24,15 +25,10 @@ public:
 
 public:
 	Value getTokenAsValue() const;
-
-protected:
-
-private:
-
 };
 
 
-}
+} // namespace Utils
 
 
 #endif
