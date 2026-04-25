@@ -3,19 +3,15 @@
 #include "Application.h"
 
 // Library includes
-// #include <algorithm>
 #include <cstdlib>
+#include <cstdio>
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string>
 #include <sys/wait.h>
-#include <unistd.h>
 #ifdef _WIN32
 #    include <direct.h>
 #    define GetCurrentDir _getcwd
 #else
-#    include <dirent.h>
 #    include <unistd.h>
 #    define GetCurrentDir getcwd
 #endif
@@ -50,7 +46,7 @@ namespace {
     Slang::ParameterList mParameters;
     bool mPrintDebugInfo{ false };
 
-}
+} // namespace
 
 
 namespace Slang {
@@ -77,12 +73,12 @@ int Application::exec()
     FCGX_InitRequest( &request, 0, 0 );
 
     while( FCGX_Accept_r( &request ) == 0 ) {
-        pid_t pid = fork();
+        const pid_t pid = fork();
 
         if ( pid == 0 ) {
             bool requestHandled{ false };
 
-            std::string servicePath{ FCGX_GetParam( "PATH_INFO", request.envp ) };
+            const std::string servicePath{ FCGX_GetParam( "PATH_INFO", request.envp ) };
 
             if ( servicePath.empty() ) {
                 if ( mSettings.DefaultService ) {
@@ -110,7 +106,7 @@ int Application::exec()
             exit( 0 );
         }
         else {
-            waitpid( pid, NULL, 0 );
+            waitpid( pid, nullptr, 0 );
         }
     }
 
@@ -151,13 +147,13 @@ void Application::init( int argc, const char* argv[] )
         mSettings.CurrentFolder = std::string( currentPath );
 
         // require a trailing slash
-        if ( mSettings.CurrentFolder[ sizeof( mSettings.CurrentFolder ) - 1 ] != '/' ) {
+        if ( mSettings.CurrentFolder[ mSettings.CurrentFolder.size() - 1 ] != '/' ) {
             mSettings.CurrentFolder += '/';
         }
     }
 
     // require a trailing slash
-    if ( mSettings.LibraryFolder[ sizeof( mSettings.LibraryFolder ) - 1 ] != '/' ) {
+    if ( mSettings.LibraryFolder[ mSettings.LibraryFolder.size() - 1 ] != '/' ) {
         mSettings.LibraryFolder += '/';
     }
 
@@ -223,22 +219,22 @@ void Application::loadServices()
 
 void Application::printUsage()
 {
-    std::cout << "Usage: slang-app [ args... ]" << std::endl;
-    std::cout << std::endl;
-    std::cout << "--debug                    Show debug information" << std::endl;
-    std::cout << "-f | --file <file>         Parse and execute <file>" << std::endl;
-    std::cout << "-h | --help                This help" << std::endl;
-    std::cout << "-l | --library <library>   Library root path" << std::endl;
-    std::cout << "-v | --verbose             Verbose output" << std::endl;
-    std::cout << "--version                  Version information" << std::endl;
-    std::cout << std::endl;
+    std::cout << "Usage: slang-app [ args... ]" << '\n';
+    std::cout << '\n';
+    std::cout << "--debug                    Show debug information" << '\n';
+    std::cout << "-f | --file <file>         Parse and execute <file>" << '\n';
+    std::cout << "-h | --help                This help" << '\n';
+    std::cout << "-l | --library <library>   Library root path" << '\n';
+    std::cout << "-v | --verbose             Verbose output" << '\n';
+    std::cout << "--version                  Version information" << '\n';
+    std::cout << '\n';
 }
 
 void Application::printVersion()
 {
-    std::cout << PRODUCT_NAME << " Application Server " << PRODUCT_VERSION << " (cli) " << std::endl;
-    std::cout << COPYRIGHT << std::endl;
-    std::cout << std::endl;
+    std::cout << PRODUCT_NAME << " Application Server " << PRODUCT_VERSION << " (cli) " << '\n';
+    std::cout << COPYRIGHT << '\n';
+    std::cout << '\n';
 }
 
 void Application::processParameters( int argc, const char* argv[] )
@@ -255,7 +251,7 @@ void Application::processParameters( int argc, const char* argv[] )
             }
             else if ( Utils::Tools::StringCompare( argv[i], "-f" ) || Utils::Tools::StringCompare( argv[i], "--file" ) ) {
                 if ( argc <= ++i ) {
-                    std::cout << "invalid number of parameters provided!" << std::endl;
+                    std::cout << "invalid number of parameters provided!" << '\n';
 
                     exit( -1 );
                 }
@@ -273,7 +269,7 @@ void Application::processParameters( int argc, const char* argv[] )
             }
             else if ( Utils::Tools::StringCompare( argv[i], "-l" ) || Utils::Tools::StringCompare( argv[i], "--library" ) ) {
                 if ( argc <= ++i ) {
-                    std::cout << "invalid number of parameters provided!" << std::endl;
+                    std::cout << "invalid number of parameters provided!" << '\n';
 
                     exit( -1 );
                 }
@@ -308,7 +304,7 @@ void Application::processParameters( int argc, const char* argv[] )
 }
 
 
-}
+} // namespace Slang
 
 
 namespace {
@@ -324,11 +320,11 @@ namespace {
     {
         std::fstream stream;
         stream.open( filename.c_str(), std::ios::in );    // open for reading
-        std::string data( ( std::istreambuf_iterator<char>( stream ) ), std::istreambuf_iterator<char>() );    // read stream
+        const std::string data( ( std::istreambuf_iterator<char>( stream ) ), std::istreambuf_iterator<char>() );    // read stream
         stream.close();
 
         Json::Reader reader;
         reader.parse( data, result );
     }
 
-}
+} // namespace

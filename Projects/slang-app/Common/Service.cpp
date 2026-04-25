@@ -20,9 +20,9 @@
 
 namespace {
 
-    static inline void setenv_s( const char* param, const FCGX_Request& request );
+    inline void setenv_s( const char* param, const FCGX_Request& request );
 
-}
+} // namespace
 
 
 Service::Service( std::string path, std::string entryPoint, Slang::Script* script )
@@ -37,7 +37,7 @@ bool Service::handleRequest( const FCGX_Request& request )
 {
     prepareEnvironment( request );
 
-    std::stringstream stream;
+    const std::stringstream stream;
     auto* old = std::cout.rdbuf( stream.rdbuf() );
 
     if ( mScript ) {
@@ -56,9 +56,9 @@ bool Service::handleRequest( const FCGX_Request& request )
     std::cout.rdbuf( old );
     auto output = stream.str();
 
-    std::cout << output << std::endl;
+    std::cout << output << '\n';
 
-    FCGX_PutStr( output.c_str(), output.size(), request.out );
+    FCGX_PutStr( output.c_str(), static_cast<int32_t>( output.size() ), request.out );
 
     return true;
 }
@@ -137,11 +137,11 @@ void Service::prepareEnvironment( const FCGX_Request& request )
 
 namespace {
 
-    static inline void setenv_s( const char* param, const FCGX_Request& request )
+    inline void setenv_s( const char* param, const FCGX_Request& request )
     {
         auto* val = FCGX_GetParam( param, request.envp );
 
         setenv( param, val ? val : "", static_cast<bool>( val ) );
     }
 
-}
+} // namespace
