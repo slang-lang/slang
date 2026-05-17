@@ -41,6 +41,7 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 		throw Common::Exceptions::DuplicateIdentifier(symbol->getName());
 	}
 
+	mLocalSymbols.push_back( symbol );
 	mSymbols.insert(std::make_pair(name, symbol));
 }
 
@@ -61,16 +62,25 @@ void SymbolScope::defineExternal(const std::string &name, Symbol *symbol)
 
 void SymbolScope::deinit()
 {
-	Symbols tmpSymbols = mSymbols;
+	// Symbols tmpSymbols = mSymbols;
 
-	for ( auto& tmpSymbol : tmpSymbols ) {
-		mSymbols.erase(tmpSymbol.first);
+	// for ( auto& tmpSymbol : tmpSymbols ) {
+	// 	mSymbols.erase(tmpSymbol.first);
 
-		if ( tmpSymbol.first == IDENTIFIER_THIS ) {
-			continue;
+	// 	if ( tmpSymbol.first == IDENTIFIER_BASE || tmpSymbol.first == IDENTIFIER_THIS ) {
+	// 		continue;
+	// 	}
+
+	// 	delete tmpSymbol.second;
+	// }
+
+	auto symIt = mSymbols.begin();
+	while ( symIt != mSymbols.end() ) {
+		if ( symIt->first != IDENTIFIER_BASE && symIt->first != IDENTIFIER_THIS ) {
+			delete symIt->second;
 		}
 
-		delete tmpSymbol.second;
+		symIt = mSymbols.erase( symIt );
 	}
 
 	// External symbols are owned by their defining scope and are only borrowed references.
@@ -135,6 +145,24 @@ Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 	return nullptr;
 }
 
+Symbol* SymbolScope::resolveIndexToSymbol( size_t index ) const
+{
+	return mLocalSymbols[ index ];
+}
+
+size_t SymbolScope::resolveLocalIndex(const std::string& name) const
+{
+	for ( size_t idx = 0; idx < mLocalSymbols.size(); ++idx ) {
+		auto* sym = mLocalSymbols[ idx ];
+
+		if ( sym->getName() == name /*&& sym->getVisibility() >= visibility*/ ) {
+			return idx;
+		}
+	}
+
+	return __SIZE_MAX__;
+}
+
 void SymbolScope::undefine(const std::string& name)
 {
 	auto it = mSymbols.find(name);
@@ -185,6 +213,7 @@ void MethodScope::define(const std::string& name, Symbol* symbol)
 		throw Common::Exceptions::DuplicateIdentifier(name);
 	}
 
+	mLocalSymbols.push_back( symbol );
 	mSymbols.insert(std::make_pair(name, symbol));
 }
 
@@ -238,16 +267,25 @@ void MethodScope::deinit()
 	// We only clear our references to them without deleting
 	mExternalMethods.clear();
 
-	Symbols tmpSymbols = mSymbols;
+	// Symbols tmpSymbols = mSymbols;
 
-	for ( auto& tmpSymbol : tmpSymbols ) {
-		mSymbols.erase(tmpSymbol.first);
+	// for ( auto& tmpSymbol : tmpSymbols ) {
+	// 	mSymbols.erase(tmpSymbol.first);
 
-		if ( tmpSymbol.first == IDENTIFIER_BASE || tmpSymbol.first == IDENTIFIER_THIS ) {
-			continue;
+	// 	if ( tmpSymbol.first == IDENTIFIER_BASE || tmpSymbol.first == IDENTIFIER_THIS ) {
+	// 		continue;
+	// 	}
+
+	// 	delete tmpSymbol.second;
+	// }
+
+	auto symIt = mSymbols.begin();
+	while ( symIt != mSymbols.end() ) {
+		if ( symIt->first != IDENTIFIER_BASE && symIt->first != IDENTIFIER_THIS ) {
+			delete symIt->second;
 		}
 
-		delete tmpSymbol.second;
+		symIt = mSymbols.erase( symIt );
 	}
 
 	// External symbols are owned by their parent scope and are only borrowed references.
@@ -355,6 +393,24 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 	}
 
 	return nullptr;
+}
+
+Symbol* MethodScope::resolveIndexToSymbol( size_t index ) const
+{
+	return mLocalSymbols[ index ];
+}
+
+size_t MethodScope::resolveLocalIndex(const std::string& name) const
+{
+	for ( size_t idx = 0; idx < mLocalSymbols.size(); ++idx ) {
+		auto* sym = mLocalSymbols[ idx ];
+
+		if ( sym->getName() == name /*&& sym->getVisibility() >= visibility*/ ) {
+			return idx;
+		}
+	}
+
+	return __SIZE_MAX__;
 }
 
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const

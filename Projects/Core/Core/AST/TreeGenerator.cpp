@@ -2381,6 +2381,18 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	return symbol;
 }
 
+SymbolExpression* TreeGenerator::resolveLocalSymbol(TokenIterator& token, IScope* base)
+{
+	auto idx = base->resolveLocalIndex(token->content());
+	if ( idx == __SIZE_MAX__ ) {
+		return nullptr;
+	}
+
+	auto* symbol = dynamic_cast<ObjectSymbol*>( base->resolveIndexToSymbol( idx ) );
+
+	return new LocalSymbolExpression( idx, token->content(), symbol->QualifiedTypename(), symbol->isConst(), false );
+}
+
 MethodSymbol* TreeGenerator::resolveMethod(const SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility)
 {
 	if ( !symbol ) {
@@ -2464,6 +2476,11 @@ SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, ISc
 
 SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* base) const
 {
+	// SymbolExpression* exp = resolveLocalSymbol(token, base);
+	// if ( exp ) {
+	// 	return exp;
+	// }
+
     if ( mThis ) {
         // every class-method has a "this" local that points to the object's blueprint
         // resolve symbol by using the "this" identifier (without exceptions so that we can try to resolve another time)

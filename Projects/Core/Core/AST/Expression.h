@@ -399,6 +399,7 @@ public:
 	public:
 		enum E {
 			DesigntimeSymbolExpression,
+			LocalRuntimeSymbolExpression,
 			RuntimeSymbolExpression
 		};
 	};
@@ -519,23 +520,21 @@ public:
 };
 
 
-class LocalSymbolExpression : public SymbolExpression
+class LocalSymbolExpression : public RuntimeSymbolExpression
 {
 public:
-	explicit LocalSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isAtomicType)
-	: SymbolExpression(name, resultType, isAtomicType),
-	  mIndex( SIZE_MAX )
+	explicit LocalSymbolExpression(size_t index, const std::string& name, const std::string& resultType, bool isConst, bool isAtomicType)
+	: RuntimeSymbolExpression(name, resultType, isConst, false, isAtomicType),
+	  mIndex( index )
 	{
-		mIsConst = isConst;
-		mIsMember = false;
-		mSymbolExpressionType = SymbolExpressionType::RuntimeSymbolExpression;
+		mSymbolExpressionType = SymbolExpressionType::LocalRuntimeSymbolExpression;
 	}
 
 	std::string getResultType() const override {
 		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
 	}
 
-	unsigned int getIndex() const {
+	size_t getIndex() const {
 		return mIndex;
 	}
 

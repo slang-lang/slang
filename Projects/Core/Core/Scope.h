@@ -10,6 +10,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <vector>
 
 // Project includes
 #include <Core/Interfaces/IScope.h>
@@ -46,10 +47,13 @@ public:	// IScope implementation
 	virtual const std::string& getScopeName() const;
 	virtual IScope::IType::E getScopeType() const;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
+	virtual Symbol* resolveIndexToSymbol( size_t index ) const;
+	virtual size_t resolveLocalIndex(const std::string& name) const;
 	virtual void undefine(const std::string& name);
 
 protected:
 	Symbols mExternalSymbols;
+	std::vector<Symbol*> mLocalSymbols;
 	IScope *mParent;
 	std::string mScopeName;
 	IType::E mScopeType;
@@ -85,6 +89,8 @@ public:	// IScope implementation
 	virtual const std::string& getScopeName() const;
 	virtual IScope::IType::E getScopeType() const;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
+	virtual Symbol* resolveIndexToSymbol( size_t index ) const;
+	virtual size_t resolveLocalIndex(const std::string& name) const;
 	virtual void undefine(const std::string& name);
 
 public: // MethodScope implementation
@@ -105,6 +111,7 @@ protected:
 
 protected:
 	Symbols mExternalSymbols;
+	std::vector<Symbol*> mLocalSymbols;
 	MethodCollection mExternalMethods;
 	MethodCollection mMethods;
 	IScope* mParent;

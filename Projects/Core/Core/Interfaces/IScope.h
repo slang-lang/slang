@@ -55,6 +55,8 @@ public:
 	virtual const std::string& getScopeName() const = 0;
 	virtual IType::E getScopeType() const = 0;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const = 0;
+	virtual Symbol* resolveIndexToSymbol( size_t index ) const = 0;
+	virtual size_t resolveLocalIndex(const std::string& name) const = 0;
 	virtual void undefine(const std::string& name) = 0;
 };
 

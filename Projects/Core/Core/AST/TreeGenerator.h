@@ -136,9 +136,10 @@ private: // Execution
 	// }
 
 	SymbolExpression* resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope, Visibility::E visibility) const;
+	static SymbolExpression* resolveLocalSymbol(TokenIterator& token, IScope* base);
+	static MethodSymbol* resolveMethod(const SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility);
 	SymbolExpression* resolveWithExceptions(TokenIterator& token, IScope* base) const;
 	SymbolExpression* resolveWithThis(TokenIterator& token, IScope* base) const;
-	static MethodSymbol* resolveMethod(const SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility);
 	std::string resolveType(TokenIterator& token, Node* left, const Token& operation, Node* right) const;
 	std::string resolveType(const TokenIterator& token, const std::string& left, const Token& operation, const std::string& right) const;
 
