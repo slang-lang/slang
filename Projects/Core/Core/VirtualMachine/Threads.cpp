@@ -61,7 +61,7 @@ Runtime::ControlFlow::E Thread::execute(Runtime::Object* self, Common::Method* m
 	AST::TreeInterpreter interpreter( this, *mController );
 	Runtime::ControlFlow::E controlflow = interpreter.execute(self, method, params, result);
 
-	mState = State::Stopping;
+	// mState = State::Stopping;
 
 	// shutdown things...
 

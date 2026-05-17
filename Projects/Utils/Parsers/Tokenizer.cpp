@@ -18,11 +18,10 @@ namespace Utils {
 const std::string Tokenizer::DELIMITERS(" \t\n\r;");
 
 
-Tokenizer::Tokenizer(std::string s, const std::string& delimiters)
+Tokenizer::Tokenizer(std::string str, const std::string& delimiters)
 : mDelimiters( !delimiters.empty() ? delimiters : DELIMITERS ),
   mOffset(0),
-  mString(std::move(s)),
-  mToken("")
+  mString(std::move(str))
 {
 }
 
@@ -49,17 +48,17 @@ bool Tokenizer::hasNext()
 
 bool Tokenizer::nextToken(const std::string& delimiters) 
 {
-    size_t i = mString.find_first_not_of(delimiters, mOffset);
+    const size_t i = mString.find_first_not_of(delimiters, mOffset);
 
-	if ( std::string::npos == i ) {
+    if ( std::string::npos == i ) {
         mOffset = mString.length();
 
         return false;
     }
 
-    size_t j = mString.find_first_of(delimiters, i);
+    const size_t j = mString.find_first_of(delimiters, i);
 
-	if ( std::string::npos == j ) {
+    if ( std::string::npos == j ) {
         mToken = mString.substr(i);
         mOffset = mString.length();
 
@@ -79,4 +78,4 @@ void Tokenizer::reset()
 }
 
 
-}
+} // namespace Utils

@@ -17,7 +17,7 @@
 
 namespace MyUnit {
 
-}
+} // namespace MyUnit
 
 
 #endif

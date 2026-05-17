@@ -14,26 +14,20 @@ namespace Utils {
 
 
 Value::Value()
-: mName(""),
-  mType(""),
-  mValue(""),
-  mIsArray(false),
+: mIsArray(false),
   mSize(0)
 {
 }
 
 Value::Value(std::string v)
-: mName(""),
-  mType(""),
-  mValue(std::move(v)),
+: mValue(std::move(v)),
   mIsArray(false),
   mSize(0)
 {
 }
 
 Value::Value(std::string t, std::string v)
-: mName(""),
-  mType(std::move(t)),
+: mType(std::move(t)),
   mValue(std::move(v)),
   mIsArray(false),
   mSize(0)
@@ -119,7 +113,7 @@ float Value::toFloat() const
 	return Tools::stringToFloat(mValue);
 }
 
-int Value::toInt() const
+int64_t Value::toInt() const
 {
 	return Tools::stringToInt(mValue);
 }
@@ -130,4 +124,4 @@ const std::string& Value::toString() const
 }
 
 
-}
+} // namespace Utils

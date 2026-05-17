@@ -31,11 +31,11 @@ void Printer::print(const std::string& text, const std::string& file, unsigned i
 	}
 
 	if ( AutomaticLineBreak ) {
-		std::cout << std::endl;
+		std::cout << '\n';
 	}
 }
 
-void Printer::println(const std::string& text, const std::string& file, unsigned int line)
+void Printer::println(const std::string& text, const std::string& file, unsigned int line) const
 {
 	if ( !ActivatePrinter ) {
 		return;
@@ -43,8 +43,8 @@ void Printer::println(const std::string& text, const std::string& file, unsigned
 
 	print(text, file, line);
 
-	std::cout << std::endl;
+	std::cout << '\n';
 }
 
 
-}
+} // namespace Utils

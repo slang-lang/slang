@@ -76,7 +76,7 @@ VirtualMachine::~VirtualMachine()
 
 	mController.deinit();
 
-	for ( auto& extension : mExtensions ) {
+	for ( const auto& extension : mExtensions ) {
 		delete extension;
 	}
 	mExtensions.clear();

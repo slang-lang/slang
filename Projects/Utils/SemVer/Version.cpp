@@ -104,7 +104,7 @@ void SemanticVersionNumber::parse( std::string version )
 	std::string label;
 	std::string major;
 	std::string minor;
-	std::string tmp;
+	// std::string tmp;
 
 	// example: 1.2.3-alpha+001
 	// 1 . 2.3-alpha+001
@@ -116,11 +116,11 @@ void SemanticVersionNumber::parse( std::string version )
 	// 3 - alpha
 	Utils::Tools::splitBy( label, '-', bugfix, label );
 
-	mBugfix        = Utils::Tools::stringToInt( bugfix );
+	mBugfix        = static_cast<int32_t>( Utils::Tools::stringToInt( bugfix ) );
 	mBuildMetadata = buildMetadata;
 	mLabel         = label;
-	mMajor         = Utils::Tools::stringToInt( major );
-	mMinor         = Utils::Tools::stringToInt( minor );
+	mMajor         = static_cast<int32_t>( Utils::Tools::stringToInt( major ) );
+	mMinor         = static_cast<int32_t>( Utils::Tools::stringToInt( minor ) );
 
 	mIsValid = mMajor != 0 || mMinor != 0 || mBugfix != 0 || !mLabel.empty() || !mBuildMetadata.empty();
 }

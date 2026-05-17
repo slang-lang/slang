@@ -38,7 +38,7 @@ public:
 	bool toBool() const;
 	double toDouble() const;
 	float toFloat() const;
-	int toInt() const;
+	int64_t toInt() const;
 	const std::string& toString() const;
 
 public:	// Array specifics
@@ -54,13 +54,10 @@ protected:
 private:	// Array specifics
 	bool	mIsArray;
 	size_t	mSize;
-
-private:
-
 };
 
 
-}
+} // namespace Utils
 
 
 #endif

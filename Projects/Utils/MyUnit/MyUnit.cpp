@@ -11,4 +11,4 @@
 
 namespace MyUnit {
 
-}
+} // namespace MyUnit

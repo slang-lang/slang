@@ -21,13 +21,13 @@ Value LineParser::parse(const std::string& line)
 		return Value();
 	}
 
-	std::string name = t.getToken();
-	
+	const std::string name = t.getToken();
+
 	if ( !t.hasNext() ) {
 		return Value();
 	}
 
-	std::string type = t.getToken();
+	const std::string type = t.getToken();
 
 	std::string value;
 
@@ -43,4 +43,4 @@ Value LineParser::parse(const std::string& line)
 }
 
 
-}
+} // namespace Utils

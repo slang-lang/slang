@@ -105,8 +105,8 @@ inline std::string toString<int>( const int& t ) {
 */
 
 
-}
-}
+} // namespace Tools
+} // namespace Utils
 
 
 #endif

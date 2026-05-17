@@ -28,9 +28,9 @@ std::string GetFullname(const std::string& filename);
 std::string RemoveFileExt(const std::string& filename);
 
 
-}
-}
-}
+} // namespace Files
+} // namespace Tools
+} // namespace Utils
 
 
 #endif
