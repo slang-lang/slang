@@ -254,11 +254,11 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintObject* bluepr
 	Runtime::Object* object = createInstance(blueprint, name, constraints, initialize);
 
 	if ( initialize == InitilizationType::Final ) {
+		Controller::Instance().memory()->newObject(object);
+
 		if ( object->isAbstract() ) {
 			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->QualifiedTypename() + "'");
 		}
-
-		Controller::Instance().memory()->newObject(object);
 	}
 
 	return object;

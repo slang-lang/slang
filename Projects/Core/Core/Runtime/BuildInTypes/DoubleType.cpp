@@ -276,7 +276,7 @@ void DoubleType::operator_unary_minus()
 
 void DoubleType::operator_unary_not()
 {
-	mValue = static_cast<double>( !mValue.toDouble() );
+	mValue = mValue.toDouble() ? 0.0 : 1.0;
 }
 
 

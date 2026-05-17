@@ -268,7 +268,7 @@ void FloatType::operator_unary_minus()
 
 void FloatType::operator_unary_not()
 {
-	mValue = static_cast<float>( !mValue.toFloat() );
+	mValue = mValue.toFloat() ? 0.0f : 1.0f;
 }
 
 
