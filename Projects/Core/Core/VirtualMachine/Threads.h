@@ -23,6 +23,7 @@
 namespace Slang {
 
 // Forward declarations
+class Controller;
 namespace Common {
 	class Method;
 }
@@ -50,7 +51,7 @@ public:
 
 public:
 	Thread();
-	explicit Thread(ThreadId id);
+	Thread(ThreadId id, Controller* controller);
 	~Thread();
 
 public:	// Initialization
@@ -60,6 +61,7 @@ public:	// Initialization
 	void print();
 
 public:	// Thread specificas
+	Controller* controller() const;
 	ThreadId getId() const;
 	State::E getState() const;
 
@@ -81,6 +83,7 @@ private:
 
 private:
 	Runtime::ExceptionData mExceptionData;
+	Controller* mController;
 	ThreadId mId;
 	StackFrames mStackFrames;
 	State::E mState;
@@ -96,6 +99,7 @@ public:
 public:
 	void deinit();
 	void init();
+	void setController(Controller* controller);
 
 public:
 	Thread* createThread();
@@ -110,6 +114,7 @@ private:
 	typedef std::map<unsigned int /*id*/, Thread* /*thread*/> InternalThreads;
 
 private:
+	Controller* mController = nullptr;
 	InternalThreads mThreads;
 };
 

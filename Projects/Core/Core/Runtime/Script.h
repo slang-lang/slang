@@ -17,6 +17,7 @@
 namespace Slang {
 
 // Forward declarations
+class Controller;
 namespace Runtime {
 	class Object;
 }
@@ -25,7 +26,7 @@ class Symbol;
 class Script
 {
 public:
-	Script() = default;
+	explicit Script(Controller* controller);
 	~Script() = default;
 
 public:	//Helpers
@@ -34,6 +35,9 @@ public:	//Helpers
 
 public:	// Execution
 	void execute(ThreadId threadId, const std::string& method, const ParameterList& params, Runtime::Object* result);
+
+private:
+	Controller* mController;
 };
 
 

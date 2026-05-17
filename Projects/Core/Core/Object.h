@@ -22,6 +22,7 @@
 
 // Forward declarations
 namespace Slang {
+	class Controller;
 	class Repository;
 }
 
@@ -67,6 +68,10 @@ public:	// Setup
 
 	Designtime::BluePrintObject* getBluePrint() const;
 	void setBluePrint(Designtime::BluePrintObject* blueprint);
+
+public:	// Controller
+	void setController(Controller* controller);
+	Controller* getController() const;
 
 public:	// Reference
 	const Reference& getReference() const;
@@ -129,6 +134,7 @@ protected:
 	void garbageCollector();
 
 protected:
+	Controller* mController;
 	Designtime::BluePrintObject* mBluePrint;
 	std::string mFilename;
 	Inheritance mInheritance;

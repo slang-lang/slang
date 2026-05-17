@@ -20,6 +20,7 @@
 namespace Slang {
 
 // Forward declarations
+class Controller;
 namespace Designtime {
 	class BluePrintObject;
 }
@@ -45,7 +46,7 @@ public:
 
 public:
 	void deinit();
-	void init();
+	void init(Controller* controller);
 
 	// asynchronous initialization of blueprints
 	void initializeBlueprints();
@@ -76,6 +77,7 @@ private:
 
 private:
 	BluePrintObjectMap mBluePrintObjects;
+	Controller* mController;
 };
 
 

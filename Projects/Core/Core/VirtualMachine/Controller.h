@@ -1,4 +1,3 @@
-
 #ifndef Slang_Core_Core_VirtualMachine_Controller_h
 #define Slang_Core_Core_VirtualMachine_Controller_h
 
@@ -26,10 +25,11 @@ namespace Common {
 class SLANG_API Controller
 {
 public:
-	static Controller& Instance() {
-		static Controller instance;
-		return instance;
-	}
+	Controller();
+	~Controller() = default;
+
+	Controller(const Controller&) = delete;
+	Controller& operator=(const Controller&) = delete;
 
 public:
 	class Phase
@@ -46,12 +46,6 @@ public:
 	};
 
 public:
-	~Controller() = default;
-
-	Controller(const Controller&) = delete;
-	Controller& operator=(const Controller&) = delete;
-
-public:
 	void deinit();
 	void init();
 
@@ -64,9 +58,6 @@ public:
 	Repository* repository() const;
 	Thread* thread(ThreadId id) const;
 	Threads* threads() const;
-
-private:
-	Controller();
 
 private:
 	Common::Namespace* mGlobalScope;

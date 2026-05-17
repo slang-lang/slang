@@ -66,7 +66,7 @@ namespace Slang {
 namespace AST {
 
 
-TreeInterpreter::TreeInterpreter( Thread* thread )
+TreeInterpreter::TreeInterpreter( Thread* thread, Controller& controller )
 : mControlFlow( Runtime::ControlFlow::Normal )
 , mDebugger ( Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : nullptr )
 , mFrame( nullptr )

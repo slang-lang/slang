@@ -46,7 +46,7 @@ public:
 		ParameterList::const_iterator it = list.begin();
 
 		auto param_sockfd = static_cast<int32_t>( (*it++).value().toInt() );
-		auto* param_addr  = Controller::Instance().memory()->get((*it++).reference());
+		auto* param_addr  = mController->memory()->get((*it++).reference());
 
 		*result = Runtime::Int32Type( evaluate( param_sockfd, param_addr ) );
 

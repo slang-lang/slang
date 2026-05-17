@@ -49,7 +49,7 @@ public:
 		ParameterList::const_iterator it = list.begin();
 
 		int param_sockfd = (*it++).value().toInt();
-		Runtime::Object* param_addr = Controller::Instance().memory()->get((*it++).reference());
+		Runtime::Object* param_addr = mController->memory()->get((*it++).reference());
 
 		int handle = evaluate(param_sockfd, param_addr);
 

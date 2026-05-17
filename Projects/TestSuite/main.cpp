@@ -5,7 +5,7 @@
 // Project includes
 #include <Core/Defines.h>
 #include <Core/Runtime/ControlFlow.h>
-#include <Core/VirtualMachine/Controller.h>
+
 #include <Logger/StdOutLogger.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
@@ -232,7 +232,7 @@ int main( int argc, const char* argv[] )
 	}
 
 	// if we get here something bad has happened
-	Controller::Instance().threads()->print();
+	std::cerr << "abnormal test termination" << std::endl;
 
 	return -1;
 }

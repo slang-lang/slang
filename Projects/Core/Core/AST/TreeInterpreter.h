@@ -20,6 +20,7 @@
 namespace Slang {
 
 // Forward declarations
+class Controller;
 namespace Common {
 	class Method;
 	class Namespace;
@@ -45,7 +46,7 @@ class Statements;
 class TreeInterpreter
 {
 public:
-	explicit TreeInterpreter( Thread* thread );
+	TreeInterpreter( Thread* thread, Controller& controller );
 	~TreeInterpreter() = default;
 
 public: // Execution
