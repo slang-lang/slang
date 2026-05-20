@@ -15,6 +15,9 @@
 
 
 namespace Slang {
+
+class MethodScope;
+
 namespace AST {
 
 // Forward declarations
@@ -24,9 +27,11 @@ class Statements;
 class PrintVisitor : private TreeVisitor
 {
 public:
-	PrintVisitor();
+	PrintVisitor() = default;
+	~PrintVisitor() = default;
 
 public:
+    void generate( MethodScope* scope, TreeLineBuffer& output );
 	void generate(Statements* root, TreeLineBuffer& output);
 
 private:
@@ -54,10 +59,9 @@ private:
 
 private:
 	std::string printExpression(Node* node) const;
-	static std::string printIndentation(int indentation);
 
 private:
-	int mIndentation;
+	int mIndentation{ 0 };
 	TreeLineBuffer mOutput;
 };
 

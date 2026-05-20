@@ -4,20 +4,36 @@
 
 // Library includes
 #include <iostream>
-#include <Core/Common/Exceptions.h>
 
 // Project includes
+#include <Core/Common/Exceptions.h>
+#include <Core/Common/Method.h>
+#include <Core/Scope.h>
 
 // Namespace declarations
 
 
+namespace {
+
+    std::string printIndentation(int indentation);
+
+}
+
 namespace Slang {
 namespace AST {
 
-
-PrintVisitor::PrintVisitor()
-: mIndentation(0)
+void PrintVisitor::generate( MethodScope* scope, TreeLineBuffer& output )
 {
+	// start processing beginning with our given root node
+	for ( auto methodIt = scope->beginMethods(); methodIt != scope->endMethods(); ++methodIt ) {
+		generate( (*methodIt)->getRootNode(), output );
+	}
+
+	/*
+	for ( auto symbolIt = scope->beginSymbols(); symbolIt != scope->endSymbols(); ++symbolIt ) {
+		generate( *symbolIt->, output );
+	}
+	*/
 }
 
 void PrintVisitor::generate(Statements* root, TreeLineBuffer& output)
@@ -137,17 +153,6 @@ std::string PrintVisitor::printExpression(Node* node) const
 
 			result += unExp->mOperation.content() + printExpression(unExp->mExpression);
 		} break;
-	}
-
-	return result;
-}
-
-std::string PrintVisitor::printIndentation(int indentation)
-{
-	std::string result;
-
-	for ( int i = 0; i < indentation; i++ ) {
-		result += "\t";
 	}
 
 	return result;
@@ -360,4 +365,20 @@ void PrintVisitor::visitWhile(WhileStatement* node)
 
 
 }
+}
+
+
+namespace {
+
+	std::string printIndentation(int indentation)
+	{
+		std::string result;
+
+		for ( int i = 0; i < indentation; i++ ) {
+			result += "\t";
+		}
+
+		return result;
+	}
+
 }
